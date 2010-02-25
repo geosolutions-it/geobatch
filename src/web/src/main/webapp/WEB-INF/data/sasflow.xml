@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<workingDirectory>sasflowworkingdir</workingDirectory>
+	<EventConsumerConfiguration>
+		<workingDirectory>sasflowworkingdir</workingDirectory>
+		<performBackup>true</performBackup>
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.xml</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+            <ComposerConfiguration>
+			<workingDirectory>sasflowworkingdir</workingDirectory>
+			<serviceID>ComposerService</serviceID>
+			<outputFormat>GeoTIFF</outputFormat>
+			<inputFormats>mat</inputFormats>
+			<leavesFolders>stbd;port</leavesFolders>
+			<!-- outputBaseFolder>H:\temp</outputBaseFolder -->
+			<!-- LINUX NAS -->
+			<!--outputBaseFolder>/mnt/datastorage/sas/mosaic_output</outputBaseFolder-->
+			<!-- LINUX LOCAL -->
+			<outputBaseFolder>V:\temp\sas\output</outputBaseFolder>
+			<JAICacheCapacity>768</JAICacheCapacity>
+	        	<JAIParallelism>8</JAIParallelism>
+			<JAICacheThreshold>1</JAICacheThreshold>
+			<numSteps>6</numSteps>
+			<downsampleStep>2</downsampleStep>
+			<rawScaleAlgorithm>nn</rawScaleAlgorithm>
+			<mosaicScaleAlgorithm>avg</mosaicScaleAlgorithm>
+			<tileH>512</tileH>
+			<tileW>512</tileW>
+			<chunkW>10240</chunkW>
+			<chunkH>10240</chunkH>
+			<compressionRatio>0.75</compressionRatio>
+			<compressionScheme>LZW</compressionScheme>
+			<geoserverURL>http://192.168.1.17:8086/geoserver</geoserverURL>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUploadMethod>EXTERNAL</geoserverUploadMethod>
+			<id>SASMSC</id>
+			<description>description</description>
+			<name>SAS Tiles Mosaic composer</name>
+			<corePoolSize>3</corePoolSize>
+			<maxPoolSize>3</maxPoolSize>
+			<maxWaitingTime>300</maxWaitingTime>
+		</ComposerConfiguration>		
+		<id>id</id>
+		<description>description</description>
+		<name>test</name>
+	</EventConsumerConfiguration>
+	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+		<wildCard>*.*</wildCard>
+		<watchDirectory>sasflowworkingdir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</eventGeneratorConfiguration>
+	<id>sasflow</id>
+	<description>Flow for the SAS Processing manager</description>
+	<name>sasflow</name>
+</FlowConfiguration>

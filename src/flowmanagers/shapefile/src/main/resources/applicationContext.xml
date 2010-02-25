@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- Environment Initialization -->
+	<bean id="shapefileGeoServerGeneratorService" class="it.geosolutions.geobatch.geoserver.shapefile.ShapeFileGeoServerGeneratorService">
+		<property  name="id">
+    		<value>shapefileGeoServerGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>shapefileGeoServerGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>shapefileGeoServerGeneratorService</value>
+    	</property>	
+	</bean>
+    
+
+
+
+</beans>

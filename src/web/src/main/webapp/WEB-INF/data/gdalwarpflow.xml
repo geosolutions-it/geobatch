@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<workingDirectory>gdaloperationsworkingdir/gdalwarp</workingDirectory>
+	<EventConsumerConfiguration>
+		<workingDirectory>gdaloperationsworkingdir/gdalwarp</workingDirectory>
+		<performBackup>true</performBackup>
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.xml</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+        <TaskExecutorConfiguration>
+			<workingDirectory>gdaloperationsworkingdir/gdalwarp</workingDirectory>
+			<serviceID>TaskExecutorService</serviceID>
+			<errorFile>gdaloperationsworkingdir/gdalwarp/config/errorlog.txt</errorFile>
+			<timeOut>1200000</timeOut> <!-- milliseconds -->
+			<executable>D:\work\programs\Java\jdk1.5.0_17\bin\gdalwarp.exe</executable>
+		    <variables>
+				 <entry>
+				    <string>GDAL_DATA</string>
+				    <string>C:/Python26/DLLs/gdalwin32-1.6/data</string>
+				  </entry>
+				  <entry>
+				    <string>PATH</string>
+				    <string>D:/work/programs/Java/jdk1.5.0_17/bin</string>
+				  </entry>
+			</variables>
+			<xsl>gdaloperationsworkingdir/gdalwarp/config/gdalwarp.xsl</xsl>
+			<id>gdalwarp</id>
+			<description>Flow to run gdalwarp operations</description>
+			<name>gdalwarp flow</name>
+		</TaskExecutorConfiguration>		
+		<id>id</id>
+		<description>description</description>
+		<name>test</name>
+	</EventConsumerConfiguration>
+	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+		<wildCard>*.*</wildCard>
+		<watchDirectory>gdaloperationsworkingdir/gdalwarp/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</eventGeneratorConfiguration>
+	<id>gdalwarp flow</id>
+	<description>Flow to run gdalwarp operations</description>
+	<name>gdalwarpFlow</name>
+</FlowConfiguration>

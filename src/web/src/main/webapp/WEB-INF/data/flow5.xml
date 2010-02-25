@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+
+	<workingDirectory>flow5workingdir</workingDirectory>
+	
+	<EventConsumerConfiguration>
+		<workingDirectory>flow5workingdir</workingDirectory>
+		<performBackup>true</performBackup>
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.nc</regex>
+			<id>r1</id>
+			<description>A single netcdf file</description>
+			<name>test</name>
+		</FileEventRule>
+		
+		<GlidersActionConfiguration>
+			<workingDirectory>flow5workingdir</workingDirectory>
+			<dbPWD>tobaro</dbPWD>
+			<dbUID>postgres</dbUID>
+			<dbServerIp>localhost</dbServerIp>
+			<dbType>postgis</dbType>
+			<dbPort>5432</dbPort>			
+			<dbName>obs_db</dbName>
+			<dbTableName>observation</dbTableName>
+			<simplyTollerance>0.0035</simplyTollerance>
+			<serviceID>glidersfileGeneratorService</serviceID>
+			<id>n1</id>
+			<description>description</description>
+			<name>test</name>
+		</GlidersActionConfiguration>
+				
+		<id>flow5Id</id>
+		<description>description</description>
+		<name>test</name>
+	</EventConsumerConfiguration>
+	
+	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+		<wildCard>*.*</wildCard>
+		<watchDirectory>flow5workingdir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>flow5Id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</eventGeneratorConfiguration>
+	
+	<id>flow5workingdir</id>
+	<description>flow5</description>
+	<name>flow5</name>
+	
+</FlowConfiguration>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+		=======================================================================
+		Maven Project Configuration File GeoSolutions GeoBatch Project
+		http://geobatch.codehaus.org Version: $Id: pom.xml 382 2010-01-07
+		18:00:13Z dany111 $
+		=======================================================================
+	-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                               http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>it.geosolutions</groupId>
+		<artifactId>gb-flowmanagers</artifactId>
+		<version>0.9-SNAPSHOT</version>
+	</parent>
+
+
+	<!-- =========================================================== -->
+	<!--     Module Description                                      -->
+	<!-- =========================================================== -->
+	<groupId>it.geosolutions</groupId>
+	<artifactId>gb-flowmanagers-sas</artifactId>
+	<packaging>jar</packaging>
+	<name>GeoSolutions GeoBatch flow managers - SAS Tiles composer flow</name>
+	<url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
+
+	<scm>
+		<connection>
+      scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
+    </connection>
+		<url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
+	</scm>
+
+	<description>
+    GeoSolutions GeoBatch flow managers - Matlab5 SAS flow.
+  </description>
+
+	<licenses>
+		<license>
+			<name>Lesser General Public License (LGPL)</name>
+			<url>http://www.gnu.org/copyleft/lesser.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<!-- =========================================================== -->
+	<!--     Dependency Management                                   -->
+	<!-- =========================================================== -->
+	<dependencies>
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-flowmanagers-geoserver</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-alias-registry</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-geotiff</artifactId>
+			<version>${gt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-matfile5</artifactId>
+			<version>${gt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-fs-catalog</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-task-executor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-flowmanagers-geotiff</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-flowmanagers-shapefile</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-coveragetools</artifactId>
+			<version>${gt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant-launcher</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+	</dependencies>
+
+	
+
+</project>

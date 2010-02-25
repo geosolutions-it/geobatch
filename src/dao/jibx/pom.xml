@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                               http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>gb-dao</artifactId>
+        <groupId>it.geosolutions</groupId>
+        <version>0.9-SNAPSHOT</version>
+    </parent>
+
+  <!-- =========================================================== -->
+  <!--     Module Description                                      -->
+  <!-- =========================================================== -->
+
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb-dao-jibx</artifactId>
+    <version>${version}</version>
+    <name>GeoSolutions GeoBatch pluggable DAOs - JiBX</name>
+    <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fs-catalog</artifactId>
+        </dependency>
+
+		<!--  needed for binding GeoTiffOverviewsEmbedderConfiguration -->        
+        <dependency>
+			  <groupId>it.geosolutions</groupId>
+			  <artifactId>gb-flowmanagers-geotiff</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jibx</groupId>
+            <artifactId>jibx-run</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jibx</groupId>
+            <artifactId>jibx-extras</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <!-- The version number is specified in the parent POM. -->
+            <scope>provided</scope>   <!-- Needed for compilation, not for running -->
+        </dependency>
+<!--
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+-->
+    </dependencies>
+
+</project>

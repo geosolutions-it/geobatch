@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- UI bean definitions -->
+	<bean id="beanNameUrlMapping"
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+
+	<!--
+		bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"/> <property
+		name="suffix" value=".jsp" /> </bean
+	-->
+	<!--
+		bean id="jspViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+		value="org.springframework.web.servlet.view.JstlView"/> <property
+		name="prefix" value="/WEB-INF/jsp/"/> <property name="suffix"
+		value=".jsp"/> </bean
+	-->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass">
+			<value>org.springframework.web.servlet.view.JstlView</value>
+		</property>
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+
+	<!-- Controllers -->
+	<bean id="flowManagerController" class="it.geosolutions.geobatch.ui.mvc.FlowManagerController">
+		<property name="cacheSeconds" value="-1" />
+	</bean>
+
+	<bean id="flowManagerPauseController"
+		class="it.geosolutions.geobatch.ui.mvc.FlowManagerPauseController">
+		<property name="cacheSeconds" value="-1" />
+	</bean>
+
+	<bean id="flowManagerResumeController"
+		class="it.geosolutions.geobatch.ui.mvc.FlowManagerResumeController">
+		<property name="cacheSeconds" value="-1" />
+	</bean>
+
+	<bean id="flowManagerDisposeController"
+		class="it.geosolutions.geobatch.ui.mvc.FlowManagerDisposeController">
+		<property name="cacheSeconds" value="-1" />
+	</bean>
+
+	<bean id="deleteFtpUserController"
+		class="it.geosolutions.geobatch.ui.mvc.DeleteFtpUserController">
+		<property name="cacheSeconds" value="-1" />
+		<property name="server">
+			<ref bean="geoBatchServer" />
+		</property>
+	</bean>
+
+	<bean id="ftpManagerController" class="it.geosolutions.geobatch.ui.mvc.FTPManagerController">
+		<property name="server">
+			<ref bean="geoBatchServer" />
+		</property>
+		<property name="cacheSeconds" value="-1" />
+	</bean>
+
+	<bean id="flowManagerFormValidator"
+		class="it.geosolutions.geobatch.ui.mvc.FlowManagerFormValidator" />
+	<bean id="flowManagerFormController"
+		class="it.geosolutions.geobatch.ui.mvc.FlowManagerFormController">
+		<property name="sessionForm">
+			<value>false</value>
+		</property>       		<!-- Keep command object throughout session? -->
+		<property name="commandName">
+			<value>flowManagerBean</value>
+		</property> 	<!-- How it’s referenced in the JSP -->
+		<property name="commandClass">
+			<value>it.geosolutions.geobatch.ui.mvc.data.FlowManagerDataBean</value>
+		</property>   <!-- Its class -->
+		<property name="validator">
+			<ref bean="flowManagerFormValidator" />
+		</property>
+		<property name="formView">
+			<value>flowManagerNewForm</value>
+		</property>
+		<property name="successView">
+			<value>flowManagerNewSuccess</value>
+		</property>
+	</bean>
+
+	<bean id="ftpUserFormController" class="it.geosolutions.geobatch.ui.mvc.FTPUserFormController">
+		<property name="sessionForm">
+			<value>false</value>
+		</property>       		<!-- Keep command object throughout session? -->
+		<property name="commandName">
+			<value>ftpUserDataBean</value>
+		</property> 	<!-- How it’s referenced in the JSP -->
+		<property name="commandClass">
+			<value>it.geosolutions.geobatch.ui.mvc.data.FtpUserDataBean</value>
+		</property>   <!-- Its class -->
+		<property name="formView">
+			<value>ftpAddUser</value>
+		</property>
+		<property name="successView">
+			<value>ftp</value>
+		</property>
+		<property name="server">
+			<ref bean="geoBatchServer" />
+		</property>
+	</bean>
+
+	<!-- Mappings -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<value>
+				/flows.do=flowManagerController
+				/pause.do=flowManagerPauseController
+				/resume.do=flowManagerResumeController
+				/dispose.do=flowManagerDisposeController
+				/newFlowManager.form=flowManagerFormController
+				/ftpUsers.do=ftpManagerController
+				/newFtpUser.form=ftpUserFormController
+				/delete.do=deleteFtpUserController
+            </value>
+		</property>
+	</bean>
+
+</beans>

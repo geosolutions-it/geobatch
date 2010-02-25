@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<workingDirectory>flow1workingdir</workingDirectory>
+	<EventConsumerConfiguration>
+		<workingDirectory>flow1workingdir</workingDirectory>
+		<performBackup>true</performBackup>
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.tif.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+		<GeoTiffOverviewConfiguration>
+			<workingDirectory>flow1workingdir</workingDirectory>
+			<numSteps>8</numSteps>
+			<downsampleStep>2</downsampleStep>
+			<scaleAlgorithm>nn</scaleAlgorithm>
+			<interp>0</interp>
+			<tileH>512</tileH>
+			<tileW>512</tileW>
+			<serviceID>geotiffOverviewsEmbedderService</serviceID>
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+		</GeoTiffOverviewConfiguration>		
+		<GeoServerActionConfiguration>
+			<workingDirectory>flow1workingdir</workingDirectory>
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<dataTransferMethod>URL</dataTransferMethod>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<!-- storeFilePrefix>c41078a</storeFilePrefix -->
+			<wmsPath>/</wmsPath>
+			<defaultStyle>raster</defaultStyle>
+			<styles/>
+			<!-- styles>
+				<style>raster.sld</style>
+			</styles -->
+			<serviceID>geotiffGeoServerGeneratorService</serviceID>
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+		</GeoServerActionConfiguration>		
+		<id>id</id>
+		<description>description</description>
+		<name>test</name>
+	</EventConsumerConfiguration>
+	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+		<wildCard>*.*</wildCard>
+		<watchDirectory>flow1workingdir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</eventGeneratorConfiguration>
+	<id>flow1</id>
+	<description>flow1</description>
+	<name>flow1</name>
+</FlowConfiguration>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	
+	<bean id="ImageMosaicGeneratorService" class="it.geosolutions.geobatch.imagemosaic.ImageMosaicGeneratorService">
+		<property  name="id">
+    		<value>ImageMosaicGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>ImageMosaicGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>ImageMosaicGeneratorService</value>
+    	</property>	
+	</bean>
+
+	<bean id="ImageMosaicAliasRegistrar" class="it.geosolutions.geobatch.imagemosaic.ImageMosaicAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+    
+</beans>

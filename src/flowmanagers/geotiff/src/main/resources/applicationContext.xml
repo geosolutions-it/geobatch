@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- Environment Initialization -->
+	<bean id="geotiffGeoServerGeneratorService" class="it.geosolutions.geobatch.geoserver.geotiff.GeoTIFFGeoServerGeneratorService">
+		<property  name="id">
+    		<value>geotiffGeoServerGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>geotiffGeoServerGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>geotiffGeoServerGeneratorService</value>
+    	</property>
+    </bean>	
+    
+    <bean id="geotiffFolderGeoServerConfiguratorService" class="it.geosolutions.geobatch.geoserver.geotiff.GeoTIFFFolderGeoServerConfiguratorService">
+		<property  name="id">
+    		<value>geotiffFolderGeoServerConfiguratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>geotiffFolderGeoServerConfiguratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>geotiffFolderGeoServerConfiguratorService</value>
+    	</property>
+    </bean>
+
+	<!-- Environment Initialization -->
+	<bean id="geotiffOverviewsEmbedderService" class="it.geosolutions.geobatch.geotiff.overview.GeoTiffOverviewsEmbedderService">
+		<property  name="id">
+    		<value>geotiffOverviewsEmbedderService</value>
+    	</property>
+    	<property name="description">
+    		<value>geotiffOverviewsEmbedderService</value>
+    	</property>
+    	<property name="name">
+    		<value>geotiffOverviewsEmbedderService</value>
+    	</property>
+    </bean>	    
+    
+    
+	<!-- Environment Initialization -->
+	<bean id="geoTiffRetilerService" class="it.geosolutions.geobatch.geotiff.retile.GeoTiffRetilerService">
+		<property  name="id">
+    		<value>geoTiffRetilerService</value>
+    	</property>
+    	<property name="description">
+    		<value>geoTiffRetilerService</value>
+    	</property>
+    	<property name="name">
+    		<value>geoTiffRetilerService</value>
+    	</property>
+    </bean>	      
+
+    <bean id="flowGeoTIFFRegistrar" class="it.geosolutions.geobatch.geotiff.GeoTIFFAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+
+</beans>

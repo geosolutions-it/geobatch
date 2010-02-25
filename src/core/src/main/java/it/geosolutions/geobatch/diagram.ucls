@@ -1,0 +1,745 @@
+<class-diagram icons="false" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true" version="0.9.65">  
+  <classifier-display autosize="true" package="true" initial-value="false" signature="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="true" package="true" protected="true" private="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.Catalog" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Catalog.java" binary="false" corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1348" y="1181" width="230" height="274"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.Configuration" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Configuration.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2357" y="727" width="132" height="78"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.Identifiable" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Identifiable.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1308" y="281" width="144" height="134"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.PersistentResource" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/PersistentResource.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1154" y="727" width="143" height="148"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.Resource" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Resource.java" binary="false" corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1308" y="511" width="134" height="92"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.Service" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Service.java" binary="false" corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="857" y="727" width="132" height="64"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.dao.CatalogConfigurationDAO" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/dao/CatalogConfigurationDAO.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1817" y="1181" width="151" height="50"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.dao.DAO" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/dao/DAO.java" binary="false" corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1817" y="727" width="150" height="120"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.dao.DAOService" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/dao/DAOService.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="857" y="1181" width="179" height="64"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.dao.FlowManagerConfigurationDAO" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/dao/FlowManagerConfigurationDAO.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2008" y="1181" width="184" height="50"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.event.CatalogAddEvent" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogAddEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="424" y="511" width="159" height="50"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.event.CatalogEvent" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="623" y="281" width="159" height="64"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.event.CatalogListener" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogListener.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1618" y="1181" width="159" height="92"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.event.CatalogModifyEvent" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogModifyEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="623" y="511" width="173" height="92"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.catalog.event.CatalogRemoveEvent" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogRemoveEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="836" y="511" width="159" height="64"/>  
+  </interface>  
+  <class language="java" name="it.geosolutions.geobatch.catalog.impl.BaseCatalog" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseCatalog.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1532" y="727" width="245" height="414"/>  
+  </class>  
+  <class language="java" name="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseConfiguration.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2357" y="281" width="241" height="134"/>  
+  </class>  
+  <class language="java" name="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseIdentifiable.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1492" y="37" width="187" height="204"/>  
+  </class>  
+  <class language="java" name="it.geosolutions.geobatch.catalog.impl.BasePersistentResource" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BasePersistentResource.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1532" y="511" width="174" height="176"/>  
+  </class>  
+  <class language="java" name="it.geosolutions.geobatch.catalog.impl.BaseResource" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseResource.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1492" y="281" width="222" height="120"/>  
+  </class>  
+  <class language="java" name="it.geosolutions.geobatch.catalog.impl.BaseService" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseService.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1056" y="511" width="212" height="134"/>  
+  </class>  
+  <class language="java" name="it.geosolutions.geobatch.catalog.impl.event.CatalogAddEventImpl" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogAddEventImpl.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="404" y="281" width="179" height="64"/>  
+  </class>  
+  <class language="java" name="it.geosolutions.geobatch.catalog.impl.event.CatalogEventImpl" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogEventImpl.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="822" y="37" width="179" height="92"/>  
+  </class>  
+  <class language="java" name="it.geosolutions.geobatch.catalog.impl.event.CatalogModifyEventImpl" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogModifyEventImpl.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="822" y="281" width="193" height="190"/>  
+  </class>  
+  <class language="java" name="it.geosolutions.geobatch.catalog.impl.event.CatalogRemoveEventImpl" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogRemoveEventImpl.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1055" y="281" width="179" height="64"/>  
+  </class>  
+  <interface language="java" name="it.geosolutions.geobatch.configuration.CatalogConfiguration" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/CatalogConfiguration.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2232" y="1181" width="156" height="50"/>  
+  </interface>  
+  <class language="java" name="it.geosolutions.geobatch.configuration.event.action.ActionConfiguration" 
+    project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/event/action/ActionConfiguration.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2089" y="511" width="247" height="78"/>  
+  </class>  
+  <interface language="java" name="it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration" 
+    project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/event/consumer/EventConsumerConfiguration.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2810" y="1181" width="274" height="78"/>  
+  </interface>  
+  <class language="java" name="it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration" 
+    project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/event/generator/EventGeneratorConfiguration.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="3124" y="1181" width="225" height="50"/>  
+  </class>  
+  <class language="java" name="it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/flow/BaseFlowConfiguration.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2529" y="727" width="510" height="148"/>  
+  </class>  
+  <interface language="java" name="it.geosolutions.geobatch.configuration.flow.FlowConfiguration" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/flow/FlowConfiguration.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2428" y="1181" width="342" height="106"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.flow.FlowManager" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/FlowManager.java" binary="false" corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1076" y="1181" width="232" height="190"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.flow.FlowManagerService" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/FlowManagerService.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="103" y="1181" width="225" height="78"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.flow.event.action.Action" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/action/Action.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2638" y="281" width="174" height="92"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.flow.event.action.ActionService" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/action/ActionService.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="643" y="1181" width="174" height="78"/>  
+  </interface>  
+  <class language="java" name="it.geosolutions.geobatch.flow.event.action.BaseAction" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/action/BaseAction.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2638" y="37" width="174" height="78"/>  
+  </class>  
+  <class language="java" name="it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/consumer/BaseEventConsumer.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2852" y="37" width="190" height="134"/>  
+  </class>  
+  <interface language="java" name="it.geosolutions.geobatch.flow.event.consumer.EventConsumer" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/consumer/EventConsumer.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="2852" y="281" width="190" height="162"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.flow.event.consumer.EventConsumerService" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/consumer/EventConsumerService.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="41" y="37" width="243" height="78"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.flow.event.generator.EventGenerator" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/generator/EventGenerator.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="324" y="37" width="230" height="78"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.flow.event.generator.EventGeneratorService" 
+    project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/generator/EventGeneratorService.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="368" y="1181" width="235" height="78"/>  
+  </interface>  
+  <interface language="java" name="it.geosolutions.geobatch.flow.event.generator.FlowEventListener" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/generator/FlowEventListener.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="594" y="37" width="188" height="64"/>  
+  </interface>  
+  <class language="java" name="it.geosolutions.geobatch.global.CatalogHolder" project="gb-core" 
+    file="/gb-core/src/main/java/it/geosolutions/geobatch/global/CatalogHolder.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>    
+    <position x="1337" y="727" width="134" height="78"/>  
+  </class>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/flow/BaseFlowConfiguration.java" 
+      binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.configuration.flow.FlowConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/flow/FlowConfiguration.java" binary="false"/>  
+  </realization>  
+  <association>    
+    <display labels="true" multiplicity="true"/>    
+    <source navigable="false" project="gb-core" name="it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/consumer/BaseEventConsumer.java" binary="false">      
+      <attribute name="actions"/>      
+      <multiplicity minimum="0" maximum="2147483647"/>    
+    </source>    
+    <target navigable="true" project="gb-core" name="it.geosolutions.geobatch.flow.event.action.Action" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/action/Action.java" binary="false"/>  
+  </association>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseService" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseService.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Service" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Service.java" binary="false"/>  
+  </realization>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.event.CatalogEventImpl" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogEventImpl.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.event.CatalogEvent" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogEvent.java" binary="false"/>  
+  </realization>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BasePersistentResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BasePersistentResource.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.PersistentResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/PersistentResource.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/event/consumer/EventConsumerConfiguration.java" 
+      binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Configuration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Configuration.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseResource.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Resource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Resource.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.configuration.flow.FlowConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/flow/FlowConfiguration.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Configuration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Configuration.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.PersistentResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/PersistentResource.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Resource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Resource.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.event.CatalogAddEventImpl" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogAddEventImpl.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.event.CatalogAddEvent" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogAddEvent.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.Resource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Resource.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Identifiable" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Identifiable.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.configuration.event.action.ActionConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/event/action/ActionConfiguration.java" 
+      binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Configuration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Configuration.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseCatalog" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseCatalog.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BasePersistentResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BasePersistentResource.java" binary="false"/>  
+  </generalization>  
+  <association>    
+    <display labels="true" multiplicity="true"/>    
+    <source navigable="false" project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseCatalog" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseCatalog.java" binary="false">      
+      <attribute name="listeners"/>      
+      <multiplicity minimum="0" maximum="2147483647"/>    
+    </source>    
+    <target navigable="true" project="gb-core" name="it.geosolutions.geobatch.catalog.event.CatalogListener" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogListener.java" binary="false"/>  
+  </association>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.flow.event.generator.EventGeneratorService" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/generator/EventGeneratorService.java" 
+      binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Service" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Service.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseIdentifiable.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Identifiable" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Identifiable.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BasePersistentResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BasePersistentResource.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseResource.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.dao.CatalogConfigurationDAO" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/dao/CatalogConfigurationDAO.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.dao.DAO" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/dao/DAO.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.flow.FlowManager" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/FlowManager.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.PersistentResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/PersistentResource.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.event.CatalogRemoveEventImpl" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogRemoveEventImpl.java" 
+      binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.event.CatalogRemoveEvent" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogRemoveEvent.java" binary="false"/>  
+  </realization>  
+  <association>    
+    <display labels="true" multiplicity="true"/>    
+    <source navigable="false" project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BasePersistentResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BasePersistentResource.java" binary="false">      
+      <attribute name="dao"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </source>    
+    <target navigable="true" project="gb-core" name="it.geosolutions.geobatch.catalog.dao.DAO" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/dao/DAO.java" binary="false"/>  
+  </association>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.dao.DAOService" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/dao/DAOService.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Service" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Service.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseService" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseService.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseResource.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.event.CatalogAddEvent" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogAddEvent.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.event.CatalogEvent" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogEvent.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseCatalog" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseCatalog.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Catalog" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Catalog.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.Service" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Service.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Resource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Resource.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.Configuration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Configuration.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Identifiable" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Identifiable.java" binary="false"/>    
+    <bendpoint x="1841" y="511"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.configuration.CatalogConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/CatalogConfiguration.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Configuration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Configuration.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.event.CatalogRemoveEventImpl" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogRemoveEventImpl.java" 
+      binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.impl.event.CatalogEventImpl" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogEventImpl.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.event.CatalogModifyEventImpl" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogModifyEventImpl.java" 
+      binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.impl.event.CatalogEventImpl" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogEventImpl.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/consumer/BaseEventConsumer.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.flow.event.consumer.EventConsumer" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/consumer/EventConsumer.java" binary="false"/>  
+  </realization>  
+  <association>    
+    <display labels="true" multiplicity="true"/>    
+    <source navigable="false" project="gb-core" name="it.geosolutions.geobatch.global.CatalogHolder" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/global/CatalogHolder.java" binary="false">      
+      <attribute name="catalog"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </source>    
+    <target navigable="true" project="gb-core" name="it.geosolutions.geobatch.catalog.Catalog" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Catalog.java" binary="false"/>  
+  </association>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.flow.event.action.ActionService" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/action/ActionService.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Service" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Service.java" binary="false"/>  
+  </generalization>  
+  <association>    
+    <display labels="true" multiplicity="true"/>    
+    <source navigable="false" project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseResource.java" binary="false">      
+      <attribute name="catalog"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </source>    
+    <target navigable="true" project="gb-core" name="it.geosolutions.geobatch.catalog.Catalog" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Catalog.java" binary="false"/>    
+    <bendpoint x="1501" y="511"/>    
+    <bendpoint x="1501" y="727"/>  
+  </association>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseResource.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseIdentifiable.java" binary="false"/>  
+  </generalization>  
+  <association>    
+    <display labels="true" multiplicity="true"/>    
+    <source navigable="false" project="gb-core" name="it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/flow/BaseFlowConfiguration.java" 
+      binary="false">      
+      <attribute name="eventGeneratorConfiguration"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </source>    
+    <target navigable="true" project="gb-core" 
+      name="it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/event/generator/EventGeneratorConfiguration.java" 
+      binary="false"/>  
+  </association>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.event.CatalogModifyEvent" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogModifyEvent.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.event.CatalogEvent" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogEvent.java" binary="false"/>  
+  </generalization>  
+  <association>    
+    <display labels="true" multiplicity="true"/>    
+    <source navigable="false" project="gb-core" name="it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/flow/BaseFlowConfiguration.java" 
+      binary="false">      
+      <attribute name="eventConsumerConfiguration"/>      
+      <multiplicity minimum="0" maximum="1"/>    
+    </source>    
+    <target navigable="true" project="gb-core" 
+      name="it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/event/consumer/EventConsumerConfiguration.java" 
+      binary="false"/>  
+  </association>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.flow.event.action.BaseAction" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/action/BaseAction.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.flow.event.action.Action" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/event/action/Action.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/flow/BaseFlowConfiguration.java" 
+      binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseConfiguration.java" binary="false"/>    
+    <bendpoint x="2452" y="511"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.Service" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Service.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Identifiable" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Identifiable.java" binary="false"/>    
+    <bendpoint x="1025" y="511"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.flow.FlowManagerService" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/flow/FlowManagerService.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Service" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Service.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseConfiguration.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.Configuration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Configuration.java" binary="false"/>    
+    <bendpoint x="2366" y="511"/>  
+  </realization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.event.CatalogAddEventImpl" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogAddEventImpl.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.impl.event.CatalogEventImpl" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogEventImpl.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.event.CatalogModifyEventImpl" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/event/CatalogModifyEventImpl.java" 
+      binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.event.CatalogModifyEvent" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogModifyEvent.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.event.CatalogRemoveEvent" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogRemoveEvent.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.event.CatalogEvent" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/event/CatalogEvent.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseConfiguration.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseIdentifiable.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.Catalog" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/Catalog.java" binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.PersistentResource" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/PersistentResource.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.configuration.event.action.ActionConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/configuration/event/action/ActionConfiguration.java" 
+      binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/impl/BaseConfiguration.java" binary="false"/>  
+  </generalization>  
+  <generalization>    
+    <source project="gb-core" name="it.geosolutions.geobatch.catalog.dao.FlowManagerConfigurationDAO" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/dao/FlowManagerConfigurationDAO.java" 
+      binary="false"/>    
+    <target project="gb-core" name="it.geosolutions.geobatch.catalog.dao.DAO" 
+      file="/gb-core/src/main/java/it/geosolutions/geobatch/catalog/dao/DAO.java" binary="false"/>  
+  </generalization>
+</class-diagram>

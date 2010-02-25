@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<workingDirectory>gdaloperationsworkingdir/gdalretile</workingDirectory>
+	<EventConsumerConfiguration>
+		<workingDirectory>gdaloperationsworkingdir/gdalretile</workingDirectory>
+		<performBackup>true</performBackup>
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.xml</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+        <TaskExecutorConfiguration>
+			<workingDirectory>gdaloperationsworkingdir/gdalretile</workingDirectory>
+			<serviceID>TaskExecutorService</serviceID>
+			<errorFile>gdaloperationsworkingdir/gdalretile/config/errorlog.txt</errorFile>
+			<timeOut>1200000</timeOut> <!-- milliseconds -->
+			<executable>D:\work\Programs\FWTools2.3.0\python\python.exe</executable>
+		    <variables>
+				 <entry>
+				    <string>GDAL_DATA</string>
+				    <string>C:/Python26/DLLs/gdalwin32-1.6/data</string>
+				  </entry>
+				  <entry>
+				    <string>PATH</string>
+				    <string>D:\work\Programs\FWTools2.3.0\bin;D:\work\Programs\FWTools2.3.0\python</string>
+				  </entry>
+				  <entry>
+				    <string>PYTHONPATH</string>
+				    <string>D:\work\Programs\FWTools2.3.0\pymod</string>
+				  </entry>
+			</variables>
+			<xsl>gdaloperationsworkingdir/gdalretile/config/gdalretile.xsl</xsl>
+			<id>gdalretile</id>
+			<description>Flow to run gdalretile operations</description>
+			<name>gdalretile flow</name>
+		</TaskExecutorConfiguration>		
+		<id>id</id>
+		<description>description</description>
+		<name>test</name>
+	</EventConsumerConfiguration>
+	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+		<wildCard>*.*</wildCard>
+		<watchDirectory>gdaloperationsworkingdir/gdalretile/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</eventGeneratorConfiguration>
+	<id>gdalretile flow</id>
+	<description>Flow to run gdalretile operations</description>
+	<name>gdalretileFlow</name>
+</FlowConfiguration>

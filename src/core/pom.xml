@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+		=======================================================================
+		Maven Project Configuration File GeoSolutions GeoBatch Project
+		http://geobatch.codehaus.org Version: $Id: pom.xml 63 2008-04-04
+		11:22:11Z alessio $
+		=======================================================================
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                               http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>it.geosolutions</groupId>
+		<artifactId>gb</artifactId>
+		<version>0.9-SNAPSHOT</version>
+	</parent>
+
+
+	<!-- =========================================================== -->
+	<!--     Module Description                                      -->
+	<!-- =========================================================== -->
+	<groupId>it.geosolutions</groupId>
+	<artifactId>gb-core</artifactId>
+	<name>GeoSolutions GeoBatch catalog</name>
+	<url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
+
+	<scm>
+		<connection>
+      scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/data/
+    </connection>
+		<url>http://svn.geotools.org/geotools/trunk/gt/modules/data/</url>
+	</scm>
+
+	<description>
+    GeoSolutions GeoBatch catalog.
+  </description>
+	<developers>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>Lesser General Public License (LGPL)</name>
+			<url>http://www.gnu.org/copyleft/lesser.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<organization>
+		<name>GeoSolutions</name>
+		<url>http://www.geo-solutions.it</url>
+	</organization>
+
+	<!-- =========================================================== -->
+	<!--     Dependency Management                                   -->
+	<!-- =========================================================== -->
+	<dependencies>
+
+		<!-- ============================== -->
+		<!--     Platform                   -->
+		<!-- ============================== -->
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<!-- The version number is specified in the parent POM. -->
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<!-- The version number is specified in the parent POM. -->
+		</dependency>
+
+		<!-- ============================== -->
+		<!--     Junit		                -->
+		<!-- ============================== -->		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<!-- The version number is specified in the parent POM. -->
+			<scope>test</scope>   <!-- Needed for test, not for running -->
+		</dependency>
+		
+		<!-- ============================== -->
+		<!--     GT  		                -->
+		<!-- ============================== -->
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-main</artifactId>
+     	 <!-- The version number is specified in the parent POM. -->
+        </dependency>
+
+	</dependencies>
+
+</project>

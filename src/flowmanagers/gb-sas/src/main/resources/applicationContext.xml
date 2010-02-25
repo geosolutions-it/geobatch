@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- Environment Initialization -->
+	<bean id="FormatConverterService" class="it.geosolutions.geobatch.convert.FormatConverterService">
+		<property  name="id">
+    		<value>FormatConverterService</value>
+    	</property>
+    	<property name="description">
+    		<value>FormatConverterService</value>
+    	</property>
+    	<property name="name">
+    		<value>FormatConverterService</value>
+    	</property>
+    </bean>	    
+    
+    
+	<!-- Environment Initialization -->
+	<bean id="MosaicerService" class="it.geosolutions.geobatch.mosaic.MosaicerService">
+		<property  name="id">
+    		<value>MosaicerService</value>
+    	</property>
+    	<property name="description">
+    		<value>MosaicerService</value>
+    	</property>
+    	<property name="name">
+    		<value>MosaicerService</value>
+    	</property>
+    </bean>	      
+    
+    <!-- Environment Initialization -->
+	<bean id="ComposerService" class="it.geosolutions.geobatch.compose.ComposerService">
+		<property name="id">
+    		<value>ComposerService</value>
+    	</property>
+    	<property name="description">
+    		<value>ComposerService</value>
+    	</property>
+    	<property name="name">
+    		<value>ComposerService</value>
+    	</property>
+    </bean>	     
+    
+     <!-- Environment Initialization -->
+	<bean id="DetectionManagerService" class="it.geosolutions.geobatch.detection.DetectionManagerService">
+		<property name="id">
+    		<value>DetectionManagerService</value>
+    	</property>
+    	<property name="description">
+    		<value>DetectionManagerService</value>
+    	</property>
+    	<property name="name">
+    		<value>DetectionManagerService</value>
+    	</property>
+    </bean>	     
+
+    <bean id="sasRegistrar" class="it.geosolutions.geobatch.sas.SASAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+</beans>

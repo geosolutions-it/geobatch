@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- =======================================================================
+         Project configuration file for the FileSystemMonitor project
+         http://www.geo-solutions.it/
+
+         Version: $Id: pom.xml 20565 2006-07-17 03:26:28Z AlFa $
+     ======================================================================= -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+	  <groupId>it.geosolutions</groupId>
+		<artifactId>gb-fsm</artifactId>
+		<version>0.9-SNAPSHOT</version>
+  </parent>
+
+
+  <!-- ===================================================================== -->
+  <!--     Module description                                                -->
+  <!-- ===================================================================== -->
+  <groupId>it.geosolutions</groupId>
+  <artifactId>gb-fsm-module</artifactId>
+  <version>0.9-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>FileSystemMonitor Core modules</name>
+  <url>http://www.geo-solutions.it/reports/module/</url>
+  <scm>
+    <connection>scm:svn:https://svn.codehaus.org/geobatch/trunk/</connection>
+    <url>https://svn.codehaus.org/geobatch/trunk/</url>
+  </scm>
+  <description>
+    FileSystemMonitor Core modules.
+  </description>
+
+
+
+  <!-- ===================================================================== -->
+  <!--     External dependencies.                                            -->
+  <!--     POM in subdirectories will inherit them.                          -->
+  <!-- ===================================================================== -->
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+
+
+
+
+  <!-- ===================================================================== -->
+  <!--     All modules included in the build                                 -->
+  <!-- ===================================================================== -->
+  <modules>
+    <module>monitor</module>
+  </modules>
+
+</project>

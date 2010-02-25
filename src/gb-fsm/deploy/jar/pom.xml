@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- ===========================================================================
+         Project configuration file for the FileSystemMonitor project
+         http://www.geo-solutions.it/
+
+         Version: $Id: pom.xml 20599 2006-07-18 12:17:41Z AlFa $
+     =========================================================================== -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+	  <groupId>it.geosolutions</groupId>
+		<artifactId>gb-fsm-deployer</artifactId>
+		<version>0.9-SNAPSHOT</version>
+  </parent>
+
+
+  <!-- ==================================================== -->
+  <!--     Module description                               -->
+  <!-- ==================================================== -->
+  <groupId>it.geosolutions</groupId>
+  <artifactId>gb-fsm-jar-deployer</artifactId>
+  <packaging>pom</packaging>
+  <name>File System Monitor - JAR Deployer</name>
+  <url>http://www.geo-solutions.it/reports/FileSystemMonitor/</url>
+  <scm>
+    <connection>scm:svn:https://svn.codehaus.org/geobatch/trunk/</connection>
+    <url>https://svn.codehaus.org/geobatch/trunk/</url>
+  </scm>
+  <description>
+    The FileSystemMonitor - JAR Deployer.
+  </description>
+
+  <!--                                                                                 -->
+  <!--        BUILD                                                                   -->
+  <!--                                                                                -->
+  <!-- We are going to install some basic jar using some specialized ant  tasks.      -->
+  <!-- We assume that you have maven 2 installed in the path. Note that maven version -->
+  <!-- must be >=2.05.                                                                -->
+  <!--                                                                                -->
+  <profiles>
+   <profile>
+    <id>linux</id>
+    <build>
+      <plugins>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.1</version>
+            <executions>
+              <execution>
+              <phase>install</phase>
+              <configuration>
+                <tasks>
+                <exec  executable="sh">
+                  <arg value="-c"/>
+                  <arg value="mvn install:install-file -DgroupId=jnotify -DartifactId=jnotify -Dversion=0.91 -Dpackaging=jar -Dfile=./jnotify-0.91.jar"/>
+                </exec>
+               </tasks>
+              </configuration>
+              <goals>
+              <goal>run</goal>
+              </goals>
+              </execution>
+            </executions>
+          <dependencies>
+            <dependency>
+              <groupId>ant</groupId>
+              <artifactId>ant-antlr</artifactId>
+              <version>1.6.5</version>
+            </dependency>
+            <dependency>
+              <groupId>antlr</groupId>
+              <artifactId>antlrall</artifactId>
+              <version>2.7.4</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.1</version>
+          </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>2.0-beta-5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-eclipse-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.1</version>
+            <executions>
+              <execution>
+              <phase>install</phase>
+              <configuration>
+               <tasks>
+                <exec  executable="cmd">
+                  <arg value="/c"/>
+                  <arg value="mvn install:install-file -DgroupId=jnotify -DartifactId=jnotify -Dversion=0.91 -Dpackaging=jar -Dfile=./jnotify-0.91.jar"/>
+                </exec>
+               </tasks>
+              </configuration>
+              <goals>
+              <goal>run</goal>
+              </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant-antlr</artifactId>
+                <version>1.6.5</version>
+              </dependency>
+                <dependency>
+                <groupId>antlr</groupId>
+                <artifactId>antlrall</artifactId>
+                <version>2.7.4</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>

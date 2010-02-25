@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+		=======================================================================
+		Maven Project Configuration File GeoSolutions GeoBatch Project
+		http://geobatch.codehaus.org Version: $Id: pom.xml 63 2008-04-04
+		11:22:11Z alessio $
+		=======================================================================
+	-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                               http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>it.geosolutions</groupId>
+		<artifactId>gb-flowmanagers</artifactId>
+		<version>0.9-SNAPSHOT</version>
+	</parent>
+
+
+	<!-- =========================================================== -->
+	<!--     Module Description                                      -->
+	<!-- =========================================================== -->
+	<groupId>it.geosolutions</groupId>
+	<artifactId>gb-flowmanagers-ais</artifactId>
+	<packaging>jar</packaging>
+	<name>GeoSolutions GeoBatch flow managers - AIS flow</name>
+	<url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
+
+	<scm>
+		<connection>
+			scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
+    </connection>
+		<url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
+	</scm>
+
+	<description>
+		GeoSolutions GeoBatch flow managers - AIS flow.
+  </description>
+
+	<licenses>
+		<license>
+			<name>Lesser General Public License (LGPL)</name>
+			<url>http://www.gnu.org/copyleft/lesser.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<!-- =========================================================== -->
+	<!--     Dependency Management                                   -->
+	<!-- =========================================================== -->
+	<dependencies>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-shapefile</artifactId>
+			<version>${gt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-flowmanagers-ascii</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernatespatial</groupId>
+			<artifactId>hibernate-spatial-postgis</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>ejb3-persistence</artifactId>
+			<version>1.0.2.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.3.1.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-commons-annotations</artifactId>
+			<version>3.1.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>3.3.1.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>3.3.1.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-arcgrid</artifactId>
+			<version>${gt.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>it.geosolutions.imageio-ext</groupId>
+			<artifactId>imageio-ext-arcgrid</artifactId>
+			<version>${imageio-ext.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.imageio-ext</groupId>
+			<artifactId>imageio-ext-customstreams</artifactId>
+			<version>${imageio-ext.version}</version>
+		</dependency>
+
+		<!--  SPRING DEPENDENCIES -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+		</dependency>
+
+		<!-- SCOPE TEST -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-collections</groupId>
+					<artifactId>commons-collections</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+
+</project>

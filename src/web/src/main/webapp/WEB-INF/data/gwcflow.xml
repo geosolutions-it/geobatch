@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+
+	<workingDirectory>gwcflowworkingdir</workingDirectory>
+	
+	<EventConsumerConfiguration>
+		<workingDirectory>gwcflowworkingdir</workingDirectory>
+		<performBackup>false</performBackup>
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.txt</regex>
+			<id>gwca</id>
+			<description>A single gwc configuration file</description>
+			<name>test</name>
+		</FileEventRule>
+		
+		<GeoWebCacheActionConfiguration>
+			<workingDirectory>gwcflowworkingdir</workingDirectory>
+			<gwcUrl>http://localhost:8080/geowebcache/rest/layers/</gwcUrl>
+			<gwcUser>geowebcache</gwcUser>
+			<gwcPassword>secured</gwcPassword>
+			<geoserverUrl>http://localhost:8080/geoserver/</geoserverUrl>
+			<zoomStart>2</zoomStart>
+			<zoomStop>20</zoomStop>	
+			<metaWidth>3</metaWidth>  
+    		<metaHeight>3</metaHeight>			
+			<gutter>50</gutter>
+			<tiled>false</tiled>
+			<transparent>true</transparent>
+  			<expireCache>7200</expireCache>
+  			<expireClients>240</expireClients>			
+			<serviceID>geowebcacheGeneratorService</serviceID>
+			<id>gwcb</id>
+			<description>description</description>
+			<name>test</name>
+		</GeoWebCacheActionConfiguration>
+				
+		<id>gwcflowId</id>
+		<description>description</description>
+		<name>test</name>
+	</EventConsumerConfiguration>
+	
+	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+		<wildCard>*.*</wildCard>
+		<watchDirectory>gwcflowworkingdir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>gwcflowId</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</eventGeneratorConfiguration>
+	
+	<id>gwcflowworkingdir</id>
+	<description>gwcflow</description>
+	<name>gwcflow</name>
+	
+</FlowConfiguration>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- ===========================================================================
+         Project configuration file for the FileSystemMonitor project
+         http://www.geo-solutions.it/
+
+         Version: $Id: pom.xml 20599 2006-07-18 12:17:41Z AlFa $
+     =========================================================================== -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- ==========================================================  -->
+  <!--     Project Description                                     -->
+  <!-- =========================================================== -->
+  <parent>
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb-fsm</artifactId>
+    <version>0.9-SNAPSHOT</version>
+  </parent>
+
+
+  <!-- ==================================================== -->
+  <!--     Module description                               -->
+  <!-- ==================================================== -->
+  <groupId>it.geosolutions</groupId>
+  <artifactId>gb-fsm-deployer</artifactId>
+  <version>0.9-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>File System Monitor - Deployer</name>
+  <url>http://www.geo-solutions.it/reports/FileSystemMonitor/</url>
+  <scm>
+    <connection>scm:svn:https://svn.codehaus.org/geobatch/trunk/</connection>
+    <url>https://svn.codehaus.org/geobatch/trunk/</url>
+  </scm>
+  <description>
+    The FileSystemMonitor - Deployer.
+  </description>
+
+  <!-- ===================================================================== -->
+  <!--     All modules included in the build                                 -->
+  <!-- ===================================================================== -->
+  <modules>
+    <module>jar</module>
+  </modules>
+
+  <profiles>
+    <profile>
+     <activation>
+     <property>
+      <name>deploylibs</name>
+      <value>true</value>
+     </property>
+    </activation>
+    <modules>
+      <module>libs</module>
+    </modules>
+    </profile>
+  </profiles>
+
+</project>

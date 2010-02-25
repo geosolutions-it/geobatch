@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+	<!--
+		===========================================================================
+		Project configuration file for the FileSystemMonitor project
+		http://www.geo-solutions.it/ Version: $Id: pom.xml 20599 2006-07-18
+		12:17:41Z AlFa $
+		===========================================================================
+	-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>it.geosolutions</groupId>
+		<artifactId>gb-fsm-plugin</artifactId>
+		<version>0.9-SNAPSHOT</version>
+	</parent>
+
+
+	<!-- ==================================================== -->
+	<!--     Module description                               -->
+	<!-- ==================================================== -->
+	<groupId>it.geosolutions</groupId>
+	<artifactId>gb-fsm-purejava</artifactId>
+	<packaging>jar</packaging>
+	<name>Directory Monitor Pure Java plugin</name>
+	<url>http://www.geo-solutions.it/reports/DirMonitorPolling/</url>
+	<scm>
+		<connection>scm:svn:https://www.geo-solutions.it/svn/repo/FileSystemMonitor/trunk/plugin/DirMonitorPolling/</connection>
+		<url>https://www.geo-solutions.it/svn/repo/FileSystemMonitor/trunk/plugin/DirMonitorPolling/</url>
+	</scm>
+	<version>0.9-SNAPSHOT</version>
+	<description>
+    The FileSystemMonitor Directory Monitor DirMonitorPolling plugin.
+  </description>
+
+
+
+
+	<!-- ==================================================== -->
+	<!--     Dependencies                                     -->
+	<!-- ==================================================== -->
+	<dependencies>
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-fsm-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>2.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>test-data</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+
+</project>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- Environment Initialization -->
+	<bean id="glidersfileGeneratorService" class="it.geosolutions.geobatch.gliders.GlidersFileGeneratorService" depends-on="gliderRegistrar">
+		<property  name="id">
+    		<value>glidersfileGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>glidersfileGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>glidersfileGeneratorService</value>
+    	</property>	
+	</bean>
+
+    <bean id="gliderRegistrar" class="it.geosolutions.geobatch.gliders.GlidersAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+</beans>

@@ -1,0 +1,23 @@
+<binding>
+	
+	<include
+		path="../../../../../../file-catalog/src/main/resources/jibx/binding.xml" />
+
+	<mapping name="GeoTiffOverviewConfiguration"
+		class="it.geosolutions.geobatch.geotiff.overview.GeoTiffOverviewsEmbedderConfiguration"
+		extends="it.geosolutions.geobatch.configuration.event.action.ActionConfiguration">
+		<value name="serviceID" field="serviceID" />
+		<value name="workingDirectory" field="workingDirectory" />
+		<value name="compressionScheme" field="compressionScheme" usage="optional" />
+		<value name="compressionRatio" field="compressionRatio" usage="optional" />
+		<value name="numSteps" field="numSteps" />
+		<value name="downsampleStep" field="downsampleStep" />
+		<value name="scaleAlgorithm" field="scaleAlgorithm" />
+		<value name="wildcardString" field="wildcardString" usage="optional" />
+		<value name="interp" field="interp" usage="optional" />
+		<value name="tileH" field="tileH" usage="optional" />
+		<value name="tileW" field="tileW" usage="optional" />
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" />
+	</mapping>
+	
+</binding>

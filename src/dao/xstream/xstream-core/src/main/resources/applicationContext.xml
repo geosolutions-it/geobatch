@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+         <property name="locations">  
+             <list>  
+                 <value>classpath:gb.properties</value>   
+             </list>  
+         </property>
+         <property name="ignoreUnresolvablePlaceholders">  
+                 <value>true</value>   
+         </property>
+
+     </bean>  
+
+     <bean id="alias" class="it.geosolutions.geobatch.xstream.Alias">
+         <property name="aliasRegistry" ref="aliasRegistry" />
+     </bean>
+
+	<!-- Environment Initialization -->
+	<bean id="globalConfig" class="it.geosolutions.geobatch.global.XStreamCatalogLoader" depends-on="catalog" >
+            <constructor-arg ref="catalog"/>
+            <constructor-arg ref="alias"/>
+	
+	    <!-- property  name="dataDir">
+    		<value>/home/simone/catalog</value>
+    	    </property-->	
+   	    	
+	</bean>
+
+    
+    <!-- XStream flow manager DAO-->
+    <bean id="XStreamFlowConfigurationDAOService" class="it.geosolutions.geobatch.catalog.dao.file.xstream.XStreamDAOService" >
+         <constructor-arg ref="alias"/>
+
+    	<property  name="id">
+    		<value>XStreamFlowConfigurationDAOService</value>
+    	</property>
+    	<property name="description">
+    		<value>XStream based FlowConfigurationDAOService</value>
+    	</property>
+    	<property name="name">
+    		<value>XStreamFlowConfigurationDAOService</value>
+    	</property>    	
+    </bean>          
+
+</beans>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =======================================================================
+        Maven Project Configuration File
+
+        GeoSolutions GeoBatch Project
+            http://geobatch.codehaus.org
+
+        Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $
+     ======================================================================= --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                                 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>it.geosolutions</groupId>
+        <artifactId>gb</artifactId>
+        <version>0.9-SNAPSHOT</version>
+    </parent>
+
+
+  <!-- =========================================================== -->
+  <!--     Module Description                                      -->
+  <!-- =========================================================== -->
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb-fs-catalog</artifactId>
+    <name>GeoSolutions GeoBatch catalog file system persistence</name>
+    <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
+
+    <scm>
+        <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/data/</connection>
+        <url>http://svn.geotools.org/geotools/trunk/gt/modules/data/</url>
+    </scm>
+
+    <description>GeoSolutions GeoBatch catalog.</description>
+
+    <licenses>
+        <license>
+            <name>Lesser General Public License (LGPL)</name>
+            <url>http://www.gnu.org/copyleft/lesser.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <organization>
+        <name>GeoSolutions</name>
+        <url>http://www.geo-solutions.it</url>
+    </organization>
+
+  <!-- =========================================================== -->
+  <!--     Dependency Management                                   -->
+  <!-- =========================================================== -->
+    <dependencies>
+
+  	<!-- ============================== -->
+  	<!--     Platform                   -->
+  	<!-- ============================== -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opengis</groupId>
+            <artifactId>geoapi</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jsr-275</groupId>
+            <artifactId>jsr-275</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-api</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+	<dependency>
+		<groupId>org.geotools</groupId>
+		<artifactId>gt-main</artifactId>
+		<!-- The version number is specified in the parent POM. -->
+	</dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-referencing</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-metadata</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-coverage</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-epsg-hsql</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jai_core</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jai_codec</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jai_imageio</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>java3d</groupId>
+            <artifactId>vecmath</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+      <!-- The version number is specified in the parent POM. -->
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+     	<!-- The version number is specified in the parent POM. -->
+            <scope>test</scope>   <!-- Needed for compilation, not for running -->
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fsm-purejava</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fsm-native</artifactId>
+            <version>${version}</version>
+        </dependency>		
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fsm-core</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-core</artifactId>
+            <version>${version}</version>
+        </dependency>
+
+    </dependencies>
+
+
+    <profiles>
+        <profile>
+            <id>dao.jibx</id>
+            <!--<activation>...</activation>-->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jibx</groupId>
+                        <artifactId>maven-jibx-plugin</artifactId>
+                        <version>1.1.6</version>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <directory>src/main/resources/jibx</directory>
+                            <includes>
+                                <includes>binding.xml</includes>
+                            </includes>
+                            <verbose>true</verbose>
+                            <multi-module>true</multi-module>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>bind</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <!--
+            <modules>...</modules>
+            <repositories>...</repositories>
+            <pluginRepositories>...</pluginRepositories>
+             -->
+             <dependencies>
+                <dependency>
+                    <groupId>org.jibx</groupId>
+                    <artifactId>jibx-run</artifactId>
+                    <version>1.1.6</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.jibx</groupId>
+                    <artifactId>jibx-extras</artifactId>
+                    <version>1.1.6</version>
+                </dependency>
+                </dependencies>
+<!--
+            <reporting>...</reporting>
+            <dependencyManagement>...</dependencyManagement>
+            <distributionManagement>...</distributionManagement>
+-->
+        </profile>
+    </profiles>
+
+</project>

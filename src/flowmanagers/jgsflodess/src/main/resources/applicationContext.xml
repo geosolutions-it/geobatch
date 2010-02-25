@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+		 
+	<!-- Environment Initialization -->
+	<bean id="NetCDFCFGeodetic2GeoTIFFsGeneratorService" class="it.geosolutions.geobatch.jgsflodess.NetCDFCFGeodetic2GeoTIFFsGeneratorService">
+		<property  name="id">
+    		<value>NetCDFCFGeodetic2GeoTIFFsGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>NetCDFCFGeodetic2GeoTIFFsGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>NetCDFCFGeodetic2GeoTIFFsGeneratorService</value>
+    	</property>	
+	</bean>
+	
+    <!-- TDA fluxes  -->
+	<bean id="JGSFLoDeSSNCOMGeneratorService" class="it.geosolutions.geobatch.jgsflodess.JGSFLoDeSSNCOMGeneratorService">
+		<property  name="id">
+    		<value>JGSFLoDeSSNCOMGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>JGSFLoDeSSNCOMGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>JGSFLoDeSSNCOMGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="JGSFLoDeSSSWANGeneratorService" class="it.geosolutions.geobatch.jgsflodess.JGSFLoDeSSSWANGeneratorService">
+		<property  name="id">
+    		<value>JGSFLoDeSSSWANGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>JGSFLoDeSSSWANGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>JGSFLoDeSSSWANGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="JGSFLoDeSSCOAMPSGeneratorService" class="it.geosolutions.geobatch.jgsflodess.JGSFLoDeSSCOAMPSGeneratorService">
+		<property  name="id">
+    		<value>JGSFLoDeSSCOAMPSGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>JGSFLoDeSSCOAMPSGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>JGSFLoDeSSCOAMPSGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<!-- lscv08-SEM fluxes  -->	
+	<bean id="MERCATORGeneratorService" class="it.geosolutions.geobatch.lscv08.MERCATORGeneratorService">
+		<property  name="id">
+    		<value>MERCATORGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>MERCATORGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>MERCATORGeneratorService</value>
+    	</property>	
+	</bean>
+
+	<bean id="NRLNCOMGeneratorService" class="it.geosolutions.geobatch.lscv08.NRLNCOMGeneratorService">
+		<property  name="id">
+    		<value>NRLNCOMGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>NRLNCOMGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>NRLNCOMGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="INGVGeneratorService" class="it.geosolutions.geobatch.lscv08.INGVGeneratorService">
+		<property  name="id">
+    		<value>IGNVGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>INGVGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>INGVGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="HDF42GeoTIFFsGeneratorService" class="it.geosolutions.geobatch.remsens.HDF42GeoTIFFsGeneratorService">
+		<property  name="id">
+    		<value>HDF42GeoTIFFsGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>HDF42GeoTIFFsGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>HDF42GeoTIFFsGeneratorService</value>
+    	</property>	
+	</bean>
+
+	<bean id="NURCWPSOutput2WMCGeneratorService" class="it.geosolutions.geobatch.wmc.NURCWPSOutput2WMCGeneratorService">
+		<property  name="id">
+    		<value>NURCWPSOutput2WMCGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>NURCWPSOutput2WMCGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>NURCWPSOutput2WMCGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<!-- Registry Harvesting -->
+	<bean id="RegistryHarvestingGeneratorService" class="it.geosolutions.geobatch.registry.harvest.RegistryHarvestingGeneratorService">
+		<property  name="id">
+    		<value>RegistryHarvestingGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>RegistryHarvestingGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>RegistryHarvestingGeneratorService</value>
+    	</property>
+	</bean>
+	
+	<!-- Web Map Context Generator Service -->
+	<bean id="WMCGeneratorService" class="it.geosolutions.geobatch.wmc.WMCGeneratorService">
+		<property  name="id">
+    		<value>WMCGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>WMCGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>WMCGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="JGSFlossDessAliasRegistrar" class="it.geosolutions.geobatch.jgsflodess.JGSFloDessAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+
+</beans>

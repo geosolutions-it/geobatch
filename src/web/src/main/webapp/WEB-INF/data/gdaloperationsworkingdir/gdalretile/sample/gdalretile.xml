@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<GdalRetile>
+    <scriptLocation>D:\work\Programs\FWTools2.3.0\bin\gdal_retile.py</scriptLocation>
+    <ps>512 512</ps>
+    <levels>3</levels>
+	<targetDir>Y:\data\geotiff\retileTest\levels</targetDir>
+	<inputFiles>Y:\data\geotiff\retileTest\test.tif</inputFiles>
+	
+</GdalRetile>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- ===========================================================================
+         Maven 2 Project configuration file for the FileSystemMonitor project.
+         Version: $Id: pom.xml 20565 2006-07-17 03:26:28Z AlFa $
+     =========================================================================== -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+   <parent>
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb</artifactId>
+    <version>0.9-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <allow.test.skip>true</allow.test.skip>
+    <allow.test.failure.ignore>false</allow.test.failure.ignore>
+    <extensive.tests>false</extensive.tests>
+    <path.native>/Windows/System32</path.native>
+  </properties>
+
+  <!-- ===================================================================== -->
+  <!--     Project description (including license).                          -->
+  <!-- ===================================================================== -->
+  <groupId>it.geosolutions</groupId>
+  <artifactId>gb-fsm</artifactId>
+  <version>0.9-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>File System Monitor</name>
+  <description>
+    FileSystemMonitor is the general project for the system that select one of avaiable method,
+    with Abstract Factory for DirectoryWatching
+  </description>
+  <url>http://www.geo-solutions.it/reports/</url>
+  <scm>
+    <connection>scm:svn:https://svn.codehaus.org/geobatch/trunk/</connection>
+    <url>https://svn.codehaus.org/geobatch/trunk/</url>
+  </scm>
+
+  <organization>
+    <name>GeoSolutions</name>
+    <url>http://www.geo-solutions.it</url>
+  </organization>
+  <inceptionYear>2006</inceptionYear>
+
+
+
+  <!-- ===================================================================== -->
+  <!--     All FileSystemMonitor groups included in the build.                      -->
+  <!-- ===================================================================== -->
+  <modules>
+    <module>deploy</module>
+    <module>module</module>
+    <module>plugin</module>
+  </modules>
+
+</project>

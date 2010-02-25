@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+
+	<workingDirectory>wmcflowworkingdir</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventConsumerConfiguration>
+		<workingDirectory>wmcflowworkingdir</workingDirectory>
+		<performBackup>false</performBackup>
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+		
+		<GeoServerActionConfiguration>
+			<workingDirectory>wmcflowworkingdir</workingDirectory>
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<dataTransferMethod>DIRECT</dataTransferMethod>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<wmsPath>/</wmsPath>
+			<defaultNamespace>nurc</defaultNamespace>
+			<defaultStyle>raster</defaultStyle>
+			<styles/>
+			<serviceID>NURCWPSOutput2WMCGeneratorService</serviceID>
+			<id>wmc</id>
+			<description>WMCDescription</description>
+			<name>testWmc</name>
+		</GeoServerActionConfiguration>
+		
+		<ImageMosaicActionConfiguration>
+			<workingDirectory>wmcflowworkingdir</workingDirectory>
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<dataTransferMethod>EXTERNAL</dataTransferMethod>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<wmsPath>/</wmsPath>
+			<defaultNamespace>nurc</defaultNamespace>
+			<defaultStyle>raster</defaultStyle>
+			<styles/>
+			<datastorePropertiesPath>JGSFLoDeSSworkingdir/config/NURC-2009/datastore.properties</datastorePropertiesPath>
+			<timeRegex>[0-9]{8}T[0-9]{6}Z(?!.*[0-9]{8}T[0-9]{6}Z.*)</timeRegex>
+			<elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>
+			<serviceID>ImageMosaicGeneratorService</serviceID>
+			<id>ImageMosaicService</id>
+			<description>ImageMosaicService</description>
+			<name>ImageMosaicService</name>
+		</ImageMosaicActionConfiguration>
+		
+		<WMCActionConfiguration>
+			<workingDirectory>wmcflowworkingdir</workingDirectory>
+			<!-- outputDirectory>[OPTIONAL]requires the full path</outputDirectory -->
+			<crs>EPSG:4326</crs>
+			<boundingBox>-180.0,-90.0,180.0,90.0</boundingBox>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<width>800</width>
+			<height>600</height>
+			<!-- baseLayerId>bluemarble</baseLayerId>
+			<baseLayerURL>http://demo.opengeo.org/geoserver/wms</baseLayerURL>
+			<baseLayerTitle>Bluemarble</baseLayerTitle>
+			<baseLayerFormat>image/png</baseLayerFormat -->
+			<serviceID>WMCGeneratorService</serviceID>
+			<id>WMCGeneratorService</id>
+			<description>WMCGeneratorService</description>
+			<name>WMCGeneratorService</name>
+		</WMCActionConfiguration>
+		
+		<id>id</id>
+		<description>description</description>
+		<name>test</name>
+	</EventConsumerConfiguration>
+	
+	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+		<wildCard>*.*</wildCard>
+		<watchDirectory>wmcflowworkingdir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>SEMwmcFlowId</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</eventGeneratorConfiguration>
+	
+	<id>SEMwmcFlow</id>
+	<description>SEMwmcFlow</description>
+	<name>SEMwmcFlow</name>
+</FlowConfiguration>

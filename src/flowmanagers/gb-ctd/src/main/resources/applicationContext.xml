@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<!-- Environment Initialization -->
+	<bean id="ctdfileGeneratorService" class="it.geosolutions.geobatch.ctd.CTDFileGeneratorService" depends-on="ctdRegistrar">
+		<property  name="id">
+    		<value>ctdfileGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>ctdfileGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>ctdfileGeneratorService</value>
+    	</property>	
+	</bean>
+
+    <bean id="ctdRegistrar" class="it.geosolutions.geobatch.ctd.CTDAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+</beans>

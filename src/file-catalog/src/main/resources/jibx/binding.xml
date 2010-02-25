@@ -1,0 +1,156 @@
+<binding>
+
+
+	<mapping class="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable"
+		abstract="true">
+		<value name="id" field="id" />
+		<value name="description" field="description" usage="optional" />
+		<value name="name" field="name" />
+	</mapping>
+
+	<mapping
+		class="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" 
+		extends="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable"
+		abstract="true">
+		<value name="serviceID" field="serviceID" />
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable" />
+	</mapping>
+		
+	<mapping
+		class="it.geosolutions.geobatch.configuration.event.action.ActionConfiguration"
+		extends="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" 
+		abstract="true">
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable" />
+	</mapping>
+
+	<mapping
+		class="it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration"
+		extends="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable"
+		abstract="true">
+		<structure field="eventConsumerConfiguration" />
+		<structure field="eventGeneratorConfiguration" />
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable" />
+	</mapping>
+
+    <!-- next classes are defined in this maven project -->
+
+	<mapping name="EventGeneratorConfiguration"
+		class="it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration"
+		extends="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable">
+		<value name="wildCard" field="wildCard" />
+		<value name="watchDirectory" field="watchDirectory" />
+		<value name="osType" field="osType" usage="optional" />
+		<value name="eventType" field="eventType" usage="optional" />
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable" />
+	</mapping>
+
+	<mapping name="FileEventRule"
+		class="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule"
+		extends="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable">
+		<value name="optional" field="optional" />
+		<value name="originalOccurrencies" field="originalOccurrencies" />
+		<value name="regex" field="regex" />
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable" />
+	</mapping>
+
+    <mapping name="EventConsumerConfiguration"
+		class="it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration"
+		extends="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable">
+		<value name="workingDirectory" field="workingDirectory" />
+		<value name="performBackup" field="performBackup" usage="optional" />
+		<collection field="rules"
+			item-type="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule" />
+		<collection field="actions"
+			item-type="it.geosolutions.geobatch.configuration.event.action.ActionConfiguration" />
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable" />
+	</mapping>
+
+	<mapping name="GeoServerActionConfiguration"
+		class="it.geosolutions.geobatch.configuration.event.action.geoserver.GeoServerActionConfiguration"
+		extends="it.geosolutions.geobatch.configuration.event.action.ActionConfiguration">
+		<value name="workingDirectory" field="workingDirectory" usage="optional" />
+		<value name="crs" field="crs" />
+		<value name="envelope" field="envelope" />
+		<value name="dataTransferMethod" field="dataTransferMethod" />
+		<value name="geoserverPWD" field="geoserverPWD" />
+		<value name="geoserverUID" field="geoserverUID" />
+		<value name="geoserverURL" field="geoserverURL" />
+		<value name="storeFilePrefix" field="storeFilePrefix" usage="optional" />
+		<value name="wmsPath" field="wmsPath" usage="optional" />
+		<value name="defaultStyle" field="defaultStyle" usage="optional" />
+		<value name="defaultNamespaceUri" field="defaultNamespaceUri" usage="optional" />
+		<value name="defaultNamespace" field="defaultNamespace" usage="optional" />
+		<value name="datatype" field="datatype" usage="optional" />
+		<value name="configId" field="configId" usage="optional" />
+		<collection name="styles" field="styles" type="java.util.ArrayList">
+			<value name="style" type="java.lang.String" />
+		</collection>
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" />
+	</mapping>
+
+	<mapping name="RegistryActionConfiguration"
+		class="it.geosolutions.geobatch.configuration.event.action.geoserver.RegistryActionConfiguration"
+		extends="it.geosolutions.geobatch.configuration.event.action.ActionConfiguration">
+		<value name="workingDirectory" field="workingDirectory" usage="optional" />
+		<value name="crs" field="crs" />
+		<value name="envelope" field="envelope" />
+		<value name="dataTransferMethod" field="dataTransferMethod" />
+		<value name="geoserverPWD" field="geoserverPWD" />
+		<value name="geoserverUID" field="geoserverUID" />
+		<value name="geoserverURL" field="geoserverURL" />
+		<value name="registryURL" field="registryURL" />
+		<value name="providerURL" field="providerURL" />
+		<value name="metocDictionaryPath" field="metocDictionaryPath" />
+		<value name="metocHarvesterXMLTemplatePath" field="metocHarvesterXMLTemplatePath" />
+		<value name="storeFilePrefix" field="storeFilePrefix" usage="optional" />
+		<value name="wmsPath" field="wmsPath" usage="optional" />
+		<value name="defaultStyle" field="defaultStyle" usage="optional" />
+		<value name="defaultNamespaceUri" field="defaultNamespaceUri" usage="optional" />
+		<value name="defaultNamespace" field="defaultNamespace" usage="optional" />
+		<value name="datatype" field="datatype" usage="optional" />
+		<value name="configId" field="configId" usage="optional" />
+		<collection name="styles" field="styles" type="java.util.ArrayList">
+			<value name="style" type="java.lang.String" />
+		</collection>
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" />
+	</mapping>
+
+	<mapping name="ImageMosaicActionConfiguration"
+		class="it.geosolutions.geobatch.configuration.event.action.geoserver.plugin.ImageMosaicActionConfiguration"
+		extends="it.geosolutions.geobatch.configuration.event.action.geoserver.GeoServerActionConfiguration">
+		<value name="datastorePropertiesPath" field="datastorePropertiesPath" usage="optional" />
+		<value name="timeRegex" field="timeRegex" usage="optional" />
+		<value name="elevationRegex" field="elevationRegex" usage="optional" />
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" />
+	</mapping>
+	
+	<mapping name="MetocActionConfiguration"
+		class="it.geosolutions.geobatch.configuration.event.action.metoc.MetocActionConfiguration"
+		extends="it.geosolutions.geobatch.configuration.event.action.ActionConfiguration">
+		<value name="workingDirectory" field="workingDirectory" usage="optional" />
+		<value name="crs" field="crs" />
+		<value name="envelope" field="envelope" />
+		<value name="metocDictionaryPath" field="metocDictionaryPath" />
+		<value name="metocHarvesterXMLTemplatePath" field="metocHarvesterXMLTemplatePath" />
+		<value name="storeFilePrefix" field="storeFilePrefix" usage="optional" />
+		<value name="wmsPath" field="wmsPath" usage="optional" />
+		<value name="configId" field="configId" usage="optional" />
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseConfiguration" />
+	</mapping>
+	
+    <mapping name="FlowConfiguration"
+		class="it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration"
+		extends="it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration">
+		<value name="workingDirectory" field="workingDirectory" />
+		<structure
+			map-as="it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration" />
+	</mapping>
+
+	<mapping name="CatalogConfiguration"
+		class="it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration"
+		extends="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable">
+		<value name="workingDirectory" field="workingDirectory" usage="optional" />
+		<structure map-as="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable" />
+	</mapping>
+
+</binding>

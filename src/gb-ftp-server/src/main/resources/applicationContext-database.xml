@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+	default-autowire="byName">
+
+	<!--  Data source -->
+	<bean id="dataSource-gb-ftp-server" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="org.h2.Driver" />
+		<property name="jdbcUrl" value="jdbc:h2:ftp" />
+		<property name="user" value="ftp" />
+		<property name="password" value="ftp" />
+		<property name="minPoolSize" value="10" />
+		<property name="maxPoolSize" value="20" />
+		<property name="maxStatements" value="100" />
+	</bean>
+
+	<!-- Hibernate SessionFactory -->
+	<bean id="sessionFactory-gb-ftp-server"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref local="dataSource-gb-ftp-server" />
+		</property>
+		<property name="configLocation">
+			<value>classpath:/hibernate-gb-ftp-server.cfg.xml</value>
+		</property>
+		<property name="configurationClass">
+			<value>org.hibernate.cfg.AnnotationConfiguration</value>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.transaction.factory_class">
+					org.hibernate.transaction.JDBCTransactionFactory
+				</prop>
+				<prop key="dialect">
+					org.hibernate.dialect.H2Dialect
+                </prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.connection.autocommit">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+	<!--
+		enable the configuration of transactional behavior based on
+		annotations
+	-->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!--
+		Transaction manager for a single Hibernate SessionFactory (alternative
+		to JTA)
+	-->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref local="sessionFactory-gb-ftp-server" />
+		</property>
+	</bean>
+</beans>

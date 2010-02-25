@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    =======================================================================
+    Maven Project Configuration File GeoSolutions GeoBatch Project
+    http://geobatch.codehaus.org
+    =======================================================================
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>it.geosolutions</groupId>
+        <artifactId>gb-dao-xstream-base</artifactId>
+        <version>0.9-SNAPSHOT</version>
+    </parent>
+
+    <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb-alias-registry</artifactId>
+    <name>GeoSolutions GeoBatch XStream Alias Registry</name>
+    <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
+
+    <description>
+        Dynamic registry for XStream aliases.
+        This lightweight module is always included in GeoBatch.
+        Each module will register its own aliases to be used in the XStream module;
+        This registration only happen at startup and will not waste CPU time at runtime.
+        XStreamDAO (if included) will use the registry to setup XStream.
+    </description>
+
+    <scm>
+        <connection>
+            scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/data/
+        </connection>
+        <url>http://svn.geotools.org/geotools/trunk/gt/modules/data/</url>
+    </scm>
+
+    <developers>
+        <developer><name>etj</name><email>etj at geo-solutions dot it</email></developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Lesser General Public License (LGPL)</name>
+            <url>http://www.gnu.org/copyleft/lesser.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <organization>
+        <name>GeoSolutions</name>
+        <url>http://www.geo-solutions.it</url>
+    </organization>
+
+    <!-- =========================================================== -->
+    <!--     Dependency Management                                   -->
+    <!-- =========================================================== -->
+    <dependencies>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>

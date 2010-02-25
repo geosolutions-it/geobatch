@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://mina.apache.org/ftpserver/spring/v1"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation=" http://www.springframework.org/schema/beans
+             http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+             http://www.springframework.org/schema/tx
+             http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+             http://www.springframework.org/schema/aop
+             http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+             http://www.springframework.org/schema/lang
+             http://www.springframework.org/schema/lang/spring-lang-2.0.xsd
+             http://mina.apache.org/ftpserver/spring/v1
+             http://mina.apache.org/ftpserver/ftpserver-1.0.xsd ">
+
+	<server id="server" max-logins="500" anon-enabled="false"
+		max-anon-logins="123" max-login-failures="124" login-failure-delay="125">
+		<listeners>
+			<nio-listener name="default" port="2121" implicit-ssl="false"></nio-listener>
+		</listeners>
+
+		<ftplets>
+			<ftplet name="gb-ftplet">
+				<beans:bean class="it.geosolutions.geobatch.ftp.server.GeoBatchFtplet">
+				</beans:bean>
+			</ftplet>
+		</ftplets>
+
+		<user-manager>
+			<beans:bean id="geoBatchUserManager" class="it.geosolutions.geobatch.ftp.server.GeoBatchUserManager" depends-on="globalConfig">
+				<beans:property name="ftpUserDAO" ref="ftpUserDAO" />
+			</beans:bean>
+		</user-manager>
+	</server>
+
+</beans:beans>

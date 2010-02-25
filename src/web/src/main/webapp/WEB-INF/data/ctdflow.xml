@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+
+	<workingDirectory>ctdflowworkingdir</workingDirectory>
+	
+	<EventConsumerConfiguration>
+		<workingDirectory>ctdflowworkingdir</workingDirectory>
+		<performBackup>true</performBackup>
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.dat</regex>
+			<id>r1</id>
+			<description>A single ctd file</description>
+			<name>test</name>
+		</FileEventRule>
+		
+		<CTDActionConfiguration>
+			<workingDirectory>ctdflowworkingdir</workingDirectory>
+			<dbPWD>postgres</dbPWD>
+			<dbUID>postgres</dbUID>
+			<dbServerIp>localhost</dbServerIp>
+			<dbPort>5432</dbPort>			
+			<dbName>obs_db</dbName>
+			<serviceID>ctdfileGeneratorService</serviceID>
+			<id>ctd1</id>
+			<description>description</description>
+			<name>test</name>
+		</CTDActionConfiguration>
+				
+		<id>ctdflowId</id>
+		<description>description</description>
+		<name>test</name>
+	</EventConsumerConfiguration>
+	
+	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+		<wildCard>*.*</wildCard>
+		<watchDirectory>ctdflowworkingdir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>ctdflowId</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</eventGeneratorConfiguration>
+	
+	<id>ctdflowworkingdir</id>
+	<description>ctdflow</description>
+	<name>ctdflow</name>
+	
+</FlowConfiguration>

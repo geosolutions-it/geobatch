@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                               http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>gb-dao-xstream-base</artifactId>
+        <groupId>it.geosolutions</groupId>
+        <version>0.9-SNAPSHOT</version>
+    </parent>
+
+  <!-- =========================================================== -->
+  <!--     Module Description                                      -->
+  <!-- =========================================================== -->
+
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb-dao-xstream</artifactId>
+    <name>GeoSolutions GeoBatch pluggable DAOs - XStream</name>
+    <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fs-catalog</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-alias-registry</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>

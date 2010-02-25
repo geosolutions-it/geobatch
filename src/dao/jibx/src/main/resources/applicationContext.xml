@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+<!--
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+-->
+         <!-- property name="locations">  
+             <list>  
+                 <value>classpath:gb.properties</value>   
+             </list>  
+         </property-->
+<!--
+     </bean>  
+-->
+
+	<!-- Environment Initialization -->
+	<bean id="globalConfig" class="it.geosolutions.geobatch.global.JIBXCatalogLoader" depends-on="catalog" >
+        <constructor-arg ref="catalog"/>
+
+	
+	    <!--  property  name="dataDir">
+    		<value>${GEOBATCH_DATA_DIR}</value>
+    	</property-->	
+   	    	
+	</bean>
+
+<!--
+	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+	  <property name="corePoolSize" value="5" />
+	  <property name="maxPoolSize" value="10" />
+	  <property name="queueCapacity" value="25" />
+	</bean>
+-->
+
+    <!-- Catalog Initialization -->
+<!--
+    <bean id="catalog" class="it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl" depends-on="taskExecutor">
+	    <property  name="id">
+    		<value>catalog</value>
+    	</property>
+    	<property name="description">
+    		<value>File system based catalog</value>
+    	</property>
+    	<property name="name">
+    		<value>catalog</value>
+    	</property>  
+	    <property  name="executor">
+    		<ref bean="taskExecutor"/>
+    	</property>	      	
+	</bean>
+-->
+    
+    <!-- File based event generator service based on the filesystem monitor -->
+<!--
+    <bean id="fsEventGeneratorService" class="it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGeneratorService" >
+    	<property  name="id">
+    		<value>fsEventGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>File system based event generator service</value>
+    	</property>
+    	<property name="name">
+    		<value>fsEventGeneratorService</value>
+    	</property>    	
+    </bean>
+-->
+    
+    <!-- File based flow manager service-->
+<!--
+    <bean id="fsFlowManagerService" class="it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService" >
+    	<property  name="available">
+    		<value>true</value>
+    	</property>
+    	<property  name="id">
+    		<value>fsFlowManagerService</value>
+    	</property>
+    	<property name="description">
+    		<value>File based flow manager service</value>
+    	</property>
+    	<property name="name">
+    		<value>fsFlowManagerService</value>
+    	</property>    	
+    </bean>  
+-->
+    
+    <!-- JIBX flow manager DAO-->
+    <bean id="JIBXFlowConfigurationDAOService" class="it.geosolutions.geobatch.catalog.dao.file.jibx.JIBXDAOService" >
+    	<property  name="id">
+    		<value>JIBXFlowConfigurationDAOService</value>
+    	</property>
+    	<property name="description">
+    		<value>JIBX based FlowConfigurationDAOService</value>
+    	</property>
+    	<property name="name">
+    		<value>JIBXFlowConfigurationDAOService</value>
+    	</property>    	
+    </bean>          
+
+</beans>
