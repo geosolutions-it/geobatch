@@ -39,8 +39,7 @@ import java.util.List;
  * 
  * @author Simone Giannecchini, GeoSolutions
  */
-public class FileBasedEventConsumerConfiguration extends BaseConfiguration implements
-        EventConsumerConfiguration {
+public class FileBasedEventConsumerConfiguration extends BaseConfiguration implements EventConsumerConfiguration {
 
 
 	protected FileBasedEventConsumerConfiguration(String id, String name,

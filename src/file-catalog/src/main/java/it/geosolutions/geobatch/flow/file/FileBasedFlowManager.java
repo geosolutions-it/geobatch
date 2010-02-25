@@ -25,13 +25,16 @@
 package it.geosolutions.geobatch.flow.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.geobatch.catalog.dao.DAO;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.catalog.impl.BasePersistentResource;
+import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 import it.geosolutions.geobatch.flow.FlowManager;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
+import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.event.generator.EventGenerator;
@@ -47,8 +50,11 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,12 +68,11 @@ public class FileBasedFlowManager
 					FlowEventListener<FileSystemMonitorEvent>,
 					Runnable {
 
-    /** Default Logger **/
+	/** Default Logger **/
     private final static Logger LOGGER = Logger.getLogger(FlowManager.class.toString());
 
     private boolean autorun=false;
-
-    /**
+        /**
      * Base class for dispatchers.
      * 
      * @author AlFa
@@ -80,8 +85,7 @@ public class FileBasedFlowManager
          * Default Constructor
          */
         public EventDispatcher() {
-            super(new StringBuilder("EventDispatcherThread-").append(
-                    FileBasedFlowManager.this.getId()).toString());
+            super(new StringBuilder("EventDispatcherThread-").append(FileBasedFlowManager.this.getId()).toString());
             setDaemon(true);// shut me down when parent shutdown
             // reset interrupted flag
             interrupted();
@@ -128,10 +132,9 @@ public class FileBasedFlowManager
                     // //
                     boolean eventServed = false;
                     final Iterator<BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration>> it =
-							FileBasedFlowManager.this.collectingEventConsumers.iterator();
+							FileBasedFlowManager.this.eventConsumers.iterator();
                     while (it.hasNext()) {
-                        final BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> 
-								consumer = it.next();
+                        final BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> consumer = it.next();
 
 						if(LOGGER.isLoggable(Level.FINE))
 							LOGGER.fine("Checking consumer " + consumer +" for " + event);
@@ -144,7 +147,11 @@ public class FileBasedFlowManager
                             if (consumer.getStatus() == EventConsumerStatus.EXECUTING) {
 								if(LOGGER.isLoggable(Level.FINE))
 									LOGGER.fine(event + " was the last needed event for " + consumer);
-                                it.remove();
+                                
+                               
+                                // are we executing? If yes, let's trigger a thread!
+                                FileBasedFlowManager.this.executor.execute(consumer);
+                                
 							} else
 								if(LOGGER.isLoggable(Level.FINE))
 									LOGGER.fine(event + " was consumed by " + consumer);
@@ -176,7 +183,7 @@ public class FileBasedFlowManager
                             if ( brandNewConsumer.getStatus() != EventConsumerStatus.EXECUTING) {
 								if(LOGGER.isLoggable(Level.FINE))
 									LOGGER.fine(brandNewConsumer + " created on event " + event);
-								FileBasedFlowManager.this.collectingEventConsumers.add(brandNewConsumer);
+								FileBasedFlowManager.this.eventConsumers.add(brandNewConsumer);
 							}
 							else
 								if(LOGGER.isLoggable(Level.FINE))
@@ -188,12 +195,11 @@ public class FileBasedFlowManager
                     }
                 }
             } catch (InterruptedException e) { // may be thrown by the "stop" button on web interface
-                LOGGER.log(Level.SEVERE, "Caught an Interrupted Exception: "+ e.getLocalizedMessage(), e);
+                LOGGER.log(Level.SEVERE,  e.getLocalizedMessage(), e);
             } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Caught an IOException: "+ e.getLocalizedMessage(), e);
+                LOGGER.log(Level.SEVERE,  e.getLocalizedMessage(), e);
             } catch (CloneNotSupportedException e) {
-                LOGGER.log(Level.SEVERE, new StringBuilder("Caught a CloneNotSupportedException Exception: ")
-                .append(e.getLocalizedMessage()).toString(), e);
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
 
         }
@@ -236,7 +242,9 @@ public class FileBasedFlowManager
      */
     private EventGenerator eventGenerator;
 
-    private final List<BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration>> collectingEventConsumers = new ArrayList<BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration>>();
+    private final List<BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration>> eventConsumers = new ArrayList<BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration>>();
+    
+	private ThreadPoolExecutor executor;
 
     /**
      * @param configuration
@@ -268,7 +276,15 @@ public class FileBasedFlowManager
                     .append(">").append(configuration.getWorkingDirectory()).append("< ").toString()
 					);
        
-       this.autorun = configuration.autorun();
+       this.autorun = configuration.isAutorun();
+       
+       // sensible defaults TODO make me configurable!!!!
+       final int queueSize=configuration.getWorkQueueSize()>0?configuration.getWorkQueueSize():100;
+       final int corePoolSize=configuration.getCorePoolSize()>0?configuration.getCorePoolSize():10;
+       final int maximumPoolSize=configuration.getMaximumPoolSize()>0?configuration.getMaximumPoolSize():30;
+       final long keepAlive =configuration.getKeepAliveTime()>0?configuration.getKeepAliveTime():15000;
+       final BlockingQueue<Runnable> queue = new ArrayBlockingQueue(queueSize);
+       this.executor= new ThreadPoolExecutor(corePoolSize,maximumPoolSize,keepAlive,TimeUnit.MILLISECONDS,queue);
 
        if(this.autorun) {
            if (LOGGER.isLoggable(Level.INFO))
@@ -397,7 +413,7 @@ public class FileBasedFlowManager
         	LOGGER.info("Resuming: " + this.getId());
 
         if (!started) {
-            getCatalog().getExecutor().execute(this);
+            executor.execute(this);
             this.started = true;
             this.paused = false;
         } else if (!isRunning()) {
@@ -519,5 +535,18 @@ public class FileBasedFlowManager
     public synchronized void persist()throws IOException {
         super.persist();
     }
+    public boolean isAutorun() {
+		return autorun;
+	}
+
+	public void setAutorun(boolean autorun) {
+		this.autorun = autorun;
+	}
+
+	public <EC extends EventConsumerConfiguration> List<EventConsumer<FileSystemMonitorEvent, EC>> getEventConsumers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

@@ -25,11 +25,14 @@
 package it.geosolutions.geobatch.flow;
 
 import it.geosolutions.geobatch.catalog.PersistentResource;
+import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
+import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.generator.EventGenerator;
 
 import java.io.File;
 import java.util.EventObject;
+import java.util.List;
 
 /**
  * @author Alessio Fabiani
@@ -79,4 +82,6 @@ public interface FlowManager<T extends EventObject, C extends FlowConfiguration>
     public File getWorkingDirectory();
 
     public void setEventGenerator(EventGenerator<T> eventGenerator);
+    
+    public <EC extends EventConsumerConfiguration>  List<EventConsumer<T,EC>> getEventConsumers();
 }

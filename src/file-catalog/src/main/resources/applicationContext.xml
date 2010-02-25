@@ -7,7 +7,7 @@
 	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
 	  <property name="corePoolSize" value="30" />
 	  <property name="maxPoolSize" value="300" />
-	  <property name="queueCapacity" value="100" />
+	  <property name="queueCapacity" value="200" />
 	</bean>
 	
 	
@@ -22,9 +22,9 @@
     	<property name="name">
     		<value>catalog</value>
     	</property>  
-	    <property  name="executor">
+	    <!-- property  name="executor">
     		<ref bean="taskExecutor"/>
-    	</property>	      	
+    	</property-->	      	
 	</bean>
 
     

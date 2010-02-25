@@ -37,6 +37,8 @@ import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.event.EventListenerList;
+
 /**
  * Comments here ...
  * 
@@ -57,6 +59,8 @@ public abstract class BaseEventConsumer<EO extends EventObject, ECC extends Even
     protected final Queue<EO> eventsQueue = new LinkedList<EO>();
 
     protected final List<Action<EO>> actions = new ArrayList<Action<EO>>();
+
+	private EventListenerList listeners = new EventListenerList();
 
     // ----------------------------------------------- PRIVATE ATTRIBUTES
     /**
@@ -166,4 +170,39 @@ public abstract class BaseEventConsumer<EO extends EventObject, ECC extends Even
         eventsQueue.clear();
         actions.clear();
     }
+
+	/**
+	 * Add listener to this file monitor.
+	 * 
+	 * @param fileListener
+	 *            Listener to add.
+	 */
+	public synchronized void addListener(EventConsumerListener fileListener) {
+	    // Don't add if its already there
+	
+	    // Guaranteed to return a non-null array
+	    final Object[] listenerArray = listeners.getListenerList();
+	    // Process the listeners last to first, notifying
+	    // those that are interested in this event
+	    final int length = listenerArray.length;
+	    for (int i = length - 2; i >= 0; i -= 2) {
+	        if (listenerArray[i].equals(fileListener)) {
+	            return;
+	
+	        }
+	    }
+	
+	    listeners.add(EventConsumerListener.class, fileListener);
+	}
+
+	/**
+	 * Remove listener from this file monitor.
+	 * 
+	 * @param fileListener
+	 *            Listener to remove.
+	 */
+	public synchronized void removeListener(EventConsumerListener fileListener) {
+	    listeners.remove(EventConsumerListener.class, fileListener);
+	
+	}
 }

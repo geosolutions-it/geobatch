@@ -53,7 +53,6 @@ import javax.swing.event.EventListenerList;
  * Comments here ...
  * 
  * @author AlFa (Alessio Fabiani)
- * @author Ivano Picco
  */
 public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGenerator<T> implements EventGenerator<T> {
     // ----------------------------------------------- PRIVATE ATTRIBUTES
@@ -74,7 +73,6 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
          * it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener#fileMonitorEventDelivered
          * (it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent)
          */
-
         public void fileMonitorEventDelivered(final FileSystemMonitorEvent fe) {
             if (fe != null && fe.getSource() != null) {
 
@@ -356,7 +354,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
     // ----------------------------------------------- DELEGATE METHODS
     /**
      * 
-     * @see it.geosolutions.filesystemmonitor.monitor.Monitor#dispose()
+     * @see it.geosolutions.filesystemmonitor.monitor.Monitor#destroy()
      */
     public synchronized void dispose() {
         fsMonitor.removeListener(fsListener);

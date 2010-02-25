@@ -19,24 +19,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package it.geosolutions.geobatch.flow.event.consumer;
 
+import java.util.EventListener;
 
-
-package it.geosolutions.geobatch.flow.event.action;
-
-import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
-
-import java.util.EventObject;
 /**
  * 
- * @author Simone Giannecchini, GeoSolutions S.A.S.
+ * @author Simone Giannecchini, GeoSolutions
  *
- * @param <T>
  */
-public abstract class BaseAction<T extends EventObject> extends BaseIdentifiable implements Action<T> {
-
-	public void destroy() {
-
-    }
-
+public interface EventConsumerListener extends EventListener{
+	public void statusChanged(EventConsumerStatus oldStatus, EventConsumerStatus neeStatus);
 }

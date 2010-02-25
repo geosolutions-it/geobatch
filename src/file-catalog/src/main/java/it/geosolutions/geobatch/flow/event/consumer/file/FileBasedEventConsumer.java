@@ -34,6 +34,7 @@ import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
+import it.geosolutions.geobatch.flow.event.consumer.EventConsumerListener;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.utils.IOUtils;
@@ -47,6 +48,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -62,7 +64,9 @@ import org.apache.commons.io.FilenameUtils;
 public class FileBasedEventConsumer extends
         BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> implements
         EventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> {
-    // ----------------------------------------------------------------------------
+    
+	private final static TimeZone tz = TimeZone.getTimeZone("UTC");
+	
     /**
      * Common file prefix (unless the rule specify another one)
      */
@@ -76,14 +80,12 @@ public class FileBasedEventConsumer extends
     /**
      * Storing mandatory rules and the times they will occur.
      */
-    private final List<FileEventRule> mandatoryRules = Collections
-            .synchronizedList(new ArrayList<FileEventRule>());
+    private final List<FileEventRule> mandatoryRules = new ArrayList<FileEventRule>();
 
     /**
      * Storing optional rules and the times they will occur.
      */
-    private final List<FileEventRule> optionalRules = Collections
-            .synchronizedList(new ArrayList<FileEventRule>());
+    private final List<FileEventRule> optionalRules = new ArrayList<FileEventRule>();
 
     /**
      *
@@ -106,8 +108,8 @@ public class FileBasedEventConsumer extends
     public FileBasedEventConsumer(Catalog catalog, FileBasedEventConsumerConfiguration configuration)
             throws InterruptedException, IOException {
         super(catalog);
-        final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(), new File(
-                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+        final File catalogFile= new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
+        final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(), catalogFile);
         if (workingDir != null) {
             if (workingDir.exists() && workingDir.isDirectory() & workingDir.canRead()) {
                 initialize(configuration, workingDir);
@@ -134,8 +136,7 @@ public class FileBasedEventConsumer extends
         final String filePrefix = FilenameUtils.getBaseName(fileName);
 
         //check mandatory rules
-        boolean res = this.checkRuleConsistency(event.getNotification(), filePrefix,
-                fileName,true);
+        boolean res = this.checkRuleConsistency(event.getNotification(), filePrefix,fileName,true);
 
         //check optinal rules if needed
         if (!res) {
@@ -313,13 +314,12 @@ public class FileBasedEventConsumer extends
 
             // prepare date format instance for creating dir for this moment
             final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
+            dateFormat.setTimeZone(tz);
             final String timeStamp = dateFormat.format(new Date());
             final File currentRunDirectory = new File(this.workingDir, timeStamp);
             currentRunDirectory.mkdir();
 
-            if ((currentRunDirectory == null) || !currentRunDirectory.exists()
-                    || !currentRunDirectory.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "Could not create consumer data directories");
+            if ((currentRunDirectory == null) || !currentRunDirectory.exists()|| !currentRunDirectory.isDirectory()) {
                 throw new IllegalStateException("Could not create consumer data directories!");
             }
 
@@ -428,11 +428,13 @@ public class FileBasedEventConsumer extends
                 LOGGER.log(Level.SEVERE, "FileBasedEventConsumer "
                         + Thread.currentThread().getName() + " could not move file "
                         + " due to the following IO error: " + e.getLocalizedMessage(), e);
+            this.setStatus(EventConsumerStatus.FAILED);
         } catch (InterruptedException e) {
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.log(Level.SEVERE, "FileBasedEventConsumer "
                         + Thread.currentThread().getName() + " could not move file "
                         + " due to the following IO error: " + e.getLocalizedMessage(), e);
+            this.setStatus(EventConsumerStatus.FAILED);
         } finally {
             LOGGER.info(Thread.currentThread().getName() + " DONE!");
             this.dispose();
@@ -503,9 +505,9 @@ public class FileBasedEventConsumer extends
     @Override
     protected void setStatus(EventConsumerStatus eventConsumerStatus) {
         super.setStatus(eventConsumerStatus);
-        // are we executing? If yes, let's trigger a thread!
-        if (eventConsumerStatus == EventConsumerStatus.EXECUTING)
-            getCatalog().getExecutor().execute(this);
+//        // are we executing? If yes, let's trigger a thread!
+//        if (eventConsumerStatus == EventConsumerStatus.EXECUTING)
+//            getCatalog().getExecutor().execute(this);
     }
 
 	@Override
@@ -519,6 +521,16 @@ public class FileBasedEventConsumer extends
 				+ " still missing:" + numInputFiles
 				+ (eventsQueue.isEmpty()? "" : ( " first event:" + eventsQueue.peek().getSource().getName() ))
 				+ "]";
+	}
+
+	public void addListener(EventConsumerListener eventConsumerListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void removeListener(EventConsumerListener eventConsumerListener) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

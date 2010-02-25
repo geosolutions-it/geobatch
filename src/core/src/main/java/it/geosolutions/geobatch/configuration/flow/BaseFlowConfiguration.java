@@ -37,8 +37,24 @@ public class BaseFlowConfiguration extends BaseConfiguration implements FlowConf
     private EventGeneratorConfiguration eventGeneratorConfiguration;
 
     private EventConsumerConfiguration eventConsumerConfiguration;
+    
+    private int corePoolSize ;
+    
+    private int maximumPoolSize ;
+    
+    private long keepAliveTime;
+    
+    private int workQueueSize;
 
-    public BaseFlowConfiguration(String id, String name,
+    public int getWorkQueueSize() {
+		return workQueueSize;
+	}
+
+	public void setWorkQueueSize(int workQueueSize) {
+		this.workQueueSize = workQueueSize;
+	}
+
+	public BaseFlowConfiguration(String id, String name,
             EventGeneratorConfiguration eventGeneratorConfiguration, String description,
             EventConsumerConfiguration eventConsumerConfiguration) {
         super(id, name, description);
@@ -86,4 +102,28 @@ public class BaseFlowConfiguration extends BaseConfiguration implements FlowConf
         this.eventConsumerConfiguration = eventConsumerConfiguration;
 
     }
+
+	public int getCorePoolSize() {
+		return corePoolSize;
+	}
+
+	public void setCorePoolSize(int corePoolSize) {
+		this.corePoolSize = corePoolSize;
+	}
+
+	public int getMaximumPoolSize() {
+		return maximumPoolSize;
+	}
+
+	public void setMaximumPoolSize(int maximumPoolSize) {
+		this.maximumPoolSize = maximumPoolSize;
+	}
+
+	public long getKeepAliveTime() {
+		return keepAliveTime;
+	}
+
+	public void setKeepAliveTime(long keepAliveTime) {
+		this.keepAliveTime = keepAliveTime;
+	}
 }

@@ -38,14 +38,12 @@ import it.geosolutions.geobatch.configuration.CatalogConfiguration;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 import it.geosolutions.geobatch.flow.FlowManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EventObject;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executor;
 
 import org.apache.commons.collections.MultiHashMap;
 
@@ -69,8 +67,6 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      * listeners
      */
     private final List<CatalogListener> listeners = new CopyOnWriteArrayList<CatalogListener>();
-
-    private Executor executor;
 
     /**
      * Default Constructor.
@@ -319,15 +315,6 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
                 }
             }
         }
-    }
-
-    public Executor getExecutor() {
-        return executor;
-    }
-
-    public void setExecutor(Executor executor) {
-        this.executor = executor;
-
     }
 
     public <T extends Resource> void add(T resource) {

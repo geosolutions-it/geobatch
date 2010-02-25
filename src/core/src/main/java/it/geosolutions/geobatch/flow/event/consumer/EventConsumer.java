@@ -80,4 +80,8 @@ public interface EventConsumer<T extends EventObject, C extends EventConsumerCon
      */
     public boolean isCanceled();
 
+	public void addListener(EventConsumerListener eventConsumerListener);
+
+	public void removeListener(EventConsumerListener eventConsumerListener);
+
 }

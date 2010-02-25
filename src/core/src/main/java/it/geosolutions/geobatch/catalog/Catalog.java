@@ -29,7 +29,6 @@ import it.geosolutions.geobatch.flow.FlowManager;
 import java.util.Collection;
 import java.util.EventObject;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 /**
  * The GeoBatch catalog which provides access to meta information about the Flow
@@ -98,9 +97,5 @@ public interface Catalog extends PersistentResource<CatalogConfiguration> {
      * Removes a listener from the catalog.
      */
     void removeListener(CatalogListener listener);
-
-    public Executor getExecutor();
-
-    public void setExecutor(Executor executor);
 
 }

@@ -26,13 +26,23 @@ package it.geosolutions.geobatch.flow.event.action;
 
 import java.util.EventObject;
 import java.util.Queue;
-
+/**
+ * 
+ * @author Simone Giannecchini, GeoSolutions
+ *
+ * @param <T>
+ */
 public interface Action<T extends EventObject> {
 	
     public Queue<T> execute(Queue<T> events) throws Exception;
 
-    public void create();
-
     public void destroy();
 
+//	public boolean isRunning();
+
+//	public void stop();
+    
+//    public void addListener(ActionListener listener);
+
+//    public void removeListener(ActionListener listener);
 }

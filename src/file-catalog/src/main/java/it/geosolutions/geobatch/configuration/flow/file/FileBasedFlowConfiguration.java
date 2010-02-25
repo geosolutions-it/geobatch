@@ -42,7 +42,8 @@ import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
  */
 public class FileBasedFlowConfiguration extends BaseFlowConfiguration implements FlowConfiguration {
 
-    /**
+
+	/**
      * workingDirectory: this attribute represents the configuring directory for this flow. It can
      * be relative to the catalog.xml directory or absolute.
      * 
@@ -111,26 +112,8 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration implements
         setDirty(true);
     }
 
-    /**
-     * Returns true if flow must be started on startup
-     * 
-     */
 
-    public boolean autorun() {
-        return autorun;
-    }
-
-    /**
-     * Set autorun flag.
-     *
-     * @param autorun
-     */
-    public void setautorun(boolean autorun) {
-        this.autorun = autorun;
-    }
-
-
-	@Override
+    @Override
 	public String toString() {
 		return getClass().getSimpleName() + "[" +
 				"id:" + getId()
@@ -141,5 +124,11 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration implements
 				+ "]";
 	}
 
+    public boolean isAutorun() {
+		return autorun;
+	}
 
+	public void setAutorun(boolean autorun) {
+		this.autorun = autorun;
+	}
 }

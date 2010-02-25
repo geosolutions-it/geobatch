@@ -43,7 +43,7 @@ public class FtpUserDataBean {
 	/**
 	 * @return the userId
 	 */
-	public synchronized String getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
@@ -51,14 +51,14 @@ public class FtpUserDataBean {
 	 * @param userId
 	 *            the userId to set
 	 */
-	public synchronized void setUserId(String userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
 	/**
 	 * @return the userPassword
 	 */
-	public synchronized String getPassword() {
+	public String getPassword() {
 		return password;
 	}
 
@@ -66,7 +66,7 @@ public class FtpUserDataBean {
 	 * @param userPassword
 	 *            the userPassword to set
 	 */
-	public synchronized void setPassword(String password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
@@ -87,7 +87,7 @@ public class FtpUserDataBean {
 	/**
 	 * @return the writePermission
 	 */
-	public synchronized boolean getWritePermission() {
+	public boolean getWritePermission() {
 		return writePermission;
 	}
 
@@ -95,14 +95,14 @@ public class FtpUserDataBean {
 	 * @param writePermission
 	 *            the writePermission to set
 	 */
-	public synchronized void setWritePermission(boolean writePermission) {
+	public void setWritePermission(boolean writePermission) {
 		this.writePermission = writePermission;
 	}
 
 	/**
 	 * @return the uploadRate
 	 */
-	public synchronized String getUploadRate() {
+	public String getUploadRate() {
 		return uploadRate;
 	}
 
@@ -110,14 +110,14 @@ public class FtpUserDataBean {
 	 * @param uploadRate
 	 *            the uploadRate to set
 	 */
-	public synchronized void setUploadRate(String uploadRate) {
+	public void setUploadRate(String uploadRate) {
 		this.uploadRate = uploadRate;
 	}
 
 	/**
 	 * @return the downloadRate
 	 */
-	public synchronized String getDownloadRate() {
+	public String getDownloadRate() {
 		return downloadRate;
 	}
 
@@ -125,7 +125,7 @@ public class FtpUserDataBean {
 	 * @param downloadRate
 	 *            the downloadRate to set
 	 */
-	public synchronized void setDownloadRate(String downloadRate) {
+	public void setDownloadRate(String downloadRate) {
 		this.downloadRate = downloadRate;
 	}
 

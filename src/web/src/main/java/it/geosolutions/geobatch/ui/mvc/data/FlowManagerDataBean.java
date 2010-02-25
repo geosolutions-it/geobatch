@@ -37,12 +37,10 @@ public class FlowManagerDataBean {
 
     private String outputDir;
 
-    // private List<FileBasedCatalogConfiguration> availableDescriptors;
-
     /**
      * @return the descriptorId
      */
-    public synchronized String getDescriptorId() {
+    public String getDescriptorId() {
         return descriptorId;
     }
 
@@ -50,14 +48,14 @@ public class FlowManagerDataBean {
      * @param descriptorId
      *            the descriptorId to set
      */
-    public synchronized void setDescriptorId(String descriptorId) {
+    public void setDescriptorId(String descriptorId) {
         this.descriptorId = descriptorId;
     }
 
     /**
      * @return the id
      */
-    public synchronized String getId() {
+    public String getId() {
         return id;
     }
 
@@ -65,14 +63,14 @@ public class FlowManagerDataBean {
      * @param id
      *            the id to set
      */
-    public synchronized void setId(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     /**
      * @return the name
      */
-    public synchronized String getName() {
+    public String getName() {
         return name;
     }
 
@@ -80,14 +78,14 @@ public class FlowManagerDataBean {
      * @param name
      *            the name to set
      */
-    public synchronized void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the inputDir
      */
-    public synchronized String getInputDir() {
+    public String getInputDir() {
         return inputDir;
     }
 
@@ -95,29 +93,14 @@ public class FlowManagerDataBean {
      * @param inputDir
      *            the inputDir to set
      */
-    public synchronized void setInputDir(String inputDir) {
+    public void setInputDir(String inputDir) {
         this.inputDir = inputDir;
     }
-
-    // /**
-    // * @return the availableDescriptors
-    // */
-    // public synchronized List<FileBasedCatalogConfiguration> getAvailableDescriptors() {
-    // return availableDescriptors;
-    // }
-    //
-    // /**
-    // * @param availableDescriptors the availableDescriptors to set
-    // */
-    // public synchronized void setAvailableDescriptors(
-    // List<FileBasedCatalogConfiguration> availableDescriptors) {
-    // this.availableDescriptors = availableDescriptors;
-    // }
 
     /**
      * @return the workingDirectory
      */
-    public synchronized String getOutputDir() {
+    public String getOutputDir() {
         return outputDir;
     }
 
@@ -125,7 +108,7 @@ public class FlowManagerDataBean {
      * @param workingDirectory
      *            the workingDirectory to set
      */
-    public synchronized void setOutputDir(String outputDir) {
+    public void setOutputDir(String outputDir) {
         this.outputDir = outputDir;
     }
 }
