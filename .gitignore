@@ -1,0 +1,147 @@
+##
+## This file has been automatically generated with the command line:
+## for pom in $(find src -name "pom.xml") ; do path=${pom%*pom.xml} ; echo '#' $path ; echo ; echo ${path}target ; echo ; done > .gitignore
+##
+## - ETj
+
+
+# src/file-catalog/
+
+src/file-catalog/target
+
+# src/gb-fsm/module/
+
+src/gb-fsm/module/target
+
+# src/gb-fsm/module/monitor/
+
+src/gb-fsm/module/monitor/target
+
+# src/gb-fsm/deploy/libs/windows/
+
+src/gb-fsm/deploy/libs/windows/target
+
+# src/gb-fsm/deploy/libs/
+
+src/gb-fsm/deploy/libs/target
+
+# src/gb-fsm/deploy/libs/linux/
+
+src/gb-fsm/deploy/libs/linux/target
+
+# src/gb-fsm/deploy/
+
+src/gb-fsm/deploy/target
+
+# src/gb-fsm/deploy/jar/
+
+src/gb-fsm/deploy/jar/target
+
+# src/gb-fsm/
+
+src/gb-fsm/target
+
+# src/gb-fsm/plugin/jnimonitor/
+
+src/gb-fsm/plugin/jnimonitor/target
+
+# src/gb-fsm/plugin/
+
+src/gb-fsm/plugin/target
+
+# src/gb-fsm/plugin/javamonitor/
+
+src/gb-fsm/plugin/javamonitor/target
+
+# src/gb-ftp-server/
+
+src/gb-ftp-server/target
+
+# src/core/
+
+src/core/target
+
+# src/
+
+src/target
+
+# src/flowmanagers/gb-geoserver/
+
+src/flowmanagers/gb-geoserver/target
+
+# src/flowmanagers/gb-sas/
+
+src/flowmanagers/gb-sas/target
+
+# src/flowmanagers/ais/
+
+src/flowmanagers/ais/target
+
+# src/flowmanagers/geowebcache/
+
+src/flowmanagers/geowebcache/target
+
+# src/flowmanagers/geotiff/
+
+src/flowmanagers/geotiff/target
+
+# src/flowmanagers/gb-gliders/
+
+src/flowmanagers/gb-gliders/target
+
+# src/flowmanagers/gb-task-executor/
+
+src/flowmanagers/gb-task-executor/target
+
+# src/flowmanagers/
+
+src/flowmanagers/target
+
+# src/flowmanagers/ascii-grids/
+
+src/flowmanagers/ascii-grids/target
+
+# src/flowmanagers/gb-ftp/
+
+src/flowmanagers/gb-ftp/target
+
+# src/flowmanagers/shapefile/
+
+src/flowmanagers/shapefile/target
+
+# src/flowmanagers/imagemosaic/
+
+src/flowmanagers/imagemosaic/target
+
+# src/flowmanagers/gb-ctd/
+
+src/flowmanagers/gb-ctd/target
+
+# src/flowmanagers/jgsflodess/
+
+src/flowmanagers/jgsflodess/target
+
+# src/web/
+
+src/web/target
+
+# src/dao/xstream/xstream-core/
+
+src/dao/xstream/xstream-core/target
+
+# src/dao/xstream/alias-registry/
+
+src/dao/xstream/alias-registry/target
+
+# src/dao/xstream/
+
+src/dao/xstream/target
+
+# src/dao/
+
+src/dao/target
+
+# src/dao/jibx/
+
+src/dao/jibx/target
+
