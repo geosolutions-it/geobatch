@@ -25,7 +25,7 @@
   <groupId>it.geosolutions</groupId>
   <artifactId>gb-flowmanagers-ascii</artifactId>
   <packaging>jar</packaging>
-  <name>GeoSolutions GeoBatch flow managers - ASCII Grids flow</name>
+  <name>GeoBatch action: ASCII Grids</name>
   <url>http://www.geo-solutions.it/maven_reports/gb/flow-managers/</url>
   
   <scm>

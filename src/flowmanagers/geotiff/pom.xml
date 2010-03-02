@@ -26,7 +26,7 @@
   <groupId>it.geosolutions</groupId>
   <artifactId>gb-flowmanagers-geotiff</artifactId>
   <packaging>jar</packaging>
-  <name>GeoSolutions GeoBatch flow managers - GeoTIFF flow</name>
+  <name>GeoBatch action: GeoTIFF</name>
   <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
   
   <scm>

@@ -17,8 +17,10 @@
 
     <groupId>it.geosolutions</groupId>
     <artifactId>gb-dao-xstream</artifactId>
-    <name>GeoSolutions GeoBatch pluggable DAOs - XStream</name>
+    <name>GeoBatch pluggable DAOs - XStream</name>
     <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
+
+    <description>GeoSolutions GeoBatch pluggable DAOs - XStream</description>
 
     <dependencies>
         <dependency>

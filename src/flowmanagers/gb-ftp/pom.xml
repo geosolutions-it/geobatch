@@ -21,7 +21,7 @@
   <!-- =========================================================== -->
     <groupId>it.geosolutions</groupId>
     <artifactId>gb-flowmanagers-ftp</artifactId>
-    <name>GeoSolutions GeoBatch FTP Support actions</name>
+    <name>GeoBatch action: FTP client</name>
     <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
 
     <scm>
@@ -29,7 +29,7 @@
         <url>http://svn.geotools.org/geotools/trunk/gt/modules/data/</url>
     </scm>
 
-    <description>GeoSolutions GeoBatch support interactions with an FTT server</description>
+    <description>GeoSolutions GeoBatch support interactions with an FTP server</description>
 
     <licenses>
         <license>

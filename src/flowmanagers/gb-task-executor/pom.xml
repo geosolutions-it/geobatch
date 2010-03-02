@@ -26,7 +26,7 @@
   <groupId>it.geosolutions</groupId>
   <artifactId>gb-task-executor</artifactId>
   <packaging>jar</packaging>
-  <name>GeoSolutions GeoBatch flow managers - Task Executor</name>
+  <name>GeoBatch action: Task Executor</name>
   <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
   
   <scm>

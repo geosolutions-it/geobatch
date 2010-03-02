@@ -23,7 +23,7 @@
 	<groupId>it.geosolutions</groupId>
 	<artifactId>gb-web</artifactId>
 	<packaging>war</packaging>
-	<name>GeoSolutions GeoBatch web module</name>
+	<name>GeoBatch web module</name>
 	<url>http://www.geo-solutions.it/maven_reports/gb/library/</url>
 
 	<scm>
@@ -240,10 +240,12 @@
 					<groupId>it.geosolutions</groupId>
 					<artifactId>gb-flowmanagers-ImageMosaic</artifactId>
 				</dependency>
+<!--
 				<dependency>
 					<groupId>it.geosolutions</groupId>
 					<artifactId>gb-flowmanagers-JGSFLoDeSS</artifactId>
 				</dependency>
+-->
 				<dependency>
 					<groupId>it.geosolutions</groupId>
 					<artifactId>gb-task-executor</artifactId>

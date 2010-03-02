@@ -25,7 +25,7 @@
 	<groupId>it.geosolutions</groupId>
 	<artifactId>gb-flowmanagers-ImageMosaic</artifactId>
 	<packaging>jar</packaging>
-	<name>GeoSolutions GeoBatch flow managers - ImageMosaic ingester</name>
+	<name>GeoBatch action: ImageMosaic ingester</name>
 	<url>http://mvn.geo-solutions.it/maven_reports/ie/flowmanagers/</url>
   
 	<scm>

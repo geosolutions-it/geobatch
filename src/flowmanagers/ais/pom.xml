@@ -24,7 +24,7 @@
 	<groupId>it.geosolutions</groupId>
 	<artifactId>gb-flowmanagers-ais</artifactId>
 	<packaging>jar</packaging>
-	<name>GeoSolutions GeoBatch flow managers - AIS flow</name>
+	<name>GeoBatch action: AIS</name>
 	<url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
 
 	<scm>

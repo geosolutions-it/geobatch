@@ -26,7 +26,7 @@
     <groupId>it.geosolutions</groupId>
     <artifactId>gb-dao</artifactId>
     <packaging>pom</packaging>
-    <name>GeoSolutions GeoBatch pluggable DAOs</name>
+    <name>GeoBatch pluggable DAOs</name>
     <url>http://www.geo-solutions.it/maven_reports/gb/dao/</url>
   
     <scm>

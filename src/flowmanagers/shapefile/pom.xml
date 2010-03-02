@@ -26,7 +26,7 @@
   <groupId>it.geosolutions</groupId>
   <artifactId>gb-flowmanagers-shapefile</artifactId>
   <packaging>jar</packaging>
-  <name>GeoSolutions GeoBatch flow managers - ESRI Shapefiles flow</name>
+  <name>GeoBatch action: ESRI Shapefiles</name>
   <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
   
   <scm>

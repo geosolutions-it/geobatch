@@ -26,7 +26,7 @@
   <groupId>it.geosolutions</groupId>
   <artifactId>gb-flowmanagers-geoserver</artifactId>
   <packaging>jar</packaging>
-  <name>GeoSolutions basemodule for actions that configure data in GeoServer</name>
+  <name>GeoBatch action: GeoServer config</name>
   <url>https://svn.codehaus.org/geobatch/trunk/flowmanagers/gb-geoserver</url>
   
   <scm>
@@ -37,7 +37,7 @@
   </scm>
   
   <description>
-    GeoSolutions Base GeoServer action
+    GeoSolutions GeoBatch basemodule for actions that configure data in GeoServer
   </description>
 
   <licenses>

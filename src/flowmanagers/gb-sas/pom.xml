@@ -24,7 +24,7 @@
 	<groupId>it.geosolutions</groupId>
 	<artifactId>gb-flowmanagers-sas</artifactId>
 	<packaging>jar</packaging>
-	<name>GeoSolutions GeoBatch flow managers - SAS Tiles composer flow</name>
+	<name>GeoBatch action: SAS Tiles composer</name>
 	<url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
 
 	<scm>

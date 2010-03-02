@@ -26,7 +26,7 @@
   <groupId>it.geosolutions</groupId>
   <artifactId>gb-flowmanagers-gliders</artifactId>
   <packaging>jar</packaging>
-  <name>GeoSolutions GeoBatch flow managers - gliders file flow</name>
+  <name>GeoBatch action: gliders</name>
   <url>http://www.geo-solutions.it/maven_reports/ie/flowmanagers/</url>
   
   <scm>
