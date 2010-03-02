@@ -30,7 +30,8 @@ import java.util.EventObject;
  *
  * @author Ivano Picco
  */
-public abstract class BaseEventGenerator<T extends EventObject> extends BaseIdentifiable
+public abstract class BaseEventGenerator<T extends EventObject>
+        extends BaseIdentifiable
         implements EventGenerator<T> {
 
 }

@@ -36,15 +36,16 @@ import java.util.logging.Logger;
 
 import org.geotools.data.DataAccessFactory.Param;
 
-public class FileBasedFlowManagerService extends BaseService implements
-        FlowManagerService<FileSystemMonitorEvent, FileBasedFlowConfiguration> {
+public class FileBasedFlowManagerService
+        extends BaseService
+        implements FlowManagerService<FileSystemMonitorEvent, FileBasedFlowConfiguration> {
 
     private FileBasedFlowManagerService() {
         super(true);
     }
 
-    public final static Param WORKING_DIR = new Param("WorkingDir", String.class, "WorkingDir",
-            true);
+    public final static Param WORKING_DIR = new Param("WorkingDir", 
+            String.class, "WorkingDir", true);
 
     private final static Logger LOGGER = Logger.getLogger(FileBasedFlowManagerService.class
             .toString());
@@ -54,13 +55,13 @@ public class FileBasedFlowManagerService extends BaseService implements
         final String workingDir = configuration.getWorkingDirectory();
         if (workingDir != null) {
             final File dir = new File((String) workingDir);
-            if (!dir.exists() || !dir.isDirectory() || !dir.canRead())
-                // TODO message
+            if (!dir.exists() || !dir.isDirectory() || !dir.canRead()) {
+                LOGGER.warning("Bad working dir '"+dir+"'");
                 return false;
+            }
         }
 
         return true;
-
     }
 
     public FileBasedFlowManager createFlowManager(FileBasedFlowConfiguration configuration) {
@@ -68,9 +69,10 @@ public class FileBasedFlowManagerService extends BaseService implements
         final String workingDir = configuration.getWorkingDirectory();
         if (workingDir != null) {
             final File dir = new File((String) workingDir);
-            if (!dir.exists() || !dir.isDirectory() || !dir.canRead())
-                // TODO message
+            if (!dir.exists() || !dir.isDirectory() || !dir.canRead()) {
+                LOGGER.warning("Bad working dir '"+dir+"'");
                 return null;
+            }
 
             try {
                 final FileBasedFlowManager manager = new FileBasedFlowManager();

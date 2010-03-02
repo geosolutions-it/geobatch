@@ -24,7 +24,6 @@
 
 package it.geosolutions.geobatch.catalog.impl;
 
-import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.catalog.Service;
 
 public class BaseService extends BaseResource implements Service {
@@ -36,8 +35,8 @@ public class BaseService extends BaseResource implements Service {
         available = true;
     }
 
-    public BaseService(String id, String name, String description, Catalog catalog) {
-        super(id, name, description, catalog);
+    public BaseService(String id, String name, String description) {
+        super(id, name, description);
     }
 
     public BaseService(boolean available) {

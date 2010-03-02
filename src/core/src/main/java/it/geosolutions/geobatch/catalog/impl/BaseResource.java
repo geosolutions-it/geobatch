@@ -29,13 +29,6 @@ import it.geosolutions.geobatch.catalog.Resource;
 
 public class BaseResource extends BaseIdentifiable implements Resource {
 
-    private Catalog catalog;
-
-    public BaseResource(Catalog catalog) {
-        super();
-        this.catalog = catalog;
-    }
-
     public BaseResource() {
         super();
     }
@@ -49,17 +42,4 @@ public class BaseResource extends BaseIdentifiable implements Resource {
 
     }
 
-    public Catalog getCatalog() {
-        return catalog;
-    }
-
-    public void setCatalog(Catalog catalog) {
-        this.catalog = catalog;
-
-    }
-
-    public BaseResource(String id, String name, String description, Catalog catalog) {
-        super(id, name, description);
-        this.catalog = catalog;
-    }
 }

@@ -3,7 +3,6 @@
 
 <beans default-init-method="init" default-destroy-method="dispose">
 
-
 	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
 	  <property name="corePoolSize" value="30" />
 	  <property name="maxPoolSize" value="300" />
@@ -13,15 +12,9 @@
 	
     <!-- Catalog Initialization -->
     <bean id="catalog" class="it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl" depends-on="taskExecutor">
-	    <property  name="id">
-    		<value>catalog</value>
-    	</property>
-    	<property name="description">
-    		<value>File system based catalog</value>
-    	</property>
-    	<property name="name">
-    		<value>catalog</value>
-    	</property>  
+	    <property name="id" value="catalog" />
+    	<property name="description" value="File system based catalog"/>
+    	<property name="name" value="catalog"/>
 	    <!-- property  name="executor">
     		<ref bean="taskExecutor"/>
     	</property-->	      	
@@ -30,38 +23,21 @@
     
     <!-- File based event generator service based on the filesystem monitor -->
     <bean id="fsEventGeneratorService" class="it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGeneratorService" depends-on="fsmSPIFinder" >
-    	<property  name="id">
-    		<value>fsEventGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>File system based event generator service</value>
-    	</property>
-    	<property name="name">
-    		<value>fsEventGeneratorService</value>
-    	</property>    	
+    	<property name="id" value="fsEventGeneratorService"/>
+    	<property name="description" value="File system based event generator service"/>
+    	<property name="name" value="fsEventGeneratorService"/>
     </bean>
 
     
     <!-- File based flow manager service-->
     <bean id="fsFlowManagerService" class="it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService"  depends-on="fsmSPIFinder" >
-    	<property  name="available">
-    		<value>true</value>
-    	</property>
-    	<property  name="id">
-    		<value>fsFlowManagerService</value>
-    	</property>
-    	<property name="description">
-    		<value>File based flow manager service</value>
-    	</property>
-    	<property name="name">
-    		<value>fsFlowManagerService</value>
+    	<property name="available" value="true"/>
+    	<property name="id" value="fsFlowManagerService"/>
+    	<property name="description" value="File based flow manager service"/>
+    	<property name="name" value="fsFlowManagerService"/>
     	</property>    	
     </bean>  
-    
-    
 
-    
-    
     <!-- JIBX flow manager DAO-->
 <!--
     <bean id="JIBXFlowConfigurationDAOService" class="it.geosolutions.geobatch.catalog.dao.file.jibx.JIBXDAOService" >

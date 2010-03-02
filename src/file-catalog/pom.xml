@@ -21,7 +21,7 @@
   <!-- =========================================================== -->
     <groupId>it.geosolutions</groupId>
     <artifactId>gb-fs-catalog</artifactId>
-    <name>GeoSolutions GeoBatch catalog file system persistence</name>
+    <name>GeoBatch filesystem catalog</name>
     <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
 
     <scm>
@@ -29,7 +29,7 @@
         <url>http://svn.geotools.org/geotools/trunk/gt/modules/data/</url>
     </scm>
 
-    <description>GeoSolutions GeoBatch catalog.</description>
+    <description>GeoSolutions GeoBatch catalog file system persistence</description>
 
     <licenses>
         <license>

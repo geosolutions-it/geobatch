@@ -172,7 +172,7 @@ public class FileBasedFlowManager
 						final FileBasedEventConsumerConfiguration configuration =
 								((FileBasedEventConsumerConfiguration) FileBasedFlowManager.this.getConfiguration().getEventConsumerConfiguration()).clone();
                         final FileBasedEventConsumer brandNewConsumer =
-								new FileBasedEventConsumer( getCatalog(), configuration);
+								new FileBasedEventConsumer( configuration);
 
                         if (brandNewConsumer.consume(event)) {
                             // //
@@ -368,7 +368,8 @@ public class FileBasedFlowManager
                             final EventGeneratorConfiguration generatorConfig = getConfiguration().getEventGeneratorConfiguration();
                             final String serviceID = generatorConfig.getServiceID();
                             LOGGER.info("EventGeneratorCreationServiceID: "+ serviceID);
-                            final EventGeneratorService<EventObject, EventGeneratorConfiguration> generatorService = getCatalog().getResource(serviceID, EventGeneratorService.class);
+                            final EventGeneratorService<EventObject, EventGeneratorConfiguration> generatorService =
+                                    CatalogHolder.getCatalog().getResource(serviceID, EventGeneratorService.class);
                             if (generatorService != null) {
                                 LOGGER.info("EventGeneratorCreationFound!");
                                 eventGenerator = generatorService.createEventGenerator(generatorConfig);

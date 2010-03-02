@@ -34,8 +34,9 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class FileBasedEventConsumerService extends BaseService implements
-        EventConsumerService<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> {
+public class FileBasedEventConsumerService
+        extends BaseService
+        implements EventConsumerService<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(FileBasedEventConsumerService.class
             .toString());
@@ -55,7 +56,7 @@ public class FileBasedEventConsumerService extends BaseService implements
     public FileBasedEventConsumer createEventConsumer(
             FileBasedEventConsumerConfiguration configuration) {
         try {
-            return new FileBasedEventConsumer(getCatalog(), configuration);
+            return new FileBasedEventConsumer(configuration);
         } catch (IOException e) {
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);

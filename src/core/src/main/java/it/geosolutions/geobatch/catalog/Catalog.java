@@ -55,14 +55,14 @@ public interface Catalog extends PersistentResource<CatalogConfiguration> {
      */
     void dispose();
 
-    <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>> List<T> getFlowManagers(
-            Class<T> clazz);
+    <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>>
+            List<T> getFlowManagers(Class<T> clazz);
 
-    <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>> T getFlowManager(
-            String id, Class<T> clazz);
+    <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>>
+            T getFlowManager(String id, Class<T> clazz);
 
-    <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>> T getFlowManagerByName(
-            String name, Class<T> clazz);
+    <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>>
+            T getFlowManagerByName(String name, Class<T> clazz);
 
     <T extends Resource> T getResource(String id, Class<T> clazz);
 

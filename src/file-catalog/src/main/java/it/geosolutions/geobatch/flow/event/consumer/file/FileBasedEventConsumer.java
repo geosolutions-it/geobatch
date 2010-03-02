@@ -105,9 +105,8 @@ public class FileBasedEventConsumer extends
 
     // ----------------------------------------------- PROTECTED METHODS
 
-    public FileBasedEventConsumer(Catalog catalog, FileBasedEventConsumerConfiguration configuration)
+    public FileBasedEventConsumer(FileBasedEventConsumerConfiguration configuration)
             throws InterruptedException, IOException {
-        super(catalog);
         final File catalogFile= new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
         final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(), catalogFile);
         if (workingDir != null) {
@@ -288,7 +287,8 @@ public class FileBasedEventConsumer extends
         final List<Action<FileSystemMonitorEvent>> actions = new ArrayList<Action<FileSystemMonitorEvent>>();
         for (ActionConfiguration actionConfig : configuration.getActions()) {
             final String serviceID = actionConfig.getServiceID();
-            final ActionService<FileSystemMonitorEvent, ActionConfiguration> actionService = getCatalog().getResource(serviceID, ActionService.class);
+            final ActionService<FileSystemMonitorEvent, ActionConfiguration> actionService =
+                    CatalogHolder.getCatalog().getResource(serviceID, ActionService.class);
             if (actionService != null) {
                 Action<FileSystemMonitorEvent> action = actionService.createAction(actionConfig);
                 actions.add(action);

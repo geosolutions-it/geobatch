@@ -35,6 +35,7 @@ import java.util.EventObject;
  * @version $ GeoServerConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
  */
 public abstract class BaseEventGeneratorService<T extends EventObject, C extends EventGeneratorConfiguration>
-        extends BaseService implements EventGeneratorService<T, C> {
+        extends BaseService
+        implements EventGeneratorService<T, C> {
 
 }

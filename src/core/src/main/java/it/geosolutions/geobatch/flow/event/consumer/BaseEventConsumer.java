@@ -24,7 +24,6 @@
 
 package it.geosolutions.geobatch.flow.event.consumer;
 
-import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.catalog.impl.BaseResource;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.flow.event.action.Action;
@@ -73,24 +72,8 @@ public abstract class BaseEventConsumer<EO extends EventObject, ECC extends Even
         this.setStatus(EventConsumerStatus.IDLE);
     }
 
-    public BaseEventConsumer(String id, String name, String description, Catalog catalog) {
-        super(id, name, description, catalog);
-
-        this.setStatus(EventConsumerStatus.IDLE);
-    }
-
     public BaseEventConsumer(String id, String name, String description) {
         super(id, name, description);
-
-    }
-
-    /**
-     * Default Constructor
-     * 
-     * @param catalog
-     */
-    public BaseEventConsumer(Catalog catalog) {
-        super(catalog);
         this.setStatus(EventConsumerStatus.IDLE);
     }
 

@@ -4,7 +4,8 @@
 		Maven Project Configuration File GeoSolutions GeoBatch Project
 		http://geobatch.codehaus.org Version: $Id: pom.xml 63 2008-04-04
 		11:22:11Z alessio $
-		=======================================================================
+		=======================================================================
+
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
@@ -23,8 +24,10 @@
 	<!-- =========================================================== -->
 	<groupId>it.geosolutions</groupId>
 	<artifactId>gb-core</artifactId>
-	<name>GeoSolutions GeoBatch catalog</name>
+	<name>GeoBatch core</name>
 	<url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
+
+	<description>GeoSolutions GeoBatch core</description>
 
 	<scm>
 		<connection>
@@ -33,9 +36,6 @@
 		<url>http://svn.geotools.org/geotools/trunk/gt/modules/data/</url>
 	</scm>
 
-	<description>
-    GeoSolutions GeoBatch catalog.
-  </description>
 	<developers>
 	</developers>
 

@@ -32,7 +32,7 @@ public abstract class BaseIdentifiable implements Identifiable {
 
     private String name;
 
-    private String description = "Flow BaseEventConsumer for the ingestion of AIS-Anomalies Files.";
+    private String description = "No description set.";
 
     public BaseIdentifiable() {
     }
