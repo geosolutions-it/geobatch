@@ -24,7 +24,6 @@
 
 package it.geosolutions.geobatch.catalog.impl;
 
-import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.catalog.Resource;
 
 public class BaseResource extends BaseIdentifiable implements Resource {

@@ -28,7 +28,7 @@ import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfig
 
 import java.util.EventObject;
 
-public interface EventConsumer<T extends EventObject, C extends EventConsumerConfiguration> {
+public interface EventConsumer<EO extends EventObject, ECC extends EventConsumerConfiguration> {
     /**
      * Clean up code for this {@link EventConsumer}.
      */
@@ -39,7 +39,7 @@ public interface EventConsumer<T extends EventObject, C extends EventConsumerCon
      * 
      * @return the configuration for this {@link EventConsumer}.
      */
-    public C getConfiguration();
+    public ECC getConfiguration();
 
     /**
      * Sets the configuration for this {@link EventConsumer}.
@@ -47,7 +47,7 @@ public interface EventConsumer<T extends EventObject, C extends EventConsumerCon
      * @param configuration
      *            to set for this {@link EventConsumer}.
      */
-    public void setConfiguration(C configuration);
+    public void setConfiguration(ECC configuration);
 
     /**
      * Retrieves the status for this {@link EventConsumer}.
@@ -64,7 +64,7 @@ public interface EventConsumer<T extends EventObject, C extends EventConsumerCon
      *            The event to consume
      * @return <code>true</code> if we can consume the provided event, <code>false</code> otherwise.
      */
-    public boolean consume(T event);
+    public boolean consume(EO event);
 
     /**
      * Asks this {@link EventConsumer} to cancel its execution.

@@ -27,14 +27,19 @@ package it.geosolutions.geobatch.flow.event.action;
 import java.util.EventObject;
 import java.util.Queue;
 /**
- * 
+ * Takes a queue of events, process them ({@link execute(Queue events)}) and provides a new queue of event to be
+ * processed by the next Action.
+ *
+ * <P><B>(WIP)</B> Will also provide ways to monitor whether the Action is currently
+ * running, which Event is running
+ *
  * @author Simone Giannecchini, GeoSolutions
  *
- * @param <T>
+ * @param <EO>
  */
-public interface Action<T extends EventObject> {
+public interface Action<EO extends EventObject> {
 	
-    public Queue<T> execute(Queue<T> events) throws Exception;
+    public Queue<EO> execute(Queue<EO> events) throws Exception;
 
     public void destroy();
 

@@ -30,16 +30,16 @@ public interface CatalogListener {
     /**
      * Handles the event of an addition to the catalog.
      */
-    <T, C extends CatalogAddEvent<T>> void handleAddEvent(C event);
+    <T, CAE extends CatalogAddEvent<T>> void handleAddEvent(CAE event);
 
     /**
      * Handles the event of a removal from the catalog.
      * 
      */
-    <T, C extends CatalogRemoveEvent<T>> void handleRemoveEvent(C event);
+    <T, CRE extends CatalogRemoveEvent<T>> void handleRemoveEvent(CRE event);
 
     /**
      * Handles the event of a modification to an object in the catalog.
      */
-    <T, C extends CatalogModifyEvent<T>> void handleModifyEvent(C event);
+    <T, CME extends CatalogModifyEvent<T>> void handleModifyEvent(CME event);
 }

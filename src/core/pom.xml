@@ -62,12 +62,10 @@
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-			<!-- The version number is specified in the parent POM. -->
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<!-- The version number is specified in the parent POM. -->
 		</dependency>
 
 		<!-- ============================== -->
@@ -76,7 +74,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<!-- The version number is specified in the parent POM. -->
 			<scope>test</scope>   <!-- Needed for test, not for running -->
 		</dependency>
 		
@@ -86,7 +83,6 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
-     	 <!-- The version number is specified in the parent POM. -->
         </dependency>
 
 	</dependencies>

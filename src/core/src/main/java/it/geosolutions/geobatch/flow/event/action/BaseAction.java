@@ -31,12 +31,13 @@ import java.util.EventObject;
  * 
  * @author Simone Giannecchini, GeoSolutions S.A.S.
  *
- * @param <T>
+ * @param <EO>
  */
-public abstract class BaseAction<T extends EventObject> extends BaseIdentifiable implements Action<T> {
+public abstract class BaseAction<EO extends EventObject>
+        extends BaseIdentifiable
+        implements Action<EO> {
 
 	public void destroy() {
-
     }
 
 }

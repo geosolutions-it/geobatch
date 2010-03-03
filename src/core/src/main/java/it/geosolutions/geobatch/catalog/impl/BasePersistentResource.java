@@ -25,14 +25,14 @@
 package it.geosolutions.geobatch.catalog.impl;
 
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.PersistentResource;
 import it.geosolutions.geobatch.catalog.dao.DAO;
 
-public abstract class BasePersistentResource<C extends Configuration> extends BaseResource
+public abstract class BasePersistentResource<C extends Configuration>
+        extends BaseResource
         implements PersistentResource<C> {
 
 	private final static Logger LOGGER= Logger.getLogger(BasePersistentResource.class.toString());

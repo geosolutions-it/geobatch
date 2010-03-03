@@ -32,7 +32,9 @@ import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConf
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public class BaseFlowConfiguration extends BaseConfiguration implements FlowConfiguration {
+public class BaseFlowConfiguration 
+        extends BaseConfiguration
+        implements FlowConfiguration {
 
     private EventGeneratorConfiguration eventGeneratorConfiguration;
 

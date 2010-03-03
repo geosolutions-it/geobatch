@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.EventObject;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
 
 import org.apache.commons.collections.MultiHashMap;
 
@@ -53,6 +54,7 @@ import org.apache.commons.collections.MultiHashMap;
  * 
  */
 public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> implements Catalog {
+    private final static Logger LOGGER = Logger.getLogger(BaseCatalog.class.getName());
     /**
      * flow manager types
      */
@@ -127,11 +129,14 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      * @see it.geosolutions.geobatch.catalog.Catalog#getFlowManagerType(java.lang.String,
      * java.lang.Class)
      */
-    public <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>> T getFlowManager(
-            final String id, final Class<T> clazz) {
-        final List<T> l = lookup(clazz, flowManagers);
+    public <EO extends EventObject,
+            FC extends FlowConfiguration,
+            FM extends FlowManager<EO, FC>>
+            FM getFlowManager(final String id, final Class<FM> clazz) {
 
-        for (final T fmt : l) {
+        final List<FM> l = lookup(clazz, flowManagers);
+
+        for (final FM fmt : l) {
             if (id.equals(fmt.getId())) {
                 return fmt;
             }
@@ -146,11 +151,14 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      * @see it.geosolutions.geobatch.catalog.Catalog#getFlowManagerTypeByName(java.lang.String,
      * java.lang.Class)
      */
-    public <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>> T getFlowManagerByName(
-            final String name, final Class<T> clazz) {
-        final List<T> l = lookup(clazz, flowManagers);
+    public <EO extends EventObject,
+            FC extends FlowConfiguration,
+            FM extends FlowManager<EO, FC>>
+            FM getFlowManagerByName(final String name, final Class<FM> clazz) {
 
-        for (final T fmt : l) {
+        final List<FM> l = lookup(clazz, flowManagers);
+
+        for (final FM fmt : l) {
 
             if (name.equals(fmt.getName())) {
                 return fmt;
@@ -165,8 +173,10 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      * 
      * @see it.geosolutions.geobatch.catalog.Catalog#getFlowManagers(java.lang.Class)
      */
-    public <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>> List<T> getFlowManagers(
-            final Class<T> clazz) {
+    public <EO extends EventObject,
+            FC extends FlowConfiguration,
+            FM extends FlowManager<EO, FC>>
+            List<FM> getFlowManagers(final Class<FM> clazz) {
         return getResources(clazz);
     }
 
@@ -175,10 +185,10 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      * 
      * @see it.geosolutions.geobatch.catalog.Catalog#getResource(java.lang.String, java.lang.Class)
      */
-    public <T extends Resource> T getResource(final String id, final Class<T> clazz) {
-        final List<T> l = lookup(clazz, resources);
+    public <R extends Resource> R getResource(final String id, final Class<R> clazz) {
+        final List<R> l = lookup(clazz, resources);
 
-		for (T resource : l) {
+		for (R resource : l) {
             if (id.equals(resource.getId())) {
                 return resource;
             }
@@ -193,10 +203,10 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      * @see it.geosolutions.geobatch.catalog.Catalog#getResourceByName(java.lang.String,
      * java.lang.Class)
      */
-    public <T extends Resource> T getResourceByName(final String name, final Class<T> clazz) {
-        final List<T> l = lookup(clazz, resources);
+    public <R extends Resource> R getResourceByName(final String name, final Class<R> clazz) {
+        final List<R> l = lookup(clazz, resources);
 
-		for (T resource : l) {
+		for (R resource : l) {
             if (name.equals(resource.getName())) {
                 return resource;
             }
@@ -210,7 +220,7 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      * 
      * @see it.geosolutions.geobatch.catalog.Catalog#getResources(java.lang.Class)
      */
-    public <T extends Resource> List<T> getResources(final Class<T> clazz) {
+    public <R extends Resource> List<R> getResources(final Class<R> clazz) {
         return Collections.unmodifiableList(lookup(clazz, resources));
     }
 
@@ -220,8 +230,8 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      * @see
      * it.geosolutions.geobatch.catalog.Catalog#remove(it.geosolutions.geobatch.catalog.FlowManager)
      */
-    public <E extends EventObject, C extends FlowConfiguration> void remove(
-            final FlowManager<E, C> resource) {
+    public <EO extends EventObject, FC extends FlowConfiguration>
+            void remove(final FlowManager<EO, FC> resource) {
         synchronized (resources) {
             resources.remove(resource.getClass(), resource);
         }
@@ -235,9 +245,10 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      * @see
      * it.geosolutions.geobatch.catalog.Catalog#save(it.geosolutions.geobatch.catalog.FlowManager)
      */
-    public <E extends EventObject, C extends FlowConfiguration> void save(
-            final FlowManager<E, C> resource) {
+    public <EO extends EventObject, FC extends FlowConfiguration>
+            void save(final FlowManager<EO, FC> resource) {
         // TODO
+        LOGGER.severe("To be implemented");
     }
 
     // //
@@ -247,10 +258,10 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      *
      */
     @SuppressWarnings("unchecked")
-    <T extends Resource> List<T> lookup(final Class<T> clazz, final MultiHashMap map) {
-        final List<T> result = new ArrayList<T>();
+    <R extends Resource> List<R> lookup(final Class<R> clazz, final MultiHashMap map) {
+        final List<R> result = new ArrayList<R>();
 
-        for (final Class<T> key : (Iterable<Class<T>>)map.keySet() ) {
+        for (final Class<R> key : (Iterable<Class<R>>)map.keySet() ) {
 //        for (final Iterator<Class<T>> k = map.keySet().iterator(); k.hasNext();) {
 //            final Class<T> key = k.next();
             if (clazz.isAssignableFrom(key)) {

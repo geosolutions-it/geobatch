@@ -31,18 +31,17 @@ import java.util.EventObject;
  * @author Simone Giannecchini, Ivano Picco
  * 
  */
-public interface EventGenerator<T extends EventObject> {
+public interface EventGenerator<EO extends EventObject> {
 
-    public void addListener(FlowEventListener<T> fileListener);
-
-    public void dispose();
+    public void start();
+    public void stop();
 
     public boolean isRunning();
 
-    public void removeListener(FlowEventListener<T> fileListener);
+    public void dispose();
 
-    public void start();
+    public void addListener(FlowEventListener<EO> listener);
+    public void removeListener(FlowEventListener<EO> listener);
 
-    public void stop();
 
 }

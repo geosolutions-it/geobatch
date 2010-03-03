@@ -28,8 +28,8 @@ import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfig
 
 import java.util.EventObject;
 
-public interface EventConsumerService<T extends EventObject, E extends EventConsumerConfiguration> {
-    public EventConsumer<T, E> createEventConsumer(E configuration);
+public interface EventConsumerService<EO extends EventObject, ECC extends EventConsumerConfiguration> {
+    public EventConsumer<EO, ECC> createEventConsumer(ECC configuration);
 
-    public boolean canCreateEventConsumer(E configuration);
+    public boolean canCreateEventConsumer(ECC configuration);
 }

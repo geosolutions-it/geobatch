@@ -29,10 +29,10 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.EventObject;
 
-public interface ActionService<T extends EventObject, C extends ActionConfiguration> extends
-        Service {
+public interface ActionService<EO extends EventObject, AC extends ActionConfiguration> 
+        extends Service {
 
-    public Action<T> createAction(C configuration);
+    public Action<EO> createAction(AC configuration);
 
-    public boolean canCreateAction(C configuration);
+    public boolean canCreateAction(AC configuration);
 }

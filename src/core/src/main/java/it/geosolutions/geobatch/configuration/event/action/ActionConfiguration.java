@@ -27,7 +27,9 @@ package it.geosolutions.geobatch.configuration.event.action;
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 
-public abstract class ActionConfiguration extends BaseConfiguration implements Configuration {
+public abstract class ActionConfiguration 
+        extends BaseConfiguration
+        implements Configuration {
     
     @Override
 	public abstract ActionConfiguration clone() throws CloneNotSupportedException;
