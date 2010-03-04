@@ -19,7 +19,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geobatch.ctd.configuration;
 
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
@@ -28,42 +27,39 @@ import java.util.EventObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  * 
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  * 
  */
-public abstract class CTDConfiguratorAction<T extends EventObject>
-extends BaseAction<T> {
-	
-	/**
+public abstract class CTDConfiguratorAction<EO extends EventObject>
+        extends BaseAction<EO> {
+
+    /**
      * Default logger
      */
     protected final static Logger LOGGER = Logger.getLogger(CTDConfiguratorAction.class.toString());
-
     protected final CTDActionConfiguration configuration;
-    
-    
+
     /**
      * Constructs a producer.
-	 * The operation name will be the same than the parameter descriptor name.
-	 * 
+     * The operation name will be the same than the parameter descriptor name.
+     *
      */
     public CTDConfiguratorAction(CTDActionConfiguration configuration) {
         this.configuration = configuration;
-        
+
         // //////////////////////////
         // get required parameters
         // //////////////////////////
-        
-		if ((configuration.getDbServerIp() == null) || (configuration.getDbPort() == null)) {
-			LOGGER.log(Level.SEVERE, "Data Base url is null.");
-			throw new IllegalStateException("Data Base url is null.");
-		}
+
+        if ((configuration.getDbServerIp() == null) || (configuration.getDbPort() == null)) {
+            LOGGER.log(Level.SEVERE, "Data Base url is null.");
+            throw new IllegalStateException("Data Base url is null.");
+        }
 
     }
-    
+
     public CTDActionConfiguration getConfiguration() {
         return configuration;
     }

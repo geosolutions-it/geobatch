@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.ctd.configuration;
 
 import it.geosolutions.geobatch.catalog.Configuration;
@@ -33,7 +31,9 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  * 
  */
-public class CTDActionConfiguration extends ActionConfiguration implements Configuration {
+public class CTDActionConfiguration 
+        extends ActionConfiguration
+        implements Configuration {
 
     protected CTDActionConfiguration(String id, String name,
 			String description, boolean dirty) {

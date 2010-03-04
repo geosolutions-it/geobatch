@@ -4,7 +4,6 @@
 ##
 ## - ETj
 
-
 # src/file-catalog/
 
 src/file-catalog/target
@@ -57,17 +56,33 @@ src/gb-fsm/plugin/javamonitor/target
 
 src/gb-ftp-server/target
 
+# src/core/model/
+
+src/core/model/target
+
 # src/core/
 
 src/core/target
+
+# src/core/impl/
+
+src/core/impl/target
 
 # src/
 
 src/target
 
+# src/flowmanagers/gb-geoserver/gsrestclient/
+
+src/flowmanagers/gb-geoserver/gsrestclient/target
+
 # src/flowmanagers/gb-geoserver/
 
 src/flowmanagers/gb-geoserver/target
+
+# src/flowmanagers/gb-geoserver/gb-geoserver-action/
+
+src/flowmanagers/gb-geoserver/gb-geoserver-action/target
 
 # src/flowmanagers/gb-sas/
 

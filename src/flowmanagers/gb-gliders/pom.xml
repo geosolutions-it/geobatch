@@ -103,7 +103,6 @@
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>8.1-407.jdbc3</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>
@@ -113,8 +112,6 @@
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 		</dependency>
-
-
         
     	<dependency>
       		<groupId>java3d</groupId>

@@ -6,7 +6,9 @@
             http://geobatch.codehaus.org
 
         Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $
-     ======================================================================= --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                                 http://maven.apache.org/maven-v4_0_0.xsd">
+======================================================================= -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                                 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -15,21 +17,21 @@
         <version>0.9-SNAPSHOT</version>
     </parent>
 
-
-  <!-- =========================================================== -->
-  <!--     Module Description                                      -->
-  <!-- =========================================================== -->
+    <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
     <groupId>it.geosolutions</groupId>
     <artifactId>gb-fs-catalog</artifactId>
+
     <name>GeoBatch filesystem catalog</name>
+    <description>GeoSolutions GeoBatch catalog file system persistence</description>
+    
     <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
 
     <scm>
         <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/data/</connection>
         <url>http://svn.geotools.org/geotools/trunk/gt/modules/data/</url>
     </scm>
-
-    <description>GeoSolutions GeoBatch catalog file system persistence</description>
 
     <licenses>
         <license>
@@ -38,151 +40,134 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
     <organization>
         <name>GeoSolutions</name>
         <url>http://www.geo-solutions.it</url>
     </organization>
 
-  <!-- =========================================================== -->
-  <!--     Dependency Management                                   -->
-  <!-- =========================================================== -->
+    <!-- =========================================================== -->
+    <!--     Dependency Management                                   -->
+    <!-- =========================================================== -->
     <dependencies>
 
-  	<!-- ============================== -->
-  	<!--     Platform                   -->
-  	<!-- ============================== -->
+        <!-- ============================== -->
+        <!--     Platform                   -->
+        <!-- ============================== -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
         </dependency>
+
         <dependency>
             <groupId>org.opengis</groupId>
             <artifactId>geoapi</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>net.java.dev.jsr-275</groupId>
             <artifactId>jsr-275</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
+
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-api</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
-	<dependency>
-		<groupId>org.geotools</groupId>
-		<artifactId>gt-main</artifactId>
-		<!-- The version number is specified in the parent POM. -->
-	</dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-main</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-referencing</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-metadata</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-coverage</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-epsg-hsql</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
+
         <dependency>
             <groupId>javax.media</groupId>
             <artifactId>jai_core</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>javax.media</groupId>
             <artifactId>jai_codec</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>javax.media</groupId>
             <artifactId>jai_imageio</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
+
         <dependency>
             <groupId>java3d</groupId>
             <artifactId>vecmath</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
+
         <dependency>
-            <groupId>jdom</groupId>
+            <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
+
         <dependency>
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-      <!-- The version number is specified in the parent POM. -->
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-     	<!-- The version number is specified in the parent POM. -->
-            <scope>test</scope>   <!-- Needed for compilation, not for running -->
+            <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-fsm-purejava</artifactId>
@@ -192,16 +177,16 @@
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-fsm-native</artifactId>
             <version>${version}</version>
-        </dependency>		
+        </dependency>
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-fsm-core</artifactId>
             <version>${version}</version>
         </dependency>
+
         <dependency>
             <groupId>it.geosolutions</groupId>
-            <artifactId>gb-core</artifactId>
-            <version>${version}</version>
+            <artifactId>gb-core-impl</artifactId>
         </dependency>
 
     </dependencies>
@@ -241,7 +226,7 @@
             <repositories>...</repositories>
             <pluginRepositories>...</pluginRepositories>
              -->
-             <dependencies>
+            <dependencies>
                 <dependency>
                     <groupId>org.jibx</groupId>
                     <artifactId>jibx-run</artifactId>
@@ -252,8 +237,8 @@
                     <artifactId>jibx-extras</artifactId>
                     <version>1.1.6</version>
                 </dependency>
-                </dependencies>
-<!--
+            </dependencies>
+            <!--
             <reporting>...</reporting>
             <dependencyManagement>...</dependencyManagement>
             <distributionManagement>...</distributionManagement>

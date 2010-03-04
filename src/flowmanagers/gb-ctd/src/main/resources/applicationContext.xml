@@ -4,15 +4,9 @@
 <beans>
 	<!-- Environment Initialization -->
 	<bean id="ctdfileGeneratorService" class="it.geosolutions.geobatch.ctd.CTDFileGeneratorService" depends-on="ctdRegistrar">
-		<property  name="id">
-    		<value>ctdfileGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>ctdfileGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>ctdfileGeneratorService</value>
-    	</property>	
+		<property name="id" value="ctdfileGeneratorService"/>
+    	<property name="description" value="ctdfileGeneratorService"/>
+    	<property name="name" value="ctdfileGeneratorService"/>
 	</bean>
 
     <bean id="ctdRegistrar" class="it.geosolutions.geobatch.ctd.CTDAliasRegistrar" lazy-init="false">

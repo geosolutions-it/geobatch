@@ -20,14 +20,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.catalog.dao.file;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.dao.DAO;
 
-public abstract class BaseFileBaseDAO<T extends Configuration> implements DAO<T, String> {
+public abstract class BaseFileBaseDAO<T extends Configuration>
+        implements DAO<T, String> {
 
     public BaseFileBaseDAO(String directory) {
         this.directory = directory;

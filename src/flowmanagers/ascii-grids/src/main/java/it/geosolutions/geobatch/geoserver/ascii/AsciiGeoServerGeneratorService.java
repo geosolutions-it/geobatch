@@ -37,11 +37,11 @@ import java.util.logging.Logger;
  * @author Simone Giannecchini, GeoSolutions
  * 
  */
-public class AsciiGeoServerGeneratorService extends
-        GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
+public class AsciiGeoServerGeneratorService 
+        extends GeoServerConfiguratorService<FileSystemMonitorEvent,
+                                             GeoServerActionConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(AsciiGeoServerGeneratorService.class
-            .toString());
+    private final static Logger LOGGER = Logger.getLogger(AsciiGeoServerGeneratorService.class.getName());
 
     public AsciiGeoServerGenerator createAction(GeoServerActionConfiguration configuration) {
         try {

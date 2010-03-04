@@ -122,8 +122,8 @@ public class PureJavaTest extends AbstractJUnit4SpringContextTests {
 				// break;
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
-				// �don�t catch an exception unless
-				// you know what to do with it�
+				// !!! don't catch an exception unless
+				// you know what to do with it !!!
 			}
 		}
 

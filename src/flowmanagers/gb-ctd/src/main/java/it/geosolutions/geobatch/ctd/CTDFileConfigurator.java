@@ -65,8 +65,8 @@ import org.postgresql.Driver;
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  *  
  */
-public class CTDFileConfigurator extends
-        CTDConfiguratorAction<FileSystemMonitorEvent>{
+public class CTDFileConfigurator 
+        extends CTDConfiguratorAction<FileSystemMonitorEvent> {
 	
 	// //////////////////////////
 	// JDBC data fields  

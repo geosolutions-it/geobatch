@@ -131,10 +131,12 @@ public class FileBasedFlowManager
                     // is there any BaseEventConsumer waiting for this particular event?
                     // //
                     boolean eventServed = false;
-                    final Iterator<BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration>> it =
-							FileBasedFlowManager.this.eventConsumers.iterator();
-                    while (it.hasNext()) {
-                        final BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> consumer = it.next();
+//                    final Iterator<BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration>> it =
+//							FileBasedFlowManager.this.eventConsumers.iterator();
+//                    while (it.hasNext()) {
+//                        final BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> consumer = it.next();
+
+                    for (BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> consumer : eventConsumers) {
 
 						if(LOGGER.isLoggable(Level.FINE))
 							LOGGER.fine("Checking consumer " + consumer +" for " + event);

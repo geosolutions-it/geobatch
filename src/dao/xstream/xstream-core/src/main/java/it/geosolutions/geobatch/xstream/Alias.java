@@ -19,8 +19,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package it.geosolutions.geobatch.xstream;
 
 import com.thoughtworks.xstream.XStream;
@@ -30,63 +28,62 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * TODO: We XStreamFlowConfigurationDAOneed to have one (or more) XML file and to bind aliases dynamically.
+ * TODO: We need to have one (or more) XML file and to bind aliases dynamically.
  * 
  * @author etj
  */
 public class Alias {
 
     private final static Logger LOGGER = Logger.getLogger(Alias.class.getName());
-
     private AliasRegistry aliasRegistry;
 
     public AliasRegistry getAliasRegistry() {
         return aliasRegistry;
     }
-    
+
     public void setAliasRegistry(AliasRegistry registry) {
         aliasRegistry = registry;
     }
 
-
     public void setAliases(XStream xstream) {
 
-    	if(LOGGER.isLoggable(Level.INFO))
-    		LOGGER.info("Setting aliases.");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Setting aliases.");
+        }
         xstream.alias("CatalogConfiguration",
-						it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration.class);
+                it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration.class);
 
         xstream.alias("FlowConfiguration",
-						it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class);
+                it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class);
         xstream.alias("FileEventRule",
-						it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
+                it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
 
         xstream.alias("EventConsumerConfiguration",
-                        it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration.class,
-                        it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class);
-        
+                it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration.class,
+                it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class);
+
         xstream.alias("EventGeneratorConfiguration",
                 it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration.class,
                 it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration.class);
 
         xstream.aliasField("EventConsumerConfiguration",
-						it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
-						"eventConsumerConfiguration");
-        
+                it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
+                "eventConsumerConfiguration");
+
         xstream.aliasField("EventGeneratorConfiguration",
-        		it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
-				"eventGeneratorConfiguration");
-        
+                it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
+                "eventGeneratorConfiguration");
+
 
         xstream.addImplicitCollection(
-                        it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
-                        "rules",
-                        it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
+                it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
+                "rules",
+                it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
 
         xstream.addImplicitCollection(
-                        it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
-                        "actions",
-                        it.geosolutions.geobatch.configuration.event.action.ActionConfiguration.class);
+                it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
+                "actions",
+                it.geosolutions.geobatch.configuration.event.action.ActionConfiguration.class);
 
 
         // adding registered alias
@@ -96,5 +93,4 @@ public class Alias {
             }
         }
     }
-
 }

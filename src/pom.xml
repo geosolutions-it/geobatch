@@ -6,11 +6,11 @@
             http://geobatch.codehaus.org
 
         Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $
-     ======================================================================= -->
+======================================================================= -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                                 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <!-- =========================================================== -->
+    <!-- =========================================================== -->
   <!--   Properties and Profiles                                   -->
   <!--       modify the build process in certain conditions.       -->
   <!--   Available properties are:                                 -->
@@ -68,12 +68,12 @@
         <src.output>${basedir}/target</src.output>
         <gt.version>2.7-SNAPSHOT</gt.version>
         <gb.version>0.9-SNAPSHOT</gb.version>
-	    <imageio-ext.version>1.0.4</imageio-ext.version>
+        <imageio-ext.version>1.0.4</imageio-ext.version>
         <spring.version>2.5.6.SEC01</spring.version>
         <dao.type>xstream</dao.type> <!-- the default dao type -->
     </properties>
 
-  <!-- Profiles set on the command-line overwrite default properties. -->
+    <!-- Profiles set on the command-line overwrite default properties. -->
     <profiles>
         <profile>
             <id>extensive.tests</id>
@@ -198,7 +198,7 @@
             </properties>-->
         </profile>
 
-	  <!-- deploy libs -->
+        <!-- deploy libs -->
         <profile>
             <id>deployJar</id>
             <activation>
@@ -211,23 +211,23 @@
             </modules>
         </profile>
         <profile>
-			<id>gb-ftp-support</id>
-			<modules>
-			   <module>gb-ftp-support</module>
-			</modules>
-		</profile>
+            <id>gb-ftp-support</id>
+            <modules>
+                <module>gb-ftp-support</module>
+            </modules>
+        </profile>
         <profile>
-			<id>gb-ftp-server</id>
-			<modules>
-			   <module>gb-ftp-server</module>
-			</modules>
-		</profile>
+            <id>gb-ftp-server</id>
+            <modules>
+                <module>gb-ftp-server</module>
+            </modules>
+        </profile>
     </profiles>
 
 
-  <!-- =========================================================== -->
-  <!--     Project Description                                     -->
-  <!-- =========================================================== -->
+    <!-- =========================================================== -->
+    <!--     Project Description                                     -->
+    <!-- =========================================================== -->
     <groupId>it.geosolutions</groupId>
     <artifactId>gb</artifactId>
     <packaging>pom</packaging>
@@ -237,15 +237,15 @@
 
     <scm>
         <connection>
-      scm:svn:https://svn.codehaus.org/geobatch/trunk/
+            scm:svn:https://svn.codehaus.org/geobatch/trunk/
         </connection>
         <url>https://svn.codehaus.org/geobatch/trunk/</url>
     </scm>
 
     <description>
-    Welcome to the homepage of the GeoSolutions GeoBatch build process
-    In the left side bar you should see a list of active modules,
-    visit each for more details on the status of each module.
+        Welcome to the homepage of the GeoSolutions GeoBatch build process
+        In the left side bar you should see a list of active modules,
+        visit each for more details on the status of each module.
     </description>
 
     <organization>
@@ -262,9 +262,9 @@
         </license>
     </licenses>
 
-  <!-- =========================================================== -->
-  <!--     Developers and Contributors                             -->
-  <!-- =========================================================== -->
+    <!-- =========================================================== -->
+    <!--     Developers and Contributors                             -->
+    <!-- =========================================================== -->
     <developers>
         <developer>
             <name>Simone Giannecchini</name>
@@ -292,15 +292,17 @@
     <contributors>
     </contributors>
 
-  <!-- =========================================================== -->
-  <!--     Dependency Management                                   -->
-  <!--     If a POM declares one of those dependencies, then it    -->
-  <!--     will use the version specified here. Otherwise, those   -->
-  <!--     dependencies are ignored.                               -->
-  <!-- =========================================================== -->
+    <!-- =========================================================== -->
+    <!--     Dependency Management                                   -->
+    <!--     If a POM declares one of those dependencies, then it    -->
+    <!--     will use the version specified here. Otherwise, those   -->
+    <!--     dependencies are ignored.                               -->
+    <!-- =========================================================== -->
     <dependencyManagement>
         <dependencies>
-    	<!-- Spring Framework -->
+
+            <!-- Spring Framework ===========================================-->
+
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
@@ -347,443 +349,582 @@
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
-	        <groupId>org.springframework</groupId>
-	        <artifactId>spring</artifactId>
-	        <version>${spring.version}</version>
-   	    </dependency>
-   	    <!-- SCOPE TEST -->
-	    	<dependency>
-	        <groupId>org.springframework</groupId>
-	        <artifactId>spring-test</artifactId>
-	        <version>${spring.version}</version>
-	        <scope>test</scope>
-	        <exclusions>
-	         <exclusion>
-	          <groupId>commons-collections</groupId>
-	          <artifactId>commons-collections</artifactId>
-	         </exclusion>
-	         <exclusion>
-	          <groupId>xerces</groupId>
-	          <artifactId>xercesImpl</artifactId>
-	         </exclusion>
-	        </exclusions>
-   	    </dependency>
-        <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-            <version>1.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.1.2</version>
-        </dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <!-- SCOPE TEST -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>xerces</groupId>
+                        <artifactId>xercesImpl</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>taglibs</groupId>
+                <artifactId>standard</artifactId>
+                <version>1.1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>1.1.2</version>
+            </dependency>
 
-		  	<!-- Jetty -->
-        <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty
-</artifactId>
-            <version>6.1.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty-util</artifactId>
-            <version>6.1.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jsp-2.0</artifactId>
-            <version>6.1.8</version>
-            <type>pom</type>
-        </dependency>
-				<dependency>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-					<version>1.5.6</version>
-				</dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl104-over-slf4j</artifactId>
-            <version>1.5.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.5.6</version>
-        </dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-jdk14</artifactId>
-				<version>1.5.6</version>
-			</dependency> 
-      <dependency>
-          <groupId>javax.servlet</groupId>
-          <artifactId>servlet-api</artifactId>
-          <version>2.4</version>
-      </dependency>
+            <!-- Jetty -->
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty
+                </artifactId>
+                <version>6.1.8</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>6.1.8</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jsp-2.0</artifactId>
+                <version>6.1.8</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.5.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl104-over-slf4j</artifactId>
+                <version>1.5.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.5.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-jdk14</artifactId>
+                <version>1.5.6</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.4</version>
+            </dependency>
 
-      <dependency>
-        <groupId>it.geosolutions</groupId>
-        <artifactId>test-data</artifactId>
-        <version>1.0-SNAPSHOT</version>
-      </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>test-data</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
 
-      <!-- GeoAPI and its dependencies -->
-      <dependency>
-          <groupId>org.opengis</groupId>
-          <artifactId>geoapi</artifactId>
-          <version>2.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-          <groupId>net.java.dev.jsr-275</groupId>
-          <artifactId>jsr-275</artifactId>
-          <version>1.0-beta-2</version>
-      </dependency>
+            <!-- GeoAPI and its dependencies ================================-->
 
-      <!-- GeoTools -->
-      <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-api</artifactId>
-          <version>${gt.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-postgis</artifactId>
-          <version>${gt.version}</version>
-      </dependency>			
-      <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-main</artifactId>
-          <version>${gt.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-referencing</artifactId>
-          <version>${gt.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-metadata</artifactId>
-          <version>${gt.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-coverage</artifactId>
-          <version>${gt.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-epsg-hsql</artifactId>
-          <version>${gt.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-jdbc</artifactId>
-          <version>${gt.version}</version>
-      </dependency>			
+            <dependency>
+                <groupId>org.opengis</groupId>
+                <artifactId>geoapi</artifactId>
+                <version>2.2-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jsr-275</groupId>
+                <artifactId>jsr-275</artifactId>
+                <version>1.0-beta-2</version>
+            </dependency>
 
-      <!-- Java Advanced Imaging (JAI) -->
-      <dependency>
-          <groupId>javax.media</groupId>
-          <artifactId>jai_core</artifactId>
-          <version>1.1.3</version>
-      </dependency>
-      <dependency>
-          <groupId>javax.media</groupId>
-          <artifactId>jai_codec</artifactId>
-          <version>1.1.3</version>
-      </dependency>
-      <dependency>
-          <groupId>javax.media</groupId>
-          <artifactId>jai_imageio</artifactId>
-          <version>1.1</version>
-      </dependency>
+            <!-- GeoTools ===================================================-->
 
-      <!-- Mathematic, geometries, SVG... -->
-      <dependency>
-          <groupId>java3d</groupId>
-          <artifactId>vecmath</artifactId>
-          <version>1.3.1</version>
-      </dependency>
-      <dependency>
-          <groupId>com.vividsolutions</groupId>
-          <artifactId>jts</artifactId>
-          <version>1.9</version>
-      </dependency>
-      <dependency>
-          <groupId>org.wkb4j</groupId>
-          <artifactId>wkb4j</artifactId>
-          <version>1.0-RC1</version>
-      </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-api</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-postgis</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-main</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-referencing</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-metadata</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-coverage</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-coveragetools</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-epsg-hsql</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-jdbc</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-shapefile</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
 
-      <!-- XML -->
-      <dependency>
-          <groupId>jdom</groupId>
-          <artifactId>jdom</artifactId>
-          <version>1.0</version>
-      </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-arcgrid</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-geotiff</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
 
-      <dependency>
-          <groupId>net.sf.saxon</groupId>
-          <artifactId>saxon</artifactId>
-          <version>9.1.0.2</version>
-      </dependency>
-      <dependency>
-          <groupId>net.sf.saxon</groupId>
-          <artifactId>saxon-dom</artifactId>
-          <version>9.1.0.2</version>
-      </dependency>
-      <dependency>
-          <groupId>net.sf.saxon</groupId>
-          <artifactId>saxon-jdom</artifactId>
-          <version>9.1.0.2</version>
-      </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-matfile5</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
 
-      <!-- Apache -->
-      <dependency>
-          <groupId>oro</groupId>
-          <artifactId>oro</artifactId>
-          <version>2.0.8</version>
-      </dependency>
-      <dependency>
-          <groupId>commons-cli</groupId>
-          <artifactId>commons-cli</artifactId>
-          <version>2.0-gt2-pre1</version>
-      </dependency>
-      <dependency>
-          <groupId>commons-lang</groupId>
-          <artifactId>commons-lang</artifactId>
-          <version>2.1</version>
-      </dependency>
-      <dependency>
-          <groupId>commons-collections</groupId>
-          <artifactId>commons-collections</artifactId>
-          <version>3.1</version>  <!-- Same as the dependency in commons-pool -->
-      </dependency>
-     <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-				<version>1.4</version>
-      </dependency>			
-      <dependency>
-          <groupId>commons-pool</groupId>
-          <artifactId>commons-pool</artifactId>
-          <version>1.3</version>
-      </dependency>
-      <dependency>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-          <version>1.1.1</version>
-      </dependency>
-      <dependency>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-          <version>1.2.12</version>  <!-- Same as the dependency in commons-logging -->
-      </dependency>
-      <dependency>
-          <groupId>commons-beanutils</groupId>
-          <artifactId>commons-beanutils</artifactId>
-          <version>1.7.0</version>
-      </dependency>
-      <dependency>
-          <groupId>commons-httpclient</groupId>
-          <artifactId>commons-httpclient</artifactId>
-          <version>3.0.1</version>
-      </dependency>
-      <dependency>
-          <groupId>commons-dbcp</groupId>
-          <artifactId>commons-dbcp</artifactId>
-          <version>1.2.2</version>
-      </dependency>
-      <dependency>
-          <groupId>velocity</groupId>
-          <artifactId>velocity</artifactId>
-          <version>1.4</version>
-      </dependency>
-      <dependency>
-          <groupId>xerces</groupId>
-          <artifactId>xercesImpl</artifactId>
-          <version>2.7.1</version>
-      </dependency>
-      <dependency>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis-xerces</artifactId>
-          <version>2.7.1</version>
-      </dependency>
-      <dependency>
-          <groupId>xpp3</groupId>
-          <artifactId>xpp3</artifactId>
-          <version>1.1.3.4.O</version>
-      </dependency>
 
-	    <!-- restlet dependencies -->
-	    <dependency>
-	      <groupId>com.noelios.restlet</groupId>
-	      <artifactId>com.noelios.restlet</artifactId>
-	      <version>1.1.5</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>com.noelios.restlet</groupId>
-	      <artifactId>com.noelios.restlet.ext.servlet</artifactId>
-	      <version>1.1.5</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>com.noelios.restlet</groupId>
-	      <artifactId>com.noelios.restlet.ext.spring</artifactId>
-	      <version>1.1.5</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.restlet</groupId>
-	      <artifactId>org.restlet.ext.spring</artifactId>
-	      <version>1.1.5</version>
-	    </dependency>
-			<dependency>
-		  	<groupId>org.codehaus.jettison</groupId>
-		  	<artifactId>jettison</artifactId>
-		  	<version>1.0.1</version>
-			</dependency>
-	  
-      <!-- Geobatch -->
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-core</artifactId>
-          <version>${gb.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-fs-catalog</artifactId>
-          <version>${gb.version}</version>
-      </dependency>      
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-alias-registry</artifactId>
-          <version>${gb.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-flowmanagers-geotiff</artifactId>
-          <version>${gb.version}</version>
-      </dependency>
-       <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-flowmanagers-sas</artifactId>
-          <version>${gb.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-task-executor</artifactId>
-          <version>${gb.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-flowmanagers-shapefile</artifactId>
-          <version>${gb.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-flowmanagers-ascii</artifactId>
-          <version>${gb.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-flowmanagers-geoserver</artifactId>
-          <version>${gb.version}</version>
-      </dependency>      
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-flowmanagers-gliders</artifactId>
-          <version>${gb.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-flowmanagers-ctd</artifactId>
-          <version>${gb.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-flowmanagers-ftp</artifactId>
-          <version>${gb.version}</version>
-      </dependency>
-      <dependency>
-	    <groupId>it.geosolutions</groupId>
-	    <artifactId>gb-flowmanagers-ais</artifactId>
-	    <version>${gb.version}</version>
-      </dependency>
-      <dependency>
-				<groupId>it.geosolutions</groupId>
-				<artifactId>gb-flowmanagers-geowebcache</artifactId>
-				<version>${gb.version}</version>
-      </dependency>
-      <dependency>
-				<groupId>it.geosolutions</groupId>
-				<artifactId>gb-flowmanagers-ImageMosaic</artifactId>
-				<version>${gb.version}</version>
-			</dependency>
-      <dependency>
-				<groupId>it.geosolutions</groupId>
-				<artifactId>gb-flowmanagers-JGSFLoDeSS</artifactId>
-				<version>${gb.version}</version>
-			</dependency>
-      <dependency>
-				<groupId>it.geosolutions</groupId>
-				<artifactId>gb-ftp-support</artifactId>
-				<version>${gb.version}</version>
-      </dependency>
-      <dependency>
-				<groupId>it.geosolutions</groupId>
-				<artifactId>gb-ftp-server</artifactId>
-				<version>${gb.version}</version>
-      </dependency>		
+            <!-- imageio-ext ================================================-->
 
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-registry</artifactId>
-            <version>${gb.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>it.geosolutions.imageio-ext</groupId>
+                <artifactId>imageio-ext-arcgrid</artifactId>
+                <version>${imageio-ext.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.imageio-ext</groupId>
+                <artifactId>imageio-ext-customstreams</artifactId>
+                <version>${imageio-ext.version}</version>
+            </dependency>
 
-      <!-- Tests or legacy -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>2.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymockclassextension</artifactId>
-            <version>2.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.mockrunner</groupId>
-            <artifactId>mockrunner</artifactId>
-            <version>0.3.6</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-  </dependencyManagement>
+            <!-- Java Advanced Imaging (JAI) ================================-->
 
-  <!-- =========================================================== -->
+            <dependency>
+                <groupId>javax.media</groupId>
+                <artifactId>jai_core</artifactId>
+                <version>1.1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.media</groupId>
+                <artifactId>jai_codec</artifactId>
+                <version>1.1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.media</groupId>
+                <artifactId>jai_imageio</artifactId>
+                <version>1.1</version>
+            </dependency>
+
+            <!-- Mathematic, geometries, SVG... =============================-->
+
+            <dependency>
+                <groupId>java3d</groupId>
+                <artifactId>vecmath</artifactId>
+                <version>1.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vividsolutions</groupId>
+                <artifactId>jts</artifactId>
+                <version>1.9</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wkb4j</groupId>
+                <artifactId>wkb4j</artifactId>
+                <version>1.0-RC1</version>
+            </dependency>
+
+            <!-- XML ========================================================-->
+
+            <dependency>
+                <groupId>org.jdom</groupId>
+                <artifactId>jdom</artifactId>
+                <version>1.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.sf.saxon</groupId>
+                <artifactId>saxon</artifactId>
+                <version>9.1.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.saxon</groupId>
+                <artifactId>saxon-dom</artifactId>
+                <version>9.1.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.saxon</groupId>
+                <artifactId>saxon-jdom</artifactId>
+                <version>9.1.0.2</version>
+            </dependency>
+
+            <!-- Apache =====================================================-->
+
+            <dependency>
+                <groupId>oro</groupId>
+                <artifactId>oro</artifactId>
+                <version>2.0.8</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>1.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-launcher</artifactId>
+                <version>1.7.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-cli</groupId>
+                <artifactId>commons-cli</artifactId>
+                <version>2.0-gt2-pre1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.1</version>  <!-- Same as the dependency in commons-pool -->
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-pool</groupId>
+                <artifactId>commons-pool</artifactId>
+                <version>1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.12</version>  <!-- Same as the dependency in commons-logging -->
+                <!-- later versions have deps on javax.jms:jms:jar:1.1 -->
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.7.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>1.2.2</version>
+            </dependency>
+            <dependency>
+                <groupId>velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>2.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis-xerces</artifactId>
+                <version>2.7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>xpp3</groupId>
+                <artifactId>xpp3</artifactId>
+                <version>1.1.3.4.O</version>
+            </dependency>
+
+            <!-- restlet dependencies =======================================-->
+
+            <dependency>
+                <groupId>com.noelios.restlet</groupId>
+                <artifactId>com.noelios.restlet</artifactId>
+                <version>1.1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.noelios.restlet</groupId>
+                <artifactId>com.noelios.restlet.ext.servlet</artifactId>
+                <version>1.1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.noelios.restlet</groupId>
+                <artifactId>com.noelios.restlet.ext.spring</artifactId>
+                <version>1.1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.noelios.restlet</groupId>
+                <artifactId>com.noelios.restlet.ext.net</artifactId>
+                <version>1.1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.noelios.restlet</groupId>
+                <artifactId>com.noelios.restlet.ext.asyncweb</artifactId>
+                <version>1.0.9</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.restlet</groupId>
+                <artifactId>org.restlet</artifactId>
+                <version>1.1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.restlet</groupId>
+                <artifactId>org.restlet.ext.spring</artifactId>
+                <version>1.1.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jettison</groupId>
+                <artifactId>jettison</artifactId>
+                <version>1.0.1</version>
+            </dependency>
+
+            <!--  JSON lib ==================================================-->
+
+            <dependency>
+                <groupId>net.sf.json-lib</groupId>
+                <artifactId>json-lib</artifactId>
+                <version>2.1</version>
+                <classifier>jdk15</classifier>
+            </dependency>
+
+            <!-- Hibernate ==================================================-->
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>ejb3-persistence</artifactId>
+                <version>1.0.2.GA</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-annotations</artifactId>
+                <version>3.3.1.GA</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-commons-annotations</artifactId>
+                <version>3.1.0.GA</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-c3p0</artifactId>
+                <version>3.3.1.GA</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>3.3.1.GA</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernatespatial</groupId>
+                <artifactId>hibernate-spatial-postgis</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
+
+            <!-- JDBC =======================================================-->
+
+            <dependency>
+                <groupId>postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>8.1-407.jdbc3</version>
+            </dependency>
+
+            <!-- Geobatch ===================================================-->
+
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-core</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-core-model</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-core-impl</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-fs-catalog</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-alias-registry</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-geotiff</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-sas</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-task-executor</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-shapefile</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-ascii</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-geoserver</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-gliders</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-ctd</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-ftp</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-ais</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-geowebcache</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-ImageMosaic</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-flowmanagers-JGSFLoDeSS</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-ftp-support</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-ftp-server</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-registry</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+
+            <!-- Tests or legacy -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.4</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>2.3</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymockclassextension</artifactId>
+                <version>2.3</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.mockrunner</groupId>
+                <artifactId>mockrunner</artifactId>
+                <version>0.3.6</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- =========================================================== -->
   <!--     Dependencies to be inherited by all modules.            -->
   <!-- =========================================================== -->
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-      <!-- The version number is specified above. -->
+            <!-- The version number is specified above. -->
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
-  <!-- TODO: the resources stuff hardcodes paths to source + test directories,
+        <!-- TODO: the resources stuff hardcodes paths to source + test directories,
       we should be able to use some properties here -->
         <resources>
             <resource>
@@ -838,7 +979,7 @@
 
         <plugins>
 
-      <!-- ======================================================= -->
+            <!-- ======================================================= -->
       <!--     Compilation.                                        -->
       <!-- ======================================================= -->
             <plugin>
@@ -852,7 +993,7 @@
                 </configuration>
             </plugin>
 
-      <!-- ======================================================= -->
+            <!-- ======================================================= -->
       <!--     Tests.                                              -->
       <!-- ======================================================= -->
             <plugin>
@@ -868,25 +1009,25 @@
                         <exclude>${test.exclude.pattern}</exclude>
                     </excludes>
                     <argLine>-Xmx${test.maxHeapSize} -Djava.awt.headless=${java.awt.headless}</argLine>
-          <!-- Ignores test failure only if we are generating a       -->
+                    <!-- Ignores test failure only if we are generating a       -->
           <!-- report for publication on the web site. See the        -->
           <!-- profiles section at the begining of this pom.xml file. -->
                     <testFailureIgnore>
-            ${allow.test.failure.ignore}
+                        ${allow.test.failure.ignore}
                     </testFailureIgnore>
 
-          <!-- The two following options have the opposite value of what we would
+                    <!-- The two following options have the opposite value of what we would
                like. They are that way because they don't seem to work as expected
                with Surefire 2.3. TODO: Try again when Surefire 2.4 will be available. -->
 
           <!-- Option to print summary of test suites or just print the test cases that has errors. -->
                     <printSummary>true</printSummary>
-          <!-- Redirect the unit test standard output to a file. -->
+                    <!-- Redirect the unit test standard output to a file. -->
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
                 </configuration>
             </plugin>
 
-		 <!-- code coverage -->
+            <!-- code coverage -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -899,7 +1040,7 @@
                 </executions>
             </plugin>
 
-	   <!-- eclipse ide integration -->
+            <!-- eclipse ide integration -->
             <plugin>
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <version>2.5</version>
@@ -910,7 +1051,7 @@
                 </configuration>
             </plugin>
 
-      <!-- ======================================================= -->
+            <!-- ======================================================= -->
       <!--     JAR packaging.                                      -->
       <!-- ======================================================= -->
             <plugin>
@@ -925,7 +1066,7 @@
                 </configuration>
             </plugin>
 
-      <!-- ======================================================= -->
+            <!-- ======================================================= -->
       <!--     Source packaging.                                      -->
       <!-- ======================================================= -->
             <plugin>
@@ -948,7 +1089,7 @@
         </plugins>
     </build>
 
-  <!-- ================================================================== -->
+    <!-- ================================================================== -->
   <!--     Repositories. This is where Maven looks for dependencies. The  -->
   <!--     Maven repository is implicit and doesn't need to be specified. -->
   <!-- ================================================================== -->
@@ -991,24 +1132,24 @@
         </repository>
 
         <repository>
-	      <snapshots>
-		<enabled>true</enabled>
-	      </snapshots>
-      	      <id>opengeo</id>
-              <name>OpenGeo Maven Repository</name>
-              <url>http://repo.opengeo.org</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>opengeo</id>
+            <name>OpenGeo Maven Repository</name>
+            <url>http://repo.opengeo.org</url>
         </repository>
-        
+
         <repository>
-			     <id>maven-restlet</id>
-			     <name>Public online Restlet repository</name>
-			     <url>http://maven.restlet.org</url>
-			  </repository>
-			  
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>http://maven.restlet.org</url>
+        </repository>
+
     </repositories>
 
 
-  <!-- =========================================================== -->
+    <!-- =========================================================== -->
   <!--     Plugin repositories.                                    -->
   <!--     This is where Maven looks for plugin dependencies.      -->
   <!-- =========================================================== -->
@@ -1026,11 +1167,11 @@
         </pluginRepository>
     </pluginRepositories>
 
-  <!-- =========================================================== -->
+    <!-- =========================================================== -->
   <!--     Modules for the build in approximate dependency order   -->
   <!-- =========================================================== -->
     <modules>
-	<module>gb-fsm</module>
+        <module>gb-fsm</module>
         <module>core</module>
         <module>file-catalog</module>
         <module>dao</module>

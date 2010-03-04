@@ -33,9 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>
  * Configuration for the event consumers based on xml marshalled files.
- * </p>
  * 
  * @author Simone Giannecchini, GeoSolutions
  */

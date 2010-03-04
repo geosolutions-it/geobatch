@@ -53,7 +53,9 @@ import org.apache.commons.collections.MultiHashMap;
  * @author Simone Giannecchini, GeoSolutions
  * 
  */
-public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> implements Catalog {
+public class BaseCatalog 
+        extends BasePersistentResource<CatalogConfiguration>
+        implements Catalog {
     private final static Logger LOGGER = Logger.getLogger(BaseCatalog.class.getName());
     /**
      * flow manager types

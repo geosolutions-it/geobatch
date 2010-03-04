@@ -28,9 +28,7 @@ import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import it.geosolutions.geobatch.configuration.CatalogConfiguration;
 
 /**
- * <p>
  * A Configuration for the Catalog based on xml marshalled files.
- * </p>
  * 
  * @author Simone Giannecchini, GeoSolutions
  * @author Alessio Fabiani, GeoSolutions

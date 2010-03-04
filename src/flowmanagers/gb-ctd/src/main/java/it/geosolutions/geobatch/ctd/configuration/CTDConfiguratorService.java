@@ -34,14 +34,15 @@ import java.util.EventObject;
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  * 
  */
-public abstract class CTDConfiguratorService <T extends EventObject, C extends ActionConfiguration>
-        extends BaseService implements ActionService<T, C> {
+public abstract class CTDConfiguratorService <EO extends EventObject, AC extends ActionConfiguration>
+        extends BaseService
+        implements ActionService<EO, AC> {
 
     public CTDConfiguratorService() {
         super(true);
     }
 
-    public boolean canCreateAction(C configuration) {
+    public boolean canCreateAction(AC configuration) {
         // XXX ImPLEMENT ME
         return true;
     }

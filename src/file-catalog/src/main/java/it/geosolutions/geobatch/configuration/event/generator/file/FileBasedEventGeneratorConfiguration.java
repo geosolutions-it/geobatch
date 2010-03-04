@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.configuration.event.generator.file;
 
 import it.geosolutions.filesystemmonitor.OsType;
@@ -30,9 +28,7 @@ import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
 
 /**
- * <p>
  * Configuration for the event generators based on xml marshalled files.
- * </p>
  * 
  * @author Simone Giannecchini, GeoSolutions
  */

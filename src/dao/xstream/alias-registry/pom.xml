@@ -21,16 +21,17 @@
     <!-- =========================================================== -->
     <groupId>it.geosolutions</groupId>
     <artifactId>gb-alias-registry</artifactId>
-    <name>GeoSolutions GeoBatch XStream Alias Registry</name>
-    <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
 
+    <name>GeoBatch DAOs - XStream Alias Registry</name>
     <description>
-        Dynamic registry for XStream aliases.
+        GeoSolutions GeoBatch XStream Alias Registry: Dynamic registry for XStream aliases.
         This lightweight module is always included in GeoBatch.
         Each module will register its own aliases to be used in the XStream module;
         This registration only happen at startup and will not waste CPU time at runtime.
         XStreamDAO (if included) will use the registry to setup XStream.
     </description>
+    
+    <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
 
     <scm>
         <connection>

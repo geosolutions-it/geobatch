@@ -1,88 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- =======================================================================    
-        Maven Project Configuration File                                        
-                                                                                
-        GeoSolutions GeoBatch Project                                                    
+        Maven Project Configuration File
+
+        GeoSolutions GeoBatch Project
             http://geobatch.codehaus.org
-                                                                                            
-        Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $              
-     ======================================================================= -->
-  <project xmlns="http://maven.apache.org/POM/4.0.0" 
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-                               http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
 
-  <parent>
+        Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $
+======================================================================= -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>it.geosolutions</groupId>
+        <artifactId>gb-flowmanagers</artifactId>
+        <version>0.9-SNAPSHOT</version>
+    </parent>
+
+    <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
     <groupId>it.geosolutions</groupId>
-    <artifactId>gb-flowmanagers</artifactId>
-    <version>0.9-SNAPSHOT</version>
-  </parent>
-  
+    <artifactId>gb-flowmanagers-geotiff</artifactId>
+    <packaging>jar</packaging>
 
-  <!-- =========================================================== -->
-  <!--     Module Description                                      -->
-  <!-- =========================================================== -->
-  <groupId>it.geosolutions</groupId>
-  <artifactId>gb-flowmanagers-geotiff</artifactId>
-  <packaging>jar</packaging>
-  <name>GeoBatch action: GeoTIFF</name>
-  <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
-  
-  <scm>
-    <connection>
-      scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
-    </connection>
-    <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
-  </scm>
-  
-  <description>
-    GeoSolutions GeoBatch flow managers - GeoTIFF flow.
-  </description>
+    <name>GeoBatch action: GeoTIFF</name>
+    <description>GeoSolutions GeoBatch flow managers - GeoTIFF flow.</description>
 
-  <licenses>
-    <license>
-      <name>Lesser General Public License (LGPL)</name>
-      <url>http://www.gnu.org/copyleft/lesser.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+    <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
 
-  <!-- =========================================================== -->
-  <!--     Dependency Management                                   -->
-  <!-- =========================================================== -->
-  <dependencies>
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-core</artifactId>
-      </dependency>
+    <scm>
+        <connection>
+            scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
+        </connection>
+        <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
+    </scm>
 
-      <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-geotiff</artifactId>
-          <version>${gt.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-fs-catalog</artifactId>
-      </dependency>
-      <dependency>
-          <groupId>it.geosolutions</groupId>
-          <artifactId>gb-flowmanagers-geoserver</artifactId>
-      </dependency>
-	    
+    <licenses>
+        <license>
+            <name>Lesser General Public License (LGPL)</name>
+            <url>http://www.gnu.org/copyleft/lesser.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- =========================================================== -->
+    <!--     Dependency Management                                   -->
+    <!-- =========================================================== -->
+    <dependencies>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-core-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-geotiff</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fs-catalog</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-flowmanagers-geoserver</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-alias-registry</artifactId>
-        </dependency>	         
-      <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-coveragetools</artifactId>
-          <version>${gt.version}</version>
-      </dependency>
-  </dependencies>
-	    
-	<profiles>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-coveragetools</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
         <profile>
             <id>dao.jibx</id>
             <!--<activation>...</activation>-->
@@ -116,7 +113,7 @@
             <repositories>...</repositories>
             <pluginRepositories>...</pluginRepositories>
              -->
-             <dependencies>
+            <dependencies>
                 <dependency>
                     <groupId>org.jibx</groupId>
                     <artifactId>jibx-run</artifactId>
@@ -127,13 +124,13 @@
                     <artifactId>jibx-extras</artifactId>
                     <version>1.1.6</version>
                 </dependency>
-                </dependencies>
-<!--
+            </dependencies>
+            <!--
             <reporting>...</reporting>
             <dependencyManagement>...</dependencyManagement>
             <distributionManagement>...</distributionManagement>
 -->
         </profile>
     </profiles>
-    
+
 </project>

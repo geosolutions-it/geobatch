@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.configuration.flow.file;
 
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
@@ -32,16 +30,15 @@ import it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 
 /**
- * <p>
  * A Configuration for the Flow based on xml marshalled files.
- * </p>
  * 
  * @author Simone Giannecchini, GeoSolutions
  * @author Alessio Fabiani, GeoSolutions
  * @author Ivano Picco
  */
-public class FileBasedFlowConfiguration extends BaseFlowConfiguration implements FlowConfiguration {
-
+public class FileBasedFlowConfiguration 
+        extends BaseFlowConfiguration
+        implements FlowConfiguration {
 
 	/**
      * workingDirectory: this attribute represents the configuring directory for this flow. It can
@@ -74,7 +71,8 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration implements
      * @param eventConsumerConfiguration
      */
     public FileBasedFlowConfiguration(String id, String name,
-            FileBasedEventGeneratorConfiguration eventGeneratorConfiguration, String description,
+            FileBasedEventGeneratorConfiguration eventGeneratorConfiguration,
+            String description,
             FileBasedEventConsumerConfiguration eventConsumerConfiguration) {
         super(id, name, eventGeneratorConfiguration, description, eventConsumerConfiguration);
     }

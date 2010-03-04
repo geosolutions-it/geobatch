@@ -23,9 +23,10 @@ package it.geosolutions.geobatch.catalog;
 
 import java.io.IOException;
 
-import it.geosolutions.geobatch.catalog.dao.DAO;
+//import it.geosolutions.geobatch.catalog.dao.DAO;
 
-public interface PersistentResource<C extends Configuration> extends Resource {
+public interface PersistentResource<C extends Configuration>
+        extends Resource {
 
     /**
      * The Flow BaseEventConsumer Type.
@@ -40,8 +41,8 @@ public interface PersistentResource<C extends Configuration> extends Resource {
 
     public boolean remove()throws IOException;
 
-    public void setDAO(DAO<C, ?> dao);
-
-    public DAO<C, ?> getDAO();
+//    public void setDAO(DAO<C, ?> dao);
+//
+//    public DAO<C, ?> getDAO();
 
 }

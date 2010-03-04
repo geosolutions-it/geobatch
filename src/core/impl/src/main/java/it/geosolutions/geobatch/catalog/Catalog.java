@@ -19,8 +19,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package it.geosolutions.geobatch.catalog;
 
+import it.geosolutions.geobatch.catalog.dao.DAO;
 import it.geosolutions.geobatch.catalog.event.CatalogListener;
 import it.geosolutions.geobatch.configuration.CatalogConfiguration;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
@@ -44,43 +46,48 @@ import java.util.List;
  * @author Alessio Fabiani, GeoSolutions
  * @author Simone Giannecchini, GeoSolutions
  */
-public interface Catalog extends PersistentResource<CatalogConfiguration> {
+public interface Catalog
+        extends PersistentResource<CatalogConfiguration> {
     /**
      * Adds a new resource.
      */
-    <E extends EventObject, C extends FlowConfiguration> void add(FlowManager<E, C> resource);
+    <EO extends EventObject, FC extends FlowConfiguration>
+            void add(FlowManager<EO, FC> resource);
 
-    /**
-     * Disposes the catalog, freeing up any resources.
-     */
-    void dispose();
 
-    <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>>
-            List<T> getFlowManagers(Class<T> clazz);
+    <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>>
+            List<FM> getFlowManagers(Class<FM> clazz);
 
-    <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>>
-            T getFlowManager(String id, Class<T> clazz);
+    <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>>
+            FM getFlowManager(String id, Class<FM> clazz);
 
-    <E extends EventObject, C extends FlowConfiguration, T extends FlowManager<E, C>>
-            T getFlowManagerByName(String name, Class<T> clazz);
+    <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>>
+            FM getFlowManagerByName(String name, Class<FM> clazz);
 
-    <T extends Resource> T getResource(String id, Class<T> clazz);
+    <R extends Resource> R getResource(String id, Class<R> clazz);
 
-    <T extends Resource> T getResourceByName(String name, Class<T> clazz);
+    <R extends Resource> R getResourceByName(String name, Class<R> clazz);
 
-    <T extends Resource> List<T> getResources(Class<T> clazz);
+    <R extends Resource> List<R> getResources(Class<R> clazz);
 
-    <T extends Resource> void add(T resource);
+    <R extends Resource> void add(R resource);
 
     /**
      * Removes an existing resource.
      */
-    <E extends EventObject, C extends FlowConfiguration> void remove(FlowManager<E, C> resource);
+    <EO extends EventObject, FC extends FlowConfiguration>
+            void remove(FlowManager<EO, FC> resource);
 
     /**
      * Saves a resource which has been modified.
      */
-    <E extends EventObject, C extends FlowConfiguration> void save(FlowManager<E, C> resource);
+    <E extends EventObject, FC extends FlowConfiguration>
+            void save(FlowManager<E, FC> resource);
+
+
+    <C extends Configuration> void setDAO(DAO<C, ?> dao);
+
+    <C extends Configuration> DAO<C, ?> getDAO();
 
     /**
      * catalog listeners.
@@ -97,5 +104,10 @@ public interface Catalog extends PersistentResource<CatalogConfiguration> {
      * Removes a listener from the catalog.
      */
     void removeListener(CatalogListener listener);
+    
+    /**
+     * Disposes the catalog, freeing up any resources.
+     */
+    void dispose();
 
 }
