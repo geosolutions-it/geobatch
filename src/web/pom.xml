@@ -29,6 +29,10 @@
 
     <url>http://www.geo-solutions.it/maven_reports/gb/library/</url>
 
+    <organization>
+        <name>GeoSolutions</name>
+    </organization>
+
     <scm>
         <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/web/</connection>
         <url>http://svn.geotools.org/geotools/trunk/gt/modules/web/</url>
@@ -132,9 +136,6 @@
         </dependency>
     </dependencies>
 
-    <organization>
-        <name>GeoSolutions</name>
-    </organization>
 
     <build>
         <!-- finalName>geobatch</finalName -->
@@ -202,142 +203,544 @@
                 </dependency>
             </dependencies>
         </profile>
+
+        <!--
+            I wanted to select all action profiles by selecting the "all" profile,
+            via an internal property definition, but it seems not to work as expected...
+            You'll need to explicitly set the -Dall_actions
+        -->
         <profile>
             <id>all</id>
-            <dependencies>
-                <dependency>
-                    <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-ftp</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-gliders</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-ctd</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-ais</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-sas</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-geowebcache</artifactId>
-                </dependency>
-                <dependency>
-                    <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-ImageMosaic</artifactId>
-                </dependency>
-                <!--
-                <dependency>
-                    <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-JGSFLoDeSS</artifactId>
-                </dependency>
--->
-                <dependency>
-                    <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-task-executor</artifactId>
-                </dependency>
-            </dependencies>
+            <properties>
+                <all_actions>true</all_actions>
+            </properties>
         </profile>
+
+        <!--
+        ========================================================================
+                FLOWMANAGERS
+        ========================================================================
+            We need sample flows to be packed into the test jars of every action
+            (was: flowmanager).
+            maven-dependency-plugin will extract the sample flows and put them
+            in the WEB-INF/data directory.
+            If you need to specify all the actions, please define the all_actions
+            env var.
+
+          Before using maven-dependency-plugin, the overlay mechanism
+          (http://maven.apache.org/plugins/maven-war-plugin/overlays.html)
+          was checked to accomplish this very task, but when more actions
+          were specified, only one was choosen to extract the sample data from.
+        -->
+
+        <!-- GLIDERS ========================================================-->
 
         <profile>
             <id>gliders</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-flowmanagers-gliders</artifactId>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_gliders</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-flowmanagers-gliders</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>tests</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
+
+        <!-- CTD ============================================================-->
+
         <profile>
             <id>ctd</id>
+
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-flowmanagers-ctd</artifactId>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_ctd</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-flowmanagers-ctd</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>tests</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
+
+        <!-- AIS ============================================================-->
+
         <profile>
             <id>ais</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-flowmanagers-ais</artifactId>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_ais</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-flowmanagers-ais</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>tests</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
+
+        <!-- SAS ============================================================-->
+
         <profile>
             <id>sas</id>
+
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-flowmanagers-sas</artifactId>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_sas</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-flowmanagers-sas</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>tests</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
+
+        <!-- GeoTIFF ========================================================-->
+
         <profile>
             <id>geotiff</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-flowmanagers-geotiff</artifactId>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_geotiff</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-flowmanagers-geotiff</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>tests</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
+
+        <!-- ASCII GRIDS ====================================================-->
+
         <profile>
             <id>ascii</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-flowmanagers-ascii</artifactId>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_ascii</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-flowmanagers-ascii</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>tests</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
+
+
+        <!-- ShapeFile ======================================================-->
         <profile>
             <id>shapefile</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-flowmanagers-shapefile</artifactId>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_shape</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-flowmanagers-shapefile</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>tests</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
+
+        <!-- Task Executor ==================================================-->
+
         <profile>
             <id>task-executor</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-task-executor</artifactId>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_taskexec</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-task-executor</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>tests</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
+
+        <!-- GWC ============================================================-->
+
         <profile>
             <id>geowebcache</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-flowmanagers-geowebcache</artifactId>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_gwc</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-flowmanagers-geowebcache</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>tests</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
+
+        <!-- FTP ============================================================-->
+
         <profile>
             <id>ftp</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-flowmanagers-ftp</artifactId>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_ftp</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-flowmanagers-ftp</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>tests</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
+
+        <!-- ImageMosaic ====================================================-->
+
         <profile>
             <id>imagemosaic</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
@@ -345,8 +748,17 @@
                 </dependency>
             </dependencies>
         </profile>
+
+        <!--
         <profile>
             <id>jgsflodess</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
@@ -366,11 +778,12 @@
                 </dependency>
             </dependencies>
         </profile>
+-->
     </profiles>
-
 
     <properties>
         <netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
+        <flow.dir>geobatch/WEB-INF/</flow.dir>
     </properties>
 
 </project>

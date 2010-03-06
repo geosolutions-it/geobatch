@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+    <workingDirectory>shape_work</workingDirectory>
+    <autorun>false</autorun>
+    <EventConsumerConfiguration>
+        <workingDirectory>shape_work</workingDirectory>
+        <performBackup>true</performBackup>
+        <FileEventRule>
+            <optional>false</optional>
+            <originalOccurrencies>1</originalOccurrencies>
+            <regex>.*\.shp</regex>
+            <id>r1</id>
+            <description>description</description>
+            <name>test</name>
+        </FileEventRule>
+        <FileEventRule>
+            <optional>false</optional>
+            <originalOccurrencies>1</originalOccurrencies>
+            <regex>.*\.shx</regex>
+            <id>r2</id>
+            <description>description</description>
+            <name>test</name>
+        </FileEventRule>
+        <FileEventRule>
+            <optional>false</optional>
+            <originalOccurrencies>1</originalOccurrencies>
+            <regex>.*\.dbf</regex>
+            <id>r3</id>
+            <description>description</description>
+            <name>test</name>
+        </FileEventRule>
+        <FileEventRule>
+            <optional>true</optional>
+            <originalOccurrencies>1</originalOccurrencies>
+            <regex>.*\.prj</regex>
+            <id>r4</id>
+            <description>description</description>
+            <name>test</name>
+        </FileEventRule>
+
+        <GeoServerActionConfiguration>
+            <workingDirectory>shape_work</workingDirectory>
+            <crs>EPSG:4326</crs>
+            <envelope/>
+            <dataTransferMethod>URL</dataTransferMethod>
+            <geoserverPWD>geoserver</geoserverPWD>
+            <geoserverUID>admin</geoserverUID>
+            <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+            <!-- storeFilePrefix>c41078a</storeFilePrefix -->
+            <wmsPath>/</wmsPath>
+            <defaultStyle>polygon</defaultStyle>
+            <styles/>
+            <!-- styles>
+                <style>raster.sld</style>
+            </styles -->
+            <serviceID>shapefileGeoServerGeneratorService</serviceID>
+            <id>a1</id>
+            <description>description</description>
+            <name>test</name>
+        </GeoServerActionConfiguration>
+        <id>id</id>
+        <description>description</description>
+        <name>test</name>
+    </EventConsumerConfiguration>
+
+    <eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+        <wildCard>*.*</wildCard>
+        <watchDirectory>shape_work/in</watchDirectory>
+        <keepFiles>true</keepFiles>
+        <osType>OS_UNDEFINED</osType>
+        <eventType>FILE_ADDED</eventType>
+        <id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+        <description>description</description>
+        <name>test</name>
+    </eventGeneratorConfiguration>
+    <id>flow2</id>
+    <description>flow2: testing injection of sparse shapefiles</description>
+    <name>Shapefile</name>
+</FlowConfiguration>

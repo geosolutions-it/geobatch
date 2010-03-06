@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 
-	<workingDirectory>hdf4flowworkingdir</workingDirectory>
+	<workingDirectory>hdf4_work</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventConsumerConfiguration>
-		<workingDirectory>hdf4flowworkingdir</workingDirectory>
+		<workingDirectory>hdf4_work</workingDirectory>
 		<performBackup>false</performBackup>
 		<FileEventRule>
 			<optional>false</optional>
@@ -17,7 +17,7 @@
 		</FileEventRule>
 		
 		<GeoServerActionConfiguration>
-			<workingDirectory>hdf4flowworkingdir</workingDirectory>
+			<workingDirectory>hdf4_work</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>DIRECT</dataTransferMethod>
@@ -35,7 +35,7 @@
 		</GeoServerActionConfiguration>
 		
 		<ImageMosaicActionConfiguration>
-			<workingDirectory>hdf4flowworkingdir</workingDirectory>
+			<workingDirectory>hdf4_work</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
@@ -56,7 +56,7 @@
 		</ImageMosaicActionConfiguration>
 		
 		<RegistryActionConfiguration>
-			<workingDirectory>hdf4flowworkingdir</workingDirectory>
+			<workingDirectory>hdf4_work</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>DIRECT</dataTransferMethod>
@@ -84,7 +84,7 @@
 	
 	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
 		<wildCard>*.*</wildCard>
-		<watchDirectory>hdf4flowworkingdir/in</watchDirectory>
+		<watchDirectory>hdf4_work/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>HDF4FlowId</id>

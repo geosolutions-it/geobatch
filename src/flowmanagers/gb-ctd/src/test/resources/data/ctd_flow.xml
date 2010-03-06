@@ -1,54 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 
-	<workingDirectory>flow5workingdir</workingDirectory>
+	<workingDirectory>ctd_work</workingDirectory>
 	
 	<EventConsumerConfiguration>
-		<workingDirectory>flow5workingdir</workingDirectory>
+		<workingDirectory>ctd_work</workingDirectory>
 		<performBackup>true</performBackup>
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.nc</regex>
+			<regex>.*\.dat</regex>
 			<id>r1</id>
-			<description>A single netcdf file</description>
+			<description>A single ctd file</description>
 			<name>test</name>
 		</FileEventRule>
 		
-		<GlidersActionConfiguration>
-			<workingDirectory>flow5workingdir</workingDirectory>
-			<dbPWD>tobaro</dbPWD>
+		<CTDActionConfiguration>
+			<workingDirectory>ctd_work</workingDirectory>
+			<dbPWD>postgres</dbPWD>
 			<dbUID>postgres</dbUID>
 			<dbServerIp>localhost</dbServerIp>
-			<dbType>postgis</dbType>
 			<dbPort>5432</dbPort>			
 			<dbName>obs_db</dbName>
-			<dbTableName>observation</dbTableName>
-			<simplyTollerance>0.0035</simplyTollerance>
-			<serviceID>glidersfileGeneratorService</serviceID>
-			<id>n1</id>
+			<serviceID>ctdfileGeneratorService</serviceID>
+			<id>ctd1</id>
 			<description>description</description>
 			<name>test</name>
-		</GlidersActionConfiguration>
+		</CTDActionConfiguration>
 				
-		<id>flow5Id</id>
+		<id>ctdflowId</id>
 		<description>description</description>
 		<name>test</name>
 	</EventConsumerConfiguration>
 	
 	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
 		<wildCard>*.*</wildCard>
-		<watchDirectory>flow5workingdir/in</watchDirectory>
+		<watchDirectory>ctd_work/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>flow5Id</id>
+		<id>ctdflowId</id>
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
 	</eventGeneratorConfiguration>
 	
-	<id>flow5workingdir</id>
-	<description>flow5</description>
-	<name>flow5</name>
+	<id>ctd_work0</id>
+	<description>ctdflow</description>
+	<name>ctdflow</name>
 	
 </FlowConfiguration>

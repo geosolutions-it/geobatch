@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<workingDirectory>ftpflowworkingdir</workingDirectory>
+	<workingDirectory>ftp_work</workingDirectory>
 	<EventConsumerConfiguration>
-		<workingDirectory>ftpflowworkingdir</workingDirectory>
+		<workingDirectory>ftp_work</workingDirectory>
 		<performBackup>false</performBackup>
 
 		<FileEventRule>
@@ -15,7 +15,7 @@
 		</FileEventRule>
 
 		<FTPActionConfiguration>
-			<workingDirectory>ftpflowworkingdir</workingDirectory>
+			<workingDirectory>ftp_work</workingDirectory>
 			<dataTransferMethod />
 			<timeout>10000</timeout>
 			<zipInput>false</zipInput>
@@ -33,7 +33,7 @@
 		</FTPActionConfiguration>
 
 		<FTPActionConfiguration>
-			<workingDirectory>ftpflowworkingdir</workingDirectory>
+			<workingDirectory>ftp_work</workingDirectory>
 			<dataTransferMethod />
 			<timeout>10000</timeout>
 			<zipInput>false</zipInput>
@@ -51,7 +51,7 @@
 		</FTPActionConfiguration>
 
 		<FTPActionConfiguration>
-			<workingDirectory>ftpflowworkingdir</workingDirectory>
+			<workingDirectory>ftp_work</workingDirectory>
 			<dataTransferMethod />
 			<timeout>10000</timeout>
 			<zipInput>false</zipInput>
@@ -75,7 +75,7 @@
 
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>ftpflowworkingdir/in</watchDirectory>
+		<watchDirectory>ftp_work/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<serviceID>fsEventGeneratorService</serviceID>

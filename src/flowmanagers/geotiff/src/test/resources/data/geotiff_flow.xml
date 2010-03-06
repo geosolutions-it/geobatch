@@ -1,44 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<workingDirectory>flow2workingdir</workingDirectory>
-    <autorun>false</autorun>
+	<workingDirectory>geotiff_work</workingDirectory>
 	<EventConsumerConfiguration>
-		<workingDirectory>flow2workingdir</workingDirectory>
+		<workingDirectory>geotiff_work</workingDirectory>
 		<performBackup>true</performBackup>
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.shp</regex>
+			<regex>.*\.tif.*</regex>
 			<id>r1</id>
 			<description>description</description>
 			<name>test</name>
 		</FileEventRule>
-		<FileEventRule>
-			<optional>false</optional>
-			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.shx</regex>
-			<id>r2</id>
+		<GeoTiffOverviewConfiguration>
+			<workingDirectory>geotiff_work</workingDirectory>
+			<numSteps>8</numSteps>
+			<downsampleStep>2</downsampleStep>
+			<scaleAlgorithm>nn</scaleAlgorithm>
+			<interp>0</interp>
+			<tileH>512</tileH>
+			<tileW>512</tileW>
+			<serviceID>geotiffOverviewsEmbedderService</serviceID>
+			<id>a1</id>
 			<description>description</description>
 			<name>test</name>
-		</FileEventRule>
-		<FileEventRule>
-			<optional>false</optional>
-			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.dbf</regex>
-			<id>r3</id>
-			<description>description</description>
-			<name>test</name>
-		</FileEventRule>
-		<FileEventRule>
-			<optional>true</optional>
-			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.prj</regex>
-			<id>r4</id>
-			<description>description</description>
-			<name>test</name>
-		</FileEventRule>
+		</GeoTiffOverviewConfiguration>		
 		<GeoServerActionConfiguration>
-			<workingDirectory>flow2workingdir</workingDirectory>
+			<workingDirectory>geotiff_work</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>URL</dataTransferMethod>
@@ -47,24 +35,23 @@
 			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
 			<!-- storeFilePrefix>c41078a</storeFilePrefix -->
 			<wmsPath>/</wmsPath>
-			<defaultStyle>polygon</defaultStyle>
+			<defaultStyle>raster</defaultStyle>
 			<styles/>
 			<!-- styles>
 				<style>raster.sld</style>
 			</styles -->
-			<serviceID>shapefileGeoServerGeneratorService</serviceID>
+			<serviceID>geotiffGeoServerGeneratorService</serviceID>
 			<id>a1</id>
 			<description>description</description>
 			<name>test</name>
-		</GeoServerActionConfiguration>
+		</GeoServerActionConfiguration>		
 		<id>id</id>
 		<description>description</description>
 		<name>test</name>
 	</EventConsumerConfiguration>
 	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
 		<wildCard>*.*</wildCard>
-		<watchDirectory>flow2workingdir/in</watchDirectory>
-        <keepFiles>true</keepFiles>
+		<watchDirectory>geotiff_work/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>id</id>
@@ -72,7 +59,7 @@
 		<description>description</description>
 		<name>test</name>
 	</eventGeneratorConfiguration>
-	<id>flow2</id>
-	<description>flow2: testing injection of sparse shapefiles</description>
-	<name>flow2</name>
+	<id>geotiff_work0</id>
+	<description>flow1</description>
+	<name>GeoTIFF</name>
 </FlowConfiguration>

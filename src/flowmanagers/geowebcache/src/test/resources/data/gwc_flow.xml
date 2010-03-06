@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 
-	<workingDirectory>gwcflowworkingdir</workingDirectory>
+	<workingDirectory>gwc_work</workingDirectory>
 	
 	<EventConsumerConfiguration>
-		<workingDirectory>gwcflowworkingdir</workingDirectory>
+		<workingDirectory>gwc_work</workingDirectory>
 		<performBackup>false</performBackup>
 		<FileEventRule>
 			<optional>false</optional>
@@ -16,7 +16,7 @@
 		</FileEventRule>
 		
 		<GeoWebCacheActionConfiguration>
-			<workingDirectory>gwcflowworkingdir</workingDirectory>
+			<workingDirectory>gwc_work</workingDirectory>
 			<gwcUrl>http://localhost:8080/geowebcache/rest/layers/</gwcUrl>
 			<gwcUser>geowebcache</gwcUser>
 			<gwcPassword>secured</gwcPassword>
@@ -43,7 +43,7 @@
 	
 	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
 		<wildCard>*.*</wildCard>
-		<watchDirectory>gwcflowworkingdir/in</watchDirectory>
+		<watchDirectory>gwc_work/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>gwcflowId</id>
@@ -52,7 +52,7 @@
 		<name>test</name>
 	</eventGeneratorConfiguration>
 	
-	<id>gwcflowworkingdir</id>
+	<id>gwc_work</id>
 	<description>gwcflow</description>
 	<name>gwcflow</name>
 	

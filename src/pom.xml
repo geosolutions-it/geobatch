@@ -970,6 +970,7 @@
                     <include>**/*.serialized</include>
                     <include>**/*.ftl</include>
                     <include>**/*.tiff</include>
+                    <include>**/placeholder</include> <!-- used for otherwise empty dirs -->
                 </includes>
                 <excludes>
                     <exclude>**/doc-files/**</exclude>
