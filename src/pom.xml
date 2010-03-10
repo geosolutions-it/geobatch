@@ -943,6 +943,7 @@
                     <include>META-INF/services/**</include>
                     <include>applicationContext.xml</include>
                     <include>**/*.ftl</include>
+                    <include>**/placeholder</include> <!-- used for otherwise empty dirs -->
                 </includes>
                 <excludes>
                     <exclude>**/doc-files/**</exclude>
