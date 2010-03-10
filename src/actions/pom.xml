@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+      =======================================================================
+        Maven Project Configuration File
+
+        GeoSolutions GeoBatch Project
+            http://geobatch.codehaus.org
+      =======================================================================
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>it.geosolutions</groupId>
+        <artifactId>gb</artifactId>
+        <version>0.9-SNAPSHOT</version>
+    </parent>
+
+    <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb-actions</artifactId>
+    <packaging>pom</packaging>
+
+    <name>GeoBatch actions</name>
+    <description>GeoSolutions GeoBatch actions.</description>
+
+    <url>http://www.geo-solutions.it/maven_reports/gb/flow-managers/</url>
+
+    <scm>
+        <connection>
+            scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flow-managers/
+        </connection>
+        <url>http://svn.geotools.org/geotools/trunk/gt/modules/flow-managers/</url>
+    </scm>
+
+
+    <licenses>
+        <license>
+            <name>Lesser General Public License (LGPL)</name>
+            <url>http://www.gnu.org/copyleft/lesser.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <build>
+        <plugins>
+            <!--
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+
+                <inherited>true</inherited>
+
+                <executions>
+                    <!-- Remove the flowdata files from the base jar ========-->
+                    <execution>
+                        <!--
+                          setting the phase as prep-pack is the only way I::etj found
+                          to have the excludes work.
+                          Once the basic jar is created with the exclusions,
+                          the jar will not be rebuilt in the jar:jar phase.
+
+                          This exclusion will work with maven 2.1.0 but not with 2.0.9 or 2.0.10.
+                        -->
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>data/</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+
+                    <!-- Creates a jar containing only the flowdata files ===-->
+                    <execution>
+                        <id>packFlowData</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>flowdata</classifier>
+                            <includes>
+                                <include>data/**</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <!-- =========================================================== -->
+    <!--     Modules for the build in approximate dependency order   -->
+    <!-- =========================================================== -->
+    <profiles>
+
+        <profile>
+            <id>ftp</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-ftp</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>geotiff</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-geoserver</module>
+                <module>geotiff</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>gliders</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-geoserver</module>
+                <module>gb-gliders</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>ctd</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-ctd</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>ais</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>ais</module>
+                <module>gb-geoserver</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>geowebcache</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>geowebcache</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>sas</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-geoserver</module>
+                <module>geotiff</module>
+                <module>gb-task-executor</module>
+                <module>shapefile</module>
+                <module>gb-sas</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>imagemosaic</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>imagemosaic</module>
+                <module>gb-geoserver</module>
+            </modules>
+        </profile>
+        <!--
+    <profile>
+        <id>jgsflodess</id>
+        <modules>
+             <module>gb-geoserver</module>
+             <module>imagemosaic</module>
+             <module>jgsflodess</module>
+        </modules>
+    </profile>
+    -->
+        <profile>
+            <id>ascii-grids</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>ascii-grids</module>
+                <module>gb-geoserver</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>shapefile</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-geoserver</module>
+                <module>shapefile</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>task-executor</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-task-executor</module>
+            </modules>
+        </profile>
+        <!--
+        <profile>
+            <id>all</id>
+            <modules>
+                <module>gb-geoserver</module>
+                <module>geotiff</module>
+                <module>geowebcache</module>
+                <module>ais</module>
+                <module>gb-gliders</module>
+                <module>gb-ctd</module>
+                <module>gb-task-executor</module>
+                <module>imagemosaic</module>
+                <module>shapefile</module>
+                <module>gb-sas</module>
+                <module>gb-ftp</module>
+                <!- -			   <module>jgsflodess</module> - ->
+                <module>ascii-grids</module>
+            </modules>
+        </profile>
+-->
+    </profiles>
+
+
+</project>

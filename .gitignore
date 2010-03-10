@@ -72,69 +72,69 @@ src/core/impl/target
 
 src/target
 
-# src/flowmanagers/gb-geoserver/gsrestclient/
+# src/actions/gb-geoserver/gsrestclient/
 
-src/flowmanagers/gb-geoserver/gsrestclient/target
+src/actions/gb-geoserver/gsrestclient/target
 
-# src/flowmanagers/gb-geoserver/
+# src/actions/gb-geoserver/
 
-src/flowmanagers/gb-geoserver/target
+src/actions/gb-geoserver/target
 
-# src/flowmanagers/gb-geoserver/gb-geoserver-action/
+# src/actions/gb-geoserver/gb-geoserver-action/
 
-src/flowmanagers/gb-geoserver/gb-geoserver-action/target
+src/actions/gb-geoserver/gb-geoserver-action/target
 
-# src/flowmanagers/gb-sas/
+# src/actions/gb-sas/
 
-src/flowmanagers/gb-sas/target
+src/actions/gb-sas/target
 
-# src/flowmanagers/ais/
+# src/actions/ais/
 
-src/flowmanagers/ais/target
+src/actions/ais/target
 
-# src/flowmanagers/geowebcache/
+# src/actions/geowebcache/
 
-src/flowmanagers/geowebcache/target
+src/actions/geowebcache/target
 
-# src/flowmanagers/geotiff/
+# src/actions/geotiff/
 
-src/flowmanagers/geotiff/target
+src/actions/geotiff/target
 
-# src/flowmanagers/gb-gliders/
+# src/actions/gb-gliders/
 
-src/flowmanagers/gb-gliders/target
+src/actions/gb-gliders/target
 
-# src/flowmanagers/gb-task-executor/
+# src/actions/gb-task-executor/
 
-src/flowmanagers/gb-task-executor/target
+src/actions/gb-task-executor/target
 
-# src/flowmanagers/
+# src/actions/
 
-src/flowmanagers/target
+src/actions/target
 
-# src/flowmanagers/ascii-grids/
+# src/actions/ascii-grids/
 
-src/flowmanagers/ascii-grids/target
+src/actions/ascii-grids/target
 
-# src/flowmanagers/gb-ftp/
+# src/actions/gb-ftp/
 
-src/flowmanagers/gb-ftp/target
+src/actions/gb-ftp/target
 
-# src/flowmanagers/shapefile/
+# src/actions/shapefile/
 
-src/flowmanagers/shapefile/target
+src/actions/shapefile/target
 
-# src/flowmanagers/imagemosaic/
+# src/actions/imagemosaic/
 
-src/flowmanagers/imagemosaic/target
+src/actions/imagemosaic/target
 
-# src/flowmanagers/gb-ctd/
+# src/actions/gb-ctd/
 
-src/flowmanagers/gb-ctd/target
+src/actions/gb-ctd/target
 
-# src/flowmanagers/jgsflodess/
+# src/actions/jgsflodess/
 
-src/flowmanagers/jgsflodess/target
+src/actions/jgsflodess/target
 
 # src/web/
 

@@ -801,69 +801,70 @@
                 <artifactId>gb-alias-registry</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-geotiff</artifactId>
+                <artifactId>gb-action-geotiff</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-sas</artifactId>
+                <artifactId>gb-action-sas</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-task-executor</artifactId>
+                <artifactId>gb-action-taskexecutor</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-shapefile</artifactId>
+                <artifactId>gb-action-shapefile</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-ascii</artifactId>
+                <artifactId>gb-action-ascii</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-geoserver</artifactId>
+                <artifactId>gb-action-geoserver</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-gliders</artifactId>
+                <artifactId>gb-action-gliders</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-ctd</artifactId>
+                <artifactId>gb-action-ctd</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-ftp</artifactId>
+                <artifactId>gb-action-ftp</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-ais</artifactId>
+                <artifactId>gb-action-ais</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-geowebcache</artifactId>
+                <artifactId>gb-action-geowebcache</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-ImageMosaic</artifactId>
+                <artifactId>gb-action-ImageMosaic</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-flowmanagers-JGSFLoDeSS</artifactId>
+                <artifactId>gb-action-JGSFLoDeSS</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
@@ -1177,7 +1178,7 @@
         <module>core</module>
         <module>file-catalog</module>
         <module>dao</module>
-        <module>flowmanagers</module>
+        <module>actions</module>
         <module>web</module>
         <module>gb-ftp-server</module>
     </modules>

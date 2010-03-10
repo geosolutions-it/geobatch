@@ -36,7 +36,7 @@
 		<!--  needed for binding GeoTiffOverviewsEmbedderConfiguration -->        
         <dependency>
 			  <groupId>it.geosolutions</groupId>
-			  <artifactId>gb-flowmanagers-geotiff</artifactId>
+			  <artifactId>gb-action-geotiff</artifactId>
         </dependency>
 
         <dependency>

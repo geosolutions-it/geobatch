@@ -245,7 +245,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-gliders</artifactId>
+                    <artifactId>gb-action-gliders</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -262,7 +262,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-flowmanagers-gliders</artifactId>
+                                            <artifactId>gb-action-gliders</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -295,7 +295,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-ctd</artifactId>
+                    <artifactId>gb-action-ctd</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -312,7 +312,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-flowmanagers-ctd</artifactId>
+                                            <artifactId>gb-action-ctd</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -344,7 +344,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-ais</artifactId>
+                    <artifactId>gb-action-ais</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -361,7 +361,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-flowmanagers-ais</artifactId>
+                                            <artifactId>gb-action-ais</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -394,7 +394,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-sas</artifactId>
+                    <artifactId>gb-action-sas</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -411,7 +411,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-flowmanagers-sas</artifactId>
+                                            <artifactId>gb-action-sas</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -444,7 +444,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-geotiff</artifactId>
+                    <artifactId>gb-action-geotiff</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -461,7 +461,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-flowmanagers-geotiff</artifactId>
+                                            <artifactId>gb-action-geotiff</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -494,7 +494,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-ascii</artifactId>
+                    <artifactId>gb-action-ascii</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -511,7 +511,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-flowmanagers-ascii</artifactId>
+                                            <artifactId>gb-action-ascii</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -544,7 +544,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-shapefile</artifactId>
+                    <artifactId>gb-action-shapefile</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -561,7 +561,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-flowmanagers-shapefile</artifactId>
+                                            <artifactId>gb-action-shapefile</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -594,7 +594,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-task-executor</artifactId>
+                    <artifactId>gb-action-taskexecutor</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -611,7 +611,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-task-executor</artifactId>
+                                            <artifactId>gb-action-taskexecutor</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -644,7 +644,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-geowebcache</artifactId>
+                    <artifactId>gb-action-geowebcache</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -661,7 +661,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-flowmanagers-geowebcache</artifactId>
+                                            <artifactId>gb-action-geowebcache</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -694,7 +694,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-ftp</artifactId>
+                    <artifactId>gb-action-ftp</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -711,7 +711,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-flowmanagers-ftp</artifactId>
+                                            <artifactId>gb-action-ftp</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -744,7 +744,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-ImageMosaic</artifactId>
+                    <artifactId>gb-action-ImageMosaic</artifactId>
                 </dependency>
             </dependencies>
         </profile>
@@ -762,19 +762,19 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-JGSFLoDeSS</artifactId>
+                    <artifactId>gb-action-JGSFLoDeSS</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-geoserver</artifactId>
+                    <artifactId>gb-action-geoserver</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-ImageMosaic</artifactId>
+                    <artifactId>gb-action-ImageMosaic</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-flowmanagers-geotiff</artifactId>
+                    <artifactId>gb-action-geotiff</artifactId>
                 </dependency>
             </dependencies>
         </profile>
