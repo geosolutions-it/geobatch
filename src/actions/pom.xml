@@ -129,7 +129,7 @@
             </modules>
         </profile>
 
-        <profile>
+<!--        <profile>
             <id>gliders</id>
             <activation>
                 <property>
@@ -141,8 +141,8 @@
                 <module>gb-gliders</module>
             </modules>
         </profile>
-
-        <profile>
+-->
+<!--        <profile>
             <id>ctd</id>
             <activation>
                 <property>
@@ -153,8 +153,8 @@
                 <module>gb-ctd</module>
             </modules>
         </profile>
-
-        <profile>
+-->
+<!--        <profile>
             <id>ais</id>
             <activation>
                 <property>
@@ -166,7 +166,7 @@
                 <module>gb-geoserver</module>
             </modules>
         </profile>
-
+-->
         <profile>
             <id>geowebcache</id>
             <activation>
@@ -179,7 +179,7 @@
             </modules>
         </profile>
 
-        <profile>
+<!--        <profile>
             <id>sas</id>
             <activation>
                 <property>
@@ -194,7 +194,7 @@
                 <module>gb-sas</module>
             </modules>
         </profile>
-
+-->
         <profile>
             <id>imagemosaic</id>
             <activation>

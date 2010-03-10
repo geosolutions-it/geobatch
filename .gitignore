@@ -52,6 +52,34 @@ src/gb-fsm/plugin/target
 
 src/gb-fsm/plugin/javamonitor/target
 
+# src/legacy/
+
+src/legacy/target
+
+# src/legacy/actions/gb-sas/
+
+src/legacy/actions/gb-sas/target
+
+# src/legacy/actions/gb-jgsflodess/
+
+src/legacy/actions/gb-jgsflodess/target
+
+# src/legacy/actions/gb-gliders/
+
+src/legacy/actions/gb-gliders/target
+
+# src/legacy/actions/
+
+src/legacy/actions/target
+
+# src/legacy/actions/gb-ais/
+
+src/legacy/actions/gb-ais/target
+
+# src/legacy/actions/gb-ctd/
+
+src/legacy/actions/gb-ctd/target
+
 # src/gb-ftp-server/
 
 src/gb-ftp-server/target
@@ -84,14 +112,6 @@ src/actions/gb-geoserver/target
 
 src/actions/gb-geoserver/gb-geoserver-action/target
 
-# src/actions/gb-sas/
-
-src/actions/gb-sas/target
-
-# src/actions/ais/
-
-src/actions/ais/target
-
 # src/actions/geowebcache/
 
 src/actions/geowebcache/target
@@ -99,10 +119,6 @@ src/actions/geowebcache/target
 # src/actions/geotiff/
 
 src/actions/geotiff/target
-
-# src/actions/gb-gliders/
-
-src/actions/gb-gliders/target
 
 # src/actions/gb-task-executor/
 
@@ -127,14 +143,6 @@ src/actions/shapefile/target
 # src/actions/imagemosaic/
 
 src/actions/imagemosaic/target
-
-# src/actions/gb-ctd/
-
-src/actions/gb-ctd/target
-
-# src/actions/jgsflodess/
-
-src/actions/jgsflodess/target
 
 # src/web/
 

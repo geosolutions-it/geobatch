@@ -13,7 +13,7 @@
 
     <parent>
         <groupId>it.geosolutions</groupId>
-        <artifactId>gb-actions</artifactId>
+        <artifactId>gb-legacy-actions</artifactId>
         <version>0.9-SNAPSHOT</version>
     </parent>
 
@@ -24,7 +24,7 @@
     <groupId>it.geosolutions</groupId>
     <artifactId>gb-action-sas</artifactId>
     <packaging>jar</packaging>
-    <name>GeoBatch action: SAS Tiles composer</name>
+    <name>GeoBatch action: (legacy) SAS Tiles composer</name>
     <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
 
     <scm>

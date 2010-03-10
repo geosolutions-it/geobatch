@@ -218,7 +218,7 @@
 
         <!--
         ========================================================================
-                FLOWMANAGERS
+                ACTIONS
         ========================================================================
             We need sample flows to be packed into the test jars of every action
             (was: flowmanager).
@@ -239,7 +239,7 @@
             <id>gliders</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all_legacy_actions</name>
                 </property>
             </activation>
             <dependencies>
@@ -288,7 +288,7 @@
 
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all_legacy_actions</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -337,7 +337,7 @@
             <id>ais</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all_legacy_actions</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -387,7 +387,7 @@
 
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all_legacy_actions</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -754,7 +754,7 @@
             <id>jgsflodess</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all_legacy_actions</name>
                     <value>true</value>
                 </property>
             </activation>

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- =======================================================================    
+<!--
+    =======================================================================
         Maven Project Configuration File
 
         GeoSolutions GeoBach Project
             http://www.geo-solutions.it/trac/IngestionEngine
 
         Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $
-     ======================================================================= -->
+     =======================================================================
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -15,30 +17,28 @@
 
     <parent>
         <groupId>it.geosolutions</groupId>
-        <artifactId>gb-actions</artifactId>
+        <artifactId>gb-legacy-actions</artifactId>
         <version>0.9-SNAPSHOT</version>
     </parent>
 
-
     <!-- =========================================================== -->
-  <!--     Module Description                                      -->
-  <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
     <groupId>it.geosolutions</groupId>
-    <artifactId>gb-action-gliders</artifactId>
+    <artifactId>gb-action-ctd</artifactId>
     <packaging>jar</packaging>
-    <name>GeoBatch action: gliders</name>
-    <url>http://www.geo-solutions.it/maven_reports/ie/flowmanagers/</url>
 
+    <name>GeoBatch action: (legacy) ctd</name>
+    <description>GeoSolutions GeoBatch flow managers - ctd file flow.</description>
+
+    <url>http://www.geo-solutions.it/maven_reports/ie/flowmanagers/</url>
+    
     <scm>
         <connection>
             scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
         </connection>
         <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
     </scm>
-
-    <description>
-        GeoSolutions GeoBatch flow managers - gliders file flow.
-    </description>
 
     <licenses>
         <license>
@@ -50,8 +50,8 @@
 
 
     <!-- =========================================================== -->
-  <!--     Dependency Management                                   -->
-  <!-- =========================================================== -->
+    <!--     Dependency Management                                   -->
+    <!-- =========================================================== -->
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -59,12 +59,10 @@
             <scope>test</scope>
         </dependency>
 
-
         <dependency>
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>log4j</groupId>
@@ -97,12 +95,12 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-jdbc</artifactId>
-
         </dependency>
 
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <version>8.1-407.jdbc3</version>
         </dependency>
         <dependency>
             <groupId>commons-dbcp</groupId>
@@ -139,7 +137,14 @@
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-alias-registry</artifactId>
         </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-core-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-core-impl</artifactId>
+        </dependency>
 
     </dependencies>
-
 </project>

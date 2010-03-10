@@ -11,52 +11,67 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- =========================================================== -->
-  <!--   Properties and Profiles                                   -->
-  <!--       modify the build process in certain conditions.       -->
-  <!--   Available properties are:                                 -->
-  <!--                                                             -->
-  <!--   Available profiles are:                                   -->
-  <!--     extensive.tests    Performs more extensive tests than   -->
-  <!--                        the default. Only a few modules      -->
-  <!--                        check for this profile.              -->
-  <!--                                                             -->
-  <!--     interactive.tests  Performs more extensive tests than   -->
-  <!--                        the default. Only a few modules      -->
-  <!--                        check for this profile.              -->
-  <!--                                                             -->
-  <!--     site.build         The main purpose of this build is to -->
-  <!--                        create reports. Consequently, a      -->
-  <!--                        JUnit test failure will not stop the -->
-  <!--                        build. The failure should be         -->
-  <!--                        reported by the surefire report      -->
-  <!--                        plugin.                              -->
-  <!--                                                             -->
-  <!--     online             Profile to active tests which end in -->
-  <!--                        "OnlineTest.java"                    -->
-  <!--                                                             -->
-  <!--     stress             Profile to active tests which end in -->
-  <!--                        "StressTest.java"                    -->
-  <!--                                                             -->
-  <!--     pending            Includes modules that are pending    -->
-  <!--                                                             -->
-  <!--     dao.xstream        Use XStream in DAO instead of        -->
-  <!--                        default JiBX                         -->
-  <!--                                                             -->
-  <!--   Example:                                                  -->
-  <!--       mvn -P extensive.tests install                        -->
-  <!--       mvn -P online,stress install                          -->
-  <!--       mvn -P site.build site                                -->
-  <!--       mvn eclipse:eclipse -Djdbc.oracle=true -P pending     -->
-  <!--                                                             -->
-  <!--     While you can specify properties one at a time on the   -->
-  <!--     command line, for properties describing your            -->
-  <!--     environment you will want to modify settings.xml        -->
-  <!--                                                             -->
-  <!--     Note that profiles like "site.build" are not mandatory  -->
-  <!--     for using the "site" goal. Such profiles just modify    -->
-  <!--     the build process prior the "site" goal execution in a  -->
-  <!--     manner relevant to the purpose of the "site" goal.      -->
-  <!-- =========================================================== -->
+    <!--   Properties and Profiles                                   -->
+    <!--       modify the build process in certain conditions.       -->
+    <!-- =========================================================== -->
+    <!--   Available properties are:                                 -->
+    <!--     all_actions        build and pack all the available     -->
+    <!--                        actions (except the legacy ones)     -->
+    <!--     all_legacy_actions  build and pack all the legacy       -->
+    <!--                        actions                              -->
+    <!--                                                             -->
+    <!-- =========================================================== -->
+    <!--   Available profiles are:                                   -->
+    <!--     extensive.tests    Performs more extensive tests than   -->
+    <!--                        the default. Only a few modules      -->
+    <!--                        check for this profile.              -->
+    <!--                                                             -->
+    <!--     interactive.tests  Performs more extensive tests than   -->
+    <!--                        the default. Only a few modules      -->
+    <!--                        check for this profile.              -->
+    <!--                                                             -->
+    <!--     site.build         The main purpose of this build is to -->
+    <!--                        create reports. Consequently, a      -->
+    <!--                        JUnit test failure will not stop the -->
+    <!--                        build. The failure should be         -->
+    <!--                        reported by the surefire report      -->
+    <!--                        plugin.                              -->
+    <!--                                                             -->
+    <!--     online             Profile to active tests which end in -->
+    <!--                        "OnlineTest.java"                    -->
+    <!--                                                             -->
+    <!--     stress             Profile to active tests which end in -->
+    <!--                        "StressTest.java"                    -->
+    <!--                                                             -->
+    <!--     pending            Includes modules that are pending    -->
+    <!--                                                             -->
+    <!--     dao.xstream        Use XStream in DAO instead of        -->
+    <!--                        default JiBX                         -->
+    <!--                                                             -->
+    <!--     legacy             Includes legacy modules - You'll     -->
+    <!--                        have as well to specify the list     -->
+    <!--                        of the modules you need.                                     -->
+    <!--                                                             -->
+    <!--                                                             -->
+    <!--   Examples:                                                  -->
+    <!--       mvn -P extensive.tests install                        -->
+    <!--       mvn -P online,stress install                          -->
+    <!--       mvn -P site.build site                                -->
+    <!--       mvn eclipse:eclipse -Djdbc.oracle=true -P pending     -->
+    <!--                                                             -->
+    <!--     Install all the current actions and the legacy glider:  -->
+    <!--     mvn -Pdao.xstream,legacy,gliders -Dall_actions install  -->
+    <!--                                                             -->
+    <!--                                                             -->
+    <!--     While you can specify properties one at a time on the   -->
+    <!--     command line, for properties describing your            -->
+    <!--     environment you will want to modify settings.xml        -->
+    <!--                                                             -->
+    <!--     Note that profiles like "site.build" are not mandatory  -->
+    <!--     for using the "site" goal. Such profiles just modify    -->
+    <!--     the build process prior the "site" goal execution in a  -->
+    <!--     manner relevant to the purpose of the "site" goal.      -->
+    <!-- =========================================================== -->
     <properties>
         <allow.test.skip>true</allow.test.skip>
         <allow.test.failure.ignore>false</allow.test.failure.ignore>
@@ -222,6 +237,14 @@
                 <module>gb-ftp-server</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>legacy</id>
+            <modules>
+                <module>legacy</module>
+            </modules>
+        </profile>
+
     </profiles>
 
 
@@ -913,8 +936,8 @@
     </dependencyManagement>
 
     <!-- =========================================================== -->
-  <!--     Dependencies to be inherited by all modules.            -->
-  <!-- =========================================================== -->
+    <!--     Dependencies to be inherited by all modules.            -->
+    <!-- =========================================================== -->
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -983,8 +1006,8 @@
         <plugins>
 
             <!-- ======================================================= -->
-      <!--     Compilation.                                        -->
-      <!-- ======================================================= -->
+            <!--     Compilation.                                        -->
+            <!-- ======================================================= -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -997,8 +1020,8 @@
             </plugin>
 
             <!-- ======================================================= -->
-      <!--     Tests.                                              -->
-      <!-- ======================================================= -->
+            <!--     Tests.                                              -->
+            <!-- ======================================================= -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -1093,9 +1116,9 @@
     </build>
 
     <!-- ================================================================== -->
-  <!--     Repositories. This is where Maven looks for dependencies. The  -->
-  <!--     Maven repository is implicit and doesn't need to be specified. -->
-  <!-- ================================================================== -->
+    <!--     Repositories. This is where Maven looks for dependencies. The  -->
+    <!--     Maven repository is implicit and doesn't need to be specified. -->
+    <!-- ================================================================== -->
     <repositories>
         <repository>
             <id>geosolutions</id>
@@ -1153,9 +1176,9 @@
 
 
     <!-- =========================================================== -->
-  <!--     Plugin repositories.                                    -->
-  <!--     This is where Maven looks for plugin dependencies.      -->
-  <!-- =========================================================== -->
+    <!--     Plugin repositories.                                    -->
+    <!--     This is where Maven looks for plugin dependencies.      -->
+    <!-- =========================================================== -->
     <pluginRepositories>
         <pluginRepository>
             <id>codehaus-snapshot-plugins</id>
@@ -1171,8 +1194,8 @@
     </pluginRepositories>
 
     <!-- =========================================================== -->
-  <!--     Modules for the build in approximate dependency order   -->
-  <!-- =========================================================== -->
+    <!--     Modules for the build in approximate dependency order   -->
+    <!-- =========================================================== -->
     <modules>
         <module>gb-fsm</module>
         <module>core</module>
@@ -1181,6 +1204,7 @@
         <module>actions</module>
         <module>web</module>
         <module>gb-ftp-server</module>
+        <!-- other conditional modules are listed in the profiles section -->
     </modules>
 
 </project>
