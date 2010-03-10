@@ -35,7 +35,6 @@
     	<property name="id" value="fsFlowManagerService"/>
     	<property name="description" value="File based flow manager service"/>
     	<property name="name" value="fsFlowManagerService"/>
-    	</property>    	
     </bean>  
 
     <!-- JIBX flow manager DAO-->

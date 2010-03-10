@@ -37,7 +37,7 @@
 		<description>description</description>
 		<name>test</name>
 	</EventConsumerConfiguration>
-	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
 		<watchDirectory>gdaloperationsworkingdir/gdaladdo/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
@@ -46,7 +46,7 @@
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
-	</eventGeneratorConfiguration>
+	</EventGeneratorConfiguration>
 	<id>gdaladdo flow</id>
 	<description>Flow to run gdaladdo operations</description>
 	<name>gdaladdoFlow</name>

@@ -41,7 +41,7 @@
 		<name>test</name>
 	</EventConsumerConfiguration>
 	
-	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
 		<watchDirectory>gwc_work/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
@@ -50,7 +50,7 @@
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
-	</eventGeneratorConfiguration>
+	</EventGeneratorConfiguration>
 	
 	<id>gwc_work</id>
 	<description>gwcflow</description>

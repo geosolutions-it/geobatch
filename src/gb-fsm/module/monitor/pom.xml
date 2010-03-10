@@ -37,16 +37,10 @@
     <!--     Dependencies                                     -->
     <!-- ==================================================== -->
     <dependencies>
-
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-core-model</artifactId>
-        </dependency>
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-core-impl</artifactId>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

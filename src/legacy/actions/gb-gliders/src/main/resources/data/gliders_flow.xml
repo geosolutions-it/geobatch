@@ -36,7 +36,7 @@
 		<name>test</name>
 	</EventConsumerConfiguration>
 	
-	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
 		<watchDirectory>gliders_work/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
@@ -45,7 +45,7 @@
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
-	</eventGeneratorConfiguration>
+	</EventGeneratorConfiguration>
 	
 	<id>gliders_work0</id>
 	<description>flow5</description>

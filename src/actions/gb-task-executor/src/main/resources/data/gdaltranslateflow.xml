@@ -37,7 +37,7 @@
 		<description>description</description>
 		<name>test</name>
 	</EventConsumerConfiguration>
-	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
 		<watchDirectory>gdaloperationsworkingdir/gdaltranslate/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
@@ -46,7 +46,7 @@
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
-	</eventGeneratorConfiguration>
+	</EventGeneratorConfiguration>
 	<id>gdal_translate flow</id>
 	<description>Flow to run gdal_translate operations</description>
 	<name>gdal_translateFlow</name>

@@ -37,7 +37,7 @@
 		<description>description</description>
 		<name>test</name>
 	</EventConsumerConfiguration>
-	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
 		<watchDirectory>gdaloperationsworkingdir/gdalwarp/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
@@ -46,7 +46,7 @@
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
-	</eventGeneratorConfiguration>
+	</EventGeneratorConfiguration>
 	<id>gdalwarp flow</id>
 	<description>Flow to run gdalwarp operations</description>
 	<name>gdalwarpFlow</name>
