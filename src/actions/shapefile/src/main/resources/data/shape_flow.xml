@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
+
+    <id>sample_shape_flow</id>
+    <description>Sample injection of sparse shapefiles</description>
+    <name>Shapefile</name>
+
     <workingDirectory>shape_work</workingDirectory>
-    <autorun>false</autorun>
+    <autorun>true</autorun>
+
     <EventConsumerConfiguration>
+        <id>shape_consumer</id>
+        <description>Shapefile packer and sender</description>
+        <name>shape_consumer</name>
+
+        <listenerId>ConsumerLogger0</listenerId>
+        <listenerId>Cumulator</listenerId>
+
         <workingDirectory>shape_work</workingDirectory>
         <performBackup>true</performBackup>
+
         <FileEventRule>
             <optional>false</optional>
             <originalOccurrencies>1</originalOccurrencies>
@@ -39,6 +53,13 @@
         </FileEventRule>
 
         <GeoServerActionConfiguration>
+            <serviceID>shapefileGeoServerGeneratorService</serviceID>
+            <id>step0</id>
+            <name>ShapeFileIngestion</name>
+            <description>Get a pack of shapefiles (optionally zipped) and ingest them into a GeoServer instance.</description>
+
+            <listenerId>ActionLogger0</listenerId>
+
             <workingDirectory>shape_work</workingDirectory>
             <crs>EPSG:4326</crs>
             <envelope/>
@@ -53,28 +74,43 @@
             <!-- styles>
                 <style>raster.sld</style>
             </styles -->
-            <serviceID>shapefileGeoServerGeneratorService</serviceID>
-            <id>a1</id>
-            <description>description</description>
-            <name>test</name>
         </GeoServerActionConfiguration>
-        <id>id</id>
-        <description>description</description>
-        <name>test</name>
+
     </EventConsumerConfiguration>
 
-    <eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+    <EventGeneratorConfiguration>
+        <id>id</id>
+        <name>test</name>
+        <description>description</description>
+        <serviceID>fsEventGeneratorService</serviceID>
+        
         <wildCard>*.*</wildCard>
         <watchDirectory>shape_work/in</watchDirectory>
         <keepFiles>true</keepFiles>
         <osType>OS_UNDEFINED</osType>
         <eventType>FILE_ADDED</eventType>
-        <id>id</id>
-        <serviceID>fsEventGeneratorService</serviceID>
-        <description>description</description>
-        <name>test</name>
-    </eventGeneratorConfiguration>
-    <id>flow2</id>
-    <description>flow2: testing injection of sparse shapefiles</description>
-    <name>Shapefile</name>
+    </EventGeneratorConfiguration>
+
+    <ListenerConfigurations>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ActionLogger0</id>
+
+            <loggerName>ActionLogger</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger0</id>
+
+            <loggerName>ConsLogger</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>Cumulator</id>
+        </CumulatingProgressListener>
+
+    </ListenerConfigurations>
+
 </FlowConfiguration>
