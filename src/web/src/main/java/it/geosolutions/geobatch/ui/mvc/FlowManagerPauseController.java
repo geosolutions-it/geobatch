@@ -51,12 +51,14 @@ public class FlowManagerPauseController extends AbstractController {
         Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
 
         String fmId = request.getParameter("fmId");
+        String fullPause = request.getParameter("full");
+        boolean full = "true".equals(fullPause);
 
         if (fmId != null) {
             FileBasedFlowManager fm = catalog.getResource(fmId, FileBasedFlowManager.class);
 
             if ((fm != null) && fm.isRunning()) {
-                fm.pause();
+                fm.pause(full);
             }
         }
 

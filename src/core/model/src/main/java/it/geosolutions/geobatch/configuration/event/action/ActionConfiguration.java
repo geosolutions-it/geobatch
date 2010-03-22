@@ -20,16 +20,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.configuration.event.action;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
+import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class ActionConfiguration 
         extends BaseConfiguration
         implements Configuration {
+
+    private List<String> listenerIds = null;
+    private List<ProgressListenerConfiguration> listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
     
     @Override
 	public abstract ActionConfiguration clone() throws CloneNotSupportedException;
@@ -42,6 +46,25 @@ public abstract class ActionConfiguration
         super(id, name, description, dirty);
     }
     
-    
+    public List<String> getListenerIds() {
+        return listenerIds;
+    }
 
+    protected void setListenerId(List<String> listenerIds) {
+        this.listenerIds = listenerIds;
+    }
+    
+    public void addListenerConfiguration(ProgressListenerConfiguration plc) {
+        listenerConfigurations.add(plc);
+    }
+
+    public List<ProgressListenerConfiguration> getListenerConfigurations() {
+        return listenerConfigurations;
+    }
+
+    public void setListenerConfigurations(List<ProgressListenerConfiguration> listenerConfigurations) {
+        if(listenerConfigurations == null)
+            throw new NullPointerException("Can't set listenerConfig list to null");
+        this.listenerConfigurations = listenerConfigurations;
+    }
 }

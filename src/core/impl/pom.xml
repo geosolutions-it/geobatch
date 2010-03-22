@@ -89,6 +89,14 @@
             <artifactId>gb-core-model</artifactId>
         </dependency>
 
+        <!-- ============================== -->
+        <!--     GeoBatch  		                -->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-alias-registry</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -49,6 +49,7 @@ import java.util.logging.Level;
 import javax.media.jai.JAI;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 /**
  * Comments here ...
@@ -57,8 +58,8 @@ import org.apache.commons.io.FilenameUtils;
  * 
  * @version $ GeoTIFFFolderGeoServerConfigurator.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
-public class GeoTIFFFolderGeoServerConfigurator extends
-		GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+public class GeoTIFFFolderGeoServerConfigurator 
+        extends GeoServerConfiguratorAction<FileSystemMonitorEvent> {
 	
 	public final static String GEOSERVER_VERSION = "2.X";
 
@@ -95,16 +96,16 @@ public class GeoTIFFFolderGeoServerConfigurator extends
 				// Initializing input variables
 				//
 				// ////////////////////////////////////////////////////////////////////
-				final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(), new File(
-						((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+				final File workingDir = IOUtils.findLocation(
+                        configuration.getWorkingDirectory(),
+                        new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
 				// ////////////////////////////////////////////////////////////////////
 				//
 				// Checking input files.
 				//
 				// ////////////////////////////////////////////////////////////////////
-				if ((workingDir == null) || !workingDir.exists()
-						|| !workingDir.isDirectory()) {
+				if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
 					LOGGER.log(Level.SEVERE,
 							"GeoServerDataDirectory is null or does not exist.");
 					throw new IllegalStateException(
@@ -121,18 +122,8 @@ public class GeoTIFFFolderGeoServerConfigurator extends
 
 				FileWriter outFile = null;
 				PrintWriter out = null;
-				
-				String[] fileNames = inputDir.list(new FilenameFilter() {
 
-					public boolean accept(File dir, String name) {
-						if (FilenameUtils.getExtension(name).equalsIgnoreCase("tiff") || 
-								FilenameUtils.getExtension(name).equalsIgnoreCase("tif"))
-							return true;
-						
-						return false;
-					}
-					
-				});
+				String[] fileNames = inputDir.list(new SuffixFileFilter(new String[]{".tif",".tiff"}));
 				
 				List<String> fileNameList = Arrays.asList(fileNames);
 				Collections.sort(fileNameList);

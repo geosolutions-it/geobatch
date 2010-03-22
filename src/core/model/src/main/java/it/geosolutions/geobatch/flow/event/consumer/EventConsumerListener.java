@@ -21,13 +21,13 @@
  */
 package it.geosolutions.geobatch.flow.event.consumer;
 
-import java.util.EventListener;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 
 /**
  * 
  * @author Simone Giannecchini, GeoSolutions
  *
  */
-public interface EventConsumerListener extends EventListener{
+public interface EventConsumerListener extends IProgressListener {
 	public void statusChanged(EventConsumerStatus oldStatus, EventConsumerStatus neeStatus);
 }

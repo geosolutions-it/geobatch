@@ -37,6 +37,11 @@
 		<property name="cacheSeconds" value="-1" />
 	</bean>
 
+	<bean id="flowManagerInfoController"
+		class="it.geosolutions.geobatch.ui.mvc.FlowManagerInfoController">
+		<property name="cacheSeconds" value="-1" />
+	</bean>
+
 	<bean id="flowManagerPauseController"
 		class="it.geosolutions.geobatch.ui.mvc.FlowManagerPauseController">
 		<property name="cacheSeconds" value="-1" />
@@ -112,6 +117,20 @@
 		</property>
 	</bean>
 
+	<bean id="consumerPauseController"
+		class="it.geosolutions.geobatch.ui.mvc.ConsumerPauseController">
+		<property name="cacheSeconds" value="-1" />
+	</bean>
+	<bean id="consumerResumeController"
+		class="it.geosolutions.geobatch.ui.mvc.ConsumerResumeController">
+		<property name="cacheSeconds" value="-1" />
+	</bean>
+	<bean id="consumerDisposeController"
+		class="it.geosolutions.geobatch.ui.mvc.ConsumerDisposeController">
+		<property name="cacheSeconds" value="-1" />
+	</bean>
+
+
 	<!-- Mappings -->
 	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
@@ -124,6 +143,10 @@
 				/ftpUsers.do=ftpManagerController
 				/newFtpUser.form=ftpUserFormController
 				/delete.do=deleteFtpUserController
+				/flowinfo.do=flowManagerInfoController
+                /consumerPause.do=consumerPauseController
+                /consumerResume.do=consumerResumeController
+                /consumerDispose.do=consumerDisposeController
             </value>
 		</property>
 	</bean>

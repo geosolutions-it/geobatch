@@ -74,6 +74,9 @@ public class Alias {
                 it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
                 "eventGeneratorConfiguration");
 
+        xstream.aliasField("ListenerConfigurations",
+                it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
+                "progressListenerConfigurations");
 
         xstream.addImplicitCollection(
                 it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
@@ -84,7 +87,18 @@ public class Alias {
                 it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
                 "actions",
                 it.geosolutions.geobatch.configuration.event.action.ActionConfiguration.class);
+        
+        xstream.addImplicitCollection(
+                it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
+                "listenerIds",
+                "listenerId",
+                String.class);
 
+        xstream.addImplicitCollection(
+                it.geosolutions.geobatch.configuration.event.action.ActionConfiguration.class,
+                "listenerIds",
+                "listenerId",
+                String.class);
 
         // adding registered alias
         if (aliasRegistry != null) {

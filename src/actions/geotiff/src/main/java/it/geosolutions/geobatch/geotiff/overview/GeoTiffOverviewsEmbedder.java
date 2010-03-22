@@ -48,8 +48,9 @@ import org.geotools.utils.progress.ProcessingEventListener;
  * 
  * @version $GeoTIFFOverviewsEmbedder.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
-public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemMonitorEvent> implements
-        Action<FileSystemMonitorEvent> {
+public class GeoTiffOverviewsEmbedder
+        extends BaseAction<FileSystemMonitorEvent>
+        implements Action<FileSystemMonitorEvent> {
 
     private GeoTiffOverviewsEmbedderConfiguration configuration;
 
@@ -63,8 +64,11 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemMonitorEvent>
 
     public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
             throws Exception {
-        try {
 
+        listenerForwarder.setTask("config");
+        listenerForwarder.started();
+        
+        try {
             // looking for file
             if (events.size() != 1)
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
@@ -119,16 +123,21 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemMonitorEvent>
 	                public void getNotification(ProcessingEvent event) {
 	                    if (LOGGER.isLoggable(Level.SEVERE))
 	                        LOGGER.info(event.getMessage());
-	
+                        listenerForwarder.progressing((float)event.getPercentage(), event.getMessage());
 	                }
 	            });
             // run
+
+            listenerForwarder.progressing(0, "Embedding overviews");
             oe.run();
 
+            listenerForwarder.setProgress(100);
+            listenerForwarder.completed();
             return events;
         } catch (Throwable t) {
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            listenerForwarder.failed(t);
             return null;
         }
 

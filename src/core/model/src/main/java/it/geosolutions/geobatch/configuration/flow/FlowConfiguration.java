@@ -27,6 +27,8 @@ package it.geosolutions.geobatch.configuration.flow;
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
+import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
+import java.util.List;
 
 /**
  * @author Alessio Fabiani, GeoSolutions
@@ -53,5 +55,10 @@ public interface FlowConfiguration extends Configuration {
      * The Rule-Set Configuration
      */
     public void setEventConsumerConfiguration(EventConsumerConfiguration eventConsumerConfiguration);
+
+
+    List<ProgressListenerConfiguration> getProgressListenerConfigurations();
+    void setProgressListenerConfigurations(List<ProgressListenerConfiguration> progressListenerConfigurations);
+    ProgressListenerConfiguration getProgressListenerConfiguration(String id);
 
 }

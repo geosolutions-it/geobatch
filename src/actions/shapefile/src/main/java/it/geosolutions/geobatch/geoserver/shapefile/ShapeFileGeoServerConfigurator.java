@@ -70,6 +70,9 @@ public class ShapeFileGeoServerConfigurator extends
 	public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
             throws Exception {
 
+       listenerForwarder.setTask("config");
+       listenerForwarder.started();
+
         try {
             // ////////////////////////////////////////////////////////////////////
             //
@@ -115,6 +118,7 @@ public class ShapeFileGeoServerConfigurator extends
 			final boolean isZipped; 
 			File zippedFile = null;
 			if(events.size() == 1 && FilenameUtils.getExtension(event.getSource().getAbsolutePath()).equalsIgnoreCase("zip")) {
+                listenerForwarder.progressing(5, "unzipping");
 				zippedFile = event.getSource();
 				shpList = handleZipFile(zippedFile, workingDir);
 				isZipped = true;
@@ -126,6 +130,8 @@ public class ShapeFileGeoServerConfigurator extends
 			if(shpList == null)
 				throw new Exception("Error while processing the shape file set");
 
+            listenerForwarder.progressing(10, "In progress");
+            
 			// look for the main shp file in the set
 			File shapeFile = null;
 			for (File file : shpList) {
@@ -186,11 +192,13 @@ public class ShapeFileGeoServerConfigurator extends
             //
             // ////////////////////////////////////////////////////////////////////
             // http://localhost:8080/geoserver/rest/coveragestores/test_cv_store/test/file.tiff
+
+            listenerForwarder.progressing(40, "Preparing shape");
+
             LOGGER.info("Sending ShapeFile to GeoServer ... " + getConfiguration().getGeoserverURL());
             Map<String, String> queryParams = new HashMap<String, String>();
             queryParams.put("namespace", getConfiguration().getDefaultNamespace());
             queryParams.put("wmspath",   getConfiguration().getWmsPath());
-
 
 			if(LOGGER.isLoggable(Level.FINE)) {
 				StringBuilder sb = new StringBuilder("Packing shapefiles: ");
@@ -199,12 +207,15 @@ public class ShapeFileGeoServerConfigurator extends
 				}
 				LOGGER.fine(sb.toString());
 			}
-			if (isZipped)
+			if (isZipped) {
 				zipFileToSend = zippedFile;
-			else
+            } else {
+                listenerForwarder.progressing(50, "Rezipping shape");
 				zipFileToSend = IOUtils.deflate(workingDir, "sending_" + shpBaseName + System.currentTimeMillis(), shpList);
+            }
 			LOGGER.info("ZIP file: " + zipFileToSend.getAbsolutePath());
 
+            listenerForwarder.progressing(60, "Sending");
 			final String[] returnedLayer = GeoServerRESTHelper.sendFeature(
 					zipFileToSend, zipFileToSend, 
                     configuration.getGeoserverURL(),
@@ -226,10 +237,17 @@ public class ShapeFileGeoServerConfigurator extends
 //				LOGGER.info("ShapeFile GeoServerConfiguratorAction: shp was NOT sent to GeoServer due to connection errors!");
 //			}
 
-            return events;
+            if(returnedLayer != null) {
+                listenerForwarder.setProgress(100);
+                listenerForwarder.completed();
+                return events;
+            } else {
+                throw new RuntimeException("Error configuring the layer on GeoServer");
+            }
 
         } catch (Throwable t) {
 			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            listenerForwarder.failed(t);
             return null;
         } finally {
 			// Clear unzipped files, if any

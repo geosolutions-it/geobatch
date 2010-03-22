@@ -196,6 +196,8 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
         final Iterator<File> it = FileUtils.iterateFiles(dataDir, new String[] { "xml" }, false);
         while (it.hasNext()) {
             final File o = it.next();
+
+            // skip catalog config file
             if (o.getName().equalsIgnoreCase(catalog.getId() + ".xml"))
                 continue;
 

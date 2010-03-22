@@ -19,22 +19,20 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-
 package it.geosolutions.geobatch.flow.event.consumer.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
-import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
+import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
+import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerService;
+import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
-import it.geosolutions.geobatch.flow.event.consumer.EventConsumerListener;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.utils.IOUtils;
@@ -43,7 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,66 +58,63 @@ import org.apache.commons.io.FilenameUtils;
  * @author Simone Giannecchini, GeoSolutions S.A.S.
  * 
  */
-public class FileBasedEventConsumer extends
-        BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> implements
-        EventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> {
-    
-	private final static TimeZone tz = TimeZone.getTimeZone("UTC");
-	
+public class FileBasedEventConsumer
+        extends BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration>
+        implements EventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> {
+
     /**
      * Common file prefix (unless the rule specify another one)
      */
     private String commonPrefixRegex;
-
     /**
      * Stream Transfer control
      */
     private long numInputFiles = 0;
-
     /**
      * Storing mandatory rules and the times they will occur.
      */
     private final List<FileEventRule> mandatoryRules = new ArrayList<FileEventRule>();
-
     /**
      * Storing optional rules and the times they will occur.
      */
     private final List<FileEventRule> optionalRules = new ArrayList<FileEventRule>();
-
     /**
      *
      */
     private File workingDir;
-
     private FileBasedEventConsumerConfiguration configuration;
-
     private volatile boolean canceled;
+    /** Dateformat for creating working dirs. */
+    private static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
 
-    // ----------------------------------------------- PUBLIC CONSTRUCTORS
-
+    static {
+        TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
+        DATEFORMAT.setTimeZone(TZ_UTC);
+    }
     /**
      * Default logger
      */
     private final static Logger LOGGER = Logger.getLogger(FileBasedEventConsumer.class.toString());
 
-    // ----------------------------------------------- PROTECTED METHODS
-
+    // ----------------------------------------------- PUBLIC CONSTRUCTORS
     public FileBasedEventConsumer(FileBasedEventConsumerConfiguration configuration)
             throws InterruptedException, IOException {
-        final File catalogFile= new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
+
+        final File catalogFile = new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
         final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(), catalogFile);
-        if (workingDir != null) {
-            if (workingDir.exists() && workingDir.isDirectory() & workingDir.canRead()) {
-                initialize(configuration, workingDir);
-                return;
-            }
+
+        if (workingDir == null)
+            throw new IllegalArgumentException("Invalid configuring directory");
+
+        if (workingDir.exists() && workingDir.isDirectory() & workingDir.canRead()) {
+            initialize(configuration, workingDir);
+            return;
         }
-        throw new IllegalArgumentException("Invalid configuring directory");
+
 
     }
 
-    // ----------------------------------------------- PUBLIC METHODS
-
+    // -------------------------------------------------------------------------
     /**
      * This method allows the BaseDispatcher to check if an Event can be processed by the current
      * BaseEventConsumer.
@@ -135,17 +129,16 @@ public class FileBasedEventConsumer extends
         final String filePrefix = FilenameUtils.getBaseName(fileName);
 
         //check mandatory rules
-        boolean res = this.checkRuleConsistency(event.getNotification(), filePrefix,fileName,true);
+        boolean res = this.checkRuleConsistency(event.getNotification(), filePrefix, fileName, true);
 
         //check optinal rules if needed
         if (!res) {
-            res = this.checkRuleConsistency(event.getNotification(), filePrefix, fileName,false);
+            res = this.checkRuleConsistency(event.getNotification(), filePrefix, fileName, false);
         }
         return res;
     }
 
     // ----------------------------------------------------------------------------
-
     /**
      * Helper method to check for mandatory rules consistency.
      * 
@@ -159,38 +152,40 @@ public class FileBasedEventConsumer extends
 
         int occurrencies;
 
-        final List<FileEventRule> rules = (mandatory?this.mandatoryRules:this.optionalRules);
-        for (FileEventRule rule :rules) {
+        final List<FileEventRule> rules = (mandatory ? this.mandatoryRules : this.optionalRules);
+        for (FileEventRule rule : rules) {
 
             // check event type
             final List<FileSystemMonitorNotifications> eventTypes = rule.getAcceptableNotifications();
-		    if (!checkEvent(eventType, eventTypes))
-		        return false;
-		    
-		    //check occurencies for this file in case we have multiple occurrencies
-		    occurrencies = rule.getActualOccurrencies();
-		    final int originalOccurrences = rule.getOriginalOccurrencies();
-		    final Pattern p = Pattern.compile(rule.getRegex());
-		    if (p.matcher(fileName).matches()) {
-			    //we cannot exceed the number of needed occurrences!
-			    if(occurrencies>originalOccurrences)
-			    	return false;
-			    
-		        if (this.commonPrefixRegex == null) {
-		            this.commonPrefixRegex = prefix;
-		            rule.setActualOccurrencies(occurrencies+ 1);
-		            if(mandatory)
-		            	this.numInputFiles--;
-		            return true;
-		        } else if (prefix.startsWith(this.commonPrefixRegex)) {
-		        	rule.setActualOccurrencies(occurrencies + 1);
-		        	if(mandatory)
-		            	this.numInputFiles--;
-		            return true;
-		        }
-		    }
-    
+            if (!checkEvent(eventType, eventTypes)) {
+                return false;
+            }
 
+            //check occurencies for this file in case we have multiple occurrencies
+            occurrencies = rule.getActualOccurrencies();
+            final int originalOccurrences = rule.getOriginalOccurrencies();
+            final Pattern p = Pattern.compile(rule.getRegex());
+            if (p.matcher(fileName).matches()) {
+                //we cannot exceed the number of needed occurrences!
+                if (occurrencies > originalOccurrences) {
+                    return false;
+                }
+
+                if (this.commonPrefixRegex == null) {
+                    this.commonPrefixRegex = prefix;
+                    rule.setActualOccurrencies(occurrencies + 1);
+                    if (mandatory) {
+                        this.numInputFiles--;
+                    }
+                    return true;
+                } else if (prefix.startsWith(this.commonPrefixRegex)) {
+                    rule.setActualOccurrencies(occurrencies + 1);
+                    if (mandatory) {
+                        this.numInputFiles--;
+                    }
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -198,11 +193,13 @@ public class FileBasedEventConsumer extends
 
     private static boolean checkEvent(FileSystemMonitorNotifications eventType,
             List<FileSystemMonitorNotifications> eventTypes) {
-        if (eventTypes == null)
+        if (eventTypes == null) {
             return true;
+        }
         for (FileSystemMonitorNotifications notification : eventTypes) {
-            if (notification.equals(eventType))
+            if (notification.equals(eventType)) {
                 return true;
+            }
 
         }
         return false;
@@ -251,7 +248,6 @@ public class FileBasedEventConsumer extends
 //
 //        return false;
 //    }
-
     /**
      * FileBasedEventConsumer initialization.
      * 
@@ -266,6 +262,25 @@ public class FileBasedEventConsumer extends
         this.mandatoryRules.clear();
         this.optionalRules.clear();
         this.canceled = false;
+
+        // set the same name of the configuration
+        setName(configuration.getName());
+
+        // ////////////////////////////////////////////////////////////////////
+        // LISTENER
+        // ////////////////////////////////////////////////////////////////////
+
+        for (ProgressListenerConfiguration plConfig : configuration.getListenerConfigurations()) {
+            final String serviceID = plConfig.getServiceID();
+            final ProgressListenerService progressListenerService =
+                    CatalogHolder.getCatalog().getResource(serviceID, ProgressListenerService.class);
+            if (progressListenerService != null) {
+                ProgressListener progressListener = progressListenerService.createProgressListener(plConfig);
+                getListenerForwarder().addListener(progressListener);
+            } else {
+                throw new IllegalArgumentException("Could not find '"+serviceID+"' listener, declared in " + configuration.getId() + " configuration");
+            }
+        }
 
         // ////////////////////////////////////////////////////////////////////
         // RULES
@@ -284,45 +299,74 @@ public class FileBasedEventConsumer extends
         // ////////////////////////////////////////////////////////////////////
         // ACTIONS
         // ////////////////////////////////////////////////////////////////////
-        final List<Action<FileSystemMonitorEvent>> actions = new ArrayList<Action<FileSystemMonitorEvent>>();
+
+        final List<Action<FileSystemMonitorEvent>> loadedActions = new ArrayList<Action<FileSystemMonitorEvent>>();
         for (ActionConfiguration actionConfig : configuration.getActions()) {
-            final String serviceID = actionConfig.getServiceID();
+            final String actionServiceID = actionConfig.getServiceID();
             final ActionService<FileSystemMonitorEvent, ActionConfiguration> actionService =
-                    CatalogHolder.getCatalog().getResource(serviceID, ActionService.class);
+                    CatalogHolder.getCatalog().getResource(actionServiceID, ActionService.class);
             if (actionService != null) {
                 Action<FileSystemMonitorEvent> action = actionService.createAction(actionConfig);
-                actions.add(action);
+
+                // attach listeners to actions
+                for (ProgressListenerConfiguration plConfig : actionConfig.getListenerConfigurations()) {
+                    final String listenerServiceID = plConfig.getServiceID();
+                    final ProgressListenerService progressListenerService =
+                            CatalogHolder.getCatalog().getResource(listenerServiceID, ProgressListenerService.class);
+                    if (progressListenerService != null) {
+                        ProgressListener progressListener = progressListenerService.createProgressListener(plConfig);
+                        action.addListener(progressListener);
+                    } else {
+                        throw new IllegalArgumentException("Could not find '"+listenerServiceID+"' listener," +
+                                " declared in " + actionConfig.getId() + " action configuration," +
+                                " in " + configuration.getId() + " consumer");
+                    }
+                }
+
+                loadedActions.add(action);
             }
         }
-        super.addActions(actions);
+        super.addActions(loadedActions);
 
-		if(actions.isEmpty())
-			if(LOGGER.isLoggable(Level.INFO))
-				LOGGER.info(getClass().getSimpleName() + " initialized with "
-						+ mandatoryRules.size() + " mandatory rules, "
-						+ optionalRules.size() + " optional rules, "
-						+ actions.size() + " actions");
+        if (loadedActions.isEmpty()) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info(getClass().getSimpleName() + " initialized with "
+                        + mandatoryRules.size() + " mandatory rules, "
+                        + optionalRules.size() + " optional rules, "
+                        + loadedActions.size() + " actions");
+            }
+        }
     }
 
-    /**
+    /***************************************************************************
      * Main Thread cycle.
+     *
+     * <LI>Create needed dirs</LI>
+     * <LI>Optionally backup files</LI>
+     * <LI>Move files into a job-specific working dir</LI>
+     * <LI>Run the actions</LI>
      */
     public void run() {
         this.canceled = false;
+        boolean jobResultSuccessful = false;
+        Throwable exceptionOccurred = null;
+
+        getListenerForwarder().setTask("Configuring");
+        getListenerForwarder().started();
 
         try {
 
-            // prepare date format instance for creating dir for this moment
-            final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
-            dateFormat.setTimeZone(tz);
-            final String timeStamp = dateFormat.format(new Date());
+            // create live working dir
+            getListenerForwarder().progressing(0, "Creating working dir");
+            final String timeStamp = DATEFORMAT.format(new Date());
             final File currentRunDirectory = new File(this.workingDir, timeStamp);
             currentRunDirectory.mkdir();
-
-            if ((currentRunDirectory == null) || !currentRunDirectory.exists()|| !currentRunDirectory.isDirectory()) {
+            if ((currentRunDirectory == null) || !currentRunDirectory.exists() || !currentRunDirectory.isDirectory()) {
                 throw new IllegalStateException("Could not create consumer data directories!");
             }
 
+            // create backup dir
+            getListenerForwarder().progressing(0, "Creating backup dir");
             File backup = null;
             if (this.configuration.isPerformBackup()) {
                 backup = new File(currentRunDirectory, "backup");
@@ -331,113 +375,116 @@ public class FileBasedEventConsumer extends
                 }
             }
 
-            final Queue<FileSystemMonitorEvent> preprocessedEventsQueue = new LinkedList<FileSystemMonitorEvent>();
+            final Queue<FileSystemMonitorEvent> fileEventList = new LinkedList<FileSystemMonitorEvent>();
             for (FileSystemMonitorEvent ev : this.eventsQueue) {
-                LOGGER.info(new StringBuilder("FileBasedEventConsumer [")
-						.append(Thread.currentThread().getName())
-						.append("]: new element retrieved from the MailBox.")
-						.toString());
+                if(LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info(new StringBuilder("FileBasedEventConsumer [").append(Thread.currentThread().getName()).append("]: new element retrieved from the MailBox.").toString());
 
                 // get info for the input file event
-                final String filePath = ev.getSource().toString();
-                final File sourceDataFile = new File(filePath);
-                final String fileName = FilenameUtils.getName(filePath);
+                final File sourceDataFile = ev.getSource();
+                final String fileBareName = FilenameUtils.getName(sourceDataFile.toString());
 
-                final File destDataFile = new File(currentRunDirectory, fileName);
+                getListenerForwarder().progressing(0, "Preprocessing event " + fileBareName);
+
+                final File destDataFile = new File(currentRunDirectory, fileBareName);
                 destDataFile.createNewFile();
-//                LOGGER.info(new StringBuilder("FileBasedEventConsumer [")
-//						.append(Thread.currentThread().getName())
-//						.append("]: trying to lock file ")
-//						.append(sourceDataFile.getAbsolutePath()).toString());
 
                 if (IOUtils.acquireLock(this, sourceDataFile)) {
                     IOUtils.copyFile(sourceDataFile, destDataFile);
-					LOGGER.info(new StringBuilder("FileBasedEventConsumer [")
-							.append(Thread.currentThread().getName())
-							.append("]: accepted file " )
-							.append(sourceDataFile).toString());
+                    LOGGER.info(new StringBuilder("FileBasedEventConsumer [").append(Thread.currentThread().getName()).append("]: accepted file ").append(sourceDataFile).toString());
                 } else {
-					LOGGER.severe(new StringBuilder("FileBasedEventConsumer [")
-							.append(Thread.currentThread().getName())
-							.append("]: could not lock file " )
-							.append(sourceDataFile).toString());
+                    LOGGER.severe(new StringBuilder("FileBasedEventConsumer [").append(Thread.currentThread().getName()).append("]: could not lock file ").append(sourceDataFile).toString());
 
-					// TODO: lock not aquired: what else?
-				}
+                    // TODO: lock not aquired: what else?
+                }
 
                 //
-                preprocessedEventsQueue.offer(new FileSystemMonitorEvent(destDataFile, FileSystemMonitorNotifications.FILE_ADDED));
+                fileEventList.offer(new FileSystemMonitorEvent(destDataFile, FileSystemMonitorNotifications.FILE_ADDED));
 
                 // Backing up files and delete sources.
                 if (this.configuration.isPerformBackup()) {
-                    LOGGER.info("FileBasedEventConsumer " + Thread.currentThread().getName()
-                            + " --- Performing BackUp of input files");
-                    try {
-                        if (IOUtils.acquireLock(this, sourceDataFile)) {
-
-                            File destFile = new File(backup, fileName);
-                            if (destFile.exists())
-                                throw new IOException("Back up file already existent!");
-
-                            IOUtils.moveFileTo(sourceDataFile, backup, true);
-
-                        } else{
-							if (LOGGER.isLoggable(Level.SEVERE))
-								LOGGER.severe( Thread.currentThread().getName() + " - Can't lock file " + sourceDataFile);
-						}
-                    } catch (IOException e) {
-                        if (LOGGER.isLoggable(Level.SEVERE))
-                            LOGGER.log(Level.SEVERE, "FileBasedEventConsumer ["
-                                    + Thread.currentThread().getName() + "]:" 
-									+ " could not backup file " + fileName
-									+ " due to the following IO error: "
-                                    + e.getLocalizedMessage(), e);
-                    } catch (InterruptedException e) {
-                        if (LOGGER.isLoggable(Level.SEVERE))
-                            LOGGER.log(Level.SEVERE, "FileBasedEventConsumer ["
-                                    + Thread.currentThread().getName() + "]:" 
-									+ " could not backup file " + fileName
-									+ " due to the following IO error: "
-                                    + e.getLocalizedMessage(), e);
-                    }
-                } else
-                    // schedule for removal
+                    getListenerForwarder().progressing(0, "Creating backup files");
+                    performBackup(sourceDataFile, backup, fileBareName);
+                } else { // schedule for removal
                     IOUtils.deleteFile(sourceDataFile);
-
+                }
             }
 
             // //
             // TODO if no further processing is necessary or can be
             // done due to some error, set eventConsumerStatus to Finished or
-            // Failure.
+            // Failure. (etj: ???)
             // //
-            LOGGER.info(new StringBuilder("FileBasedEventConsumer [")
-					.append(Thread.currentThread().getName()).append("]: new element processed.")
-                    .toString());
-            // //
-            // if the processing has been done successfully,
-            // produce the DTOs.
-            // //
-            if (this.applyActions(preprocessedEventsQueue))
+            LOGGER.info(new StringBuilder("FileBasedEventConsumer [").append(Thread.currentThread().getName()).append("]: new element processed.").toString());
+
+            // // Finally, run the Actions on the files
+            getListenerForwarder().progressing(0, "Running actions");
+
+            if (this.applyActions(fileEventList)) {
                 this.setStatus(EventConsumerStatus.COMPLETED);
-            else
+                jobResultSuccessful = true;
+            } else {
                 this.setStatus(EventConsumerStatus.FAILED);
+            }
 
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
+            if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "FileBasedEventConsumer "
                         + Thread.currentThread().getName() + " could not move file "
                         + " due to the following IO error: " + e.getLocalizedMessage(), e);
+            }
             this.setStatus(EventConsumerStatus.FAILED);
+            exceptionOccurred = e;
         } catch (InterruptedException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
+            if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "FileBasedEventConsumer "
                         + Thread.currentThread().getName() + " could not move file "
-                        + " due to the following IO error: " + e.getLocalizedMessage(), e);
+                        + " due to an InterruptedException: " + e.getLocalizedMessage(), e);
+            }
             this.setStatus(EventConsumerStatus.FAILED);
+            exceptionOccurred = e;
+        } catch(RuntimeException e) {
+            exceptionOccurred = e;
+            throw e;
         } finally {
             LOGGER.info(Thread.currentThread().getName() + " DONE!");
             this.dispose();
+
+            if(jobResultSuccessful && exceptionOccurred==null)
+                getListenerForwarder().completed();
+            else
+                getListenerForwarder().failed(exceptionOccurred);
+        }
+    }
+
+    protected void performBackup(final File sourceDataFile, File backup, final String fileName) {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info(getClass().getSimpleName() + " " + Thread.currentThread().getName() + " --- Performing BackUp of input files");
+        }
+        try {
+            if (IOUtils.acquireLock(this, sourceDataFile)) {
+                File destFile = new File(backup, fileName);
+                if (destFile.exists()) {
+                    throw new IOException("Back up file already existent!");
+                }
+                IOUtils.moveFileTo(sourceDataFile, backup, true);
+            } else {
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.severe(Thread.currentThread().getName() + " - Can't lock file " + sourceDataFile);
+                }
+            }
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, getClass().getSimpleName() + "[" + Thread.currentThread().getName() + "]:"
+                        + " could not backup file " + fileName
+                        + " due to the following IO error: " + e.getLocalizedMessage(), e);
+            }
+        } catch (InterruptedException e) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, getClass().getSimpleName() + "[" + Thread.currentThread().getName() + "]:"
+                        + " could not backup file " + fileName
+                        + " due to the following IO error: " + e.getLocalizedMessage(), e);
+            }
         }
     }
 
@@ -476,26 +523,29 @@ public class FileBasedEventConsumer extends
 
     @Override
     public boolean consume(FileSystemMonitorEvent event) {
-        if (getStatus() != EventConsumerStatus.IDLE && getStatus() != EventConsumerStatus.WAITING)
+        if (getStatus() != EventConsumerStatus.IDLE && getStatus() != EventConsumerStatus.WAITING) {
             return false;
-        if (!canConsume(event))
+        }
+        if (!canConsume(event)) {
             return false;
+        }
         super.consume(event);
 
         //start execution
-        if (numInputFiles == 0)
+        if (numInputFiles == 0) {
             setStatus(EventConsumerStatus.EXECUTING);
+        }
 
         // move to waiting
-        if (getStatus() == EventConsumerStatus.IDLE)
+        if (getStatus() == EventConsumerStatus.IDLE) {
             setStatus(EventConsumerStatus.WAITING);
+        }
 
         return true;
     }
 
     public void cancel() {
         this.canceled = true;
-
     }
 
     public boolean isCanceled() {
@@ -510,27 +560,17 @@ public class FileBasedEventConsumer extends
 //            getCatalog().getExecutor().execute(this);
     }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName()
-				+ "["
-				+ "name:" + getName()
-				+ " status:" + getStatus()
-				+ " actions:" + actions.size()
-				+ " events:" + eventsQueue.size()
-				+ " still missing:" + numInputFiles
-				+ (eventsQueue.isEmpty()? "" : ( " first event:" + eventsQueue.peek().getSource().getName() ))
-				+ "]";
-	}
-
-	public void addListener(EventConsumerListener eventConsumerListener) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void removeListener(EventConsumerListener eventConsumerListener) {
-		// TODO Auto-generated method stub
-		
-	}
-
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()
+                + "["
+                + "name:" + getName()
+                + " status:" + getStatus()
+                + " actions:" + actions.size()
+                + " events:" + eventsQueue.size()
+                + " still missing:" + numInputFiles
+                + (isPaused() ? " PAUSED" : "")
+                + (eventsQueue.isEmpty() ? "" : (" first event:" + eventsQueue.peek().getSource().getName()))
+                + "]";
+    }
 }

@@ -24,29 +24,22 @@
 
 package it.geosolutions.geobatch.catalog.dao.file.xstream;
 
-import it.geosolutions.filesystemmonitor.OsType;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
-import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
-import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
-import it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.xstream.Alias;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.Resource;
 
 /**
- * 
+ *
+ * TODO: in order to test this stuff, we have to load all the available appcontext, so that
+ * xstream registrars will set up all the needed aliases.
+ *
  * @author etj
  */
 public class XStreamFlowConfigurationDAOTest extends TestCase {
@@ -112,7 +105,7 @@ public class XStreamFlowConfigurationDAOTest extends TestCase {
 //
 //        assertEquals(1, lfer.size());
 
-     
+
     }
 
 }

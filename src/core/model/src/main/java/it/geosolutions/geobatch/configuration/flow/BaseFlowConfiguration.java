@@ -27,19 +27,28 @@ package it.geosolutions.geobatch.configuration.flow;
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
+import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public class BaseFlowConfiguration 
+public abstract class BaseFlowConfiguration
         extends BaseConfiguration
         implements FlowConfiguration {
 
     private EventGeneratorConfiguration eventGeneratorConfiguration;
 
     private EventConsumerConfiguration eventConsumerConfiguration;
-    
+
+    /**
+     * These configurations can be recalled by name by any Action or Consumer that will need them.
+     */
+    private List<ProgressListenerConfiguration> progressListenerConfigurations =
+            new ArrayList<ProgressListenerConfiguration>();
+
     private int corePoolSize ;
     
     private int maximumPoolSize ;
@@ -86,6 +95,7 @@ public class BaseFlowConfiguration
         this.eventGeneratorConfiguration = eventGeneratorConfiguration;
     }
 
+
     /*
      * (non-Javadoc)
      * 
@@ -103,6 +113,22 @@ public class BaseFlowConfiguration
     public void setEventConsumerConfiguration(EventConsumerConfiguration eventConsumerConfiguration) {
         this.eventConsumerConfiguration = eventConsumerConfiguration;
 
+    }
+
+    public List<ProgressListenerConfiguration> getProgressListenerConfigurations() {
+        return progressListenerConfigurations;
+    }
+
+    public void setProgressListenerConfigurations(List<ProgressListenerConfiguration> progressListenerConfigurations) {
+        this.progressListenerConfigurations = progressListenerConfigurations;
+    }
+
+    public ProgressListenerConfiguration getProgressListenerConfiguration(String id) {
+        for (ProgressListenerConfiguration progressListenerConfiguration : progressListenerConfigurations) {
+            if(id.equals(progressListenerConfiguration.getId()))
+                return progressListenerConfiguration;
+        }
+        return null;
     }
 
 	public int getCorePoolSize() {

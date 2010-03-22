@@ -138,9 +138,9 @@ public class BaseCatalog
 
         final List<FM> l = lookup(clazz, flowManagers);
 
-        for (final FM fmt : l) {
-            if (id.equals(fmt.getId())) {
-                return fmt;
+        for (final FM fm : l) {
+            if (id.equals(fm.getId())) {
+                return fm;
             }
         }
 
@@ -160,10 +160,10 @@ public class BaseCatalog
 
         final List<FM> l = lookup(clazz, flowManagers);
 
-        for (final FM fmt : l) {
+        for (final FM fm : l) {
 
-            if (name.equals(fmt.getName())) {
-                return fmt;
+            if (name.equals(fm.getName())) {
+                return fm;
             }
         }
 

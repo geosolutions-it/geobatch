@@ -32,8 +32,9 @@ import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConf
  * 
  * @author Simone Giannecchini, GeoSolutions
  */
-public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfiguration implements
-     Configuration{
+public class FileBasedEventGeneratorConfiguration
+        extends EventGeneratorConfiguration
+        implements Configuration {
 
     /**
      * The type of OS which will be used by the embedded File System Watcher.

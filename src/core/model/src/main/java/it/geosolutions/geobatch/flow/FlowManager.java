@@ -38,20 +38,12 @@ import java.util.List;
  * @author Alessio Fabiani
  */
 public interface FlowManager<EO extends EventObject, FC extends FlowConfiguration> 
-        extends PersistentResource<FC> {
+        extends PersistentResource<FC>,
+                Job {
     /**
      * The Flow BaseEventConsumer identifier.
      */
     public void setName(String name);
-
-    /**
-     *
-     */
-    public void pause();
-    /**
-     *
-     */
-    public void resume();
 
     /**
      *
@@ -80,5 +72,5 @@ public interface FlowManager<EO extends EventObject, FC extends FlowConfiguratio
     public EventGenerator<EO> getEventGenerator();
     public void setEventGenerator(EventGenerator<EO> eventGenerator);
     
-    public <ECC extends EventConsumerConfiguration>  List<EventConsumer<EO,ECC>> getEventConsumers();
+    public List<? extends EventConsumer> getEventConsumers();
 }

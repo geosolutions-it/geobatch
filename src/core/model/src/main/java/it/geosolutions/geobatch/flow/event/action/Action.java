@@ -20,12 +20,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.flow.event.action;
 
+import it.geosolutions.geobatch.misc.ListenerRegistry;
+import it.geosolutions.geobatch.flow.Job;
+import it.geosolutions.geobatch.flow.event.ProgressListener;
 import java.util.EventObject;
 import java.util.Queue;
+
 /**
  * Takes a queue of events, process them ({@link execute(Queue events)}) and provides a new queue of event to be
  * processed by the next Action.
@@ -35,11 +37,13 @@ import java.util.Queue;
  *
  * @author Simone Giannecchini, GeoSolutions
  *
- * @param <EO>
+ * @param <XEO>
  */
-public interface Action<EO extends EventObject> {
+public interface Action<XEO extends EventObject>
+    extends Job,
+            ListenerRegistry<ProgressListener> {
 	
-    public Queue<EO> execute(Queue<EO> events) throws Exception;
+    public Queue<XEO> execute(Queue<XEO> events) throws Exception;
 
     public void destroy();
 

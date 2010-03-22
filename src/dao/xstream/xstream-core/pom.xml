@@ -39,5 +39,12 @@
             <artifactId>gb-alias-registry</artifactId>
         </dependency>
 
+        <!-- used for aliasing testing files -->
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-geoserver</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 </project>

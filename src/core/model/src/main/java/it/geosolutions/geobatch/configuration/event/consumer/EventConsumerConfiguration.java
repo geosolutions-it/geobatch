@@ -28,10 +28,15 @@ import java.util.List;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 
 public interface EventConsumerConfiguration extends Configuration {
 
     public List<? extends ActionConfiguration> getActions();
 
     public void setActions(List<? extends ActionConfiguration> actions);
+
+    public List<String> getListenerIds();
+    public void addListenerConfiguration(ProgressListenerConfiguration plc);
+    public List<ProgressListenerConfiguration> getListenerConfigurations();
 }

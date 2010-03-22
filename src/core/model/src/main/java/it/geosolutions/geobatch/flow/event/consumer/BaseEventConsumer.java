@@ -19,24 +19,25 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-
 package it.geosolutions.geobatch.flow.event.consumer;
 
 import it.geosolutions.geobatch.catalog.impl.BaseResource;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
+import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import it.geosolutions.geobatch.flow.event.action.Action;
+import it.geosolutions.geobatch.misc.Counter;
+import it.geosolutions.geobatch.misc.PauseHandler;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.event.EventListenerList;
 
 /**
  * Comments here ...
@@ -44,37 +45,42 @@ import javax.swing.event.EventListenerList;
  * @author Alessio Fabiani, GeoSolutions
  * @author Simone Giannecchini, GeoSolutions
  */
-public abstract class BaseEventConsumer<EO extends EventObject, ECC extends EventConsumerConfiguration>
+public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends EventConsumerConfiguration>
         extends BaseResource
-		implements Runnable, EventConsumer<EO, ECC> {
+        implements Runnable, EventConsumer<XEO, ECC> {
+
+    private static Logger LOGGER = Logger.getLogger(BaseEventConsumer.class.toString());
+    private static Counter counter = new Counter();
+
+    private final Calendar creationTimestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
     /**
      */
     private volatile EventConsumerStatus eventConsumerStatus;
-
     /**
      * The MailBox
      */
-    protected final Queue<EO> eventsQueue = new LinkedList<EO>();
-
-    protected final List<Action<EO>> actions = new ArrayList<Action<EO>>();
-
-	private EventListenerList listeners = new EventListenerList();
-
-    // ----------------------------------------------- PRIVATE ATTRIBUTES
-    /**
-     * Private Logger
-     */
-    private static Logger LOGGER = Logger.getLogger(BaseEventConsumer.class.toString());
+    protected final Queue<XEO> eventsQueue = new LinkedList<XEO>();
+    protected final List<Action<XEO>> actions = new ArrayList<Action<XEO>>();
+    protected volatile Action<XEO> currentAction = null;
+//    private EventListenerList listeners = new EventListenerList();
+    protected EventConsumerListenerForwarder listenerForwarder =
+            new EventConsumerListenerForwarder();
+    protected PauseHandler pauseHandler = new PauseHandler(false);
 
     public BaseEventConsumer() {
         super();
         this.setStatus(EventConsumerStatus.IDLE);
+        this.setId(getClass().getSimpleName() + "_" + counter.getNext());
     }
 
     public BaseEventConsumer(String id, String name, String description) {
         super(id, name, description);
         this.setStatus(EventConsumerStatus.IDLE);
+    }
+
+    public Calendar getCreationTimestamp() {
+        return (Calendar)creationTimestamp.clone();
     }
 
     /*
@@ -86,19 +92,23 @@ public abstract class BaseEventConsumer<EO extends EventObject, ECC extends Even
         return this.eventConsumerStatus;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see it.geosolutions.geobatch.flow.event.consumer.EventConsumer#setStatus(it
-     * .geosolutions.geobatch .flow.event.consumer.Status)
+    /**
+     * Change status and fire events on listeners if status has really changed.
      */
     protected void setStatus(EventConsumerStatus eventConsumerStatus) {
 
-        // //
-        // now changing eventConsumerStatus
-        // //
+        EventConsumerStatus old = eventConsumerStatus;
+
         this.eventConsumerStatus = eventConsumerStatus;
 
+        if (old != eventConsumerStatus) {
+            listenerForwarder.fireStatusChanged(old, eventConsumerStatus);
+            listenerForwarder.setTask(eventConsumerStatus.toString());
+        }
+    }
+
+    public Action<XEO> getCurrentAction() {
+        return currentAction;
     }
 
     /*
@@ -107,45 +117,88 @@ public abstract class BaseEventConsumer<EO extends EventObject, ECC extends Even
      * @see it.geosolutions.geobatch.flow.event.consumer.EventConsumer#put(it.geosolutions
      * .filesystemmonitor .monitor.FileSystemMonitorEvent)
      */
-    public boolean consume(EO event) {
-        if (!eventsQueue.offer(event))
+    public boolean consume(XEO event) {
+        if (!eventsQueue.offer(event)) {
             return false;
+        }
 
         return true;
     }
 
     /**
      * Once the configuring state has been successfully passed, by collecting all the necessary
-     * Events, the BaseEventConsumer invokes this method in order to produce the DTOs. DTOs
-     * represent the Java beans used by the Catalog BaseEventConsumer to configure GeoServer.
-     * 
-     * @param event
-     * @return
-     * 
-     * @throws InterruptedException
-     * @throws InitializationException
+     * Events, the EventConsumer invokes this method in order to run the 
+     * related actions.
+     * <P>
+     * <B>FIXME</B>: once an action fails, the whole flow should bail out. Now it runs on.
      */
-    protected boolean applyActions(Queue<EO> events) {
-		if (LOGGER.isLoggable(Level.FINE))
-			LOGGER.log(Level.FINE, "Applying " + actions.size() + " actions on "
-					+ events.size() + " events.");
+    protected boolean applyActions(Queue<XEO> events) {
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.log(Level.FINE, "Applying " + actions.size() + " actions on "
+                    + events.size() + " events.");
+        }
 
-		// apply all the actions
-        for (Action<EO> action : this.actions) {
+        // apply all the actions
+        int step = 0;
+        for (Action<XEO> action : this.actions) {
+
+            pauseHandler.waitUntilResumed();
+
             try {
+                listenerForwarder.progressing(
+                        100f * step / this.actions.size(),
+                        "Running " + action.getClass().getSimpleName() + "(" + (step + 1) + "/" + this.actions.size() + ")");
+                currentAction = action;
                 events = action.execute(events);
             } catch (Exception e) {
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                }
                 events.clear();
+            } finally {
+                currentAction = null;
             }
-            if (events == null || events.isEmpty())
+            if (events == null || events.isEmpty()) {
                 return false;
+            }
         }
         return true;
     }
 
-    protected void addActions(final List<Action<EO>> actions) {
+    public boolean pause() {
+        pauseHandler.pause();
+        return true; // we'll pause asap
+    }
+
+    public boolean pause(boolean sub) {
+        LOGGER.info("Pausing consumer " + getName() + " ["+ creationTimestamp+"]");
+        pauseHandler.pause();
+
+        if (currentAction != null) {
+            LOGGER.info("Pausing action " + currentAction.getClass().getSimpleName()
+                    + " in consumer " + getName() + " ["+ creationTimestamp+"]");
+            currentAction.pause();
+        }
+
+        return true; // we'll pause asap
+    }
+
+    public void resume() {
+        LOGGER.info("Resuming consumer " + getName() + " ["+ creationTimestamp+"]");
+        if (currentAction != null) {
+            LOGGER.info("Resuming action " + currentAction.getClass().getSimpleName()
+                    + " in consumer " + getName() + " ["+ creationTimestamp+"]");
+            currentAction.resume();
+        }
+
+        pauseHandler.resume();
+    }
+
+    public boolean isPaused() {
+        return pauseHandler.isPaused();
+    }
+
+    protected void addActions(final List<Action<XEO>> actions) {
         this.actions.addAll(actions);
     }
 
@@ -154,38 +207,54 @@ public abstract class BaseEventConsumer<EO extends EventObject, ECC extends Even
         actions.clear();
     }
 
-	/**
-	 * Add listener to this file monitor.
-	 * 
-	 * @param fileListener
-	 *            Listener to add.
-	 */
-	public synchronized void addListener(EventConsumerListener fileListener) {
-	    // Don't add if its already there
-	
-	    // Guaranteed to return a non-null array
-	    final Object[] listenerArray = listeners.getListenerList();
-	    // Process the listeners last to first, notifying
-	    // those that are interested in this event
-	    final int length = listenerArray.length;
-	    for (int i = length - 2; i >= 0; i -= 2) {
-	        if (listenerArray[i].equals(fileListener)) {
-	            return;
-	
-	        }
-	    }
-	
-	    listeners.add(EventConsumerListener.class, fileListener);
-	}
+    /**
+     * Add listener to this consumer.
+     * If hte listere is already registerd, it won't be added again.
+     *
+     * @param fileListener
+     *            Listener to add.
+     */
+    public synchronized void addListener(EventConsumerListener listener) {
+        listenerForwarder.addListener(listener);
+    }
 
-	/**
-	 * Remove listener from this file monitor.
-	 * 
-	 * @param fileListener
-	 *            Listener to remove.
-	 */
-	public synchronized void removeListener(EventConsumerListener fileListener) {
-	    listeners.remove(EventConsumerListener.class, fileListener);
-	
-	}
+    /**
+     * Remove listener from this file monitor.
+     *
+     * @param listener
+     *            Listener to remove.
+     */
+    public synchronized void removeListener(EventConsumerListener listener) {
+        listenerForwarder.removeListener(listener);
+    }
+
+    protected ProgressListenerForwarder getListenerForwarder() {
+        return listenerForwarder;
+    }
+
+    public <PL extends IProgressListener> PL getProgressListener(Class<PL> clazz) {
+        for (IProgressListener ipl : getListenerForwarder().getListeners()) {
+            if(clazz.isAssignableFrom(ipl.getClass()))
+                return (PL)ipl;
+        }
+
+        return null;
+    }
+
+    protected class EventConsumerListenerForwarder extends ProgressListenerForwarder {
+
+        public void fireStatusChanged(EventConsumerStatus olds, EventConsumerStatus news) {
+            for (IProgressListener l : listeners) {
+                try {
+                    if (l instanceof EventConsumerListener) {
+                        ((EventConsumerListener) l).statusChanged(olds, news);
+                    }
+                } catch (Exception e) {
+                    LOGGER.warning("Exception in event forwarder: " + e);
+                }
+            }
+        }
+    }
+
 }
+

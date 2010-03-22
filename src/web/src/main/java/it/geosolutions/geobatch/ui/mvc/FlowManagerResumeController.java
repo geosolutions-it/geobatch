@@ -49,16 +49,21 @@ public class FlowManagerResumeController extends AbstractController {
         Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
 
         String fmId = request.getParameter("fmId");
+        ModelAndView mav = new ModelAndView("flows");
 
         if (fmId != null) {
             FileBasedFlowManager fm = catalog.getResource(fmId, FileBasedFlowManager.class);
 
-            if ((fm != null) && !fm.isRunning()) {
+            if (fm == null) {
+                mav.addObject("error", "Flow '"+fmId+"' not found");
+            } else if( fm.isRunning()) {
+                mav.addObject("error", "Flow '"+fmId+"' is already running.");
+            } else {
                 fm.resume();
+                mav.addObject("message", "Flow '"+fmId+"' resumed.");
             }
         }
 
-        ModelAndView mav = new ModelAndView("flows");
         mav.addObject("flowManagers", catalog.getFlowManagers(FileBasedFlowManager.class));
 
         return mav;

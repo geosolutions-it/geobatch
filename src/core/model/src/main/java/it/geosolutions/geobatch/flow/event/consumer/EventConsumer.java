@@ -25,10 +25,14 @@
 package it.geosolutions.geobatch.flow.event.consumer;
 
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
+import it.geosolutions.geobatch.misc.ListenerRegistry;
+import it.geosolutions.geobatch.flow.Job;
 
 import java.util.EventObject;
 
-public interface EventConsumer<EO extends EventObject, ECC extends EventConsumerConfiguration> {
+public interface EventConsumer<EO extends EventObject, ECC extends EventConsumerConfiguration>
+    extends ListenerRegistry<EventConsumerListener>,
+            Job {
     /**
      * Clean up code for this {@link EventConsumer}.
      */
@@ -68,7 +72,7 @@ public interface EventConsumer<EO extends EventObject, ECC extends EventConsumer
 
     /**
      * Asks this {@link EventConsumer} to cancel its execution.
-     * 
+     *
      */
     public void cancel();
 
@@ -79,9 +83,5 @@ public interface EventConsumer<EO extends EventObject, ECC extends EventConsumer
      *         execution, <code>false</code> otherwise.
      */
     public boolean isCanceled();
-
-	public void addListener(EventConsumerListener eventConsumerListener);
-
-	public void removeListener(EventConsumerListener eventConsumerListener);
 
 }
