@@ -40,6 +40,40 @@
         <link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection" />
 	    <link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" />
       <![endif]-->
+      
+      <!--  style type="text/css">
+		tr.d0 td {
+			background-color: #EEBBBB; color: black;
+		}
+		tr.d1 td {
+			background-color: #BBBBEE; color: black;
+		}
+	  </style -->
+	  
+	<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.custom.css" rel="stylesheet" />	
+	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.8.custom.min.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+
+			// Accordion
+			$("#accordion").accordion({
+				header: "h3",
+				collapsible: true,
+				autoHeight: false
+			});
+
+			// Tabs
+			$("#accordion div.tabs").tabs({
+				ajaxOptions: {
+					error: function(xhr, status, index, anchor) {
+						$(anchor.hash).html("Couldn't load this tab. We'll try to fix this as soon as possible. If this wouldn't be a demo.");
+					}
+				}
+			});
+		});
+	</script>
 </head>
 <body>
   <div id="header">
@@ -62,55 +96,57 @@
 
         <div class="header-panel"></div>
         <p><img src="img/manageFlows-small.png" /></p>
-		<table width="100%" border="0" cellpadding="2" cellspacing="1">
-			<thead>
-				<tr bgcolor="black" style="color: white;">
-					<th width="10%">ID</th>
-					<th width="20%">DESCRIPTION</th>
-					<th width="30%">INPUT DIR</th>
-					<th width="30%">WORKING DIR</th>
-					<th width="5%">STATUS</th>
-					<th width="15%">ACTION</th>
-					<th width="5%">?</th>
-				</tr>
-			</thead>
-			<tbody>
+
+		<!-- Accordion -->
+		<div id="accordion">
+			<% int i=0; %>
 			<c:forEach var="fm" items="${flowManagers}">
-				<tr >
-					<td><c:out value="${fm.configuration.id}"/></td>
-					<td><font style="font-style: italic; font-size: 12px"><c:out value="${fm.configuration.description}"/></font></td>
-					<td><c:out value="${fm.configuration.eventGeneratorConfiguration.workingDirectory}"/></td>
-					<td><c:out value="${fm.configuration.workingDirectory}"/></td>
-					<td align="center">
-						<c:choose> 
-  							<c:when test="${fm.running}">
-								<image src='img/green.png' border='0' title='running' alt='running' width='16' height='16'/>
-							</c:when>
-							<c:otherwise>
-								<image src='img/red.png' border='0' title='paused' alt='paused' width='16' height='16'/>
-							</c:otherwise>
-						</c:choose>
-					</td>
-					<td align="center">
-						<c:choose> 
-  							<c:when test="${fm.running}">
-  								<a href='pause.do?fmId=${fm.id}'><image src='img/pause.png' border='0' title='pause' alt='pause' width='16' height='16'/></a>
-  								<a href='pause.do?fmId=${fm.id}&full=true'><image src='img/pause.png' border='0' title='complete freeze' alt='full' width='16' height='16'/></a>
-  							</c:when>
-  							<c:otherwise>
-  								<a href='resume.do?fmId=${fm.id}'><image src='img/play.png' border='0' title='resume' alt='resume' width='16' height='16'/></a>
-  							</c:otherwise>
-  						</c:choose>
-						<a href="dispose.do?fmId=${fm.id}"><image src='img/dispose.png' border='0' title='dispose' alt='dispose' width='16' height='16'/></a>
-					</td>
-                    <td>
-                        <a href='flowinfo.do?fmId=${fm.id}' target="_">?</a>
-                    </td>
-				</tr>
+				<div>
+					<h3>
+						<a href="#">
+							<c:choose> 
+	  							<c:when test="${fm.running}">
+									<image src='img/green.png' border='0' title='running' alt='running' width='16' height='16'/>
+								</c:when>
+								<c:otherwise>
+									<image src='img/red.png' border='0' title='paused' alt='paused' width='16' height='16'/>
+								</c:otherwise>
+							</c:choose>
+							<c:out value="${fm.configuration.id}"/>
+						</a>
+					</h3>
+					<div>
+						<font style="font-style: italic; font-size: 12px"><c:out value="${fm.configuration.description}"/></font>
+						<div class="tabs">
+							<ul>
+								<li><a class="current" href="#tabs-<%= i %>">Configuration</a></li>
+								<li><a class="" href="flowinfo.do?fmId=${fm.id}">Active Instances</a></li>
+							</ul>
+							<div id="tabs-<%= i %>">
+								<p>
+									<strong>Input directory:</strong> <c:out value="${fm.configuration.eventGeneratorConfiguration.workingDirectory}"/><br/>
+									<strong>Working directory:</strong> <c:out value="${fm.configuration.workingDirectory}"/><br/>
+									
+									<strong>Status:</strong>
+									<c:choose> 
+		  								<c:when test="${fm.running}">
+		  									<a href='pause.do?fmId=${fm.id}'><image src='img/control_pause.png' border='0' title='pause' alt='pause' width='16' height='16'/></a>
+		  									<a href='pause.do?fmId=${fm.id}&full=true'><image src='img/control_stop.png' border='0' title='complete freeze' alt='full' width='16' height='16'/></a>
+		  								</c:when>
+		  								<c:otherwise>
+		  									<a href='resume.do?fmId=${fm.id}'><image src='img/control_play.png' border='0' title='resume' alt='resume' width='16' height='16'/></a>
+		  								</c:otherwise>
+		  							</c:choose>
+									<a href="dispose.do?fmId=${fm.id}"><image src='img/dispose.png' border='0' title='dispose' alt='dispose' width='16' height='16'/></a>									
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<% i++; %>
 			</c:forEach>
-			
-			</tbody>
-		</table>
+		</div>		
+		
 	</div>
       <div class="page-pane selfclear">
 
