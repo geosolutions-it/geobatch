@@ -34,7 +34,14 @@
 		$("a.actions").click(
 			function() {
 				var url = this.href;
-				var dialog = $('<div id="dialog-modal" style="display:hidden"></div>').appendTo('body');
+				var dialog = $("#dialog-modal").get(0);
+
+				if (dialog != null || dialog != "undefined") {
+					$("#dialog-modal").remove();
+					dialog = null;
+				}
+
+				dialog = $('<div id="dialog-modal" style="display:hidden"></div>');
 				
                	// load remote content
                	dialog.load(

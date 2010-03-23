@@ -583,8 +583,6 @@ final class EventDispatcher extends Thread {
 
                             // are we executing? If we are, let's trigger a thread!
                             fm.execute(consumer);
-//                                FileBasedFlowManager.this.executor.execute(consumer);
-
                         } else
                             if(LOGGER.isLoggable(Level.FINE))
                                 LOGGER.fine(event + " was consumed by " + consumer);
@@ -623,6 +621,8 @@ final class EventDispatcher extends Thread {
                                 LOGGER.fine(event + " was the only needed event for " + brandNewConsumer);
 
                             // etj: shouldn't we call executor.execute(consumer); here?
+                            fm.add( brandNewConsumer );
+                            fm.execute(brandNewConsumer);
                         }
 
                         eventServed = true;

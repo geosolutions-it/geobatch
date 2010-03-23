@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<GdalAddo>
+    <r>average</r>
+    <filename>y:\data\geotiff\tobeoverviewed.tif</filename>
+    <levels>2 4 8 16 32</levels>
+</GdalAddo>

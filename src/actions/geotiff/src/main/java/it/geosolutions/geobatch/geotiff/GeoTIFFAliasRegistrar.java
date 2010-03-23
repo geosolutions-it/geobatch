@@ -35,7 +35,7 @@ public class GeoTIFFAliasRegistrar extends AliasRegistrar {
      public GeoTIFFAliasRegistrar(AliasRegistry registry) {
          LOGGER.info(getClass().getSimpleName() + ": registering alias.");
          registry.putAlias("GeoTiffOverviewConfiguration", it.geosolutions.geobatch.geotiff.overview.GeoTiffOverviewsEmbedderConfiguration.class);
-         registry.putAlias("GeoTiffRetilerConfiguration",it.geosolutions.geobatch.geotiff.retile.GeoTiffRetilerConfiguration.class);         
+         registry.putAlias("GeoTiffRetilerConfiguration", it.geosolutions.geobatch.geotiff.retile.GeoTiffRetilerConfiguration.class);         
          
          
      }

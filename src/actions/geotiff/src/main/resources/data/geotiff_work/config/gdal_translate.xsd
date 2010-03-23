@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.geobatch.org/gdal_translate"
+	xmlns="http://www.geobatch.org/gdal_translate">
+
+	<xsd:element name="GdalTranslate">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>
+					converts raster data between different formats
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:all>
+				<xsd:element name="ot" minOccurs="0" maxOccurs="1">
+					<xsd:simpleType>
+						<xsd:annotation>
+							<xsd:documentation>For the output bands to be of the indicated
+								data type.
+							</xsd:documentation>
+						</xsd:annotation>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="Byte"></xsd:enumeration>
+							<xsd:enumeration value="Int16"></xsd:enumeration>
+							<xsd:enumeration value="UInt16"></xsd:enumeration>
+							<xsd:enumeration value="UInt32"></xsd:enumeration>
+							<xsd:enumeration value="Int32"></xsd:enumeration>
+							<xsd:enumeration value="Float32"></xsd:enumeration>
+							<xsd:enumeration value="Float64"></xsd:enumeration>
+							<xsd:enumeration value="CInt16"></xsd:enumeration>
+							<xsd:enumeration value="CInt32"></xsd:enumeration>
+							<xsd:enumeration value="CFloat32"></xsd:enumeration>
+							<xsd:enumeration value="CFloat64"></xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="strict" type="xsd:boolean"
+					minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Don't be forgiving of mismatches and lost
+							data when translating to the output format.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="of" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Select the output format. The default is
+							GeoTIFF
+							(GTiff). Use the short format name.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="expand" minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							(From GDAL 1.6.0) To expose a dataset with 1
+							band with a color table as a dataset with 3
+							(RGB) or 4 (RGBA)
+							bands. Usefull for output
+							drivers such as JPEG, JPEG2000, MrSID,
+							ECW that
+							don't support color indexed datasets. The 'gray'
+							value
+							(from GDAL 1.7.0) enables to expand a
+							dataset with a color table
+							that only contains
+							gray levels to a gray indexed dataset.
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="gray"></xsd:enumeration>
+							<xsd:enumeration value="rgb"></xsd:enumeration>
+							<xsd:enumeration value="rgba"></xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="outsize" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Set the size of the output file. Outsize is in
+							pixels and lines unless '' is attached in which
+							case it is as a
+							fraction of the input image
+							size.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="scale" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							[src_min src_max [dst_min dst_max]]:
+
+							Rescale the
+							input pixels values from the range
+							src_min to src_max to the range
+							dst_min to
+							dst_max. If omitted the output range is 0 to
+							255. If
+							omitted the input range is automatically
+							computed from the source
+							data.
+    					</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="unscale" type="xsd:boolean"
+					minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Apply the scale
+							/offset metadata for the bands
+							to
+							convert scaled values to unscaled values. It is
+							also often
+							necessary to reset the output
+							datatype with the -ot switch.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="srcwin" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							xoff yoff xsize ysize:
+
+							Selects a subwindow from
+							the source image for
+							copying based on pixel/line location.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="projwin" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							ulx uly lrx lry: Selects a subwindow from the
+							source image for copying (like -srcwin) but with
+							the corners given
+							in georeferenced coordinates.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="a_srs" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							srs_def:
+
+							Override the projection for the output
+							file. The
+							srs_def may be any of the usual GDAL/OGR forms,
+							complete
+							WKT, PROJ.4, EPSG:n or a file
+							containing the WKT
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="a_ullr" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							ulx uly lrx lry:
+
+							Assign/override the
+							georeferenced bounds of the
+							output file. This assigns
+							georeferenced bounds
+							to the output file, ignoring what would have
+							been derived from the source file.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="a_nodata" type="xsd:double"
+					minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Assign a specified nodata value to output
+							bands.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="mo_params" minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							"META-TAG=VALUE":
+
+							Passes a metadata key and
+							value to set on the
+							output dataset if possible.
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="mo" type="xsd:string" minOccurs="0"
+								maxOccurs="unbounded">
+								<xsd:annotation>
+									<xsd:documentation>
+										"META-TAG=VALUE":
+
+										Passes a metadata key and
+										value to set on the
+										output dataset if possible.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="co_params" minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							"NAME=VALUE": Passes a creation option to the
+							output format driver. Multiple -co options may
+							be listed. See
+							format specific documentation for
+							legal creation options for each
+							format.
+    				</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="co" type="xsd:string" minOccurs="0"
+								maxOccurs="unbounded">
+								<xsd:annotation>
+									<xsd:documentation>
+										"NAME=VALUE": Passes a creation option to the
+										output format driver. Multiple -co options may
+										be listed. See
+										format specific documentation for
+										legal creation options for each
+										format.
+    								</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="bands" minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Select an input band for output. 
+							Bands are numbered from 1. 
+    				</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="b" type="xsd:int" minOccurs="0"
+								maxOccurs="unbounded">
+								<xsd:annotation>
+									<xsd:documentation>
+										Select an input band for output. 
+										Bands are numbered from 1. 
+    								</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="gcps" minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							pixel line easting northing elevation: Add the
+							indicated ground control point to the output
+							dataset. 
+    				</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="gcp" type="xsd:string" minOccurs="0" 
+					maxOccurs="unbounded">
+								<xsd:annotation>
+									<xsd:documentation>
+										pixel line easting northing elevation: Add the
+										indicated ground control point to the output
+										dataset. 
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="sds" type="xsd:boolean" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Copy all subdatasets of this file to individual
+							output files. Use with formats like HDF or OGDI
+							that have subdatasets.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="source" type="xsd:string" minOccurs="1"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							The source dataset name. It can be either file
+							name, URL of data source or subdataset name for
+							multi-dataset
+							files.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="destination" type="xsd:string"
+					minOccurs="1" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>The destination file name. </xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

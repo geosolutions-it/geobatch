@@ -28,43 +28,6 @@
 <%@ page import="java.text.*" %>
 <%@ page import="java.util.*" %>
 
-<head>
-	<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.custom.css" rel="stylesheet" />	
-	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.8.custom.min.js"></script>
-	
-	<script type="text/javascript">
-		$(function(){
-			// Dialogs
-			$("a.actions").click(
-				function() {
-					var url = this.href;
-					var dialog = $('<div id="dialog-modal" style="display:hidden"></div>').appendTo('body');
-					
-                	// load remote content
-                	dialog.load(
-                        url, 
-                        {},
-                        function (responseText, textStatus, XMLHttpRequest) {
-                        	dialog.dialog({
-                            	title: 'Instance actions...',
-                            	width: 800,
-                    			height: 600,
-                    			modal: true
-                    		});
-
-                        }
-                );
-
-                //prevent the browser to follow the link
-                return false;
-        	});
-
-			
-		});
-	</script>
-</head>
-
 <c:set var="ec" value="${consumer}"/>
 
 <h5>
