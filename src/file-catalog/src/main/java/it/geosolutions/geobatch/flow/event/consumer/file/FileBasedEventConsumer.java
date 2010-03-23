@@ -30,6 +30,7 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerService;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.action.Action;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
@@ -426,6 +427,15 @@ public class FileBasedEventConsumer
             } else {
                 this.setStatus(EventConsumerStatus.FAILED);
             }
+        } catch (ActionException e) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, "FileBasedEventConsumer "
+                        + Thread.currentThread().getName() 
+                        + " Error during "+e.getAction().getClass().getSimpleName()+" execution: "
+                        + e.getLocalizedMessage(), e);
+            }
+            this.setStatus(EventConsumerStatus.FAILED);
+            exceptionOccurred = e;
 
         } catch (IOException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
@@ -435,6 +445,7 @@ public class FileBasedEventConsumer
             }
             this.setStatus(EventConsumerStatus.FAILED);
             exceptionOccurred = e;
+
         } catch (InterruptedException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.log(Level.SEVERE, "FileBasedEventConsumer "
@@ -443,9 +454,11 @@ public class FileBasedEventConsumer
             }
             this.setStatus(EventConsumerStatus.FAILED);
             exceptionOccurred = e;
+
         } catch(RuntimeException e) {
             exceptionOccurred = e;
             throw e;
+
         } finally {
             LOGGER.info(Thread.currentThread().getName() + " DONE!");
             this.dispose();

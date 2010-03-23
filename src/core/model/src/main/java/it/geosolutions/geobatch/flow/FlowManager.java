@@ -20,12 +20,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.flow;
 
 import it.geosolutions.geobatch.catalog.PersistentResource;
-import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.generator.EventGenerator;

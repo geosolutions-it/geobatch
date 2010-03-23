@@ -239,23 +239,24 @@ public class DetectionManagerConfiguration extends ActionConfiguration implement
 	}
 
 
-    public DetectionManagerConfiguration clone() throws CloneNotSupportedException {
+    @Override
+    public DetectionManagerConfiguration clone() { // throws CloneNotSupportedException {
     	try {
 			return (DetectionManagerConfiguration) BeanUtils.cloneBean(this);
 		} catch (IllegalAccessException e) {
-			final CloneNotSupportedException cns= new CloneNotSupportedException();
+			final RuntimeException cns= new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InstantiationException e) {
-			final CloneNotSupportedException cns= new CloneNotSupportedException();
+			final RuntimeException cns= new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InvocationTargetException e) {
-			final CloneNotSupportedException cns= new CloneNotSupportedException();
+			final RuntimeException cns= new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (NoSuchMethodException e) {
-			final CloneNotSupportedException cns= new CloneNotSupportedException();
+			final RuntimeException cns= new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		}

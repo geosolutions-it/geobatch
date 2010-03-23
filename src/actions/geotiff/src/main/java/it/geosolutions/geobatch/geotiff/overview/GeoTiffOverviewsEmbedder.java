@@ -27,6 +27,7 @@ package it.geosolutions.geobatch.geotiff.overview;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.Action;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.io.IOException;
@@ -63,7 +64,7 @@ public class GeoTiffOverviewsEmbedder
     }
 
     public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
-            throws Exception {
+            throws ActionException {
 
         listenerForwarder.setTask("config");
         listenerForwarder.started();
@@ -134,9 +135,9 @@ public class GeoTiffOverviewsEmbedder
             listenerForwarder.setProgress(100);
             listenerForwarder.completed();
             return events;
-        } catch (Throwable t) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+        } catch (Exception t) {
+//            if (LOGGER.isLoggable(Level.SEVERE))
+//                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
             listenerForwarder.failed(t);
             return null;
         }

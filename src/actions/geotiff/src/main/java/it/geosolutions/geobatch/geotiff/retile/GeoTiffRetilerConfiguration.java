@@ -113,38 +113,25 @@ public class GeoTiffRetilerConfiguration extends ActionConfiguration implements
         this.tileW = tileW;
     }
 
-    /**
-     * @return the serviceID
-     */
-    public String getServiceID() {
-        return serviceID;
-    }
-
-    /**
-     * @param serviceID
-     *            the serviceID to set
-     */
-    public void setServiceID(String serviceID) {
-        this.serviceID = serviceID;
-    }
-
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "["
 				+ "id:" + getId()
-				+ ", name:" + getName()
-				+ ", wxh:" + getTileW() + "x" + getTileH()
+				+ " srvId:" + serviceID
+				+ " name:" + getName()
+				+ " wxh:" + getTileW() + "x" + getTileH()
 				+ "]";
 	}
 
 	@Override
-	public GeoTiffRetilerConfiguration clone() throws CloneNotSupportedException {
-		final GeoTiffRetilerConfiguration configuration= 
-			new GeoTiffRetilerConfiguration(getId(),getName(),getDescription(),isDirty());
+	public GeoTiffRetilerConfiguration clone() {
+        GeoTiffRetilerConfiguration configuration = (GeoTiffRetilerConfiguration)super.clone();
+//		final GeoTiffRetilerConfiguration configuration=
+//			new GeoTiffRetilerConfiguration(getId(),getName(),getDescription(),isDirty());
 		configuration.setCompressionRatio(compressionRatio);
 		configuration.setCompressionScheme(compressionScheme);
 		configuration.setJAICapacity(JAICapacity);
-		configuration.setServiceID(serviceID);
+//		configuration.setServiceID(serviceID);
 		configuration.setTileH(tileH);
 		configuration.setTileW(tileW);
 		configuration.setWorkingDirectory(workingDirectory);

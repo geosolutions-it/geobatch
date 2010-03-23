@@ -204,7 +204,7 @@ public class FileBasedEventConsumerConfiguration
     }
     
     @Override
-	public FileBasedEventConsumerConfiguration clone() throws CloneNotSupportedException {
+	public FileBasedEventConsumerConfiguration clone() { // throws CloneNotSupportedException {
 		
     	// clone object
 		final FileBasedEventConsumerConfiguration object = new FileBasedEventConsumerConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());

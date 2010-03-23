@@ -243,7 +243,7 @@ public class ComposerConfiguration extends BaseImageProcessingConfiguration impl
     }
     
     @Override
-    public BaseImageProcessingConfiguration clone() throws CloneNotSupportedException {
+    public BaseImageProcessingConfiguration clone() { // throws CloneNotSupportedException {
         final ComposerConfiguration configuration = new ComposerConfiguration(
                 getId(), getName(), getDescription(), isDirty());
         configuration.setServiceID(getServiceID());

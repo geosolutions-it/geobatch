@@ -168,11 +168,13 @@ public class GeoWebCacheActionConfiguration extends ActionConfiguration implemen
 	}
 	
     @Override
-    public ActionConfiguration clone() throws CloneNotSupportedException {
-		final GeoWebCacheActionConfiguration configuration = 
-			new GeoWebCacheActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+    public ActionConfiguration clone() { // throws CloneNotSupportedException {
+//		final GeoWebCacheActionConfiguration configuration =
+//			new GeoWebCacheActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+		final GeoWebCacheActionConfiguration configuration =
+                (GeoWebCacheActionConfiguration)super.clone();
 		
-		configuration.setServiceID(getServiceID());
+//		configuration.setServiceID(getServiceID());
 		configuration.setGwcUrl(gwcUrl);
 		configuration.setWorkingDirectory(workingDirectory);
 		configuration.setGeoserverUrl(geoserverUrl);

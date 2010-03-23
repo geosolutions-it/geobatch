@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.imagemosaic;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.utils.IOUtils;
@@ -49,6 +50,8 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 /**
  * 
@@ -72,10 +75,12 @@ public class ImageMosaicConfigurator extends
 	 * 
 	 */
 	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws Exception {
+			Queue<FileSystemMonitorEvent> events) throws ActionException {
 
 		if (LOGGER.isLoggable(Level.INFO))
 			LOGGER.info("Starting with processing...");
+
+        listenerForwarder.started();
 
 		try {
 			// looking for file
@@ -217,18 +222,7 @@ public class ImageMosaicConfigurator extends
 					}
 				}
 
-				String[] fileNames = inputDir.list(new FilenameFilter() {
-
-					public boolean accept(File dir, String name) {
-						if (FilenameUtils.getExtension(name).equalsIgnoreCase("tiff") || 
-								FilenameUtils.getExtension(name).equalsIgnoreCase("tif"))
-							return true;
-						
-						return false;
-					}
-					
-				});
-				
+				String[] fileNames = inputDir.list(new SuffixFileFilter(new String[]{".tif", ".tiff"}, IOCase.INSENSITIVE));				
 				List<String> fileNameList = Arrays.asList(fileNames);
 				Collections.sort(fileNameList);
 				fileNames = fileNameList.toArray(new String[1]);
@@ -340,11 +334,14 @@ public class ImageMosaicConfigurator extends
             
 			// ... setting up the appropriate event for the next action
 			events.addAll(layers);
+
+            listenerForwarder.completed();
 			return events;
 		} catch (Throwable t) {
-			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to log, rethrowing
 			JAI.getDefaultInstance().getTileCache().flush();
-			return null;
+            listenerForwarder.failed(t);
+			throw new ActionException(this, t.getMessage(), t);
 		} finally {
 			JAI.getDefaultInstance().getTileCache().flush();
 		}

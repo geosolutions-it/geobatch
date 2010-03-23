@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
+	<id>geotiff_flow0</id>
+	<name>Prepare GeoTIFF and publish</name>
+	<description>Create overviews and publish on GeoServer</description>
+
 	<workingDirectory>geotiff_work</workingDirectory>
-	<EventConsumerConfiguration>
+
+    <EventConsumerConfiguration>
+		<id>geotiff_retile_overview_publish</id>
+		<name>dummy</name>
+		<description>dummy</description>
+
 		<workingDirectory>geotiff_work</workingDirectory>
 		<performBackup>true</performBackup>
+
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
@@ -12,7 +22,13 @@
 			<description>description</description>
 			<name>test</name>
 		</FileEventRule>
+
 		<GeoTiffOverviewConfiguration>
+			<serviceID>geotiffOverviewsEmbedderService</serviceID>
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+
 			<workingDirectory>geotiff_work</workingDirectory>
 			<numSteps>8</numSteps>
 			<downsampleStep>2</downsampleStep>
@@ -20,12 +36,14 @@
 			<interp>0</interp>
 			<tileH>512</tileH>
 			<tileW>512</tileW>
-			<serviceID>geotiffOverviewsEmbedderService</serviceID>
+		</GeoTiffOverviewConfiguration>
+
+		<GeoServerActionConfiguration>
+			<serviceID>geotiffGeoServerGeneratorService</serviceID>
 			<id>a1</id>
 			<description>description</description>
 			<name>test</name>
-		</GeoTiffOverviewConfiguration>		
-		<GeoServerActionConfiguration>
+
 			<workingDirectory>geotiff_work</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
@@ -40,15 +58,10 @@
 			<!-- styles>
 				<style>raster.sld</style>
 			</styles -->
-			<serviceID>geotiffGeoServerGeneratorService</serviceID>
-			<id>a1</id>
-			<description>description</description>
-			<name>test</name>
-		</GeoServerActionConfiguration>		
-		<id>id</id>
-		<description>description</description>
-		<name>test</name>
+		</GeoServerActionConfiguration>
+
 	</EventConsumerConfiguration>
+
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
 		<watchDirectory>geotiff_work/in</watchDirectory>
@@ -59,7 +72,5 @@
 		<description>description</description>
 		<name>test</name>
 	</EventGeneratorConfiguration>
-	<id>geotiff_work0</id>
-	<description>flow1</description>
-	<name>GeoTIFF</name>
+
 </FlowConfiguration>

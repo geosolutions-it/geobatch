@@ -26,6 +26,7 @@ package it.geosolutions.geobatch.geoserver.ascii;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
@@ -171,8 +172,9 @@ public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSys
     }
 
     public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
-            throws Exception {
+            throws ActionException {
         try {
+            listenerForwarder.started();
             // ////////////////////////////////////////////////////////////////////
             //
             // Initializing input variables
@@ -339,11 +341,15 @@ public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSys
             // ////////////////////////////////////////////////////////////////////
             // http://localhost:8080/geoserver/rest/coveragestores/test_cv_store/test/file.tiff
             this.sendToGeoServer(workingDir, event, coverageStoreId, storeFilePrefix, configId);
+
+            listenerForwarder.completed();
             return events;
         } catch (Throwable t) {
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-            return null;
+
+            listenerForwarder.failed(t);
+            throw new ActionException(this, t.getMessage(), t);
         }
 
     }

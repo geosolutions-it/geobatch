@@ -24,6 +24,7 @@
 
 package it.geosolutions.geobatch.ftp.client.upload;
 
+import com.enterprisedt.net.ftp.FTPException;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.ftp.client.FTPHelper;
@@ -42,6 +43,8 @@ import java.util.logging.Level;
 import com.enterprisedt.net.ftp.FTPConnectMode;
 import com.enterprisedt.net.ftp.FTPTransferType;
 import com.enterprisedt.net.ftp.WriteMode;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
 
 
 /**
@@ -71,10 +74,11 @@ public class FTPUploadAction extends
 	 * @param events The events queue.
 	 * @throws IOException
 	 */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)throws Exception {
+    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events) throws ActionException {
 
         try {
-        	
+            listenerForwarder.started();
+
             // ////////////////////////////////////////////////////////////////////
             //
             // Initializing input variables
@@ -139,7 +143,7 @@ public class FTPUploadAction extends
             if (LOGGER.isLoggable(Level.INFO))
             	LOGGER.info("Sending file to FtpServer ... " + ftpserverHost);
             
-            boolean sent = false;
+//            boolean sent = false;
             final FTPConnectMode connectMode = configuration.getConnectMode().toString().equalsIgnoreCase(FTPConnectMode.ACTIVE.toString()) ?
             		FTPConnectMode.ACTIVE : FTPConnectMode.PASV;
             final int timeout = configuration.getTimeout();
@@ -171,7 +175,7 @@ public class FTPUploadAction extends
 				
 				final File zippedFile = IOUtils.zip(tempDir,zipFileName,filesToSend.toArray(new File[filesToSend.size()]));
 				
-	            sent = FTPHelper.putBinaryFileTo(ftpserverHost, zippedFile.getAbsolutePath(), path,
+	            FTPHelperBare.putBinaryFileTo(ftpserverHost, zippedFile.getAbsolutePath(), path,
 	                    ftpserverUSR, ftpserverPWD, ftpserverPort, WriteMode.OVERWRITE, connectMode, timeout);
             }else{
             	
@@ -181,34 +185,39 @@ public class FTPUploadAction extends
             	
             	for(File file: filesToSend){
             		if(file.isFile()){
-                		sent = FTPHelper.putBinaryFileTo(ftpserverHost, file.getAbsolutePath(), path,
+                		FTPHelperBare.putBinaryFileTo(ftpserverHost, file.getAbsolutePath(), path,
         	                    ftpserverUSR, ftpserverPWD, ftpserverPort,WriteMode.OVERWRITE, connectMode, timeout);
-                		if(!sent)
-                			break;
+//                		if(!sent)
+//                			break;
             		}else{
 //            			File dir = new File("C:/Users/tobaro/Desktop/prove gb ftp/test");
 //            			sent = putDirectory(dir, path);
-            			sent = putDirectory(file, path);
+//            			sent =
+                                putDirectory(file, path);
             			
-                		if(!sent)
-                			break;
+//                		if(!sent)
+//                			break;
             		}
             	}
             }
 			
-            if (sent)
+//            if (sent)
             	if (LOGGER.isLoggable(Level.INFO))
             		LOGGER.info("FTPUploadAction: file SUCCESSFULLY sent to FtpServer!");
-            else
-            	if (LOGGER.isLoggable(Level.INFO))
-            		LOGGER.info("FTPUploadAction: file was NOT sent to FtpServer due to connection errors!");
+//            else
+//            	if (LOGGER.isLoggable(Level.INFO))
+//            		LOGGER.info("FTPUploadAction: file was NOT sent to FtpServer due to connection errors!");
 
+            listenerForwarder.completed();
             return events;
             
-        } catch (Throwable t) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-            return null;
+        } catch (Exception ex) {
+//            if (LOGGER.isLoggable(Level.SEVERE))
+//                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex); // not logging rethrown exception
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("FTPUploadAction: file was NOT sent to FtpServer due to connection errors: " + ex.getMessage() );
+            listenerForwarder.failed(ex);
+            throw new ActionException(this, ex.getMessage(), ex); // wrap exception
         }
     }
     
@@ -219,9 +228,9 @@ public class FTPUploadAction extends
      * @param path The remote path where uploading teh files or directory.
      * @return If true the upload operation has been successful.
      */
-    private boolean putDirectory(final File file, final String path){
+    private void putDirectory(final File file, final String path) throws IOException, FTPException{
 		
-    	boolean sent = false;
+//    	boolean sent = false;
     	
     	final FTPConnectMode connectMode = configuration.getConnectMode().toString().equalsIgnoreCase(FTPConnectMode.ACTIVE.toString()) ?
     			FTPConnectMode.ACTIVE : FTPConnectMode.PASV;
@@ -237,36 +246,38 @@ public class FTPUploadAction extends
     	// Build in the remote directory to upload this content 
     	// //////////////////////////////////////////////////////
     	
-		sent = FTPHelper.createDirectory(ftpserverHost, dirName, path,
+//		sent =
+        FTPHelperBare.createDirectory(ftpserverHost, dirName, path,
                 ftpserverUSR, ftpserverPWD, ftpserverPort, FTPTransferType.BINARY, WriteMode.OVERWRITE, connectMode, timeout);
 	
     	// /////////////////////////////
     	// Uploading the local content
     	// /////////////////////////////
 		
-		if(sent){
+//		if(sent){
 			String dirPath = path.concat("/" + dirName);
 			
 			File[] files = file.listFiles();
 		    
 		    for (int i = 0, n = files.length; i < n; i++) {
 		    	if (files[i].isDirectory()) {
-		    		sent = putDirectory(files[i], dirPath);
+//		    		sent = 
+                            putDirectory(files[i], dirPath);
 		    		
-	        		if(!sent)
-	        			break;
+//	        		if(!sent)
+//	        			break;
 		    	}else{
-	    			sent = FTPHelper.putBinaryFileTo(ftpserverHost, files[i].getAbsolutePath(), dirPath,
+	    			FTPHelperBare.putBinaryFileTo(ftpserverHost, files[i].getAbsolutePath(), dirPath,
 		                    ftpserverUSR, ftpserverPWD, ftpserverPort, WriteMode.OVERWRITE, connectMode, timeout);
 	    			
-	        		if(!sent)
-	        			break;
+//	        		if(!sent)
+//	        			break;
 		    	}
 		    }
 		    
-		    if(sent)return true;
-		    else return false;
+//		    if(sent)return true;
+//		    else return false;
 		    
-		}else return false;
+//		}else return false;
     }
 }

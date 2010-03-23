@@ -26,6 +26,7 @@ package it.geosolutions.geobatch.geoserver.shapefile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -68,7 +70,7 @@ public class ShapeFileGeoServerConfigurator extends
     }
 
 	public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
-            throws Exception {
+            throws ActionException {
 
        listenerForwarder.setTask("config");
        listenerForwarder.started();
@@ -80,7 +82,7 @@ public class ShapeFileGeoServerConfigurator extends
             //
             // ////////////////////////////////////////////////////////////////////
             if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "ActionConfig is null.");
+//                LOGGER.log(Level.SEVERE, "ActionConfig is null."); // we're rethrowing it, so don't log
                 throw new IllegalStateException("ActionConfig is null.");
             }
 
@@ -98,12 +100,12 @@ public class ShapeFileGeoServerConfigurator extends
             //
             // ////////////////////////////////////////////////////////////////////
             if (workingDir == null) {
-                LOGGER.log(Level.SEVERE, "Working directory is null.");
+//                LOGGER.log(Level.SEVERE, "Working directory is null."); // we're rethrowing it, so don't log
                 throw new IllegalStateException("Working directory is null.");
             }
 
             if ( !workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "Working directory does not exist ("+workingDir.getAbsolutePath()+").");
+//                LOGGER.log(Level.SEVERE, "Working directory does not exist ("+workingDir.getAbsolutePath()+")."); // we're rethrowing it, so don't log
                 throw new IllegalStateException("Working directory does not exist ("+workingDir.getAbsolutePath()+").");
             }
 
@@ -142,7 +144,7 @@ public class ShapeFileGeoServerConfigurator extends
 			}
 
 			if(shapeFile == null) {
-                LOGGER.log(Level.SEVERE, "Shp file not found in fileset.");
+//                LOGGER.log(Level.SEVERE, "Shp file not found in fileset."); // we're rethrowing it, so don't log
                 throw new IllegalStateException("Shp file not found in fileset.");
 			}
 			final String shpBaseName; 
@@ -168,8 +170,8 @@ public class ShapeFileGeoServerConfigurator extends
             try {
                 connectionParams.put("url", shapeFile.toURI().toURL());
             } catch (MalformedURLException e) {
-                LOGGER.log(Level.SEVERE, "No valid ShapeFile URL found for this Data Flow: "
-                        + e.getLocalizedMessage());
+//                LOGGER.log(Level.SEVERE, "No valid ShapeFile URL found for this Data Flow: "
+//                        + e.getLocalizedMessage()); // we're rethrowing it, so don't log
                 throw new IllegalStateException("No valid ShapeFile URL found for this Data Flow: "
                         + e.getLocalizedMessage());
             }
@@ -180,7 +182,7 @@ public class ShapeFileGeoServerConfigurator extends
             factory = null;
 
             if (!validShape) {
-                LOGGER.log(Level.SEVERE, "No valid ShapeFile found for this Data Flow!");
+//                LOGGER.log(Level.SEVERE, "No valid ShapeFile found for this Data Flow!"); // we're rethrowing it, so don't log
                 throw new IllegalStateException("No valid ShapeFiles found for this Data Flow!");
             }
 
@@ -246,13 +248,18 @@ public class ShapeFileGeoServerConfigurator extends
             }
 
         } catch (Throwable t) {
-			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-            listenerForwarder.failed(t);
-            return null;
+//			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // we're rethrowing it, so don't log
+            listenerForwarder.failed(t); // fails the Action
+            throw new ActionException(this, t.getMessage(), t);
         } finally {
 			// Clear unzipped files, if any
-			if(tempOutDir != null)
-				FileUtils.deleteDirectory(tempOutDir);
+			if(tempOutDir != null) {
+                try {
+                    FileUtils.deleteDirectory(tempOutDir);
+                } catch (IOException ex) {
+                    LOGGER.log(Level.WARNING, "Could not delete temp dir: " + ex.getMessage(), ex);
+                }
+            }
 
 			// Clear sent zip file
 			if(zipFileToSend != null)

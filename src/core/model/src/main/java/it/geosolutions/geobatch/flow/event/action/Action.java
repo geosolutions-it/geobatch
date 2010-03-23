@@ -43,7 +43,7 @@ public interface Action<XEO extends EventObject>
     extends Job,
             ListenerRegistry<ProgressListener> {
 	
-    public Queue<XEO> execute(Queue<XEO> events) throws Exception;
+    public Queue<XEO> execute(Queue<XEO> events) throws ActionException;
 
     public void destroy();
 

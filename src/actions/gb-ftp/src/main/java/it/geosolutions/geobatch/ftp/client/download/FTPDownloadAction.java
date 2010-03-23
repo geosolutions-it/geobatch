@@ -42,6 +42,7 @@ import com.enterprisedt.net.ftp.FTPConnectMode;
 import com.enterprisedt.net.ftp.FTPFile;
 import com.enterprisedt.net.ftp.FTPTransferType;
 import com.enterprisedt.net.ftp.WriteMode;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 
 
 /**
@@ -71,10 +72,11 @@ public class FTPDownloadAction extends
 	 * @param events The events queue.
 	 * @throws IOException
 	 */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)throws Exception {
+    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events) throws ActionException {
     	
         try {
-        	
+        	listenerForwarder.started();
+
             // ////////////////////////////////////////////////////////////////////
             //
             // Initializing input variables
@@ -195,21 +197,31 @@ public class FTPDownloadAction extends
             		}
             	}            	
             }
-            
-            if (sent)
+
+            // TODO: remove the "sent" var and trap errors via try/catch
+
+            if (sent) {
             	if (LOGGER.isLoggable(Level.INFO))
             		LOGGER.info("FTPDownloadAction: file SUCCESSFULLY downloaded from FtpServer!");
-            else
+                
+                listenerForwarder.completed();
+            }
+            else {
             	if (LOGGER.isLoggable(Level.INFO))
             		LOGGER.info("FTPDownloadAction: file was NOT downloaded from FtpServer due to connection errors!");
+                
+                listenerForwarder.failed(null);
+            }
 
             return events;
             
-        } catch (Throwable t) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-            return null;
+        } catch (Exception ex) {
+//            if (LOGGER.isLoggable(Level.SEVERE))
+//                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex); // not logging rethrown exception
+            listenerForwarder.failed(ex);
+            throw new ActionException(this, ex.getMessage(), ex); // wrap exception
         }
+
     }
     
     /**

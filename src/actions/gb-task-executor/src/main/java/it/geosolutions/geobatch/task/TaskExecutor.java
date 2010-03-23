@@ -25,6 +25,7 @@ package it.geosolutions.geobatch.task;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.Action;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.utils.IOUtils;
@@ -69,8 +70,10 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements 
     }
 
 	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws Exception {
-		
+			Queue<FileSystemMonitorEvent> events) throws ActionException {
+
+        listenerForwarder.started();
+
 		 // looking for file
         if (events.size() != 1)
             throw new IllegalArgumentException("Wrong number of elements for this action: "+ events.size());
@@ -83,20 +86,22 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements 
         final FileSystemMonitorEvent event = events.remove();
         final File inputFile = event.getSource();
         
-        //Getting XSL file definition
-        final String xslPath = configuration.getXsl();
-        File xslFile = null;
-		if (xslPath != null && xslPath.trim().length()>0){
-        	 xslFile = IOUtils.findLocation(xslPath,
-	                 new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-        }
-		if (xslFile == null || !xslFile.exists())
-			throw new IllegalArgumentException("The specified XSL file hasn't been found: "+xslPath);
-		
-		//Setup an XML source from the input XML file
-		final Source xmlSource = new StreamSource(inputFile);
 		InputStream is = null;
-		try {
+
+        try {
+            //Getting XSL file definition
+            final String xslPath = configuration.getXsl();
+            File xslFile = null;
+            if (xslPath != null && xslPath.trim().length()>0){
+                 xslFile = IOUtils.findLocation(xslPath,
+                         new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+            }
+            if (xslFile == null || !xslFile.exists())
+                throw new IllegalArgumentException("The specified XSL file hasn't been found: "+xslPath);
+
+            //Setup an XML source from the input XML file
+            final Source xmlSource = new StreamSource(inputFile);
+
 			is = new FileInputStream(xslFile);
 	        if (is != null){
 	        	
@@ -162,17 +167,17 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements 
 				//Executing
 				execTask.execute();
 	         }
-		} catch (BuildException e) {
+		} catch (Exception e) {
 			if (LOGGER.isLoggable(Level.FINE))
 				LOGGER.fine(e.getLocalizedMessage());
+
+            listenerForwarder.failed(e);
+
 		}finally{
-			try{
-				if (is!=null)
-					is.close();
-			}catch (Throwable t){
-					//eat me
-			}
+            org.apache.commons.io.IOUtils.closeQuietly(is);
 		}
+        
+        listenerForwarder.completed();
 		return events;
 	}
 

@@ -26,6 +26,7 @@ import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfig
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import it.geosolutions.geobatch.flow.event.action.Action;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.misc.Counter;
 import it.geosolutions.geobatch.misc.PauseHandler;
 
@@ -51,9 +52,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
     private static Logger LOGGER = Logger.getLogger(BaseEventConsumer.class.toString());
     private static Counter counter = new Counter();
-
     private final Calendar creationTimestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-
     /**
      */
     private volatile EventConsumerStatus eventConsumerStatus;
@@ -80,7 +79,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
     }
 
     public Calendar getCreationTimestamp() {
-        return (Calendar)creationTimestamp.clone();
+        return (Calendar) creationTimestamp.clone();
     }
 
     /*
@@ -130,9 +129,12 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
      * Events, the EventConsumer invokes this method in order to run the 
      * related actions.
      * <P>
-     * <B>FIXME</B>: once an action fails, the whole flow should bail out. Now it runs on.
+     * <B>FIXME</B>: <I>on action errors the flow used to go on.
+     *  Now it bails out from the loop.
+     *  <BR>We may need to specify on a per-action basis if an error in the action
+     *  should stop the whole flow.</I>
      */
-    protected boolean applyActions(Queue<XEO> events) {
+    protected boolean applyActions(Queue<XEO> events) throws ActionException {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.log(Level.FINE, "Applying " + actions.size() + " actions on "
                     + events.size() + " events.");
@@ -140,29 +142,56 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
         // apply all the actions
         int step = 0;
-        for (Action<XEO> action : this.actions) {
 
-            pauseHandler.waitUntilResumed();
+        try {
+            for (Action<XEO> action : this.actions) {
 
-            try {
-                listenerForwarder.progressing(
-                        100f * step / this.actions.size(),
-                        "Running " + action.getClass().getSimpleName() + "(" + (step + 1) + "/" + this.actions.size() + ")");
+                pauseHandler.waitUntilResumed();
+
+                listenerForwarder.setProgress(100f * step / this.actions.size());
+                listenerForwarder.setTask("Running " + action.getClass().getSimpleName() + "(" + (step + 1) + "/" + this.actions.size() + ")");
+                listenerForwarder.progressing(); // notify there has been some progressing
+                
                 currentAction = action;
                 events = action.execute(events);
-            } catch (Exception e) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-                }
-                events.clear();
-            } finally {
-                currentAction = null;
+
+                if (events == null || events.isEmpty()) {
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("Action " + action.getClass().getSimpleName() + " left no event in queue.");
+                    }
+                    return false;
+                } 
             }
-            if (events == null || events.isEmpty()) {
-                return false;
+            // end of loop: all actions have been executed
+            // checkme: what shall we do with the events left in the queue?
+            if(events != null && ! events.isEmpty()) {
+                LOGGER.info("There are " + events.size() + " events left in the queue after last action ("+currentAction.getClass().getSimpleName()+")");
             }
+
+            return true;
+
+        } catch (ActionException e) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            }
+            events.clear();
+
+            // WIP do we want to manage the exception upstream?
+            throw e;
+
+        } catch (Exception e) { // exception not handled by the Action
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            }
+            events.clear();
+
+            // WIP do we want to manage the exception upstream?
+            // wrap the unhandled exception
+            throw new ActionException(currentAction, e.getMessage(), e);
+
+        } finally {
+            currentAction = null;
         }
-        return true;
     }
 
     public boolean pause() {
@@ -171,12 +200,12 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
     }
 
     public boolean pause(boolean sub) {
-        LOGGER.info("Pausing consumer " + getName() + " ["+ creationTimestamp+"]");
+        LOGGER.info("Pausing consumer " + getName() + " [" + creationTimestamp + "]");
         pauseHandler.pause();
 
         if (currentAction != null) {
             LOGGER.info("Pausing action " + currentAction.getClass().getSimpleName()
-                    + " in consumer " + getName() + " ["+ creationTimestamp+"]");
+                    + " in consumer " + getName() + " [" + creationTimestamp + "]");
             currentAction.pause();
         }
 
@@ -184,10 +213,10 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
     }
 
     public void resume() {
-        LOGGER.info("Resuming consumer " + getName() + " ["+ creationTimestamp+"]");
+        LOGGER.info("Resuming consumer " + getName() + " [" + creationTimestamp + "]");
         if (currentAction != null) {
             LOGGER.info("Resuming action " + currentAction.getClass().getSimpleName()
-                    + " in consumer " + getName() + " ["+ creationTimestamp+"]");
+                    + " in consumer " + getName() + " [" + creationTimestamp + "]");
             currentAction.resume();
         }
 
@@ -234,8 +263,9 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
     public <PL extends IProgressListener> PL getProgressListener(Class<PL> clazz) {
         for (IProgressListener ipl : getListenerForwarder().getListeners()) {
-            if(clazz.isAssignableFrom(ipl.getClass()))
-                return (PL)ipl;
+            if (clazz.isAssignableFrom(ipl.getClass())) {
+                return (PL) ipl;
+            }
         }
 
         return null;
@@ -255,6 +285,5 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
             }
         }
     }
-
 }
 

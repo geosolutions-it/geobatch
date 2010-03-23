@@ -26,7 +26,7 @@ package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.Identifiable;
 
-public abstract class BaseIdentifiable implements Identifiable {
+public abstract class BaseIdentifiable implements Identifiable, Cloneable {
 
     private String id;
 
@@ -80,4 +80,17 @@ public abstract class BaseIdentifiable implements Identifiable {
         return description;
     }
 
+    public BaseIdentifiable clone() {
+        try {
+            BaseIdentifiable bi = (BaseIdentifiable) super.clone();
+            bi.description = this.description;
+            bi.id = this.id;
+            bi.name = this.name;
+            return bi;
+        } catch (CloneNotSupportedException e) {
+            // this shouldn't happen, since we are Cloneable
+            throw new InternalError();
+        }
+    }
+    
 }

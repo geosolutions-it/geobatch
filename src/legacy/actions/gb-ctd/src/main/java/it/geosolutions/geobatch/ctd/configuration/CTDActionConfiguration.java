@@ -133,8 +133,8 @@ public class CTDActionConfiguration
     }
 
     @Override
-    public ActionConfiguration clone() throws CloneNotSupportedException {
-		final CTDActionConfiguration configuration = 
+    public ActionConfiguration clone() { // throws CloneNotSupportedException {
+		final CTDActionConfiguration configuration =
 			new CTDActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
 
 		configuration.setDbPWD(dbPWD);

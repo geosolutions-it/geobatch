@@ -199,9 +199,12 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
     }
 
 	@Override
-	public GeoServerActionConfiguration clone() throws CloneNotSupportedException {
-		final GeoServerActionConfiguration configuration = 
-			new GeoServerActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+	public GeoServerActionConfiguration clone() { // throws CloneNotSupportedException {
+//		final GeoServerActionConfiguration configuration =
+//			new GeoServerActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+		final GeoServerActionConfiguration configuration =
+                (GeoServerActionConfiguration)super.clone();
+
 		configuration.setCrs(crs);
 		configuration.setDataTransferMethod(dataTransferMethod);
 		configuration.setDatatype(datatype);
@@ -212,7 +215,7 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
 		configuration.setGeoserverPWD(geoserverPWD);
 		configuration.setGeoserverUID(geoserverUID);
 		configuration.setGeoserverURL(geoserverURL);
-		configuration.setServiceID(getServiceID());
+//		configuration.setServiceID(getServiceID());
 		configuration.setStoreFilePrefix(storeFilePrefix);
 		configuration.setStyles(styles);
 		configuration.setWmsPath(wmsPath);

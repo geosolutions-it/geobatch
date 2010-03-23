@@ -25,6 +25,7 @@ package it.geosolutions.geobatch.geoserver.geotiff;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
@@ -33,7 +34,6 @@ import it.geosolutions.geobatch.utils.IOUtils;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -68,8 +68,7 @@ public class GeoTIFFFolderGeoServerConfigurator
 		super(configuration);
 	}
 
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws Exception {
+	public Queue<FileSystemMonitorEvent> execute ( Queue<FileSystemMonitorEvent> events) throws ActionException {
 		if (LOGGER.isLoggable(Level.INFO))
 			LOGGER.info("Starting with processing...");
 
@@ -198,10 +197,10 @@ public class GeoTIFFFolderGeoServerConfigurator
 			// ... setting up the appropriate event for the next action
 			events.addAll(layers);
 			return events;
-		} catch (Throwable t) {
-			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+		} catch (Exception t) {
+			// LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // not logging since we are rethrowing
 			JAI.getDefaultInstance().getTileCache().flush();
-			return null;
+			throw new ActionException(this, t.getMessage(), t);
 		} finally {
 			JAI.getDefaultInstance().getTileCache().flush();
 		}

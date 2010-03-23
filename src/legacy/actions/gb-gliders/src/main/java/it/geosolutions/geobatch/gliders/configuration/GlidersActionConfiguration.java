@@ -159,9 +159,11 @@ public class GlidersActionConfiguration extends ActionConfiguration implements C
     }
 
     @Override
-    public ActionConfiguration clone() throws CloneNotSupportedException {
-		final GlidersActionConfiguration configuration = 
-			new GlidersActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+    public ActionConfiguration clone() { // throws CloneNotSupportedException {
+//		final GlidersActionConfiguration configuration =
+//			new GlidersActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+		final GlidersActionConfiguration configuration =
+                (GlidersActionConfiguration)super.clone();
 
 		configuration.setDbPWD(dbPWD);
 		configuration.setDbUID(dbUID);
@@ -170,14 +172,12 @@ public class GlidersActionConfiguration extends ActionConfiguration implements C
         configuration.setDbName(dbName);
 		configuration.setStoreFilePrefix(storeFilePrefix);
 		configuration.setConfigId(configId);
-		configuration.setServiceID(getServiceID());
+//		configuration.setServiceID(getServiceID());
 		configuration.setDbType(dbType);
 		configuration.setWorkingDirectory(workingDirectory);
 		configuration.setDbTableName(dbTableName);
 		configuration.setSimplyTollerance(simplyTollerance);
 		return configuration;
     }
-
-
 
 }

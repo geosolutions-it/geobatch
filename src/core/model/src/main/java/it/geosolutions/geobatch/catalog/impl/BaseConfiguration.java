@@ -26,7 +26,8 @@ package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 
-public class BaseConfiguration extends BaseIdentifiable implements Configuration {
+public class BaseConfiguration extends BaseIdentifiable 
+        implements Configuration, Cloneable {
 
     private String serviceID;
     
@@ -66,6 +67,14 @@ public class BaseConfiguration extends BaseIdentifiable implements Configuration
      */
     public void setServiceID(String serviceID) {
         this.serviceID = serviceID;
+    }
+
+    @Override
+    public BaseConfiguration clone() {
+        BaseConfiguration bc = (BaseConfiguration) super.clone();
+        bc.dirty = this.dirty;
+        bc.serviceID = this.serviceID;
+        return bc;
     }
 
 	@Override

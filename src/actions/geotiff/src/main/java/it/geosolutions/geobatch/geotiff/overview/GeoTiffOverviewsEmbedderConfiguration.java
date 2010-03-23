@@ -209,9 +209,12 @@ public class GeoTiffOverviewsEmbedderConfiguration extends ActionConfiguration i
 	}
 
 	@Override
-	public GeoTiffOverviewsEmbedderConfiguration clone() throws CloneNotSupportedException {
-		final GeoTiffOverviewsEmbedderConfiguration configuration= 
-			new GeoTiffOverviewsEmbedderConfiguration(getId(),getName(),getDescription(),isDirty());
+	public GeoTiffOverviewsEmbedderConfiguration clone() { // throws CloneNotSupportedException {
+//		final GeoTiffOverviewsEmbedderConfiguration configuration=
+//			new GeoTiffOverviewsEmbedderConfiguration(getId(),getName(),getDescription(),isDirty());
+		final GeoTiffOverviewsEmbedderConfiguration configuration =
+                (GeoTiffOverviewsEmbedderConfiguration) super.clone();
+
 		configuration.setCompressionRatio(compressionRatio);
 		configuration.setCompressionScheme(compressionScheme);
 		configuration.setDownsampleStep(downsampleStep);
@@ -223,7 +226,7 @@ public class GeoTiffOverviewsEmbedderConfiguration extends ActionConfiguration i
 		configuration.setTileW(tileW);
 		configuration.setWildcardString(wildcardString);
 		configuration.setWorkingDirectory(workingDirectory);
-		configuration.setServiceID(serviceID);
+//		configuration.setServiceID(serviceID);
 		configuration.setLogNotification(logNotification);
 		
 		return configuration;

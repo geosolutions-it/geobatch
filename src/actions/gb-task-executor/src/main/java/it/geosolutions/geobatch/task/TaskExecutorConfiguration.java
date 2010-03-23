@@ -109,23 +109,23 @@ public class TaskExecutorConfiguration extends ActionConfiguration implements
         super(id, name, description, dirty);
     }
     
-    public TaskExecutorConfiguration clone() throws CloneNotSupportedException {
+    public TaskExecutorConfiguration clone() { // throws CloneNotSupportedException {
     	try {
 			return (TaskExecutorConfiguration) BeanUtils.cloneBean(this);
 		} catch (IllegalAccessException e) {
-			final CloneNotSupportedException cns= new CloneNotSupportedException();
+			final RuntimeException cns= new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InstantiationException e) {
-			final CloneNotSupportedException cns= new CloneNotSupportedException();
+			final RuntimeException cns= new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InvocationTargetException e) {
-			final CloneNotSupportedException cns= new CloneNotSupportedException();
+			final RuntimeException cns= new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (NoSuchMethodException e) {
-			final CloneNotSupportedException cns= new CloneNotSupportedException();
+			final RuntimeException cns= new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		}

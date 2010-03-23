@@ -129,7 +129,7 @@ public class FormatConverterConfiguration extends BaseImageProcessingConfigurati
     }
 
 	@Override
-	public FormatConverterConfiguration clone() throws CloneNotSupportedException {
+	public FormatConverterConfiguration clone() { // throws CloneNotSupportedException {
 		final FormatConverterConfiguration configuration= 
 			new FormatConverterConfiguration(getId(),getName(),getDescription(),isDirty());
 		configuration.setCompressionRatio(getCompressionRatio());

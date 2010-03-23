@@ -65,6 +65,7 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.simplify.DouglasPeuckerLineSimplifier;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 
 
 /**
@@ -89,9 +90,10 @@ public class GlidersFileConfigurator extends
     }
 
 	public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
-            throws Exception {
+            throws ActionException {
 
         try {
+            listenerForwarder.started();
         	
         	// ///////////////////////////////////
             // Initializing input variables
@@ -168,11 +170,13 @@ public class GlidersFileConfigurator extends
                 closeConnections();
 	        }
 
+            listenerForwarder.completed();
         	return events;        	
         	
         } catch (Throwable t) {
 			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-            return null;
+            listenerForwarder.failed(t);
+            throw new ActionException(this, t.getMessage(), t);
         } finally {
 			cleanup();
 		}

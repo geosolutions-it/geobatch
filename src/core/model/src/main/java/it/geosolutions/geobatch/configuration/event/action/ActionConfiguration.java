@@ -30,14 +30,11 @@ import java.util.List;
 
 public abstract class ActionConfiguration 
         extends BaseConfiguration
-        implements Configuration {
+        implements Configuration, Cloneable {
 
     private List<String> listenerIds = null;
     private List<ProgressListenerConfiguration> listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
     
-    @Override
-	public abstract ActionConfiguration clone() throws CloneNotSupportedException;
-
 	public ActionConfiguration() {
         super();
     }
@@ -67,4 +64,22 @@ public abstract class ActionConfiguration
             throw new NullPointerException("Can't set listenerConfig list to null");
         this.listenerConfigurations = listenerConfigurations;
     }
+
+    @Override
+    public ActionConfiguration clone() {
+        ActionConfiguration bc = (ActionConfiguration) super.clone();
+
+        bc.listenerIds = new ArrayList<String>(listenerIds);
+        for (String lid : listenerIds) {
+            bc.listenerIds.add(lid);
+        }
+
+        bc.listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
+        for (ProgressListenerConfiguration plc : listenerConfigurations) {
+            bc.listenerConfigurations.add(plc); // CHECKME: shall we clone the configs?
+        }
+        return bc;
+    }
+
+
 }

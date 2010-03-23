@@ -227,7 +227,7 @@ public class FTPActionConfiguration  extends ActionConfiguration implements Conf
     }
 
 	@Override
-	public FTPActionConfiguration clone() throws CloneNotSupportedException {
+	public FTPActionConfiguration clone() { // throws CloneNotSupportedException {
 		final FTPActionConfiguration configuration= new FTPActionConfiguration();
 		BeanUtils.copyProperties(this, configuration);
 		return configuration;

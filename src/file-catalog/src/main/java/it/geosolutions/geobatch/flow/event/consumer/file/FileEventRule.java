@@ -93,11 +93,12 @@ public class FileEventRule extends BaseConfiguration implements Configuration, C
     }
 
     @Override
-    public FileEventRule clone() throws CloneNotSupportedException {
-        final FileEventRule rule = new FileEventRule();
-        rule.setId(getId());
-        rule.setName(getName());
-        rule.setDescription(getDescription());
+    public FileEventRule clone() { // throws CloneNotSupportedException {
+//        final FileEventRule rule = new FileEventRule();
+        final FileEventRule rule = (FileEventRule)super.clone();
+//        rule.setId(getId());
+//        rule.setName(getName());
+//        rule.setDescription(getDescription());
         if (acceptableNotifications != null)
             rule.setAcceptableNotifications(new ArrayList<FileSystemMonitorNotifications>(acceptableNotifications));
         rule.setOptional(optional);
@@ -107,10 +108,12 @@ public class FileEventRule extends BaseConfiguration implements Configuration, C
         return rule;
     }
 
+    // ??? why is it overridden?
     public void setServiceID(String serviceID) {
     	
     }
 
+    // ??? why is it overridden?
     public String getServiceID() {
         return null;
     }

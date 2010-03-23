@@ -608,8 +608,8 @@ final class EventDispatcher extends Thread {
             LOGGER.log(Level.SEVERE,  e.getLocalizedMessage(), e);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE,  e.getLocalizedMessage(), e);
-        } catch (CloneNotSupportedException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+//        } catch (CloneNotSupportedException e) {
+//            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
         }
 
     }

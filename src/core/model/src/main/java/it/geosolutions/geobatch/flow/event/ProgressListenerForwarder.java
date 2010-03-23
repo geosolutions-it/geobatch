@@ -50,7 +50,7 @@ public class ProgressListenerForwarder
     public void failed(Throwable exception) {
         for (IProgressListener l : listeners) {
             try{
-                LOGGER.info(getClass().getSimpleName()+ " FORWARDING failed message to " + l.getClass().getSimpleName());
+                LOGGER.info(getClass().getSimpleName()+ " FORWARDING failed message ("+exception+") to " + l.getClass().getSimpleName());
                 l.failed(exception);
             }catch(Exception e) {
                 LOGGER.warning("Exception in event forwarder: " + e);
