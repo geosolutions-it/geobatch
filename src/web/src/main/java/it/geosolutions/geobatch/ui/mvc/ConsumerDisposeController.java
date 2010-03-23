@@ -25,6 +25,8 @@
 package it.geosolutions.geobatch.ui.mvc;
 
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
+import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,8 +37,10 @@ import org.springframework.web.servlet.ModelAndView;
 public class ConsumerDisposeController extends ConsumerAbstractController {
 
     @Override
-    protected void runStuff(ModelAndView mav, String fmId, BaseEventConsumer consumer) {
-        consumer.cancel();
+    protected void runStuff(ModelAndView mav, FileBasedFlowManager fm, BaseEventConsumer consumer) {
+    	if (fm != null && consumer != null)
+    		fm.dispose((FileBasedEventConsumer) consumer);
+    	
         mav.addObject("consumer", consumer);
     }
 }

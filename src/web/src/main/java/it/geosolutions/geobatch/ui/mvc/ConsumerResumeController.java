@@ -25,6 +25,7 @@
 package it.geosolutions.geobatch.ui.mvc;
 
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,8 +36,10 @@ import org.springframework.web.servlet.ModelAndView;
 public class ConsumerResumeController extends ConsumerAbstractController {
 
     @Override
-    protected void runStuff(ModelAndView mav, String fmId, BaseEventConsumer consumer) {
-        consumer.resume();
+    protected void runStuff(ModelAndView mav, FileBasedFlowManager fm, BaseEventConsumer consumer) {
+        if (fm != null && consumer != null)
+        	consumer.resume();
+        
         mav.addObject("consumer", consumer);
     }
 

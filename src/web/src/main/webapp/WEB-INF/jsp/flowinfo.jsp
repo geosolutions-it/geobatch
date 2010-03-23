@@ -67,12 +67,12 @@
 	    <c:choose>
 	        <c:when test="${ec.paused}">
 	            <a href='consumerResume.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_play.png' border='0' title='resume instance' alt='resume' width='16' height='16'/></a>
+	    		<a href="consumerDispose.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/cancel.png' border='0' title='cancel instance' alt='cancel' width='16' height='16'/></a>
 	        </c:when>
 	        <c:otherwise>
 	            <a href='consumerPause.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_pause.png' border='0' title='pause instance' alt='pause' width='16' height='16'/></a>
 	        </c:otherwise>
 	    </c:choose>
-	    <a href="consumerDispose.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/cancel.png' border='0' title='cancel instance' alt='cancel' width='16' height='16'/></a>
 	    <a class="actions" href="consumerInfo.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/page_white_text.png' border='0' title='instance logs' alt='logs' width='16' height='16'/></a>
     </h5>
     <UL>

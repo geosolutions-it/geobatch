@@ -53,9 +53,10 @@ public abstract class ConsumerAbstractController extends AbstractController {
         String ecId = request.getParameter("ecId");
 
         BaseEventConsumer consumer = null;
-
+        FileBasedFlowManager fm = null;
+        
         if (fmId != null) {
-            FileBasedFlowManager fm = catalog.getResource(fmId, FileBasedFlowManager.class);
+            fm = catalog.getResource(fmId, FileBasedFlowManager.class);
 
             if (fm != null) {
                 List<? extends EventConsumer> ecList = fm.getEventConsumers();
@@ -72,7 +73,7 @@ public abstract class ConsumerAbstractController extends AbstractController {
         mav.addObject("flowManagers", catalog.getFlowManagers(FileBasedFlowManager.class));
 
         if(consumer != null) {
-            runStuff(mav, fmId, consumer);
+            runStuff(mav, fm, consumer);
         } else {
             mav.addObject("error", "Flow instance '"+ecId+"' not found");
         }
@@ -80,5 +81,5 @@ public abstract class ConsumerAbstractController extends AbstractController {
         return mav;
     }
 
-    protected abstract void runStuff(ModelAndView mav, String fmId, BaseEventConsumer consumer);
+    protected abstract void runStuff(ModelAndView mav, FileBasedFlowManager fm, BaseEventConsumer consumer);
 }
