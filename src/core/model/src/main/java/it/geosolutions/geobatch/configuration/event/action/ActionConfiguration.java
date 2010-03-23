@@ -69,14 +69,15 @@ public abstract class ActionConfiguration
     public ActionConfiguration clone() {
         ActionConfiguration bc = (ActionConfiguration) super.clone();
 
-        bc.listenerIds = new ArrayList<String>(listenerIds);
-        for (String lid : listenerIds) {
-            bc.listenerIds.add(lid);
-        }
+        bc.listenerIds = listenerIds == null ?
+            new ArrayList<String>() :
+            new ArrayList<String>(listenerIds);
 
         bc.listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
-        for (ProgressListenerConfiguration plc : listenerConfigurations) {
-            bc.listenerConfigurations.add(plc); // CHECKME: shall we clone the configs?
+        if(listenerConfigurations != null) {
+            for (ProgressListenerConfiguration plc : listenerConfigurations) {
+                bc.listenerConfigurations.add(plc); // CHECKME: shall we clone the configs?
+            }
         }
         return bc;
     }
