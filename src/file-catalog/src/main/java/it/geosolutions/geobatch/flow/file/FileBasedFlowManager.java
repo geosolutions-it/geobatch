@@ -186,6 +186,32 @@ public class FileBasedFlowManager
         return !paused && started;
     }
 
+    /**
+     * Remove the given consumer instance from the ones handled by this flow.
+     * <P>
+     * It should only be used on instances that are not running, i.e. in
+     * a COMPLETED or FAILED state.
+     *
+     * @param fbec the consumer to be removed.
+     */
+    public void dispose(FileBasedEventConsumer fbec) {
+        if( ! eventConsumers.contains(fbec)) {
+            throw new IllegalArgumentException("This flow is not managing " + fbec);
+        }
+
+        if(fbec.getStatus() != EventConsumerStatus.COMPLETED &&
+                fbec.getStatus() != EventConsumerStatus.FAILED) {
+                if(LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.warning("Disposing uncompleted consumer " + fbec);
+        }
+
+        synchronized(eventConsumers) {
+            eventConsumers.remove(fbec);
+        }
+
+        // dunno if we should also force a fbec.dispose();
+        // it's called at the end of the consumer thread automatically
+    }
 
     /**
      * Main thread loop.
