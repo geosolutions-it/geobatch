@@ -26,6 +26,8 @@ package it.geosolutions.geobatch.ui.mvc;
 
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 
+import org.springframework.web.servlet.ModelAndView;
+
 
 /**
  *
@@ -34,7 +36,8 @@ import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 public class ConsumerPauseController extends ConsumerAbstractController {
 
     @Override
-    protected void runStuff(String fmId, BaseEventConsumer consumer) {
+    protected void runStuff(ModelAndView mav, String fmId, BaseEventConsumer consumer) {
         consumer.pause(true);
+        mav.addObject("consumer", consumer);
     }
 }

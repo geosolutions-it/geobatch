@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,13 +68,11 @@ public abstract class ConsumerAbstractController extends AbstractController {
             }
         }
 
-        ModelAndView mav = new ModelAndView("flowinfo");
-        FileBasedFlowManager fm = catalog.getResource(fmId, FileBasedFlowManager.class);
-        mav.addObject("flowManager", fm);
+        ModelAndView mav = new ModelAndView("flows");
+        mav.addObject("flowManagers", catalog.getFlowManagers(FileBasedFlowManager.class));
 
         if(consumer != null) {
-            runStuff(fmId, consumer);
-            mav.addObject("consumer", consumer);
+            runStuff(mav, fmId, consumer);
         } else {
             mav.addObject("error", "Flow instance '"+ecId+"' not found");
         }
@@ -81,5 +80,5 @@ public abstract class ConsumerAbstractController extends AbstractController {
         return mav;
     }
 
-    protected abstract void runStuff(String fmId, BaseEventConsumer consumer);
+    protected abstract void runStuff(ModelAndView mav, String fmId, BaseEventConsumer consumer);
 }

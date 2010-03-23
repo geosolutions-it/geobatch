@@ -71,7 +71,8 @@ public class Start {
 
             WebAppContext wah = new WebAppContext();
             wah.setContextPath("/geobatch");
-            wah.setWar("target/geobatch");
+            //wah.setWar("target/geobatch");
+            wah.setWar("src/main/webapp");
             jettyServer.setHandler(wah);
             wah.setTempDirectory(new File("target/work"));
 

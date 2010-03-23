@@ -25,8 +25,8 @@
 package it.geosolutions.geobatch.ui.mvc;
 
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
-import java.text.DateFormat;
-import java.util.Date;
+
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -35,8 +35,9 @@ import java.util.Date;
 public class ConsumerResumeController extends ConsumerAbstractController {
 
     @Override
-    protected void runStuff(String fmId, BaseEventConsumer consumer) {
+    protected void runStuff(ModelAndView mav, String fmId, BaseEventConsumer consumer) {
         consumer.resume();
+        mav.addObject("consumer", consumer);
     }
 
 }

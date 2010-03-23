@@ -72,6 +72,7 @@
 					}
 				}
 			});
+
 		});
 	</script>
 </head>
@@ -130,14 +131,16 @@
 									<strong>Status:</strong>
 									<c:choose> 
 		  								<c:when test="${fm.running}">
+		  									Running
 		  									<a href='pause.do?fmId=${fm.id}'><image src='img/control_pause.png' border='0' title='pause' alt='pause' width='16' height='16'/></a>
 		  									<a href='pause.do?fmId=${fm.id}&full=true'><image src='img/control_stop.png' border='0' title='complete freeze' alt='full' width='16' height='16'/></a>
 		  								</c:when>
 		  								<c:otherwise>
+		  									Stopped
 		  									<a href='resume.do?fmId=${fm.id}'><image src='img/control_play.png' border='0' title='resume' alt='resume' width='16' height='16'/></a>
 		  								</c:otherwise>
 		  							</c:choose>
-									<a href="dispose.do?fmId=${fm.id}"><image src='img/dispose.png' border='0' title='dispose' alt='dispose' width='16' height='16'/></a>									
+									<a href="dispose.do?fmId=${fm.id}"><image src='img/cancel.png' border='0' title='cancel' alt='cancel' width='16' height='16'/></a>									
 								</p>
 							</div>
 						</div>
