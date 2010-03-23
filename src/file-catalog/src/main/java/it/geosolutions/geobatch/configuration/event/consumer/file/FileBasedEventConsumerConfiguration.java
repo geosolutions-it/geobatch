@@ -223,8 +223,10 @@ public class FileBasedEventConsumerConfiguration
 		object.setActions(clonedActions);
 
         // clone listeners
-        for (ProgressListenerConfiguration progressListenerConfiguration : listenerConfigurations) {
-       		object.addListenerConfiguration(progressListenerConfiguration);
+        if(listenerConfigurations != null) { // tricks from xstream
+            for (ProgressListenerConfiguration progressListenerConfiguration : listenerConfigurations) {
+                object.addListenerConfiguration(progressListenerConfiguration);
+            }
         }
 
 		return object;
