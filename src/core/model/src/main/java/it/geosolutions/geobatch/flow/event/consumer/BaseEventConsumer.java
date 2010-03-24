@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/

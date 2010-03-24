@@ -393,9 +393,56 @@ public class GeoServerRESTHelper {
 
         return input.toString();
     }
+
+    /**
+     * Send data to GeoServer...
+     * 
+     * @param inputDataDir
+     * @param data
+     * @param layerType
+     * @param geoserverBaseURL
+     * @param geoserverUID
+     * @param geoserverPWD
+     * @param originalCoverageStoreId
+     * @param storeFilePrefix
+     * @param queryParams
+     * @param queryString
+     * @param dataTransferMethod
+     * @param type
+     * @param geoserverVersion
+     * @param dataStyles
+     * @param defaultStyle
+     * @return
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws TransformerException
+     */
+    public static String[] send(
+			final File inputDataDir, 
+			final File data,
+			final boolean layerType,
+			final String geoserverBaseURL, 
+			final String geoserverUID, 
+			final String geoserverPWD,
+			final String originalStoreId, 
+			final String storeFilePrefix,
+			final Map<String, String> queryParams,
+			final String queryString,
+			final String dataTransferMethod, 
+			final String type, 
+			final String geoserverVersion, 
+			final List<String> dataStyles, 
+			final String defaultStyle )
+			throws ParserConfigurationException, IOException, TransformerException {
+			
+    	if (layerType)
+    		return sendFeature(inputDataDir, data, geoserverBaseURL, geoserverUID, geoserverPWD, originalStoreId, storeFilePrefix, queryParams, dataTransferMethod, type, geoserverVersion, dataStyles, defaultStyle);
+    	else
+    		return sendCoverage(inputDataDir, data, geoserverBaseURL, geoserverUID, geoserverPWD, originalStoreId, storeFilePrefix, queryParams, queryString, dataTransferMethod, type, geoserverVersion, dataStyles, defaultStyle);
+    }
     
     /**
-	 * Send to GeoServer
+	 * Send Coverage to GeoServer
 	 * 
 	 * @param inputDataDir
 	 * @param data
@@ -410,7 +457,7 @@ public class GeoServerRESTHelper {
      * @throws IOException 
      * @throws ParserConfigurationException 
 	 */
-	public static String[] send(
+	public static String[] sendCoverage(
 			final File inputDataDir, 
 			final File data,
 			final String geoserverBaseURL, 

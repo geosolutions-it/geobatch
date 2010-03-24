@@ -24,9 +24,9 @@ package it.geosolutions.geobatch.geoserver.shapefile;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.utils.IOUtils;
 
@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -54,15 +55,18 @@ import org.geotools.data.shapefile.ShapefileDataStoreFactory;
  * @author ETj
  * @author Daniele Romagnoli, GeoSolutions S.A.S.
  */
-public class ShapeFileGeoServerConfigurator extends
-        GeoServerConfiguratorAction<FileSystemMonitorEvent> {
-
+public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> implements Action<FileSystemMonitorEvent> {
+	
+	private final static Logger LOGGER = Logger.getLogger(ShapeFileConfigurator.class.toString());
+	
 	private File tempOutDir = null;
 	private File zipFileToSend = null;
 
-    public ShapeFileGeoServerConfigurator(GeoServerActionConfiguration configuration)
+	private ShapeFileConfiguration configuration;
+	
+    public ShapeFileConfigurator(ShapeFileConfiguration configuration)
             throws IOException {
-        super(configuration);
+    	this.configuration = configuration;
     }
 
     /**
@@ -161,7 +165,7 @@ public class ShapeFileGeoServerConfigurator extends
             // //
             // Convert Params into the kind of Map we actually need
             // //
-            Map<String, Serializable> connectionParams = new HashMap(); // values used for connection
+            Map<String, Serializable> connectionParams = new HashMap<String, Serializable>(); // values used for connection
 
             /**
              * GeoServer url: "file:data/" + dataStoreId + "/" + shpFileName
@@ -175,7 +179,7 @@ public class ShapeFileGeoServerConfigurator extends
                         + e.getLocalizedMessage());
             }
 
-            connectionParams.put("namespace", getConfiguration().getDefaultNamespace());
+            connectionParams.put("namespace", configuration.getNamespace());
 
             boolean validShape = factory.canProcess(connectionParams);
             factory = null;
@@ -195,11 +199,6 @@ public class ShapeFileGeoServerConfigurator extends
             // http://localhost:8080/geoserver/rest/coveragestores/test_cv_store/test/file.tiff
 
             listenerForwarder.progressing(40, "Preparing shape");
-
-            LOGGER.info("Sending ShapeFile to GeoServer ... " + getConfiguration().getGeoserverURL());
-            Map<String, String> queryParams = new HashMap<String, String>();
-            queryParams.put("namespace", getConfiguration().getDefaultNamespace());
-            queryParams.put("wmspath",   getConfiguration().getWmsPath());
 
 			if(LOGGER.isLoggable(Level.FINE)) {
 				StringBuilder sb = new StringBuilder("Packing shapefiles: ");

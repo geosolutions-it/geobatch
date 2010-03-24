@@ -36,6 +36,8 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
     private String storeType;
     
     private String storeId;
+    
+    private Boolean vectorialLayer;
 
     public GeoServerRESTActionConfiguration() {
         super();
@@ -62,6 +64,7 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
 		setStyles(baseConfiguration.getStyles());
 		setWmsPath(baseConfiguration.getWmsPath());
 		setWorkingDirectory(baseConfiguration.getWorkingDirectory());
+		setVectorialLayer(baseConfiguration.isVectorialLayer());
     }
     
 	/**
@@ -128,5 +131,19 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
 	 */
 	public String getStoreId() {
 		return storeId;
+	}
+
+	/**
+	 * @param vectorialLayer the vectorialLayer to set
+	 */
+	public void setVectorialLayer(Boolean vectorialLayer) {
+		this.vectorialLayer = vectorialLayer;
+	}
+
+	/**
+	 * @return the vectorialLayer
+	 */
+	public Boolean isVectorialLayer() {
+		return vectorialLayer;
 	}
 }
