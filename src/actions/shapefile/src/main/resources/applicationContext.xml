@@ -4,7 +4,7 @@
 <beans>
 
 	<!-- Environment Initialization -->
-	<bean id="shapefileGeoServerGeneratorService" class="it.geosolutions.geobatch.geoserver.shapefile.ShapeFileGeoServerGeneratorService">
+	<bean id="shapefileGeoServerGeneratorService" class="it.geosolutions.geobatch.geoserver.shapefile.ShapeFileGeneratorService">
 		<property  name="id">
     		<value>shapefileGeoServerGeneratorService</value>
     	</property>
@@ -16,4 +16,7 @@
     	</property>	
 	</bean>
 
+    <bean id="ShapeFileRegistrar" class="it.geosolutions.geobatch.geoserver.shapefile.ShapeFileAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
 </beans>

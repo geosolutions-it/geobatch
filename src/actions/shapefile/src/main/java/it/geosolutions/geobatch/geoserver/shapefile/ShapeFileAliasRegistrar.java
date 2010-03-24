@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.task;
+package it.geosolutions.geobatch.geoserver.shapefile;
 
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
@@ -30,10 +30,10 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class TaskExecutorAliasRegistrar extends AliasRegistrar {
+public class ShapeFileAliasRegistrar extends AliasRegistrar {
 
-     public TaskExecutorAliasRegistrar(AliasRegistry registry) {
+     public ShapeFileAliasRegistrar(AliasRegistry registry) {
          LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-         registry.putAlias("TaskExecutorConfiguration", it.geosolutions.geobatch.task.TaskExecutorConfiguration.class);
+         registry.putAlias("ShapeFileConfiguration", ShapeFileConfiguration.class);
      }
  }

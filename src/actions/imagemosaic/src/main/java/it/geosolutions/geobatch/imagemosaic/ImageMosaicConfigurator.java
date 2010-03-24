@@ -258,7 +258,7 @@ public class ImageMosaicConfigurator extends
 						Map<String, String> queryParams = new HashMap<String, String>();
 						queryParams.put("namespace", getConfiguration().getDefaultNamespace());
 						queryParams.put("wmspath", getConfiguration().getWmsPath());
-						final String[] layerResponse = GeoServerRESTHelper.send(
+						final String[] layerResponse = GeoServerRESTHelper.sendCoverage(
 								inputDir, 
 								inputDir, 
 								getConfiguration().getGeoserverURL(), 
