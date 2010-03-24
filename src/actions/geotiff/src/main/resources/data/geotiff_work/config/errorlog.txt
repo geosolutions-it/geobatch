@@ -1,2 +1,0 @@
--srcwin 0 0 2000 2000 falls outside raster size of 835x972
-or is otherwise illegal.

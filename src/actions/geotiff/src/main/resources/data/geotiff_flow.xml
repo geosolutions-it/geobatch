@@ -19,16 +19,7 @@
 		<performBackup>false</performBackup>
 
 		<FileEventRule>
-			<optional>true</optional>
-			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.xml</regex>
-			<id>r1</id>
-			<description>description</description>
-			<name>test</name>
-		</FileEventRule>
-		
-		<FileEventRule>
-			<optional>true</optional>
+			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
 			<regex>.*\.tif.*</regex>
 			<id>r1</id>
@@ -39,7 +30,7 @@
 		<TaskExecutorConfiguration>
 			<id>GDALTRANSLATE</id>
 			<description>Flow to run gdal_translate operations</description>
-			<name>GdalTranslate flow</name>
+			<name>GdalTranslate action</name>
 			
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 			
@@ -48,6 +39,8 @@
 			<errorFile>geotiff_work/config/errorlog.txt</errorFile>
 			<timeOut>1200000</timeOut>
 			<executable>C:\Programmi\FWTools2.2.8\bin\gdal_translate.exe</executable>
+			<defaultScript>geotiff_work/config/gdal_translate.xml</defaultScript>
+			<outputName>*.tiff</outputName>
 		    <variables>
 				 <entry>
 				    <string>GDAL_DATA</string>
@@ -61,10 +54,10 @@
 			<xsl>geotiff_work/config/gdal_translate.xsl</xsl>
 		</TaskExecutorConfiguration>
 		
-		<!-- TaskExecutorConfiguration>
-			<id>gdaladdo</id>
+		<TaskExecutorConfiguration>
+			<id>GDALADDO</id>
 			<description>Action to run gdaladdo operations</description>
-			<name>gdaladdo action</name>
+			<name>GdalADDO action</name>
 			
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 			
@@ -73,6 +66,8 @@
 			<errorFile>geotiff_work/config/errorlog.txt</errorFile>
 			<timeOut>1200000</timeOut>
 			<executable>C:\Program Files\FWTools2.2.8\bin\gdaladdo.exe</executable>
+			<defaultScript>geotiff_work/config/gdaladdo.xml</defaultScript>
+			<outputName>*.tif</outputName>
 		    <variables>
 				 <entry>
 				    <string>GDAL_DATA</string>
@@ -84,10 +79,10 @@
 				  </entry>
 			</variables>
 			<xsl>geotiff_work/config/gdaladdo.xsl</xsl>
-		</TaskExecutorConfiguration -->
+		</TaskExecutorConfiguration>
 
-		<GeoServerActionConfiguration>
-			<serviceID>geotiffGeoServerGeneratorService</serviceID>
+		<GeoServerRESTActionConfiguration>
+            <serviceID>geoServerRESTGeneratorService</serviceID>
 			<id>geotiff</id>
 			<description>Action to ingest GeoTIFF on GeoServer</description>
 			<name>geotiff action</name>
@@ -95,20 +90,24 @@
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 			
 			<workingDirectory>geotiff_work</workingDirectory>
-			<crs>EPSG:4326</crs>
-			<envelope/>
-			<dataTransferMethod>URL</dataTransferMethod>
-			<geoserverPWD>geoserver</geoserverPWD>
-			<geoserverUID>admin</geoserverUID>
-			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
-			<!-- storeFilePrefix>c41078a</storeFilePrefix -->
-			<wmsPath>/</wmsPath>
-			<defaultStyle>raster</defaultStyle>
-			<styles/>
-			<!-- styles>
-				<style>raster.sld</style>
-			</styles -->
-		</GeoServerActionConfiguration>
+            <crs>EPSG:4326</crs>
+            <envelope/>
+            <dataTransferMethod>DIRECT</dataTransferMethod>
+            <vectorialLayer>false</vectorialLayer>
+            <geoserverPWD>geoserver</geoserverPWD>
+            <geoserverUID>admin</geoserverUID>
+            <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+            <geoserverVersion>2.0.0</geoserverVersion>
+            <!-- storeFilePrefix></storeFilePrefix -->
+            <!-- storeId></storeId -->
+            <storeType>geotiff</storeType>
+            <wmsPath>/</wmsPath>
+            <defaultStyle>raster</defaultStyle>
+            <styles/>
+            <!-- styles>
+                <style>raster.sld</style>
+            </styles -->
+		</GeoServerRESTActionConfiguration>
 
 	</EventConsumerConfiguration>
 

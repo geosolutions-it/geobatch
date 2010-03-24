@@ -25,9 +25,8 @@
 package it.geosolutions.geobatch.geoserver.shapefile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -40,16 +39,14 @@ import java.util.logging.Logger;
  * 
  * @version $ ShapeFileGeoServerGeneratorService.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
-public class ShapeFileGeoServerGeneratorService 
-	extends GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration>
-	implements ActionService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
+public class ShapeFileGeneratorService extends BaseService implements
+ActionService<FileSystemMonitorEvent, ShapeFileConfiguration> {
 	
-    private final static Logger LOGGER = Logger.getLogger(ShapeFileGeoServerGeneratorService.class
-            .toString());
+    private final static Logger LOGGER = Logger.getLogger(ShapeFileGeneratorService.class.toString());
 
-    public ShapeFileGeoServerConfigurator createAction(GeoServerActionConfiguration configuration) {
+    public ShapeFileConfigurator createAction(final ShapeFileConfiguration configuration) {
         try {
-            return new ShapeFileGeoServerConfigurator(configuration);
+            return new ShapeFileConfigurator(configuration);
         } catch (IOException e) {
             if (LOGGER.isLoggable(Level.WARNING))
                 LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
@@ -57,10 +54,8 @@ public class ShapeFileGeoServerGeneratorService
         }
     }
 
-    @Override
-    public boolean canCreateAction(GeoServerActionConfiguration configuration) {
-        final boolean superRetVal = super.canCreateAction(configuration);
-        return superRetVal;
+    public boolean canCreateAction(final ShapeFileConfiguration configuration) {
+        return true;
     }
 
 }

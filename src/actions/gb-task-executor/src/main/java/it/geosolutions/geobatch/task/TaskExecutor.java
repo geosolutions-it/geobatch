@@ -64,13 +64,9 @@ import org.apache.tools.ant.types.Environment.Variable;
  * 
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
-public class TaskExecutor 
-	extends BaseAction<FileSystemMonitorEvent>
-	implements Action<FileSystemMonitorEvent> {
+public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements Action<FileSystemMonitorEvent> {
 
 	private final static Logger LOGGER = Logger.getLogger(TaskExecutor.class.toString());
-	
-	private final static String PATH_SEPARATOR = System.getProperty("path.separator");
 	
 	private final static String SOURCE_TAG_OPEN = "<source>";
 	
@@ -87,8 +83,8 @@ public class TaskExecutor
     	this.configuration = configuration;
     }
 
-	public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
-		throws ActionException {
+	public Queue<FileSystemMonitorEvent> execute(
+			Queue<FileSystemMonitorEvent> events) throws ActionException {
 
         listenerForwarder.started();
 
@@ -145,9 +141,9 @@ public class TaskExecutor
 				if (defaultScriptPath != null && defaultScriptPath.trim().length()>0){
 					xmlFile = IOUtils.findLocation(defaultScriptPath,
 						 new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-					final File outXmlFile = File.createTempFile("script", "xml");
+					final File outXmlFile = File.createTempFile("script", ".xml");
 					outXmlFile.deleteOnExit();
-					outputFile = setScriptArguments(defaultScriptPath, inputFilePath, outputName, outXmlFile);
+					outputFile = setScriptArguments(xmlFile.getAbsolutePath(), inputFilePath, outputName, outXmlFile);
 					xmlFile = outXmlFile;
 				}
 
@@ -222,7 +218,8 @@ public class TaskExecutor
 				
 				//Executing
 				execTask.execute();
-				final File outFile = new File(outputFile); 
+				final File outFile = new File(outputFile);
+				events.clear();
 				events.add(new FileSystemMonitorEvent(outFile, FileSystemMonitorNotifications.FILE_ADDED));
 				
 	         }
@@ -259,9 +256,9 @@ public class TaskExecutor
 			overwriteOutput = true;
 			if (outputName.startsWith("*.")){
 				final String outputExt = outputName.substring(2,outputName.length());
-				destFilePath = new StringBuilder(FilenameUtils.getFullPath(inputFilePath)).append(PATH_SEPARATOR).append(FilenameUtils.getBaseName(inputFilePath)).append(outputExt).toString();
+				destFilePath = new StringBuilder(FilenameUtils.getFullPath(inputFilePath)).append(File.separator).append(FilenameUtils.getBaseName(inputFilePath)).append(".").append(outputExt).toString();
 			} else {
-				destFilePath = new StringBuilder(FilenameUtils.getFullPath(inputFilePath)).append(PATH_SEPARATOR).append(FilenameUtils.getBaseName(inputFilePath)).append(outputName).toString();
+				destFilePath = new StringBuilder(FilenameUtils.getFullPath(inputFilePath)).append(File.separator).append(FilenameUtils.getBaseName(inputFilePath)).append(".").append(outputName).toString();
 			}
         }
 		
@@ -276,30 +273,33 @@ public class TaskExecutor
             PrintWriter    outputStream  = new PrintWriter(outputFileWriter);
 
             String inLine = null;
+            boolean sourcePresent = false;
+            boolean destinationPresent = false;
             
             while ((inLine = inputStream.readLine()) != null) {
             	// Handle KeyWords
 
-            	if (inLine.startsWith(SOURCE_TAG_OPEN)) {
-            		if (inLine.endsWith(SOURCE_TAG_CLOSE)){
+            	if (inLine.trim().startsWith(SOURCE_TAG_OPEN)) {
+            		if (inLine.trim().endsWith(SOURCE_TAG_CLOSE)){
             			// source file specified on the same line
             			inLine = new StringBuilder(SOURCE_TAG_OPEN).append(inputFilePath).append(SOURCE_TAG_CLOSE).toString();
             		} else {
             			while ((inLine = inputStream.readLine()) != null) {
-            				if (inLine.endsWith(SOURCE_TAG_CLOSE)){
+            				if (inLine.trim().endsWith(SOURCE_TAG_CLOSE)){
             					// source file specified on different lines
             					inLine = new StringBuilder(SOURCE_TAG_OPEN).append(inputFilePath).append(SOURCE_TAG_CLOSE).toString();
             				} 
             			}
             		}
+            		sourcePresent = true;
             	}
 
             	
-        		if (inLine.startsWith(DESTINATION_TAG_OPEN)) {
-            		if (inLine.endsWith(DESTINATION_TAG_CLOSE)){
+        		if (inLine.trim().startsWith(DESTINATION_TAG_OPEN)) {
+            		if (inLine.trim().endsWith(DESTINATION_TAG_CLOSE)){
             			// source file specified on the same line
             			if (overwriteOutput){
-            				inLine = new StringBuilder(DESTINATION_TAG_OPEN).append(destFilePath).append(DESTINATION_TAG_CLOSE).toString();	
+            				inLine = new StringBuilder(DESTINATION_TAG_OPEN).append(destFilePath).append(DESTINATION_TAG_CLOSE).toString();
             			} else {
             				final int start = inLine.indexOf(DESTINATION_TAG_OPEN);
             				final int end = inLine.indexOf(DESTINATION_TAG_CLOSE, start+1);
@@ -309,16 +309,17 @@ public class TaskExecutor
             		} else {
             			while ((inLine = inputStream.readLine()) != null) {
             				if (overwriteOutput){
-	            				if (inLine.endsWith(DESTINATION_TAG_CLOSE)){
+	            				if (inLine.trim().endsWith(DESTINATION_TAG_CLOSE)){
 	            					// source file specified on different lines
 	            					inLine = new StringBuilder(DESTINATION_TAG_OPEN).append(destFilePath).append(DESTINATION_TAG_CLOSE).toString();
 	            				} 
             				} else {
             					String newLine = inLine.trim();
-            					if (newLine.endsWith(DESTINATION_TAG_CLOSE)){
+            					if (newLine.trim().endsWith(DESTINATION_TAG_CLOSE)){
 	            					// source file specified on different lines
-            						if (!newLine.startsWith(DESTINATION_TAG_CLOSE))
+            						if (!newLine.trim().startsWith(DESTINATION_TAG_CLOSE)) {
             							destFilePath = newLine.substring(0, newLine.indexOf(DESTINATION_TAG_CLOSE));
+            						}
 	            				} else {
 	            					if (newLine.length()>0){
 	            						destFilePath = newLine;
@@ -327,16 +328,22 @@ public class TaskExecutor
             				}
             			}
             		}
+            		destinationPresent = true;
         		}
             	
         		outputStream.println(inLine);
             }
 
+            if (sourcePresent && !destinationPresent) {
+            	destFilePath = inputFilePath;
+            }
+            
         } catch (IOException e) {
         } finally {
         	inputFileReader.close();
         	outputFileWriter.close();
         }
+        
 		return destFilePath;
 	}
 	

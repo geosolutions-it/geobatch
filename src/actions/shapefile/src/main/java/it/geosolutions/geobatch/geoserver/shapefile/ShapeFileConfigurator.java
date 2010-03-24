@@ -64,8 +64,9 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
 
 	private ShapeFileConfiguration configuration;
 	
-    public ShapeFileConfigurator(ShapeFileConfiguration configuration)
+    public ShapeFileConfigurator(final ShapeFileConfiguration configuration)
             throws IOException {
+    	super(configuration);
     	this.configuration = configuration;
     }
 

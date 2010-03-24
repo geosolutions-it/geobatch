@@ -52,7 +52,7 @@
             <name>test</name>
         </FileEventRule>
 
-        <GeoServerActionConfiguration>
+        <ShapeFileConfiguration>
             <serviceID>shapefileGeoServerGeneratorService</serviceID>
             <id>step0</id>
             <name>ShapeFileIngestion</name>
@@ -60,24 +60,37 @@
 
             <listenerId>ActionLogger0</listenerId>
 
-			<failIgnored>false</failIgnored> <!-- optional -->
+            <workingDirectory>shape_work</workingDirectory>
+        </ShapeFileConfiguration>
+
+		<GeoServerRESTActionConfiguration>
+            <serviceID>geoServerRESTGeneratorService</serviceID>
+            <id>step1</id>
+            <name>GeoServerIngestion</name>
+            <description>GeoServer REST.</description>
+
+            <listenerId>ActionLogger0</listenerId>
 
             <workingDirectory>shape_work</workingDirectory>
             <crs>EPSG:4326</crs>
             <envelope/>
-            <dataTransferMethod>URL</dataTransferMethod>
+            <dataTransferMethod>DIRECT</dataTransferMethod>
+            <vectorialLayer>true</vectorialLayer>
             <geoserverPWD>geoserver</geoserverPWD>
             <geoserverUID>admin</geoserverUID>
             <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
-            <!-- storeFilePrefix>c41078a</storeFilePrefix -->
+            <geoserverVersion>2.0.0</geoserverVersion>
+            <!-- storeFilePrefix></storeFilePrefix -->
+            <!-- storeId></storeId -->
+            <storeType>shp</storeType>
             <wmsPath>/</wmsPath>
             <defaultStyle>polygon</defaultStyle>
             <styles/>
             <!-- styles>
                 <style>raster.sld</style>
             </styles -->
-        </GeoServerActionConfiguration>
-
+		</GeoServerRESTActionConfiguration>
+		
     </EventConsumerConfiguration>
 
     <EventGeneratorConfiguration>

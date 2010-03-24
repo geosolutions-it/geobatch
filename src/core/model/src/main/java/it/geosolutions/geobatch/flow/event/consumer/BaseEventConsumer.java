@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
@@ -28,13 +27,11 @@ import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.misc.Counter;
 import it.geosolutions.geobatch.misc.PauseHandler;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
