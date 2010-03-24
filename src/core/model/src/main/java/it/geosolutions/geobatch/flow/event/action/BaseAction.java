@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.flow.event.action;
 
 import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
+import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.Job;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
@@ -44,10 +45,15 @@ public abstract class BaseAction<XEO extends EventObject>
     private final static Logger LOGGER = Logger.getLogger(BaseAction.class.toString());
     
     protected ProgressListenerForwarder listenerForwarder = new ProgressListenerForwarder();
+	
+	protected boolean failIgnored = false;
+
+	public BaseAction(ActionConfiguration actionConfiguration) {
+		failIgnored = actionConfiguration.isFailIgnored();
+	}
 
     public void destroy() {
     }
-
 
     public boolean isPaused() {
         return false;
@@ -66,6 +72,14 @@ public abstract class BaseAction<XEO extends EventObject>
     public void resume() {
         LOGGER.info("Resuming " + getClass().getSimpleName());
     }
+
+	public boolean isFailIgnored() {
+		return failIgnored;
+	}
+
+	public void setFailIgnored(boolean failIgnored) {
+		this.failIgnored = failIgnored;
+	}
 
     public void removeListener(ProgressListener listener) {
         this.listenerForwarder.removeListener(listener);

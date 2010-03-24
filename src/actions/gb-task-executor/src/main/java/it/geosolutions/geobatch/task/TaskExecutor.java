@@ -34,7 +34,6 @@ import it.geosolutions.geobatch.utils.IOUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,7 +54,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.ExecTask;
 import org.apache.tools.ant.types.Environment.Variable;
@@ -66,7 +64,9 @@ import org.apache.tools.ant.types.Environment.Variable;
  * 
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
-public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements Action<FileSystemMonitorEvent> {
+public class TaskExecutor 
+	extends BaseAction<FileSystemMonitorEvent>
+	implements Action<FileSystemMonitorEvent> {
 
 	private final static Logger LOGGER = Logger.getLogger(TaskExecutor.class.toString());
 	
@@ -83,6 +83,7 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements 
     private TaskExecutorConfiguration configuration;
 
 	public TaskExecutor(final TaskExecutorConfiguration configuration) throws IOException {
+		super(configuration);
     	this.configuration = configuration;
     }
 

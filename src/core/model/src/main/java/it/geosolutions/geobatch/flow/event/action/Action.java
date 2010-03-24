@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.flow.event.action;
 
+import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.misc.ListenerRegistry;
 import it.geosolutions.geobatch.flow.Job;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
@@ -46,6 +47,18 @@ public interface Action<XEO extends EventObject>
     public Queue<XEO> execute(Queue<XEO> events) throws ActionException;
 
     public void destroy();
+
+	/**
+	 *  Tells if an exception in this Actions should not break the entire flow.
+	 * <BR>Defaults to false.
+	 * <P>Some somehow "minor" actions would not break the logical flow, for 
+	 * instance a remote file deletion via FTP. 
+	 * 
+	 * @return true if an error in this Actions should not stop the whole flow.
+	 */
+	public boolean isFailIgnored();
+
+//	public <T extends ActionConfiguration> T getConfiguration();
 
 //	public boolean isRunning();
 

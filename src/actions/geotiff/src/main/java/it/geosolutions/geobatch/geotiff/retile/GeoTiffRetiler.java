@@ -71,6 +71,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemMonitorEvent> implement
 
     protected GeoTiffRetiler(GeoTiffRetilerConfiguration configuration)
             throws IOException {
+		super(configuration);
         this.configuration = configuration;
     }
 

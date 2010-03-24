@@ -36,7 +36,9 @@ import java.util.logging.Logger;
  * 
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  */
-public abstract class FTPBaseAction <T extends EventObject> extends BaseAction<T> implements Action<T> {
+public abstract class FTPBaseAction <T extends EventObject> 
+	extends BaseAction<T>
+	implements Action<T> {
 	
     /**
      * Default logger
@@ -53,7 +55,7 @@ public abstract class FTPBaseAction <T extends EventObject> extends BaseAction<T
      * @throws IOException
      */
     public FTPBaseAction(FTPActionConfiguration configuration) throws IOException {
-    	
+		super(configuration);
 //        try {
 			this.configuration = configuration.clone();
 //		} catch (CloneNotSupportedException e) {

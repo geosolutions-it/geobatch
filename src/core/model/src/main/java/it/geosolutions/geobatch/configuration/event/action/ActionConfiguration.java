@@ -34,7 +34,8 @@ public abstract class ActionConfiguration
 
     private List<String> listenerIds = null;
     private List<ProgressListenerConfiguration> listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
-    
+	private boolean failIgnored = false;
+
 	public ActionConfiguration() {
         super();
     }
@@ -42,7 +43,23 @@ public abstract class ActionConfiguration
     public ActionConfiguration(String id, String name, String description, boolean dirty) {
         super(id, name, description, dirty);
     }
-    
+
+	/**
+	 *  Tells if an exception in this Actions should break the entire flow.
+	 * <BR>Defaults to false.
+	 * <P>Some somehow "minor" actions would not break the logical flow, for
+	 * instance a remote file deletion via FTP.
+	 *
+	 * @return true if an error in this Actions should not stop the whole flow.
+	 */
+	public boolean isFailIgnored() {
+		return failIgnored;
+	}
+
+	public void setFailIgnored(boolean failIgnored) {
+		this.failIgnored = failIgnored;
+	}
+
     public List<String> getListenerIds() {
         return listenerIds;
     }

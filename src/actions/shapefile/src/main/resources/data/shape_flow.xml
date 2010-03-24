@@ -60,6 +60,8 @@
 
             <listenerId>ActionLogger0</listenerId>
 
+			<failIgnored>false</failIgnored> <!-- optional -->
+
             <workingDirectory>shape_work</workingDirectory>
             <crs>EPSG:4326</crs>
             <envelope/>

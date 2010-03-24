@@ -24,6 +24,7 @@
 
 package it.geosolutions.geobatch.imagemosaic;
 
+import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 
@@ -46,7 +47,8 @@ import java.util.logging.Logger;
  */
 
 public abstract class ImageMosaicConfiguratorAction<T extends EventObject>
-	extends BaseAction<T> {
+	extends BaseAction<T>
+	implements Action<T> {
 	/**
      * Default logger
      */
@@ -61,6 +63,7 @@ public abstract class ImageMosaicConfiguratorAction<T extends EventObject>
      * @throws IOException
      */
     public ImageMosaicConfiguratorAction(ImageMosaicActionConfiguration configuration) {
+		super(configuration);
         this.configuration = configuration;
         // //
         //

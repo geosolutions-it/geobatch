@@ -60,6 +60,7 @@ public abstract class GeoServerConfiguratorAction<T extends EventObject>
      * @throws IOException
      */
     public GeoServerConfiguratorAction(GeoServerActionConfiguration configuration) {
+		super(configuration);
         this.configuration = configuration;
         // //
         //

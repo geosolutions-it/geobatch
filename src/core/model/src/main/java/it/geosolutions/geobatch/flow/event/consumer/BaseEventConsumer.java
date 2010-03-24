@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.misc.Counter;
 import it.geosolutions.geobatch.misc.PauseHandler;
 
@@ -143,56 +144,70 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
         // apply all the actions
         int step = 0;
 
-        try {
-            for (Action<XEO> action : this.actions) {
+        for (Action<XEO> action : this.actions) {
+			try {
+				pauseHandler.waitUntilResumed();
 
-                pauseHandler.waitUntilResumed();
+				listenerForwarder.setProgress(100f * (float)step / this.actions.size());
+				listenerForwarder.setTask("Running " + action.getClass().getSimpleName() + "(" + (step + 1) + "/" + this.actions.size() + ")");
+				listenerForwarder.progressing(); // notify there has been some progressing
 
-                listenerForwarder.setProgress(100f * step / this.actions.size());
-                listenerForwarder.setTask("Running " + action.getClass().getSimpleName() + "(" + (step + 1) + "/" + this.actions.size() + ")");
-                listenerForwarder.progressing(); // notify there has been some progressing
-                
-                currentAction = action;
-                events = action.execute(events);
+				currentAction = action;
+				events = action.execute(events);
 
-                if (events == null || events.isEmpty()) {
-                    if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("Action " + action.getClass().getSimpleName() + " left no event in queue.");
-                    }
-                    return false;
-                } 
-            }
-            // end of loop: all actions have been executed
-            // checkme: what shall we do with the events left in the queue?
-            if(events != null && ! events.isEmpty()) {
-                LOGGER.info("There are " + events.size() + " events left in the queue after last action ("+currentAction.getClass().getSimpleName()+")");
-            }
+				if (events == null || events.isEmpty()) {
+					if (LOGGER.isLoggable(Level.WARNING)) {
+						LOGGER.warning("Action " + action.getClass().getSimpleName() + " left no event in queue.");
+					}
+					return false;
+				}
 
-            return true;
+				step++;
 
-        } catch (ActionException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-            }
-            events.clear();
+			} catch (ActionException e) {
+				if (LOGGER.isLoggable(Level.SEVERE)) {
+					LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+				}
 
-            // WIP do we want to manage the exception upstream?
-            throw e;
+				listenerForwarder.setTask("Action " + action.getClass().getSimpleName() + " failed ("+e+")");
+				listenerForwarder.progressing();
 
-        } catch (Exception e) { // exception not handled by the Action
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-            }
-            events.clear();
+				if( ! currentAction.isFailIgnored()) {
+					events.clear();
+					throw e;
+				} else {
+					// CHECKME: eventlist is not modified in this case. will it work?
+				}
 
-            // WIP do we want to manage the exception upstream?
-            // wrap the unhandled exception
-            throw new ActionException(currentAction, e.getMessage(), e);
+			} catch (Exception e) { // exception not handled by the Action
+				if (LOGGER.isLoggable(Level.SEVERE)) {
+					LOGGER.log(Level.SEVERE, "Action threw an unhandled exception: " + e.getLocalizedMessage(), e);
+				}
 
-        } finally {
-            currentAction = null;
-        }
-    }
+				listenerForwarder.setTask("Action " + action.getClass().getSimpleName() + " failed ("+e+")");
+				listenerForwarder.progressing();
+
+				if(! currentAction.isFailIgnored() ) {
+					events.clear();
+					// wrap the unhandled exception
+					throw new ActionException(currentAction, e.getMessage(), e);
+				} else {
+					// CHECKME: eventlist is not modified in this case. will it work?
+				}
+			}
+			finally {
+				// currentAction = null; // don't null the action: we'd like to read which was the last action run
+			}
+		}
+
+		// end of loop: all actions have been executed
+		// checkme: what shall we do with the events left in the queue?
+		if(events != null && ! events.isEmpty()) {
+			LOGGER.info("There are " + events.size() + " events left in the queue after last action ("+currentAction.getClass().getSimpleName()+")");
+		}
+
+		return true;
+	}
 
     public boolean pause() {
         pauseHandler.pause();

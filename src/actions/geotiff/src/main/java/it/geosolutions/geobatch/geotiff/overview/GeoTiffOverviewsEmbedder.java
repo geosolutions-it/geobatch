@@ -60,6 +60,7 @@ public class GeoTiffOverviewsEmbedder
 
     public GeoTiffOverviewsEmbedder(GeoTiffOverviewsEmbedderConfiguration configuration)
             throws IOException {
+		super(configuration);
         this.configuration = configuration;
     }
 

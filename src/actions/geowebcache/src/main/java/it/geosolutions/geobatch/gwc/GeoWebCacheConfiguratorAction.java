@@ -46,6 +46,7 @@ extends BaseAction<T> {
 	 * 
      */
     public GeoWebCacheConfiguratorAction(GeoWebCacheActionConfiguration configuration) {
+		super(configuration);
         this.configuration = configuration;
         
         // //////////////////////////
