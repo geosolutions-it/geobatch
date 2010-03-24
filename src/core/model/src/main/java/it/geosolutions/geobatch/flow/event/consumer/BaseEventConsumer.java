@@ -33,6 +33,7 @@ import it.geosolutions.geobatch.misc.PauseHandler;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
@@ -241,6 +242,16 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
     public boolean isPaused() {
         return pauseHandler.isPaused();
     }
+
+	/**
+	 *
+	 * @return the list of the <TT>Action</TT>s associated to this consumer.
+	 *
+	 * TODO: returned list should be unmodifiable
+	 */
+	public List<Action<XEO>> getActions() {
+		return actions;
+	}
 
     protected void addActions(final List<Action<XEO>> actions) {
         this.actions.addAll(actions);

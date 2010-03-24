@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.flow.event.action;
 
+import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.misc.ListenerRegistry;
 import it.geosolutions.geobatch.flow.Job;
@@ -41,7 +42,8 @@ import java.util.Queue;
  * @param <XEO>
  */
 public interface Action<XEO extends EventObject>
-    extends Job,
+    extends Identifiable,
+			Job,
             ListenerRegistry<ProgressListener> {
 	
     public Queue<XEO> execute(Queue<XEO> events) throws ActionException;

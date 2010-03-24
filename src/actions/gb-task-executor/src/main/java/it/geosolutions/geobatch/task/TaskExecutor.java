@@ -87,8 +87,8 @@ public class TaskExecutor
     	this.configuration = configuration;
     }
 
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+	public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+		throws ActionException {
 
         listenerForwarder.started();
 

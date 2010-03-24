@@ -40,6 +40,7 @@ public class ProgressListenerForwarder
         for (IProgressListener l : listeners) {
             LOGGER.info(getClass().getSimpleName()+ " FORWARDING completed message to " + l.getClass().getSimpleName());
             try{
+				l.setProgress(100f); // forcing 100% progress
                 l.completed();
             }catch(Exception e) {
                 LOGGER.warning("Exception in event forwarder: " + e);
