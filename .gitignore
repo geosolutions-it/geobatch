@@ -5,7 +5,7 @@
 ## - ETj
 
 nb*.xml
-web/ftp*db
+src/web/ftp*db
 .classpath
 .project
 .settings
