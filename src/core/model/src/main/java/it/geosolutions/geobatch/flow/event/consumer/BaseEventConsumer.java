@@ -149,7 +149,8 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 			try {
 				pauseHandler.waitUntilResumed();
 
-				listenerForwarder.setProgress(100f * (float)step / this.actions.size());
+                float progress = 100f * (float)step / this.actions.size();
+                listenerForwarder.setProgress(progress);
 				listenerForwarder.setTask("Running " + action.getClass().getSimpleName() + "(" + (step + 1) + "/" + this.actions.size() + ")");
 				listenerForwarder.progressing(); // notify there has been some progressing
 

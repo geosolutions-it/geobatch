@@ -19,7 +19,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geobatch.geoserver.rest;
 
 import java.io.File;
@@ -38,14 +37,14 @@ import org.apache.log4j.Logger;
  * @author ETj <etj at geo-solutions.it>
  */
 
-public class GeoserverRESTPublisher {
+public class GeoServerRESTPublisher {
 
-    private static final Logger LOGGER = Logger.getLogger(GeoserverRESTPublisher.class);
+    private static final Logger LOGGER = Logger.getLogger(GeoServerRESTPublisher.class);
 	private final String restURL;
 	private final String gsuser;
 	private final String gspass;
 
-	public GeoserverRESTPublisher(String restURL, String username, String pw) {
+	public GeoServerRESTPublisher(String restURL, String username, String pw) {
 		this.restURL = restURL;
 		this.gsuser = username;
 		this.gspass = pw;

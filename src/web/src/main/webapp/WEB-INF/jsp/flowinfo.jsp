@@ -97,6 +97,7 @@
 			</c:choose>
 	    	<c:out value="${ec.status}"/></font>
 	    </LI>
+	    <LI> - <B>consumer info</B>: <c:out value="${ec}"/><br/></LI>
     </UL>
     <hr/>
 </c:forEach>

@@ -19,7 +19,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geobatch.geoserver.rest;
 
 import java.io.IOException;
@@ -44,16 +43,16 @@ import org.jdom.input.SAXBuilder;
  *
  * @author ETj <etj at geo-solutions.it>
  */
-public class GeoserverRESTReader {
-	private final static Logger LOGGER = Logger.getLogger(GeoserverRESTReader.class);
+public class GeoServerRESTReader {
+	private final static Logger LOGGER = Logger.getLogger(GeoServerRESTReader.class);
 
 	private final String baseurl;
 
-	public GeoserverRESTReader(URL restUrl) {
+	public GeoServerRESTReader(URL restUrl) {
 		this.baseurl = restUrl.toExternalForm();
 	}
 
-	public GeoserverRESTReader(String restUrl) throws MalformedURLException{
+	public GeoServerRESTReader(String restUrl) throws MalformedURLException{
 		new URL (restUrl); // check URL correctness
 		this.baseurl = restUrl;
 	}

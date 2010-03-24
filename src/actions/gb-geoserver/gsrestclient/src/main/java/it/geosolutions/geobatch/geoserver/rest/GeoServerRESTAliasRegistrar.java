@@ -19,32 +19,19 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.geoserver;
+package it.geosolutions.geobatch.geoserver.rest;
 
-import it.geosolutions.geobatch.catalog.impl.BaseService;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.flow.event.action.ActionService;
-
-import java.util.EventObject;
+import it.geosolutions.geobatch.registry.AliasRegistrar;
+import it.geosolutions.geobatch.registry.AliasRegistry;
 
 /**
- * Comments here ...
- * 
- * @author AlFa
- * 
- * @version $ GeoServerConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
+ *
+ * @author ETj <etj at geo-solutions.it>
  */
-public abstract class GeoServerConfiguratorService<T extends EventObject, C extends ActionConfiguration>
-        extends BaseService
-        implements ActionService<T, C> {
+public class GeoServerRESTAliasRegistrar extends AliasRegistrar {
 
-    public GeoServerConfiguratorService() {
-        super(true);
-    }
-
-    public boolean canCreateAction(C configuration) {
-        // XXX ImPLEMENT ME
-        return true;
-    }
-
+     public GeoServerRESTAliasRegistrar(AliasRegistry registry) {
+        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+        registry.putAlias("GeoServerRESTActionConfiguration", GeoServerRESTActionConfiguration.class);
+     }
 }

@@ -19,7 +19,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geobatch.geoserver.rest;
 
 import java.io.FileNotFoundException;
@@ -37,11 +36,11 @@ public class GeoserverRESTPublisherTest extends TestCase {
 	public static final String RESTUSER = "admin";
 	public static final String RESTPW   = "geoserver";
 
-	public static final GeoserverRESTPublisher publisher
-			= new GeoserverRESTPublisher(RESTURL, RESTUSER, RESTPW);
+	public static final GeoServerRESTPublisher publisher
+			= new GeoServerRESTPublisher(RESTURL, RESTUSER, RESTPW);
 
 	public static final URL URL;
-	public static final GeoserverRESTReader reader;
+	public static final GeoServerRESTReader reader;
 
 	static {
 		URL lurl = null;
@@ -51,7 +50,7 @@ public class GeoserverRESTPublisherTest extends TestCase {
 		}
 
 		URL = lurl;
-		reader = new GeoserverRESTReader(lurl);
+		reader = new GeoServerRESTReader(lurl);
 	}
 
     public GeoserverRESTPublisherTest(String testName) {

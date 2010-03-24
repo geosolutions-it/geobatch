@@ -358,7 +358,7 @@ public class FileBasedEventConsumer
         try {
 
             // create live working dir
-            getListenerForwarder().progressing(0, "Creating working dir");
+            getListenerForwarder().progressing(10, "Creating working dir");
             final String timeStamp = DATEFORMAT.format(new Date());
             final File currentRunDirectory = new File(this.workingDir, timeStamp);
             currentRunDirectory.mkdir();
@@ -367,7 +367,7 @@ public class FileBasedEventConsumer
             }
 
             // create backup dir
-            getListenerForwarder().progressing(0, "Creating backup dir");
+            getListenerForwarder().progressing(20, "Creating backup dir");
             File backup = null;
             if (this.configuration.isPerformBackup()) {
                 backup = new File(currentRunDirectory, "backup");
@@ -377,6 +377,7 @@ public class FileBasedEventConsumer
             }
 
             final Queue<FileSystemMonitorEvent> fileEventList = new LinkedList<FileSystemMonitorEvent>();
+            int numProcessedFiles = 0;
             for (FileSystemMonitorEvent ev : this.eventsQueue) {
                 if(LOGGER.isLoggable(Level.INFO))
                     LOGGER.info(new StringBuilder("FileBasedEventConsumer [").append(Thread.currentThread().getName()).append("]: new element retrieved from the MailBox.").toString());
@@ -385,7 +386,7 @@ public class FileBasedEventConsumer
                 final File sourceDataFile = ev.getSource();
                 final String fileBareName = FilenameUtils.getName(sourceDataFile.toString());
 
-                getListenerForwarder().progressing(0, "Preprocessing event " + fileBareName);
+                getListenerForwarder().progressing(30 + (10f / this.eventsQueue.size() * numProcessedFiles++ ), "Preprocessing event " + fileBareName);
 
                 final File destDataFile = new File(currentRunDirectory, fileBareName);
                 destDataFile.createNewFile();
@@ -404,7 +405,7 @@ public class FileBasedEventConsumer
 
                 // Backing up files and delete sources.
                 if (this.configuration.isPerformBackup()) {
-                    getListenerForwarder().progressing(0, "Creating backup files");
+                    getListenerForwarder().progressing(30 + (10f / this.eventsQueue.size() * numProcessedFiles++ ), "Creating backup files");
                     performBackup(sourceDataFile, backup, fileBareName);
                 } else { // schedule for removal
                     IOUtils.deleteFile(sourceDataFile);
@@ -419,7 +420,7 @@ public class FileBasedEventConsumer
             LOGGER.info(new StringBuilder("FileBasedEventConsumer [").append(Thread.currentThread().getName()).append("]: new element processed.").toString());
 
             // // Finally, run the Actions on the files
-            getListenerForwarder().progressing(0, "Running actions");
+            getListenerForwarder().progressing(50, "Running actions");
 
             if (this.applyActions(fileEventList)) {
                 this.setStatus(EventConsumerStatus.COMPLETED);
@@ -460,6 +461,7 @@ public class FileBasedEventConsumer
             throw e;
 
         } finally {
+        	getListenerForwarder().progressing(100, "Running actions");
             LOGGER.info(Thread.currentThread().getName() + " DONE!");
             this.dispose();
 

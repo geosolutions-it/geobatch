@@ -19,9 +19,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-
 package it.geosolutions.geobatch.geoserver;
 
 import java.io.File;
@@ -32,7 +29,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -415,14 +411,20 @@ public class GeoServerRESTHelper {
      * @throws ParserConfigurationException 
 	 */
 	public static String[] send(
-			final File inputDataDir, final File data,
-			final String geoserverBaseURL, final String geoserverUID, 
+			final File inputDataDir, 
+			final File data,
+			final String geoserverBaseURL, 
+			final String geoserverUID, 
 			final String geoserverPWD,
-			final String originalCoverageStoreId, final String storeFilePrefix,
+			final String originalCoverageStoreId, 
+			final String storeFilePrefix,
 			final Map<String, String> queryParams,
 			final String queryString,
-			final String dataTransferMethod, final String type, final String geoserverVersion, 
-			final List<String> dataStyles, final String defaultStyle )
+			final String dataTransferMethod, 
+			final String type, 
+			final String geoserverVersion, 
+			final List<String> dataStyles, 
+			final String defaultStyle )
 			throws ParserConfigurationException, IOException, TransformerException {
 		URL geoserverREST_URL = null;
 		boolean sent = false;

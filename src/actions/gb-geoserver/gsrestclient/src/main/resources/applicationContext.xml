@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <bean id="geoserverRESTRegistrar" class="it.geosolutions.geobatch.geoserver.rest.GeoServerRESTAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+
+	<!-- Environment Initialization -->
+	<bean id="geoServerRESTGeneratorService" class="it.geosolutions.geobatch.geoserver.rest.GeoServerRESTConfiguratorService">
+		<property  name="id">
+    		<value>geoServerRESTGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>geoServerRESTGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>geoServerRESTGeneratorService</value>
+    	</property>	
+	</bean>
+</beans>

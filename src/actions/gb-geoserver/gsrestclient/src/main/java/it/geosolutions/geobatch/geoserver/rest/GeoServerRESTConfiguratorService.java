@@ -19,32 +19,31 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.geoserver;
+package it.geosolutions.geobatch.geoserver.rest;
 
-import it.geosolutions.geobatch.catalog.impl.BaseService;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.flow.event.action.ActionService;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
-import java.util.EventObject;
+import java.util.logging.Logger;
 
 /**
  * Comments here ...
  * 
  * @author AlFa
  * 
- * @version $ GeoServerConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
+ * @version $ GeoServerRESTConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
  */
-public abstract class GeoServerConfiguratorService<T extends EventObject, C extends ActionConfiguration>
-        extends BaseService
-        implements ActionService<T, C> {
+public class GeoServerRESTConfiguratorService extends
+        GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerRESTActionConfiguration> {
+    private final static Logger LOGGER = Logger.getLogger(GeoServerRESTConfiguratorService.class.toString());
 
-    public GeoServerConfiguratorService() {
-        super(true);
+    public GeoServerRESTConfiguratorAction createAction(GeoServerRESTActionConfiguration configuration) {
+    	return new GeoServerRESTConfiguratorAction(configuration);
     }
 
-    public boolean canCreateAction(C configuration) {
-        // XXX ImPLEMENT ME
-        return true;
+    public boolean canCreateAction(GeoServerRESTActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
     }
 
 }
