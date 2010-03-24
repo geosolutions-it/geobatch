@@ -18,6 +18,8 @@
 			<errorFile>gdaloperationsworkingdir/gdaltranslate/config/errorlog.txt</errorFile>
 			<timeOut>1200000</timeOut> <!-- milliseconds -->
 			<executable>D:\work\programs\Java\jdk1.5.0_17\bin\gdal_translate.exe</executable>
+			<defaultScript>gdaloperationsworkingdir/gdaltranslate/config/gdal_translate.xml</defaultScript>
+			<outputName>*.tif</outputName>
 		    <variables>
 				 <entry>
 				    <string>GDAL_DATA</string>

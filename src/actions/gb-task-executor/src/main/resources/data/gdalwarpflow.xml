@@ -18,6 +18,8 @@
 			<errorFile>gdaloperationsworkingdir/gdalwarp/config/errorlog.txt</errorFile>
 			<timeOut>1200000</timeOut> <!-- milliseconds -->
 			<executable>D:\work\programs\Java\jdk1.5.0_17\bin\gdalwarp.exe</executable>
+			<defaultScript>gdaloperationsworkingdir/gdalwarp/config/gdalwarp.xml</defaultScript>
+			<outputName>*.tif</outputName>
 		    <variables>
 				 <entry>
 				    <string>GDAL_DATA</string>

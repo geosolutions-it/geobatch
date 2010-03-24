@@ -87,6 +87,22 @@ public class TaskExecutorConfiguration extends ActionConfiguration implements
 		this.workingDirectory = workingDirectory;
 	}
 	
+	public String getDefaultScript() {
+			return defaultScript;
+	}
+
+	public void setDefaultScript(String defaultScript) {
+		this.defaultScript = defaultScript;
+	}
+	
+	public void setOutputName(String outputName) {
+		this.outputName = outputName;
+	}
+
+	public String getOutputName() {
+		return outputName;
+	}
+	
 	private String workingDirectory;
 
 	private String executable;
@@ -94,6 +110,10 @@ public class TaskExecutorConfiguration extends ActionConfiguration implements
 	private String errorFile;
 	
 	private Long timeOut;
+	
+	private String outputName;
+	
+	private String defaultScript;
 	
 //	private boolean spawn;
 	
