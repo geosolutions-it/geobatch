@@ -15,8 +15,5 @@
     		<value>shapefileGeoServerGeneratorService</value>
     	</property>	
 	</bean>
-    
-
-
 
 </beans>

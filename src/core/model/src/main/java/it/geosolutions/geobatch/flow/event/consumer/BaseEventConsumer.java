@@ -148,7 +148,8 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
                 pauseHandler.waitUntilResumed();
 
-                listenerForwarder.setProgress(100f * step / this.actions.size());
+                float progress = 100f * (float)step / this.actions.size();
+                listenerForwarder.setProgress(progress);
                 listenerForwarder.setTask("Running " + action.getClass().getSimpleName() + "(" + (step + 1) + "/" + this.actions.size() + ")");
                 listenerForwarder.progressing(); // notify there has been some progressing
                 
@@ -160,7 +161,9 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                         LOGGER.warning("Action " + action.getClass().getSimpleName() + " left no event in queue.");
                     }
                     return false;
-                } 
+                }
+                
+                step++;
             }
             // end of loop: all actions have been executed
             // checkme: what shall we do with the events left in the queue?
@@ -190,7 +193,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
             throw new ActionException(currentAction, e.getMessage(), e);
 
         } finally {
-            currentAction = null;
+            //currentAction = null;
         }
     }
 

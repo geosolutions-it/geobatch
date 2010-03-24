@@ -19,14 +19,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geobatch.geoserver.rest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
+
 import junit.framework.TestCase;
-import org.jdom.Element;
 
 /**
  *
@@ -36,7 +34,7 @@ public class GeoserverRESTReaderTest extends TestCase {
 
 	public static final String RESTURL = "http://localhost:8080/geoserver";
 	public static final URL URL;
-	public static final GeoserverRESTReader grr;
+	public static final GeoServerRESTReader grr;
 
 	static {
 		URL lurl = null;
@@ -46,7 +44,7 @@ public class GeoserverRESTReaderTest extends TestCase {
 		}
 
 		URL = lurl;
-		grr = new GeoserverRESTReader(lurl);
+		grr = new GeoServerRESTReader(lurl);
 	}
 
     public GeoserverRESTReaderTest(String testName) {
@@ -64,7 +62,7 @@ public class GeoserverRESTReaderTest extends TestCase {
     }
 
 	/**
-	 * Test of getLayers method, of class GeoserverRESTReader.
+	 * Test of getLayers method, of class GeoServerRESTReader.
 	 */
 	public void testGetLayers() {
 //		System.out.println("getLayers");
@@ -78,7 +76,7 @@ public class GeoserverRESTReaderTest extends TestCase {
 	}
 
 	/**
-	 * Test of getDatastores method, of class GeoserverRESTReader.
+	 * Test of getDatastores method, of class GeoServerRESTReader.
 	 */
 	public void testGetDatastores() {
 //		System.out.println("getDatastores");
@@ -95,19 +93,19 @@ public class GeoserverRESTReaderTest extends TestCase {
 	}
 
 	/**
-	 * Test of getDatastore method, of class GeoserverRESTReader.
+	 * Test of getDatastore method, of class GeoServerRESTReader.
 	 */
 	public void testGetDatastore() {
 	}
 
 	/**
-	 * Test of getLayer method, of class GeoserverRESTReader.
+	 * Test of getLayer method, of class GeoServerRESTReader.
 	 */
 	public void testGetLayer() {
 	}
 
 	/**
-	 * Test of getNamespaceNames method, of class GeoserverRESTReader.
+	 * Test of getNamespaceNames method, of class GeoServerRESTReader.
 	 */
 	public void testGetNamespaceNames() {
 //		System.out.println("getNamespaceNames");
@@ -120,7 +118,7 @@ public class GeoserverRESTReaderTest extends TestCase {
 
 
 	/**
-	 * Test of getWorkspaceNames method, of class GeoserverRESTReader.
+	 * Test of getWorkspaceNames method, of class GeoServerRESTReader.
 	 */
 	public void testGetWorkspaceNames() {
 //		System.out.println("getWorkspaceNames");

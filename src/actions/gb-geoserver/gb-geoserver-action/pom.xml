@@ -75,7 +75,6 @@
         </dependency>
 
         <!-- GEOBATCH lib -->
-
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-core-impl</artifactId>

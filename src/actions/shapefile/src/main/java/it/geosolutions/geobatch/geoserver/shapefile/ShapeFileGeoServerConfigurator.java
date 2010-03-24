@@ -19,17 +19,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-
 package it.geosolutions.geobatch.geoserver.shapefile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
-import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.utils.IOUtils;
 
@@ -42,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -69,6 +65,9 @@ public class ShapeFileGeoServerConfigurator extends
         super(configuration);
     }
 
+    /**
+     * 
+     */
 	public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
             throws ActionException {
 
@@ -217,35 +216,13 @@ public class ShapeFileGeoServerConfigurator extends
             }
 			LOGGER.info("ZIP file: " + zipFileToSend.getAbsolutePath());
 
-            listenerForwarder.progressing(60, "Sending");
-			final String[] returnedLayer = GeoServerRESTHelper.sendFeature(
-					zipFileToSend, zipFileToSend, 
-                    configuration.getGeoserverURL(),
-                    configuration.getGeoserverUID(),
-                    configuration.getGeoserverPWD(),
-                    shpBaseName, shpBaseName, queryParams,
-                    configuration.getDataTransferMethod(),
-                    "shp", "2.0.0", getConfiguration().getStyles(), getConfiguration().getDefaultStyle());
+            listenerForwarder.progressing(100, "File prepared ... forwarding to the next action");
 			
-//            boolean sent = sendShpLayer(zipFileToSend,
-//					getConfiguration().getGeoserverURL(),
-//					shpBaseName, shpBaseName,
-//                    queryParams);
-
-//			if (sent) {
-//				LOGGER.info("ShapeFile GeoServerConfiguratorAction: shp SUCCESSFULLY sent to GeoServer!");
-//				boolean sldSent = configureStyles(shpBaseName);
-//			} else {
-//				LOGGER.info("ShapeFile GeoServerConfiguratorAction: shp was NOT sent to GeoServer due to connection errors!");
-//			}
-
-            if(returnedLayer != null) {
-                listenerForwarder.setProgress(100);
-                listenerForwarder.completed();
-                return events;
-            } else {
-                throw new RuntimeException("Error configuring the layer on GeoServer");
-            }
+            // Removing old files...
+            events.clear();
+            // Adding the zipped file to send...
+            events.add(new FileSystemMonitorEvent(zipFileToSend, FileSystemMonitorNotifications.FILE_ADDED));
+			return events;
 
         } catch (Throwable t) {
 //			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // we're rethrowing it, so don't log
@@ -260,10 +237,6 @@ public class ShapeFileGeoServerConfigurator extends
                     LOGGER.log(Level.WARNING, "Could not delete temp dir: " + ex.getMessage(), ex);
                 }
             }
-
-			// Clear sent zip file
-			if(zipFileToSend != null)
-				zipFileToSend.delete();
 		}
     }
 

@@ -19,7 +19,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geobatch.geoserver.rest.parser;
 
 import java.util.List;
@@ -27,7 +26,7 @@ import org.jdom.Element;
 
 /**
  * Parses fields of a Datastore got via a
- * {@link it.geosolutions.geobatch.geoserver.rest.GeoserverRESTReader}.
+ * {@link it.geosolutions.geobatch.geoserver.rest.GeoServerRESTReader}.
  *
  * @author etj
  */
