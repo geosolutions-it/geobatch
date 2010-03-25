@@ -68,7 +68,7 @@
 			<thead>
 				<tr bgcolor="black" style="color: white;">
 					<th width="10%">USERID</th>
-					<th width="20%">HOMEDIRECTORY</th>
+					<th width="20%">USERNAME</th>
 					<th width="5%">WRITE PERMISSION</th>
 					<th width="5%">UPLOAD RATE</th>
 					<th width="5%">DOWNLOAD RATE</th>
@@ -78,13 +78,13 @@
 			<tbody>
 			<c:forEach var="us" items="${ftpUsers}">
 				<tr >
-					<td><c:out value="${us.userId}"/></td>
-					<td><c:out value="${us.userId}"/></td>
+					<td><c:out value="${us.id}"/></td>
+					<td><c:out value="${us.name}"/></td>
 					<td><c:out value="${us.writePermission}"/></td>
 					<td><c:out value="${us.uploadRate}"/></td>
 					<td><c:out value="${us.downloadRate}"/></td>
 					<td align="center">
-						<a href='delete.do?userId=${us.userId}'><image src='img/dispose.png' border='0' title='delete' alt='delete' width='16' height='16'/></a>
+						<a href='delete.do?userId=${us.id}'><image src='img/dispose.png' border='0' title='delete' alt='delete' width='16' height='16'/></a>
 					</td>
 				</tr>
 			</c:forEach>

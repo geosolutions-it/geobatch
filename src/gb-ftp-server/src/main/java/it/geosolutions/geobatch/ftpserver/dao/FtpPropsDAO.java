@@ -1,5 +1,5 @@
 /*
- * $Header: it.geosolutions.geobatch.ftp.server.dao.FtpUserDAO,v. 0.1 13/ott/2009 09.57.52 created by giuseppe $
+ * $Header: it.geosolutions.geobatch.ftp.server.dao.FtpPropsDAO,v. 0.1 13/ott/2009 09.57.52 created by giuseppe $
  * $Revision: 0.1 $
  * $Date: 13/ott/2009 09.57.52 $
  *
@@ -27,22 +27,22 @@
  * <http://www.geo-solutions.it/>.
  *
  */
-package it.geosolutions.geobatch.ftp.server.dao;
+package it.geosolutions.geobatch.ftpserver.dao;
 
-import it.geosolutions.geobatch.ftp.server.model.FtpUser;
+import it.geosolutions.geobatch.ftpserver.model.FtpProps;
+import it.geosolutions.geobatch.users.dao.DAOException;
 
 /**
- * @author giuseppe
- * 
+ * @author ETj
  */
-public interface FtpUserDAO extends GenericDAO<FtpUser, Long> {
+public interface FtpPropsDAO extends GenericDAO<FtpProps, Long> {
 
-	public FtpUser findByUserName(String userName) throws DAOException;
+//	public FtpProps findByUserName(String userName) throws DAOException;
 
-	public FtpUser save(FtpUser ftpUser) throws DAOException;
+	public FtpProps save(FtpProps props) throws DAOException;
 
-	public void delete(String userId) throws DAOException;
+	public void delete(Long id) throws DAOException;
 
-	public void delete(FtpUser ftpUser) throws DAOException;
+	public void delete(FtpProps props) throws DAOException;
 
 }

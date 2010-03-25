@@ -24,9 +24,10 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import it.geosolutions.geobatch.ftp.server.GeoBatchServer;
-import it.geosolutions.geobatch.ftp.server.GeoBatchUserManager;
-import it.geosolutions.geobatch.ftp.server.model.FtpUser;
+import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
+import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
+import it.geosolutions.geobatch.ftpserver.ftp.GeoBatchUserManager;
+import it.geosolutions.geobatch.ftpserver.model.FtpProps;
 import it.geosolutions.geobatch.ui.mvc.data.FtpUserDataBean;
 
 import java.util.List;
@@ -90,9 +91,9 @@ public class FTPUserFormController extends SimpleFormController {
 
 		logger.info(givenData.toString());
 
-		FtpUser user = new FtpUser();
-		user.setUserId(givenData.getUserId());
-		user.setUserPassword(givenData.getPassword());
+		FtpUser user = FtpUser.createInstance();
+		user.setName(givenData.getUserId());
+		user.setPassword(givenData.getPassword());
 		user.setWritePermission(givenData.getWritePermission());
 		if (!givenData.getUploadRate().equals(""))
 			user.setUploadRate(Integer.parseInt(givenData.getUploadRate()));
@@ -134,9 +135,7 @@ public class FTPUserFormController extends SimpleFormController {
 				errors.rejectValue("userId", "error.code",
 						"Ftp User Id is mandatory.");
 			} else {
-				if (((GeoBatchUserManager) ((DefaultFtpServer) server
-						.getFtpServer()).getUserManager()).checkUser(givenData
-						.getUserId())) {
+				if (server.getUserManager().doesExist(givenData.getUserId())) {
 					present = true;
 					errors.rejectValue("userId", "error.code", "Ftp User "
 							+ givenData.getUserId() + " has already entered.");

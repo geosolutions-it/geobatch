@@ -58,23 +58,22 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
 
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public GBUser findByUserName(String userName) throws DAOException {
-		List<GBUser> users = super.findByCriteria(Restrictions.eq("userId",
-				userName));
+		List<GBUser> users = super.findByCriteria(Restrictions.eq("name", userName));
 		if (users.size() > 0)
 			return users.get(0);
 		return null;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void delete(final String userId) throws DAOException {
+	public void delete(final Long id) throws DAOException {
 		try {
 			getHibernateTemplate().execute(new HibernateCallback() {
 
 				public Object doInHibernate(Session session)
 						throws HibernateException, SQLException {
 					Query query = session
-							.createQuery("delete from GBUser user where user.userId = :userId");
-					query.setParameter("userId", userId);
+							.createQuery("delete from GBUser user where user.id = :id");
+					query.setParameter("id", id);
 					query.executeUpdate();
 					return null;
 				}

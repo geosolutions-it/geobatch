@@ -1,7 +1,7 @@
 /*
- * $Header: it.geosolutions.geobatch.ftp.server.dao.GenericDAO,v. 0.1 13/ott/2009 09.53.26 created by giuseppe $
+ * $Header: it.geosolutions.geobatch.ftp.server.dao.FtpPropsDAO,v. 0.1 13/ott/2009 09.57.52 created by giuseppe $
  * $Revision: 0.1 $
- * $Date: 13/ott/2009 09.53.26 $
+ * $Date: 13/ott/2009 09.57.52 $
  *
  * ====================================================================
  *
@@ -27,26 +27,24 @@
  * <http://www.geo-solutions.it/>.
  *
  */
-package it.geosolutions.geobatch.ftp.server.dao;
+package it.geosolutions.geobatch.ftpserver.ftp;
 
-import java.io.Serializable;
+import it.geosolutions.geobatch.users.dao.DAOException;
 import java.util.List;
 
 /**
- * @author giuseppe
- * 
+ * @author ETj
  */
-public interface GenericDAO<T, ID extends Serializable> {
+public interface FtpUserDAO { // extends GenericDAO<FtpUser, Long> {
 
-	public T findById(ID id, boolean lock) throws DAOException;
+	public FtpUser findByUserName(String userName) throws DAOException;
+	public List<FtpUser> findAll() throws DAOException;
 
-	public List<T> findAll() throws DAOException;
+	public FtpUser save(FtpUser props) throws DAOException;
 
-	public List<T> findAll(int offset, int limit) throws DAOException;
+	public void delete(Long id) throws DAOException;
 
-	public T makePersistent(T entity) throws DAOException;
+	public boolean existsUser(Long id) throws DAOException;
+	public boolean existsUser(String name) throws DAOException;
 
-	public void makeTransient(T entity) throws DAOException;
-
-	public void lock(T entity) throws DAOException;
 }

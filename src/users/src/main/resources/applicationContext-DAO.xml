@@ -11,7 +11,7 @@
 
 	<!-- FTP USER DAO -->
 
-	<bean id="usersDAO"
+	<bean id="gbUserDAO"
 		class="it.geosolutions.geobatch.users.dao.hibernate.HibGBUserDAO">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory-gb-users" />

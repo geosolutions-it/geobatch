@@ -3,9 +3,9 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import it.geosolutions.geobatch.ftp.server.GeoBatchServer;
-import it.geosolutions.geobatch.ftp.server.GeoBatchUserManager;
-import it.geosolutions.geobatch.ftp.server.model.FtpUser;
+import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
+import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
+import it.geosolutions.geobatch.ftpserver.ftp.GeoBatchUserManager;
 
 import java.util.List;
 
@@ -45,11 +45,9 @@ public class DeleteFtpUserController extends AbstractController {
 			HttpServletResponse response) throws Exception {
 		String userId = request.getParameter("userId");
 
-		((GeoBatchUserManager) ((DefaultFtpServer) server.getFtpServer())
-				.getUserManager()).delete(userId);
+		server.getUserManager().delete(userId);
 
-		List<FtpUser> ftpUsers = ((GeoBatchUserManager) ((DefaultFtpServer) server
-				.getFtpServer()).getUserManager()).getAllUsers();
+		List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
 
 		request.getSession().setAttribute("ftpUsers", ftpUsers);
 

@@ -1,5 +1,5 @@
 /*
- * $Header: it.geosolutions.geobatch.ftp.server.dao.hibernate.DAOFtpUserHibernate,v. 0.1 13/ott/2009 10.02.48 created by giuseppe $
+ * $Header: it.geosolutions.geobatch.ftp.server.dao.hibernate.HibFtpPropsDAO,v. 0.1 13/ott/2009 10.02.48 created by giuseppe $
  * $Revision: 0.1 $
  * $Date: 13/ott/2009 10.02.48 $
  *
@@ -27,19 +27,17 @@
  * <http://www.geo-solutions.it/>.
  *
  */
-package it.geosolutions.geobatch.ftp.server.dao.hibernate;
+package it.geosolutions.geobatch.ftpserver.dao.hibernate;
 
-import it.geosolutions.geobatch.ftp.server.dao.DAOException;
-import it.geosolutions.geobatch.ftp.server.dao.FtpUserDAO;
-import it.geosolutions.geobatch.ftp.server.model.FtpUser;
+import it.geosolutions.geobatch.ftpserver.dao.FtpPropsDAO;
+import it.geosolutions.geobatch.ftpserver.model.FtpProps;
 
+import it.geosolutions.geobatch.users.dao.DAOException;
 import java.sql.SQLException;
-import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,33 +46,25 @@ import org.springframework.transaction.annotation.Transactional;
  * @author giuseppe
  * 
  */
-public class DAOFtpUserHibernate extends DAOAbstractSpring<FtpUser, Long>
-		implements FtpUserDAO {
+public class HibFtpPropsDAO
+		extends DAOAbstractSpring<FtpProps, Long>
+		implements FtpPropsDAO {
 
-	public DAOFtpUserHibernate() {
-		super(FtpUser.class);
+	public HibFtpPropsDAO() {
+		super(FtpProps.class);
 		// TODO Auto-generated constructor stub
 	}
 
-	@Transactional(propagation = Propagation.SUPPORTS)
-	public FtpUser findByUserName(String userName) throws DAOException {
-		List<FtpUser> users = super.findByCriteria(Restrictions.eq("userId",
-				userName));
-		if (users.size() > 0)
-			return users.get(0);
-		return null;
-	}
-
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void delete(final String userId) throws DAOException {
+	public void delete(final Long id) throws DAOException {
 		try {
 			getHibernateTemplate().execute(new HibernateCallback() {
 
 				public Object doInHibernate(Session session)
 						throws HibernateException, SQLException {
 					Query query = session
-							.createQuery("delete from FtpUser ftpUser where ftpUser.userId = ?");
-					query.setParameter(0, userId);
+							.createQuery("delete from FtpProps props where props.id = :id");
+					query.setParameter("id", id);
 					query.executeUpdate();
 					return null;
 				}
@@ -85,13 +75,13 @@ public class DAOFtpUserHibernate extends DAOAbstractSpring<FtpUser, Long>
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void delete(FtpUser ftpUser) throws DAOException {
-		super.makeTransient(ftpUser);
+	public void delete(FtpProps props) throws DAOException {
+		super.makeTransient(props);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	public FtpUser save(FtpUser ftpUser) throws DAOException {
-		return super.makePersistent(ftpUser);
+	public FtpProps save(FtpProps props) throws DAOException {
+		return super.makePersistent(props);
 	}
 
 }

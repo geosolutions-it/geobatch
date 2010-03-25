@@ -65,7 +65,7 @@ public class GBUser implements Serializable {
 	private String password;
 
 	@Column(name = "HOME_DIRECTORY", length = 128)
-	private String homeDirectory;
+	private String relativeHomeDir;
 
 	@Column(name = "USER_ENABLED", columnDefinition = "boolean default true")
 	private boolean enabled;
@@ -123,16 +123,16 @@ public class GBUser implements Serializable {
 	/**
 	 * @return the homeDirectory
 	 */
-	public String getHomeDirectory() {
-		return homeDirectory;
+	public String getRelativeHomeDir() {
+		return relativeHomeDir;
 	}
 
 	/**
 	 * @param homeDirectory
 	 *            the homeDirectory to set
 	 */
-	public void setHomeDirectory(String homeDirectory) {
-		this.homeDirectory = homeDirectory;
+	public void setRelativeHomeDir(String homeDirectory) {
+		this.relativeHomeDir = homeDirectory;
 	}
 
 	/**
@@ -196,7 +196,7 @@ public class GBUser implements Serializable {
 	public String toString() {
 		return "[ ID : " + getId() + " - USER_NAME : " + getName()
 				+ " - USER_PASSWORD : " + getPassword()
-				+ "  - HOME_DIRECTORY : " + getHomeDirectory()
+				+ "  - HOME_DIRECTORY : " + getRelativeHomeDir()
 				+ " - ENABLE_FLAG : " + getEnabled() + "]";
 	}
 

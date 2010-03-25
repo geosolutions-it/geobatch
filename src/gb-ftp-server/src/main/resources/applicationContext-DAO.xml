@@ -11,11 +11,32 @@
 
 	<!-- FTP USER DAO -->
 
-	<bean id="ftpUserDAO"
-		class="it.geosolutions.geobatch.ftp.server.dao.hibernate.DAOFtpUserHibernate">
+	<bean id="ftpPropsDAO"
+		class="it.geosolutions.geobatch.ftpserver.dao.hibernate.HibFtpPropsDAO">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory-gb-ftp-server" />
 		</property>
 	</bean>
 
+	<bean id="ftpConfigDAO"
+		class="it.geosolutions.geobatch.ftpserver.dao.hibernate.HibFtpServerConfigDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory-gb-ftp-server" />
+		</property>
+	</bean>
+
+	<bean id="ftpUserDAO"
+		class="it.geosolutions.geobatch.ftpserver.ftp.FTPUserDAOImpl">
+		<property name="userDAO" ref="gbUserDAO"/>
+		<property name="ftpPropsDAO" ref="ftpPropsDAO"/>
+	</bean>
+
+	<bean id="gbUserManager" class="it.geosolutions.geobatch.ftpserver.ftp.GeoBatchUserManager">
+		<property name="ftpUserDAO" ref="ftpUserDAO"/>
+	</bean>
+
+	<bean id="geoBatchServer" class="it.geosolutions.geobatch.ftpserver.server.GeoBatchServer">
+		<property name="serverConfigDAO" ref="ftpConfigDAO"/>
+		<property name="userManager" ref="gbUserManager"/>
+	</bean>
 </beans>

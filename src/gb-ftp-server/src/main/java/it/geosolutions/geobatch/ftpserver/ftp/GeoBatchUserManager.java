@@ -27,14 +27,12 @@
  * <http://www.geo-solutions.it/>.
  *
  */
-package it.geosolutions.geobatch.ftp.server;
+package it.geosolutions.geobatch.ftpserver.ftp;
 
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
-import it.geosolutions.geobatch.ftp.server.dao.DAOException;
-import it.geosolutions.geobatch.ftp.server.dao.FtpUserDAO;
-import it.geosolutions.geobatch.ftp.server.model.FtpUser;
 import it.geosolutions.geobatch.global.CatalogHolder;
 
+import it.geosolutions.geobatch.users.dao.DAOException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +54,7 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
 
 /**
  * @author giuseppe
+ * @author ETj
  * 
  */
 public class GeoBatchUserManager implements UserManager {
@@ -63,32 +62,21 @@ public class GeoBatchUserManager implements UserManager {
 	private Logger logger = Logger.getLogger(GeoBatchUserManager.class
 			.getName());
 
-	private File ftpRootDir;
+//	private File ftpRootDir;
 
 	private FtpUserDAO ftpUserDAO;
 
-	private DefaultFtpServer ftpServer;
+	private boolean allowAnon = false;
 
 	public GeoBatchUserManager() {
-		String baseDir = ((FileBaseCatalog) CatalogHolder.getCatalog())
-				.getBaseDirectory();
-		ftpRootDir = new File(baseDir + File.separator + "FTP" + File.separator);
+//		String baseDir = ((FileBaseCatalog) CatalogHolder.getCatalog())
+//				.getBaseDirectory();
+//		ftpRootDir = new File(baseDir, "FTP");
 	}
 
-	/**
-	 * @param ftpUserDAO
-	 *            the ftpUser to set
-	 */
-	public void setFtpUserDAO(FtpUserDAO ftpUserDAO) {
-		this.ftpUserDAO = ftpUserDAO;
-	}
-
-	/**
-	 * @param ftpServer
-	 *            the ftpServer to set
-	 */
-	public void setFtpServer(DefaultFtpServer ftpServer) {
-		this.ftpServer = ftpServer;
+	private File getFtpRootDir() {
+		return new File( ((FileBaseCatalog) CatalogHolder.getCatalog())
+				.getBaseDirectory(), "FTP");
 	}
 
 	/*
@@ -102,7 +90,7 @@ public class GeoBatchUserManager implements UserManager {
 			throws AuthenticationFailedException {
 
 		if ((authentication instanceof AnonymousAuthentication)
-				&& (!ftpServer.getConnectionConfig().isAnonymousLoginEnabled()))
+				&&  ! allowAnon)
 			throw new AuthenticationFailedException(
 					"Anonymous authentication is not allowed.");
 
@@ -111,17 +99,15 @@ public class GeoBatchUserManager implements UserManager {
 			final UsernamePasswordAuthentication upAuth = (UsernamePasswordAuthentication) authentication;
 			final String userName = upAuth.getUsername();
 
-			FtpUser user;
+			FtpUser user = null;
 			try {
 				user = ftpUserDAO.findByUserName(userName);
 			} catch (DAOException e) {
 				throw new AuthenticationFailedException(e);
 			}
 
-			if (user.getPassword().equals(
-					((UsernamePasswordAuthentication) authentication)
-							.getPassword())) {
-
+			if (user != null &&
+				user.getPassword().equals(((UsernamePasswordAuthentication) authentication).getPassword())) {
 				return transcodeUser(user);
 			}
 
@@ -138,11 +124,13 @@ public class GeoBatchUserManager implements UserManager {
 	 */
 	public void delete(String userId) throws FtpException {
 		try {
-			ftpUserDAO.delete(userId);
+			ftpUserDAO.delete(new Long(userId));
 			this.deleteFtpUserDir(userId);
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			logger.info("ERROR :" + e.getMessage());
+		} catch (NumberFormatException e) {
+			logger.info("ID needed, not user name:" + e.getMessage()); // just to remember it :P
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.info("ERROR :" + e.getMessage());
@@ -150,7 +138,7 @@ public class GeoBatchUserManager implements UserManager {
 	}
 
 	private void deleteFtpUserDir(String userId) throws Exception {
-		File homeDirectory = new File(ftpRootDir, userId);
+		File homeDirectory = new File(getFtpRootDir(), userId);
 		if (homeDirectory.exists()) {
 			if (!deleteDir(homeDirectory))
 				throw new Exception("Error to delete "
@@ -174,15 +162,6 @@ public class GeoBatchUserManager implements UserManager {
 		return dir.delete();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apache.ftpserver.ftplet.UserManager#doesExist(java.lang.String)
-	 */
-	public boolean doesExist(String arg0) throws FtpException {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -203,6 +182,10 @@ public class GeoBatchUserManager implements UserManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public List<FtpUser> getAllUsers() throws DAOException {
+		return ftpUserDAO.findAll();
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -210,9 +193,12 @@ public class GeoBatchUserManager implements UserManager {
 	 * @see
 	 * org.apache.ftpserver.ftplet.UserManager#getUserByName(java.lang.String)
 	 */
-	public User getUserByName(String arg0) throws FtpException {
-		// TODO Auto-generated method stub
-		return null;
+	public User getUserByName(String name) throws FtpException {
+		try {
+			return ftpUserDAO.findByUserName(name);
+		} catch(DAOException ex) {
+			throw new FtpException(ex);
+		}
 	}
 
 	/*
@@ -232,62 +218,86 @@ public class GeoBatchUserManager implements UserManager {
 	 * org.apache.ftpserver.ftplet.UserManager#save(org.apache.ftpserver.ftplet
 	 * .User)
 	 */
-	public void save(User arg0) throws FtpException {
+	public void save(User user) throws FtpException {
+		if(! ( user instanceof FtpUser)) {
+			throw new FtpException("Bad user class to save: ["+user.getClass()+"]" + user);
+		}
 		try {
-			if (!checkUser(((FtpUser) arg0).getUserId()))
-				ftpUserDAO.save((FtpUser) arg0);
+			FtpUser ftpUser = (FtpUser)user;
+			ftpUserDAO.save(ftpUser); // atm this will call a saveOrUpdate() which is the right behaviour
+			                          // when using JPA pls ensure the right behaviour will be enforced
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			logger.log(Level.INFO, "Error :" + e.getMessage());
 		}
-
 	}
 
 	private FtpUser transcodeUser(FtpUser user) {
-		File homeDirectory = new File(ftpRootDir, user.getUserId());
+		File homeDirectory = new File(getFtpRootDir(), user.getRelativeHomeDir());
 
+		// ETj: maybe this is not the right place to create an home dir 
 		if (!homeDirectory.exists()) {
 			if (!homeDirectory.mkdir())
 				throw new IllegalStateException(
-						"Unalbe to create ftp home dir dir at "
+						"Unable to create ftp home dir dir at "
 								+ homeDirectory.getAbsolutePath()
-								+ " for user " + user.getUserId());
+								+ " for user " + user.getName());
 		}
 
 		user.setHomeDirectory(homeDirectory.getAbsolutePath());
 		final List<Authority> auths = new ArrayList<Authority>();
 
-		// for the moment they are all enabled with write permission
+		// for the moment they are all enabled with write permission (ETj:: ???)
 		if (user.isWritePermission()) {
 			final Authority authW = new WritePermission();
 			auths.add(authW);
 		}
 
 		// concurrent logins
-		auths.add(new ConcurrentLoginPermission(user.getMaxLoginNumber(), user
-				.getMaxLoginPerIp()));
+		auths.add(new ConcurrentLoginPermission(user.getMaxLoginNumber(),
+												user.getMaxLoginPerIp()));
 
 		// up and download rates
-		auths.add(new TransferRatePermission(user.getDownloadRate(), user
-				.getUploadRate()));
+		auths.add(new TransferRatePermission(user.getDownloadRate(),
+											 user.getUploadRate()));
 
 		user.setAuthorities(auths);
 		return user;
 	}
 
-	public boolean checkUser(String userId) {
+	public boolean doesExist(Long id) {
 		try {
-			FtpUser ftpUserToSearch = ftpUserDAO.findByUserName(userId);
-			if (ftpUserToSearch != null)
-				return true;
+			return ftpUserDAO.existsUser(id);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			logger.info("ERROR : " + e.getMessage());
+			logger.log(Level.INFO, "ERROR : " + e.getMessage(), e);
 		}
 		return false;
 	}
 
-	public List<FtpUser> getAllUsers() throws DAOException {
-		return ftpUserDAO.findAll();
+	public boolean doesExist(String name) throws FtpException {
+		try {
+			return ftpUserDAO.existsUser(name);
+		} catch (DAOException e) {
+			logger.log(Level.INFO, "ERROR : " + e.getMessage(), e);
+		}
+		return false;
 	}
+
+	/**
+	 * @param ftpUserDAO
+	 *            the ftpUser to set
+	 */
+	public void setFtpUserDAO(FtpUserDAO ftpUserDAO) {
+		this.ftpUserDAO = ftpUserDAO;
+	}
+
+	public void setAllowAnon(boolean allowAnon) {
+		this.allowAnon = allowAnon;
+	}
+
+//	public List<FtpProps> getAllUsers() throws DAOException {
+//		return ftpUserDAO.findAll();
+//	}
+
+
 }

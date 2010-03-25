@@ -1,7 +1,7 @@
 /*
- * $Header: it.geosolutions.geobatch.ftp.server.dao.DAOException,v. 0.1 13/ott/2009 09.54.31 created by giuseppe $
+ * $Header: it.geosolutions.geobatch.ftp.server.dao.GenericDAO,v. 0.1 13/ott/2009 09.53.26 created by giuseppe $
  * $Revision: 0.1 $
- * $Date: 13/ott/2009 09.54.31 $
+ * $Date: 13/ott/2009 09.53.26 $
  *
  * ====================================================================
  *
@@ -27,40 +27,25 @@
  * <http://www.geo-solutions.it/>.
  *
  */
-package it.geosolutions.geobatch.ftp.server.dao;
+package it.geosolutions.geobatch.ftpserver.dao;
 
+import it.geosolutions.geobatch.users.dao.DAOException;
 import java.io.Serializable;
 
 /**
- * @author giuseppe
  * 
  */
-public class DAOException extends Exception implements Serializable {
+public interface GenericDAO<T, ID extends Serializable> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7560128994291133997L;
+	public T findById(ID id, boolean lock) throws DAOException;
 
-	private String message;
+//	public List<T> findAll() throws DAOException;
+//
+//	public List<T> findAll(int offset, int limit) throws DAOException;
 
-	public DAOException() {
-	}
+	public T makePersistent(T entity) throws DAOException;
 
-	public DAOException(String message) {
-		this.message = message;
-	}
+	public void makeTransient(T entity) throws DAOException;
 
-	public DAOException(Exception e) {
-		super(e);
-	}
-
-	public DAOException(Throwable e) {
-		super(e);
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
+	public void lock(T entity) throws DAOException;
 }

@@ -51,8 +51,7 @@
 
 		<dependency>
 			<groupId>it.geosolutions</groupId>
-			<artifactId>gb-fs-catalog</artifactId>
-			<version>${version}</version>
+			<artifactId>gb-users</artifactId>
 		</dependency>
 
 		<!-- ============================== -->
@@ -82,27 +81,22 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>ejb3-persistence</artifactId>
-			<version>1.0.2.GA</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
-			<version>3.3.1.GA</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-commons-annotations</artifactId>
-			<version>3.1.0.GA</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
-			<version>3.3.1.GA</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>3.3.1.GA</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -145,7 +139,6 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.1.118</version>
 		</dependency>
 
 	</dependencies>

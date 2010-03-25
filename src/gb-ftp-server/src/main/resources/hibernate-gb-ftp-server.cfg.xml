@@ -50,7 +50,8 @@
 		<!-- Drop and re-create the database schema on startup -->
 		<property name="hbm2ddl.auto">update</property>
 
-		<mapping class="it.geosolutions.geobatch.ftp.server.model.FtpUser" />
+		<mapping class="it.geosolutions.geobatch.ftpserver.model.FtpProps" />
+		<mapping class="it.geosolutions.geobatch.ftpserver.model.FtpServerConfig" />
 
 
 	</session-factory>

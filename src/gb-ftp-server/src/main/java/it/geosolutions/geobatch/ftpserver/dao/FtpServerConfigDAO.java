@@ -1,8 +1,4 @@
 /*
- * $Header: it.geosolutions.geobatch.ftp.server.dao.GBUserDAO,v. 0.1 13/ott/2009 09.57.52 created by giuseppe $
- * $Revision: 0.1 $
- * $Date: 13/ott/2009 09.57.52 $
- *
  * ====================================================================
  *
  * Copyright (C) 2007-2008 GeoSolutions S.A.S.
@@ -27,22 +23,17 @@
  * <http://www.geo-solutions.it/>.
  *
  */
-package it.geosolutions.geobatch.users.dao;
+package it.geosolutions.geobatch.ftpserver.dao;
 
-import it.geosolutions.geobatch.users.model.GBUser;
+import it.geosolutions.geobatch.ftpserver.model.FtpServerConfig;
+import it.geosolutions.geobatch.users.dao.DAOException;
 
 /**
- * @author giuseppe
- * 
+ * @author ETj
  */
-public interface GBUserDAO extends GenericDAO<GBUser, Long> {
+public interface FtpServerConfigDAO {
 
-	public GBUser findByUserName(String userName) throws DAOException;
+	public void save(FtpServerConfig config) throws DAOException;
 
-	public GBUser save(GBUser user) throws DAOException;
-
-	public void delete(Long userId) throws DAOException;
-
-	public void delete(GBUser user) throws DAOException;
-
+	public FtpServerConfig load() throws DAOException;
 }

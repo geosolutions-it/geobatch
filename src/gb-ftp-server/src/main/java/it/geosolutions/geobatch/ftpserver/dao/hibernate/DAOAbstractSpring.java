@@ -27,11 +27,11 @@
  * <http://www.geo-solutions.it/>.
  *
  */
-package it.geosolutions.geobatch.ftp.server.dao.hibernate;
+package it.geosolutions.geobatch.ftpserver.dao.hibernate;
 
-import it.geosolutions.geobatch.ftp.server.dao.DAOException;
-import it.geosolutions.geobatch.ftp.server.dao.GenericDAO;
+import it.geosolutions.geobatch.ftpserver.dao.GenericDAO;
 
+import it.geosolutions.geobatch.users.dao.DAOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;

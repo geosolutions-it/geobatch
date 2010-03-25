@@ -1,7 +1,4 @@
 /*
- * $Header: it.geosolutions.geobatch.ftp.server.GeoBatchFtplet,v. 0.1 13/ott/2009 22.43.14 created by giuseppe $
- * $Revision: 0.1 $
- * $Date: 13/ott/2009 22.43.14 $
  *
  * ====================================================================
  *
@@ -27,9 +24,9 @@
  * <http://www.geo-solutions.it/>.
  *
  */
-package it.geosolutions.geobatch.ftp.server;
+package it.geosolutions.geobatch.ftpserver.server;
 
-import it.geosolutions.geobatch.ftp.server.model.FtpUser;
+import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -99,9 +96,10 @@ public class GeoBatchFtplet implements Ftplet {
 
 		this.ftpStatisticts = ftpletContext.getFtpStatistics();
 
-		FtpUser ftpUser = new FtpUser();
-		ftpUser.setUserId("admin");
-		ftpUser.setUserPassword("admin");
+		// TODO: REMOVE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		FtpUser ftpUser = FtpUser.createInstance();
+		ftpUser.setName("admin");
+		ftpUser.setPassword("admin");
 		ftpUser.setWritePermission(true);
 
 		ftpletContext.getUserManager().save(ftpUser);

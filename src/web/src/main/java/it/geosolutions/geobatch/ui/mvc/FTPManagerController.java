@@ -24,16 +24,14 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import it.geosolutions.geobatch.ftp.server.GeoBatchServer;
-import it.geosolutions.geobatch.ftp.server.GeoBatchUserManager;
-import it.geosolutions.geobatch.ftp.server.model.FtpUser;
+import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
+import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
 
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.ftpserver.impl.DefaultFtpServer;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -68,8 +66,7 @@ public class FTPManagerController extends AbstractController {
 		// "ftpUserDAO");
 
 		ModelAndView mav = new ModelAndView("ftp");
-		List<FtpUser> ftpUsers = ((GeoBatchUserManager) ((DefaultFtpServer) server
-				.getFtpServer()).getUserManager()).getAllUsers();// ftpUserDAO.findAll();
+		List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
 		mav.addObject("ftpUsers", ftpUsers);
 
 		request.getSession().setAttribute("ftpUsers", ftpUsers);

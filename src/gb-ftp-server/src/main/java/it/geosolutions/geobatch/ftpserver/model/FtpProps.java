@@ -1,5 +1,5 @@
 /*
- * $Header: it.geosolutions.geobatch.ftp.server.model.FtpUser,v. 0.1 13/ott/2009 09.16.47 created by giuseppe $
+ * $Header: it.geosolutions.geobatch.ftp.server.model.FtpProps,v. 0.1 13/ott/2009 09.16.47 created by giuseppe $
  * $Revision: 0.1 $
  * $Date: 13/ott/2009 09.16.47 $
  *
@@ -27,26 +27,24 @@
  * <http://www.geo-solutions.it/>.
  *
  */
-package it.geosolutions.geobatch.ftp.server.model;
+package it.geosolutions.geobatch.ftpserver.model;
 
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
-import org.apache.ftpserver.usermanager.impl.BaseUser;
+import org.apache.ftpserver.ftplet.User;
 
 /**
  * @author giuseppe
  * 
  */
-@Entity(name = "FtpUser")
-@Table(name = "FTP_USER")
-public class FtpUser extends BaseUser implements Serializable {
+@Entity(name = "FtpProps")
+@Table(name = "FTP_USER_PROP")
+public class FtpProps implements Serializable {
 
 	/**
 	 * 
@@ -54,42 +52,45 @@ public class FtpUser extends BaseUser implements Serializable {
 	private static final long serialVersionUID = -1959960226594655854L;
 
 	@Id
-	@GeneratedValue
 	@Column(name = "ID")
-	private Long id;
+	private Long id = null;
 
-	@Column(name = "USER_ID", nullable = false, unique = true, length = 64)
-	private String userId;
-
-	@Column(name = "USER_PASSWORD", nullable = false, length = 64)
-	private String userPassword;
-
-	@Column(name = "HOME_DIRECTORY", length = 128)
-	private String homeDirectory;
-
-	@Column(name = "ENABLE_FLAG", columnDefinition = "boolean default true")
-	private boolean enableFlag;
+//	@Column(name = "USER_ID", nullable = false, unique = true, length = 64)
+//	private String userId;
+//
+//	@Column(name = "USER_PASSWORD", nullable = false, length = 64)
+//	private String userPassword;
+//
+//	@Column(name = "HOME_DIRECTORY", length = 128)
+//	private String homeDirectory;
+//
+//	@Column(name = "ENABLE_FLAG", columnDefinition = "boolean default true")
+//	private boolean enableFlag;
 
 	@Column(name = "WRITE_PERMISSION", columnDefinition = "boolean default false")
-	private boolean writePermission;
+	private boolean writePermission = false;
 
 	@Column(name = "IDLE_TIME", columnDefinition = "int default 0")
-	private int idleTime;
+	private int idleTime = 0;
 
-	@Column(name = "UPLOAD_RATE", columnDefinition = "int default 0")
-	private int uploadRate;
+	@Column(name = "UPLOAD_RATE", columnDefinition = "int default 10")
+	private int uploadRate = 10;
 
-	@Column(name = "DOWNLOAD_RATE", columnDefinition = "int default 0")
-	private int downloadRate;
+	@Column(name = "DOWNLOAD_RATE", columnDefinition = "int default 10")
+	private int downloadRate = 10;
 
-	@Column(name = "MAX_LOGIN_NUMBER", columnDefinition = "int default 0")
-	private int maxLoginNumber;
+	@Column(name = "MAX_LOGIN_NUMBER", columnDefinition = "int default 1")
+	private int maxLoginNumber = 1;
 
-	@Column(name = "MAX_LOGIN_PER_IP", columnDefinition = "int default 0")
-	private int maxLoginPerIp;
+	@Column(name = "MAX_LOGIN_PER_IP", columnDefinition = "int default 1")
+	private int maxLoginPerIp = 1;
 
-	public FtpUser() {
+	public FtpProps() {
 
+	}
+
+	public FtpProps(Long id) {
+		this.id = id;
 	}
 
 	/**
@@ -107,65 +108,65 @@ public class FtpUser extends BaseUser implements Serializable {
 		this.id = id;
 	}
 
-	/**
-	 * @return the userId
-	 */
-	public String getUserId() {
-		return userId;
-	}
-
-	/**
-	 * @param userId
-	 *            the userId to set
-	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	/**
-	 * @return the userPassword
-	 */
-	public String getUserPassword() {
-		return userPassword;
-	}
-
-	/**
-	 * @param userPassword
-	 *            the userPassword to set
-	 */
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
-	}
-
-	/**
-	 * @return the homeDirectory
-	 */
-	public String getHomeDirectory() {
-		return homeDirectory;
-	}
-
-	/**
-	 * @param homeDirectory
-	 *            the homeDirectory to set
-	 */
-	public void setHomeDirectory(String homeDirectory) {
-		this.homeDirectory = homeDirectory;
-	}
-
-	/**
-	 * @return the enableFlag
-	 */
-	public boolean isEnableFlag() {
-		return enableFlag;
-	}
-
-	/**
-	 * @param enableFlag
-	 *            the enableFlag to set
-	 */
-	public void setEnableFlag(boolean enableFlag) {
-		this.enableFlag = enableFlag;
-	}
+////	/**
+////	 * @return the userId
+////	 */
+////	public String getUserId() {
+////		return userId;
+////	}
+////
+////	/**
+////	 * @param userId
+////	 *            the userId to set
+////	 */
+////	public void setUserId(String userId) {
+////		this.userId = userId;
+////	}
+//
+//	/**
+//	 * @return the userPassword
+//	 */
+//	public String getUserPassword() {
+//		return userPassword;
+//	}
+//
+//	/**
+//	 * @param userPassword
+//	 *            the userPassword to set
+//	 */
+//	public void setUserPassword(String userPassword) {
+//		this.userPassword = userPassword;
+//	}
+//
+//	/**
+//	 * @return the homeDirectory
+//	 */
+//	public String getHomeDirectory() {
+//		return homeDirectory;
+//	}
+//
+//	/**
+//	 * @param homeDirectory
+//	 *            the homeDirectory to set
+//	 */
+//	public void setHomeDirectory(String homeDirectory) {
+//		this.homeDirectory = homeDirectory;
+//	}
+//
+//	/**
+//	 * @return the enableFlag
+//	 */
+//	public boolean isEnableFlag() {
+//		return enableFlag;
+//	}
+//
+//	/**
+//	 * @param enableFlag
+//	 *            the enableFlag to set
+//	 */
+//	public void setEnableFlag(boolean enableFlag) {
+//		this.enableFlag = enableFlag;
+//	}
 
 	/**
 	 * @return the writePermission
@@ -185,7 +186,7 @@ public class FtpUser extends BaseUser implements Serializable {
 	/**
 	 * @return the idleTime
 	 */
-	public int getIdleTime() {
+	public int getMaxIdleTime() {
 		return idleTime;
 	}
 
@@ -193,7 +194,7 @@ public class FtpUser extends BaseUser implements Serializable {
 	 * @param idleTime
 	 *            the idleTime to set
 	 */
-	public void setIdleTime(int idleTime) {
+	public void setMaxIdleTime(int idleTime) {
 		this.idleTime = idleTime;
 	}
 
@@ -283,7 +284,7 @@ public class FtpUser extends BaseUser implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		FtpUser other = (FtpUser) obj;
+		FtpProps other = (FtpProps) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -299,26 +300,17 @@ public class FtpUser extends BaseUser implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "[ ID : " + getId() + " - USER_ID : " + getUserId()
-				+ " - USER_PASSWORD : " + getUserPassword()
-				+ "  - HOME_DIRECTORY : " + getHomeDirectory()
-				+ " - ENABLE_FLAG : " + isEnableFlag() + " - WRITE_PERMISSION "
-				+ isWritePermission() + " - IDLE_TIME " + getIdleTime()
-				+ " - UPLOAD_RATE " + getUploadRate() + " - DOWNLOAD_RATE "
-				+ getDownloadRate() + " - MAX_LOGIN_NUMBER "
-				+ getMaxLoginNumber() + " - MAX_LOGIN_PER_IP "
-				+ getMaxLoginPerIp() + "]";
+		return "[ ID : " + getId()
+//				+ " - USER_ID : " + getUserId()
+//				+ " - USER_PASSWORD : " + getUserPassword()
+//				+ "  - HOME_DIRECTORY : " + getHomeDirectory()
+//				+ " - ENABLE_FLAG : " + isEnableFlag()
+				+ " - WRITE_PERMISSION " + isWritePermission()
+				+ " - IDLE_TIME " + getMaxIdleTime()
+				+ " - UPLOAD_RATE " + getUploadRate() 
+				+ " - DOWNLOAD_RATE " + getDownloadRate()
+				+ " - MAX_LOGIN_NUMBER " + getMaxLoginNumber()
+				+ " - MAX_LOGIN_PER_IP " + getMaxLoginPerIp() + "]";
 	}
 
-	@Transient
-	public String getName() {
-		// TODO Auto-generated method stub
-		return getUserId();
-	}
-
-	@Transient
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return getUserPassword();
-	}
 }
