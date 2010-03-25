@@ -7,6 +7,11 @@ cat >$OUTFILE <<EOF
 ##
 ## - ETj
 
+nb*.xml
+src/web/ftp*db
+.classpath
+.project
+.settings
 EOF
 
 for pom in $(find src -name "pom.xml")

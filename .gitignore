@@ -165,6 +165,10 @@ src/gb-fsm/plugin/jnimonitor/target
 
 src/gb-fsm/plugin/target
 
+# src/users/
+
+src/users/target
+
 # src/
 
 src/target
