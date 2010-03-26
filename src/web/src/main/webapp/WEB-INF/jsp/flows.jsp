@@ -21,8 +21,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 %>
-<%@ page contentType="text/html" import="java.sql.*, java.io.*, java.util.*, it.geosolutions.geobatch.catalog.*" %>
+<%@ page contentType="text/html" import="java.sql.*, java.io.*, java.util.*, it.geosolutions.geobatch.catalog.*, it.geosolutions.geobatch.flow.event.action.*, it.geosolutions.geobatch.flow.event.listeners.status.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
@@ -36,32 +37,42 @@
       <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection" />
       <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print" />
 	  <link rel="stylesheet" href="css/app.css" type="text/css" media="screen, projection" />
-      <!--[if IE]>
-        <link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection" />
-	    <link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" />
-      <![endif]-->
-      
-      <!--  style type="text/css">
-		tr.d0 td {
-			background-color: #EEBBBB; color: black;
-		}
-		tr.d1 td {
-			background-color: #BBBBEE; color: black;
-		}
-	  </style -->
+	  <link rel="stylesheet" href="css/jpaginate.css" type="text/css" media="screen, projection" />
 	  
 	<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.custom.css" rel="stylesheet" />	
 	<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-1.8.custom.min.js"></script>
+	<script type="text/javascript" src="js/jquery.paginate.js"></script>
 	
 	<script type="text/javascript">
+		<% 
+			int flowsPerPage = 10;
+			List flowManagers = (List)request.getAttribute("flowManagers");
+			int pages = Math.round(flowManagers.size() / (float)flowsPerPage);
+		%>
+		
 		$(function(){
 
 			// Accordion
 			$("#accordion").accordion({
+				active: false,
 				header: "h3",
 				collapsible: true,
-				autoHeight: false
+				autoHeight: false,
+				alwaysOpen: false,
+				animated: true,
+				showSpeed: 400,
+				hideSpeed: 800
+			});
+			$("#accordion2").accordion({
+				active: false,
+				header: "h3",
+				collapsible: true,
+				autoHeight: false,
+				alwaysOpen: false,
+				animated: true,
+				showSpeed: 400,
+				hideSpeed: 800
 			});
 
 			// Tabs
@@ -73,8 +84,67 @@
 				}
 			});
 
+			// Pagination
+			$("#pagination1").paginate({
+				count 					: <%= pages %>,
+				start 					: 1,
+				display     			: <%= flowsPerPage %>,
+				border					: false,
+				text_color  			: '#79B5E3',
+				background_color    	: 'none',	
+				text_hover_color  		: '#2573AF',
+				background_hover_color	: 'none', 
+				images					: false,
+				mouse					: 'press',
+				onChange     			: function(page){
+											$('._current','#paginationdemo').removeClass('_current').hide();
+											$('#p'+page).addClass('_current').show();
+										  }
+			});
 		});
+
+		// Dialogs
+		$("a.actions").click(
+			function() {
+				var url = this.href;
+				var dialog = $("#dialog-modal").get(0);
+
+				if (dialog != null || dialog != "undefined") {
+					$("#dialog-modal").remove();
+					dialog = null;
+				}
+
+				dialog = $('<div id="dialog-modal" style="display:hidden"></div>');
+				
+               	// load remote content
+               	dialog.load(
+                       url, 
+                       {},
+                       function (responseText, textStatus, XMLHttpRequest) {
+                       	dialog.dialog({
+                           	title: 'Instance actions...',
+                           	width: 600,
+                   			height: 700,
+                   			modal: true
+                   		});
+
+                       }
+               );
+
+               //prevent the browser to follow the link
+               return false;
+       	});
 	</script>
+	<style>
+		.page{
+			border: 1px solid #CCC;
+			width:100%;
+			margin:2px;
+	        padding:50px 10px;
+	        text-align:left;
+			background-color:white;	
+		}
+	</style>
 </head>
 <body>
   <div id="header">
@@ -97,63 +167,83 @@
 
         <div class="header-panel"></div>
         <p><img src="img/manageFlows-small.png" /></p>
-
-		<!-- Accordion -->
-		<div id="accordion">
-			<% int i=0; %>
-			<c:forEach var="fm" items="${flowManagers}">
-				<div>
-					<h3>
-						<a href="#">
-							<c:choose> 
-	  							<c:when test="${fm.running}">
-									<image src='img/green.png' border='0' title='running' alt='running' width='16' height='16'/>
-								</c:when>
-								<c:otherwise>
-									<image src='img/red.png' border='0' title='paused' alt='paused' width='16' height='16'/>
-								</c:otherwise>
-							</c:choose>
-							<c:out value="${fm.configuration.id}"/>
-						</a>
-					</h3>
-					<div>
-						<font style="font-style: italic; font-size: 12px"><c:out value="${fm.configuration.description}"/></font>
-						<div class="tabs">
-							<ul>
-								<li><a class="current" href="#tabs-<%= i %>">Configuration</a></li>
-								<li><a class="" href="flowinfo.do?fmId=${fm.id}">Active Instances</a></li>
-							</ul>
-							<div id="tabs-<%= i %>">
-								<p>
-									<strong>Input directory:</strong> <c:out value="${fm.configuration.eventGeneratorConfiguration.workingDirectory}"/><br/>
-									<strong>Working directory:</strong> <c:out value="${fm.configuration.workingDirectory}"/><br/>
-									
-									<strong>Status:</strong>
-									<c:choose> 
-		  								<c:when test="${fm.running}">
-		  									Running
-		  									<a href='pause.do?fmId=${fm.id}'><image src='img/control_pause.png' border='0' title='pause' alt='pause' width='16' height='16'/></a>
-		  									<a href='pause.do?fmId=${fm.id}&full=true'><image src='img/control_stop.png' border='0' title='complete freeze' alt='full' width='16' height='16'/></a>
-		  								</c:when>
-		  								<c:otherwise>
-		  									Stopped
-		  									<a href='resume.do?fmId=${fm.id}'><image src='img/control_play.png' border='0' title='resume' alt='resume' width='16' height='16'/></a>
-		  								</c:otherwise>
-		  							</c:choose>
-									<a href="dispose.do?fmId=${fm.id}"><image src='img/cancel.png' border='0' title='cancel' alt='cancel' width='16' height='16'/></a>									
-								</p>
-							</div>
+			<!-- Accordion -->
+			<div id="accordion">
+				<!-- Pagination -->
+				<% 
+					int i = 0;
+					int pageNum = 1;
+				%>
+				<div id="paginationdemo" class="demo">
+					<c:forEach var="fm" items="${flowManagers}">
+						<%
+						  if(i % flowsPerPage == 0) {
+						%>
+						<div id="p<%= pageNum++ %>" class="page <%= (i == 0 ? "_current" : "") %>" style="<%= (i != 0 ? "display:none;" : "") %>">
+						<%
+						  }
+						%>
+								<h3>
+									<a href="#">
+										<c:choose> 
+				  							<c:when test="${fm.running}">
+												<image src='img/green.png' border='0' title='running' alt='running' width='16' height='16'/>
+											</c:when>
+											<c:otherwise>
+												<image src='img/red.png' border='0' title='paused' alt='paused' width='16' height='16'/>
+											</c:otherwise>
+										</c:choose>
+										<c:out value="${fm.configuration.id}"/>
+									</a>
+								</h3>
+								<div>
+									<font style="font-style: italic; font-size: 12px"><c:out value="${fm.configuration.description}"/></font>
+									<div class="tabs">
+										<ul>
+											<li><a class="current" href="#tabs-<%= i %>">Configuration</a></li>
+											<li><a class="" href="flowinfo.do?fmId=${fm.id}">Instances</a></li>
+										</ul>
+										<div id="tabs-<%= i %>">
+											<p>
+												<strong>Input directory:</strong> <c:out value="${fm.configuration.eventGeneratorConfiguration.workingDirectory}"/><br/>
+												<strong>Working directory:</strong> <c:out value="${fm.configuration.workingDirectory}"/><br/>
+												
+												<strong>Status:</strong>
+												<c:choose> 
+					  								<c:when test="${fm.running}">
+					  									Running
+					  									<a href='pause.do?fmId=${fm.id}'><image src='img/control_pause.png' border='0' title='pause' alt='pause' width='16' height='16'/></a>
+					  									<a href='pause.do?fmId=${fm.id}&full=true'><image src='img/control_stop.png' border='0' title='complete freeze' alt='full' width='16' height='16'/></a>
+					  								</c:when>
+					  								<c:otherwise>
+					  									Stopped
+					  									<a href='resume.do?fmId=${fm.id}'><image src='img/control_play.png' border='0' title='resume' alt='resume' width='16' height='16'/></a>
+					  								</c:otherwise>
+					  							</c:choose>
+												<a href="dispose.do?fmId=${fm.id}"><image src='img/cancel.png' border='0' title='cancel' alt='cancel' width='16' height='16'/></a>									
+											</p>
+										</div>
+									</div>
+								</div>
+							<% 
+								i++;
+							%>
+						<%
+						  if(i % flowsPerPage == 0) {
+						%>
 						</div>
-					</div>
+						<%
+						  }
+						%>
+					</c:forEach>
 				</div>
-				<% i++; %>
-			</c:forEach>
-		</div>		
-		
-	</div>
-      <div class="page-pane selfclear">
+				<div id="pagination1"></div>
+			</div>
+		</div>
+	
+    <div class="page-pane selfclear">
 
-      </div>
+    </div>
     </div><!-- /#page -->
     </div><!-- /.wrap> -->
   </div><!-- /#main -->

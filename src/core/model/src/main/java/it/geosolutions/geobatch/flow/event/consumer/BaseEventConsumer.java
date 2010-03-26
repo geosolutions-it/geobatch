@@ -258,7 +258,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
     public void dispose() {
         eventsQueue.clear();
-        actions.clear();
+        //actions.clear();
     }
 
     /**

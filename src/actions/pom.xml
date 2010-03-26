@@ -251,6 +251,7 @@
                 </property>
             </activation>
             <modules>
+            		<module>gb-geoserver</module>
                 <module>gb-task-executor</module>
             </modules>
         </profile>

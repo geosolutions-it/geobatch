@@ -84,7 +84,8 @@
         <gt.version>2.7-SNAPSHOT</gt.version>
         <gb.version>0.9-SNAPSHOT</gb.version>
         <imageio-ext.version>1.0.4</imageio-ext.version>
-        <spring.version>2.5.6.SEC01</spring.version>
+        <spring.version>3.0.1.RELEASE</spring.version>
+        <spring.security.version>3.0.2.RELEASE</spring.security.version>
         <dao.type>xstream</dao.type> <!-- the default dao type -->
     </properties>
 
@@ -337,10 +338,20 @@
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
+								<groupId>org.springframework</groupId>
+								<artifactId>spring-aop</artifactId>
+								<version>${spring.version}</version>
+						</dependency>
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+            <dependency>
+						  	<groupId>org.springframework</groupId>
+						  	<artifactId>spring-context-support</artifactId>
+						  	<version>${spring.version}</version>
+						</dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
@@ -351,6 +362,11 @@
                 <artifactId>spring-webmvc-struts</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+						<dependency>
+								<groupId>org.springframework</groupId>
+								<artifactId>spring-expression</artifactId>
+								<version>${spring.version}</version>
+						</dependency>            
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
@@ -372,10 +388,39 @@
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
+								<groupId>org.springframework</groupId>
+								<artifactId>spring-orm</artifactId>
+								<version>${spring.version}</version>
+						</dependency>
+						
+            <!-- ============================== -->
+		        <!--     Spring Security            -->
+		        <!-- ============================== -->
+						<dependency>
+							<groupId>org.springframework.security</groupId>
+							<artifactId>spring-security-acl</artifactId>
+							<version>${spring.security.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.springframework.security</groupId>
+							<artifactId>spring-security-config</artifactId>
+							<version>${spring.security.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.springframework.security</groupId>
+							<artifactId>spring-security-core</artifactId>
+							<version>${spring.security.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.springframework.security</groupId>
+							<artifactId>spring-security-taglibs</artifactId>
+							<version>${spring.security.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.springframework.security</groupId>
+							<artifactId>spring-security-web</artifactId>
+							<version>${spring.security.version}</version>
+						</dependency>
             <!-- SCOPE TEST -->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -451,7 +496,7 @@
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>servlet-api</artifactId>
-                <version>2.4</version>
+                <version>2.5</version>
             </dependency>
 
             <dependency>
@@ -803,12 +848,12 @@
                 <version>8.1-407.jdbc3</version>
             </dependency>
 
-			<!-- H2 DATABASE DEPENDENCY -->
-			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>1.1.119</version>
-			</dependency>
+						<!-- H2 DATABASE DEPENDENCY -->
+						<dependency>
+							<groupId>com.h2database</groupId>
+							<artifactId>h2</artifactId>
+							<version>1.1.119</version>
+						</dependency>
 
             <!-- Geobatch ===================================================-->
 
@@ -929,7 +974,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.4</version>
+                <version>4.5</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

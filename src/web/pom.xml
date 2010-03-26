@@ -47,25 +47,37 @@
     </licenses>
 
     <!-- =========================================================== -->
-    <!--     Dependency Management                                   -->
+    <!--     Dependencies                                            -->
     <!-- =========================================================== -->
 
     <dependencies>
         <!-- ============================== -->
         <!--     Platform                   -->
-        <!-- ============================== -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
+	    <!-- ============================== -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
@@ -82,7 +94,6 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -118,7 +129,9 @@
             <artifactId>gb-ftp-server</artifactId>
         </dependency>
 
-        <!-- RESTLET -->
+        <!-- ============================== -->
+        <!--     RESTLET                    -->
+        <!-- ============================== -->
         <dependency>
             <groupId>com.noelios.restlet</groupId>
             <artifactId>com.noelios.restlet</artifactId>
@@ -139,6 +152,30 @@
             <groupId>org.codehaus.jettison</groupId>
             <artifactId>jettison</artifactId>
         </dependency>
+        
+        <!-- ============================== -->
+        <!--     Spring Security            -->
+        <!-- ============================== -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-acl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+		</dependency>
     </dependencies>
 
 
@@ -173,7 +210,7 @@
                     <contextPath>geobatch</contextPath>
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                            <port>8080</port>
+                            <port>8081</port>
                             <maxIdleTime>10000</maxIdleTime>
                         </connector>
                     </connectors>
@@ -449,6 +486,10 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
+                    <artifactId>gb-action-geoserver-restclient</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>it.geosolutions</groupId>
                     <artifactId>gb-action-geotiff</artifactId>
                 </dependency>
             </dependencies>
@@ -547,6 +588,10 @@
             </activation>
 
             <dependencies>
+                <dependency>
+                    <groupId>it.geosolutions</groupId>
+                    <artifactId>gb-action-geoserver-restclient</artifactId>
+                </dependency>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-action-shapefile</artifactId>

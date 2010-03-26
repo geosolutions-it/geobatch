@@ -75,7 +75,7 @@ public class ConsumerInfoController extends ConsumerAbstractController {
     		BaseAction action = (BaseAction)consumer.getCurrentAction();
     		if(action != null) {
     			eventlist.add("Current action name:   " + action.getName() + " ["+action.getClass().getSimpleName()+"]");
-    			eventlist.add("Current action status: " + (action.isPaused() ? "PAUSED" : "RUNNING"));
+    			eventlist.add("Current action status: " + (action.isPaused() ? "SUSPENDED" : "ACTIVE"));
 
     			// try the most interesting information holder
     			cpl = (CumulatingProgressListener)action.getProgressListener(CumulatingProgressListener.class);

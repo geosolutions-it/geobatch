@@ -7,7 +7,7 @@
 	<!-- pick up all spring application contexts -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:/applicationContext.xml classpath*:/applicationSecurityContext.xml</param-value>
+		<param-value>classpath*:/applicationContext.xml classpath*:/applicationContextSecurity.xml</param-value>
 	</context-param>
 
 	<!--  spring context loader -->
@@ -15,9 +15,7 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 
-	<!--
-		spring dispatcher servlet, dispatches incoming requests to controllers
-	-->
+	<!-- spring dispatcher servlet, dispatches incoming requests to controllers -->
 	<servlet>
 		<servlet-name>geobatch</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -55,8 +53,31 @@
         <servlet-name>rservlet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
-    
+
+	<filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
+    <filter-mapping>
+      <filter-name>springSecurityFilterChain</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!--
+      - Publishes events for session creation and destruction through the application
+      - context. Optional unless concurrent session control is being used.
+      -->
+    <listener>
+      <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+        
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
+	
 </web-app>
