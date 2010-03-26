@@ -32,6 +32,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="refresh" content="5">
+	
 	<title wicket:id="pageTitle">GeoBatch</title>
       <link href="img/favicon.ico" rel="shortcut icon"/>
       <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection" />
@@ -82,14 +84,12 @@
 	                   			height: 700,
 	                   			modal: true
 	                   		});
-	
 	                       }
 	               );
 	
 	               //prevent the browser to follow the link
 	               return false;
 	       	});
-	
 			
 		});
 	</script>
@@ -144,7 +144,7 @@
 									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: red">
 								</c:when>
 								<c:when test="${acStatus.terminated}">
-									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: orange">
+									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: red">
 								</c:when>
 								<c:when test="${acStatus.completed}">
 									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: green">
@@ -153,7 +153,7 @@
 									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: blue">
 								</c:when>
 								<c:when test="${acStatus.started}">
-									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: yellow">
+									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: orange">
 								</c:when>
 								<c:otherwise>
 									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: black">

@@ -102,39 +102,8 @@
 											$('#p'+page).addClass('_current').show();
 										  }
 			});
+
 		});
-
-		// Dialogs
-		$("a.actions").click(
-			function() {
-				var url = this.href;
-				var dialog = $("#dialog-modal").get(0);
-
-				if (dialog != null || dialog != "undefined") {
-					$("#dialog-modal").remove();
-					dialog = null;
-				}
-
-				dialog = $('<div id="dialog-modal" style="display:hidden"></div>');
-				
-               	// load remote content
-               	dialog.load(
-                       url, 
-                       {},
-                       function (responseText, textStatus, XMLHttpRequest) {
-                       	dialog.dialog({
-                           	title: 'Instance actions...',
-                           	width: 600,
-                   			height: 700,
-                   			modal: true
-                   		});
-
-                       }
-               );
-
-               //prevent the browser to follow the link
-               return false;
-       	});
 	</script>
 	<style>
 		.page{
@@ -202,7 +171,7 @@
 									<div class="tabs">
 										<ul>
 											<li><a class="current" href="#tabs-<%= i %>">Configuration</a></li>
-											<li><a class="" href="flowinfo.do?fmId=${fm.id}">Instances</a></li>
+											<li><a href="flowinfo.do?fmId=${fm.id}">Instances</a><a class="autorefresh" href="flowinfo.do?fmId=${fm.id}"><img src="img/arrow_refresh.png"/></a></li>
 										</ul>
 										<div id="tabs-<%= i %>">
 											<p>
