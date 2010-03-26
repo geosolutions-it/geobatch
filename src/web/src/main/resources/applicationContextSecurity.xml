@@ -19,11 +19,11 @@
 
     <http use-expressions="true">
         <intercept-url pattern="/index.*" filters="none" />
-    	<intercept-url pattern="/flow*" access="isAuthenticated()" />
         <!-- Disable web URI authorization, as we're using <global-method-security> and have @Secured the services layer instead
         <intercept-url pattern="/listAccounts.html" access="isRememberMe()" />
         <intercept-url pattern="/post.html" access="hasRole('ROLE_TELLER')" />
         -->
+    	<intercept-url pattern="/*.do" access="isAuthenticated()" />
         <intercept-url pattern="/**" access="permitAll" />
         <form-login login-page="/login.jsp" authentication-failure-url="/login.jsp?login_error=1" default-target-url="/index.html"/>
     	<logout logout-success-url="/index.html"/>

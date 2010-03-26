@@ -152,6 +152,9 @@
 								<c:when test="${acStatus.paused}">
 									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: blue">
 								</c:when>
+								<c:when test="${acStatus.started}">
+									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: yellow">
+								</c:when>
 								<c:otherwise>
 									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: black">
 								</c:otherwise>
