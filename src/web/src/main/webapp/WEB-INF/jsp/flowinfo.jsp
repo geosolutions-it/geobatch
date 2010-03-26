@@ -32,7 +32,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta http-equiv="refresh" content="5">
 	
 	<title wicket:id="pageTitle">GeoBatch</title>
       <link href="img/favicon.ico" rel="shortcut icon"/>
@@ -49,15 +48,13 @@
 	<script type="text/javascript">
 		$(function(){
 			// Accordion
-			$("#accordion2").accordion({
+			$("#accordionInfo").accordion({
 				active: false,
-				header: "h3",
+				header: "h4",
 				collapsible: true,
+				clearStyle: true,
 				autoHeight: false,
-				alwaysOpen: false,
-				animated: true,
-				showSpeed: 400,
-				hideSpeed: 800
+				alwaysOpen: false
 			});
 			
 			// Dialogs
@@ -98,13 +95,13 @@
 	<c:set var="fm" value="${flowManager}"/>
 
 	<!-- Accordion -->
-	<div id="accordion2">
+	<div id="accordionInfo">
 		<c:forEach var="ec" items="${fm.eventConsumers}">
-		    <h3>
+		    <h4>
 		    	<a href="#">
 			    	<c:out value="${ec.id}"/>
 				</a>
-		    </h3>
+		    </h4>
 		    <div>
 			    <UL>
 				    <LI> - <B>status</B>:

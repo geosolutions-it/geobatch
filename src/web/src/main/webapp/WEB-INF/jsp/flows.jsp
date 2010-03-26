@@ -59,21 +59,9 @@
 				active: false,
 				header: "h3",
 				collapsible: true,
+				clearStyle: true,
 				autoHeight: false,
-				alwaysOpen: false,
-				animated: true,
-				showSpeed: 400,
-				hideSpeed: 800
-			});
-			$("#accordion2").accordion({
-				active: false,
-				header: "h3",
-				collapsible: true,
-				autoHeight: false,
-				alwaysOpen: false,
-				animated: true,
-				showSpeed: 400,
-				hideSpeed: 800
+				alwaysOpen: false
 			});
 
 			// Tabs
@@ -85,6 +73,12 @@
 				}
 			});
 
+			$("a.autorefresh").click(
+				function() {
+					alert($("#accordion div.tabs").get(this.id).class);
+				}
+			);
+					
 			// Pagination
 			$("#pagination1").paginate({
 				count 					: <%= pages %>,
@@ -170,8 +164,8 @@
 									<font style="font-style: italic; font-size: 12px"><c:out value="${fm.configuration.description}"/></font>
 									<div class="tabs">
 										<ul>
-											<li><a class="current" href="#tabs-<%= i %>">Configuration</a></li>
-											<li><a href="flowinfo.do?fmId=${fm.id}">Instances</a><a class="autorefresh" href="flowinfo.do?fmId=${fm.id}"><img src="img/arrow_refresh.png"/></a></li>
+											<li><a href="#tabs-<%= i %>">Configuration</a></li>
+											<li><a href="flowinfo.do?fmId=${fm.id}">Instances</a></li>
 										</ul>
 										<div id="tabs-<%= i %>">
 											<p>
