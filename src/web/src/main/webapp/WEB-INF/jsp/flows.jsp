@@ -27,6 +27,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<jsp:useBean id="currentUser" class="it.geosolutions.geobatch.ui.security.CurrentUser"/>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -73,9 +75,10 @@
 				}
 			});
 
+			// Refresh Button
 			$("a.autorefresh").click(
 				function() {
-					alert($("#accordion div.tabs").get(this.id).class);
+					$("#tab-instances-"+this.id).load(this.title);
 				}
 			);
 					
@@ -124,12 +127,12 @@
     <div class="wrap selfclear">
     <!--div id="sidebar">
 
-
     </div--><!-- /#sidebar -->
     <div id="page" class="selfclear">
       <div class="page-header">
 
         <div class="header-panel"></div>
+        
         <p><img src="img/manageFlows-small.png" style="vertical-align: middle"/> <a href="j_spring_security_logout"><img src="img/logout.png" title="Logout" alt="Logout" width="40" height="40" style="vertical-align: middle"/></a> </p>
 			<!-- Accordion -->
 			<div id="accordion">
@@ -164,10 +167,10 @@
 									<font style="font-style: italic; font-size: 12px"><c:out value="${fm.configuration.description}"/></font>
 									<div class="tabs">
 										<ul>
-											<li><a href="#tabs-<%= i %>">Configuration</a></li>
-											<li><a href="flowinfo.do?fmId=${fm.id}">Instances</a></li>
+											<li><a href="#tab-config-<%= i %>">Configuration</a></li>
+											<li><a href="flowinfo.do?fmId=${fm.id}" title="tab-instances-<%= i %>">Instances</a> <a class="autorefresh" id="<%= i %>" title="flowinfo.do?fmId=${fm.id}"><img src="img/arrow_refresh.png"/></a></li>
 										</ul>
-										<div id="tabs-<%= i %>">
+										<div id="tab-config-<%= i %>">
 											<p>
 												<strong>Input directory:</strong> <c:out value="${fm.configuration.eventGeneratorConfiguration.workingDirectory}"/><br/>
 												<strong>Working directory:</strong> <c:out value="${fm.configuration.workingDirectory}"/><br/>
@@ -176,16 +179,31 @@
 												<c:choose> 
 					  								<c:when test="${fm.running}">
 					  									Running
-					  									<a href='pause.do?fmId=${fm.id}'><image src='img/control_pause.png' border='0' title='pause' alt='pause' width='16' height='16'/></a>
-					  									<a href='pause.do?fmId=${fm.id}&full=true'><image src='img/control_stop.png' border='0' title='complete freeze' alt='full' width='16' height='16'/></a>
+					  									<c:forEach var="role" items="${currentUser.user.authorities}">
+					  										<c:if test="${role == 'ADMIN' || role == 'POWERUSER'}">
+							  									<a href='pause.do?fmId=${fm.id}'><image src='img/control_pause.png' border='0' title='pause' alt='pause' width='16' height='16'/></a>
+							  									<a href='pause.do?fmId=${fm.id}&full=true'><image src='img/control_stop.png' border='0' title='complete freeze' alt='full' width='16' height='16'/></a>
+					  										</c:if>
+					  									</c:forEach>
 					  								</c:when>
 					  								<c:otherwise>
 					  									Stopped
-					  									<a href='resume.do?fmId=${fm.id}'><image src='img/control_play.png' border='0' title='resume' alt='resume' width='16' height='16'/></a>
+					  									<c:forEach var="role" items="${currentUser.user.authorities}">
+					  										<c:if test="${role == 'ADMIN' || role == 'POWERUSER'}">
+					  											<a href='resume.do?fmId=${fm.id}'><image src='img/control_play.png' border='0' title='resume' alt='resume' width='16' height='16'/></a>
+					  										</c:if>
+					  									</c:forEach>
 					  								</c:otherwise>
 					  							</c:choose>
-												<a href="dispose.do?fmId=${fm.id}"><image src='img/cancel.png' border='0' title='cancel' alt='cancel' width='16' height='16'/></a>									
+			  									<c:forEach var="role" items="${currentUser.user.authorities}">
+			  										<c:if test="${role == 'ADMIN'}">
+														<a href="dispose.do?fmId=${fm.id}"><image src='img/cancel.png' border='0' title='cancel' alt='cancel' width='16' height='16'/></a>
+													</c:if>
+												</c:forEach>									
 											</p>
+										</div>
+										<div id="tab-instances-<%= i %>">
+											Instances...
 										</div>
 									</div>
 								</div>
