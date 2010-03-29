@@ -69,6 +69,7 @@
 				<tr bgcolor="black" style="color: white;">
 					<th width="10%">USERID</th>
 					<th width="20%">USERNAME</th>
+					<th width="5%">ROLE</th>
 					<th width="5%">WRITE PERMISSION</th>
 					<th width="5%">UPLOAD RATE</th>
 					<th width="5%">DOWNLOAD RATE</th>
@@ -80,6 +81,7 @@
 				<tr >
 					<td><c:out value="${us.id}"/></td>
 					<td><c:out value="${us.name}"/></td>
+					<td><c:out value="${us.sourceUser.role}"/></td>
 					<td><c:out value="${us.writePermission}"/></td>
 					<td><c:out value="${us.uploadRate}"/></td>
 					<td><c:out value="${us.downloadRate}"/></td>

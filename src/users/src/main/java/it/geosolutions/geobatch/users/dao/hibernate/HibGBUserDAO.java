@@ -32,29 +32,50 @@ package it.geosolutions.geobatch.users.dao.hibernate;
 import it.geosolutions.geobatch.users.dao.DAOException;
 import it.geosolutions.geobatch.users.dao.GBUserDAO;
 import it.geosolutions.geobatch.users.model.GBUser;
+import it.geosolutions.geobatch.users.model.GBUserRole;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * @author giuseppe
  * 
  */
 public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
-		implements GBUserDAO {
+		implements GBUserDAO, InitializingBean {
+
+    private final static Logger LOGGER = Logger.getLogger(HibGBUserDAO.class.getName());
 
 	public HibGBUserDAO() {
 		super(GBUser.class);
-		// TODO Auto-generated constructor stub
 	}
+
+    /**
+     * Creates the default admin if no admin user is found.
+     * @throws Exception
+     */
+	protected void initDao() throws Exception {
+        super.initDao();
+
+        if( ! existsAdmin() ) {
+            LOGGER.info("Admin user does not exist. Creating default one.");
+            GBUser user = new GBUser();
+            user.setName("admin");
+            user.setPassword("admin");
+            user.setRole(GBUserRole.ADMIN);
+            save(user);
+        }
+	}
+
 
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public GBUser findByUserName(String userName) throws DAOException {
@@ -62,6 +83,11 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
 		if (users.size() > 0)
 			return users.get(0);
 		return null;
+	}
+
+	public boolean existsAdmin() throws DAOException {
+		List<GBUser> users = super.findByCriteria(Restrictions.eq("role", GBUserRole.ADMIN));
+        return ! users.isEmpty();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)

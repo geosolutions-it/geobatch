@@ -33,11 +33,11 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 /**
  * 
@@ -68,7 +68,11 @@ public class GBUser implements Serializable {
     private String relativeHomeDir;
 
     @Column(name = "USER_ENABLED", columnDefinition = "boolean default true")
-    private boolean enabled;
+    private boolean enabled = true;
+
+    @Column(name = "USER_ROLE")
+    @Enumerated(EnumType.STRING)
+    private GBUserRole role = GBUserRole.USER;
 
     public GBUser() {
     }
@@ -148,6 +152,13 @@ public class GBUser implements Serializable {
         this.enabled = enableFlag;
     }
 
+    public GBUserRole getRole() {
+        return role;
+    }
+
+    public void setRole(GBUserRole role) {
+        this.role = role;
+    }
 
     /*
      * (non-Javadoc)

@@ -5,6 +5,7 @@ package it.geosolutions.geobatch.ftpserver.ftp;
 
 import it.geosolutions.geobatch.ftpserver.model.*;
 import it.geosolutions.geobatch.users.model.GBUser;
+import it.geosolutions.geobatch.users.model.GBUserRole;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,9 @@ public class FtpUser implements User {
 		this.delegateFtpProps = delegateFtpProps;
 	}
 	
+    //==========================================================================
+    // GBUser props
+
 	public Long getId() {
 		return delegateUser.getId();
 	}
@@ -77,6 +81,17 @@ public class FtpUser implements User {
 	public void setEnabled(boolean enableFlag) {
 		delegateUser.setEnabled(enableFlag);
 	}
+
+    public void setRole(GBUserRole role) {
+        delegateUser.setRole(role);
+    }
+
+    public GBUserRole getRole() {
+        return delegateUser.getRole();
+    }
+
+    //==========================================================================
+    // FTP props
 
 	public void setWritePermission(boolean writePermission) {
 		delegateFtpProps.setWritePermission(writePermission);
@@ -220,12 +235,15 @@ public class FtpUser implements User {
 //				+ " - PWD : " + getPassword()
 				+ " - HOME_DIR : " + getRelativeHomeDir()
 				+ " - ENABLE_FLAG : " + getEnabled()
+				+ " - ROLE : " + getRole()
+                + "]["
 				+ " - WRITE_PERMISSION " + isWritePermission()
 				+ " - IDLE_TIME " + getMaxIdleTime()
 				+ " - UPLOAD_RATE " + getUploadRate()
 				+ " - DOWNLOAD_RATE " + getDownloadRate()
 				+ " - MAX_LOGIN_NUMBER " + getMaxLoginNumber()
-				+ " - MAX_LOGIN_PER_IP " + getMaxLoginPerIp() + "]";
+				+ " - MAX_LOGIN_PER_IP " + getMaxLoginPerIp()
+                + "]";
 	}
 
 }
