@@ -36,8 +36,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.apache.ftpserver.ftplet.User;
-
 /**
  * @author giuseppe
  * 

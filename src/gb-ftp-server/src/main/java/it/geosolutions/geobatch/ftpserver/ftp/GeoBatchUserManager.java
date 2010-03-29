@@ -228,7 +228,7 @@ public class GeoBatchUserManager implements UserManager {
 			                          // when using JPA pls ensure the right behaviour will be enforced
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
-			logger.log(Level.INFO, "Error :" + e.getMessage());
+			logger.log(Level.WARNING, "Error saving user("+user+"):" + e.getMessage(), e);
 		}
 	}
 

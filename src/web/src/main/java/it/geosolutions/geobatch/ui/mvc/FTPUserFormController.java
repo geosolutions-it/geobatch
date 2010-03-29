@@ -100,11 +100,13 @@ public class FTPUserFormController extends SimpleFormController {
 		if (!givenData.getDownloadRate().equals(""))
 			user.setDownloadRate(Integer.parseInt(givenData.getDownloadRate()));
 
-		((GeoBatchUserManager) ((DefaultFtpServer) server.getFtpServer())
-				.getUserManager()).save(user);
+        server.getUserManager().save(user);
+//		((GeoBatchUserManager) ((DefaultFtpServer) server.getFtpServer())
+//				.getUserManager()).save(user);
 
-		List<FtpUser> ftpUsers = (List<FtpUser>) request.getSession().getAttribute("ftpUsers");
-		ftpUsers.add(user);
+        List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
+//		List<FtpUser> ftpUsers = (List<FtpUser>) request.getSession().getAttribute("ftpUsers");
+//		ftpUsers.add(user);
 		request.getSession().setAttribute("ftpUsers", ftpUsers);
 		logger.info("Form data successfully submitted");
 		return new ModelAndView(getSuccessView());

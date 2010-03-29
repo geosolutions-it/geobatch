@@ -4,13 +4,13 @@
 package it.geosolutions.geobatch.ftpserver.ftp;
 
 import it.geosolutions.geobatch.ftpserver.dao.FtpPropsDAO;
-import it.geosolutions.geobatch.ftpserver.dao.hibernate.HibFtpPropsDAO;
 import it.geosolutions.geobatch.ftpserver.model.FtpProps;
 import it.geosolutions.geobatch.users.dao.DAOException;
 import it.geosolutions.geobatch.users.dao.GBUserDAO;
 import it.geosolutions.geobatch.users.model.GBUser;
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author etj
  */
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional
 public class FTPUserDAOImpl implements FtpUserDAO {
 
 	private GBUserDAO userDAO;
@@ -52,9 +52,13 @@ public class FTPUserDAOImpl implements FtpUserDAO {
 		List<GBUser> gbUsers = userDAO.findAll();
 		List<FtpUser> ftpUsers = new ArrayList<FtpUser>();
 		for(GBUser gbUser : gbUsers) {
-			FtpProps props = propsDAO.findById(gbUser.getId(), false);
-			if(props == null)
-				props = new FtpProps(gbUser.getId()); // take default values
+            FtpProps props = null;
+            try {
+                props = propsDAO.findById(gbUser.getId(), false);
+                props.getId(); // any getter is good: load the instance
+            }catch(ObjectNotFoundException e) {
+                props = new FtpProps(gbUser.getId()); // take default values
+            }
 			ftpUsers.add(new FtpUser(gbUser, props));
 		}
 		return ftpUsers;
