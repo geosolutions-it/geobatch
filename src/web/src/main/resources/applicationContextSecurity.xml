@@ -19,38 +19,50 @@
 
     <http use-expressions="true">
         <intercept-url pattern="/index.*" filters="none" />
-        <!-- Disable web URI authorization, as we're using <global-method-security> and have @Secured the services layer instead
-        <intercept-url pattern="/listAccounts.html" access="isRememberMe()" />
-        <intercept-url pattern="/post.html" access="hasRole('ROLE_TELLER')" />
-        -->
+        <intercept-url pattern="/error/**" filters="none" />
+
+        <intercept-url pattern="/ftp.*" access="hasRole('ADMIN')" />
+        <intercept-url pattern="/ftpUsers.*" access="hasRole('ADMIN')" />
+        <intercept-url pattern="/newFtpUser.*" access="hasRole('ADMIN')" />
+
+        <intercept-url pattern="/dispose.*" access="hasRole('ADMIN')" />
+        <intercept-url pattern="/resume.*" access="hasAnyRole('ADMIN', 'POWERUSER')" />
+        <intercept-url pattern="/pause.*" access="hasAnyRole('ADMIN', 'POWERUSER')" />
+        
+        <intercept-url pattern="/consumerDispose.*" access="hasRole('ADMIN')" />
+        <intercept-url pattern="/consumerResume.*" access="hasAnyRole('ADMIN', 'POWERUSER')" />
+        <intercept-url pattern="/consumerPause.*" access="hasAnyRole('ADMIN', 'POWERUSER')" />
+        
     	<intercept-url pattern="/*.do" access="isAuthenticated()" />
+
         <intercept-url pattern="/**" access="permitAll" />
+
         <form-login login-page="/login.jsp" authentication-failure-url="/login.jsp?login_error=1" default-target-url="/index.html"/>
-    	<logout logout-success-url="/index.html"/>
+    	<logout invalidate-session="true" logout-success-url="/index.html"/>
         <remember-me />
         
         <!-- Uncomment to limit the number of sessions a user can have -->
-        <!-- session-management>
+        <session-management>
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
-        </session-management -->
+        </session-management>
     </http>
 
-    <!-- authentication-manager>
-	    <authentication-provider>
-	        <jdbc-user-service data-source-ref="dataSource" 
-	        		role-prefix="" 
-	        		users-by-username-query="SELECT name AS username, password, 'true' AS enabled FROM authuser WHERE name = ?"
-	        		authorities-by-username-query="SELECT user_id AS username, rolename AS authority FROM userrole WHERE user_id = ?" />
-	    </authentication-provider>
-    </authentication-manager -->
-    
     <authentication-manager>
+	    <authentication-provider>
+	        <jdbc-user-service data-source-ref="dataSource-gb-users" 
+	        		role-prefix="" 
+	        		users-by-username-query="SELECT USER_NAME AS username, USER_PASSWORD AS password, USER_ENABLED AS enabled FROM GBUser WHERE USER_NAME = ?" 
+	        		authorities-by-username-query="SELECT USER_NAME AS username, USER_ROLE AS authority FROM GBUser WHERE USER_NAME = ?" />
+	    </authentication-provider>
+    </authentication-manager>
+    
+    <!-- authentication-manager>
         <authentication-provider>
             <password-encoder hash="md5"/>
             <user-service>
-            	<user name="alessio" password="24c4e5a9f984e85ce46edd14cf2078e4" authorities="ROLE_SUPERVISOR, ROLE_USER" /> <!-- AlexAa -->
+            	<user name="alessio" password="24c4e5a9f984e85ce46edd14cf2078e4" authorities="ADMIN" />
             </user-service>
         </authentication-provider>
-    </authentication-manager>
+    </authentication-manager -->
 
 </beans:beans>

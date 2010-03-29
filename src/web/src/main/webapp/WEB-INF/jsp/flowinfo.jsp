@@ -27,6 +27,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<jsp:useBean id="currentUser" class="it.geosolutions.geobatch.ui.security.CurrentUser"/>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -48,7 +50,7 @@
 	<script type="text/javascript">
 		$(function(){
 			// Accordion
-			$("#accordionInfo").accordion({
+			$("#accordion div.accordionInfo").accordion({
 				active: false,
 				header: "h4",
 				collapsible: true,
@@ -95,83 +97,97 @@
 	<c:set var="fm" value="${flowManager}"/>
 
 	<!-- Accordion -->
-	<div id="accordionInfo">
-		<c:forEach var="ec" items="${fm.eventConsumers}">
-		    <h4>
-		    	<a href="#">
-			    	<c:out value="${ec.id}"/>
-				</a>
-		    </h4>
-		    <div>
-			    <UL>
-				    <LI> - <B>status</B>:
-				    	<c:choose> 
-							<c:when test="${ec.status == 'FAILED'}">
-								<font style="font-style: italic; font-weight: bold; font-size: 12px; color: red">
-							</c:when>
-							<c:otherwise>
-								<font style="font-style: italic; font-weight: bold; font-size: 12px; color: green">
-							</c:otherwise>
-						</c:choose>
-				    	<c:out value="${ec.status}"/></font>
-							<c:choose>
-						        <c:when test="${ec.paused}">
-						            <a href='consumerResume.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_play.png' border='0' title='resume instance' alt='resume' width='16' height='16'/></a>
-						    		<a href="consumerDispose.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/cancel.png' border='0' title='cancel instance' alt='cancel' width='16' height='16'/></a>
-						        </c:when>
-						        <c:otherwise>
-						            <a href='consumerPause.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_pause.png' border='0' title='pause instance' alt='pause' width='16' height='16'/></a>
-						        </c:otherwise>
-						    </c:choose>
-						    <a class="actions" href="consumerInfo.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/page_white_text.png' border='0' title='instance logs' alt='logs' width='16' height='16'/></a>
-				    </LI>
-				    <LI> - <B>created</B>: <fmt:formatDate value="${ec.creationTimestamp.time}" type="both" dateStyle="SHORT" timeStyle="FULL"/></LI>
-				    <LI> - <B>consumer info</B>: <c:out value="${ec}"/><br/></LI>
-			    </UL>
-			    <font style="font-style: italic; font-weight: bold; font-size: 12px; color: blue">Flow Start</font> -->&nbsp;
-			    <c:forEach var="ac" items="${ec.actions}">
-			    	<c:set var="action" value="${ac}" scope="request" />
-			    	<% 
-			    		request.setAttribute("acStatus", ((BaseAction)request.getAttribute("action")).getProgressListener(StatusProgressListener.class));
-			    	%>
-			    	<c:choose> 
-						<c:when test="${acStatus != null}">
-					    	<c:choose>
-								<c:when test="${acStatus.failed}">
+	<div id="accordion">
+		<div class="accordionInfo">
+			<c:forEach var="ec" items="${fm.eventConsumers}">
+			    <h4>
+			    	<a href="#">
+				    	<c:out value="${ec.id}"/>
+					</a>
+			    </h4>
+			    <div>
+				    <UL>
+					    <LI> - <B>status</B>:
+					    	<c:choose> 
+								<c:when test="${ec.status == 'FAILED'}">
 									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: red">
-								</c:when>
-								<c:when test="${acStatus.terminated}">
-									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: red">
-								</c:when>
-								<c:when test="${acStatus.completed}">
-									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: green">
-								</c:when>
-								<c:when test="${acStatus.paused}">
-									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: blue">
-								</c:when>
-								<c:when test="${acStatus.started}">
-									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: orange">
 								</c:when>
 								<c:otherwise>
-									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: black">
+									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: green">
 								</c:otherwise>
 							</c:choose>
-							<c:out value="${ac.class.simpleName}"/></font>
-					    	<c:choose>
-								<c:when test="${acStatus.failed}">
-									<font style="font-style: italic; font-size: 12px; color: black">(${acStatus.failException.message})</font>
-								</c:when>
-								<c:otherwise></c:otherwise>
-							</c:choose>
-						</c:when>
-						<c:otherwise>
-							<c:out value="${ac.class.simpleName}"/> <font style="font-style: italic; font-size: 12px; color: black">(No status info)</font>
-						</c:otherwise>
-					</c:choose>
-					&nbsp;-->&nbsp;			    	
-			    </c:forEach>
-			    <font style="font-style: italic; font-weight: bold; font-size: 12px; color: blue">Flow End</font>
-		    </div>
-		</c:forEach>
+					    	<c:out value="${ec.status}"/></font>
+								<c:choose>
+							        <c:when test="${ec.paused}">
+	  									<c:forEach var="role" items="${currentUser.user.authorities}">
+	  										<c:if test="${role == 'ADMIN' || role == 'POWERUSER'}">
+							            		<a href='consumerResume.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_play.png' border='0' title='resume instance' alt='resume' width='16' height='16'/></a>
+											</c:if>
+										</c:forEach>									
+	  									<c:forEach var="role" items="${currentUser.user.authorities}">
+	  										<c:if test="${role == 'ADMIN'}">
+							    				<a href="consumerDispose.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/cancel.png' border='0' title='cancel instance' alt='cancel' width='16' height='16'/></a>
+											</c:if>
+										</c:forEach>
+							        </c:when>
+							        <c:otherwise>
+	  									<c:forEach var="role" items="${currentUser.user.authorities}">
+	  										<c:if test="${role == 'ADMIN' || role == 'POWERUSER'}">
+							            		<a href='consumerPause.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_pause.png' border='0' title='pause instance' alt='pause' width='16' height='16'/></a>
+											</c:if>
+										</c:forEach>
+							        </c:otherwise>
+							    </c:choose>
+							    <a class="actions" href="consumerInfo.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/page_white_text.png' border='0' title='instance logs' alt='logs' width='16' height='16'/></a>
+					    </LI>
+					    <LI> - <B>created</B>: <fmt:formatDate value="${ec.creationTimestamp.time}" type="both" dateStyle="SHORT" timeStyle="FULL"/></LI>
+					    <LI> - <B>consumer info</B>: <c:out value="${ec}"/><br/></LI>
+				    </UL>
+				    <font style="font-style: italic; font-weight: bold; font-size: 12px; color: blue">Flow Start</font> -->&nbsp;
+				    <c:forEach var="ac" items="${ec.actions}">
+				    	<c:set var="action" value="${ac}" scope="request" />
+				    	<% 
+				    		request.setAttribute("acStatus", ((BaseAction)request.getAttribute("action")).getProgressListener(StatusProgressListener.class));
+				    	%>
+				    	<c:choose> 
+							<c:when test="${acStatus != null}">
+						    	<c:choose>
+									<c:when test="${acStatus.failed}">
+										<font style="font-style: italic; font-weight: bold; font-size: 12px; color: red">
+									</c:when>
+									<c:when test="${acStatus.terminated}">
+										<font style="font-style: italic; font-weight: bold; font-size: 12px; color: red">
+									</c:when>
+									<c:when test="${acStatus.completed}">
+										<font style="font-style: italic; font-weight: bold; font-size: 12px; color: green">
+									</c:when>
+									<c:when test="${acStatus.paused}">
+										<font style="font-style: italic; font-weight: bold; font-size: 12px; color: blue">
+									</c:when>
+									<c:when test="${acStatus.started}">
+										<font style="font-style: italic; font-weight: bold; font-size: 12px; color: orange">
+									</c:when>
+									<c:otherwise>
+										<font style="font-style: italic; font-weight: bold; font-size: 12px; color: black">
+									</c:otherwise>
+								</c:choose>
+								<c:out value="${ac.class.simpleName}"/></font>
+						    	<c:choose>
+									<c:when test="${acStatus.failed}">
+										<font style="font-style: italic; font-size: 12px; color: black">(${acStatus.failException.message})</font>
+									</c:when>
+									<c:otherwise></c:otherwise>
+								</c:choose>
+							</c:when>
+							<c:otherwise>
+								<c:out value="${ac.class.simpleName}"/> <font style="font-style: italic; font-size: 12px; color: black">(No status info)</font>
+							</c:otherwise>
+						</c:choose>
+						&nbsp;-->&nbsp;			    	
+				    </c:forEach>
+				    <font style="font-style: italic; font-weight: bold; font-size: 12px; color: blue">Flow End</font>
+			    </div>
+			</c:forEach>
+		</div>
 	</div>
 </body>

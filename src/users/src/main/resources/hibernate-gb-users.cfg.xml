@@ -52,7 +52,6 @@
 
 		<mapping class="it.geosolutions.geobatch.users.model.GBUser" />
 
-
 	</session-factory>
 
 </hibernate-configuration>

@@ -71,6 +71,7 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
             GBUser user = new GBUser();
             user.setName("admin");
             user.setPassword("admin");
+            user.setEnabled(true);
             user.setRole(GBUserRole.ADMIN);
             save(user);
         }
