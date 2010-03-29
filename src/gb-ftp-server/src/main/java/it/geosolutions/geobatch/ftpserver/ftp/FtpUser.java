@@ -9,16 +9,20 @@ import it.geosolutions.geobatch.users.model.GBUserRole;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.AuthorizationRequest;
 import org.apache.ftpserver.ftplet.User;
-
+import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
+import org.apache.ftpserver.usermanager.impl.TransferRatePermission;
+import org.apache.ftpserver.usermanager.impl.WritePermission;
 /**
  * Represents a GBuser merged with its related FTP props
  *
  * @author etj
  */
 public class FtpUser implements User {
+    private final static Logger LOGGER = Logger.getLogger(FtpUser.class.getName());
 
 	private GBUser delegateUser;
 	private FtpProps delegateFtpProps;
@@ -146,7 +150,13 @@ public class FtpUser implements User {
         if (authorities != null) {
             return Collections.unmodifiableList(authorities);
         } else {
-            return null;
+            // try to lazily create auths
+            List<Authority> a = createAuthorities();
+            if( ! a.isEmpty()) {
+                authorities = a;
+                return Collections.unmodifiableList(authorities);
+            } else
+                return null;
         }
     }
 
@@ -163,8 +173,8 @@ public class FtpUser implements User {
      */
     public AuthorizationRequest authorize(AuthorizationRequest request) {
         // check for no authorities at all
-        if(authorities == null) {
-            return null;
+        if(authorities == null || authorities.isEmpty()) {
+            authorities = createAuthorities();
         }
 
         boolean someoneCouldAuthorize = false;
@@ -187,6 +197,24 @@ public class FtpUser implements User {
         } else {
             return null;
         }
+    }
+
+
+    /**
+     * Creates Authorities based on ftp properties.
+     * 
+     */
+    protected List<Authority> createAuthorities() {
+
+        List<Authority> auth = new ArrayList<Authority>();
+
+        if (isWritePermission()) {
+            auth.add(new WritePermission());
+        }
+        auth.add(new ConcurrentLoginPermission(getMaxLoginNumber(), getMaxLoginPerIp()));
+        auth.add(new TransferRatePermission(getDownloadRate(), getUploadRate()));
+
+        return auth;
     }
 
     /**

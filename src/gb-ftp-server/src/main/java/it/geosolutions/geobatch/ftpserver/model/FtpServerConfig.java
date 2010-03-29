@@ -23,17 +23,23 @@ public class FtpServerConfig implements Serializable {
 
 	@Column(nullable=false)
 	private int maxLogins = 50;
+
 	@Column(nullable=false)
 	private boolean anonEnabled = false;
+
 	@Column(nullable=false)
 	private int maxAnonLogins = 1;
+
 	@Column(nullable=false)
 	private int maxLoginFailures = 3;
+
 	@Column(nullable=false)
 	private int loginFailureDelay = 10;
 
+
 	@Column(nullable=false)
 	private int port = 2121;
+
 	@Column(nullable=false)
 	private boolean ssl = false;
 
@@ -197,6 +203,4 @@ public class FtpServerConfig implements Serializable {
         clone.setSsl(ssl);
         return clone;
     }
-
-
 }

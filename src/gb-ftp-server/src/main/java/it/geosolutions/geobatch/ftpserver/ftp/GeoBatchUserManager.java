@@ -179,8 +179,17 @@ public class GeoBatchUserManager implements UserManager {
 	 * @see org.apache.ftpserver.ftplet.UserManager#getAllUserNames()
 	 */
 	public String[] getAllUserNames() throws FtpException {
-		// TODO Auto-generated method stub
-		return null;
+        try {
+            List<FtpUser> users = ftpUserDAO.findAll(); // TODO: this call is heavy, coz it joins by hand ftp props
+            String[] ret = new String[users.size()];
+            int cnt = 0;
+            for (FtpUser ftpUser : users) {
+                ret[cnt++] = ftpUser.getName();
+            }
+            return ret;
+        } catch (DAOException ex) {
+            throw new FtpException("Can't retrieve users.", ex);
+        }
 	}
 	
 	public List<FtpUser> getAllUsers() throws DAOException {
@@ -237,11 +246,16 @@ public class GeoBatchUserManager implements UserManager {
 
 		// ETj: maybe this is not the right place to create an home dir 
 		if (!homeDirectory.exists()) {
-			if (!homeDirectory.mkdir())
+			if (!homeDirectory.mkdir()) {
+                logger.warning("Unable to create ftp home dir dir at "
+								+ homeDirectory.getAbsolutePath()
+								+ " for user " + user.getName());
+
 				throw new IllegalStateException(
 						"Unable to create ftp home dir dir at "
 								+ homeDirectory.getAbsolutePath()
 								+ " for user " + user.getName());
+            }
 		}
 
 		user.setHomeDirectory(homeDirectory.getAbsolutePath());
@@ -261,7 +275,10 @@ public class GeoBatchUserManager implements UserManager {
 		auths.add(new TransferRatePermission(user.getDownloadRate(),
 											 user.getUploadRate()));
 
+        // TODO: add constraints on file size
+
 		user.setAuthorities(auths);
+        logger.info("TRANSCODED USER " + user);
 		return user;
 	}
 

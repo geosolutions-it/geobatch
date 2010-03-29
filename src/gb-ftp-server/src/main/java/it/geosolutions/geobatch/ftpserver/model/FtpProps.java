@@ -65,23 +65,23 @@ public class FtpProps implements Serializable {
 //	@Column(name = "ENABLE_FLAG", columnDefinition = "boolean default true")
 //	private boolean enableFlag;
 
-	@Column(name = "WRITE_PERMISSION", columnDefinition = "boolean default false")
+	@Column(name = "WRITE_PERMISSION")
 	private boolean writePermission = false;
 
-	@Column(name = "IDLE_TIME", columnDefinition = "int default 0")
+	@Column(name = "IDLE_TIME")
 	private int idleTime = 0;
 
-	@Column(name = "UPLOAD_RATE", columnDefinition = "int default 10")
+	@Column(name = "UPLOAD_RATE")
 	private int uploadRate = 10;
 
-	@Column(name = "DOWNLOAD_RATE", columnDefinition = "int default 10")
+	@Column(name = "DOWNLOAD_RATE")
 	private int downloadRate = 10;
 
-	@Column(name = "MAX_LOGIN_NUMBER", columnDefinition = "int default 1")
-	private int maxLoginNumber = 1;
+	@Column(name = "MAX_LOGIN_NUMBER")
+	private int maxLoginNumber = 4;
 
-	@Column(name = "MAX_LOGIN_PER_IP", columnDefinition = "int default 1")
-	private int maxLoginPerIp = 1;
+	@Column(name = "MAX_LOGIN_PER_IP")
+	private int maxLoginPerIp = 4;
 
 	public FtpProps() {
 
@@ -105,66 +105,6 @@ public class FtpProps implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-////	/**
-////	 * @return the userId
-////	 */
-////	public String getUserId() {
-////		return userId;
-////	}
-////
-////	/**
-////	 * @param userId
-////	 *            the userId to set
-////	 */
-////	public void setUserId(String userId) {
-////		this.userId = userId;
-////	}
-//
-//	/**
-//	 * @return the userPassword
-//	 */
-//	public String getUserPassword() {
-//		return userPassword;
-//	}
-//
-//	/**
-//	 * @param userPassword
-//	 *            the userPassword to set
-//	 */
-//	public void setUserPassword(String userPassword) {
-//		this.userPassword = userPassword;
-//	}
-//
-//	/**
-//	 * @return the homeDirectory
-//	 */
-//	public String getHomeDirectory() {
-//		return homeDirectory;
-//	}
-//
-//	/**
-//	 * @param homeDirectory
-//	 *            the homeDirectory to set
-//	 */
-//	public void setHomeDirectory(String homeDirectory) {
-//		this.homeDirectory = homeDirectory;
-//	}
-//
-//	/**
-//	 * @return the enableFlag
-//	 */
-//	public boolean isEnableFlag() {
-//		return enableFlag;
-//	}
-//
-//	/**
-//	 * @param enableFlag
-//	 *            the enableFlag to set
-//	 */
-//	public void setEnableFlag(boolean enableFlag) {
-//		this.enableFlag = enableFlag;
-//	}
 
 	/**
 	 * @return the writePermission

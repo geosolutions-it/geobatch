@@ -10,8 +10,9 @@ import it.geosolutions.geobatch.users.dao.GBUserDAO;
 import it.geosolutions.geobatch.users.model.GBUser;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import org.hibernate.Hibernate;
 import org.hibernate.ObjectNotFoundException;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public class FTPUserDAOImpl implements FtpUserDAO {
+    private final static Logger LOGGER = Logger.getLogger(FTPUserDAOImpl.class.getName());
 
 	private GBUserDAO userDAO;
 	private FtpPropsDAO propsDAO;
@@ -39,9 +41,15 @@ public class FTPUserDAOImpl implements FtpUserDAO {
 	public FtpUser findByUserName(String userName) throws DAOException {
 		GBUser user = userDAO.findByUserName(userName);
 		if(user != null) {
-			FtpProps props = propsDAO.findById(user.getId(), false);
-			if(props == null)
-				props = new FtpProps(user.getId()); // take default values
+            FtpProps props;
+            try {
+                props = propsDAO.findById(user.getId(), false);
+                if( ! Hibernate.isInitialized(props))
+                    Hibernate.initialize(props);
+            }catch(ObjectNotFoundException e) {
+                LOGGER.info("FTP props not found for user " + userName);
+                props = new FtpProps(user.getId()); // take default values
+            }
 			return new FtpUser(user, props);
 		}
 		else
@@ -75,8 +83,6 @@ public class FTPUserDAOImpl implements FtpUserDAO {
 		propsDAO.delete(userId);
 		userDAO.delete(userId);
 	}
-
-
 
 	
 	public void setFtpPropsDAO(FtpPropsDAO ftpPropsDAO) {

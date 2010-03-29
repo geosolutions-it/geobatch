@@ -58,8 +58,8 @@ public class GeoBatchServer implements InitializingBean {
         serverFactory.setUserManager(userManager);
 
         // callback
-		final Map<String, Ftplet> map=  new HashMap<String, Ftplet>();
-		map.put("GDSFtplet", new GeoBatchFtplet());
+		final Map<String, Ftplet> map = new HashMap<String, Ftplet>();
+		map.put("GB-Ftplet", new GeoBatchFtplet());
 		serverFactory.setFtplets(map);
 
 		return serverFactory.createServer();

@@ -87,8 +87,12 @@
 					<td><c:out value="${ftpServer.stopped}"/></td>
                     <td>
 							<c:choose>
-						        <c:when test="${ftpServer.suspended || ftpServer.stopped}">
+						        <c:when test="${ftpServer.stopped}">
 						            <a href='ftp.do?action=start&view=status'><image src='img/control_play.png' border='0' title='start/resume instance' alt='start' width='16' height='16'/></a>
+						        </c:when>
+						        <c:when test="${ftpServer.suspended}">
+						            <a href='ftp.do?action=start&view=status'><image src='img/control_play.png' border='0' title='start/resume instance' alt='start' width='16' height='16'/></a>
+						            <a href='ftp.do?action=stop&view=status'><image src='img/control_stop.png' border='0' title='Stop instance' alt='Stop' width='16' height='16'/></a>
 						        </c:when>
 						        <c:otherwise>
 						            <a href='ftp.do?action=pause&view=status'><image src='img/control_pause.png' border='0' title='Pause instance' alt='Pause' width='16' height='16'/></a>

@@ -26,10 +26,10 @@
  */
 package it.geosolutions.geobatch.ftpserver.server;
 
-import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
 
 import java.io.IOException;
 import java.util.logging.Logger;
+import org.apache.ftpserver.ftplet.DefaultFtplet;
 
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.FtpReply;
@@ -44,47 +44,11 @@ import org.apache.ftpserver.ftplet.FtpletResult;
  * @author giuseppe
  * 
  */
-public class GeoBatchFtplet implements Ftplet {
+public class GeoBatchFtplet implements Ftplet /* extends DefaultFtplet */  {
 
-	private Logger logger = Logger.getLogger(GeoBatchFtplet.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(GeoBatchFtplet.class.getName());
 
-	private FtpStatistics ftpStatisticts;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.ftpserver.ftplet.Ftplet#afterCommand(org.apache.ftpserver.
-	 * ftplet.FtpSession, org.apache.ftpserver.ftplet.FtpRequest,
-	 * org.apache.ftpserver.ftplet.FtpReply)
-	 */
-	public FtpletResult afterCommand(FtpSession session, FtpRequest request,
-			FtpReply arg2) throws FtpException, IOException {
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.ftpserver.ftplet.Ftplet#beforeCommand(org.apache.ftpserver
-	 * .ftplet.FtpSession, org.apache.ftpserver.ftplet.FtpRequest)
-	 */
-	public FtpletResult beforeCommand(FtpSession ftpSession, FtpRequest ftpRequest)
-			throws FtpException, IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apache.ftpserver.ftplet.Ftplet#destroy()
-	 */
-	public void destroy() {
-		// TODO Auto-generated method stub
-
-	}
+	private FtpStatistics ftpStats;
 
 	/*
 	 * (non-Javadoc)
@@ -92,9 +56,10 @@ public class GeoBatchFtplet implements Ftplet {
 	 * @seeorg.apache.ftpserver.ftplet.Ftplet#init(org.apache.ftpserver.ftplet.
 	 * FtpletContext)
 	 */
+    @Override
 	public void init(FtpletContext ftpletContext) throws FtpException {
-
-		this.ftpStatisticts = ftpletContext.getFtpStatistics();
+//        super.init(ftpletContext);
+		this.ftpStats = ftpletContext.getFtpStatistics();
 	}
 
 	/*
@@ -106,23 +71,58 @@ public class GeoBatchFtplet implements Ftplet {
 	 */
 	public FtpletResult onConnect(FtpSession ftpSession) throws FtpException,
 			IOException {
-		logger.info("#######################TOTAL CONNECT##############"
-				+ this.ftpStatisticts.getTotalConnectionNumber());
+//        super.onConnect(ftpSession);
+
+		LOGGER.info("#######################  CONNECTIONS : "
+                + this.ftpStats.getCurrentConnectionNumber()
+                + " / "
+				+ this.ftpStats.getTotalConnectionNumber());
+		LOGGER.info("#######################  LOGINS : "
+                + this.ftpStats.getCurrentLoginNumber()
+                + " / "
+				+ this.ftpStats.getTotalLoginNumber());
 
 		return FtpletResult.DEFAULT;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.ftpserver.ftplet.Ftplet#onDisconnect(org.apache.ftpserver.
-	 * ftplet.FtpSession)
-	 */
-	public FtpletResult onDisconnect(FtpSession ftpSession) throws FtpException,
-			IOException {
-		// TODO Auto-generated method stub
+
+
+//    @Override
+//    public FtpletResult onLogin(FtpSession session, FtpRequest request) throws FtpException, IOException {
+//        LOGGER.info("onLogin (arg): " + request.getArgument());
+//        LOGGER.info("onLogin (cmd): " + request.getCommand());
+//        LOGGER.info("onLogin (rql): " + request.getRequestLine());
+//
+//		return FtpletResult.DEFAULT;
+//    }
+//
+//    @Override
+//    public FtpletResult onUploadEnd(FtpSession session, FtpRequest request) throws FtpException, IOException {
+//        super.onUploadEnd(session, request);
+//        LOGGER.info("FTP upload ended (arg): " + request.getArgument());
+//        LOGGER.info("FTP upload ended (cmd): " + request.getCommand());
+//        LOGGER.info("FTP upload ended (rql): " + request.getRequestLine());
+//
+//		return FtpletResult.DEFAULT;
+//    }
+
+    public void destroy() {
+    }
+
+    public FtpletResult beforeCommand(FtpSession session, FtpRequest request) throws FtpException, IOException {
+        return null;
+//		return FtpletResult.DEFAULT;
+    }
+
+//    public FtpletResult afterCommand(FtpSession session, FtpRequest request, FtpReply reply) throws FtpException, IOException {
+//		return FtpletResult.DEFAULT;
+//    }
+	public FtpletResult afterCommand(FtpSession session, FtpRequest request,
+			FtpReply arg2) throws FtpException, IOException {
 		return null;
 	}
+    public FtpletResult onDisconnect(FtpSession session) throws FtpException, IOException {
+		return FtpletResult.DEFAULT;
+    }
 
 }
