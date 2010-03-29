@@ -82,7 +82,7 @@ public class GeoBatchServer implements InitializingBean {
 
 		try {
 			FtpServerConfig config = serverConfigDAO.load();
-			if(!config.equals(lastConfig)) {
+			if(true) { // !config.equals(lastConfig)) {
 				// config has changed: recreate server with new config
 				lastConfig = config;
 				userManager.setAllowAnon(lastConfig.isAnonEnabled());
