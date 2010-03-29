@@ -37,6 +37,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 
 /**
@@ -212,5 +213,12 @@ public class GBUser implements Serializable {
                 + " - USER_PASSWORD : " + getPassword()
                 + "  - HOME_DIRECTORY : " + getRelativeHomeDir()
                 + " - ENABLE_FLAG : " + getEnabled() + "]";
+    }
+
+    @PostLoad
+    protected void postLoad() {
+        if(getRelativeHomeDir() == null) {
+            relativeHomeDir = getName();
+        }
     }
 }

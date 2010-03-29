@@ -28,7 +28,7 @@ public class GeoBatchServer implements InitializingBean {
 
 	public void afterPropertiesSet() throws Exception {
 		lastConfig = serverConfigDAO.load();
-		userManager.setAllowAnon(lastConfig.isAnonEnabled());
+		userManager.setServerConfig(lastConfig);
 		ftpServer = create(lastConfig, userManager);
 
 		if(lastConfig.isAutoStart())
@@ -85,7 +85,7 @@ public class GeoBatchServer implements InitializingBean {
 			if(true) { // !config.equals(lastConfig)) {
 				// config has changed: recreate server with new config
 				lastConfig = config;
-				userManager.setAllowAnon(lastConfig.isAnonEnabled());
+                userManager.setServerConfig(lastConfig);                
 				ftpServer = create(lastConfig, userManager);
 			}
 		} catch(DAOException ex) {

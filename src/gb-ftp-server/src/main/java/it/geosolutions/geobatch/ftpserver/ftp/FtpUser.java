@@ -16,6 +16,7 @@ import org.apache.ftpserver.ftplet.User;
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
 import org.apache.ftpserver.usermanager.impl.TransferRatePermission;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
+
 /**
  * Represents a GBuser merged with its related FTP props
  *
@@ -275,5 +276,3 @@ public class FtpUser implements User {
 	}
 
 }
-
-

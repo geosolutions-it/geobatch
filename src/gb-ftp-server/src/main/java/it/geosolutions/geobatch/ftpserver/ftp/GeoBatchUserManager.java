@@ -30,6 +30,7 @@
 package it.geosolutions.geobatch.ftpserver.ftp;
 
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.ftpserver.model.FtpServerConfig;
 import it.geosolutions.geobatch.global.CatalogHolder;
 
 import it.geosolutions.geobatch.users.dao.DAOException;
@@ -66,7 +67,7 @@ public class GeoBatchUserManager implements UserManager {
 
 	private FtpUserDAO ftpUserDAO;
 
-	private boolean allowAnon = false;
+	private FtpServerConfig serverConfig;
 
 	public GeoBatchUserManager() {
 //		String baseDir = ((FileBaseCatalog) CatalogHolder.getCatalog())
@@ -75,8 +76,12 @@ public class GeoBatchUserManager implements UserManager {
 	}
 
 	private File getFtpRootDir() {
-		return new File( ((FileBaseCatalog) CatalogHolder.getCatalog())
-				.getBaseDirectory(), "FTP");
+        if(serverConfig.getFtpBaseDir() != null) {
+            return new File(serverConfig.getFtpBaseDir());
+        } else {
+            return new File( ((FileBaseCatalog) CatalogHolder.getCatalog())
+                    .getBaseDirectory(), "FTP");
+        }
 	}
 
 	/*
@@ -90,7 +95,7 @@ public class GeoBatchUserManager implements UserManager {
 			throws AuthenticationFailedException {
 
 		if ((authentication instanceof AnonymousAuthentication)
-				&&  ! allowAnon)
+				&&  ! serverConfig.isAnonEnabled())
 			throw new AuthenticationFailedException(
 					"Anonymous authentication is not allowed.");
 
@@ -308,9 +313,9 @@ public class GeoBatchUserManager implements UserManager {
 		this.ftpUserDAO = ftpUserDAO;
 	}
 
-	public void setAllowAnon(boolean allowAnon) {
-		this.allowAnon = allowAnon;
-	}
+    public void setServerConfig(FtpServerConfig serverConfig) {
+        this.serverConfig = serverConfig;
+    }
 
 //	public List<FtpProps> getAllUsers() throws DAOException {
 //		return ftpUserDAO.findAll();

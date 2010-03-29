@@ -46,6 +46,8 @@ public class FtpServerConfig implements Serializable {
 	@Column(nullable=false)
 	private boolean autoStart = false;
 
+	@Column(length=512)
+	private String ftpBaseDir;
 
 	public boolean isAnonEnabled() {
 		return anonEnabled;
@@ -118,7 +120,16 @@ public class FtpServerConfig implements Serializable {
 	public void setAutoStart(boolean autoStart) {
 		this.autoStart = autoStart;
 	}
-    
+
+    public String getFtpBaseDir() {
+        return ftpBaseDir;
+    }
+
+    public void setFtpBaseDir(String ftpBaseDir) {
+        this.ftpBaseDir = ftpBaseDir;
+    }
+
+
 	@Override
 	public String toString() {
 		return new StringBuilder(getClass().getSimpleName())
@@ -131,63 +142,68 @@ public class FtpServerConfig implements Serializable {
 			.append(" maxLoginFailures:").append(getMaxLoginFailures())
 			.append(" loginFailureDelay:").append(getLoginFailureDelay())
 			.append(" auto:").append(isAutoStart())
+			.append(" basedir:").append(getFtpBaseDir())
 			.append(']')
 			.toString();
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if(obj == null) {
-			return false;
-		}
-		if(getClass() != obj.getClass()) {
-			return false;
-		}
-		final FtpServerConfig other = (FtpServerConfig) obj;
-		if(this.id != other.id) {
-			return false;
-		}
-		if(this.maxLogins != other.maxLogins) {
-			return false;
-		}
-		if(this.anonEnabled != other.anonEnabled) {
-			return false;
-		}
-		if(this.maxAnonLogins != other.maxAnonLogins) {
-			return false;
-		}
-		if(this.maxLoginFailures != other.maxLoginFailures) {
-			return false;
-		}
-		if(this.loginFailureDelay != other.loginFailureDelay) {
-			return false;
-		}
-		if(this.port != other.port) {
-			return false;
-		}
-		if(this.ssl != other.ssl) {
-			return false;
-		}
-		if(this.autoStart != other.autoStart) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FtpServerConfig other = (FtpServerConfig) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (this.maxLogins != other.maxLogins) {
+            return false;
+        }
+        if (this.anonEnabled != other.anonEnabled) {
+            return false;
+        }
+        if (this.maxAnonLogins != other.maxAnonLogins) {
+            return false;
+        }
+        if (this.maxLoginFailures != other.maxLoginFailures) {
+            return false;
+        }
+        if (this.loginFailureDelay != other.loginFailureDelay) {
+            return false;
+        }
+        if (this.port != other.port) {
+            return false;
+        }
+        if (this.ssl != other.ssl) {
+            return false;
+        }
+        if (this.autoStart != other.autoStart) {
+            return false;
+        }
+        if ((this.ftpBaseDir == null) ? (other.ftpBaseDir != null) : !this.ftpBaseDir.equals(other.ftpBaseDir)) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 67 * hash + this.id;
-		hash = 67 * hash + this.maxLogins;
-		hash = 67 * hash + (this.anonEnabled ? 1 : 0);
-		hash = 67 * hash + this.maxAnonLogins;
-		hash = 67 * hash + this.maxLoginFailures;
-		hash = 67 * hash + this.loginFailureDelay;
-		hash = 67 * hash + this.port;
-		hash = 67 * hash + (this.ssl ? 1 : 0);
-		hash = 67 * hash + (this.autoStart ? 1 : 0);
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + this.id;
+        hash = 97 * hash + this.maxLogins;
+        hash = 97 * hash + (this.anonEnabled ? 1 : 0);
+        hash = 97 * hash + this.maxAnonLogins;
+        hash = 97 * hash + this.maxLoginFailures;
+        hash = 97 * hash + this.loginFailureDelay;
+        hash = 97 * hash + this.port;
+        hash = 97 * hash + (this.ssl ? 1 : 0);
+        hash = 97 * hash + (this.autoStart ? 1 : 0);
+        hash = 97 * hash + (this.ftpBaseDir != null ? this.ftpBaseDir.hashCode() : 0);
+        return hash;
+    }
 
     @Override
     public FtpServerConfig clone()  {
@@ -201,6 +217,7 @@ public class FtpServerConfig implements Serializable {
         clone.setMaxLogins(maxLogins);
         clone.setPort(port);
         clone.setSsl(ssl);
+        clone.setFtpBaseDir(ftpBaseDir);
         return clone;
     }
 }
