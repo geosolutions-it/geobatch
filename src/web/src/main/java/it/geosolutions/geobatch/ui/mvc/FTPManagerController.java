@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
 import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,10 +37,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 /**
- * @author giuseppe
  * 
  */
 public class FTPManagerController extends AbstractController {
+    private final static Logger LOGGER = Logger.getLogger(FlowManagerController.class.getName());
 
 	private GeoBatchServer server;
 
@@ -52,24 +53,66 @@ public class FTPManagerController extends AbstractController {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
-	 * (javax.servlet .http.HttpServletRequest,
-	 * javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		// FtpUserDAO ftpUserDAO = (FtpUserDAO) getApplicationContext().getBean(
-		// "ftpUserDAO");
 
-		ModelAndView mav = new ModelAndView("ftp");
+        // Selecting output page
+        String viewName;
+        String view = request.getParameter("view");
+        if("users".equalsIgnoreCase(view))
+            viewName = "ftpUsers";
+        else if("status".equalsIgnoreCase(view))
+            viewName = "ftp";
+        else
+            viewName = "ftp"; // default view
+
+		ModelAndView mav = new ModelAndView(viewName);
+
+        String errMsg = null;
+
+        // Selecting action, if any
+        String action = request.getParameter("action");
+        if("stop".equalsIgnoreCase(action)) {
+            LOGGER.info("Requested STOP for ftp server.");
+            if(server.isStopped()) {
+                errMsg = "Server is not running";
+            } else {
+                server.stop();
+            }
+        } else if("start".equalsIgnoreCase(action)) {
+            LOGGER.info("Requested START for ftp server.");
+            if( server.isStopped()) {
+                server.start();
+            } else if( server.isSuspended()) {
+                server.resume();
+            } else {
+                errMsg = "Server is already running";
+            }
+        } else if("pause".equalsIgnoreCase(action)) {
+            LOGGER.info("Requested PAUSE for ftp server.");
+            if(server.isSuspended()) {
+                errMsg = "Server is already suspended";
+            } else if(server.isStopped()) {
+                errMsg = "Server is not running";
+            } else {
+                server.suspend();
+            }
+        }
+
+
 		List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
 		mav.addObject("ftpUsers", ftpUsers);
+		mav.addObject("ftpServer", server);
+		mav.addObject("ftpConfig", server.getLastConfig());
 
-		request.getSession().setAttribute("ftpUsers", ftpUsers);
+        if(errMsg != null) {
+            mav.addObject("errMsg", errMsg);
+            LOGGER.info(errMsg);
+        }
+
+		request.getSession().setAttribute("ftpUsers", ftpUsers); // ???
 		return mav;
 	}
 }

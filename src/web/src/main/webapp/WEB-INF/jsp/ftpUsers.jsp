@@ -62,75 +62,40 @@
 
         <div class="header-panel"></div>
         <p><img src="img/manageFTP-small.png" />
-            <a href="ftp.do?view=users">Manage users</a>
+            <a href="ftp.do?view=status">Status</a>
         </p>
         <br /><br />
 
-        FTP Server status
-        <c:if test="${errMsg!=null}">
-            <div class="feedbackPanelWARNING">
-                <c:out value="${errMsg}"/>
-            </div>
-        </c:if>
-
+        <p><a href="newFtpUser.form"><img src="img/add.png" />Add new user</a></p>
 		<table width="100%" border="0" cellpadding="2" cellspacing="1">
 			<thead>
 				<tr bgcolor="black" style="color: white;">
-					<th width="10%">suspended</th>
-					<th width="10%">stopped</th>
-					<th width="40%">ACTIONS</th>
+					<th width="10%">USERID</th>
+					<th width="20%">USERNAME</th>
+					<th width="5%">ROLE</th>
+					<th width="5%">WRITE PERMISSION</th>
+					<th width="5%">UPLOAD RATE</th>
+					<th width="5%">DOWNLOAD RATE</th>
+					<th width="5%">ACTIONS</th>
 				</tr>
 			</thead>
 			<tbody>
+			<c:forEach var="us" items="${ftpUsers}">
 				<tr >
-					<td><c:out value="${ftpServer.suspended}"/></td>
-					<td><c:out value="${ftpServer.stopped}"/></td>
-                    <td>
-							<c:choose>
-						        <c:when test="${ftpServer.suspended || ftpServer.stopped}">
-						            <a href='ftp.do?action=start&view=status'><image src='img/control_play.png' border='0' title='start/resume instance' alt='start' width='16' height='16'/></a>
-						        </c:when>
-						        <c:otherwise>
-						            <a href='ftp.do?action=pause&view=status'><image src='img/control_pause.png' border='0' title='Pause instance' alt='Pause' width='16' height='16'/></a>
-						            <a href='ftp.do?action=stop&view=status'><image src='img/control_stop.png' border='0' title='Stop instance' alt='Stop' width='16' height='16'/></a>
-						        </c:otherwise>
-						    </c:choose>
-
-
-                    </td>
+					<td><c:out value="${us.id}"/></td>
+					<td><c:out value="${us.name}"/></td>
+					<td><c:out value="${us.sourceUser.role}"/></td>
+					<td><c:out value="${us.writePermission}"/></td>
+					<td><c:out value="${us.uploadRate}"/></td>
+					<td><c:out value="${us.downloadRate}"/></td>
+					<td align="center">
+						<a href='delete.do?userId=${us.id}'><image src='img/dispose.png' border='0' title='delete' alt='delete' width='16' height='16'/></a>
+					</td>
 				</tr>
+			</c:forEach>
+			
 			</tbody>
 		</table>
-
-        <P/>FTP Server config
-		<table width="100%" border="0" cellpadding="2" cellspacing="1">
-			<thead>
-				<tr bgcolor="black" style="color: white;">
-					<th width="10%">port</th>
-					<th width="10%">implicitssl</th>
-					<th width="10%">maxlogins</th>
-					<th width="10%">maxloginfailures</th>
-					<th width="10%">loginfailuredelay</th>
-					<th width="10%">anonenabled</th>
-					<th width="10%">maxanonlogins</th>
-					<th width="10%">autostart</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr >
-					<td><c:out value="${ftpConfig.port}"/></td>
-					<td><c:out value="${ftpConfig.ssl}"/></td>
-					<td><c:out value="${ftpConfig.maxLogins}"/></td>
-					<td><c:out value="${ftpConfig.maxLoginFailures}"/></td>
-					<td><c:out value="${ftpConfig.loginFailureDelay}"/></td>
-					<td><c:out value="${ftpConfig.anonEnabled}"/></td>
-					<td><c:out value="${ftpConfig.maxAnonLogins}"/></td>
-					<td><c:out value="${ftpConfig.autoStart}"/></td>
-				</tr>
-			</tbody>
-		</table>
-
-
 	</div>
       <div class="page-pane selfclear">
 

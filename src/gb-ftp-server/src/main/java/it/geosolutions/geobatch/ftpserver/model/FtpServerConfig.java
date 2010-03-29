@@ -112,7 +112,7 @@ public class FtpServerConfig implements Serializable {
 	public void setAutoStart(boolean autoStart) {
 		this.autoStart = autoStart;
 	}
-
+    
 	@Override
 	public String toString() {
 		return new StringBuilder(getClass().getSimpleName())
@@ -182,5 +182,21 @@ public class FtpServerConfig implements Serializable {
 		hash = 67 * hash + (this.autoStart ? 1 : 0);
 		return hash;
 	}
+
+    @Override
+    public FtpServerConfig clone()  {
+        FtpServerConfig clone = new FtpServerConfig();
+        clone.setAnonEnabled(anonEnabled);
+        clone.setAutoStart(autoStart);
+        clone.setId(id);
+        clone.setLoginFailureDelay(loginFailureDelay);
+        clone.setMaxAnonLogins(maxAnonLogins);
+        clone.setMaxLoginFailures(maxLoginFailures);
+        clone.setMaxLogins(maxLogins);
+        clone.setPort(port);
+        clone.setSsl(ssl);
+        return clone;
+    }
+
 
 }

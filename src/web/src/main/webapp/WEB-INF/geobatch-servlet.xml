@@ -60,15 +60,11 @@
 	<bean id="deleteFtpUserController"
 		class="it.geosolutions.geobatch.ui.mvc.DeleteFtpUserController">
 		<property name="cacheSeconds" value="-1" />
-		<property name="server">
-			<ref bean="geoBatchServer" />
-		</property>
+		<property name="server" ref="geoBatchServer" />
 	</bean>
 
 	<bean id="ftpManagerController" class="it.geosolutions.geobatch.ui.mvc.FTPManagerController">
-		<property name="server">
-			<ref bean="geoBatchServer" />
-		</property>
+		<property name="server" ref="geoBatchServer" />
 		<property name="cacheSeconds" value="-1" />
 	</bean>
 
@@ -145,6 +141,7 @@
 				/dispose.do=flowManagerDisposeController
 				/newFlowManager.form=flowManagerFormController
 				/ftpUsers.do=ftpManagerController
+				/ftp.do=ftpManagerController
 				/newFtpUser.form=ftpUserFormController
 				/delete.do=deleteFtpUserController
 				/flowinfo.do=flowManagerInfoController

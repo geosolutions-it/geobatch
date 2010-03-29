@@ -95,14 +95,6 @@ public class GeoBatchFtplet implements Ftplet {
 	public void init(FtpletContext ftpletContext) throws FtpException {
 
 		this.ftpStatisticts = ftpletContext.getFtpStatistics();
-
-		// TODO: REMOVE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		FtpUser ftpUser = FtpUser.createInstance();
-		ftpUser.setName("admin");
-		ftpUser.setPassword("admin");
-		ftpUser.setWritePermission(true);
-
-		ftpletContext.getUserManager().save(ftpUser);
 	}
 
 	/*

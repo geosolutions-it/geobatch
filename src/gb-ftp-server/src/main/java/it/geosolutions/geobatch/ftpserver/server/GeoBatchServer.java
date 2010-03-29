@@ -75,7 +75,7 @@ public class GeoBatchServer implements InitializingBean {
 	}
 
 	public synchronized void start() throws FtpException {
-		if( ftpServer.isStopped()) {
+		if( ! ftpServer.isStopped()) {
 			LOGGER.log(Level.WARNING, "FTP server is already running and will not be started again.");
 			return;
 		}
@@ -107,6 +107,9 @@ public class GeoBatchServer implements InitializingBean {
 		return ftpServer.isStopped();
 	}
 
+    public FtpServerConfig getLastConfig() {
+        return lastConfig.clone();
+    }
 
 	/**
 	 * @param ftpServer
