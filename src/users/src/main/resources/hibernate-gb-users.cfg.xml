@@ -51,6 +51,7 @@
 		<property name="hbm2ddl.auto">update</property>
 
 		<mapping class="it.geosolutions.geobatch.users.model.GBUser" />
+		<mapping class="it.geosolutions.geobatch.users.model.UserFlowAccess" />
 
 	</session-factory>
 

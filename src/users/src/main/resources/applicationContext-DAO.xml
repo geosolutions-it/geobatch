@@ -13,9 +13,12 @@
 
 	<bean id="gbUserDAO"
 		class="it.geosolutions.geobatch.users.dao.hibernate.HibGBUserDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory-gb-users" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory-gb-users" />
+	</bean>
+
+	<bean id="userFlowAccessDAO"
+		class="it.geosolutions.geobatch.users.dao.hibernate.HibUserFlowAccessDAO">
+		<property name="sessionFactory" ref="sessionFactory-gb-users" />
 	</bean>
 
 </beans>
