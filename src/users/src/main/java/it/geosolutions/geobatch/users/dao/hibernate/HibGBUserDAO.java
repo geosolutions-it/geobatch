@@ -99,7 +99,7 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
 				public Object doInHibernate(Session session)
 						throws HibernateException, SQLException {
 					Query query = session
-							.createQuery("delete from GBUser user where user.id = :id");
+							.createQuery("delete from User user where user.id = :id");
 					query.setParameter("id", id);
 					query.executeUpdate();
 					return null;
