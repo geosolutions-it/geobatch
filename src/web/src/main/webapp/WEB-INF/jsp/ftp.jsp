@@ -68,7 +68,7 @@
         </p>
         <br /><br />
 
-        FTP Server status
+        <P/><h2>FTP Server status</h2>
         <c:if test="${errMsg!=null}">
             <div class="feedbackPanelWARNING">
                 <c:out value="${errMsg}"/>
@@ -118,7 +118,7 @@
 			</tbody>
 		</table>
 
-        <P/>FTP Server config
+        <P/><h2>FTP Server config</h2>
 		<table width="100%" border="0" cellpadding="2" cellspacing="1">
 			<thead>
 				<tr bgcolor="black" style="color: white;">
@@ -145,6 +145,48 @@
 				</tr>
 			</tbody>
 		</table>
+
+        <P/><h2>FTP Server stats</h2>
+        Start time <c:out value="${ftpStats.startTime}"/>
+        <br/>
+        <table class="statsTable" border="0" cellpadding="2" cellspacing="1" >
+			<thead>
+				<tr bgcolor="black" style="color: white;">
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+				</tr>
+			</thead>
+			<tbody>
+                <tr>
+                    <td>Total uploaded files</td>
+                    <td><c:out value="${ftpStats.totalUploadNumber}"/></td>
+                    <td>Total uploaded bytes</td>
+                    <td><c:out value="${ftpStats.totalUploadSize}"/></td>
+                </tr>
+				<tr>
+                    <td>Total downloaded files</td>
+                    <td><c:out value="${ftpStats.totalDownloadNumber}"/></td>
+                    <td>Total uploaded bytes</td>
+                    <td><c:out value="${ftpStats.totalDownloadSize}"/></td>
+                </tr>
+				<tr>
+                    <td>Total connections</td>
+                    <td><c:out value="${ftpStats.totalConnectionNumber}"/></td>
+                    <td>Current connections</td>
+                    <td><c:out value="${ftpStats.currentConnectionNumber}"/></td>
+                </tr>
+				<tr>
+                    <td>Total logins(failed)</td>
+                    <td><c:out value="${ftpStats.totalLoginNumber}"/>
+                    (<c:out value="${ftpStats.totalFailedLoginNumber}"/>)</td>
+                    <td>Current logins</td>
+                    <td><c:out value="${ftpStats.currentLoginNumber}"/></td>
+                </tr>
+
+            </tbody>
+        </table>
 
 
 	</div>

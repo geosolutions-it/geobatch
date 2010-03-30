@@ -34,6 +34,7 @@ import it.geosolutions.geobatch.ftpserver.model.FtpServerConfig;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.users.dao.DAOException;
 import it.geosolutions.geobatch.users.dao.UserFlowAccessDAO;
+import it.geosolutions.geobatch.users.model.GBUserRole;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -235,9 +236,15 @@ public class GeoBatchUserManager implements UserManager {
 	 * 
 	 * @see org.apache.ftpserver.ftplet.UserManager#isAdmin(java.lang.String)
 	 */
-	public boolean isAdmin(String arg0) throws FtpException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isAdmin(String name) throws FtpException {
+		try {
+			FtpUser user = ftpUserDAO.findByUserName(name);
+            if(user != null) {
+                return user.getRole() == GBUserRole.ADMIN;
+            }
+		} catch(DAOException ex) {
+		}
+        return false;
 	}
 
 	/*

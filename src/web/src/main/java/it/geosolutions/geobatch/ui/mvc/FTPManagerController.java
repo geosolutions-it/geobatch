@@ -32,6 +32,11 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.ftpserver.FtpServer;
+import org.apache.ftpserver.ftplet.FtpStatistics;
+import org.apache.ftpserver.impl.DefaultFtpServer;
+import org.apache.ftpserver.impl.DefaultFtpServerContext;
+import org.apache.ftpserver.impl.FtpServerContext;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -106,6 +111,17 @@ public class FTPManagerController extends AbstractController {
 		mav.addObject("ftpUsers", ftpUsers);
 		mav.addObject("ftpServer", server);
 		mav.addObject("ftpConfig", server.getLastConfig());
+
+        // add statistics
+        FtpStatistics stats = null;
+   		final FtpServer ftp = server.getFtpServer();
+		if(ftp instanceof DefaultFtpServer) {
+			//get the context and check if the context is of the right type
+			final FtpServerContext context = ((DefaultFtpServer)ftp).getServerContext();
+			if(context instanceof DefaultFtpServerContext)
+				stats = ((DefaultFtpServerContext)context).getFtpStatistics();
+		}
+		mav.addObject("ftpStats", stats);
 
         if(errMsg != null) {
             mav.addObject("errMsg", errMsg);
