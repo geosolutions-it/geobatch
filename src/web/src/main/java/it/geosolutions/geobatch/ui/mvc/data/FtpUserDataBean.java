@@ -32,7 +32,9 @@ import java.util.List;
  */
 public class FtpUserDataBean {
 
-	private String userId;
+	private Long   userId;
+	
+	private String userName;
 
 	private String password;
 	
@@ -48,18 +50,32 @@ public class FtpUserDataBean {
 	private String[] allowedFlowManagers;
 
 	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	/**
 	 * @return the userId
 	 */
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public String getUserName() {
+		return userName;
 	}
 
 	/**
 	 * @param userId
 	 *            the userId to set
 	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	/**
@@ -171,7 +187,7 @@ public class FtpUserDataBean {
 	public String toString() {
 		return "FtpUserDataBean [downloadRate=" + downloadRate + ", password="
 				+ password + ", uploadRate=" + uploadRate + ", userId="
-				+ userId + ", writePermission=" + writePermission + "]";
+				+ userName + ", writePermission=" + writePermission + "]";
 	}
 
 }

@@ -219,6 +219,20 @@ public class GeoBatchUserManager implements UserManager {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see
+	 * org.apache.ftpserver.ftplet.UserManager#getUserByName(java.lang.String)
+	 */
+	public User getUserById(Long userId) throws FtpException {
+		try {
+			return ftpUserDAO.findByUserId(userId);
+		} catch(DAOException ex) {
+			throw new FtpException(ex);
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.ftpserver.ftplet.UserManager#isAdmin(java.lang.String)
 	 */
 	public boolean isAdmin(String arg0) throws FtpException {

@@ -30,6 +30,7 @@
 package it.geosolutions.geobatch.ftpserver.ftp;
 
 import it.geosolutions.geobatch.users.dao.DAOException;
+
 import java.util.List;
 
 /**
@@ -38,6 +39,7 @@ import java.util.List;
 public interface FtpUserDAO { // extends GenericDAO<FtpUser, Long> {
 
 	public FtpUser findByUserName(String userName) throws DAOException;
+	public FtpUser findByUserId(Long userId) throws DAOException;
 	public List<FtpUser> findAll() throws DAOException;
 
 	public FtpUser save(FtpUser props) throws DAOException;

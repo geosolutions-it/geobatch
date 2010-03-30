@@ -36,6 +36,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.ftpserver.ftplet.User;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -78,8 +79,16 @@ public class FTPUserFormController extends SimpleFormController {
 			throws Exception {
 		FtpUserDataBean backingObject = new FtpUserDataBean();
 		
+		final String userId = request.getParameter("userId");
+		if (userId != null) {
+			User user = server.getUserManager().getUserById(Long.parseLong(userId));
+			if (user != null) {
+				backingObject.setUserId(Long.parseLong(userId));
+				backingObject.setUserName(user.getName());
+				backingObject.setPassword(user.getPassword());
+			}
+		}
 		Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
-
 		backingObject.setAvailableFlowManagers(catalog.getFlowManagers(FileBasedFlowManager.class));
 
 		// this.setValidator(new FtpUserFormValidator(getApplicationContext()));
@@ -106,10 +115,11 @@ public class FTPUserFormController extends SimpleFormController {
 		logger.info(givenData.toString());
 
 		FtpUser user = FtpUser.createInstance();
-		user.setName(givenData.getUserId());
+		user.setId(givenData.getUserId());
+		user.setName(givenData.getUserName());
 		user.setPassword(givenData.getPassword());
 		user.setWritePermission(givenData.getWritePermission());
-		user.setHomeDirectory(givenData.getUserId().toLowerCase().trim().replaceAll(" ", "_"));
+		user.setHomeDirectory(givenData.getUserName().toLowerCase().trim().replaceAll(" ", "_"));
 		if (!givenData.getUploadRate().equals(""))
 			user.setUploadRate(Integer.parseInt(givenData.getUploadRate()));
 		if (!givenData.getDownloadRate().equals(""))
@@ -119,9 +129,11 @@ public class FTPUserFormController extends SimpleFormController {
 //		((GeoBatchUserManager) ((DefaultFtpServer) server.getFtpServer())
 //				.getUserManager()).save(user);
 
-		for (String flowId : givenData.getAllowedFlowManagers()) {
-			userFlowAccess.add(user.getId(), flowId);
-		}
+        if (givenData.getAllowedFlowManagers() != null) {
+        	for (String flowId : givenData.getAllowedFlowManagers()) {
+        		userFlowAccess.add(user.getId(), flowId);
+        	}
+        }
 
         List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
 //		List<FtpUser> ftpUsers = (List<FtpUser>) request.getSession().getAttribute("ftpUsers");
@@ -151,37 +163,29 @@ public class FTPUserFormController extends SimpleFormController {
 			errors.reject("error.nullpointer", "Null data received");
 		} else {
 			/* VALIDATE ALL FIELDS */
-			if ((givenData.getUserId() == null)
-					|| (givenData.getUserId().trim().length() <= 0)) {
-				errors.rejectValue("userId", "error.code",
-						"Ftp User Id is mandatory.");
+			if ((givenData.getUserName() == null)
+					|| (givenData.getUserName().trim().length() <= 0)) {
+				errors.rejectValue("userName", "error.code", "Ftp User Name is mandatory.");
 			} else {
-				if (server.getUserManager().doesExist(givenData.getUserId())) {
+				if (server.getUserManager().doesExist(givenData.getUserName())) {
 					present = true;
-					errors.rejectValue("userId", "error.code", "Ftp User "
-							+ givenData.getUserId() + " has already entered.");
+					errors.rejectValue("userName", "error.code", "Ftp User " + givenData.getUserId() + " has already entered.");
 				}
 			}
 
 			if (!present) {
-				if ((givenData.getPassword() == null)
-						|| (givenData.getPassword().trim().length() <= 0)) {
-					errors.rejectValue("password", "error.code",
-							"Ftp User Password is mandatory.");
+				if ((givenData.getPassword() == null) || (givenData.getPassword().trim().length() <= 0)) {
+					errors.rejectValue("password", "error.code", "Ftp User Password is mandatory.");
 				}
 
-				if ((givenData.getRepeatPassword() == null)
-						|| (givenData.getRepeatPassword().trim().length() <= 0)) {
-					errors.rejectValue("repeatPassword", "error.code",
-							"Ftp User Repeat Password is mandatory.");
+				if ((givenData.getRepeatPassword() == null) || (givenData.getRepeatPassword().trim().length() <= 0)) {
+					errors.rejectValue("repeatPassword", "error.code", "Ftp User Repeat Password is mandatory.");
 				}
 
-				if ((!givenData.getPassword().equals(""))
-						&& (!givenData.getRepeatPassword().equals(""))) {
+				if ((!givenData.getPassword().equals("")) && (!givenData.getRepeatPassword().equals(""))) {
 					if (!givenData.getPassword().equals(
 							givenData.getRepeatPassword())) {
-						errors.rejectValue("password", "error.code",
-								"The password must be the same.");
+						errors.rejectValue("password", "error.code", "The password must be the same.");
 					}
 
 				}

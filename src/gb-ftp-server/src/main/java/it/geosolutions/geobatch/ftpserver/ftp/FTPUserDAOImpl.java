@@ -38,6 +38,24 @@ public class FTPUserDAOImpl implements FtpUserDAO {
 		return userDAO.findByUserName(name) != null;
 	}
 
+	public FtpUser findByUserId(Long userId) throws DAOException {
+		GBUser user = userDAO.findById(userId, false);
+		if(user != null) {
+            FtpProps props;
+            try {
+                props = propsDAO.findById(userId, false);
+                if( ! Hibernate.isInitialized(props))
+                    Hibernate.initialize(props);
+            }catch(ObjectNotFoundException e) {
+                LOGGER.info("FTP props not found for user " + user.getName());
+                props = new FtpProps(user.getId()); // take default values
+            }
+			return new FtpUser(user, props);
+		}
+		else
+			return null;
+	}
+
 	public FtpUser findByUserName(String userName) throws DAOException {
 		GBUser user = userDAO.findByUserName(userName);
 		if(user != null) {

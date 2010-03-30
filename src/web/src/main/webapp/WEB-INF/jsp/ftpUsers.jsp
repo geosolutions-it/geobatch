@@ -92,7 +92,7 @@
 					<td><c:out value="${us.downloadRate}"/></td>
 					<td align="center">
 						<a href='deleteFtpUser.do?userId=${us.id}'><image src='img/dispose.png' border='0' title='delete' alt='delete' width='16' height='16'/></a>
-						<a href='updateFtpUser.do?userId=${us.id}'><image src='img/hammer_screwdriver.png' border='0' title='modify' alt='modify' width='16' height='16'/></a>
+						<a href='updateFtpUser.form?userId=${us.id}'><image src='img/hammer_screwdriver.png' border='0' title='modify' alt='modify' width='16' height='16'/></a>
 					</td>
 				</tr>
 			</c:forEach>

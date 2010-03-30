@@ -219,7 +219,6 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
                 // add to the catalog
                 catalog.add(flow);
 
-
                 // loaded
                 if (LOGGER.isLoggable(Level.INFO))
                     LOGGER.info(new StringBuilder("Loaded flow from file ").append(

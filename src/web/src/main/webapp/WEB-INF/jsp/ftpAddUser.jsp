@@ -87,8 +87,8 @@
 		  <tr>
 		    <td>User Name <i>(no spaces allowed)</i></td>
 		    <td>
-		    	<spring:bind path="ftpUserDataBean.userId">
-					<input type="text" name="userId" value="${status.value}" />
+		    	<spring:bind path="ftpUserDataBean.userName">
+					<input type="text" name="userName" value="${status.value}" />
 	      		</spring:bind>
 	      	</td>
 		  </tr>
