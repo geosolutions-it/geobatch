@@ -61,8 +61,10 @@
       <div class="page-header">
 
         <div class="header-panel"></div>
-        <p><img src="img/manageFTP-small.png" />
-            <a href="ftp.do?view=status">Status</a>
+        <p>
+        	<img src="img/manageFTP-small.png" style="vertical-align: middle"/>
+        	<a href="ftp.do?view=status"><img src="img/cog.png" title="Status" alt="Status" style="vertical-align: middle"/></a>
+        	<a href="j_spring_security_logout"><img src="img/logout.png" title="Logout" alt="Logout" width="40" height="40" style="vertical-align: middle"/></a>
         </p>
         <br /><br />
 
@@ -90,6 +92,7 @@
 					<td><c:out value="${us.downloadRate}"/></td>
 					<td align="center">
 						<a href='delete.do?userId=${us.id}'><image src='img/dispose.png' border='0' title='delete' alt='delete' width='16' height='16'/></a>
+						<a href='delete.do?userId=${us.id}'><image src='img/hammer_screwdriver.png' border='0' title='modify' alt='modify' width='16' height='16'/></a>
 					</td>
 				</tr>
 			</c:forEach>

@@ -16,9 +16,9 @@
 	<server id="server" 
 			max-logins="500"
 			anon-enabled="false"
-			max-anon-logins="123"
-			max-login-failures="124"
-			login-failure-delay="125">
+			max-anon-logins="0"
+			max-login-failures="3"
+			login-failure-delay="20">
 		<listeners>
 			<nio-listener name="default" port="2121" implicit-ssl="false"/>
 		</listeners>

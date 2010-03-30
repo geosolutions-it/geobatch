@@ -61,8 +61,10 @@
       <div class="page-header">
 
         <div class="header-panel"></div>
-        <p><img src="img/manageFTP-small.png" />
-            <a href="ftp.do?view=users">Manage users</a>
+        <p>
+        	<img src="img/manageFTP-small.png" style="vertical-align: middle"/>
+        	<a href="ftp.do?view=users"><img src="img/group.png" title="Manage users" alt="Manage users" style="vertical-align: middle"/></a>
+        	<a href="j_spring_security_logout"><img src="img/logout.png" title="Logout" alt="Logout" width="40" height="40" style="vertical-align: middle"/></a>
         </p>
         <br /><br />
 

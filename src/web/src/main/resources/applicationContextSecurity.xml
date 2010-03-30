@@ -41,7 +41,6 @@
     	<logout invalidate-session="true" logout-success-url="/index.html"/>
         <remember-me />
         
-        <!-- Uncomment to limit the number of sessions a user can have -->
         <session-management>
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
         </session-management>

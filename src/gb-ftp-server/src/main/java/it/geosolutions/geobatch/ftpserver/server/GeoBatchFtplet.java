@@ -29,7 +29,6 @@ package it.geosolutions.geobatch.ftpserver.server;
 
 import java.io.IOException;
 import java.util.logging.Logger;
-import org.apache.ftpserver.ftplet.DefaultFtplet;
 
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.FtpReply;
@@ -56,7 +55,6 @@ public class GeoBatchFtplet implements Ftplet /* extends DefaultFtplet */  {
 	 * @seeorg.apache.ftpserver.ftplet.Ftplet#init(org.apache.ftpserver.ftplet.
 	 * FtpletContext)
 	 */
-    @Override
 	public void init(FtpletContext ftpletContext) throws FtpException {
 //        super.init(ftpletContext);
 		this.ftpStats = ftpletContext.getFtpStatistics();
