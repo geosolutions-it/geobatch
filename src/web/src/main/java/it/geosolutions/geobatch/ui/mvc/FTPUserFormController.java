@@ -24,18 +24,18 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
+import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
 import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
-import it.geosolutions.geobatch.ftpserver.ftp.GeoBatchUserManager;
-import it.geosolutions.geobatch.ftpserver.model.FtpProps;
 import it.geosolutions.geobatch.ui.mvc.data.FtpUserDataBean;
+import it.geosolutions.geobatch.users.dao.UserFlowAccessDAO;
 
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.ftpserver.impl.DefaultFtpServer;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -44,9 +44,12 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
  * @author giuseppe
  * 
  */
+@SuppressWarnings("deprecation")
 public class FTPUserFormController extends SimpleFormController {
 
 	private GeoBatchServer server;
+	
+	private UserFlowAccessDAO userFlowAccess;
 
 	/**
 	 * @param server
@@ -54,6 +57,13 @@ public class FTPUserFormController extends SimpleFormController {
 	 */
 	public void setServer(GeoBatchServer server) {
 		this.server = server;
+	}
+
+	/**
+	 * @param userFlowAccess the userFlowAccess to set
+	 */
+	public void setUserFlowAccess(UserFlowAccessDAO userFlowAccess) {
+		this.userFlowAccess = userFlowAccess;
 	}
 
 	/*
@@ -67,8 +77,12 @@ public class FTPUserFormController extends SimpleFormController {
 	protected Object formBackingObject(HttpServletRequest request)
 			throws Exception {
 		FtpUserDataBean backingObject = new FtpUserDataBean();
+		
+		Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
+
+		backingObject.setAvailableFlowManagers(catalog.getFlowManagers(FileBasedFlowManager.class));
+
 		// this.setValidator(new FtpUserFormValidator(getApplicationContext()));
-		logger.info("Returning backing object");
 		return backingObject;
 	}
 
@@ -95,6 +109,7 @@ public class FTPUserFormController extends SimpleFormController {
 		user.setName(givenData.getUserId());
 		user.setPassword(givenData.getPassword());
 		user.setWritePermission(givenData.getWritePermission());
+		user.setHomeDirectory(givenData.getUserId().toLowerCase().trim().replaceAll(" ", "_"));
 		if (!givenData.getUploadRate().equals(""))
 			user.setUploadRate(Integer.parseInt(givenData.getUploadRate()));
 		if (!givenData.getDownloadRate().equals(""))
@@ -103,6 +118,10 @@ public class FTPUserFormController extends SimpleFormController {
         server.getUserManager().save(user);
 //		((GeoBatchUserManager) ((DefaultFtpServer) server.getFtpServer())
 //				.getUserManager()).save(user);
+
+		for (String flowId : givenData.getAllowedFlowManagers()) {
+			userFlowAccess.add(user.getId(), flowId);
+		}
 
         List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
 //		List<FtpUser> ftpUsers = (List<FtpUser>) request.getSession().getAttribute("ftpUsers");

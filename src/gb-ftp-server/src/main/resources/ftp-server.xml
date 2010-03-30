@@ -33,6 +33,7 @@
 		<user-manager>
 			<beans:bean id="geoBatchUserManager" class="it.geosolutions.geobatch.ftpserver.server.GeoBatchUserManager" depends-on="globalConfig">
 				<beans:property name="ftpUserDAO" ref="ftpUserDAO" />
+				<beans:property name="userFlowAccess" ref="userFlowAccessDAO" />
 			</beans:bean>
 		</user-manager>
 	</server>

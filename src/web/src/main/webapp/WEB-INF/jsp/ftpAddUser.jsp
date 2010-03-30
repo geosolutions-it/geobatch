@@ -40,6 +40,25 @@
         <link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection" />
 	    <link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" />
       <![endif]-->
+      
+      <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.custom.css" rel="stylesheet" />
+      <link rel="stylesheet" type="text/css" href="css/jquery.asmselect.css" />
+	  <script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+	  <script type="text/javascript" src="js/jquery-ui-1.8.custom.min.js"></script>
+	  <script type="text/javascript" src="js/jquery.asmselect.js"></script>
+	  <script type="text/javascript" src="js/jquery.paginate.js"></script>
+		
+	  <script type="text/javascript">
+	  	$(document).ready(function() {
+			$("select[multiple]").asmSelect({
+				addItemTarget: 'bottom',
+				animate: true,
+				highlight: true,
+				sortable: true
+			});
+		});
+      </script>
+      
 </head>
 <body>
   <div id="header">
@@ -66,7 +85,7 @@
         <form method="post" action="newFtpUser.form">
         <table>
 		  <tr>
-		    <td>USER_ID</td>
+		    <td>User Name <i>(no spaces allowed)</i></td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.userId">
 					<input type="text" name="userId" value="${status.value}" />
@@ -74,7 +93,7 @@
 	      	</td>
 		  </tr>
 		  <tr>
-		    <td>USER_PASSWORD</td>
+		    <td>Password</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.password">
 					<input type="password" name="password" value="${status.value}" />
@@ -82,7 +101,7 @@
 		    </td>
 		  </tr>
 		  <tr>
-		    <td>REPEAT_USER_PASSWORD</td>
+		    <td>Repeat Password</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.repeatPassword">
 					<input type="password" name="repeatPassword" value="${status.value}" />
@@ -90,17 +109,16 @@
 		    </td>
 		  </tr>
 		  <tr>
-		    <td>WRITE_PERMISSION</td>
+		    <td>Write Enabled</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.writePermission">
-					<input type="checkbox" name="writePermission" value="true" <c:if test="${status.value}">checked</c:if>>
-
+					<input type="checkbox" name="writePermission" value="true" <c:if test="${status.value}">checked</c:if> />
 	      		</spring:bind>
 		    
 		    </td>
 		  </tr>
 		  <tr>
-		    <td>UPLOAD_RATE</td>
+		    <td>Upload Rate</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.uploadRate">
 					<input type="text" name="uploadRate" value="${status.value}" />
@@ -108,15 +126,26 @@
 		    </td>
 		  </tr>
 		  <tr>
-		    <td>DOWNLOAD_RATE</td>
+		    <td>Download Rate</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.downloadRate">
 					<input type="text" name="downloadRate" value="${status.value}" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
+		  <tr>
+		    <td>Allowed Flows</td>
+		    <td>
+		    	<spring:bind path="ftpUserDataBean.allowedFlowManagers">
+					<select multiple="multiple" name="allowedFlowManagers" title="Select Allowed Flow-Managers">
+						<c:forEach var="fm" items="${ftpUserDataBean.availableFlowManagers}">
+							<option value="${fm.configuration.id}"><c:out value="${fm.configuration.id}"/></option>
+						</c:forEach>					
+					</select>
+				</spring:bind>
+		    </td>
+		  </tr>
 		</table>
-		
 		
 		<font style="font-style: italic; font-size: 13px; color: red">
       <spring:hasBindErrors name="ftpUserDataBean">
@@ -135,7 +164,6 @@
       		<input type="submit" value="Save" id="btnTxt"/><input type="button" value="Cancel" onclick="javascript:window.location.href=('ftpUsers.do')">
       	</div>
    </form>
-   
 
 	</div>
       <div class="page-pane selfclear">

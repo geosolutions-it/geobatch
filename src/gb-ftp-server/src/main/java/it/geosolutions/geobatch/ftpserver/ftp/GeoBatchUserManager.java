@@ -32,8 +32,9 @@ package it.geosolutions.geobatch.ftpserver.ftp;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.ftpserver.model.FtpServerConfig;
 import it.geosolutions.geobatch.global.CatalogHolder;
-
 import it.geosolutions.geobatch.users.dao.DAOException;
+import it.geosolutions.geobatch.users.dao.UserFlowAccessDAO;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,6 @@ import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.User;
 import org.apache.ftpserver.ftplet.UserManager;
-import org.apache.ftpserver.impl.DefaultFtpServer;
 import org.apache.ftpserver.usermanager.AnonymousAuthentication;
 import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication;
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
@@ -60,13 +60,14 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
  */
 public class GeoBatchUserManager implements UserManager {
 
-	private Logger logger = Logger.getLogger(GeoBatchUserManager.class
-			.getName());
+	private Logger logger = Logger.getLogger(GeoBatchUserManager.class.getName());
 
 //	private File ftpRootDir;
 
 	private FtpUserDAO ftpUserDAO;
 
+	private UserFlowAccessDAO userFlowAccess;
+	
 	private FtpServerConfig serverConfig;
 
 	public GeoBatchUserManager() {
@@ -252,17 +253,42 @@ public class GeoBatchUserManager implements UserManager {
 		// ETj: maybe this is not the right place to create an home dir 
 		if (!homeDirectory.exists()) {
 			if (!homeDirectory.mkdir()) {
-                logger.warning("Unable to create ftp home dir dir at "
+                logger.warning("Unable to create ftp home dir at "
 								+ homeDirectory.getAbsolutePath()
 								+ " for user " + user.getName());
 
 				throw new IllegalStateException(
-						"Unable to create ftp home dir dir at "
+						"Unable to create ftp home dir at "
 								+ homeDirectory.getAbsolutePath()
 								+ " for user " + user.getName());
             }
 		}
 
+		try {
+			List<String> allowedFlows = userFlowAccess.findFlows(user.getId());
+			
+			for (String flowId : allowedFlows) {
+				File flowDir = new File(homeDirectory, flowId);
+				
+				if (!flowDir.exists()) {
+					if (!flowDir.mkdir()) {
+		                logger.warning("Unable to create ftp flow dir at "
+										+ flowDir.getAbsolutePath()
+										+ " for user " + user.getName());
+
+						throw new IllegalStateException(
+								"Unable to create ftp flow dir at "
+										+ flowDir.getAbsolutePath()
+										+ " for user " + user.getName());
+		            }
+				}
+			}
+		} catch (DAOException e) {
+			throw new IllegalStateException(
+					"Unable to retrieve allowed flows"
+							+ " for user " + user.getName());
+		}
+		
 		user.setHomeDirectory(homeDirectory.getAbsolutePath());
 		final List<Authority> auths = new ArrayList<Authority>();
 
@@ -313,13 +339,15 @@ public class GeoBatchUserManager implements UserManager {
 		this.ftpUserDAO = ftpUserDAO;
 	}
 
-    public void setServerConfig(FtpServerConfig serverConfig) {
+    /**
+	 * @param userFlowAccess the userFlowAccess to set
+	 */
+	public void setUserFlowAccess(UserFlowAccessDAO userFlowAccess) {
+		this.userFlowAccess = userFlowAccess;
+	}
+
+	public void setServerConfig(FtpServerConfig serverConfig) {
         this.serverConfig = serverConfig;
     }
-
-//	public List<FtpProps> getAllUsers() throws DAOException {
-//		return ftpUserDAO.findAll();
-//	}
-
 
 }

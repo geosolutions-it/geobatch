@@ -22,6 +22,10 @@
 
 package it.geosolutions.geobatch.ui.mvc.data;
 
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+
+import java.util.List;
+
 /**
  * @author Francesco Izzi
  * 
@@ -39,6 +43,9 @@ public class FtpUserDataBean {
 	private String uploadRate;
 
 	private String downloadRate;
+	
+	private List<FileBasedFlowManager> availableFlowManagers;
+	private String[] allowedFlowManagers;
 
 	/**
 	 * @return the userId
@@ -127,6 +134,34 @@ public class FtpUserDataBean {
 	 */
 	public void setDownloadRate(String downloadRate) {
 		this.downloadRate = downloadRate;
+	}
+
+	/**
+	 * @param availableFlowManagers the availableFlowManagers to set
+	 */
+	public void setAvailableFlowManagers(List<FileBasedFlowManager> availableFlowManagers) {
+		this.availableFlowManagers = availableFlowManagers;
+	}
+
+	/**
+	 * @return the availableFlowManagers
+	 */
+	public List<FileBasedFlowManager> getAvailableFlowManagers() {
+		return availableFlowManagers;
+	}
+
+	/**
+	 * @param allowedFlowManagers the allowedFlowManagers to set
+	 */
+	public void setAllowedFlowManagers(String[] allowedFlowManagers) {
+		this.allowedFlowManagers = allowedFlowManagers;
+	}
+
+	/**
+	 * @return the allowedFlowManagers
+	 */
+	public String[] getAllowedFlowManagers() {
+		return allowedFlowManagers;
 	}
 
 	/* (non-Javadoc)

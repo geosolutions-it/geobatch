@@ -72,7 +72,7 @@ public class FtpUser implements User {
 	}
 
 	public String getRelativeHomeDir() {
-		return delegateUser.getRelativeHomeDir();
+		return (delegateUser.getRelativeHomeDir() != null ? delegateUser.getRelativeHomeDir() : delegateUser.getName().toLowerCase());
 	}
 
 	public void setRelativeHomeDir(String homeDirectory) {
