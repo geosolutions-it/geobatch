@@ -27,11 +27,18 @@
 package it.geosolutions.geobatch.ftpserver.server;
 
 
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+import it.geosolutions.geobatch.global.CatalogHolder;
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.ftpserver.ftplet.DefaultFtplet;
 
 import org.apache.ftpserver.ftplet.FtpException;
-import org.apache.ftpserver.ftplet.FtpReply;
 import org.apache.ftpserver.ftplet.FtpRequest;
 import org.apache.ftpserver.ftplet.FtpSession;
 import org.apache.ftpserver.ftplet.FtpStatistics;
@@ -40,42 +47,31 @@ import org.apache.ftpserver.ftplet.FtpletContext;
 import org.apache.ftpserver.ftplet.FtpletResult;
 
 /**
- * @author giuseppe
  * 
+ * @author ETj <etj at geo-solutions.it>
  */
-public class GeoBatchFtplet implements Ftplet /* extends DefaultFtplet */  {
+public class GeoBatchFtplet 
+        extends DefaultFtplet
+        implements Ftplet  {
 
 	private final static Logger LOGGER = Logger.getLogger(GeoBatchFtplet.class.getName());
 
 	private FtpStatistics ftpStats;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.apache.ftpserver.ftplet.Ftplet#init(org.apache.ftpserver.ftplet.
-	 * FtpletContext)
-	 */
 	public void init(FtpletContext ftpletContext) throws FtpException {
-//        super.init(ftpletContext);
+        super.init(ftpletContext);
 		this.ftpStats = ftpletContext.getFtpStatistics();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.ftpserver.ftplet.Ftplet#onConnect(org.apache.ftpserver.ftplet
-	 * .FtpSession)
-	 */
 	public FtpletResult onConnect(FtpSession ftpSession) throws FtpException,
 			IOException {
-//        super.onConnect(ftpSession);
+        super.onConnect(ftpSession);
 
-		LOGGER.info("#######################  CONNECTIONS : "
+		LOGGER.info("FTP Stats: CONNECTIONS : "
                 + this.ftpStats.getCurrentConnectionNumber()
                 + " / "
-				+ this.ftpStats.getTotalConnectionNumber());
-		LOGGER.info("#######################  LOGINS : "
+				+ this.ftpStats.getTotalConnectionNumber()
+                + " -- LOGINS : "
                 + this.ftpStats.getCurrentLoginNumber()
                 + " / "
 				+ this.ftpStats.getTotalLoginNumber());
@@ -83,44 +79,59 @@ public class GeoBatchFtplet implements Ftplet /* extends DefaultFtplet */  {
 		return FtpletResult.DEFAULT;
 	}
 
+    @Override
+    public FtpletResult onUploadEnd(FtpSession session, FtpRequest request) throws FtpException, IOException {
+        super.onUploadEnd(session, request);
 
+        String spath = session.getFileSystemView().getWorkingDirectory().getAbsolutePath();
+        String filename = request.getArgument();
+        File targetFile = new File(spath, filename);
 
-//    @Override
-//    public FtpletResult onLogin(FtpSession session, FtpRequest request) throws FtpException, IOException {
-//        LOGGER.info("onLogin (arg): " + request.getArgument());
-//        LOGGER.info("onLogin (cmd): " + request.getCommand());
-//        LOGGER.info("onLogin (rql): " + request.getRequestLine());
-//
-//		return FtpletResult.DEFAULT;
-//    }
-//
-//    @Override
-//    public FtpletResult onUploadEnd(FtpSession session, FtpRequest request) throws FtpException, IOException {
-//        super.onUploadEnd(session, request);
-//        LOGGER.info("FTP upload ended (arg): " + request.getArgument());
-//        LOGGER.info("FTP upload ended (cmd): " + request.getCommand());
-//        LOGGER.info("FTP upload ended (rql): " + request.getRequestLine());
-//
-//		return FtpletResult.DEFAULT;
-//    }
+        String flowid = FilenameUtils.getName(spath);
+
+        LOGGER.info("FTP upload ended - session working dir: '" + spath + "' - file: '"+filename+"'");
+
+        Catalog catalog = CatalogHolder.getCatalog();
+
+        // CHECKME FIXME next call won't work: flowid are set as the file name, not the config id
+//        FileBasedFlowManager fm = catalog.getFlowManager(flowid, FileBasedFlowManager.class); // CHECKME TODO this has to be made more general
+        FileBasedFlowManager fm = null;
+        StringBuilder availFmSb = new StringBuilder("Available FlowManagers: ");
+        for (FileBasedFlowManager fmloop : catalog.getFlowManagers(FileBasedFlowManager.class)) {            
+            availFmSb.append('(').append(fmloop.getId()).append(',').append(fmloop.getName()).append(')');
+
+            if(fmloop.getConfiguration().getId().equals(flowid)) {
+                fm = fmloop;
+            }            
+        }
+
+        if(fm != null) {
+            LOGGER.info("Firing FILEADDED event to " + fm);
+            fm.postEvent(new FileSystemMonitorEvent(targetFile, FileSystemMonitorNotifications.FILE_ADDED));
+        } else {
+            LOGGER.info("No FlowManager '"+flowid+"' to notify about " + targetFile  + " -- " + availFmSb);
+        }
+
+		return FtpletResult.DEFAULT;
+    }
 
     public void destroy() {
+        super.destroy();
     }
 
-    public FtpletResult beforeCommand(FtpSession session, FtpRequest request) throws FtpException, IOException {
-        return null;
-//		return FtpletResult.DEFAULT;
+    @Override
+    public FtpletResult onMkdirStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
+        throw new FtpException("Operation not allowed."); //return FtpletResult.SKIP;
     }
 
-//    public FtpletResult afterCommand(FtpSession session, FtpRequest request, FtpReply reply) throws FtpException, IOException {
-//		return FtpletResult.DEFAULT;
-//    }
-	public FtpletResult afterCommand(FtpSession session, FtpRequest request,
-			FtpReply arg2) throws FtpException, IOException {
-		return null;
-	}
-    public FtpletResult onDisconnect(FtpSession session) throws FtpException, IOException {
-		return FtpletResult.DEFAULT;
+    @Override
+    public FtpletResult onRenameStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
+        throw new FtpException("Operation not allowed."); //return FtpletResult.SKIP;
+    }
+
+    @Override
+    public FtpletResult onRmdirStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
+        throw new FtpException("Operation not allowed."); //return FtpletResult.SKIP;
     }
 
 }

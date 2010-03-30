@@ -433,6 +433,7 @@ public class FileBasedFlowManager
     @Override
     public synchronized void load() throws IOException{
         super.load();
+        setName(getConfiguration().getName());
     }
 
     @Override
@@ -481,17 +482,20 @@ public class FileBasedFlowManager
         this.executor.execute(consumer);
     }
 
+    public void postEvent(FileSystemMonitorEvent event) {
+        try {
+            eventMailBox.put(event);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }    
+    }
 
     /**
      * Will listen for the eventGenerator events, and put them in the blocking mailbox.
      */
     private class GeneratorListener implements FlowEventListener<FileSystemMonitorEvent> {
         public void eventGenerated(FileSystemMonitorEvent event) {
-            try {
-                eventMailBox.put(event);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            postEvent(event);
         }
     }
 

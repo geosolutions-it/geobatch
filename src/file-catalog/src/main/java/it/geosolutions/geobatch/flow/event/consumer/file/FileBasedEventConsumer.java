@@ -128,6 +128,7 @@ public class FileBasedEventConsumer
         final String path = event.getSource().getAbsolutePath();
         final String fileName = FilenameUtils.getName(path);
         final String filePrefix = FilenameUtils.getBaseName(fileName);
+        final String fullPath = FilenameUtils.getFullPath(path);
 
         //check mandatory rules
         boolean res = this.checkRuleConsistency(event.getNotification(), filePrefix, fileName, true);
@@ -136,7 +137,24 @@ public class FileBasedEventConsumer
         if (!res) {
             res = this.checkRuleConsistency(event.getNotification(), filePrefix, fileName, false);
         }
+
+        res &= this.checkSamePath(fullPath);
+
         return res;
+    }
+
+    /**
+     * Check if all queued events refer to files in the same dir.
+     * CHECKME: is it really needed? will it not break flows that need scattered files?
+     */
+    private boolean checkSamePath(String fullpath) {
+        for (FileSystemMonitorEvent event : eventsQueue) {
+            String existingFP = FilenameUtils.getFullPath(event.getSource().getAbsolutePath());
+            if( ! fullpath.equals(existingFP)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     // ----------------------------------------------------------------------------

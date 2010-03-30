@@ -70,4 +70,9 @@ public interface FlowManager<EO extends EventObject, FC extends FlowConfiguratio
     public void setEventGenerator(EventGenerator<EO> eventGenerator);
     
     public List<? extends EventConsumer> getEventConsumers();
+
+    /**
+     * Post an event to the flow
+     */
+    public void postEvent(EO event);
 }
