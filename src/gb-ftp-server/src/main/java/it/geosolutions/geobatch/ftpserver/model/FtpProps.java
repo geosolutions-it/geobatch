@@ -107,22 +107,20 @@ public class FtpProps implements Serializable {
 	}
 
 	/**
-	 * @return the writePermission
+	 * @return true if the user has write permissions
 	 */
 	public boolean isWritePermission() {
 		return writePermission;
 	}
 
 	/**
-	 * @param writePermission
-	 *            the writePermission to set
 	 */
 	public void setWritePermission(boolean writePermission) {
 		this.writePermission = writePermission;
 	}
 
 	/**
-	 * @return the idleTime
+	 * @return the idleTime in seconds. 0 means idletime is not considered
 	 */
 	public int getMaxIdleTime() {
 		return idleTime;
@@ -167,7 +165,9 @@ public class FtpProps implements Serializable {
 	}
 
 	/**
-	 * @return the maxLoginNumber
+	 * @return the maxLoginNumber the user can perform at the same time
+     *
+     * @see org.apache.ftpserver.ConnectionConfigFactory#getMaxLogins()
 	 */
 	public int getMaxLoginNumber() {
 		return maxLoginNumber;
@@ -183,6 +183,7 @@ public class FtpProps implements Serializable {
 
 	/**
 	 * @return the maxLoginPerIp
+     *
 	 */
 	public int getMaxLoginPerIp() {
 		return maxLoginPerIp;

@@ -36,9 +36,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.ftpserver.ftplet.DefaultFtpReply;
 import org.apache.ftpserver.ftplet.DefaultFtplet;
 
 import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.ftplet.FtpReply;
 import org.apache.ftpserver.ftplet.FtpRequest;
 import org.apache.ftpserver.ftplet.FtpSession;
 import org.apache.ftpserver.ftplet.FtpStatistics;
@@ -58,11 +60,13 @@ public class GeoBatchFtplet
 
 	private FtpStatistics ftpStats;
 
+    @Override
 	public void init(FtpletContext ftpletContext) throws FtpException {
         super.init(ftpletContext);
 		this.ftpStats = ftpletContext.getFtpStatistics();
 	}
 
+    @Override
 	public FtpletResult onConnect(FtpSession ftpSession) throws FtpException,
 			IOException {
         super.onConnect(ftpSession);
@@ -121,17 +125,20 @@ public class GeoBatchFtplet
 
     @Override
     public FtpletResult onMkdirStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
-        throw new FtpException("Operation not allowed."); //return FtpletResult.SKIP;
+        session.write(new DefaultFtpReply(FtpReply.REPLY_550_REQUESTED_ACTION_NOT_TAKEN, "No permission."));
+        return FtpletResult.SKIP;
+    }
+    
+    @Override
+    public FtpletResult onRmdirStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
+        session.write(new DefaultFtpReply(550, "No permission."));
+        return FtpletResult.SKIP;
     }
 
     @Override
     public FtpletResult onRenameStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
-        throw new FtpException("Operation not allowed."); //return FtpletResult.SKIP;
-    }
-
-    @Override
-    public FtpletResult onRmdirStart(FtpSession session, FtpRequest request) throws FtpException, IOException {
-        throw new FtpException("Operation not allowed."); //return FtpletResult.SKIP;
+        session.write(new DefaultFtpReply(553, "No permission."));
+        return FtpletResult.SKIP;
     }
 
 }
