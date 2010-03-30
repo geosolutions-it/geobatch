@@ -47,7 +47,7 @@ public class FtpUserDataBean {
 	private String downloadRate;
 	
 	private List<FileBasedFlowManager> availableFlowManagers;
-	private String[] allowedFlowManagers;
+	private List<String> allowedFlowManagers;
 
 	/**
 	 * @param userId the userId to set
@@ -167,16 +167,16 @@ public class FtpUserDataBean {
 	}
 
 	/**
-	 * @param allowedFlowManagers the allowedFlowManagers to set
+	 * @param list the allowedFlowManagers to set
 	 */
-	public void setAllowedFlowManagers(String[] allowedFlowManagers) {
+	public void setAllowedFlowManagers(List<String> allowedFlowManagers) {
 		this.allowedFlowManagers = allowedFlowManagers;
 	}
 
 	/**
 	 * @return the allowedFlowManagers
 	 */
-	public String[] getAllowedFlowManagers() {
+	public List<String> getAllowedFlowManagers() {
 		return allowedFlowManagers;
 	}
 

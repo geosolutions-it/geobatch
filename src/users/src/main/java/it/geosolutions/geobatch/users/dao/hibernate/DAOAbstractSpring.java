@@ -50,8 +50,7 @@ public abstract class DAOAbstractSpring<T, ID extends Serializable>
 	extends HibernateDaoSupport
 	implements GenericDAO<T, ID> {
 
-	private static Logger logger = Logger.getLogger(DAOAbstractSpring.class
-			.getName());
+	private static Logger logger = Logger.getLogger(DAOAbstractSpring.class.getName());
 
 	private Class<T> persistentClass;
 
@@ -109,8 +108,7 @@ public abstract class DAOAbstractSpring<T, ID extends Serializable>
 		T entity;
 		try {
 			if (lock) {
-				entity = (T) getSession().load(getPersistentClass(), id,
-						LockMode.UPGRADE);
+				entity = (T) getSession().load(getPersistentClass(), id, LockMode.UPGRADE);
 			} else {
 				entity = (T) getSession().load(getPersistentClass(), id);
 			}

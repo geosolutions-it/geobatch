@@ -79,6 +79,11 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
 
 
 	@Transactional(propagation = Propagation.SUPPORTS)
+	public GBUser findByUserId(Long userId) throws DAOException {
+		return getHibernateTemplate().get(GBUser.class, userId);
+	}
+
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public GBUser findByUserName(String userName) throws DAOException {
 		List<GBUser> users = super.findByCriteria(Restrictions.eq("name", userName));
 		if (users.size() > 0)

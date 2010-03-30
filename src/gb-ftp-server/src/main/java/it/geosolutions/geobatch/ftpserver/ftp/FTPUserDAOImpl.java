@@ -39,7 +39,7 @@ public class FTPUserDAOImpl implements FtpUserDAO {
 	}
 
 	public FtpUser findByUserId(Long userId) throws DAOException {
-		GBUser user = userDAO.findById(userId, false);
+		GBUser user = userDAO.findByUserId(userId);
 		if(user != null) {
             FtpProps props;
             try {
@@ -50,6 +50,7 @@ public class FTPUserDAOImpl implements FtpUserDAO {
                 LOGGER.info("FTP props not found for user " + user.getName());
                 props = new FtpProps(user.getId()); // take default values
             }
+
 			return new FtpUser(user, props);
 		}
 		else

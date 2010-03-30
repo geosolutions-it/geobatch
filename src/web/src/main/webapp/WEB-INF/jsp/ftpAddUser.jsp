@@ -84,6 +84,15 @@
         
         <form method="post" action="newFtpUser.form">
         <table>
+          <tr>
+		    <td>User ID</td>
+		    <td>
+		    	<spring:bind path="ftpUserDataBean.userId">
+					<input type="hidden" name="userId" value="${status.value}" />
+					${ftpUserDataBean.userId}
+	      		</spring:bind>
+	      	</td>
+		  </tr>
 		  <tr>
 		    <td>User Name <i>(no spaces allowed)</i></td>
 		    <td>
@@ -139,8 +148,16 @@
 		    	<spring:bind path="ftpUserDataBean.allowedFlowManagers">
 					<select multiple="multiple" name="allowedFlowManagers" title="Select Allowed Flow-Managers">
 						<c:forEach var="fm" items="${ftpUserDataBean.availableFlowManagers}">
-							<option value="${fm.configuration.id}"><c:out value="${fm.configuration.id}"/></option>
-						</c:forEach>					
+							<option value="${fm.configuration.id}" 
+								<c:if test="${ftpUserDataBean.allowedFlowManagers != null}">
+									<c:forEach var="fmA" items="${ftpUserDataBean.allowedFlowManagers}">
+										<c:if test="${fmA == fm.configuration.id}">
+											selected="selected"
+										</c:if>
+									</c:forEach>
+								</c:if>
+							><c:out value="${fm.configuration.id}"/></option>
+						</c:forEach>
 					</select>
 				</spring:bind>
 		    </td>
