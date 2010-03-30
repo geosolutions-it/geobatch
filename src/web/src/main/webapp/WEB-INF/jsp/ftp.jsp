@@ -78,33 +78,43 @@
 		<table width="100%" border="0" cellpadding="2" cellspacing="1">
 			<thead>
 				<tr bgcolor="black" style="color: white;">
-					<th width="10%">suspended</th>
-					<th width="10%">stopped</th>
+					<th width="60%">STATUS</th>
 					<th width="40%">ACTIONS</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr >
-					<td><c:out value="${ftpServer.suspended}"/></td>
-					<td><c:out value="${ftpServer.stopped}"/></td>
-                    <td>
-							<c:choose>
-						        <c:when test="${ftpServer.stopped}">
-						            <a href='ftp.do?action=start&view=status'><image src='img/control_play.png' border='0' title='start/resume instance' alt='start' width='16' height='16'/></a>
-						        </c:when>
-						        <c:when test="${ftpServer.suspended}">
-						            <a href='ftp.do?action=start&view=status'><image src='img/control_play.png' border='0' title='start/resume instance' alt='start' width='16' height='16'/></a>
-						            <a href='ftp.do?action=stop&view=status'><image src='img/control_stop.png' border='0' title='Stop instance' alt='Stop' width='16' height='16'/></a>
-						        </c:when>
-						        <c:otherwise>
-						            <a href='ftp.do?action=pause&view=status'><image src='img/control_pause.png' border='0' title='Pause instance' alt='Pause' width='16' height='16'/></a>
-						            <a href='ftp.do?action=stop&view=status'><image src='img/control_stop.png' border='0' title='Stop instance' alt='Stop' width='16' height='16'/></a>
-						        </c:otherwise>
-						    </c:choose>
+<%--					<td><c:out value="${ftpServer.suspended}"/></td>
+					<td><c:out value="${ftpServer.stopped}"/></td>--%>
+                    <c:choose>
+                        <c:when test="${ftpServer.stopped}">
+                            <td>
+                                <b style="color: red">STOPPED</b>
+                                (suspended:<c:out value="${ftpServer.suspended}"/>, stopped:<c:out value="${ftpServer.stopped}"/>)</td>
+                            <td>
+                                <a href='ftp.do?action=start&view=status'><image src='img/control_play.png' border='0' title='start/resume instance' alt='start' width='16' height='16'/></a>
+                            </td>
+                        </c:when>
+                        <c:when test="${ftpServer.suspended}">
+                            <td><b style="color: orange">SUSPENDED</b>
+                                (suspended:<c:out value="${ftpServer.suspended}"/>, stopped:<c:out value="${ftpServer.stopped}"/>)</td>
+                            <td>
+                                <a href='ftp.do?action=start&view=status'><image src='img/control_play.png' border='0' title='start/resume instance' alt='start' width='16' height='16'/></a>
+                                <a href='ftp.do?action=stop&view=status'><image src='img/control_stop.png' border='0' title='Stop instance' alt='Stop' width='16' height='16'/></a>
+                            </td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><b  style="color: green">RUNNING</b>
+                                (suspended:<c:out value="${ftpServer.suspended}"/>, stopped:<c:out value="${ftpServer.stopped}"/>)</td>
+                            <td>
+                                <a href='ftp.do?action=pause&view=status'><image src='img/control_pause.png' border='0' title='Pause instance' alt='Pause' width='16' height='16'/></a>
+                                <a href='ftp.do?action=stop&view=status'><image src='img/control_stop.png' border='0' title='Stop instance' alt='Stop' width='16' height='16'/></a>
+                            </td>
+                        </c:otherwise>
+                    </c:choose>
 
 
-                    </td>
-				</tr>
+                </tr>
 			</tbody>
 		</table>
 
