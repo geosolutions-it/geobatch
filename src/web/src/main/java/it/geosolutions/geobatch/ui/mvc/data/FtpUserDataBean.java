@@ -54,6 +54,7 @@ public class FtpUserDataBean {
 	private int idleTime;
 	
 	private List<FileBasedFlowManager> availableFlowManagers;
+	
 	private List<String> allowedFlowManagers;
 
 	/**
@@ -234,9 +235,181 @@ public class FtpUserDataBean {
 	 */
 	@Override
 	public String toString() {
-		return "FtpUserDataBean [downloadRate=" + downloadRate + ", password="
-				+ password + ", uploadRate=" + uploadRate + ", userId="
-				+ userName + ", writePermission=" + writePermission + "]";
+		final int maxLen = 10;
+		StringBuilder builder = new StringBuilder();
+		builder.append("FtpUserDataBean [");
+		if (allowedFlowManagers != null) {
+			builder.append("allowedFlowManagers=");
+			builder.append(allowedFlowManagers.subList(0, Math.min(
+					allowedFlowManagers.size(), maxLen)));
+			builder.append(", ");
+		}
+		if (availableFlowManagers != null) {
+			builder.append("availableFlowManagers=");
+			builder.append(availableFlowManagers.subList(0, Math.min(
+					availableFlowManagers.size(), maxLen)));
+			builder.append(", ");
+		}
+		if (downloadRate != null) {
+			builder.append("downloadRate=");
+			builder.append(downloadRate);
+			builder.append(", ");
+		}
+		builder.append("idleTime=");
+		builder.append(idleTime);
+		builder.append(", maxLoginNumber=");
+		builder.append(maxLoginNumber);
+		builder.append(", maxLoginPerIp=");
+		builder.append(maxLoginPerIp);
+		builder.append(", ");
+		if (password != null) {
+			builder.append("password=");
+			builder.append(password);
+			builder.append(", ");
+		}
+		if (repeatPassword != null) {
+			builder.append("repeatPassword=");
+			builder.append(repeatPassword);
+			builder.append(", ");
+		}
+		if (uploadRate != null) {
+			builder.append("uploadRate=");
+			builder.append(uploadRate);
+			builder.append(", ");
+		}
+		if (userId != null) {
+			builder.append("userId=");
+			builder.append(userId);
+			builder.append(", ");
+		}
+		if (userName != null) {
+			builder.append("userName=");
+			builder.append(userName);
+			builder.append(", ");
+		}
+		builder.append("writePermission=");
+		builder.append(writePermission);
+		builder.append("]");
+		return builder.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((allowedFlowManagers == null) ? 0 : allowedFlowManagers
+						.hashCode());
+		result = prime
+				* result
+				+ ((availableFlowManagers == null) ? 0 : availableFlowManagers
+						.hashCode());
+		result = prime * result
+				+ ((downloadRate == null) ? 0 : downloadRate.hashCode());
+		result = prime * result + idleTime;
+		result = prime * result + maxLoginNumber;
+		result = prime * result + maxLoginPerIp;
+		result = prime * result
+				+ ((password == null) ? 0 : password.hashCode());
+		result = prime * result
+				+ ((repeatPassword == null) ? 0 : repeatPassword.hashCode());
+		result = prime * result
+				+ ((uploadRate == null) ? 0 : uploadRate.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+		result = prime * result
+				+ ((userName == null) ? 0 : userName.hashCode());
+		result = prime * result + (writePermission ? 1231 : 1237);
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof FtpUserDataBean)) {
+			return false;
+		}
+		FtpUserDataBean other = (FtpUserDataBean) obj;
+		if (allowedFlowManagers == null) {
+			if (other.allowedFlowManagers != null) {
+				return false;
+			}
+		} else if (!allowedFlowManagers.equals(other.allowedFlowManagers)) {
+			return false;
+		}
+		if (availableFlowManagers == null) {
+			if (other.availableFlowManagers != null) {
+				return false;
+			}
+		} else if (!availableFlowManagers.equals(other.availableFlowManagers)) {
+			return false;
+		}
+		if (downloadRate == null) {
+			if (other.downloadRate != null) {
+				return false;
+			}
+		} else if (!downloadRate.equals(other.downloadRate)) {
+			return false;
+		}
+		if (idleTime != other.idleTime) {
+			return false;
+		}
+		if (maxLoginNumber != other.maxLoginNumber) {
+			return false;
+		}
+		if (maxLoginPerIp != other.maxLoginPerIp) {
+			return false;
+		}
+		if (password == null) {
+			if (other.password != null) {
+				return false;
+			}
+		} else if (!password.equals(other.password)) {
+			return false;
+		}
+		if (repeatPassword == null) {
+			if (other.repeatPassword != null) {
+				return false;
+			}
+		} else if (!repeatPassword.equals(other.repeatPassword)) {
+			return false;
+		}
+		if (uploadRate == null) {
+			if (other.uploadRate != null) {
+				return false;
+			}
+		} else if (!uploadRate.equals(other.uploadRate)) {
+			return false;
+		}
+		if (userId == null) {
+			if (other.userId != null) {
+				return false;
+			}
+		} else if (!userId.equals(other.userId)) {
+			return false;
+		}
+		if (userName == null) {
+			if (other.userName != null) {
+				return false;
+			}
+		} else if (!userName.equals(other.userName)) {
+			return false;
+		}
+		if (writePermission != other.writePermission) {
+			return false;
+		}
+		return true;
 	}
 
 }

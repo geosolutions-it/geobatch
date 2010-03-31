@@ -121,7 +121,7 @@
         	FTP Server config
 	        <c:choose>
 				<c:when test="${ftpServer.stopped}">
-					<a href="ftp.do?view=status"><img src="img/hammer_screwdriver.png" title="Configure" alt="Configure" style="vertical-align: middle"/></a>
+					<a href="ftpConfig.form"><img src="img/hammer_screwdriver.png" title="Configure" alt="Configure" style="vertical-align: middle"/></a>
 				</c:when>
 			</c:choose>
         </h2>
@@ -174,7 +174,7 @@
 				<tr>
                     <td>Total downloaded files</td>
                     <td><c:out value="${ftpStats.totalDownloadNumber}"/></td>
-                    <td>Total uploaded bytes</td>
+                    <td>Total downloaded bytes</td>
                     <td><c:out value="${ftpStats.totalDownloadSize}"/></td>
                 </tr>
 				<tr>

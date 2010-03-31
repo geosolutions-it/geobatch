@@ -17,6 +17,11 @@ import javax.persistence.Table;
 @Table(name = "FTP_SERVER_CONFIG")
 public class FtpServerConfig implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5498994877614701945L;
+
 	/** We have only one instance */
 	@Id
 	private int id = 100;

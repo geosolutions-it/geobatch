@@ -4,10 +4,12 @@ import it.geosolutions.geobatch.ftpserver.dao.FtpServerConfigDAO;
 import it.geosolutions.geobatch.ftpserver.ftp.GeoBatchUserManager;
 import it.geosolutions.geobatch.ftpserver.model.FtpServerConfig;
 import it.geosolutions.geobatch.users.dao.DAOException;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
@@ -27,11 +29,11 @@ public class GeoBatchServer implements InitializingBean {
 	private GeoBatchUserManager userManager;
 
 	public void afterPropertiesSet() throws Exception {
-		lastConfig = serverConfigDAO.load();
-		userManager.setServerConfig(lastConfig);
-		ftpServer = create(lastConfig, userManager);
+		setLastConfig(serverConfigDAO.load());
+		userManager.setServerConfig(getLastConfig());
+		ftpServer = create(getLastConfig(), userManager);
 
-		if(lastConfig.isAutoStart())
+		if(getLastConfig().isAutoStart())
 			ftpServer.start();
 	}
 
@@ -84,9 +86,9 @@ public class GeoBatchServer implements InitializingBean {
 			FtpServerConfig config = serverConfigDAO.load();
 			if(true) { // !config.equals(lastConfig)) {
 				// config has changed: recreate server with new config
-				lastConfig = config;
-                userManager.setServerConfig(lastConfig);                
-				ftpServer = create(lastConfig, userManager);
+				setLastConfig(config);
+                userManager.setServerConfig(getLastConfig());                
+				ftpServer = create(getLastConfig(), userManager);
 			}
 		} catch(DAOException ex) {
 			LOGGER.log(Level.WARNING, "Could not retrieve server config. Using old server instance", ex);
@@ -110,6 +112,15 @@ public class GeoBatchServer implements InitializingBean {
     public FtpServerConfig getLastConfig() {
         return lastConfig.clone();
     }
+
+	/**
+	 * @param lastConfig the lastConfig to set
+	 * @throws DAOException 
+	 */
+	public void setLastConfig(FtpServerConfig lastConfig) throws DAOException {
+		this.lastConfig = serverConfigDAO.load();
+	}
+
 
 	/**
 	 * @param ftpServer
