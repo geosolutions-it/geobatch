@@ -143,6 +143,30 @@
 		    </td>
 		  </tr>
 		  <tr>
+		    <td>Max Login per Ip</td>
+		    <td>
+		    	<spring:bind path="ftpUserDataBean.maxLoginPerIp">
+					<input type="text" name="maxLoginPerIp" value="${status.value}" />
+	      		</spring:bind>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td>Max Login Number</td>
+		    <td>
+		    	<spring:bind path="ftpUserDataBean.maxLoginNumber">
+					<input type="text" name="maxLoginNumber" value="${status.value}" />
+	      		</spring:bind>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td>Idle Time</td>
+		    <td>
+		    	<spring:bind path="ftpUserDataBean.idleTime">
+					<input type="text" name="idleTime" value="${status.value}" />
+	      		</spring:bind>
+		    </td>
+		  </tr>
+		  <tr>
 		    <td>Allowed Flows</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.allowedFlowManagers">
@@ -178,7 +202,7 @@
      </font>    
 
 		<div class="button-group selfclear">
-      		<input type="submit" value="Save" id="btnTxt"/><input type="button" value="Cancel" onclick="javascript:window.location.href=('ftpUsers.do')">
+      		<input type="submit" value="Save" id="btnTxt"/><input type="button" value="Cancel" onclick="javascript:window.location.href=('ftp.do?view=users')"/>
       	</div>
    </form>
 

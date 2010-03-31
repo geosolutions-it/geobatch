@@ -84,8 +84,6 @@
 			</thead>
 			<tbody>
 				<tr >
-<%--					<td><c:out value="${ftpServer.suspended}"/></td>
-					<td><c:out value="${ftpServer.stopped}"/></td>--%>
                     <c:choose>
                         <c:when test="${ftpServer.stopped}">
                             <td>
@@ -118,18 +116,26 @@
 			</tbody>
 		</table>
 
-        <P/><h2>FTP Server config</h2>
+        <P/>
+        <h2>
+        	FTP Server config
+	        <c:choose>
+				<c:when test="${ftpServer.stopped}">
+					<a href="ftp.do?view=status"><img src="img/hammer_screwdriver.png" title="Configure" alt="Configure" style="vertical-align: middle"/></a>
+				</c:when>
+			</c:choose>
+        </h2>
 		<table width="100%" border="0" cellpadding="2" cellspacing="1">
 			<thead>
 				<tr bgcolor="black" style="color: white;">
-					<th width="10%">port</th>
-					<th width="10%">implicitssl</th>
-					<th width="10%">maxlogins</th>
-					<th width="10%">maxloginfailures</th>
-					<th width="10%">loginfailuredelay</th>
-					<th width="10%">anonenabled</th>
-					<th width="10%">maxanonlogins</th>
-					<th width="10%">autostart</th>
+					<th width="10%">PORT</th>
+					<th width="10%">IMPLICIT SSL</th>
+					<th width="10%">MAX LOGINS</th>
+					<th width="10%">MAX LOGIN FAILURES</th>
+					<th width="10%">LOGIN FAILURE DELAY</th>
+					<th width="10%">ANONYMOUS ENABLED</th>
+					<th width="10%">MAX ANONYM LOGINS</th>
+					<th width="10%">AUTO-START</th>
 				</tr>
 			</thead>
 			<tbody>

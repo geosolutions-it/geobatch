@@ -92,6 +92,30 @@
 		</property>
 	</bean>
 
+	<bean id="ftpConfigController" class="it.geosolutions.geobatch.ui.mvc.FTPUserFormController">
+		<property name="sessionForm">
+			<value>false</value>
+		</property>       		<!-- Keep command object throughout session? -->
+		<property name="commandName">
+			<value>ftpUserDataBean</value>
+		</property> 	<!-- How it’s referenced in the JSP -->
+		<property name="commandClass">
+			<value>it.geosolutions.geobatch.ui.mvc.data.FtpUserDataBean</value>
+		</property>   <!-- Its class -->
+		<property name="formView">
+			<value>ftpAddUser</value>
+		</property>
+		<property name="successView">
+			<value>ftpUsers</value>
+		</property>
+		<property name="server">
+			<ref bean="geoBatchServer" />
+		</property>
+		<property name="userFlowAccess">
+			<ref bean="userFlowAccessDAO" />
+		</property>
+	</bean>
+
 	<bean id="ftpUserFormController" class="it.geosolutions.geobatch.ui.mvc.FTPUserFormController">
 		<property name="sessionForm">
 			<value>false</value>
@@ -106,7 +130,7 @@
 			<value>ftpAddUser</value>
 		</property>
 		<property name="successView">
-			<value>ftp</value>
+			<value>ftpUsers</value>
 		</property>
 		<property name="server">
 			<ref bean="geoBatchServer" />
@@ -145,6 +169,7 @@
 				/newFlowManager.form=flowManagerFormController
 				/ftpUsers.do=ftpManagerController
 				/ftp.do=ftpManagerController
+				/ftpConfig.form=ftpConfigController
 				/newFtpUser.form=ftpUserFormController
 				/deleteFtpUser.do=deleteFtpUserController
 				/updateFtpUser.form=ftpUserFormController

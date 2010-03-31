@@ -28,6 +28,7 @@ import java.util.List;
 
 /**
  * @author Francesco Izzi
+ * @author Alessio Fabiani
  * 
  */
 public class FtpUserDataBean {
@@ -45,6 +46,12 @@ public class FtpUserDataBean {
 	private String uploadRate;
 
 	private String downloadRate;
+	
+	private int maxLoginPerIp;
+	
+	private int maxLoginNumber;
+	
+	private int idleTime;
 	
 	private List<FileBasedFlowManager> availableFlowManagers;
 	private List<String> allowedFlowManagers;
@@ -150,6 +157,48 @@ public class FtpUserDataBean {
 	 */
 	public void setDownloadRate(String downloadRate) {
 		this.downloadRate = downloadRate;
+	}
+
+	/**
+	 * @param maxLoginPerIp the maxLoginPerIp to set
+	 */
+	public void setMaxLoginPerIp(int maxLoginPerIp) {
+		this.maxLoginPerIp = maxLoginPerIp;
+	}
+
+	/**
+	 * @return the maxLoginPerIp
+	 */
+	public int getMaxLoginPerIp() {
+		return maxLoginPerIp;
+	}
+
+	/**
+	 * @param maxLoginNumber the maxLoginNumber to set
+	 */
+	public void setMaxLoginNumber(int maxLoginNumber) {
+		this.maxLoginNumber = maxLoginNumber;
+	}
+
+	/**
+	 * @return the maxLoginNumber
+	 */
+	public int getMaxLoginNumber() {
+		return maxLoginNumber;
+	}
+
+	/**
+	 * @param idleTime the idleTime to set
+	 */
+	public void setIdleTime(int idleTime) {
+		this.idleTime = idleTime;
+	}
+
+	/**
+	 * @return the idleTime
+	 */
+	public int getIdleTime() {
+		return idleTime;
 	}
 
 	/**

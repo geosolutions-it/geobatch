@@ -128,7 +128,6 @@ public class FTPManagerController extends AbstractController {
             LOGGER.info(errMsg);
         }
 
-		request.getSession().setAttribute("ftpUsers", ftpUsers); // ???
 		return mav;
 	}
 }

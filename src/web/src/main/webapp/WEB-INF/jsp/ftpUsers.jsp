@@ -72,12 +72,15 @@
 		<table width="100%" border="0" cellpadding="2" cellspacing="1">
 			<thead>
 				<tr bgcolor="black" style="color: white;">
-					<th width="10%">USERID</th>
-					<th width="20%">USERNAME</th>
+					<th width="2%">USERID</th>
+					<th width="8%">USERNAME</th>
 					<th width="5%">ROLE</th>
 					<th width="5%">WRITE PERMISSION</th>
 					<th width="5%">UPLOAD RATE</th>
 					<th width="5%">DOWNLOAD RATE</th>
+					<th width="5%">MAX LOGIN PER IP</th>
+					<th width="5%">MAX LOGIN NUMBER</th>
+					<th width="5%">MAX IDLE TIME</th>
 					<th width="5%">ACTIONS</th>
 				</tr>
 			</thead>
@@ -90,8 +93,11 @@
 					<td><c:out value="${us.writePermission}"/></td>
 					<td><c:out value="${us.uploadRate}"/></td>
 					<td><c:out value="${us.downloadRate}"/></td>
+					<td><c:out value="${us.maxLoginPerIp}"/></td>
+					<td><c:out value="${us.maxLoginNumber}"/></td>
+					<td><c:out value="${us.maxIdleTime}"/></td>
 					<td align="center">
-						<a href='deleteFtpUser.do?userId=${us.id}'><image src='img/dispose.png' border='0' title='delete' alt='delete' width='16' height='16'/></a>
+						<a href='deleteFtpUser.do?userId=${us.id}' onclick="javascript:return confirm('Delete user ${us.name}?');"><image src='img/dispose.png' border='0' title='delete' alt='delete' width='16' height='16'/></a>
 						<a href='updateFtpUser.form?userId=${us.id}'><image src='img/hammer_screwdriver.png' border='0' title='modify' alt='modify' width='16' height='16'/></a>
 					</td>
 				</tr>

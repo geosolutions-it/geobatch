@@ -5,14 +5,12 @@ package it.geosolutions.geobatch.ui.mvc;
 
 import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
 import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
-import it.geosolutions.geobatch.ftpserver.ftp.GeoBatchUserManager;
 
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.ftpserver.impl.DefaultFtpServer;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -49,9 +47,7 @@ public class DeleteFtpUserController extends AbstractController {
 
 		List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
 
-		request.getSession().setAttribute("ftpUsers", ftpUsers);
-
-		ModelAndView mav = new ModelAndView("ftp");
+		ModelAndView mav = new ModelAndView("ftpUsers");
 		mav.addObject("ftpUsers", ftpUsers);
 
 		return mav;

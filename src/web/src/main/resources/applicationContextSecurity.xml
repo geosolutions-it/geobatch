@@ -24,6 +24,7 @@
 
 		<!-- FTP Server Management -->
         <intercept-url pattern="/ftp.*" access="hasRole('ADMIN')" />
+        <intercept-url pattern="/ftpConfig.*" access="hasRole('ADMIN')" />
         <intercept-url pattern="/ftpUsers.*" access="hasRole('ADMIN')" />
         <intercept-url pattern="/newFtpUser.*" access="hasRole('ADMIN')" />
 		<intercept-url pattern="/deleteFtpUser.*" access="hasRole('ADMIN')" />

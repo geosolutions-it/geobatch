@@ -36,6 +36,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.ftpserver.FtpServer;
+import org.apache.ftpserver.ftplet.FtpStatistics;
+import org.apache.ftpserver.impl.DefaultFtpServer;
+import org.apache.ftpserver.impl.DefaultFtpServerContext;
+import org.apache.ftpserver.impl.FtpServerContext;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
@@ -89,6 +94,9 @@ public class FTPUserFormController extends SimpleFormController {
 				backingObject.setWritePermission(user.isWritePermission());
 				backingObject.setUploadRate(String.valueOf(user.getUploadRate()));
 				backingObject.setDownloadRate(String.valueOf(user.getDownloadRate()));
+				backingObject.setIdleTime(user.getMaxIdleTime());
+				backingObject.setMaxLoginNumber(user.getMaxLoginNumber());
+				backingObject.setMaxLoginPerIp(user.getMaxLoginPerIp());
 				backingObject.setAllowedFlowManagers(userFlowAccess.findFlows(Long.parseLong(userId)));
 			}
 		}
@@ -106,7 +114,6 @@ public class FTPUserFormController extends SimpleFormController {
 	 * org.springframework.web.servlet.mvc.SimpleFormController#onSubmit(java
 	 * .lang.Object, org.springframework.validation.BindException)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected ModelAndView onSubmit(HttpServletRequest request,
 			HttpServletResponse response, Object command, BindException errors)
@@ -127,6 +134,9 @@ public class FTPUserFormController extends SimpleFormController {
 		user.setName(givenData.getUserName());
 		user.setPassword(givenData.getPassword());
 		user.setWritePermission(givenData.getWritePermission());
+		user.setMaxIdleTime(givenData.getIdleTime());
+		user.setMaxLoginNumber(givenData.getMaxLoginNumber());
+		user.setMaxLoginPerIp(givenData.getMaxLoginPerIp());
 		
 		if (!givenData.getUploadRate().equals(""))
 			user.setUploadRate(Integer.parseInt(givenData.getUploadRate()));
@@ -142,12 +152,24 @@ public class FTPUserFormController extends SimpleFormController {
         	}
         }
 
+        ModelAndView mav = new ModelAndView(getSuccessView());
         List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
-//		List<FtpUser> ftpUsers = (List<FtpUser>) request.getSession().getAttribute("ftpUsers");
-//		ftpUsers.add(user);
-		request.getSession().setAttribute("ftpUsers", ftpUsers);
+		mav.addObject("ftpUsers", ftpUsers);
+		mav.addObject("ftpServer", server);
+		mav.addObject("ftpConfig", server.getLastConfig());
+
+        // add statistics
+        FtpStatistics stats = null;
+   		final FtpServer ftp = server.getFtpServer();
+		if(ftp instanceof DefaultFtpServer) {
+			//get the context and check if the context is of the right type
+			final FtpServerContext context = ((DefaultFtpServer)ftp).getServerContext();
+			if(context instanceof DefaultFtpServerContext)
+				stats = ((DefaultFtpServerContext)context).getFtpStatistics();
+		}
+		mav.addObject("ftpStats", stats);
 		logger.debug("Form data successfully submitted");
-		return new ModelAndView(getSuccessView());
+		return mav;
 	}
 
 	/*
@@ -161,10 +183,7 @@ public class FTPUserFormController extends SimpleFormController {
 	@Override
 	protected void onBindAndValidate(HttpServletRequest request,
 			Object command, BindException errors) throws Exception {
-//		GeoBatchServer server = (GeoBatchServer) getApplicationContext()
-//				.getBean("geoBatchServer");
 
-		boolean present = false;
 		FtpUserDataBean givenData = (FtpUserDataBean) command;
 		if (givenData == null) {
 			errors.reject("error.nullpointer", "Null data received");
