@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.geobatch.org/gdalretile"
+	xmlns="http://www.geobatch.org/gdalretile">
+	<xsd:element name="GdalRetile">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>
+					retiles a set of tiles and/or build tiled pyramid levels
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:all>
+				<xsd:element name="v" type="xsd:boolean" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							    Generate verbose output of tile operations as they are done.  
+	   					</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="co_params" minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							"NAME=VALUE": 
+							Creation option for output file. 
+							Multiple options can be specified. 
+	   				</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="co" type="xsd:string" minOccurs="0"
+								maxOccurs="unbounded">
+								<xsd:annotation>
+									<xsd:documentation>
+										"NAME=VALUE": 
+										Creation option for output file. 
+										Multiple options can be specified. 
+	   								</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="of" type="xsd:string" minOccurs="0"
+						maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Select the output format. The default is
+							GeoTIFF (GTiff). Use the short format name.
+	   				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="ps" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							 pixelsize_x pixelsize_y:
+    						Pixel size to be used for the output file. 
+    						If not specified, 256 x 256 is the default 
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="ot" minOccurs="0" maxOccurs="1">
+					<xsd:simpleType>
+						<xsd:annotation>
+							<xsd:documentation>Force the output image bands to have a specific type. 
+							Use type names (ie. Byte, Int16,...) 
+							</xsd:documentation>
+						</xsd:annotation>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="Byte"></xsd:enumeration>
+							<xsd:enumeration value="Int16"></xsd:enumeration>
+							<xsd:enumeration value="UInt16"></xsd:enumeration>
+							<xsd:enumeration value="UInt32"></xsd:enumeration>
+							<xsd:enumeration value="Int32"></xsd:enumeration>
+							<xsd:enumeration value="Float32"></xsd:enumeration>
+							<xsd:enumeration value="Float64"></xsd:enumeration>
+							<xsd:enumeration value="CInt16"></xsd:enumeration>
+							<xsd:enumeration value="CInt32"></xsd:enumeration>
+							<xsd:enumeration value="CFloat32"></xsd:enumeration>
+							<xsd:enumeration value="CFloat64"></xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="tileIndex" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							tileIndexName:
+    						The name of shape file containing the result tile(s) index  
+ 						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="tileIndexField" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							tileIndexFieldName:
+    						The name of the attribute containing the tile name   
+ 						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="csv" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							csvFileName:
+    						The name of the csv file containing the tile(s) georeferencing information. 
+    						The file contains 5 columns: tilename,minx,maxx,miny,maxy  
+ 						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="csvDelim" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							column delimiter:
+    						The column delimter used in the csv file, 
+    						default value is a semicolon ";" 
+ 						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="s_srs" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							srs_def:
+
+							source spatial reference to use. 
+							The coordinate systems that can be passed 
+							includes EPSG PCS and GCSes (ie. EPSG:4296), 
+							PROJ.4 declarations, or the name of a .prf 
+							file containing well known text. 
+							If no srs_def is given, the srs_def of 
+							the source tiles is used (if there is any). 
+							The srs_def will be propageted to created tiles 
+							(if possible) and to the optional shape file(s)
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="pyramidOnly" type="xsd:boolean" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							    No retiling, build only the pyramids 
+	   					</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="r" minOccurs="0" maxOccurs="1">
+					<xsd:simpleType>
+						<xsd:annotation>
+							<xsd:documentation>algorithm:
+    						Resampling algorithm, default is near 
+						
+						    near:
+						        nearest neighbour resampling 
+						        (default, fastest algorithm, 
+						        worst interpolation quality). 
+						    bilinear:
+						        bilinear resampling. 
+						    cubic:
+						        cubic resampling. 
+						    cubicspline:
+						        cubic spline resampling. 
+						    lanczos:
+						        Lanczos windowed sinc resampling. 
+							</xsd:documentation>
+						</xsd:annotation>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="near"></xsd:enumeration>
+							<xsd:enumeration value="bilinear"></xsd:enumeration>
+							<xsd:enumeration value="cubic"></xsd:enumeration>
+							<xsd:enumeration value="cubicspline"></xsd:enumeration>
+							<xsd:enumeration value="lanczos"></xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+			    <xsd:element name="levels" type="xsd:string" minOccurs="1"
+									maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Number of pyramids levels to build. 
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="targetdir" type="xsd:string"
+					minOccurs="1" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>The Directory where the tile result is created. 
+						Pyramids are stored in subdirs numbered from 1. 
+						Created tile names have a numbering schema and contain 
+						the name of the source tiles(s)
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="inputFiles" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+						Input files to be retiled.
+						If your number of input tiles exhausts the command line buffer, 
+						use the general --optfile option					
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				
+				<xsd:element name="optfile" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+						If your number of input tiles exhausts the command line buffer, use the general --optfile option 						
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

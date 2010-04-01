@@ -51,7 +51,7 @@
 			int flowsPerPage = 10;
 			List flowManagers = (List)request.getAttribute("flowManagers");
 			int pages = Math.round(flowManagers.size() / (float)flowsPerPage);
-			pages = (pages == 0 ? 1 : 0);
+			pages = (pages == 0 ? 1 : pages);
 		%>
 		
 		$(function(){

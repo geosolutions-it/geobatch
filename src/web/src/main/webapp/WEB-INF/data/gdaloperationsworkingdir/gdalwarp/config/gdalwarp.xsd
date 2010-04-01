@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.geobatch.org/gdalwarp"
+	xmlns="http://www.geobatch.org/gdalwarp">
+	<xsd:element name="GdalWarp">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>
+					image reprojection and warping utility
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:all>
+			<xsd:element name="s_srs" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							srs_def:
+
+							source spatial reference set. 
+							The coordinate systems that can be passed 
+							includes EPSG PCS and GCSes (ie. EPSG:4296), 
+							PROJ.4 declarations, or the name of a .prf 
+							file containing well known text.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			    <xsd:element name="t_srs" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							trs_def:
+
+							Target spatial reference set. 
+							The coordinate systems that can be passed 
+							includes EPSG PCS and GCSes (ie. EPSG:4296), 
+							PROJ.4 declarations, or the name of a .prf 
+							file containing well known text.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="to" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							"NAME=VALUE":
+    						set a transformer option suitable to pass to GDALCreateGenImgProjTransformer2(). 
+ 						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="order" type="xsd:int" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							n:
+    						order of polynomial used for warping (1 to 3). 
+    						The default is to select a polynomial order based 
+    						on the number of GCPs. 
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="tps" type="xsd:boolean" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							    Force use of thin plate spline transformer based on available GCPs. 
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="rpc" type="xsd:boolean" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							    Force use of RPCs.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="geoloc" type="xsd:boolean" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							    Force use of Geolocation Arrays.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="et" type="xsd:double"
+					minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							err_threshold:
+              error threshold for transformation approximation 
+              (in pixel units - defaults to 0.125).
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="te" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							xmin ymin xmax ymax:
+              set georeferenced extents of output file 
+              to be created (in target SRS).
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="tr" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							xres yres:
+              set output file resolution (in target georeferenced units)
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="ts" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							width height:
+              set output file size in pixels and lines. If width or height is set to 0, 
+              the other dimension will be guessed from the computed resolution. 
+              Note that -ts cannot be used with -tr
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="wo_params" minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							"NAME=VALUE":
+              Set a warp options. Multiple -wo options may be listed.
+              Supported options:
+              - INIT_DEST=[value] or INIT_DEST=NO_DATA: This option forces the destination image 
+                to be initialized to the indicated value (for all bands) or indicates that it should 
+                be initialized to the NO_DATA value in padfDstNoDataReal/padfDstNoDataImag. 
+                If this value isn't set the destination image will be read and overlayed.
+
+              - WRITE_FLUSH=YES/NO: This option forces a flush to disk of data after each chunk is processed. 
+                In some cases this helps ensure a serial writing of the output data otherwise a block of data 
+                may be written to disk each time a block of data is read for the input buffer resulting in 
+                alot of extra seeking around the disk, and reduced IO throughput. The default at this time is NO.
+
+              - SKIP_NOSOURCE=YES/NO: Skip all processing for chunks for which there is no corresponding input data. 
+                This will disable initializing the destination (INIT_DEST) and all other processing, and so should 
+                be used careful. Mostly useful to short circuit a lot of extra work in mosaicing situations.
+
+              - UNIFIED_SRC_NODATA=YES/[NO]: By default nodata masking values considered independently for each band. 
+                However, sometimes it is desired to treat all bands as nodata if and only if, all bands match the 
+                corresponding nodata values. To get this behavior set this option to YES.
+
+              Normally when computing the source raster data to load to generate a particular output area, the warper 
+              samples transforms 21 points along each edge of the destination region back onto the source file, and uses 
+              this to compute a bounding window on the source image that is sufficient. Depending on the transformation 
+              in effect, the source window may be a bit too small, or even missing large areas. Problem situations are those 
+              where the transformation is very non-linear or "inside out". Examples are transforming from WGS84 to 
+              Polar Steregraphic for areas around the pole, or transformations where some of the image is untransformable. 
+              The following options provide some additional control to deal with errors in computing the source window:
+
+              - SAMPLE_GRID=YES/NO: Setting this option to YES will force the sampling to include internal points as well as 
+                edge points which can be important if the transformation is esoteric inside out, or if large sections of the 
+                destination image are not transformable into the source coordinate system.
+
+              - SAMPLE_STEPS: Modifies the density of the sampling grid. The default number of steps is 21. Increasing this 
+                can increase the computational cost, but improves the accuracy with which the source region is computed.
+
+              - SOURCE_EXTRA: This is a number of extra pixels added around the source window for a given request, 
+                and by default it is 1 to take care of rounding error. Setting this larger will incease the amount of data 
+                that needs to be read, but can avoid missing source data.
+
+              - CUTLINE: This may contain the WKT geometry for a cutline. It will be converted into a geometry by 
+                GDALWarpOperation::Initialize() and assigned to the GDALWarpOptions hCutline field.
+
+              - CUTLINE_BLEND_DIST: This may be set with a distance in pixels which will be assigned to the dfCutlineBlendDist 
+                field in the GDALWarpOptions.
+
+              - CUTLINE_ALL_TOUCHED: This defaults to FALSE, but may be set to TRUE to enable ALL_TOUCHEd mode when rasterizing 
+                cutline polygons. This is useful to ensure that that all pixels overlapping the cutline polygon will be selected, 
+                not just those whose center point falls within the polygon. 
+              
+    				</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="wo" type="xsd:string" minOccurs="0"
+								maxOccurs="unbounded">
+								<xsd:annotation>
+									<xsd:documentation>
+										"NAME=VALUE":
+                    Set a warp options. Multiple -wo options may be listed.
+                    Supported options:
+                    - INIT_DEST=[value] or INIT_DEST=NO_DATA: This option forces the destination image 
+                      to be initialized to the indicated value (for all bands) or indicates that it should 
+                      be initialized to the NO_DATA value in padfDstNoDataReal/padfDstNoDataImag. 
+                      If this value isn't set the destination image will be read and overlayed.
+
+                    - WRITE_FLUSH=YES/NO: This option forces a flush to disk of data after each chunk is processed. 
+                      In some cases this helps ensure a serial writing of the output data otherwise a block of data 
+                      may be written to disk each time a block of data is read for the input buffer resulting in 
+                      alot of extra seeking around the disk, and reduced IO throughput. The default at this time is NO.
+
+                    - SKIP_NOSOURCE=YES/NO: Skip all processing for chunks for which there is no corresponding input data. 
+                      This will disable initializing the destination (INIT_DEST) and all other processing, and so should 
+                      be used careful. Mostly useful to short circuit a lot of extra work in mosaicing situations.
+
+                    - UNIFIED_SRC_NODATA=YES/[NO]: By default nodata masking values considered independently for each band. 
+                      However, sometimes it is desired to treat all bands as nodata if and only if, all bands match the 
+                      corresponding nodata values. To get this behavior set this option to YES.
+
+                    Normally when computing the source raster data to load to generate a particular output area, the warper 
+                    samples transforms 21 points along each edge of the destination region back onto the source file, and uses 
+                    this to compute a bounding window on the source image that is sufficient. Depending on the transformation 
+                    in effect, the source window may be a bit too small, or even missing large areas. Problem situations are those 
+                    where the transformation is very non-linear or "inside out". Examples are transforming from WGS84 to 
+                    Polar Steregraphic for areas around the pole, or transformations where some of the image is untransformable. 
+                    The following options provide some additional control to deal with errors in computing the source window:
+
+                    - SAMPLE_GRID=YES/NO: Setting this option to YES will force the sampling to include internal points as well as 
+                      edge points which can be important if the transformation is esoteric inside out, or if large sections of the 
+                      destination image are not transformable into the source coordinate system.
+
+                    - SAMPLE_STEPS: Modifies the density of the sampling grid. The default number of steps is 21. Increasing this 
+                      can increase the computational cost, but improves the accuracy with which the source region is computed.
+
+                    - SOURCE_EXTRA: This is a number of extra pixels added around the source window for a given request, 
+                      and by default it is 1 to take care of rounding error. Setting this larger will incease the amount of data 
+                      that needs to be read, but can avoid missing source data.
+
+                    - CUTLINE: This may contain the WKT geometry for a cutline. It will be converted into a geometry by 
+                      GDALWarpOperation::Initialize() and assigned to the GDALWarpOptions hCutline field.
+
+                    - CUTLINE_BLEND_DIST: This may be set with a distance in pixels which will be assigned to the dfCutlineBlendDist 
+                      field in the GDALWarpOptions.
+
+                    - CUTLINE_ALL_TOUCHED: This defaults to FALSE, but may be set to TRUE to enable ALL_TOUCHEd mode when rasterizing 
+                      cutline polygons. This is useful to ensure that that all pixels overlapping the cutline polygon will be selected, 
+                      not just those whose center point falls within the polygon. 
+    								</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="ot" minOccurs="0" maxOccurs="1">
+					<xsd:simpleType>
+						<xsd:annotation>
+							<xsd:documentation>For the output bands to be of the indicated
+								data type.
+							</xsd:documentation>
+						</xsd:annotation>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="Byte"></xsd:enumeration>
+							<xsd:enumeration value="Int16"></xsd:enumeration>
+							<xsd:enumeration value="UInt16"></xsd:enumeration>
+							<xsd:enumeration value="UInt32"></xsd:enumeration>
+							<xsd:enumeration value="Int32"></xsd:enumeration>
+							<xsd:enumeration value="Float32"></xsd:enumeration>
+							<xsd:enumeration value="Float64"></xsd:enumeration>
+							<xsd:enumeration value="CInt16"></xsd:enumeration>
+							<xsd:enumeration value="CInt32"></xsd:enumeration>
+							<xsd:enumeration value="CFloat32"></xsd:enumeration>
+							<xsd:enumeration value="CFloat64"></xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="wt" minOccurs="0" maxOccurs="1">
+					<xsd:simpleType>
+						<xsd:annotation>
+							<xsd:documentation>Working pixel data type. The data type of pixels 
+                in the source image and destination image buffers.
+							</xsd:documentation>
+						</xsd:annotation>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="Byte"></xsd:enumeration>
+							<xsd:enumeration value="Int16"></xsd:enumeration>
+							<xsd:enumeration value="UInt16"></xsd:enumeration>
+							<xsd:enumeration value="UInt32"></xsd:enumeration>
+							<xsd:enumeration value="Int32"></xsd:enumeration>
+							<xsd:enumeration value="Float32"></xsd:enumeration>
+							<xsd:enumeration value="Float64"></xsd:enumeration>
+							<xsd:enumeration value="CInt16"></xsd:enumeration>
+							<xsd:enumeration value="CInt32"></xsd:enumeration>
+							<xsd:enumeration value="CFloat32"></xsd:enumeration>
+							<xsd:enumeration value="CFloat64"></xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				
+				<xsd:element name="r" minOccurs="0" maxOccurs="1">
+					<xsd:simpleType>
+						<xsd:annotation>
+							<xsd:documentation>resampling_method:
+    						Resampling method to use. Available methods are:
+						
+						    near:
+						        nearest neighbour resampling 
+						        (default, fastest algorithm, 
+						        worst interpolation quality). 
+						    bilinear:
+						        bilinear resampling. 
+						    cubic:
+						        cubic resampling. 
+						    cubicspline:
+						        cubic spline resampling. 
+						    lanczos:
+						        Lanczos windowed sinc resampling. 
+							</xsd:documentation>
+						</xsd:annotation>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="near"></xsd:enumeration>
+							<xsd:enumeration value="bilinear"></xsd:enumeration>
+							<xsd:enumeration value="cubic"></xsd:enumeration>
+							<xsd:enumeration value="cubicspline"></xsd:enumeration>
+							<xsd:enumeration value="lanczos"></xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				
+				<xsd:element name="srcnodata" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							value [value...]:
+    						Set nodata masking values for input bands 
+    						(different values can be supplied for each 
+    						band). If more than one value is supplied 
+    						all values should be quoted to keep them 
+    						together as a single operating system argument. 
+    						Masked values will not be used in interpolation. 
+    						Use a value of None to ignore intrinsic nodata 
+    						settings on the source dataset.  
+ 						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="dstnodata" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							value [value...]:
+    						Set nodata values for output bands 
+    						(different values can be supplied for each band). 
+    						If more than one value is supplied all values 
+    						should be quoted to keep them together as a single 
+    						operating system argument. New files will be 
+    						initialized to this value and if possible the nodata 
+    						value will be recorded in the output file.
+ 						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				
+				<xsd:element name="dstalpha" type="xsd:boolean" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Create an output alpha band to identify nodata (unset/transparent) pixels. 
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="wm" type="xsd:double"
+					minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							memory_in_mb:
+              Set the amount of memory (in megabytes) that the warp API is allowed to use 
+              for caching.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="multi" type="xsd:boolean" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Use multithreaded warping implementation. Multiple threads will be used to 
+							process chunks of image and perform input/output operation simultaneously
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="of" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							Select the output format. The default is
+							GeoTIFF (GTiff). Use the short format name.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="co_params" minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							"NAME=VALUE": Passes a creation option to the
+							output format driver. Multiple -co options may
+							be listed. See
+							format specific documentation for
+							legal creation options for each
+							format.
+    				</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="co" type="xsd:string" minOccurs="0"
+								maxOccurs="unbounded">
+								<xsd:annotation>
+									<xsd:documentation>
+										"NAME=VALUE": Passes a creation option to the
+										output format driver. Multiple -co options may
+										be listed. See
+										format specific documentation for
+										legal creation options for each
+										format.
+    								</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="cutline" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							datasource: Enable use of a blend cutline from the name OGR support datasource.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="cutline" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							layername: Select the named layer from the cutline datasource.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="cwhere" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							expression: Restrict desired cutline features based on attribute query.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="csql" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							query: Select cutline features using an SQL query instead of from a layer with -cl.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			  <xsd:element name="cblend" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							-cblend distance: Set a blend distance to use to blend over cutlines (in pixels).
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="srcfile" type="xsd:string" minOccurs="1"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							The source file name(s). 
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="dstfile" type="xsd:string"
+					minOccurs="1" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>The destination file name. </xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

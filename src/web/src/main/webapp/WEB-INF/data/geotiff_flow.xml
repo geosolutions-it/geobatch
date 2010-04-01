@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>geotiff_flow0</id>
+	<name>Prepare GeoTIFF and publish</name>
+	<description>Create overviews and publish on GeoServer</description>
+
+	<workingDirectory>geotiff_work</workingDirectory>
+	<autorun>false</autorun>
+
+    <EventConsumerConfiguration>
+		<id>geotiff_retile_overview_publish</id>
+		<name>dummy</name>
+		<description>dummy</description>
+
+		<listenerId>GeoTIFFConsumerLogger0</listenerId>
+        <listenerId>GeoTIFFCumulator0</listenerId>
+        
+		<workingDirectory>geotiff_work</workingDirectory>
+		<performBackup>false</performBackup>
+
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.tif.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+
+		<TaskExecutorConfiguration>
+			<id>GDALTRANSLATE</id>
+			<description>Flow to run gdal_translate operations</description>
+			<name>GdalTranslate action</name>
+			
+			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
+			<listenerId>GeoTIFFActionLogger0</listenerId>
+			
+			<workingDirectory>geotiff_work</workingDirectory>
+			<serviceID>TaskExecutorService</serviceID>
+			<errorFile>geotiff_work/config/errorlog.txt</errorFile>
+			<timeOut>1200000</timeOut>
+			<executable>C:\Programmi\FWTools2.2.8\bin\gdal_translate.exe</executable>
+			<defaultScript>geotiff_work/config/gdal_translate.xml</defaultScript>
+			<outputName>*.tiff</outputName>
+		    <variables>
+				 <entry>
+				    <string>GDAL_DATA</string>
+				    <string>C:\Program Files\FWTools2.2.8\data</string>
+				  </entry>
+				  <entry>
+				    <string>PATH</string>
+				    <string>C:\Program Files\FWTools2.2.8\bin</string>
+				  </entry>
+			</variables>
+			<xsl>geotiff_work/config/gdal_translate.xsl</xsl>
+		</TaskExecutorConfiguration>
+		
+		<TaskExecutorConfiguration>
+			<id>GDALADDO</id>
+			<description>Action to run gdaladdo operations</description>
+			<name>GdalADDO action</name>
+			
+			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
+			<listenerId>GeoTIFFActionLogger0</listenerId>
+			
+			<workingDirectory>geotiff_work</workingDirectory>
+			<serviceID>TaskExecutorService</serviceID>
+			<errorFile>geotiff_work/config/errorlog.txt</errorFile>
+			<timeOut>1200000</timeOut>
+			<executable>C:\Program Files\FWTools2.2.8\bin\gdaladdo.exe</executable>
+			<defaultScript>geotiff_work/config/gdaladdo.xml</defaultScript>
+			<outputName>*.tif</outputName>
+		    <variables>
+				 <entry>
+				    <string>GDAL_DATA</string>
+				    <string>C:\Program Files\FWTools2.2.8\data</string>
+				  </entry>
+				  <entry>
+				    <string>PATH</string>
+				    <string>C:\Program Files\FWTools2.2.8\bin</string>
+				  </entry>
+			</variables>
+			<xsl>geotiff_work/config/gdaladdo.xsl</xsl>
+		</TaskExecutorConfiguration>
+
+		<GeoServerRESTActionConfiguration>
+            <serviceID>geoServerRESTGeneratorService</serviceID>
+			<id>geotiff</id>
+			<description>Action to ingest GeoTIFF on GeoServer</description>
+			<name>geotiff action</name>
+
+			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
+			<listenerId>GeoTIFFActionLogger0</listenerId>
+			
+			<workingDirectory>geotiff_work</workingDirectory>
+            <crs>EPSG:4326</crs>
+            <envelope/>
+            <dataTransferMethod>DIRECT</dataTransferMethod>
+            <vectorialLayer>false</vectorialLayer>
+            <geoserverPWD>geoserver</geoserverPWD>
+            <geoserverUID>admin</geoserverUID>
+            <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+            <geoserverVersion>2.0.0</geoserverVersion>
+            <!-- storeFilePrefix></storeFilePrefix -->
+            <!-- storeId></storeId -->
+            <storeType>geotiff</storeType>
+            <wmsPath>/</wmsPath>
+            <defaultStyle>raster</defaultStyle>
+            <styles/>
+            <!-- styles>
+                <style>raster.sld</style>
+            </styles -->
+		</GeoServerRESTActionConfiguration>
+
+	</EventConsumerConfiguration>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>geotiff_work/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>GeoTIFFStatusActionLogger0</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>GeoTIFFActionLogger0</id>
+
+            <loggerName>GeoTIFFActionLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>GeoTIFFConsumerLogger0</id>
+
+            <loggerName>GeoTIFFConsumerLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>GeoTIFFCumulator0</id>
+        </CumulatingProgressListener>
+
+    </ListenerConfigurations>
+    
+</FlowConfiguration>

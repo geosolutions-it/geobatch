@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<GdalWarp>
+    <ot>Int16</ot>
+    <of>GTIFF</of>
+    <s_srs>"EPSG:4326"</s_srs>
+    <t_srs>"EPSG:4326"</t_srs>
+	<srcfile>Y:\data\geotiff\small_world.tif</srcfile>
+	<dstfile>Y:\data\geotiff\rsmall_world.tif</dstfile>
+</GdalWarp>

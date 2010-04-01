@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<workingDirectory>ftp_work</workingDirectory>
+	<EventConsumerConfiguration>
+		<workingDirectory>ftp_work</workingDirectory>
+		<performBackup>false</performBackup>
+
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+
+		<FTPActionConfiguration>
+			<workingDirectory>ftp_work</workingDirectory>
+			<dataTransferMethod />
+			<timeout>10000</timeout>
+			<zipInput>false</zipInput>
+			<zipFileName>ftpZip</zipFileName>
+			<ftpserverPWD>twin2-a</ftpserverPWD>
+			<ftpserverUSR>twin2-a</ftpserverUSR>
+			<ftpserverHost>10.0.0.5</ftpserverHost>
+			<ftpserverPort>21</ftpserverPort>
+			<connectMode>ACTIVE</connectMode>
+			<localTempDir>C:/gbTemp</localTempDir>
+			<serviceID>ftpUploadActionService</serviceID>
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+		</FTPActionConfiguration>
+
+		<FTPActionConfiguration>
+			<workingDirectory>ftp_work</workingDirectory>
+			<dataTransferMethod />
+			<timeout>10000</timeout>
+			<zipInput>false</zipInput>
+			<zipFileName>ftpZip</zipFileName>
+			<ftpserverPWD>twin2-a</ftpserverPWD>
+			<ftpserverUSR>twin2-a</ftpserverUSR>
+			<ftpserverHost>10.0.0.5</ftpserverHost>
+			<ftpserverPort>21</ftpserverPort>
+			<connectMode>ACTIVE</connectMode>
+			<localTempDir>C:/gbTemp</localTempDir>
+			<serviceID>ftpDownloadActionService</serviceID>
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+		</FTPActionConfiguration>
+
+		<FTPActionConfiguration>
+			<workingDirectory>ftp_work</workingDirectory>
+			<dataTransferMethod />
+			<timeout>10000</timeout>
+			<zipInput>false</zipInput>
+			<zipFileName>ftpZip</zipFileName>
+			<ftpserverPWD>twin2-a</ftpserverPWD>
+			<ftpserverUSR>twin2-a</ftpserverUSR>
+			<ftpserverHost>10.0.0.5</ftpserverHost>
+			<ftpserverPort>21</ftpserverPort>
+			<connectMode>ACTIVE</connectMode>
+			<localTempDir>C:/gbTemp</localTempDir>
+			<serviceID>ftpDeleteActionService</serviceID>
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+		</FTPActionConfiguration>
+
+		<id>id</id>
+		<description>description</description>
+		<name>test</name>
+	</EventConsumerConfiguration>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>ftp_work/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<serviceID>fsEventGeneratorService</serviceID>
+		<id>id</id>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+
+	<id>flowFtpPush</id>
+	<description>test ftp push</description>
+	<name>flowFtpPush</name>
+</FlowConfiguration>

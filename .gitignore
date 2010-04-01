@@ -1,7 +1,6 @@
 ##
 ## This file has been automatically generated with the command line:
 ## for pom in $(find src -name "pom.xml") ; do path=${pom%*pom.xml} ; echo '#' $path ; echo ; echo ${path}target ; echo ; done > .gitignore
-##
 ## - ETj
 
 nb*.xml
@@ -10,170 +9,87 @@ src/web/ftp*db
 .project
 .settings
 # src/actions/shapefile/
-
 src/actions/shapefile/target
-
 # src/actions/ascii-grids/
-
 src/actions/ascii-grids/target
-
 # src/actions/geowebcache/
-
 src/actions/geowebcache/target
-
 # src/actions/imagemosaic/
-
 src/actions/imagemosaic/target
-
 # src/actions/gb-ftp/
-
 src/actions/gb-ftp/target
-
 # src/actions/gb-geoserver/gb-geoserver-action/
-
 src/actions/gb-geoserver/gb-geoserver-action/target
-
 # src/actions/gb-geoserver/gsrestclient/
-
 src/actions/gb-geoserver/gsrestclient/target
-
 # src/actions/gb-geoserver/
-
 src/actions/gb-geoserver/target
-
 # src/actions/geotiff/
-
 src/actions/geotiff/target
-
 # src/actions/gb-task-executor/
-
 src/actions/gb-task-executor/target
-
 # src/actions/
-
 src/actions/target
-
 # src/dao/jibx/
-
 src/dao/jibx/target
-
 # src/dao/xstream/xstream-core/
-
 src/dao/xstream/xstream-core/target
-
 # src/dao/xstream/alias-registry/
-
 src/dao/xstream/alias-registry/target
-
 # src/dao/xstream/
-
 src/dao/xstream/target
-
 # src/dao/
-
 src/dao/target
-
 # src/file-catalog/
-
 src/file-catalog/target
-
 # src/legacy/actions/gb-ais/
-
 src/legacy/actions/gb-ais/target
-
 # src/legacy/actions/gb-ctd/
-
 src/legacy/actions/gb-ctd/target
-
 # src/legacy/actions/gb-jgsflodess/
-
 src/legacy/actions/gb-jgsflodess/target
-
 # src/legacy/actions/gb-gliders/
-
 src/legacy/actions/gb-gliders/target
-
 # src/legacy/actions/gb-sas/
-
 src/legacy/actions/gb-sas/target
-
 # src/legacy/actions/
-
 src/legacy/actions/target
-
 # src/legacy/
-
 src/legacy/target
-
 # src/core/model/
-
 src/core/model/target
-
 # src/core/impl/
-
 src/core/impl/target
-
 # src/core/
-
 src/core/target
-
 # src/gb-ftp-server/
-
 src/gb-ftp-server/target
-
 # src/gb-fsm/module/monitor/
-
 src/gb-fsm/module/monitor/target
-
 # src/gb-fsm/module/
-
 src/gb-fsm/module/target
-
 # src/gb-fsm/
-
 src/gb-fsm/target
-
 # src/gb-fsm/deploy/jar/
-
 src/gb-fsm/deploy/jar/target
-
 # src/gb-fsm/deploy/libs/windows/
-
 src/gb-fsm/deploy/libs/windows/target
-
 # src/gb-fsm/deploy/libs/linux/
-
 src/gb-fsm/deploy/libs/linux/target
-
 # src/gb-fsm/deploy/libs/
-
 src/gb-fsm/deploy/libs/target
-
 # src/gb-fsm/deploy/
-
 src/gb-fsm/deploy/target
-
 # src/gb-fsm/plugin/javamonitor/
-
 src/gb-fsm/plugin/javamonitor/target
-
 # src/gb-fsm/plugin/jnimonitor/
-
 src/gb-fsm/plugin/jnimonitor/target
-
 # src/gb-fsm/plugin/
-
 src/gb-fsm/plugin/target
-
 # src/users/
-
 src/users/target
-
 # src/
-
 src/target
-
 # src/web/
-
 src/web/target
-
+/firstusecase_data.7z
