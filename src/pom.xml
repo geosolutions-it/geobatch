@@ -83,7 +83,7 @@
         <src.output>${basedir}/target</src.output>
         <gt.version>2.7-SNAPSHOT</gt.version>
         <gb.version>0.9-SNAPSHOT</gb.version>
-        <imageio-ext.version>1.0.4</imageio-ext.version>
+        <imageio-ext.version>1.0.5</imageio-ext.version>
         <spring.version>3.0.1.RELEASE</spring.version>
         <spring.security.version>3.0.2.RELEASE</spring.security.version>
         <dao.type>xstream</dao.type> <!-- the default dao type -->
@@ -503,19 +503,6 @@
                 <groupId>it.geosolutions</groupId>
                 <artifactId>test-data</artifactId>
                 <version>1.0-SNAPSHOT</version>
-            </dependency>
-
-            <!-- GeoAPI and its dependencies ================================-->
-
-            <dependency>
-                <groupId>org.opengis</groupId>
-                <artifactId>geoapi</artifactId>
-                <version>2.2-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>net.java.dev.jsr-275</groupId>
-                <artifactId>jsr-275</artifactId>
-                <version>1.0-beta-2</version>
             </dependency>
 
             <!-- GeoTools ===================================================-->
