@@ -31,7 +31,6 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
     public GeoServerActionConfiguration(String id, String name,
 			String description, boolean dirty) {
 		super(id, name, description, dirty);
-		// TODO Auto-generated constructor stub
 	}
 
 	private String workingDirectory;

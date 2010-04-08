@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>sasDetectionFlow</id>
+	<name>sasDetectionFlow</name>
+	<description>Flow for the SAS Detection manager</description>
+
+	<workingDirectory>sasdetectionflowworkingdir</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventConsumerConfiguration>
+		<id>id</id>
+		<name>test</name>
+		<description>description</description>
+
+		<listenerId>SASDetectionConsumerLogger0</listenerId>
+        <listenerId>SASDetectionCumulator0</listenerId>
+
+		<workingDirectory>sasdetectionflowworkingdir</workingDirectory>
+		<performBackup>true</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.xml</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+		
+        <DetectionManagerConfiguration>
+			<id>SASDETECTION</id>
+			<description>description</description>
+			<name>SAS Detections Manager</name>
+
+			<listenerId>SASDetectionStatusActionLogger0</listenerId>
+			<listenerId>SASDetectionActionLogger0</listenerId>
+        
+			<workingDirectory>sasdetectionflowworkingdir</workingDirectory>
+			<serviceID>DetectionManagerService</serviceID>
+			<detectionsErrorLog>sasdetectionflowworkingdir/config/errorlog.txt</detectionsErrorLog>
+			<detectionsOutputDir>G:\temp\sas\data\muscleshapes</detectionsOutputDir>
+			<detectionConverterPath>sasdetectionflowworkingdir/config/shapegen.py</detectionConverterPath>
+			<detectionStyle>detection</detectionStyle>
+			<converterTimeout>1200000</converterTimeout> <!-- milliseconds -->
+			<crsDefinitionsDir>sasdetectionflowworkingdir/config/prj</crsDefinitionsDir>
+			<loggingDir>sasdetectionflowworkingdir/log</loggingDir>
+			<executablePath>C:\Apps\Python26\python.exe</executablePath>
+			<gdalData>C:\\Program Files\\FWTools2.2.8\\data</gdalData>
+			<path>C:\\Apps\\Python26</path>
+			<xslPath>sasdetectionflowworkingdir/config/task.xsl</xslPath>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUploadMethod>DIRECT</geoserverUploadMethod>
+			<defaultNamespace>it.geosolutions</defaultNamespace>
+		</DetectionManagerConfiguration>
+		
+	</EventConsumerConfiguration>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>sasdetectionflowworkingdir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+
+	<ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>SASDetectionStatusActionLogger0</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>SASDetectionActionLogger0</id>
+
+            <loggerName>SASDetectionActionLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>SASDetectionConsumerLogger0</id>
+
+            <loggerName>SASDetectionConsumerLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>SASDetectionCumulator0</id>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+    
+</FlowConfiguration>

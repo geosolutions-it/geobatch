@@ -223,7 +223,6 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
             // Adding the zipped file to send...
             events.add(new FileSystemMonitorEvent(zipFileToSend, FileSystemMonitorNotifications.FILE_ADDED));
 			return events;
-
         } catch (Throwable t) {
 //			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // we're rethrowing it, so don't log
             listenerForwarder.failed(t); // fails the Action

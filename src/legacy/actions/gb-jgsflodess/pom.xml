@@ -267,7 +267,7 @@
       </dependency>
       <dependency>
 		  <groupId>it.geosolutions</groupId>
-		  <artifactId>gb-action-ImageMosaic</artifactId>
+		  <artifactId>gb-action-imagemosaic</artifactId>
 	  </dependency>
 	  <dependency>
           <groupId>it.geosolutions</groupId>

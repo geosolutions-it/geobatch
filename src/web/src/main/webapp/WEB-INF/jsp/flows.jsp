@@ -183,8 +183,8 @@
 												<c:choose> 
 					  								<c:when test="${fm.running}">
 					  									Running
-					  									<c:forEach var="role" items="${currentUser.user.authorities}">
-					  										<c:if test="${role == 'ADMIN' || role == 'POWERUSER'}">
+					  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
+					  										<c:if test="${role.authority == 'ADMIN' || role.authority == 'POWERUSER'}">
 							  									<a href='pause.do?fmId=${fm.id}'><image src='img/control_pause.png' border='0' title='pause' alt='pause' width='16' height='16'/></a>
 							  									<a href='pause.do?fmId=${fm.id}&full=true'><image src='img/control_stop.png' border='0' title='complete freeze' alt='full' width='16' height='16'/></a>
 					  										</c:if>
@@ -192,15 +192,15 @@
 					  								</c:when>
 					  								<c:otherwise>
 					  									Stopped
-					  									<c:forEach var="role" items="${currentUser.user.authorities}">
-					  										<c:if test="${role == 'ADMIN' || role == 'POWERUSER'}">
+					  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
+					  										<c:if test="${role.authority == 'ADMIN' || role.authority == 'POWERUSER'}">
 					  											<a href='resume.do?fmId=${fm.id}'><image src='img/control_play.png' border='0' title='resume' alt='resume' width='16' height='16'/></a>
 					  										</c:if>
 					  									</c:forEach>
 					  								</c:otherwise>
 					  							</c:choose>
-			  									<c:forEach var="role" items="${currentUser.user.authorities}">
-			  										<c:if test="${role == 'ADMIN'}">
+			  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
+			  										<c:if test="${role.authority == 'ADMIN'}">
 														<a href="dispose.do?fmId=${fm.id}"><image src='img/cancel.png' border='0' title='cancel' alt='cancel' width='16' height='16'/></a>
 													</c:if>
 												</c:forEach>									

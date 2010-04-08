@@ -5,7 +5,7 @@
 	<description>Create overviews and publish on GeoServer</description>
 
 	<workingDirectory>geotiff_work</workingDirectory>
-	<autorun>true</autorun>
+	<autorun>false</autorun>
 
     <EventConsumerConfiguration>
 		<id>geotiff_retile_overview_publish</id>
@@ -32,6 +32,7 @@
 			<description>Flow to run gdal_translate operations</description>
 			<name>GdalTranslate action</name>
 			
+			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 			
 			<workingDirectory>geotiff_work</workingDirectory>
@@ -59,6 +60,7 @@
 			<description>Action to run gdaladdo operations</description>
 			<name>GdalADDO action</name>
 			
+			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 			
 			<workingDirectory>geotiff_work</workingDirectory>
@@ -87,6 +89,7 @@
 			<description>Action to ingest GeoTIFF on GeoServer</description>
 			<name>geotiff action</name>
 
+			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 			
 			<workingDirectory>geotiff_work</workingDirectory>
@@ -123,6 +126,11 @@
 	</EventGeneratorConfiguration>
 
     <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>GeoTIFFStatusActionLogger0</id>
+    	</StatusProgressListener>
+        
         <LoggingProgressListener>
             <serviceID>loggingListenerService</serviceID>
             <id>GeoTIFFActionLogger0</id>
@@ -141,7 +149,6 @@
             <serviceID>cumulatingListenerService</serviceID>
             <id>GeoTIFFCumulator0</id>
         </CumulatingProgressListener>
-
     </ListenerConfigurations>
     
 </FlowConfiguration>

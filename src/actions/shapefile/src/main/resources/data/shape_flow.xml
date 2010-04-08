@@ -6,7 +6,7 @@
     <name>Shapefile</name>
 
     <workingDirectory>shape_work</workingDirectory>
-    <autorun>true</autorun>
+    <autorun>false</autorun>
 
     <EventConsumerConfiguration>
         <id>shape_consumer</id>
@@ -58,6 +58,7 @@
             <name>ShapeFileIngestion</name>
             <description>Get a pack of shapefiles (optionally zipped) and ingest them into a GeoServer instance.</description>
 
+			<listenerId>StatusActionLogger0</listenerId>
             <listenerId>ActionLogger0</listenerId>
 
             <workingDirectory>shape_work</workingDirectory>
@@ -69,6 +70,7 @@
             <name>GeoServerIngestion</name>
             <description>GeoServer REST.</description>
 
+			<listenerId>StatusActionLogger0</listenerId>
             <listenerId>ActionLogger0</listenerId>
 
             <workingDirectory>shape_work</workingDirectory>
@@ -107,6 +109,11 @@
     </EventGeneratorConfiguration>
 
     <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>StatusActionLogger0</id>
+    	</StatusProgressListener>
+    	
         <LoggingProgressListener>
             <serviceID>loggingListenerService</serviceID>
             <id>ActionLogger0</id>

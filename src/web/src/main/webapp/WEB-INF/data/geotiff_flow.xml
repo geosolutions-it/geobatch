@@ -149,7 +149,6 @@
             <serviceID>cumulatingListenerService</serviceID>
             <id>GeoTIFFCumulator0</id>
         </CumulatingProgressListener>
-
     </ListenerConfigurations>
     
 </FlowConfiguration>

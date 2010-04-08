@@ -399,7 +399,7 @@ public class GeoServerRESTHelper {
      * 
      * @param inputDataDir
      * @param data
-     * @param layerType
+     * @param isVectorialLayer
      * @param geoserverBaseURL
      * @param geoserverUID
      * @param geoserverPWD
@@ -420,7 +420,7 @@ public class GeoServerRESTHelper {
     public static String[] send(
 			final File inputDataDir, 
 			final File data,
-			final boolean layerType,
+			final boolean isVectorialLayer,
 			final String geoserverBaseURL, 
 			final String geoserverUID, 
 			final String geoserverPWD,
@@ -435,7 +435,7 @@ public class GeoServerRESTHelper {
 			final String defaultStyle )
 			throws ParserConfigurationException, IOException, TransformerException {
 			
-    	if (layerType)
+    	if (isVectorialLayer)
     		return sendFeature(inputDataDir, data, geoserverBaseURL, geoserverUID, geoserverPWD, originalStoreId, storeFilePrefix, queryParams, dataTransferMethod, type, geoserverVersion, dataStyles, defaultStyle);
     	else
     		return sendCoverage(inputDataDir, data, geoserverBaseURL, geoserverUID, geoserverPWD, originalStoreId, storeFilePrefix, queryParams, queryString, dataTransferMethod, type, geoserverVersion, dataStyles, defaultStyle);
@@ -638,7 +638,7 @@ public class GeoServerRESTHelper {
 			return layer;
 		} else {
 			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.info("GeoServerConfiguratorAction: coverage was NOT sent to GeoServer due to connection errors!");
+				LOGGER.info("GeoServerConfiguratorAction: FeatureType was NOT sent to GeoServer due to connection errors!");
 			return null;
 		}
 	}

@@ -23,7 +23,7 @@
     <!--     Module Description                                      -->
     <!-- =========================================================== -->
     <groupId>it.geosolutions</groupId>
-    <artifactId>gb-action-ImageMosaic</artifactId>
+    <artifactId>gb-action-imagemosaic</artifactId>
     <packaging>jar</packaging>
 
     <name>GeoBatch action: ImageMosaic ingester</name>

@@ -3,15 +3,25 @@
  */
 package it.geosolutions.geobatch.ui.security;
 
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 
 /**
  * @author Administrator
  * 
  */
 public class CurrentUser {
-	public User getUser() {
-		return (User) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+	public Object getUser() {
+		return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	}
+
+	public String getUserName() {
+		return SecurityContextHolder.getContext().getAuthentication().getName();
+	}
+
+	public Collection<GrantedAuthority> getGrantedAuthorities() {
+		return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 	}
 }

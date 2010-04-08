@@ -179,22 +179,19 @@
             </modules>
         </profile>
 
-<!--        <profile>
-            <id>sas</id>
+        <profile>
+            <id>sasmanager</id>
             <activation>
                 <property>
                     <name>all_actions</name>
                 </property>
             </activation>
             <modules>
+                <module>sasmanager</module>
                 <module>gb-geoserver</module>
-                <module>geotiff</module>
-                <module>gb-task-executor</module>
-                <module>shapefile</module>
-                <module>gb-sas</module>
             </modules>
         </profile>
--->
+
         <profile>
             <id>imagemosaic</id>
             <activation>

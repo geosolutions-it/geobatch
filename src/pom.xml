@@ -403,6 +403,11 @@
 						</dependency>
 						<dependency>
 							<groupId>org.springframework.security</groupId>
+							<artifactId>spring-security-cas-client</artifactId>
+							<version>${spring.security.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.springframework.security</groupId>
 							<artifactId>spring-security-config</artifactId>
 							<version>${spring.security.version}</version>
 						</dependency>
@@ -887,6 +892,11 @@
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
+                <artifactId>gb-action-sasmanager</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-taskexecutor</artifactId>
                 <version>${gb.version}</version>
             </dependency>
@@ -937,7 +947,7 @@
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-action-ImageMosaic</artifactId>
+                <artifactId>gb-action-imagemosaic</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
@@ -1012,11 +1022,14 @@
                     <include>**/*.txt</include>
                     <include>**/*.sql</include>
                     <include>**/*.html</include>
+                    <include>**/*.xsd</include>
+                    <include>**/*.xsl</include>
                     <include>**/*.xml</include>
                     <include>**/*.utf</include>
+                    <include>**/*.prj</include>
+                    <include>**/*.py</include>
                     <include>**/*.properties</include>
                     <include>**/*.serialized</include>
-                    <include>**/*.xsd</include>
                     <include>META-INF/*.jai</include>
                     <include>META-INF/mailcap</include>
                     <include>META-INF/services/**</include>
@@ -1036,8 +1049,9 @@
                     <include>META-INF/services/**</include>
                     <include>**/test-data/**</include>
                     <include>**/*.html</include>
-                    <include>**/*.xml</include>
                     <include>**/*.xsd</include>
+                    <include>**/*.xsl</include>
+                    <include>**/*.xml</include>
                     <include>**/*.csv</include>
                     <include>**/*.sld</include>
                     <include>**/*.svg</include>
@@ -1046,6 +1060,8 @@
                     <include>**/*.txt</include>
                     <include>**/*.sql</include>
                     <include>**/*.png</include>
+                    <include>**/*.prj</include>
+                    <include>**/*.py</include>
                     <include>**/*.properties</include>
                     <include>**/*.serialized</include>
                     <include>**/*.ftl</include>

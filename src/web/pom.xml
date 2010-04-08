@@ -156,26 +156,30 @@
         <!-- ============================== -->
         <!--     Spring Security            -->
         <!-- ============================== -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-acl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-		</dependency>
+				<dependency>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-acl</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-config</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-core</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-taglibs</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-cas-client</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.springframework.security</groupId>
+					<artifactId>spring-security-web</artifactId>
+				</dependency>
     </dependencies>
 
 
@@ -221,7 +225,6 @@
 
         </plugins>
     </build>
-
 
     <profiles>
         <profile>
@@ -276,7 +279,6 @@
         -->
 
         <!-- GLIDERS ========================================================-->
-
         <profile>
             <id>gliders</id>
             <activation>
@@ -324,7 +326,6 @@
         </profile>
 
         <!-- CTD ============================================================-->
-
         <profile>
             <id>ctd</id>
 
@@ -374,7 +375,6 @@
         </profile>
 
         <!-- AIS ============================================================-->
-
         <profile>
             <id>ais</id>
             <activation>
@@ -423,20 +423,19 @@
         </profile>
 
         <!-- SAS ============================================================-->
-
         <profile>
             <id>sas</id>
 
             <activation>
                 <property>
-                    <name>all_legacy_actions</name>
+                    <name>all_actions</name>
                     <value>true</value>
                 </property>
             </activation>
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-action-sas</artifactId>
+                    <artifactId>gb-action-sasmanager</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -453,7 +452,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-action-sas</artifactId>
+                                            <artifactId>gb-action-sasmanager</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -473,7 +472,6 @@
         </profile>
 
         <!-- GeoTIFF ========================================================-->
-
         <profile>
             <id>geotiff</id>
             <activation>
@@ -527,7 +525,6 @@
         </profile>
 
         <!-- ASCII GRIDS ====================================================-->
-
         <profile>
             <id>ascii</id>
             <activation>
@@ -631,7 +628,6 @@
         </profile>
 
         <!-- Task Executor ==================================================-->
-
         <profile>
             <id>task-executor</id>
             <activation>
@@ -681,7 +677,6 @@
         </profile>
 
         <!-- GWC ============================================================-->
-
         <profile>
             <id>geowebcache</id>
             <activation>
@@ -731,7 +726,6 @@
         </profile>
 
         <!-- FTP ============================================================-->
-
         <profile>
             <id>ftp</id>
             <activation>
@@ -781,7 +775,6 @@
         </profile>
 
         <!-- ImageMosaic ====================================================-->
-
         <profile>
             <id>imagemosaic</id>
             <activation>
@@ -794,7 +787,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-action-ImageMosaic</artifactId>
+                    <artifactId>gb-action-imagemosaic</artifactId>
                 </dependency>
             </dependencies>
         </profile>
@@ -820,7 +813,7 @@
                 </dependency>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-action-ImageMosaic</artifactId>
+                    <artifactId>gb-action-imagemosaic</artifactId>
                 </dependency>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
