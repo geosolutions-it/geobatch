@@ -155,84 +155,83 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements 
 			final Source xmlSource = new StreamSource(xmlFile);
 
 			is = new FileInputStream(xslFile);
-	        if (is != null){
 	        	
-	        	//XML parsing to setup a command line
-				final String argument = buildArgument(xmlSource, is);
-				   
-				final Project project = new Project();
-				project.init();
-		
-				final ExecTask execTask = new ExecTask();
-				execTask.setProject(project);
-				
-				// Setting environment variables coming from the configuration
-				// as an instance: PATH, LD_LIBRARY_PATH and similar
-				Map<String,String> variables = configuration.getVariables();
-				if (variables != null && !variables.isEmpty()){
-					for (String key: variables.keySet()){
-						Variable var = new Variable();
-						var.setKey(key);
-						final String value = variables.get(key);
-						if (value != null){
-							var.setValue(variables.get(key));
-							execTask.addEnv(var);
-						}
+        	//XML parsing to setup a command line
+			final String argument = buildArgument(xmlSource, is);
+			   
+			final Project project = new Project();
+			project.init();
+	
+			final ExecTask execTask = new ExecTask();
+			execTask.setProject(project);
+			
+			// Setting environment variables coming from the configuration
+			// as an instance: PATH, LD_LIBRARY_PATH and similar
+			Map<String,String> variables = configuration.getVariables();
+			if (variables != null && !variables.isEmpty()){
+				for (String key: variables.keySet()){
+					Variable var = new Variable();
+					var.setKey(key);
+					final String value = variables.get(key);
+					if (value != null){
+						var.setValue(variables.get(key));
+						execTask.addEnv(var);
 					}
 				}
-				
-				//Setting executable
-				execTask.setExecutable(configuration.getExecutable());
-				
-				//Setting Error logging
-				final String errorPath = configuration.getErrorFile();
-				if (errorPath!=null && errorPath.trim().length()>0){
-					File errorFile = IOUtils.findLocation(errorPath,
-				                 new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-					if (errorFile != null){
-						if(!errorFile.exists()){
-							try{
-								errorFile.createNewFile();
-							} catch (Throwable t){
-								if (LOGGER.isLoggable(Level.WARNING))
-										LOGGER.warning(new StringBuilder("The specified errorFile doesn't exist.")
-										.append(" Unable to create it due to:").append(t.getLocalizedMessage()).toString());
-							}
-						}
-						if (errorFile.exists()){
-							execTask.setLogError(true);
-							execTask.setError(errorFile);
-							execTask.setFailonerror(true);
+			}
+			
+			//Setting executable
+			execTask.setExecutable(configuration.getExecutable());
+			
+			//Setting Error logging
+			final String errorPath = configuration.getErrorFile();
+			if (errorPath!=null && errorPath.trim().length()>0){
+				File errorFile = IOUtils.findLocation(errorPath,
+			                 new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+				if (errorFile != null){
+					if(!errorFile.exists()){
+						try{
+							errorFile.createNewFile();
+						} catch (Throwable t){
+							if (LOGGER.isLoggable(Level.WARNING))
+									LOGGER.warning(new StringBuilder("The specified errorFile doesn't exist.")
+									.append(" Unable to create it due to:").append(t.getLocalizedMessage()).toString());
 						}
 					}
+					if (errorFile.exists()){
+						execTask.setLogError(true);
+						execTask.setError(errorFile);
+						execTask.setFailonerror(true);
+					}
 				}
-					
-				//Setting the timeout
-				Long timeOut = configuration.getTimeOut();
-				if (timeOut!=null){
-					execTask.setTimeout(timeOut);
-				}
+			}
 				
-				//Setting command line argument
-				execTask.createArg().setLine(argument);
+			//Setting the timeout
+			Long timeOut = configuration.getTimeOut();
+			if (timeOut!=null){
+				execTask.setTimeout(timeOut);
+			}
+			
+			//Setting command line argument
+			execTask.createArg().setLine(argument);
+			
+			//Executing
+			execTask.execute();
+			final File outFile = new File(outputFile);
+			events.clear();
+			events.add(new FileSystemMonitorEvent(outFile, FileSystemMonitorNotifications.FILE_ADDED));
 				
-				//Executing
-				execTask.execute();
-				final File outFile = new File(outputFile);
-				events.clear();
-				events.add(new FileSystemMonitorEvent(outFile, FileSystemMonitorNotifications.FILE_ADDED));
-				
-	         }
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			if (LOGGER.isLoggable(Level.FINE))
 				LOGGER.fine(e.getLocalizedMessage());
 
             listenerForwarder.failed(e);
 
 		}finally{
-            org.apache.commons.io.IOUtils.closeQuietly(is);
+			if(is!=null)
+				org.apache.commons.io.IOUtils.closeQuietly(is);
 		}
-        
+
         listenerForwarder.completed();
 		return events;
 	}

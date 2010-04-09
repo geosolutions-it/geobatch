@@ -180,19 +180,6 @@
         </profile>
 
         <profile>
-            <id>sasmanager</id>
-            <activation>
-                <property>
-                    <name>all_actions</name>
-                </property>
-            </activation>
-            <modules>
-                <module>sasmanager</module>
-                <module>gb-geoserver</module>
-            </modules>
-        </profile>
-
-        <profile>
             <id>imagemosaic</id>
             <activation>
                 <property>
@@ -252,26 +239,6 @@
                 <module>gb-task-executor</module>
             </modules>
         </profile>
-        <!--
-        <profile>
-            <id>all</id>
-            <modules>
-                <module>gb-geoserver</module>
-                <module>geotiff</module>
-                <module>geowebcache</module>
-                <module>ais</module>
-                <module>gb-gliders</module>
-                <module>gb-ctd</module>
-                <module>gb-task-executor</module>
-                <module>imagemosaic</module>
-                <module>shapefile</module>
-                <module>gb-sas</module>
-                <module>gb-ftp</module>
-                <!- -			   <module>jgsflodess</module> - ->
-                <module>ascii-grids</module>
-            </modules>
-        </profile>
--->
     </profiles>
 
 
