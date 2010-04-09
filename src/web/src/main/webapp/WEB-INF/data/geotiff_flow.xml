@@ -95,7 +95,7 @@
 			<workingDirectory>geotiff_work</workingDirectory>
             <crs>EPSG:4326</crs>
             <envelope/>
-            <dataTransferMethod>DIRECT</dataTransferMethod>
+            <dataTransferMethod>EXTERNAL</dataTransferMethod>
             <vectorialLayer>false</vectorialLayer>
             <geoserverPWD>geoserver</geoserverPWD>
             <geoserverUID>admin</geoserverUID>
