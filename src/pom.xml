@@ -1065,7 +1065,9 @@
                     <include>**/*.properties</include>
                     <include>**/*.serialized</include>
                     <include>**/*.ftl</include>
+                    <include>**/*.tif</include>
                     <include>**/*.tiff</include>
+                    <include>**/*.zip</include>
                     <include>**/placeholder</include> <!-- used for otherwise empty dirs -->
                 </includes>
                 <excludes>

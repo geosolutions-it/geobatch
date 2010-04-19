@@ -22,76 +22,59 @@
 package it.geosolutions.geobatch.geoserver.rest;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
 
 /**
- * Connect to a GeoServer instance for publishing or modify data .
+ * Connect to a GeoServer instance for publishing or modify data.
  *
  * @author ETj <etj at geo-solutions.it>
  */
-
 public class GeoServerRESTPublisher {
 
     private static final Logger LOGGER = Logger.getLogger(GeoServerRESTPublisher.class);
-	private final String restURL;
-	private final String gsuser;
-	private final String gspass;
+    private final String restURL;
+    private final String gsuser;
+    private final String gspass;
 
-	public GeoServerRESTPublisher(String restURL, String username, String pw) {
-		this.restURL = restURL;
-		this.gsuser = username;
-		this.gspass = pw;
-	}
+    public GeoServerRESTPublisher(String restURL, String username, String pw) {
+        this.restURL = restURL;
+        this.gsuser = username;
+        this.gspass = pw;
+    }
 
-	public boolean publishFT(String dsName, String ftName, String xmlFeatureType) {
+//    public boolean publishFT(String dsName, String ftName, String xmlFeatureType) {
+//
+//        LOGGER.info("GeoserverPublisher::publish('" + ftName + "') : start");
+//
+//        String sUrl = restURL + "/rest/folders/" + dsName + "/layers/" + ftName + ".xml";
+//
+//        if (HTTPUtils.putXml(sUrl, xmlFeatureType, gsuser, gspass)) {
+//            return true;
+//        } else {
+//            LOGGER.warn("Could not publish layer " + ftName);
+//            return false;
+//        }
+//    }
 
-		LOGGER.info("GeoserverPublisher::publish('" + ftName + "') : start");
+//    public void unpublish(String ftName) {
+//        LOGGER.error("GeoserverPublisher::unpublish('" + ftName + "') : TODO"); // TODO
+//    }
 
-		try {			
-			URL dssUrl = new URL(restURL + "/rest/folders/" + dsName +
-									"/layers/"+ftName+".xml");
+    public boolean createClassifiedSLD(String ftName, String styleName) {
 
-			LOGGER.info("### Putting FT into " + dssUrl.toExternalForm() + " (" + dssUrl + ")");
-			LOGGER.info("### Feature Type: "+ xmlFeatureType);
-						
-			if( HTTPUtils.put(dssUrl, xmlFeatureType, gsuser, gspass))
-				return true;
-			else {
-				LOGGER.warn("Could not publish layer " + ftName);
-				return false;
-			}
+        LOGGER.info("GeoserverPublisher::createClassifiedSLD('" + ftName + "') : start");
 
-		} catch(MalformedURLException e) {
-			LOGGER.warn("Could not publish layer " + ftName , e);
-			return false;
-		} catch(IOException e) {
-			LOGGER.warn("Could not publish layer " + ftName , e);
-			return false;
-		}
-	}
-
-	public void unpublish(String ftName) {
-		LOGGER.error("GeoserverPublisher::unpublish('" + ftName + "') : TODO"); // TODO
-	}
-
-	public void createClassifiedSLD(String ftName, String styleName){
-		
-		LOGGER.info("GeoserverPublisher::createClassifiedSLD('" + ftName + "') : start");
-		
-		/**
-		 * nella url richiesta va inserito userStyleID e featureType
-		 * Va creata la stringa con i parametri da passere a sldService:
-		 *  
-		 *  classMethod = "unique", "equalInterval", "quantile"
-		 *  property = nome della property (field name in table/view) su cui eseguire classificazione
-		 *  classNum = optional numero delle classi che voglio generare default 4
+        /**
+         * nella url richiesta va inserito userStyleID e featureType
+         * Va creata la stringa con i parametri da passere a sldService:
+         *
+         *  classMethod = "unique", "equalInterval", "quantile"
+         *  property = nome della property (field name in table/view) su cui eseguire classificazione
+         *  classNum = optional numero delle classi che voglio generare default 4
          *  colorRamp = tipo di colorRamp che voglio generare valid value = red blue gray random custom 
          *  startColor = required se custom colorRam è stata scelta;
          *  endColor = required se custom colorRam è stata scelta;
@@ -99,125 +82,234 @@ public class GeoServerRESTPublisher {
          *  RulesBuilder ruBuild;
          *  String userStyleId = null;
          *  String featureTypeName = null;
-		 * 
-		 */
-		StringBuilder szString = new StringBuilder();
-		szString.append("classMethod=quantile");
-		szString.append("&property=quantity");
-		szString.append("&classNum=10");
-		szString.append("&colorRamp=red");
-		
-		try {
-			URL dssUrl = new URL(restURL + "/rest/sldservice/" +ftName+"/styles/"+styleName);
-			LOGGER.info("### Putting FT into " + dssUrl.toExternalForm() + " (" + dssUrl + ")");
-			LOGGER.info("### Feature Type: "+ szString);
+         *
+         */
+        StringBuilder classDefinition = new StringBuilder("&").append("classMethod=quantile").append("&property=quantity").append("&classNum=10").append("&colorRamp=red");
 
-			HTTPUtils.put(dssUrl, szString.toString(), gsuser, gspass);
+        String sUrl = restURL + "/rest/sldservice/" + ftName + "/styles/" + styleName + classDefinition;
+        return HTTPUtils.put(sUrl, null, gsuser, gspass);
+    }
 
-		} catch (MalformedURLException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-	}
+    public boolean publishStyle(String styleName, String sldBody) {
+        styleName = styleName.replaceAll(":", "_");
+        String sUrl = restURL + "/rest/styles/" + styleName;
+        return HTTPUtils.putXml(sUrl, sldBody, gsuser, gspass);
+    }
 
-	public boolean publishStyle(String styleName, String sldBody) {
-		try {
-			URL dssUrl = new URL(restURL + "/rest/styles/" + styleName.replaceAll(":", "_"));
-			return HTTPUtils.put(dssUrl, sldBody, gsuser, gspass);
-		} catch (IOException ex) {
-			LOGGER.warn("Could not publish style '"+styleName+"'", ex);
-			return false;
-		}
-	}
+    public boolean createStyleForLayer(String styleName, String sldBody, String layername) {
+        final String rstyleName = styleName.replaceAll(":", "_");
+        String sUrl = restURL + "/rest/styles/" + rstyleName;
+        if (HTTPUtils.putXml(sUrl, sldBody, gsuser, gspass)) {
+            LOGGER.info("Created style '" + rstyleName + "' for layer '" + layername + "'");
+            //final String featureTypeName = styleName.substring(0, styleName.lastIndexOf("_"));
+            sUrl = restURL + "/rest/sldservice/updateLayer/" + layername;
+            String content = "<LayerConfig><Style>" + rstyleName + "</Style></LayerConfig>";
+            if (HTTPUtils.putXml(sUrl, content, gsuser, gspass)) {
+                LOGGER.info("Added new style '" + rstyleName + "' to layer '" + layername + "'");
+                return true;
+            } else {
+                LOGGER.warn("Could not add style '" + rstyleName + "' to layer '" + layername + "'");
+                return false;
+            }
+        } else {
+            LOGGER.warn("Could not create style '" + rstyleName + "' for layer '" + layername + "'");
+            return false;
+        }
+    }
 
-	public void createStyleForLayer(String styleName, String sldBody, String layername) {
-		try {
-			final String gsURL = /* geoserver.getBaseUrl() */ restURL.substring(0, restURL.lastIndexOf("/"));
-			String rstyleName = styleName.replaceAll(":", "_");
-			URL dssUrl = new URL(gsURL + "/rest/styles/" + rstyleName);
-			if ( HTTPUtils.put(dssUrl, sldBody, gsuser, gspass)) {
-				LOGGER.info("Created style '"+rstyleName+"' for layer '"+layername+"'");
-				//final String featureTypeName = styleName.substring(0, styleName.lastIndexOf("_"));
-				dssUrl = new URL(gsURL + "/rest/sldservice/updateLayer/" + layername);
-				if( HTTPUtils.put(dssUrl, "<LayerConfig><Style>" + rstyleName + "</Style></LayerConfig>",
-						gsuser, gspass)) {
-					LOGGER.info("Added new style '"+rstyleName+"' to layer '"+layername+"'");
-				} else
-					LOGGER.warn("Could not add style '"+rstyleName+"' to layer '"+layername+"'");
-			} else
-				LOGGER.warn("Could not create style '"+rstyleName+"' for layer '"+layername+"'");
-		} catch (MalformedURLException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-	}
+    public boolean setDefaultStyle(String layerName, String styleName) {
+        String sUrl = restURL + "/rest/sldservice/updateLayer/" + layerName;
+        String content = "<LayerConfig><DefaultStyle>" + styleName + "</DefaultStyle></LayerConfig>";
 
-	public boolean setDefaultStyle(String layerName, String styleName) {
-		try {
-			URL dssUrl = new URL(restURL + "/rest/sldservice/updateLayer/" + layerName);
-
-			if(HTTPUtils.put(dssUrl, "<LayerConfig><DefaultStyle>" + styleName + "</DefaultStyle></LayerConfig>",
-							gsuser, gspass)) {
-				return true;
-			} else {
-				LOGGER.warn("Could not set style " + styleName + " for layer "+ layerName);
-				return false;
-			}
-		} catch (MalformedURLException e) {
-			LOGGER.warn("Could not set style " + styleName + " for layer "+ layerName, e);
-			return false;
-		} catch (IOException e) {
-			LOGGER.warn("Could not set style " + styleName + " for layer "+ layerName, e);
-			return false;
-		}
-	}
+        if (HTTPUtils.putXml(sUrl, content, gsuser, gspass)) {
+            return true;
+        } else {
+            LOGGER.warn("Could not set style " + styleName + " for layer " + layerName);
+            return false;
+        }
+    }
 
 
- 	public boolean publishShp(String storename, String layername, File zipFile) throws FileNotFoundException {
-		try {
-			URL url = new URL("/rest/folders/" + storename + "/layers/" + layername + "/file.shp?" + "namespace=fenix" + "&SRS=4326&SRSHandling=Force"); // hack
-			boolean sent = HTTPUtils.put(url, new FileInputStream(zipFile), gsuser, gspass);
-			return sent;
-		} catch (MalformedURLException ex) {
-			LOGGER.error(ex);
-			return false;
-		}
- 	}
+    public boolean publishShp(String workspace, String storename, String layername, File zipFile) throws FileNotFoundException {
+        return publishShp(workspace, storename, layername, zipFile, "EPSG:4326");
+    }
 
- 	public boolean publishExternalGeoTIFF(String storeName, String layerName, File geotiff) throws FileNotFoundException {
-		try {
-			URL url = new URL(restURL + "/rest/folders/" + storeName + "/layers/" + layerName + "/external.geotiff");
-			InputStream is = new FileInputStream(geotiff);
-			boolean sent = HTTPUtils.put(url, is, gsuser, gspass);
-			return sent;
-		} catch (MalformedURLException ex) {
-			LOGGER.error(ex);
-			return false;
-		}
-	}
+    /**
+     * <BR>
+     * <TT>curl -u admin:geoserver -XPUT -H 'Content-type: application/zip' \ <BR>
+     *      &nbsp;&nbsp;&nbsp;--data-binary @$ZIPFILE \<BR>
+     *      &nbsp;&nbsp;&nbsp;http://$GSIP:$GSPORT/$SERVLET/rest/workspaces/$WORKSPACE/datastores/$BARE/file.shp</TT>
+     * <BR><BR>
+     * <TT>
+     * curl -u admin:geoserver -XPOST -H 'Content-type: text/xml'  \ <BR>
+     *      &nbsp;&nbsp;&nbsp;-d "<featureType><name>$BARE</name><nativeCRS>EPSG:4326</nativeCRS><enabled>true</enabled></featureType>"  \ <BR>
+     *      &nbsp;&nbsp;&nbsp;http://$GSIP:$GSPORT/$SERVLET/rest/workspaces/$WORKSPACE/datastores/$BARE/featuretypes/$BARE
+     * </TT>
+     *
+     */
+    public boolean publishShp(String workspace, String storename, String layername, File zipFile, String nativeCrs) throws FileNotFoundException {
+        // build full URL
+        StringBuilder sbUrl = new StringBuilder(restURL.toString())
+                .append("/rest/workspaces/").append(workspace)
+                .append("/datastores/").append(storename)
+                .append("/file.shp?");
+//        if (workspace != null) {
+//            sbUrl.append("namespace=").append(workspace);
+//        }
+//        sbUrl.append("&SRS=4326&SRSHandling=Force"); // hack
 
-//	/** TODO */
-// 	public boolean unpublishExternalGeoTIFF(String storeName, String layerName, File geotiff) throws FileNotFoundException {
-//		try {
-//			URL url = new URL(restURL + "/rest/folders/" + storeName + "/layers/" + layerName);
-//			boolean sent = HTTPUtils.put(url, geotiff.toURL().toExternalForm(), gsuser, gspass);
-//			return sent;
-//		} catch (MalformedURLException ex) {
-//			LOGGER.error(ex);
-//			return false;
-//		}
-//	}
+        boolean shpSent = HTTPUtils.put(sbUrl.toString(), zipFile, "application/zip", gsuser, gspass);
 
- 	public boolean unpublishLayer(String storename, String layername) {
-		try {
-			URL url = new URL("/rest/folders/" + storename + "/layers/" + layername ); 
-			return HTTPUtils.delete(url.toExternalForm(), gsuser, gspass);
-		} catch (MalformedURLException ex) {
-			LOGGER.error(ex);
-			return false;
-		}
- 	}
+        if(shpSent) {
+//            StringBuilder postMsg = new StringBuilder("<featureType>")
+//                    .append("<name>").append(layername).append("</name>")
+//                    .append("<nativeCRS>").append(nativeCrs).append("</nativeCRS>")
+//                    .append("<enabled>true</enabled></featureType>");
+//
+//            // http://$GSIP:$GSPORT/$SERVLET/rest/workspaces/$WORKSPACE/datastores/$BARE/featuretypes/$BARE
+//            StringBuilder postUrl = new StringBuilder(restURL.toString())
+//                    .append("/rest/workspaces/").append(workspace)
+//                    .append("/datastores/").append(storename)
+//                    .append("/featuretypes/").append(layername);
+//
+//            boolean shpConfigured = HTTPUtils.postXml(postUrl.toString(), postMsg.toString(), this.gsuser, this.gspass);
+//
+//            if ( ! shpConfigured) {
+//                LOGGER.warn("Error in configuring " + workspace + ":" + storename + "/" + layername + " -- Zipfile was uploaded successfully: " + zipFile);
+//            }
+//
+//            return shpConfigured;
 
+        } else {
+            LOGGER.warn("Error in sending zipfile " + workspace + ":" + storename + "/" + layername + " " + zipFile);
+            return false;
+        }
+
+        return shpSent;
+    }
+    /**
+     * <TT>curl -u admin:geoserver -XPUT -H 'Content-type: text' -d "file:$FULLPATH" http://$GSIP:$GSPORT/$SERVLET/rest/workspaces/$WORKSPACE/coveragestores/$BARENAME/external.geotiff</TT>
+     */
+
+    public boolean publishGeoTIFF(String workspace, String storeName, File geotiff) throws FileNotFoundException {
+        String sUrl = restURL + "/rest/workspaces/" + workspace + "/coveragestores/" + storeName + "/external.geotiff";
+//			URL url = new URL(restURL + "/rest/folders/" + storeName + "/layers/" + layerName + "/external.geotiff");
+//			InputStream is = new FileInputStream(geotiff);
+        boolean sent = HTTPUtils.put(sUrl, geotiff, "text", gsuser, gspass);
+        return sent;
+    }
+
+    public boolean publishExternalGeoTIFF(String workspace, String storeName, File geotiff) throws FileNotFoundException {
+        String sUrl = restURL + "/rest/workspaces/" + workspace + "/coveragestores/" + storeName + "/external.geotiff";
+//			URL url = new URL(restURL + "/rest/folders/" + storeName + "/layers/" + layerName + "/external.geotiff");
+//			InputStream is = new FileInputStream(geotiff);
+        boolean sent = HTTPUtils.put(sUrl, geotiff.toURI().toString(), "text/plain", gsuser, gspass);
+        return sent;
+    }
+
+    /**
+
+     * <P> Sample cUrl usage:<BR>
+     * <TT>curl -u admin:geoserver -XPUT -H 'Content-type: text' -d "file:$ABSPORTDIR"
+     *          http://$GSIP:$GSPORT/$SERVLET/rest/workspaces/$WORKSPACE/coveragestores/$BAREDIR/external.imagemosaic </TT>
+     *
+     * @param workspace
+     * @param storeName
+     * @param mosaicDir
+     * @return
+     * @throws FileNotFoundException
+     */
+    public boolean publishExternalMosaic(String workspace, String storeName, File mosaicDir) throws FileNotFoundException {
+        if(! mosaicDir.isDirectory())
+            throw new IllegalArgumentException("Not a directory '"+mosaicDir+"'");
+        String sUrl = restURL + "/rest/workspaces/" + workspace + "/coveragestores/" + storeName + "/external.imagemosaic";
+        boolean sent = HTTPUtils.put(sUrl, mosaicDir.toURI().toString(), "text/plain", gsuser, gspass);
+        return sent;
+    }
+
+    /**
+     * Remove the Coverage configuration from GeoServer.
+     * <BR>
+     * First, the associated layer is removed, then the Coverage configuration itself.
+     * <P>
+     * <B>CHECKME</B> Maybe the coveragestore has to be removed as well.
+     *
+     * <P> REST URL:
+     * <TT>http://localhost:8080/geoserver/rest/workspaces/it.geosolutions/coveragestores/gbRESTtestStore/coverages/resttestdem.xml</TT>
+     * @return
+     */
+    public boolean unpublishCoverage(String workspace, String storename, String layername) {
+        try {
+            // delete related layer
+            URL deleteLayerUrl = new URL(restURL + "/rest/layers/" + layername);
+            if(LOGGER.isDebugEnabled()) LOGGER.debug("Going to delete " + "/rest/layers/" + layername);
+            boolean layerDeleted = HTTPUtils.delete(deleteLayerUrl.toExternalForm(), gsuser, gspass);
+            if( ! layerDeleted) {
+                LOGGER.warn("Could not delete layer '"+layername+"'");
+                return false;
+            }
+            // delete the coverage
+            URL deleteCovUrl = new URL(restURL + "/rest/workspaces/" + workspace + "/coveragestores/"+ storename + "/coverages/" + layername);
+            if(LOGGER.isDebugEnabled()) LOGGER.debug("Going to delete " + "/rest/workspaces/" + workspace + "/coveragestores/"+ storename + "/coverages/" + layername);
+            boolean covDeleted =  HTTPUtils.delete(deleteCovUrl.toExternalForm(), gsuser, gspass);
+            if( ! covDeleted) {
+                LOGGER.warn("Could not delete coverage "+workspace+":"+storename+"/"+layername+", but layer was deleted.");
+            }
+            return covDeleted;
+
+            // the covstore is still there: should we delete it?
+
+        } catch (MalformedURLException ex) {
+            LOGGER.error(ex);
+            return false;
+        }
+    }
+
+
+    /**
+     * Removes the featuretype and the associated layer.
+     * <BR>You may also want to {@link removeDatastore(String, String) remove the datastore}
+     * @param workspace
+     * @param storename
+     * @param layername
+     * @return
+     */
+    public boolean unpublishFeatureType(String workspace, String storename, String layername) {
+        try {
+            // delete related layer
+            URL deleteLayerUrl = new URL(restURL + "/rest/layers/" + layername);
+            boolean layerDeleted = HTTPUtils.delete(deleteLayerUrl.toExternalForm(), gsuser, gspass);
+            if( ! layerDeleted) {
+                LOGGER.warn("Could not delete layer '"+layername+"'");
+                return false;
+            }
+            // delete the coverage
+            URL deleteFtUrl = new URL(restURL + "/rest/workspaces/" + workspace + "/datastores/"+ storename + "/featuretypes/" + layername);
+            boolean ftDeleted =  HTTPUtils.delete(deleteFtUrl.toExternalForm(), gsuser, gspass);
+            if( ! ftDeleted) {
+                LOGGER.warn("Could not delete featuretype "+workspace+":"+storename+"/"+layername+", but layer was deleted.");
+            }
+            return ftDeleted;
+
+            // the store is still there: should we delete it?
+
+        } catch (MalformedURLException ex) {
+            LOGGER.error(ex);
+            return false;
+        }
+    }
+
+    public boolean removeDatastore(String workspace, String storename) {
+        try {
+            URL deleteStore = new URL(restURL + "/rest/workspaces/" + workspace + "/datastores/"+ storename);
+            boolean deleted =  HTTPUtils.delete(deleteStore.toExternalForm(), gsuser, gspass);
+            if( ! deleted) {
+                LOGGER.warn("Could not delete datastore "+workspace+":"+storename);
+            }
+            return deleted;
+        } catch (MalformedURLException ex) {
+            LOGGER.error(ex);
+            return false;
+        }
+    }
 }

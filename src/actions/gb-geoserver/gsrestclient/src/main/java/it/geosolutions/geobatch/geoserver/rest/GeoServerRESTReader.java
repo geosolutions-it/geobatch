@@ -27,7 +27,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.log4j.Priority;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -44,22 +46,33 @@ import org.jdom.input.SAXBuilder;
  * @author ETj <etj at geo-solutions.it>
  */
 public class GeoServerRESTReader {
-	private final static Logger LOGGER = Logger.getLogger(GeoServerRESTReader.class);
+	private final static Logger LOGGER = Logger.getLogger(GeoServerRESTReader.class.getName());
 
 	private final String baseurl;
+    private  String username;
+    private  String password;
 
 	public GeoServerRESTReader(URL restUrl) {
 		this.baseurl = restUrl.toExternalForm();
 	}
 
-	public GeoServerRESTReader(String restUrl) throws MalformedURLException{
+	public GeoServerRESTReader(String restUrl)
+            throws MalformedURLException{
 		new URL (restUrl); // check URL correctness
 		this.baseurl = restUrl;
 	}
 
+    public GeoServerRESTReader(URL restUrl, String username, String password) {
+        this(restUrl);
+        this.username = username;
+        this.password = password;
+    }
+
+
+
 	private Element load(String url) {
 		try {
-			String response = HTTPUtils.get(baseurl + url);
+			String response = HTTPUtils.get(baseurl + url, username, password);
 			if (response == null) {
 				return null;
 			}
@@ -67,19 +80,19 @@ public class GeoServerRESTReader {
 			Document doc = builder.build(new StringReader(response));
 			return doc.getRootElement();
 		} catch (JDOMException ex) {
-			LOGGER.warn("Ex parsing HTTP REST response", ex);
+			LOGGER.log(Level.WARNING, "Ex parsing HTTP REST response", ex);
 		} catch (MalformedURLException ex) {
-			LOGGER.warn("Bad URL", ex);
+			LOGGER.log(Level.WARNING, "Bad URL", ex);
 		} catch (IOException ex) {
-			LOGGER.warn("Ex loading HTTP REST response", ex);
+			LOGGER.log(Level.WARNING, "Ex loading HTTP REST response", ex);
 		}
 
 		return null;
 	}
 
 
-	public static boolean existGeoserver(String restUrl) {
-		return HTTPUtils.httpPing(restUrl + "/rest/");
+	public boolean existGeoserver() {
+		return HTTPUtils.httpPing(baseurl + "/rest/", username, password);
 	}
 
 	public static boolean existsStyle(String baseURL, String sldName) {
@@ -89,7 +102,8 @@ public class GeoServerRESTReader {
 	
 	public Element getDatastores(String workspace) {
 		String url = "/rest/workspaces/" + workspace + "/datastores.xml";
-		LOGGER.debug("### Retrieving DS list from " + url);
+        if(LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("### Retrieving DS list from " + url);
 		return load(url);
 	}
 
@@ -106,13 +120,15 @@ public class GeoServerRESTReader {
 
 	public Element getDatastore(String workspace, String dsName) {
 		String url = "/rest/workspaces/" + workspace + "/datastores"+dsName+".xml";
-		LOGGER.debug("### Retrieving DS from " + url);
+		if(LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("### Retrieving DS from " + url);
 		return load(url);
 	}
 
 	public Element getLayers() {
 		String url = "/rest/layers.xml";
-		LOGGER.debug("### Retrieving layers from " + url);
+		if(LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("### Retrieving layers from " + url);
 		return load(url);
 	}
 
@@ -129,13 +145,15 @@ public class GeoServerRESTReader {
 
 	public Element getLayer(String name) {
 		String url = "/rest/layers/"+name+".xml";
-		LOGGER.debug("### Retrieving layer from " + url);
+		if(LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("### Retrieving layer from " + url);
 		return load(url);
 	}
 
 	public Element getNamespaces() {
 		String url = "/rest/namespaces.xml";
-		LOGGER.debug("### Retrieving namespaces from " + url);
+		if(LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("### Retrieving namespaces from " + url);
 		return load(url);
 	}
 
@@ -152,7 +170,8 @@ public class GeoServerRESTReader {
 
 	public Element getWorkspaces() {
 		String url = "/rest/workspaces.xml";
-		LOGGER.debug("### Retrieving workspaces from " + url);
+		if(LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("### Retrieving workspaces from " + url);
 		return load(url);
 	}
 

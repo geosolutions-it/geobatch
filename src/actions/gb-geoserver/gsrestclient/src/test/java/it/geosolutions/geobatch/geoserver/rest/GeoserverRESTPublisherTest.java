@@ -21,16 +21,25 @@
  */
 package it.geosolutions.geobatch.geoserver.rest;
 
+import it.geosolutions.geobatch.geoserver.rest.parser.GSRestLayerParser;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import junit.framework.TestCase;
+import org.jdom.Element;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 /**
  *
  * @author etj
  */
 public class GeoserverRESTPublisherTest extends TestCase {
+    private final static Logger LOGGER = Logger.getLogger(GeoserverRESTPublisherTest.class.getName());
 
 	public static final String RESTURL  = "http://localhost:8080/geoserver";
 	public static final String RESTUSER = "admin";
@@ -42,6 +51,8 @@ public class GeoserverRESTPublisherTest extends TestCase {
 	public static final URL URL;
 	public static final GeoServerRESTReader reader;
 
+    public static boolean enabled = true;
+    
 	static {
 		URL lurl = null;
 		try {
@@ -50,16 +61,29 @@ public class GeoserverRESTPublisherTest extends TestCase {
 		}
 
 		URL = lurl;
-		reader = new GeoServerRESTReader(lurl);
+		reader = new GeoServerRESTReader(lurl, RESTUSER, RESTPW);
 	}
 
     public GeoserverRESTPublisherTest(String testName) {
         super(testName);
+
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+
+        if(enabled()) {
+            if( ! reader.existGeoserver()) {
+                System.out.println(getClass().getSimpleName() + ": TESTS WILL BE SKIPPED SINCE NO GEOSERVER WAS FOUND AT " + RESTURL);
+                enabled = false;
+            }
+        }
+
+        if(enabled)
+            System.out.println("-------------------> RUNNING TEST " + this.getName());
+        else
+            System.out.println("Skipping test " + this.getClass().getSimpleName() + "::" + this.getName());
     }
 
     @Override
@@ -67,27 +91,108 @@ public class GeoserverRESTPublisherTest extends TestCase {
         super.tearDown();
     }
 
+    protected boolean enabled() {
+        if(!enabled) {
+//            System.out.println("Skipping test in " + getClass().getSimpleName());
+        }
+        return enabled;
+    }
 
-	public void testInsertDelete() throws FileNotFoundException {
-		String layerName = "";
-/*
+	public void testPublishDeleteExternalGeotiff() throws FileNotFoundException, IOException {
+        if(!enabled()) return;
+
+		String wsName = "it.geosolutions";
+		String storeName = "testRESTStoreGeotiff";
+		String layerName = "resttestdem";
+
+        File geotiff = new ClassPathResource("testdata/resttestdem.tif").getFile();
+
 		// dry run delete to work in a known state
-		if(reader.getLayer(layerName) != null) {
-			publisher.deleteLayer(layerName);
+        Element testLayer = reader.getLayer(layerName);
+		if( testLayer != null) {
+            LOGGER.info("Clearing stale test layer " + layerName);
+			boolean ok = publisher.unpublishCoverage(wsName, storeName, layerName);
+            if(! ok) {
+                fail("Could not unpublish layer " + layerName);
+            }
 		}
 
 		// known state?
 		assertFalse("Cleanup failed", existsLayer(layerName));
 
 		// test insert
-		publisher.publishExternalGeoTIFF(layerName, layerName, null);
+		boolean published = publisher.publishExternalGeoTIFF(wsName, storeName, geotiff);
+        assertTrue("publish() failed", published);
 		assertTrue(existsLayer(layerName));
 
 		//test delete
-		publisher.deleteLayer(layerName);
+		boolean ok = publisher.unpublishCoverage(wsName, storeName, layerName);
+        assertTrue("Unpublish() failed", ok);
 		assertFalse(existsLayer(layerName));
-*/
+
 	}
+
+	public void testPublishDeleteShapeZip() throws FileNotFoundException, IOException {
+        if(!enabled()) return;
+
+		String ns = "it.geosolutions";
+		String storeName = "resttestshp";
+		String layerName = "cities";
+
+        File zipFile = new ClassPathResource("testdata/resttestshp.zip").getFile();
+
+		// dry run delete to work in a known state
+        Element testLayer = reader.getLayer(layerName);
+		if( testLayer != null) {
+            LOGGER.info("Clearing stale test layer " + layerName);
+			boolean ok = publisher.unpublishFeatureType(ns, storeName, layerName);
+            if(! ok) {
+                fail("Could not unpublish layer " + layerName);
+            }
+		}
+        // the test ds may exist
+		if(publisher.removeDatastore(ns, storeName)) {
+            LOGGER.info("Cleared stale datastore " + storeName);
+        }
+
+		// known state?
+		assertFalse("Cleanup failed", existsLayer(layerName));
+
+		// test insert
+		boolean published = publisher.publishShp(ns, storeName, layerName, zipFile);
+        assertTrue("publish() failed", published);
+		assertTrue(existsLayer(layerName));
+
+		//test delete
+		boolean ok = publisher.unpublishFeatureType(ns, storeName, layerName);
+        assertTrue("Unpublish() failed", ok);
+		assertFalse(existsLayer(layerName));
+
+        // remove also datastore
+		boolean dsRemoved = publisher.removeDatastore(ns, storeName);
+        assertTrue("removeDatastore() failed", dsRemoved);
+
+	}
+
+	public void testDeleteUnexistingCoverage() throws FileNotFoundException, IOException {
+        if(!enabled()) return;
+
+		String wsName = "this_ws_does_not_exist";
+		String storeName = "this_store_does_not_exist";
+		String layerName = "this_layer_does_not_exist";
+
+		boolean ok = publisher.unpublishCoverage(wsName, storeName, layerName);
+		assertFalse("unpublished not existing layer", ok);
+	}
+
+//	public void testDeleteUnexistingFT() throws FileNotFoundException, IOException {
+//		String wsName = "this_ws_does_not_exist";
+//		String storeName = "this_store_does_not_exist";
+//		String layerName = "this_layer_does_not_exist";
+//
+//		boolean ok = publisher.unpublishFT(wsName, storeName, layerName);
+//		assertFalse("unpublished not existing layer", ok);
+//	}
 
 	private boolean existsLayer(String layername) {
 		return reader.getLayer(layername) != null;
