@@ -21,20 +21,24 @@
  */
 package it.geosolutions.geobatch.geoserver.rest;
 
-import it.geosolutions.geobatch.geoserver.rest.parser.GSRestLayerParser;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.TestCase;
+import org.apache.commons.io.IOUtils;
 import org.jdom.Element;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 /**
+ * Testcase for publishing layers on geoserver.
+ * We need a running GeoServer to properly run the tests. 
+ * Login credentials are hardcoded at the moment (localhost:8080 admin/geoserver).
+ * If such geoserver instance cannot be contacted, tests will be skipped.
+ *
  *
  * @author etj
  */
@@ -100,6 +104,7 @@ public class GeoserverRESTPublisherTest extends TestCase {
 
 	public void testPublishDeleteExternalGeotiff() throws FileNotFoundException, IOException {
         if(!enabled()) return;
+//        Assume.assumeTrue(enabled);
 
 		String wsName = "it.geosolutions";
 		String storeName = "testRESTStoreGeotiff";
@@ -134,6 +139,7 @@ public class GeoserverRESTPublisherTest extends TestCase {
 
 	public void testPublishDeleteShapeZip() throws FileNotFoundException, IOException {
         if(!enabled()) return;
+//        Assume.assumeTrue(enabled);
 
 		String ns = "it.geosolutions";
 		String storeName = "resttestshp";
@@ -174,8 +180,72 @@ public class GeoserverRESTPublisherTest extends TestCase {
 
 	}
 
+
+	public void testPublishDeleteStyleFile() throws FileNotFoundException, IOException {
+        if(!enabled()) return;
+//        Assume.assumeTrue(enabled);
+        final String styleName = "restteststyle";
+
+        File sldFile = new ClassPathResource("testdata/restteststyle.sld").getFile();
+
+		// dry run delete to work in a known state
+		if( reader.existsStyle(styleName)) {
+            LOGGER.info("Clearing stale test style " + styleName);
+			boolean ok = publisher.removeStyle(styleName);
+            if(! ok) {
+                fail("Could not unpublish style " + styleName);
+            }
+		}
+        
+		// known state?
+		assertFalse("Cleanup failed", reader.existsStyle(styleName));
+
+		// test insert
+		boolean published = publisher.publishStyle(sldFile); // Will take the name from sld contents
+        assertTrue("publish() failed", published);
+		assertTrue(reader.existsStyle(styleName));
+
+		//test delete
+		boolean ok = publisher.removeStyle(styleName);
+        assertTrue("Unpublish() failed", ok);
+		assertFalse(reader.existsStyle(styleName));
+	}
+
+	public void testPublishDeleteStyleString() throws FileNotFoundException, IOException {
+        if(!enabled()) return;
+//        Assume.assumeTrue(enabled);
+        final String styleName = "restteststyle";
+
+        File sldFile = new ClassPathResource("testdata/restteststyle.sld").getFile();
+
+		// dry run delete to work in a known state
+		if( reader.existsStyle(styleName)) {
+            LOGGER.info("Clearing stale test style " + styleName);
+			boolean ok = publisher.removeStyle(styleName);
+            if(! ok) {
+                fail("Could not unpublish style " + styleName);
+            }
+		}
+
+		// known state?
+		assertFalse("Cleanup failed", reader.existsStyle(styleName));
+
+		// test insert
+        String sldContent = IOUtils.toString(new FileInputStream(sldFile));
+
+		boolean published = publisher.publishStyle(sldContent);  // Will take the name from sld contents
+        assertTrue("publish() failed", published);
+		assertTrue(reader.existsStyle(styleName));
+
+		//test delete
+		boolean ok = publisher.removeStyle(styleName);
+        assertTrue("Unpublish() failed", ok);
+		assertFalse(reader.existsStyle(styleName));
+	}
+
 	public void testDeleteUnexistingCoverage() throws FileNotFoundException, IOException {
         if(!enabled()) return;
+//        Assume.assumeTrue(enabled);
 
 		String wsName = "this_ws_does_not_exist";
 		String storeName = "this_store_does_not_exist";
@@ -183,6 +253,29 @@ public class GeoserverRESTPublisherTest extends TestCase {
 
 		boolean ok = publisher.unpublishCoverage(wsName, storeName, layerName);
 		assertFalse("unpublished not existing layer", ok);
+	}
+
+	public void testDeleteUnexistingFeatureType() throws FileNotFoundException, IOException {
+        if(!enabled()) return;
+//        Assume.assumeTrue(enabled);
+
+		String wsName = "this_ws_does_not_exist";
+		String storeName = "this_store_does_not_exist";
+		String layerName = "this_layer_does_not_exist";
+
+		boolean ok = publisher.unpublishFeatureType(wsName, storeName, layerName);
+		assertFalse("unpublished not existing layer", ok);
+	}
+
+	public void testDeleteUnexistingDatastore() throws FileNotFoundException, IOException {
+        if(!enabled()) return;
+//        Assume.assumeTrue(enabled);
+
+		String wsName = "this_ws_does_not_exist";
+		String storeName = "this_store_does_not_exist";
+
+		boolean ok = publisher.removeDatastore(wsName, storeName);
+		assertFalse("removed not existing datastore", ok);
 	}
 
 //	public void testDeleteUnexistingFT() throws FileNotFoundException, IOException {

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.log4j.Priority;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -68,8 +67,6 @@ public class GeoServerRESTReader {
         this.password = password;
     }
 
-
-
 	private Element load(String url) {
 		try {
 			String response = HTTPUtils.get(baseurl + url, username, password);
@@ -95,9 +92,9 @@ public class GeoServerRESTReader {
 		return HTTPUtils.httpPing(baseurl + "/rest/", username, password);
 	}
 
-	public static boolean existsStyle(String baseURL, String sldName) {
-		String url = baseURL + "/rest/styles/" + sldName + ".xml";
-		return HTTPUtils.httpPing(url);
+	public boolean existsStyle(String styleName) {
+		String url = baseurl + "/rest/styles/" + styleName + ".xml";
+		return HTTPUtils.exists(url, username, password);
 	}
 	
 	public Element getDatastores(String workspace) {

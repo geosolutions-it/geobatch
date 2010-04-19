@@ -24,15 +24,11 @@ package it.geosolutions.geobatch.geoserver.rest;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.Authenticator;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.PasswordAuthentication;
 import java.net.URL;
-import java.util.logging.Level;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -51,8 +47,6 @@ import org.apache.log4j.Logger;
 
 /**
  * Low level HTTP utilities.
- *
- * <P><B>TODO</B>: use apache.commons classes in all methods.
  */
 public class HTTPUtils {
     private static final Logger LOGGER = Logger.getLogger(HTTPUtils.class);
@@ -116,6 +110,9 @@ public class HTTPUtils {
     }
 
 
+    public static boolean post(String url, File file, String contentType, String username, String pw) {
+        return post(url, new FileRequestEntity(file, contentType), username, pw);
+    }
 
     public static boolean post(String url, String content, String contentType, String username, String pw) {
         try {
@@ -151,12 +148,15 @@ public class HTTPUtils {
 				case HttpURLConnection.HTTP_CREATED:
 				case HttpURLConnection.HTTP_ACCEPTED:
 					String response = IOUtils.toString(httpMethod.getResponseBodyAsStream());
+//					LOGGER.info("================= POST " + url);
 					LOGGER.info("HTTP "+ httpMethod.getStatusText()+": " + response);
 					return true;
 				default:
 					LOGGER.warn("Bad response: code["+status+"]" +
 							" msg["+httpMethod.getStatusText()+"]" +
-							" url["+url+"]"
+							" url["+url+"]" +
+                            " method["+httpMethod.getClass().getSimpleName()+"]: " +
+                            IOUtils.toString(httpMethod.getResponseBodyAsStream())
 							);
 					return false;
 			}
@@ -187,10 +187,12 @@ public class HTTPUtils {
                 InputStream is = httpMethod.getResponseBodyAsStream();
 				response = IOUtils.toString(is);
 				if(response.trim().equals("")) { // sometimes gs rest fails
-					LOGGER.info("ResponseBody is empty (this may be not an error since we just performed a DELETE call)");
+                    if(LOGGER.isDebugEnabled())
+                        LOGGER.debug("ResponseBody is empty (this may be not an error since we just performed a DELETE call)");
 					return true;
 				}
-				LOGGER.debug("("+status+") " + httpMethod.getStatusText() + " -- " + url );
+                if(LOGGER.isDebugEnabled())
+                    LOGGER.debug("("+status+") " + httpMethod.getStatusText() + " -- " + url );
 				return true;
 			} else {
 				LOGGER.info("("+status+") " + httpMethod.getStatusText() + " -- " + url );
@@ -237,6 +239,43 @@ public class HTTPUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+            if(httpMethod != null)
+                httpMethod.releaseConnection();
+        }
+	}
+
+    /**
+     * Used to query for REST resources.
+     *
+     * @param url The URL of the REST resource to query about.
+     * @param username
+     * @param pw
+     * @return true on 200, false on 404.
+     * @throws RuntimeException on unhandled status or exceptions.
+     */
+	public static boolean exists(String url, String username, String pw) {
+
+        GetMethod httpMethod = null;
+
+		try {
+			HttpClient client = new HttpClient();
+            setAuth(client, url, username, pw);
+			httpMethod = new GetMethod(url);
+			client.getHttpConnectionManager().getParams().setConnectionTimeout(2000);
+			int status = client.executeMethod(httpMethod);
+            switch(status) {
+                case HttpStatus.SC_OK:
+                    return true;
+                case HttpStatus.SC_NOT_FOUND:
+                    return false;
+                default:
+                    throw new RuntimeException("Unhandled response status at '"+url+"': ("+status+") " + httpMethod.getStatusText());
+            }
+		} catch (ConnectException e) {
+            throw new RuntimeException(e);
+		} catch (IOException e) {
+            throw new RuntimeException(e);
 		} finally {
             if(httpMethod != null)
                 httpMethod.releaseConnection();
