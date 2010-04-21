@@ -237,9 +237,10 @@ public class GeoServerRESTPublisher {
     /**
      * <TT>curl -u admin:geoserver -XPUT -H 'Content-type: text' -d "file:$FULLPATH" http://$GSIP:$GSPORT/$SERVLET/rest/workspaces/$WORKSPACE/coveragestores/$BARENAME/external.geotiff</TT>
      * @return true if the operation completed successfully.
+     * @deprecated UNTESTED
      */
 
-    public boolean publishGeoTIFF_UNTESTED(String workspace, String storeName, File geotiff) throws FileNotFoundException {
+    public boolean publishGeoTIFF(String workspace, String storeName, File geotiff) throws FileNotFoundException {
         String sUrl = restURL + "/rest/workspaces/" + workspace + "/coveragestores/" + storeName + "/external.geotiff";
         boolean sent = HTTPUtils.put(sUrl, geotiff, "text", gsuser, gspass);
         return sent;
@@ -272,8 +273,9 @@ public class GeoServerRESTPublisher {
      * @param mosaicDir
      * @return true if the operation completed successfully.
      * @throws FileNotFoundException
+     * @deprecated UNTESTED
      */
-    public boolean publishExternalMosaic_UNTESTED(String workspace, String storeName, File mosaicDir) throws FileNotFoundException {
+    public boolean publishExternalMosaic(String workspace, String storeName, File mosaicDir) throws FileNotFoundException {
         if(! mosaicDir.isDirectory())
             throw new IllegalArgumentException("Not a directory '"+mosaicDir+"'");
         String sUrl = restURL + "/rest/workspaces/" + workspace + "/coveragestores/" + storeName + "/external.imagemosaic";
