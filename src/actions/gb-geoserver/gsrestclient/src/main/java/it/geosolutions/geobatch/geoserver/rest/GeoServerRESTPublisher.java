@@ -40,18 +40,14 @@ import org.apache.log4j.Logger;
 public class GeoServerRESTPublisher {
 
     private static final Logger LOGGER = Logger.getLogger(GeoServerRESTPublisher.class);
-	private String restURL;
-	private String gsuser;
-	private String gspass;
+	private final String restURL;
+	private final String gsuser;
+	private final String gspass;
 
-	public GeoServerRESTPublisher() {
-		
-	}
-	
 	public GeoServerRESTPublisher(String restURL, String username, String pw) {
-		this.setRestURL(restURL);
-		this.setGsuser(username);
-		this.setGspass(pw);
+		this.restURL = restURL;
+		this.gsuser = username;
+		this.gspass = pw;
 	}
 
 	/**
@@ -62,13 +58,6 @@ public class GeoServerRESTPublisher {
 	}
 
 	/**
-	 * @param restURL the restURL to set
-	 */
-	public void setRestURL(String restURL) {
-		this.restURL = restURL;
-	}
-
-	/**
 	 * @return the gsuser
 	 */
 	public String getGsuser() {
@@ -76,24 +65,10 @@ public class GeoServerRESTPublisher {
 	}
 
 	/**
-	 * @param gsuser the gsuser to set
-	 */
-	public void setGsuser(String gsuser) {
-		this.gsuser = gsuser;
-	}
-
-	/**
 	 * @return the gspass
 	 */
 	public String getGspass() {
 		return gspass;
-	}
-
-	/**
-	 * @param gspass the gspass to set
-	 */
-	public void setGspass(String gspass) {
-		this.gspass = gspass;
 	}
 
 	public boolean publishFT(String dsName, String ftName, String xmlFeatureType) {
@@ -220,10 +195,14 @@ public class GeoServerRESTPublisher {
 		}
 	}
 
-
  	public boolean publishShp(String storename, String layername, File zipFile) throws FileNotFoundException {
+ 		return this.publishShp(storename, layername, zipFile, null, null);
+ 	}
+ 	
+ 	public boolean publishShp(String storename, String layername, File zipFile, String namespace, String srs) throws FileNotFoundException {
 		try {
-			URL url = new URL("/rest/folders/" + storename + "/layers/" + layername + "/file.shp?" + "namespace=fenix" + "&SRS=4326&SRSHandling=Force"); // hack
+			URL url = new URL(getRestURL() + "/rest/folders/" + storename + "/layers/" + layername + "/file.shp?" + 
+					(namespace != null ? "namespace="+namespace : "") + (srs != null ? "&SRS="+srs+"&SRSHandling=Force" : "")); // hack
 			boolean sent = HTTPUtils.put(url, new FileInputStream(zipFile), getGsuser(), getGspass());
 			return sent;
 		} catch (MalformedURLException ex) {
