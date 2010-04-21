@@ -40,14 +40,18 @@ import org.apache.log4j.Logger;
 public class GeoServerRESTPublisher {
 
     private static final Logger LOGGER = Logger.getLogger(GeoServerRESTPublisher.class);
-	private final String restURL;
-	private final String gsuser;
-	private final String gspass;
+	private String restURL;
+	private String gsuser;
+	private String gspass;
 
+	public GeoServerRESTPublisher() {
+		
+	}
+	
 	public GeoServerRESTPublisher(String restURL, String username, String pw) {
-		this.restURL = restURL;
-		this.gsuser = username;
-		this.gspass = pw;
+		this.setRestURL(restURL);
+		this.setGsuser(username);
+		this.setGspass(pw);
 	}
 
 	/**
@@ -58,6 +62,13 @@ public class GeoServerRESTPublisher {
 	}
 
 	/**
+	 * @param restURL the restURL to set
+	 */
+	public void setRestURL(String restURL) {
+		this.restURL = restURL;
+	}
+
+	/**
 	 * @return the gsuser
 	 */
 	public String getGsuser() {
@@ -65,10 +76,24 @@ public class GeoServerRESTPublisher {
 	}
 
 	/**
+	 * @param gsuser the gsuser to set
+	 */
+	public void setGsuser(String gsuser) {
+		this.gsuser = gsuser;
+	}
+
+	/**
 	 * @return the gspass
 	 */
 	public String getGspass() {
 		return gspass;
+	}
+
+	/**
+	 * @param gspass the gspass to set
+	 */
+	public void setGspass(String gspass) {
+		this.gspass = gspass;
 	}
 
 	public boolean publishFT(String dsName, String ftName, String xmlFeatureType) {
