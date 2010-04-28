@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>sasDetectionFlow</id>
+	<name>sasDetectionFlow</name>
+	<description>Flow for the SAS Detection manager</description>
+
+	<workingDirectory>sasdetectionesb_work</workingDirectory>
+	<autorun>false</autorun>
+	
+	<EventConsumerConfiguration>
+		<id>id</id>
+		<name>test</name>
+		<description>description</description>
+
+		<listenerId>SASDetectionConsumerLogger0</listenerId>
+        <listenerId>Cumulator0</listenerId>
+
+		<workingDirectory>sasdetectionesb_work</workingDirectory>
+		<performBackup>true</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.xml</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+		
+        <DetectionManagerConfiguration>
+			<id>SASDETECTION</id>
+			<description>description</description>
+			<name>SAS Detections Manager</name>
+			<serviceID>DetectionManagerService</serviceID>
+
+			<listenerId>SASDetectionStatusActionLogger0</listenerId>
+			<listenerId>SASDetectionActionLogger0</listenerId>
+        
+			<workingDirectory>sasdetectionesb_work</workingDirectory>
+			<detectionsErrorLog>sasdetectionesb_work/config/errorlog.txt</detectionsErrorLog>
+			<detectionsOutputDir>D:\work\data\muscleshapes</detectionsOutputDir>
+			<detectionConverterPath>sasdetectionesb_work/config/shapegen.py</detectionConverterPath>
+			<detectionStyle>detection</detectionStyle>
+			<converterTimeout>1200000</converterTimeout> <!-- milliseconds -->
+			<crsDefinitionsDir>sasdetectionesb_work/config/prj</crsDefinitionsDir>
+			<loggingDir>sasdetectionesb_work/log</loggingDir>
+			<executablePath>c:\Python26\python.exe</executablePath>
+			<gdalData>C:\\Python26\\DLLs\\gdalwin32-1.6\\data</gdalData>
+			<path>C:\\Python26</path>
+			<xslPath>sasdetectionesb_work/config/task.xsl</xslPath>
+<!--			<geoserverURL>http://192.168.1.17:8086/geoserver</geoserverURL>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUploadMethod>DIRECT</geoserverUploadMethod>
+-->			<defaultNamespace>it.geosolutions</defaultNamespace>
+		</DetectionManagerConfiguration>
+
+        <SasEsbConfiguration>
+			<id>sasesb</id>
+			<serviceID>sasEsbService</serviceID>
+			<name>SAS ESB</name>
+			<description>Sends SOAP messages to ESB</description>
+
+            <id>SASDetectionESBLogger0</id>
+
+            <serverURL>http://localhost:8080/saservice/soap</serverURL>
+        </SasEsbConfiguration>
+
+	</EventConsumerConfiguration>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>sasdetectionflowworkingdir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+
+	<ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>SASDetectionStatusActionLogger0</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>SASDetectionActionLogger0</id>
+
+            <loggerName>SASDetectionActionLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>SASDetectionESBLogger0</id>
+
+            <loggerName>SASDetectionESBLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>SASDetectionConsumerLogger0</id>
+
+            <loggerName>SASDetectionConsumerLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>Cumulator0</id>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+    
+</FlowConfiguration>
