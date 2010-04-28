@@ -242,11 +242,11 @@
 
         <profile>
             <id>sas</id>
-            <!--            <activation>
+            <activation>
                 <property>
                     <name>all_actions</name>
                 </property>
-            </activation>-->
+            </activation>
             <modules>
                 <module>sas</module>
                 <module>gb-task-executor</module>
@@ -255,11 +255,11 @@
 
         <profile>
             <id>sasesb</id>
-            <!--            <activation>
+            <activation>
                 <property>
                     <name>all_actions</name>
                 </property>
-            </activation>-->
+            </activation>
             <modules>
                 <module>sas</module>
                 <module>sasesb</module>

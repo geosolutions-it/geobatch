@@ -165,10 +165,6 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-acl</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.security</groupId>-->
-<!--			<artifactId>spring-security-config</artifactId>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
@@ -177,14 +173,6 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.security</groupId>-->
-<!--			<artifactId>spring-security-cas-client</artifactId>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.security</groupId>-->
-<!--			<artifactId>spring-security-web</artifactId>-->
-<!--		</dependency>-->
     </dependencies>
 
 
@@ -427,7 +415,7 @@
             </build>
         </profile>
 
-        <!-- SAS ============================================================
+        <!-- SAS ============================================================-->
         <profile>
             <id>sas</id>
 
@@ -440,7 +428,11 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-action-sasmanager</artifactId>
+                    <artifactId>gb-action-sas</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>it.geosolutions</groupId>
+                    <artifactId>gb-action-sasesb</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -457,7 +449,17 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-action-sasmanager</artifactId>
+                                            <artifactId>gb-action-sas</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>flowdata</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-action-sasesb</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -474,7 +476,7 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile-->
+        </profile>
 
         <!-- GeoTIFF ========================================================-->
         <profile>

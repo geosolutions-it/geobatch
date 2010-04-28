@@ -80,7 +80,7 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
 
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public GBUser findByUserId(Long userId) throws DAOException {
-		return getHibernateTemplate().get(GBUser.class, userId);
+		return (GBUser) getHibernateTemplate().get(GBUser.class, userId);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS)

@@ -84,7 +84,7 @@
         <gt.version>2.7-SNAPSHOT</gt.version>
         <gb.version>0.9-SNAPSHOT</gb.version>
         <imageio-ext.version>1.0.5</imageio-ext.version>
-        <spring.version>3.0.1.RELEASE</spring.version>
+        <spring.version>2.5.6</spring.version>
         <spring.security.version>2.0.5.RELEASE</spring.security.version>
         <dao.type>xstream</dao.type> <!-- the default dao type -->
     </properties>

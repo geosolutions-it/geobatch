@@ -45,9 +45,6 @@
         </license>
     </licenses>
 
-    <properties>
-        <sas-version>0.1-SNAPSHOT</sas-version>
-    </properties>
     <!-- =========================================================== -->
     <!--     Dependency Management                                   -->
     <!-- =========================================================== -->
