@@ -30,7 +30,9 @@ import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
 import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
 import it.geosolutions.geobatch.ui.mvc.data.FtpUserDataBean;
 import it.geosolutions.geobatch.users.dao.UserFlowAccessDAO;
+import it.geosolutions.geobatch.users.model.GBUserRole;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -100,6 +102,13 @@ public class FTPUserFormController extends SimpleFormController {
 				backingObject.setAllowedFlowManagers(userFlowAccess.findFlows(Long.parseLong(userId)));
 			}
 		}
+		
+		List<GBUserRole> availableRoles = new ArrayList<GBUserRole>();
+		availableRoles.add(GBUserRole.ROLE_ADMIN);
+		availableRoles.add(GBUserRole.ROLE_POWERUSER);
+		availableRoles.add(GBUserRole.ROLE_USER);
+		backingObject.setAvailableRoles(availableRoles);
+
 		Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
 		backingObject.setAvailableFlowManagers(catalog.getFlowManagers(FileBasedFlowManager.class));
 
@@ -133,6 +142,7 @@ public class FTPUserFormController extends SimpleFormController {
 		
 		user.setName(givenData.getUserName());
 		user.setPassword(givenData.getPassword());
+		user.setRole(givenData.getRole());
 		user.setWritePermission(givenData.getWritePermission());
 		user.setMaxIdleTime(givenData.getIdleTime());
 		user.setMaxLoginNumber(givenData.getMaxLoginNumber());

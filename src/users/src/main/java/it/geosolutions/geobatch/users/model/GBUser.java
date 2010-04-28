@@ -73,7 +73,7 @@ public class GBUser implements Serializable {
 
     @Column(name = "USER_ROLE")
     @Enumerated(EnumType.STRING)
-    private GBUserRole role = GBUserRole.USER;
+    private GBUserRole role = GBUserRole.ROLE_USER;
 
     public GBUser() {
     }

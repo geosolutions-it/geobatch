@@ -39,17 +39,17 @@
 			<serviceID>TaskExecutorService</serviceID>
 			<errorFile>geotiff_work/config/errorlog.txt</errorFile>
 			<timeOut>1200000</timeOut>
-			<executable>C:\Programs\FWTools2.2.8\bin\gdal_translate.exe</executable>
+			<executable>C:\Programmi\FWTools2.2.8\bin\gdal_translate.exe</executable>
 			<defaultScript>geotiff_work/config/gdal_translate.xml</defaultScript>
 			<outputName>*.tiff</outputName>
 		    <variables>
 				 <entry>
 				    <string>GDAL_DATA</string>
-				    <string>C:\Programs\FWTools2.2.8\data</string>
+				    <string>C:\Programmi\FWTools2.2.8\data</string>
 				  </entry>
 				  <entry>
 				    <string>PATH</string>
-				    <string>C:\Programs\FWTools2.2.8\bin</string>
+				    <string>C:\Programmi\FWTools2.2.8\bin</string>
 				  </entry>
 			</variables>
 			<xsl>geotiff_work/config/gdal_translate.xsl</xsl>
@@ -67,17 +67,17 @@
 			<serviceID>TaskExecutorService</serviceID>
 			<errorFile>geotiff_work/config/errorlog.txt</errorFile>
 			<timeOut>1200000</timeOut>
-			<executable>C:\Programs\FWTools2.2.8\bin\gdaladdo.exe</executable>
+			<executable>C:\Programmi\FWTools2.2.8\bin\gdaladdo.exe</executable>
 			<defaultScript>geotiff_work/config/gdaladdo.xml</defaultScript>
 			<outputName>*.tif</outputName>
 		    <variables>
 				 <entry>
 				    <string>GDAL_DATA</string>
-				    <string>C:\Programs\FWTools2.2.8\data</string>
+				    <string>C:\Programmi\FWTools2.2.8\data</string>
 				  </entry>
 				  <entry>
 				    <string>PATH</string>
-				    <string>C:\Programs\FWTools2.2.8\bin</string>
+				    <string>C:\Programmi\FWTools2.2.8\bin</string>
 				  </entry>
 			</variables>
 			<xsl>geotiff_work/config/gdaladdo.xsl</xsl>

@@ -72,7 +72,7 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
             user.setName("admin");
             user.setPassword("admin");
             user.setEnabled(true);
-            user.setRole(GBUserRole.ADMIN);
+            user.setRole(GBUserRole.ROLE_ADMIN);
             save(user);
         }
 	}
@@ -92,7 +92,7 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
 	}
 
 	public boolean existsAdmin() throws DAOException {
-		List<GBUser> users = super.findByCriteria(Restrictions.eq("role", GBUserRole.ADMIN));
+		List<GBUser> users = super.findByCriteria(Restrictions.eq("role", GBUserRole.ROLE_ADMIN));
         return ! users.isEmpty();
 	}
 
@@ -101,10 +101,8 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
 		try {
 			getHibernateTemplate().execute(new HibernateCallback() {
 
-				public Object doInHibernate(Session session)
-						throws HibernateException, SQLException {
-					Query query = session
-							.createQuery("delete from User user where user.id = :id");
+				public Object doInHibernate(Session session) throws HibernateException, SQLException {
+					Query query = session.createQuery("delete from User user where user.id = :id");
 					query.setParameter("id", id);
 					query.executeUpdate();
 					return null;

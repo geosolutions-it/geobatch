@@ -240,7 +240,7 @@ public class GeoBatchUserManager implements UserManager {
 		try {
 			FtpUser user = ftpUserDAO.findByUserName(name);
             if(user != null) {
-                return user.getRole() == GBUserRole.ADMIN;
+                return user.getRole() == GBUserRole.ROLE_ADMIN;
             }
 		} catch(DAOException ex) {
 		}

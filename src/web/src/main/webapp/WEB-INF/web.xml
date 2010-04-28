@@ -68,9 +68,9 @@
       - Publishes events for session creation and destruction through the application
       - context. Optional unless concurrent session control is being used.
       -->
-    <listener>
+    <!-- listener>
       <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
-    </listener>
+    </listener -->
 
     <listener>
         <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>

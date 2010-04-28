@@ -118,6 +118,18 @@
 		    </td>
 		  </tr>
 		  <tr>
+		    <td>Role</td>
+		    <td>
+		    	<spring:bind path="ftpUserDataBean.role">
+					<select name="role" title="Select Role">
+						<c:forEach var="role" items="${ftpUserDataBean.availableRoles}">
+							<option value="${role}"><c:out value="${role}"/></option>
+						</c:forEach>
+					</select>
+	      		</spring:bind>
+		    </td>
+		  </tr>
+		  <tr>
 		    <td>Write Enabled</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.writePermission">

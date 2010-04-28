@@ -71,7 +71,10 @@
       <div class="page-header">
 
         <div class="header-panel"></div>
-		<h1>GeoBatch Access</h1>
+		<h1>
+			GeoBatch Access
+			<a href="j_spring_security_logout"><img src="img/logout.png" title="Logout" alt="Logout" width="40" height="40" style="vertical-align: middle"/></a>
+		</h1>
       </div>
       <div class="page-pane selfclear">
       	<table class="page">

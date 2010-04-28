@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.ui.mvc.data;
 
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+import it.geosolutions.geobatch.users.model.GBUserRole;
 
 import java.util.List;
 
@@ -41,6 +42,8 @@ public class FtpUserDataBean {
 	
 	private String repeatPassword;
 
+	private GBUserRole role;
+	
 	private boolean writePermission;
 
 	private String uploadRate;
@@ -52,6 +55,8 @@ public class FtpUserDataBean {
 	private int maxLoginNumber;
 	
 	private int idleTime;
+
+	private List<GBUserRole> availableRoles;
 	
 	private List<FileBasedFlowManager> availableFlowManagers;
 	
@@ -113,6 +118,20 @@ public class FtpUserDataBean {
 	 */
 	public String getRepeatPassword() {
 		return repeatPassword;
+	}
+
+	/**
+	 * @param role the role to set
+	 */
+	public void setRole(GBUserRole role) {
+		this.role = role;
+	}
+
+	/**
+	 * @return the role
+	 */
+	public GBUserRole getRole() {
+		return role;
 	}
 
 	/**
@@ -200,6 +219,20 @@ public class FtpUserDataBean {
 	 */
 	public int getIdleTime() {
 		return idleTime;
+	}
+
+	/**
+	 * @param availableRoles the availableRoles to set
+	 */
+	public void setAvailableRoles(List<GBUserRole> availableRoles) {
+		this.availableRoles = availableRoles;
+	}
+
+	/**
+	 * @return the availableRoles
+	 */
+	public List<GBUserRole> getAvailableRoles() {
+		return availableRoles;
 	}
 
 	/**

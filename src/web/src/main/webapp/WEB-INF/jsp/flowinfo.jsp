@@ -120,19 +120,19 @@
 								<c:choose>
 							        <c:when test="${ec.paused}">
 	  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
-	  										<c:if test="${role.authority == 'ADMIN' || role.authority == 'POWERUSER'}">
+	  										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
 							            		<a href='consumerResume.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_play.png' border='0' title='resume instance' alt='resume' width='16' height='16'/></a>
 											</c:if>
 										</c:forEach>									
 	  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
-	  										<c:if test="${role.authority == 'ADMIN'}">
+	  										<c:if test="${role.authority == 'ROLE_ADMIN'}">
 							    				<a href="consumerDispose.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/cancel.png' border='0' title='cancel instance' alt='cancel' width='16' height='16'/></a>
 											</c:if>
 										</c:forEach>
 							        </c:when>
 							        <c:otherwise>
 	  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
-	  										<c:if test="${role.authority == 'ADMIN' || role.authority == 'POWERUSER'}">
+	  										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
 							            		<a href='consumerPause.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_pause.png' border='0' title='pause instance' alt='pause' width='16' height='16'/></a>
 											</c:if>
 										</c:forEach>
