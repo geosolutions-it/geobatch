@@ -38,7 +38,7 @@ public class SASFileNameParser {
     private int rangeStart;
     private int rangeEnd;
 
-    private static Pattern PATTERN = Pattern.compile("(.*)_(.*)_(\\d\\d\\d\\d\\d\\d)_(\\n+)_(\\n+)_(p|s)_(\\n+)_(\\n+)_(\\n+)_(\\n+)");
+    private static Pattern PATTERN = Pattern.compile("(.*)_(.*)_(\\d{6})_(\\d+)_(\\d+)_(p|s)_(\\d+)_(\\d+)_(\\d+)_(\\d+)");
     private static DateFormat DATEFRM = new SimpleDateFormat("yyMMdd");
 
     public static SASFileNameParser parse(String fileName) {
