@@ -7,7 +7,9 @@
 	<!-- pick up all spring application contexts -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:/applicationContext.xml classpath*:/applicationContextSecurity.xml</param-value>
+		<param-value>
+			classpath*:/applicationContext.xml 
+			classpath*:/applicationContextSecurity-jdbc.xml</param-value>
 	</context-param>
 
 	<!--  spring context loader -->

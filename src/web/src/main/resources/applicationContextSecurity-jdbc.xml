@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  - Sample namespace-based configuration
+  -
+  -->
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
+
+    <http>
+    	<!-- Welcome and Error pages -->
+        <intercept-url pattern="/index.*" filters="none" />
+        <intercept-url pattern="/error/**" filters="none" />
+
+		<!-- FTP Server Management -->
+        <intercept-url pattern="/ftp.*" access="ROLE_ADMIN" />
+        <intercept-url pattern="/ftpConfig.*" access="ROLE_ADMIN" />
+        <intercept-url pattern="/ftpUsers.*" access="ROLE_ADMIN" />
+        <intercept-url pattern="/newFtpUser.*" access="ROLE_ADMIN" />
+		<intercept-url pattern="/deleteFtpUser.*" access="ROLE_ADMIN" />
+		<intercept-url pattern="/updateFtpUser.*" access="ROLE_ADMIN" />
+
+		<!-- Flow Management -->
+        <intercept-url pattern="/dispose.*" access="ROLE_ADMIN" />
+        <intercept-url pattern="/resume.*" access="ROLE_ADMIN,ROLE_POWERUSER" />
+        <intercept-url pattern="/pause.*" access="ROLE_ADMIN,ROLE_POWERUSER" />
+        
+        <!-- Consumers Management -->
+        <intercept-url pattern="/consumerDispose.*" access="ROLE_ADMIN" />
+        <intercept-url pattern="/consumerResume.*" access="ROLE_ADMIN,ROLE_POWERUSER" />
+        <intercept-url pattern="/consumerPause.*" access="ROLE_ADMIN,ROLE_POWERUSER" />
+        
+        <!-- Generic Actions -->
+    	<!-- intercept-url pattern="/*.do" access="IS_AUTHENTICATED_ANONYMOUSLY" / -->
+    	<intercept-url pattern="/*.do" access="ROLE_ADMIN,ROLE_POWERUSER,ROLE_USER" />
+
+		<!-- All the others -->
+        <intercept-url pattern="/**" filters="none" />
+
+		<!-- Login/Logout Options -->
+        <form-login login-page="/login.jsp" authentication-failure-url="/login.jsp?login_error=1" default-target-url="/index.html"/>
+    	<logout invalidate-session="true" logout-success-url="/index.html"/>
+        <remember-me />
+        
+        <!-- Session Management -->
+        <!-- session-management>
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+        </session-management -->
+    </http>
+
+	<!--
+	  Authentication Manager and Providers 
+	 -->
+    <authentication-manager alias="authenticationManager" />
+
+	<authentication-provider>
+		<jdbc-user-service data-source-ref="dataSource-gb-users"
+			users-by-username-query="SELECT USER_NAME AS username, USER_PASSWORD AS password, USER_ENABLED AS enabled FROM GBUser WHERE USER_NAME = ?"
+			authorities-by-username-query="SELECT USER_NAME AS username, USER_ROLE AS authority FROM GBUser WHERE USER_NAME = ?" />
+	</authentication-provider>
+
+</beans:beans>

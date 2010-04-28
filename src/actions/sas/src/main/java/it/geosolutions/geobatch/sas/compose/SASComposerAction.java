@@ -220,7 +220,8 @@ public class SASComposerAction
 
                                         // //
                                         // 3) MOSAIC INGESTION: prepare next events
-
+                                        //
+                                        
                                         if (mosaicTobeIngested != null && mosaicTobeIngested.trim().length() > 0) {
 //                                                final String style = SasMosaicGeoServerAction.SAS_STYLE;
                                             final int index = mosaicTobeIngested.lastIndexOf(MosaicerAction.MOSAIC_PREFIX);
