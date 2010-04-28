@@ -20,30 +20,43 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.compose;
+package it.geosolutions.geobatch.sas.compose;
 
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
-import java.util.EventObject;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Comments here ...
  * 
- * @author AlFa
+ * @author Daniele Romagnoli, GeoSolutions
  * 
- * @version $ BaseMosaicerConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
  */
-public abstract class ComposerConfiguratorService<T extends EventObject, C extends ActionConfiguration>
-        extends BaseService implements ActionService<T, C> {
+public class SASComposerService
+        extends BaseService
+        implements ActionService<FileSystemMonitorEvent, SASComposerConfiguration> {
 
-    public ComposerConfiguratorService() {
-        super(true);
+    private final static Logger LOGGER = Logger.getLogger(SASComposerService.class.toString());
+
+    /**
+     * 
+     */
+    public SASComposerAction createAction(SASComposerConfiguration configuration) {
+        try {
+            return new SASComposerAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
-    public boolean canCreateAction(C configuration) {
-        // XXX ImPLEMENT ME
+    public boolean canCreateAction(SASComposerConfiguration configuration) {
+//        final boolean superRetVal = super.canCreateAction(configuration);
         return true;
     }
 

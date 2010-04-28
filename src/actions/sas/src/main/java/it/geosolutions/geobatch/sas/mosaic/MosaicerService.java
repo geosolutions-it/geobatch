@@ -19,32 +19,46 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package it.geosolutions.geobatch.sas.mosaic;
 
-package it.geosolutions.geobatch.convert;
-
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
-import java.util.EventObject;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Comments here ...
  * 
- * @author AlFa
- * 
- * @version $ BaseMosaicerConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
+ * @author Daniele Romagnoli, GeoSolutions
  */
-public abstract class FormatConverterConfiguratorService<T extends EventObject, C extends ActionConfiguration>
-        extends BaseService implements ActionService<T, C> {
+public class MosaicerService
+        extends BaseService
+        implements ActionService<FileSystemMonitorEvent, MosaicerConfiguration> {
 
-    public FormatConverterConfiguratorService() {
+    private final static Logger LOGGER = Logger.getLogger(MosaicerAction.class.toString());
+
+    public MosaicerService() {
         super(true);
     }
 
-    public boolean canCreateAction(C configuration) {
-        // XXX ImPLEMENT ME
-        return true;
+    /**
+     * 
+     */
+    public MosaicerAction createAction(MosaicerConfiguration configuration) {
+        try {
+            return new MosaicerAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
+    public boolean canCreateAction(MosaicerConfiguration configuration) {
+        return true;
+    }
+    
 }

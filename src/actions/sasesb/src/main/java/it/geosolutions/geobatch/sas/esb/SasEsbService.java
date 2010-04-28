@@ -20,31 +20,42 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.base;
 
+
+package it.geosolutions.geobatch.sas.esb;
+
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
-import java.util.EventObject;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Comments here ...
- * 
- * @author AlFa
- * 
- * @version $ BaseMosaicerConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
  */
-public abstract class BaseMosaicerConfiguratorService<T extends EventObject, C extends ActionConfiguration>
-        extends BaseService implements ActionService<T, C> {
+public class SasEsbService
+        extends BaseService
+        implements ActionService<FileSystemMonitorEvent, SasEsbConfiguration> {
 
-    public BaseMosaicerConfiguratorService() {
-        super(true);
+
+    private final static Logger LOGGER = Logger.getLogger(SasEsbAction.class
+            .toString());
+
+    /**
+     * 
+     */
+    public SasEsbAction createAction(SasEsbConfiguration configuration) {
+        try {
+            return new SasEsbAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
-    public boolean canCreateAction(C configuration) {
-        // XXX ImPLEMENT ME
-        return true;
+    public boolean canCreateAction(SasEsbConfiguration configuration) {
+        return configuration instanceof SasEsbConfiguration;
     }
-
 }

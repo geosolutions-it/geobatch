@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>sasMosaicEsbFlow</id>
+	<name>sasMosaicEsbFlow</name>
+	<description>Process SAS tiles/mosaics and send events to an ESB</description>
+
+	<workingDirectory>sasmosaicesb_work</workingDirectory>
+	<autorun>false</autorun>
+
+	<EventGeneratorConfiguration>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+
+        <wildCard>*.*</wildCard>
+		<watchDirectory>sasmosaicesb_work/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+	</EventGeneratorConfiguration>
+
+	<EventConsumerConfiguration>
+		<id>id</id>
+		<name>test</name>
+		<description>description</description>
+
+		<listenerId>SASConsumerLogger0</listenerId>
+	    <listenerId>SASCumulator0</listenerId>
+
+		<workingDirectory>sasmosaicesb_work</workingDirectory>
+		<performBackup>true</performBackup>
+
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.xml</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+
+        <ComposerConfiguration>
+			<id>SASMSC</id>
+			<serviceID>ComposerService</serviceID>
+
+			<name>SAS Tiles Mosaic composer</name>
+			<description>description</description>
+
+			<listenerId>SASStatusActionLogger0</listenerId>
+			<listenerId>SASActionLogger0</listenerId>
+
+			<workingDirectory>sasmosaicesb_work</workingDirectory>
+			<outputFormat>SAS</outputFormat>
+			<inputFormats>mat</inputFormats>
+			<!--<leavesFolders>stbd;port</leavesFolders>-->
+			<!-- outputBaseFolder>H:\temp</outputBaseFolder -->
+			<!-- LINUX NAS -->
+			<!--outputBaseFolder>/mnt/datastorage/sas/mosaic_output</outputBaseFolder-->
+			<!-- LINUX LOCAL -->
+			<outputBaseFolder>V:\temp\sas\output</outputBaseFolder>
+			<JAICacheCapacity>768</JAICacheCapacity>
+	        	<JAIParallelism>8</JAIParallelism>
+			<JAICacheThreshold>1</JAICacheThreshold>
+			<numSteps>6</numSteps>
+			<downsampleStep>2</downsampleStep>
+			<rawScaleAlgorithm>nn</rawScaleAlgorithm>
+			<mosaicScaleAlgorithm>avg</mosaicScaleAlgorithm>
+			<tileH>512</tileH>
+			<tileW>512</tileW>
+			<chunkW>10240</chunkW>
+			<chunkH>10240</chunkH>
+			<compressionRatio>0.75</compressionRatio>
+			<compressionScheme>LZW</compressionScheme>
+<!--			<geoserverURL>http://192.168.1.17:8086/geoserver</geoserverURL>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUploadMethod>EXTERNAL</geoserverUploadMethod>
+-->			<corePoolSize>3</corePoolSize>
+			<maxPoolSize>3</maxPoolSize>
+			<maxWaitingTime>300</maxWaitingTime>
+		</ComposerConfiguration>
+        
+        <SasEsbConfiguration>
+			<id>sasesb</id>
+			<serviceID>sasEsbService</serviceID>
+			<name>SAS ESB</name>
+			<description>Sends SOAP messages to ESB</description>
+
+            <listenerId>ESBCumulator0</listenerId>
+
+            <serverURL>http://localhost:8080/saservice/soap</serverURL>
+        </SasEsbConfiguration>
+
+        <!-- if we wish to directly configure geoserver -->
+        <!--
+        <SAS2GSConverter>
+            <geotiffStyle>GEOTIFFSTYLENAME</geotiffStyle>
+            <mosaicStyle>MOSAICSTYLENAME</mosaicStyle>
+        </SAS2GSConverter>
+        <GeoServerPublisher>
+			<geoserverURL>http://192.168.1.17:8086/geoserver</geoserverURL>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverPWD>geoserver</geoserverPWD>
+        </GeoServerPublisher>
+        -->
+
+	</EventConsumerConfiguration>
+	
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>SASStatusActionLogger0</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>SASActionLogger0</id>
+
+            <loggerName>SASActionLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>SASConsumerLogger0</id>
+
+            <loggerName>SASConsumerLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>SASCumulator0</id>
+        </CumulatingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>ESBCumulator0</id>
+        </CumulatingProgressListener>
+
+    </ListenerConfigurations>
+    
+</FlowConfiguration>

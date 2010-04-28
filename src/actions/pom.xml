@@ -129,7 +129,7 @@
             </modules>
         </profile>
 
-<!--        <profile>
+        <!--        <profile>
             <id>gliders</id>
             <activation>
                 <property>
@@ -235,10 +235,52 @@
                 </property>
             </activation>
             <modules>
-            		<module>gb-geoserver</module>
+                <module>gb-geoserver</module>
                 <module>gb-task-executor</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>sas</id>
+            <!--            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>-->
+            <modules>
+                <module>sas</module>
+                <module>gb-task-executor</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>sasesb</id>
+            <!--            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>-->
+            <modules>
+                <module>sas</module>
+                <module>sasesb</module>
+                <module>gb-task-executor</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>sasgs</id>
+            <!--            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>-->
+            <modules>
+                <module>sas</module>
+                <module>sasgs</module>
+                <module>gb-task-executor</module>
+            </modules>
+        </profile>
+
     </profiles>
 
 

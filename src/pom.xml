@@ -901,6 +901,16 @@
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
+                <artifactId>gb-action-sasesb</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-action-sasgs</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-sasmanager</artifactId>
                 <version>${gb.version}</version>
             </dependency>
