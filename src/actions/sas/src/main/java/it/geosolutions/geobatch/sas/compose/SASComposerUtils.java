@@ -26,9 +26,10 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.sas.base.BaseImageProcessingConfiguration;
 import it.geosolutions.geobatch.sas.convert.FormatConverterAction;
 import it.geosolutions.geobatch.sas.convert.FormatConverterConfiguration;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.sas.event.SASMosaicEvent;
 import it.geosolutions.geobatch.sas.mosaic.MosaicerAction;
 import it.geosolutions.geobatch.sas.mosaic.MosaicerConfiguration;
+import it.geosolutions.opensdi.sas.model.Layer;
 
 import java.util.Queue;
 import java.util.logging.Level;
@@ -129,7 +130,7 @@ public class SASComposerUtils {
         return sasTileEvents;
     }
         
-    static String composeMosaic(Queue<FileSystemMonitorEvent> events,
+    static Layer composeMosaic(Queue<FileSystemMonitorEvent> events,
             final BaseImageProcessingConfiguration imageProcessingConfiguration,
             final String outputDir,
             final String mosaicScaleAlgorithm
@@ -154,7 +155,7 @@ public class SASComposerUtils {
         if (events == null){
         	return null;
         } else
-            return mosaicerConfig.getMosaicDirectory();
+            return ((SASMosaicEvent) events.remove()).getLayer();
     }
     
     /**

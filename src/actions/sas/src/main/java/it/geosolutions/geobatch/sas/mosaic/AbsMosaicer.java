@@ -24,11 +24,13 @@ package it.geosolutions.geobatch.sas.mosaic;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.sas.base.SASUtils;
+import it.geosolutions.geobatch.sas.event.SASMosaicEvent;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geotiff.overview.GeoTiffOverviewsEmbedderConfiguration;
+import it.geosolutions.opensdi.sas.model.Layer;
 
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
@@ -59,6 +61,7 @@ import javax.media.jai.ParameterBlockJAI;
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.MosaicDescriptor;
 
+import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.CoverageFactoryFinder;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridCoverageFactory;
@@ -70,14 +73,19 @@ import org.geotools.gce.geotiff.GeoTiffWriteParams;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.metadata.iso.spatial.PixelTranslation;
+import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
 import org.geotools.referencing.operation.matrix.XAffineTransform;
 import org.geotools.referencing.operation.transform.ProjectiveTransform;
+import org.opengis.geometry.Envelope;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.datum.PixelInCell;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.NoninvertibleTransformException;
+
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * Main Mosaicer class.
@@ -94,6 +102,7 @@ public abstract class AbsMosaicer
      */
     public AbsMosaicer(ActionConfiguration actionConfiguration) throws IOException {
 		super(actionConfiguration);
+		this.configuration = (MosaicerConfiguration) actionConfiguration;
 	}
 
 	private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(AbsMosaicer.class.toString());
@@ -373,7 +382,49 @@ public abstract class AbsMosaicer
                 }
             }
 
+            Layer mosaicLayer = new Layer();
+            mosaicLayer.setName(FilenameUtils.getBaseName(buildOutputDirName(directory)));
+            mosaicLayer.setTitle(FilenameUtils.getBaseName(buildOutputDirName(directory)));
+            mosaicLayer.setDesctiption("");
+            mosaicLayer.setFileURL(fileDir.getAbsolutePath() + File.separator + FilenameUtils.getBaseName(buildOutputDirName(directory)));
+            mosaicLayer.setNamespace("it.geosolutions");
+            mosaicLayer.setServerURL(null);
+            mosaicLayer.setStyle("sas");
+            
+            Envelope originalEnvelope = globEnvelope;
+            Integer srsID = CRS.lookupEpsgCode(originalEnvelope.getCoordinateReferenceSystem(), true);
+            mosaicLayer.setNativeCRS(srsID != null ? "EPSG:" + srsID : originalEnvelope.getCoordinateReferenceSystem().toWKT());
+            
+            WKTReader wktReader = new WKTReader();
+            
+            // minX minY, maxX minY, maxX maxY, minX maxY, minX minY
+            Polygon nativeEnvelope = (Polygon) wktReader.read(
+            		"POLYGON(("+originalEnvelope.getLowerCorner().getOrdinate(0)+" "+originalEnvelope.getLowerCorner().getOrdinate(1)+", " +
+            				 ""+originalEnvelope.getUpperCorner().getOrdinate(0)+" "+originalEnvelope.getLowerCorner().getOrdinate(1)+", " +
+            				 ""+originalEnvelope.getUpperCorner().getOrdinate(0)+" "+originalEnvelope.getUpperCorner().getOrdinate(1)+", " +
+            				 ""+originalEnvelope.getLowerCorner().getOrdinate(0)+" "+originalEnvelope.getUpperCorner().getOrdinate(1)+", " +
+            				 ""+originalEnvelope.getLowerCorner().getOrdinate(0)+" "+originalEnvelope.getLowerCorner().getOrdinate(1)+"))");
+            if (srsID != null ) 
+            	nativeEnvelope.setSRID(srsID);
+            mosaicLayer.setNativeEnvelope(nativeEnvelope);
+    		
+            mosaicLayer.setSrs(srsID != null ? "EPSG:" + srsID : "UNKNOWN");
+            Envelope originalToWgs84Envelope = CRS.transform(originalEnvelope, CRS.decode("EPSG:4326", true));
+            Polygon wgs84Envelope = (Polygon) wktReader.read(
+            		"POLYGON(("+originalToWgs84Envelope.getLowerCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getLowerCorner().getOrdinate(1)+", " +
+            				 ""+originalToWgs84Envelope.getUpperCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getLowerCorner().getOrdinate(1)+", " +
+            				 ""+originalToWgs84Envelope.getUpperCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getUpperCorner().getOrdinate(1)+", " +
+            				 ""+originalToWgs84Envelope.getLowerCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getUpperCorner().getOrdinate(1)+", " +
+            				 ""+originalToWgs84Envelope.getLowerCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getLowerCorner().getOrdinate(1)+"))");
+
+            wgs84Envelope.setSRID(4326);
+            mosaicLayer.setWgs84Envelope(wgs84Envelope);
+            
             listenerForwarder.completed();
+            events.clear();
+            SASMosaicEvent mosaicEvent = new SASMosaicEvent(fileDir);
+            mosaicEvent.setLayer(mosaicLayer);
+			events.add(mosaicEvent);
             return events;
         } catch (Throwable t) {
             if (LOGGER.isLoggable(Level.SEVERE))

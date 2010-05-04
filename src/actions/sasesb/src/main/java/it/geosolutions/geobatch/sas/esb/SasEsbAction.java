@@ -25,28 +25,34 @@ package it.geosolutions.geobatch.sas.esb;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-
 import it.geosolutions.geobatch.sas.event.SASDetectionEvent;
 import it.geosolutions.geobatch.sas.event.SASMosaicEvent;
 import it.geosolutions.geobatch.sas.event.SASTileEvent;
-
+import it.geosolutions.opensdi.sas.model.Contact;
 import it.geosolutions.opensdi.sas.model.Leg;
 import it.geosolutions.opensdi.sas.model.Mission;
+import it.geosolutions.opensdi.sas.model.SonarMosaic;
+import it.geosolutions.opensdi.sas.model.SonarTile;
+import it.geosolutions.opensdi.sas.model.TileMetadata;
 import it.geosolutions.opensdi.sas.services.SASManagerService;
 import it.geosolutions.opensdi.sas.services.exception.ResourceNotFoundFault;
+import it.geosolutions.opensdi.sas.services.request.GetLegRequest;
 import it.geosolutions.opensdi.sas.services.request.GetMissionRequest;
 import it.geosolutions.opensdi.sas.services.request.InsertLegRequest;
-import java.io.File;
+import it.geosolutions.opensdi.sas.services.request.InsertSonarMosaicRequest;
+import it.geosolutions.opensdi.sas.services.request.InsertSonarTileRequest;
+import it.geosolutions.opensdi.sas.services.response.Legs;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.cxf.aegis.databinding.AegisDatabinding;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -69,9 +75,9 @@ public class SasEsbAction
     public final static String DEFAULT_STYLE = "raster";
     
     
-    private final static String NAMESPACE = "namespace";
-    private final static String STORE = "store";
-    private final static String LAYERNAME = "layername";
+//    private final static String NAMESPACE = "namespace";
+//    private final static String STORE = "store";
+//    private final static String LAYERNAME = "layername";
 
     private final SasEsbConfiguration configuration;
 
@@ -147,56 +153,242 @@ public class SasEsbAction
                 }
             }
 
-
-            if(mosaicEvents.isEmpty()) { // uhm, what if in case of detections?
-                throw new ActionException(this, "No " + SASMosaicEvent.class.getSimpleName() + " event in the input queue");
+            if(mosaicEvents.isEmpty() && tileEvents.isEmpty() && detectEvents.isEmpty()) { // uhm, what if in case of detections?
+                throw new ActionException(this, "No SASEvent event in the input queue");
             }
 
             listenerForwarder.progressing(10,
-                        "Scanned "
-                        + mosaicEvents.size() + " mosaics, "
-                        + tileEvents.size() + " tiles, "
-                        + detectEvents.size() + " detections" );
-
-            // TODO ============================================================
-            // create missions, legs, tiles from events.........................
-
-            // HOW SHALL WE LINK CONTACTS TO MISSIONS?
-
-            Mission mission = new Mission();
-//            mission.setCruiseExperiment(mosaicEvent.);
-            mission.setName(mosaicEvents.get(0).getMissionName());
-            mission.setSrs("EPSG:4326"); // FIXME
+        			"Scanned "
+        			+ mosaicEvents.size() + " mosaics, "
+        			+ tileEvents.size() + " tiles, "
+        			+ detectEvents.size() + " detections" );
             
-            if(! tileEvents.isEmpty())
-                mission.setDate(tileEvents.get(0).getDate());
+            // ////////////////////////////////////////////////////////////////
+            //
+            // Processing Detecitons ...
+            //
+            // ////////////////////////////////////////////////////////////////
+            if(!detectEvents.isEmpty()) {
+            	for (SASDetectionEvent detection : detectEvents) {
+            		String missionName = detection.getMissionName();
+            		
+            		Mission mission = null;
+            		
+            		try {
+            			mission = getClient().getMissionByName(missionName);
+            		} catch (Exception e) {
+            			mission = null;
+            		}
+            		
+            		if (mission == null) {
+            			mission = new Mission();
+            			mission.setName(missionName);
+            			mission.setDate(new Date());
+            			mission.setSrs(detection.getLayer().getNativeCRS());
+            			
+            			long missionId = getClient().insertMission(mission);
+            			
+            			if (missionId < 0) {
+            				throw new ActionException(this, "Could not create the new Mission " + mission.getName());
+            			}
 
-            Long missionId = insertMission(mission);
-            Mission iMission = getMission(missionId); // this one should also have default attribs ok
+            			mission.setId(missionId);
+            		}
+            		
+            		// TODO: This will be replaced by ESB ...
+            		if (detection.getLayer().getServerURL() == null) {
+            			detection.getLayer().setServerURL(configuration.getGeoserverURL());
+            		}
+            		
+            		Contact contact = new Contact();
+            		contact.setDate(mission.getDate());
+            		contact.setLayer(detection.getLayer());
+					mission.setContact(contact);
+					
+					long missionId = getClient().updateMission(mission);
 
-            List<Long> legIds = new ArrayList<Long>();
-            for (SASTileEvent tileEvent : tileEvents) {
-                Leg leg = new Leg();
-                leg.setMission(iMission);
-                leg.setDate(tileEvent.getDate());
-                Long id = insertLeg(leg);
-                legIds.add(id);
+					if (missionId < 0) {
+        				throw new ActionException(this, "Unable to update Mission " + mission.getName());
+        			}
+            	}
+            } 
+
+            // ////////////////////////////////////////////////////////////////
+            //
+            // Processing Tiles ...
+            //
+            // ////////////////////////////////////////////////////////////////
+            if(!tileEvents.isEmpty()) {
+            	for (SASTileEvent tile : tileEvents) {
+            		String missionName = tile.getMissionName();
+            		
+            		Mission mission = null;
+            		
+            		try {
+            			mission = getClient().getMissionByName(missionName);
+            		} catch (Exception e) {
+            			mission = null;
+            		}
+            		
+            		if (mission == null) {
+            			mission = new Mission();
+            			mission.setName(missionName);
+            			mission.setDate(new Date());
+            			mission.setSrs(tile.getLayer().getNativeCRS());
+            			
+            			long missionId = getClient().insertMission(mission);
+            			
+            			if (missionId < 0) {
+            				throw new ActionException(this, "Could not create the new Mission " + mission.getName());
+            			}
+            			
+            			mission.setId(missionId);
+            		}
+            		
+            		// TODO: This will be replaced by ESB ...
+            		if (tile.getLayer().getServerURL() == null) {
+            			tile.getLayer().setServerURL(configuration.getGeoserverURL());
+            		}
+            		
+            		GetMissionRequest missionRequest = new GetMissionRequest();
+            		missionRequest.setId(mission.getId());
+					Legs legs = getClient().getLegs(missionRequest);
+					
+					long legId = -1;
+
+					if (legs != null && legs.getLegs() != null) {
+						for (Leg leg : legs.getLegs()) {
+							if (leg.getName().equals(tile.getLegNames().get(0))) {
+								legId = leg.getId();
+								break;
+							}
+						}
+					}
+					
+					if (legId < 0) {
+						Leg leg = new Leg();
+						leg.setName(tile.getLegNames().get(0));
+						leg.setMission(mission);
+						leg.setDate(mission.getDate());
+						
+						InsertLegRequest legRequest = new InsertLegRequest();
+						legRequest.setId(mission.getId());
+						legRequest.setLeg(leg);
+						legId = getClient().insertLeg(legRequest);
+					}
+
+					if (legId < 0) {
+						throw new ActionException(this, "Could not create/find a Leg for Mission " + mission.getName());
+					}
+
+					InsertSonarTileRequest tileRequest = new InsertSonarTileRequest();
+					SonarTile sonarTile = new SonarTile();
+					sonarTile.setLayer(tile.getLayer());
+					GetLegRequest legRequest = new GetLegRequest();
+            		legRequest.setLegId(legId);
+            		legRequest.setMissionId(mission.getId());
+					sonarTile.setLeg(getClient().getLeg(legRequest));
+					sonarTile.setName(tile.getLayer().getName());
+					TileMetadata tileMetadata = new TileMetadata();
+					tileMetadata.setPath(tile.getLayer().getFileURL());
+					sonarTile.setTileMetadata(tileMetadata);
+					sonarTile.setType(tile.getType());
+					tileRequest.setId(legId);
+					tileRequest.setSonarTile(sonarTile);
+					if (getClient().insertTile(tileRequest) < 0) {
+						throw new ActionException(this, "Could not create Tile " + sonarTile.getName() + " for Mission " + mission.getName());
+					}
+            	}
             }
+            	
+            // ////////////////////////////////////////////////////////////////
+            //
+            // Processing Mosaics ...
+            //
+            // ////////////////////////////////////////////////////////////////
+            if(!mosaicEvents.isEmpty()) {
+            	for (SASMosaicEvent mosaic : mosaicEvents) {
+            		String missionName = mosaic.getMissionName();
+            		
+            		Mission mission = null;
+            		
+            		try {
+            			mission = getClient().getMissionByName(missionName);
+            		} catch (Exception e) {
+            			mission = null;
+            		}
+            		
+            		if (mission == null) {
+            			mission = new Mission();
+            			mission.setName(missionName);
+            			mission.setDate(new Date());
+            			mission.setSrs(mosaic.getLayer().getNativeCRS());
+            			
+            			long missionId = getClient().insertMission(mission);
+            			
+            			if (missionId < 0) {
+            				throw new ActionException(this, "Could not create the new Mission " + mission.getName());
+            			}
+            			
+            			mission.setId(missionId);
+            		}
+            		
+            		// TODO: This will be replaced by ESB ...
+            		if (mosaic.getLayer().getServerURL() == null) {
+            			mosaic.getLayer().setServerURL(configuration.getGeoserverURL());
+            		}
+            		
+            		GetMissionRequest missionRequest = new GetMissionRequest();
+            		missionRequest.setId(mission.getId());
+					Legs legs = getClient().getLegs(missionRequest);
+					
+					long legId = -1;
+					
+					if (legs != null && legs.getLegs() != null) {
+						for (Leg leg : legs.getLegs()) {
+							if (leg.getName().equals(mosaic.getLegNames().get(0))) {
+								legId = leg.getId();
+								break;
+							}
+						}
+					}
+					
+					if (legId < 0) {
+						Leg leg = new Leg();
+						leg.setName(mosaic.getLegNames().get(0));
+						leg.setMission(mission);
+						leg.setDate(mission.getDate());
+						
+						InsertLegRequest legRequest = new InsertLegRequest();
+						legRequest.setId(mission.getId());
+						legRequest.setLeg(leg);
+						legId = getClient().insertLeg(legRequest);
+					}
 
+					if (legId < 0) {
+						throw new ActionException(this, "Could not create/find a Leg for Mission " + mission.getName());
+					}
 
-
-//            TileMetadata tileMetadata = new TileMetadata();
-//            tileMetadata.set
-//
-//            SonarMosaic mosaic;
-//            SonarTile sonarTile = new SonarTile();
-//
-//
-//            Layer layer = new Layer();
-//            layer.set;
+            		InsertSonarMosaicRequest mosaicRequest = new InsertSonarMosaicRequest();
+            		mosaicRequest.setId(legId);
+            		SonarMosaic sonarMosaic = new SonarMosaic();
+            		sonarMosaic.setDate(mission.getDate());
+            		GetLegRequest legRequest = new GetLegRequest();
+            		legRequest.setLegId(legId);
+            		legRequest.setMissionId(mission.getId());
+					sonarMosaic.setLeg(getClient().getLeg(legRequest));
+            		sonarMosaic.setLayer(mosaic.getLayer());
+            		sonarMosaic.setType(mosaic.getType());
+					mosaicRequest.setSonarMosaic(sonarMosaic);
+					if (getClient().insertSonarMosaic(mosaicRequest) < 0) {
+						throw new ActionException(this, "Could not create Mosaic " + sonarMosaic.getLayer().getName() + " for Mission " + mission.getName());
+					}
+            	}
+            }
             
             listenerForwarder.completed();
-            return unhandledEvents;
+            events.clear();
+            return events;
         } catch (ActionException e) {
             LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
             listenerForwarder.failed(e);
@@ -248,7 +440,7 @@ public class SasEsbAction
             factory.getOutInterceptors().add(new LoggingOutInterceptor());
             factory.setServiceClass(SASManagerService.class);
             factory.setAddress(configuration.getServerURL());
-            factory.getServiceFactory().setDataBinding(new AegisDatabinding());
+            //factory.getServiceFactory().setDataBinding(new AegisDatabinding());
             __client = (SASManagerService) factory.create();
         }
 

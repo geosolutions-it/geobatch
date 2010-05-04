@@ -24,7 +24,7 @@
 			<!-- LINUX LOCAL -->
 			<outputBaseFolder>V:\temp\sas\output</outputBaseFolder>
 			<JAICacheCapacity>768</JAICacheCapacity>
-	        	<JAIParallelism>8</JAIParallelism>
+	    <JAIParallelism>8</JAIParallelism>
 			<JAICacheThreshold>1</JAICacheThreshold>
 			<numSteps>6</numSteps>
 			<downsampleStep>2</downsampleStep>

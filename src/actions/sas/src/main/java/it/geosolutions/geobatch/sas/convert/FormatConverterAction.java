@@ -23,13 +23,14 @@
 package it.geosolutions.geobatch.sas.convert;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.geobatch.sas.base.SASFileNameParser;
-import it.geosolutions.geobatch.sas.base.SASUtils;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geotiff.overview.GeoTiffOverviewsEmbedderConfiguration;
+import it.geosolutions.geobatch.sas.base.SASDirNameParser;
+import it.geosolutions.geobatch.sas.base.SASUtils;
 import it.geosolutions.geobatch.sas.event.SASTileEvent;
+import it.geosolutions.opensdi.sas.model.Layer;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -37,9 +38,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.io.FilenameUtils;
-
-
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
@@ -164,10 +164,10 @@ public class FormatConverterAction
                             LOGGER.info(new StringBuilder("Converting file N. ").append(++i)
                                     .append(":").append(path).toString());
                         final File outFile = new File(outputFileName);
-                        final boolean converted = FormatConverterUtils.convert(file, outFile,
+                        final Layer converted = FormatConverterUtils.convert(file, outFile,
                                     configuration.getTileW(), configuration.getTileH(),
                                     configuration.getOutputFormat());
-                        if (converted){
+                        if (converted != null){
                         	
 	                        // //
 	                        //
@@ -186,32 +186,31 @@ public class FormatConverterAction
                             if(runName.endsWith(File.separator))
                                 runName = runName.substring(0,runName.length()-1);
 
-//	                        int index = runName.lastIndexOf(SASUtils.SEPARATOR);
-//	                        if (index == runName.length()-1){
-//	                        	//Removing the last separator
-//	                        	runName = runName.substring(0,runName.length()-1);
-//	                        	index = runName.lastIndexOf(SASUtils.SEPARATOR);
-//	                        }
+	                        int index = runName.lastIndexOf(SASUtils.SEPARATOR);
+	                        if (index == runName.length()-1){
+	                        	//Removing the last separator
+	                        	runName = runName.substring(0,runName.length()-1);
+	                        	index = runName.lastIndexOf(SASUtils.SEPARATOR);
+	                        }
 	                        
 	                        //Setting up the wmspath.
 	                        //Actually it is set by simply changing mosaic's name underscores to slashes.
 	                        //TODO: can be improved
-	                        final String filePath = FilenameUtils.getName(runName);
-//                                                    runName.substring(index+1, runName.length());
+	                        final String filePath = /* FilenameUtils.getName(runName); */
+                                                    runName.substring(index+1, runName.length());
 	                        final String wmsPath = SASUtils.buildWmsPath(filePath);
 
                             // Create event
                             SASTileEvent tileEvent = new SASTileEvent(outFile);
                             tileEvent.setWmsPath(wmsPath);
                             tileEvent.setFormat("geotiff");
+                            tileEvent.setLayer(converted);
                             retEvents.offer(tileEvent);
 
-                            SASFileNameParser nameParser = SASFileNameParser.parse(name);
+                            SASDirNameParser nameParser = SASDirNameParser.parse(filePath);
                             if(nameParser != null) {
-                                tileEvent.setMissionName(nameParser.getMission());
+                                tileEvent.setMissionName(FilenameUtils.getBaseName(outFile.getParentFile().getParentFile().getParent()));
                                 tileEvent.setDate(nameParser.getDate());
-                                tileEvent.setChannel(nameParser.getChannel() == SASFileNameParser.Channel.PORT ?
-                                        SASTileEvent.Channel.PORT : SASTileEvent.Channel.STBD);
                             }
 
 //	                        SasMosaicGeoServerAction.ingest(outputFileName, wmsPath, configuration.getGeoserverURL(),

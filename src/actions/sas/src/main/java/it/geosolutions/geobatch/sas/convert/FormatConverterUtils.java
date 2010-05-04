@@ -22,13 +22,11 @@
 
 package it.geosolutions.geobatch.sas.convert;
 
-import it.geosolutions.geobatch.flow.event.action.Action;
-import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geotiff.overview.GeoTiffOverviewsEmbedderConfiguration;
+import it.geosolutions.opensdi.sas.model.Layer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -36,16 +34,22 @@ import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
+import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.coverage.grid.io.UnknownFormat;
 import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams;
+import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.coverage.grid.GridCoverageWriter;
+import org.opengis.geometry.Envelope;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
+
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * Comments here ...
@@ -96,10 +100,10 @@ public class FormatConverterUtils {
      * @throws IllegalArgumentException
      * @throws IOException
      */	
-    static boolean convert(final File file, final File outputFile, final int tileW, final int tileH, final String outputFormatType)
+    static Layer convert(final File file, final File outputFile, final int tileW, final int tileH, final String outputFormatType)
             throws IllegalArgumentException, IOException {
 
-    	boolean converted = false;
+    	Layer converted = null;
         // //
         //
         // Getting a GridFormat
@@ -124,9 +128,47 @@ public class FormatConverterUtils {
 	            final AbstractGridFormat writerFormat = (AbstractGridFormat) acquireFormatByName(outputFormatType);
 	
 	            if (!(writerFormat instanceof UnknownFormat)) {
+	            	converted = new Layer();
+	            	converted.setName(FilenameUtils.getBaseName(outputFile.getAbsolutePath()));
+	            	converted.setTitle(FilenameUtils.getBaseName(outputFile.getAbsolutePath()));
+	            	converted.setDesctiption("");
+	            	converted.setFileURL(outputFile.getAbsolutePath());
+	            	converted.setNamespace("it.geosolutions");
+	            	converted.setServerURL(null);
+	            	converted.setStyle("sas");
+	                
+	                Envelope originalEnvelope = gc.getEnvelope();
+	                Integer srsID = CRS.lookupEpsgCode(originalEnvelope.getCoordinateReferenceSystem(), true);
+	                converted.setNativeCRS(srsID != null ? "EPSG:" + srsID : originalEnvelope.getCoordinateReferenceSystem().toWKT());
+	                
+	                WKTReader wktReader = new WKTReader();
+	                
+	                // minX minY, maxX minY, maxX maxY, minX maxY, minX minY
+	                Polygon nativeEnvelope = (Polygon) wktReader.read(
+	                		"POLYGON(("+originalEnvelope.getLowerCorner().getOrdinate(0)+" "+originalEnvelope.getLowerCorner().getOrdinate(1)+", " +
+	                				 ""+originalEnvelope.getUpperCorner().getOrdinate(0)+" "+originalEnvelope.getLowerCorner().getOrdinate(1)+", " +
+	                				 ""+originalEnvelope.getUpperCorner().getOrdinate(0)+" "+originalEnvelope.getUpperCorner().getOrdinate(1)+", " +
+	                				 ""+originalEnvelope.getLowerCorner().getOrdinate(0)+" "+originalEnvelope.getUpperCorner().getOrdinate(1)+", " +
+	                				 ""+originalEnvelope.getLowerCorner().getOrdinate(0)+" "+originalEnvelope.getLowerCorner().getOrdinate(1)+"))");
+	                if (srsID != null ) 
+	                	nativeEnvelope.setSRID(srsID);
+	                converted.setNativeEnvelope(nativeEnvelope);
+	        		
+	                converted.setSrs(srsID != null ? "EPSG:" + srsID : "UNKNOWN");
+	                Envelope originalToWgs84Envelope = CRS.transform(originalEnvelope, CRS.decode("EPSG:4326", true));
+	                Polygon wgs84Envelope = (Polygon) wktReader.read(
+	                		"POLYGON(("+originalToWgs84Envelope.getLowerCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getLowerCorner().getOrdinate(1)+", " +
+	                				 ""+originalToWgs84Envelope.getUpperCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getLowerCorner().getOrdinate(1)+", " +
+	                				 ""+originalToWgs84Envelope.getUpperCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getUpperCorner().getOrdinate(1)+", " +
+	                				 ""+originalToWgs84Envelope.getLowerCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getUpperCorner().getOrdinate(1)+", " +
+	                				 ""+originalToWgs84Envelope.getLowerCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getLowerCorner().getOrdinate(1)+"))");
+
+	                wgs84Envelope.setSRID(4326);
+	                converted.setWgs84Envelope(wgs84Envelope);
+	        		
 	                GridCoverageWriter writer = writerFormat.getWriter(outputFile);
 	
-	                 GeoToolsWriteParams params = null;
+	                GeoToolsWriteParams params = null;
 	                ParameterValueGroup wparams = null;
 	                try {
 	                    wparams = writerFormat.getWriteParameters();
@@ -138,8 +180,7 @@ public class FormatConverterUtils {
 	                if (params != null) {
 	                    params.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
 	                    params.setTiling(tileW, tileH);
-	                    wparams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName()
-	                                    .toString()).setValue(params);
+	                    wparams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString()).setValue(params);
 	                }
 	
 	                // //
@@ -165,8 +206,6 @@ public class FormatConverterUtils {
 							// eat me
 						}
 	                }
-	                converted = true;
-	                
 	            }
 	            else{
 	            	if (LOGGER.isLoggable(Level.WARNING))

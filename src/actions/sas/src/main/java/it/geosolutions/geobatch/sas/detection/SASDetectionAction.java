@@ -23,19 +23,19 @@ package it.geosolutions.geobatch.sas.detection;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
-import it.geosolutions.geobatch.sas.base.SASUtils;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.geoserver.rest.GeoServerRESTActionConfiguration;
-import it.geosolutions.geobatch.geoserver.rest.GeoServerRESTConfiguratorAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
+import it.geosolutions.geobatch.sas.base.SASDirNameParser;
+import it.geosolutions.geobatch.sas.base.SASUtils;
 import it.geosolutions.geobatch.sas.base.SASUtils.FolderContentType;
 import it.geosolutions.geobatch.sas.event.SASDetectionEvent;
 import it.geosolutions.geobatch.task.TaskExecutor;
 import it.geosolutions.geobatch.task.TaskExecutorConfiguration;
 import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.opensdi.sas.model.Layer;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -69,12 +69,18 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * Action which allows to run a script to convert a detection file to a shapefile
@@ -243,9 +249,52 @@ public class SASDetectionAction
         File zipFile = zipShape(dataPrefix);
 
         SASDetectionEvent event = new SASDetectionEvent(zipFile);
+        event.setMissionName(getMissionName(zipFile));
         event.setFormat("shp");
         event.setWmsPath(buildWmsPath(zipFile));
-        return event;
+        
+        Layer layer = new Layer();
+        layer.setName(FilenameUtils.getBaseName(zipFile.getAbsolutePath()));
+        layer.setTitle(FilenameUtils.getBaseName(zipFile.getAbsolutePath()));
+        layer.setDesctiption("");
+        layer.setFileURL(zipFile.getAbsolutePath());
+        layer.setNamespace("it.geosolutions");
+        layer.setServerURL(null);
+        layer.setStyle("polygon");
+        
+        ShapefileDataStore shpDs = new ShapefileDataStore(new File(dataPrefix + ".shp").toURI().toURL());
+        ReferencedEnvelope originalEnvelope = shpDs.getFeatureSource().getBounds();
+        Integer srsID = CRS.lookupEpsgCode(originalEnvelope.getCoordinateReferenceSystem(), true);
+        layer.setNativeCRS(srsID != null ? "EPSG:" + srsID : originalEnvelope.getCoordinateReferenceSystem().toWKT());
+        
+        WKTReader wktReader = new WKTReader();
+        
+        // minX minY, maxX minY, maxX maxY, minX maxY, minX minY
+        Polygon nativeEnvelope = (Polygon) wktReader.read(
+        		"POLYGON(("+originalEnvelope.getMinX()+" "+originalEnvelope.getMinY()+", " +
+        				 ""+originalEnvelope.getMaxX()+" "+originalEnvelope.getMinY()+", " +
+        				 ""+originalEnvelope.getMaxX()+" "+originalEnvelope.getMaxY()+", " +
+        				 ""+originalEnvelope.getMinX()+" "+originalEnvelope.getMaxY()+", " +
+        				 ""+originalEnvelope.getMinX()+" "+originalEnvelope.getMinY()+"))");
+        if (srsID != null ) 
+        	nativeEnvelope.setSRID(srsID);
+		layer.setNativeEnvelope(nativeEnvelope);
+		
+        layer.setSrs(srsID != null ? "EPSG:" + srsID : "UNKNOWN");
+        BoundingBox originalToWgs84Envelope = originalEnvelope.toBounds(CRS.decode("EPSG:4326", true));
+        Polygon wgs84Envelope = (Polygon) wktReader.read(
+        		"POLYGON(("+originalToWgs84Envelope.getMinX()+" "+originalToWgs84Envelope.getMinY()+", " +
+        				 ""+originalToWgs84Envelope.getMaxX()+" "+originalToWgs84Envelope.getMinY()+", " +
+        				 ""+originalToWgs84Envelope.getMaxX()+" "+originalToWgs84Envelope.getMaxY()+", " +
+        				 ""+originalToWgs84Envelope.getMinX()+" "+originalToWgs84Envelope.getMaxY()+", " +
+        				 ""+originalToWgs84Envelope.getMinX()+" "+originalToWgs84Envelope.getMinY()+"))");
+
+        wgs84Envelope.setSRID(4326);
+		layer.setWgs84Envelope(wgs84Envelope);
+
+        event.setLayer(layer);
+        
+		return event;
 
 //        sendShape(dataPrefix + ".zip");
     }
@@ -595,11 +644,12 @@ public class SASDetectionAction
         //will refer to /MISSIONDIR
         final File missionDir = file.getParentFile().getParentFile();
 
+        String missionName = getMissionName(file);
+        
         //will refer to /DATE
         final File timeDir = missionDir.getParentFile();
         String time = FilenameUtils.getBaseName(timeDir.getAbsolutePath());
 
-        String missionName = FilenameUtils.getBaseName(missionDir.getAbsolutePath());
         final int missionIndex = missionName.lastIndexOf("_");
         if (missionIndex != -1) {
             final String missionCollapsed = missionName.substring(0, missionIndex).replace("_", "-");
@@ -612,6 +662,15 @@ public class SASDetectionAction
         return wmsPath;
     }
 
+    protected static String getMissionName(final File file) {
+        //will refer to /MISSIONDIR
+        final File missionDir = file.getParentFile().getParentFile();
+
+        String missionName = FilenameUtils.getBaseName(missionDir.getAbsolutePath());
+
+        return missionName;
+    }
+    
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */

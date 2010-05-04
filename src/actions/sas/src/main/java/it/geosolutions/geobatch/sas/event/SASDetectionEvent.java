@@ -11,7 +11,12 @@ import java.io.File;
  */
 public class SASDetectionEvent extends SASEvent {
 
-    public SASDetectionEvent(File source) {
+    /**
+	 * Generated Serial UID
+	 */
+	private static final long serialVersionUID = 1546493272038183232L;
+
+	public SASDetectionEvent(File source) {
         super(source);
     }
 

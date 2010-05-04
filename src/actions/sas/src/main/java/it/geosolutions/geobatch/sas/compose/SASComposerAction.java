@@ -22,17 +22,19 @@
 package it.geosolutions.geobatch.sas.compose;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.geobatch.sas.base.SASUtils;
-import it.geosolutions.geobatch.sas.base.SASUtils.FolderContentType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.sas.mosaic.MosaicerAction;
+import it.geosolutions.geobatch.sas.base.SASUtils;
+import it.geosolutions.geobatch.sas.base.SASUtils.FolderContentType;
 import it.geosolutions.geobatch.sas.event.SASMosaicEvent;
+import it.geosolutions.geobatch.sas.event.SASTileEvent;
+import it.geosolutions.geobatch.sas.mosaic.MosaicerAction;
 import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.opensdi.sas.model.Layer;
+import it.geosolutions.opensdi.sas.model.Type;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -41,11 +43,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 
 /**
@@ -94,7 +99,7 @@ public class SASComposerAction
                 throw new IllegalStateException("DataFlowConfig is null.");
             }
 
-            Queue<FileSystemMonitorEvent> sasEvents = null;
+            Queue<FileSystemMonitorEvent> sasEvents = new LinkedList<FileSystemMonitorEvent>();
 
             SASComposerUtils.setJAIHints(configuration);
 
@@ -199,21 +204,27 @@ public class SASComposerAction
                                         // 1) PROCESS SINGLE TILES
                                         //
 
-                                        sasEvents = SASComposerUtils.processTiles(events,
+                                        Queue<FileSystemMonitorEvent> tileEvents = SASComposerUtils.processTiles(events,
                                                 configuration,
                                                 leafPath, outputDir.toString(),
                                                 inputFormats, outputFormat,
                                                 configuration.getRawScaleAlgorithm());
 
-                                        if (sasEvents == null) {
+                                        if (tileEvents == null) {
                                             throw new ActionException(this, "Unable to proceed with the mosaic composition due to problems occurred during conversion");
                                         }
+                                        
+                                        for (FileSystemMonitorEvent tile : tileEvents) {
+                                        	((SASTileEvent) tile).getLegNames().add(legDir.getName() + "_" + leafName.toUpperCase());
+                                        	((SASTileEvent) tile).setType(Type.valueOf(leafName.toUpperCase()));
+                                        }
+                                        sasEvents.addAll(tileEvents);
 
                                         // //
                                         // 2) MOSAIC COMPOSITION
                                         //
 
-                                        final String mosaicTobeIngested = SASComposerUtils.composeMosaic(events,
+                                        final Layer mosaicTobeIngested = SASComposerUtils.composeMosaic(events,
                                                 configuration,
                                                 outputDir.toString(),
                                                 configuration.getMosaicScaleAlgorithm());
@@ -222,27 +233,30 @@ public class SASComposerAction
                                         // 3) MOSAIC INGESTION: prepare next events
                                         //
                                         
-                                        if (mosaicTobeIngested != null && mosaicTobeIngested.trim().length() > 0) {
+                                        if (mosaicTobeIngested != null) {
 //                                                final String style = SasMosaicGeoServerAction.SAS_STYLE;
-                                            final int index = mosaicTobeIngested.lastIndexOf(MosaicerAction.MOSAIC_PREFIX);
+                                            final int index = mosaicTobeIngested.getFileURL().lastIndexOf(MosaicerAction.MOSAIC_PREFIX);
 
                                             //Setting up the wmspath.
                                             //Actually it is set by simply changing mosaic's name underscores to slashes.
                                             //TODO: can be improved
-                                            final String path = mosaicTobeIngested.substring(index + MosaicerAction.MOSAIC_PREFIX.length());
+                                            final String path = mosaicTobeIngested.getFileURL().substring(index + MosaicerAction.MOSAIC_PREFIX.length());
                                             final String wmsPath = SASUtils.buildWmsPath(path);
 
                                             final File realDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
                                                     new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
                                             SASMosaicEvent mosaicEvent = new SASMosaicEvent(realDir);
+                                            mosaicEvent.setMissionName(FilenameUtils.getBaseName(new File(mosaicTobeIngested.getFileURL()).getParentFile().getParentFile().getParent()));
                                             mosaicEvent.setWmsPath(wmsPath);
                                             mosaicEvent.setFormat("imagemosaic");
+                                            mosaicEvent.getLegNames().add(legDir.getName() + "_" + leafName.toUpperCase());
+                                            mosaicEvent.setType(Type.valueOf(leafName.toUpperCase()));
+                                            mosaicEvent.setLayer(mosaicTobeIngested);
                                             if (LOGGER.isLoggable(Level.FINE)) {
                                                 LOGGER.fine("Adding " + mosaicEvent);
                                             }
                                             sasEvents.add(mosaicEvent);
-
                                         } else {
                                             if (LOGGER.isLoggable(Level.SEVERE)) {
                                                 LOGGER.severe("unable to build a mosaic for the following dataset:" + leafPath);

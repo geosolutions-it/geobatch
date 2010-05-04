@@ -196,7 +196,6 @@ public class SASDetectionConfiguration extends ActionConfiguration implements Co
 		this.detectionsOutputDir = detectionsOutputDir;
 	}
 
-
     @Override
     public SASDetectionConfiguration clone() { // throws CloneNotSupportedException {
     	try {

@@ -5,6 +5,8 @@ package it.geosolutions.geobatch.sas.event;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.opensdi.sas.model.Layer;
+
 import java.io.File;
 
 /**
@@ -15,12 +17,18 @@ import java.io.File;
  */
 public class SASEvent extends FileSystemMonitorEvent{
 
-    protected String wmsPath;
+    /**
+	 * Generated Serial UID
+	 */
+	private static final long serialVersionUID = -2114044839962334441L;
+	
+	protected String wmsPath;
     protected String format;
 
     protected String missionName;
 
-
+    private Layer layer;
+    
     public SASEvent(File source) {
         super(source, FileSystemMonitorNotifications.FILE_ADDED);
     }
@@ -69,7 +77,21 @@ public class SASEvent extends FileSystemMonitorEvent{
         this.missionName = missionName;
     }
 
-    @Override
+    /**
+	 * @param layer the layer to set
+	 */
+	public void setLayer(Layer layer) {
+		this.layer = layer;
+	}
+
+	/**
+	 * @return the layer
+	 */
+	public Layer getLayer() {
+		return layer;
+	}
+
+	@Override
     public String toString() {
         return getClass().getSimpleName()
                 + "[source:" + source

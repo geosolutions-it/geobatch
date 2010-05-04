@@ -5,24 +5,12 @@
 	<description>Process SAS tiles/mosaics and send events to an ESB</description>
 
 	<workingDirectory>sasmosaicesb_work</workingDirectory>
-	<autorun>false</autorun>
-
-	<EventGeneratorConfiguration>
-		<id>id</id>
-        <serviceID>fsEventGeneratorService</serviceID>
-		<description>description</description>
-		<name>test</name>
-
-        <wildCard>*.*</wildCard>
-		<watchDirectory>sasmosaicesb_work/in</watchDirectory>
-		<osType>OS_UNDEFINED</osType>
-		<eventType>FILE_ADDED</eventType>
-	</EventGeneratorConfiguration>
+	<autorun>true</autorun>
 
 	<EventConsumerConfiguration>
-		<id>id</id>
-		<name>test</name>
-		<description>description</description>
+		<id>sasmosaicesb_flow</id>
+		<name>sasmosaicesb_flow</name>
+		<description>sasmosaicesb_flow</description>
 
 		<listenerId>SASConsumerLogger0</listenerId>
 	    <listenerId>SASCumulator0</listenerId>
@@ -50,16 +38,16 @@
 			<listenerId>SASActionLogger0</listenerId>
 
 			<workingDirectory>sasmosaicesb_work</workingDirectory>
-			<outputFormat>SAS</outputFormat>
+			<outputFormat>GeoTIFF</outputFormat>
 			<inputFormats>mat</inputFormats>
 			<!--<leavesFolders>stbd;port</leavesFolders>-->
 			<!-- outputBaseFolder>H:\temp</outputBaseFolder -->
 			<!-- LINUX NAS -->
 			<!--outputBaseFolder>/mnt/datastorage/sas/mosaic_output</outputBaseFolder-->
 			<!-- LINUX LOCAL -->
-			<outputBaseFolder>V:\temp\sas\output</outputBaseFolder>
+			<outputBaseFolder>G:\data\sas\output</outputBaseFolder>
 			<JAICacheCapacity>768</JAICacheCapacity>
-	        <JAIParallelism>8</JAIParallelism>
+	    	<JAIParallelism>8</JAIParallelism>
 			<JAICacheThreshold>1</JAICacheThreshold>
 			<numSteps>6</numSteps>
 			<downsampleStep>2</downsampleStep>
@@ -81,14 +69,15 @@
 		</ComposerConfiguration>
         
         <SasEsbConfiguration>
-			<id>sasesb</id>
+			<id>sasMosaicESB</id>
 			<serviceID>sasEsbService</serviceID>
-			<name>SAS ESB</name>
+			<name>SAS Mosaic ESB</name>
 			<description>Sends SOAP messages to ESB</description>
 
             <listenerId>ESBCumulator0</listenerId>
 
-            <serverURL>http://localhost:8080/saservice/soap</serverURL>
+            <serverURL>http://localhost:9090/sas-service/soap</serverURL>
+            <geoserverURL>http://localhost:8080/geoserver-sas</geoserverURL>
         </SasEsbConfiguration>
 
         <!-- if we wish to directly configure geoserver -->
@@ -105,7 +94,20 @@
         -->
 
 	</EventConsumerConfiguration>
-	
+
+    <EventGeneratorConfiguration>
+        <id>id</id>
+        <name>test</name>
+        <description>description</description>
+        <serviceID>fsEventGeneratorService</serviceID>
+        
+        <wildCard>*.*</wildCard>
+        <watchDirectory>sasmosaicesb_work/in</watchDirectory>
+        <keepFiles>true</keepFiles>
+        <osType>OS_UNDEFINED</osType>
+        <eventType>FILE_ADDED</eventType>
+    </EventGeneratorConfiguration>
+    	
     <ListenerConfigurations>
     	<StatusProgressListener>
     		<serviceID>statusListenerService</serviceID>
