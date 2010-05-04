@@ -5,15 +5,15 @@
 	<description>Flow for the SAS Detection manager</description>
 
 	<workingDirectory>sasdetectionesb_work</workingDirectory>
-	<autorun>false</autorun>
-	
+	<autorun>true</autorun>
+
 	<EventConsumerConfiguration>
-		<id>id</id>
-		<name>test</name>
-		<description>description</description>
+		<id>sasdetectionesb_flow</id>
+		<name>sasdetectionesb_flow</name>
+		<description>sasdetectionesb_flow</description>
 
 		<listenerId>SASDetectionConsumerLogger0</listenerId>
-        <listenerId>Cumulator0</listenerId>
+        <listenerId>SASCumulator0</listenerId>
 
 		<workingDirectory>sasdetectionesb_work</workingDirectory>
 		<performBackup>true</performBackup>
@@ -38,15 +38,15 @@
         
 			<workingDirectory>sasdetectionesb_work</workingDirectory>
 			<detectionsErrorLog>sasdetectionesb_work/config/errorlog.txt</detectionsErrorLog>
-			<detectionsOutputDir>D:\work\data\muscleshapes</detectionsOutputDir>
+			<detectionsOutputDir>G:\data\sas\muscleshapes</detectionsOutputDir>
 			<detectionConverterPath>sasdetectionesb_work/config/shapegen.py</detectionConverterPath>
 			<detectionStyle>detection</detectionStyle>
 			<converterTimeout>1200000</converterTimeout> <!-- milliseconds -->
 			<crsDefinitionsDir>sasdetectionesb_work/config/prj</crsDefinitionsDir>
 			<loggingDir>sasdetectionesb_work/log</loggingDir>
-			<executablePath>c:\Python26\python.exe</executablePath>
-			<gdalData>C:\\Python26\\DLLs\\gdalwin32-1.6\\data</gdalData>
-			<path>C:\\Python26</path>
+			<executablePath>C:\Apps\Python26\python.exe</executablePath>
+			<gdalData>C:\Apps\gdalwin32-1.6\data</gdalData>
+			<path>C:\Apps\Python26\DLLs</path>
 			<xslPath>sasdetectionesb_work/config/task.xsl</xslPath>
 <!--		<geoserverURL>http://192.168.1.17:8086/geoserver</geoserverURL>
 			<geoserverUID>admin</geoserverUID>
@@ -56,29 +56,32 @@
 		</DetectionManagerConfiguration>
 
         <SasEsbConfiguration>
-			<id>sasesb</id>
+			<id>sasDetectionESB</id>
 			<serviceID>sasEsbService</serviceID>
-			<name>SAS ESB</name>
+			<name>SAS Detection ESB</name>
 			<description>Sends SOAP messages to ESB</description>
 
-            <id>SASDetectionESBLogger0</id>
+            <listenerId>ESBCumulator0</listenerId>
 
-            <serverURL>http://localhost:8080/saservice/soap</serverURL>
+            <serverURL>http://localhost:9090/sas-service/soap</serverURL>
+            <geoserverURL>http://localhost:8080/geoserver-sas</geoserverURL>
         </SasEsbConfiguration>
 
 	</EventConsumerConfiguration>
 
-	<EventGeneratorConfiguration>
-		<wildCard>*.*</wildCard>
-		<watchDirectory>sasdetectionflowworkingdir/in</watchDirectory>
-		<osType>OS_UNDEFINED</osType>
-		<eventType>FILE_ADDED</eventType>
-		<id>id</id>
+    <EventGeneratorConfiguration>
+        <id>id</id>
+        <name>test</name>
+        <description>description</description>
         <serviceID>fsEventGeneratorService</serviceID>
-		<description>description</description>
-		<name>test</name>
-	</EventGeneratorConfiguration>
-
+        
+        <wildCard>*.*</wildCard>
+        <watchDirectory>sasdetectionesb_work/in</watchDirectory>
+        <keepFiles>true</keepFiles>
+        <osType>OS_UNDEFINED</osType>
+        <eventType>FILE_ADDED</eventType>
+    </EventGeneratorConfiguration>
+    
 	<ListenerConfigurations>
     	<StatusProgressListener>
     		<serviceID>statusListenerService</serviceID>
@@ -108,8 +111,14 @@
 
         <CumulatingProgressListener>
             <serviceID>cumulatingListenerService</serviceID>
-            <id>Cumulator0</id>
+            <id>SASCumulator0</id>
         </CumulatingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>ESBCumulator0</id>
+        </CumulatingProgressListener>
+        
     </ListenerConfigurations>
     
 </FlowConfiguration>
