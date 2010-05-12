@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+
+    <id>sample_shape_flow</id>
+    <description>Sample injection of sparse shapefiles</description>
+    <name>Shapefile</name>
+
+    <workingDirectory>shape_work</workingDirectory>
+    <autorun>false</autorun>
+
+    <EventConsumerConfiguration>
+        <id>shape_consumer</id>
+        <description>Shapefile packer and sender</description>
+        <name>shape_consumer</name>
+
+        <listenerId>ConsumerLogger0</listenerId>
+        <listenerId>Cumulator</listenerId>
+
+        <workingDirectory>shape_work</workingDirectory>
+        <performBackup>true</performBackup>
+
+        <FileEventRule>
+            <optional>false</optional>
+            <originalOccurrencies>1</originalOccurrencies>
+            <regex>.*\.shp</regex>
+            <id>r1</id>
+            <description>description</description>
+            <name>test</name>
+        </FileEventRule>
+        <FileEventRule>
+            <optional>false</optional>
+            <originalOccurrencies>1</originalOccurrencies>
+            <regex>.*\.shx</regex>
+            <id>r2</id>
+            <description>description</description>
+            <name>test</name>
+        </FileEventRule>
+        <FileEventRule>
+            <optional>false</optional>
+            <originalOccurrencies>1</originalOccurrencies>
+            <regex>.*\.dbf</regex>
+            <id>r3</id>
+            <description>description</description>
+            <name>test</name>
+        </FileEventRule>
+        <FileEventRule>
+            <optional>true</optional>
+            <originalOccurrencies>1</originalOccurrencies>
+            <regex>.*\.prj</regex>
+            <id>r4</id>
+            <description>description</description>
+            <name>test</name>
+        </FileEventRule>
+
+        <ShapeFileConfiguration>
+            <serviceID>shapefileGeoServerGeneratorService</serviceID>
+            <id>step0</id>
+            <name>ShapeFileIngestion</name>
+            <description>Get a pack of shapefiles (optionally zipped) and ingest them into a GeoServer instance.</description>
+
+			<listenerId>StatusActionLogger0</listenerId>
+            <listenerId>ActionLogger0</listenerId>
+
+            <workingDirectory>shape_work</workingDirectory>
+        </ShapeFileConfiguration>
+
+		<GeoServerRESTActionConfiguration>
+            <serviceID>geoServerRESTGeneratorService</serviceID>
+            <id>step1</id>
+            <name>GeoServerIngestion</name>
+            <description>GeoServer REST.</description>
+
+			<listenerId>StatusActionLogger0</listenerId>
+            <listenerId>ActionLogger0</listenerId>
+
+            <workingDirectory>shape_work</workingDirectory>
+            <crs>EPSG:4326</crs>
+            <envelope/>
+            <dataTransferMethod>DIRECT</dataTransferMethod>
+            <vectorialLayer>true</vectorialLayer>
+            <geoserverPWD>geoserver</geoserverPWD>
+            <geoserverUID>admin</geoserverUID>
+            <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+            <geoserverVersion>2.0.0</geoserverVersion>
+            <!-- storeFilePrefix></storeFilePrefix -->
+            <!-- storeId></storeId -->
+            <storeType>shp</storeType>
+            <wmsPath>/</wmsPath>
+            <defaultStyle>polygon</defaultStyle>
+            <styles/>
+            <!-- styles>
+                <style>raster.sld</style>
+            </styles -->
+		</GeoServerRESTActionConfiguration>
+		
+    </EventConsumerConfiguration>
+
+    <EventGeneratorConfiguration>
+        <id>id</id>
+        <name>test</name>
+        <description>description</description>
+        <serviceID>fsEventGeneratorService</serviceID>
+        
+        <wildCard>*.*</wildCard>
+        <watchDirectory>shape_work/in</watchDirectory>
+        <keepFiles>true</keepFiles>
+        <osType>OS_UNDEFINED</osType>
+        <eventType>FILE_ADDED</eventType>
+    </EventGeneratorConfiguration>
+
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>StatusActionLogger0</id>
+    	</StatusProgressListener>
+    	
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ActionLogger0</id>
+
+            <loggerName>ActionLogger</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger0</id>
+
+            <loggerName>ConsLogger</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>Cumulator</id>
+        </CumulatingProgressListener>
+
+    </ListenerConfigurations>
+
+</FlowConfiguration>

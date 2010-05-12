@@ -1,0 +1,1655 @@
+[INFO] Scanning for projects...
+[INFO] Reactor build order: 
+[INFO]   GeoSolutions GeoBatch
+[INFO]   File System Monitor
+[INFO]   File System Monitor - Deployer
+[INFO]   File System Monitor - JAR Deployer
+[INFO]   GeoBatch core
+[INFO]   GeoBatch core model
+[INFO]   GeoBatch DAOs
+[INFO]   GeoBatch DAOs - XStream base project
+[INFO]   GeoBatch DAOs - XStream Alias Registry
+[INFO]   GeoBatch core implementation
+[INFO]   Monitor module
+[INFO]   FileSystemMonitor Core modules
+[INFO]   FileSystemMonitor plugins
+[INFO]   Directory Monitor native plugin
+[INFO]   Directory Monitor Pure Java plugin
+[INFO]   GeoBatch filesystem catalog
+[INFO]   GeoBatch actions
+[INFO]   GeoBatch action: GeoServer parent
+[INFO]   GeoBatch action: GeoServer config
+[INFO]   GeoBatch DAOs - XStream main
+[INFO]   GeoBatch action: FTP client
+[INFO]   GeoBatch action: GeoServer 2 REST client
+[INFO]   GeoBatch action: GeoTIFF
+[INFO]   GeoBatch action: GWC config
+[INFO]   GeoBatch action: ImageMosaic ingester
+[INFO]   GeoBatch action: ASCII Grids
+[INFO]   GeoBatch action: ESRI Shapefiles
+[INFO]   GeoBatch action: Task Executor
+[INFO]   GeoBatch action: SAS Tiles processor
+[INFO]   GeoBatch action: SAS ESB messaging
+[INFO]   GeoBatch users management
+[INFO]   GeoBatch FTP Server
+[INFO]   GeoBatch web module
+[INFO] Searching repository for plugin with prefix: 'dependency'.
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoSolutions GeoBatch
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb:pom:0.9-SNAPSHOT
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building File System Monitor
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-fsm:pom:0.9-SNAPSHOT
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building File System Monitor - Deployer
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-fsm-deployer:pom:0.9-SNAPSHOT
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building File System Monitor - JAR Deployer
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-fsm-jar-deployer:pom:0.9-SNAPSHOT
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch core
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-core:pom:0.9-SNAPSHOT
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch core model
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT
+[INFO] +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] +- commons-io:commons-io:jar:1.4:compile
+[INFO] +- junit:junit:jar:4.5:test
+[INFO] \- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO]    +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO]    |  \- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO]    |     +- java3d:vecmath:jar:1.3.1:compile (version managed from 1.3.2)
+[INFO]    |     +- commons-pool:commons-pool:jar:1.3:compile (version managed from 1.5.3)
+[INFO]    |     \- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO]    |        +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO]    |        +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO]    |        \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO]    +- com.vividsolutions:jts:jar:1.9:compile
+[INFO]    +- jdom:jdom:jar:1.0:compile
+[INFO]    \- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO]       \- commons-logging:commons-logging:jar:1.1.1:compile (version managed from 1.0.3)
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch DAOs
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-dao:pom:0.9-SNAPSHOT
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch DAOs - XStream base project
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-dao-xstream-base:pom:0.9-SNAPSHOT
+[INFO] +- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |  \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch DAOs - XStream Alias Registry
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT
+[INFO] +- junit:junit:jar:4.5:test
+[INFO] \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO]    \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch core implementation
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT
+[INFO] +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] +- commons-io:commons-io:jar:1.4:compile
+[INFO] +- junit:junit:jar:4.5:test
+[INFO] +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  |     +- java3d:vecmath:jar:1.3.1:compile (version managed from 1.3.2)
+[INFO] |  |     +- commons-pool:commons-pool:jar:1.3:compile (version managed from 1.5.3)
+[INFO] |  |     \- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |        +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |        +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |        \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  +- jdom:jdom:jar:1.0:compile
+[INFO] |  \- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |     \- commons-logging:commons-logging:jar:1.1.1:compile (version managed from 1.0.3)
+[INFO] +- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] \- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO]    \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO]       \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Monitor module
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  \- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |     +- java3d:vecmath:jar:1.3.1:compile (version managed from 1.3.2)
+[INFO] |  |  |     +- commons-pool:commons-pool:jar:1.3:compile (version managed from 1.5.3)
+[INFO] |  |  |     \- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |        +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  |        +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  |        \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  |  +- jdom:jdom:jar:1.0:compile
+[INFO] |  |  \- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |     \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |        \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] +- junit:junit:jar:4.5:test
+[INFO] +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  \- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] +- org.springframework:spring-test:jar:2.5.6:test
+[INFO] \- org.springframework:spring-context:jar:2.5.6:compile
+[INFO]    +- aopalliance:aopalliance:jar:1.0:compile
+[INFO]    \- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Building FileSystemMonitor Core modules
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-fsm-module:pom:0.9-SNAPSHOT
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building FileSystemMonitor plugins
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-fsm-plugin:pom:0.9-SNAPSHOT
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Directory Monitor native plugin
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  |  +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  |  \- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  |     +- java3d:vecmath:jar:1.3.1:compile (version managed from 1.3.2)
+[INFO] |  |  |  |     +- commons-pool:commons-pool:jar:1.3:compile (version managed from 1.5.3)
+[INFO] |  |  |  |     \- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  |        +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  |  |        +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  |  |        \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  |  |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  |  |  +- jdom:jdom:jar:1.0:compile
+[INFO] |  |  |  \- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  |  +- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  \- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  |     \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |  |        \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] |  +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  |  \- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  \- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |     +- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |     \- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] +- jnotify:jnotify:jar:0.91:compile
+[INFO] +- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] +- org.springframework:spring-test:jar:2.5:test
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Directory Monitor Pure Java plugin
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  |  +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  |  \- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  |     +- java3d:vecmath:jar:1.3.1:compile (version managed from 1.3.2)
+[INFO] |  |  |  |     +- commons-pool:commons-pool:jar:1.3:compile (version managed from 1.5.3)
+[INFO] |  |  |  |     \- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  |        +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  |  |        +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  |  |        \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  |  |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  |  |  +- jdom:jdom:jar:1.0:compile
+[INFO] |  |  |  \- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  |  +- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  \- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  |     \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |  |        \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] |  +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  |  \- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  \- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |     +- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |     \- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-test:jar:2.5:test
+[INFO] +- it.geosolutions:test-data:jar:1.0-SNAPSHOT:test
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch filesystem catalog
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT
+[INFO] +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- jdom:jdom:jar:1.0:compile
+[INFO] +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] +- java3d:vecmath:jar:1.3.1:compile
+[INFO] +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] +- org.jdom:jdom:jar:1.1:compile
+[INFO] +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] +- junit:junit:jar:4.5:test
+[INFO] +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] \- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO]    +- commons-io:commons-io:jar:1.4:compile
+[INFO]    +- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO]    \- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO]       \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO]          \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch actions
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-actions:pom:0.9-SNAPSHOT
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: GeoServer parent
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-action-geoserver-parent:pom:0.9-SNAPSHOT
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: GeoServer config
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-action-geoserver:jar:0.9-SNAPSHOT
+[INFO] +- junit:junit:jar:4.5:test
+[INFO] +- net.sf.json-lib:json-lib:jar:jdk15:2.1:compile
+[INFO] |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile (version managed from 3.2)
+[INFO] |  +- commons-lang:commons-lang:jar:2.1:compile (version managed from 2.3)
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  \- net.sf.ezmorph:ezmorph:jar:1.0.3:compile
+[INFO] +- org.codehaus.jettison:jettison:jar:1.0.1:compile
+[INFO] |  \- stax:stax-api:jar:1.0.1:compile
+[INFO] +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] \- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO]    +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO]    +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO]    +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO]    +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO]    |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO]    +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO]    +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO]    +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO]    +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO]    |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO]    |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO]    |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO]    +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO]    +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO]    |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO]    +- javax.media:jai_core:jar:1.1.3:compile
+[INFO]    +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO]    +- javax.media:jai_imageio:jar:1.1:compile
+[INFO]    +- java3d:vecmath:jar:1.3.1:compile
+[INFO]    +- com.vividsolutions:jts:jar:1.9:compile
+[INFO]    +- org.jdom:jdom:jar:1.1:compile
+[INFO]    +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO]    +- commons-pool:commons-pool:jar:1.3:compile
+[INFO]    +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO]    +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO]    |  +- jnotify:jnotify:jar:0.91:compile
+[INFO]    |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO]    \- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch DAOs - XStream main
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-dao-xstream:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |  +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  +- org.jdom:jdom:jar:1.1:compile
+[INFO] |  +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] |  +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-action-geoserver:jar:0.9-SNAPSHOT:test
+[INFO] |  +- net.sf.json-lib:json-lib:jar:jdk15:2.1:test
+[INFO] |  |  \- net.sf.ezmorph:ezmorph:jar:1.0.3:test
+[INFO] |  \- org.codehaus.jettison:jettison:jar:1.0.1:test
+[INFO] |     \- stax:stax-api:jar:1.0.1:test
+[INFO] +- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |  \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: FTP client
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-action-ftp:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |  +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  +- org.jdom:jdom:jar:1.1:compile
+[INFO] |  +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |     +- commons-io:commons-io:jar:1.4:compile
+[INFO] |     \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] +- com.enterprisedt:edtFTPj:jar:2.0.3:compile
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: GeoServer 2 REST client
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-action-geoserver-restclient:jar:0.9-SNAPSHOT
+[INFO] +- log4j:log4j:jar:1.2.12:compile
+[INFO] +- commons-io:commons-io:jar:1.4:compile
+[INFO] +- commons-httpclient:commons-httpclient:jar:3.1:compile
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.1:compile (version managed from 1.0.4)
+[INFO] |  \- commons-codec:commons-codec:jar:1.2:compile
+[INFO] +- org.jdom:jdom:jar:1.1:compile
+[INFO] +- junit:junit:jar:4.5:test
+[INFO] +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |  +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] |  +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] \- it.geosolutions:gb-action-geoserver:jar:0.9-SNAPSHOT:compile
+[INFO]    +- net.sf.json-lib:json-lib:jar:jdk15:2.1:compile
+[INFO]    |  \- net.sf.ezmorph:ezmorph:jar:1.0.3:compile
+[INFO]    \- org.codehaus.jettison:jettison:jar:1.0.1:compile
+[INFO]       \- stax:stax-api:jar:1.0.1:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: GeoTIFF
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-action-geotiff:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] +- org.geotools:gt-geotiff:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions.imageio-ext:imageio-ext-tiff:jar:1.0.5:compile
+[INFO] |     \- it.geosolutions.imageio-ext:imageio-ext-utilities:jar:1.0.5:compile
+[INFO] +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |  +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  +- org.jdom:jdom:jar:1.1:compile
+[INFO] |  +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] |  +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-action-geoserver:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- net.sf.json-lib:json-lib:jar:jdk15:2.1:compile
+[INFO] |  |  \- net.sf.ezmorph:ezmorph:jar:1.0.3:compile
+[INFO] |  \- org.codehaus.jettison:jettison:jar:1.0.1:compile
+[INFO] |     \- stax:stax-api:jar:1.0.1:compile
+[INFO] +- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] +- org.geotools:gt-coveragetools:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-arcgrid:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- it.geosolutions.imageio-ext:imageio-ext-arcgrid:jar:1.0.5:compile
+[INFO] |  |     \- it.geosolutions.imageio-ext:imageio-ext-customstreams:jar:1.0.5:compile
+[INFO] |  +- org.geotools:gt-image:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-imagemosaic:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.geotools.jdbc:gt-jdbc-postgis:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  +- postgresql:postgresql:jar:8.4-701.jdbc3:compile
+[INFO] |  |  |  \- org.geotools:gt-jdbc:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |     +- org.geotools:gt-data:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |     \- commons-dbcp:commons-dbcp:jar:1.2.2:compile
+[INFO] |  |  +- org.geotools:gt-shapefile:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- org.geotools:gt-jp2k:jar:2.7-SNAPSHOT:compile
+[INFO] |  |     \- it.geosolutions.imageio-ext:imageio-ext-kakadu:jar:1.0.5:compile
+[INFO] |  |        \- it.geosolutions.imageio-ext:imageio-ext-kakadujni:jar:5.2.6:compile
+[INFO] |  +- org.geotools:gt-imagepyramid:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- org.geotools:gt-imageio-ext-gdal:jar:2.7-SNAPSHOT:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalarcbinarygrid:jar:1.0.5:compile
+[INFO] |     |  \- it.geosolutions.imageio-ext:imageio-ext-gdalframework:jar:1.0.5:compile
+[INFO] |     |     +- it.geosolutions.imageio-ext:imageio-ext-gdal-bindings:jar:1.4.5b:compile
+[INFO] |     |     \- it.geosolutions.imageio-ext:imageio-ext-geocore:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalmrsid:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalecw:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdaldted:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalkakadujp2:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalmrsidjp2:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalecwjp2:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalehdr:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalenvihdr:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalerdasimg:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalnitf:jar:1.0.5:compile
+[INFO] |     \- it.geosolutions.imageio-ext:imageio-ext-imagereadmt:jar:1.0.5:compile
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: GWC config
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-action-geowebcache:jar:0.9-SNAPSHOT
+[INFO] +- junit:junit:jar:4.5:test
+[INFO] +- log4j:log4j:jar:1.2.12:compile
+[INFO] +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  \- commons-lang:commons-lang:jar:2.1:compile
+[INFO] +- commons-io:commons-io:jar:1.4:compile
+[INFO] +- org.restlet:org.restlet:jar:1.1.6:compile
+[INFO] +- com.noelios.restlet:com.noelios.restlet:jar:1.1.6:compile
+[INFO] +- com.noelios.restlet:com.noelios.restlet.ext.net:jar:1.1.6:compile
+[INFO] +- com.noelios.restlet:com.noelios.restlet.ext.asyncweb:jar:1.0.9:compile
+[INFO] |  \- org.safehaus.asyncweb:org.safehaus.asyncweb:jar:0.8.2:compile
+[INFO] +- net.sf.json-lib:json-lib:jar:jdk15:2.1:compile
+[INFO] |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile (version managed from 3.2)
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  \- net.sf.ezmorph:ezmorph:jar:1.0.3:compile
+[INFO] +- org.codehaus.jettison:jettison:jar:1.0.1:compile
+[INFO] |  \- stax:stax-api:jar:1.0.1:compile
+[INFO] +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |  +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  +- org.jdom:jdom:jar:1.1:compile
+[INFO] |  +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |     \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] \- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO]    \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO]       \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: ImageMosaic ingester
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-action-imagemosaic:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-action-geoserver:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- net.sf.json-lib:json-lib:jar:jdk15:2.1:compile
+[INFO] |  |  \- net.sf.ezmorph:ezmorph:jar:1.0.3:compile
+[INFO] |  +- org.codehaus.jettison:jettison:jar:1.0.1:compile
+[INFO] |  |  \- stax:stax-api:jar:1.0.1:compile
+[INFO] |  \- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |     \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |        \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] +- log4j:log4j:jar:1.2.12:compile
+[INFO] +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- jdom:jdom:jar:1.0:compile
+[INFO] |  \- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] +- org.geotools:gt-geotiff:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions.imageio-ext:imageio-ext-tiff:jar:1.0.5:compile
+[INFO] |     \- it.geosolutions.imageio-ext:imageio-ext-utilities:jar:1.0.5:compile
+[INFO] +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  \- commons-lang:commons-lang:jar:2.1:compile
+[INFO] +- commons-io:commons-io:jar:1.4:compile
+[INFO] +- commons-dbcp:commons-dbcp:jar:1.2.2:compile
+[INFO] +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] +- java3d:vecmath:jar:1.3.1:compile
+[INFO] +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |  +- org.jdom:jdom:jar:1.1:compile
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: ASCII Grids
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-action-ascii:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-action-geoserver:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- net.sf.json-lib:json-lib:jar:jdk15:2.1:compile
+[INFO] |  |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  |  +- commons-collections:commons-collections:jar:3.1:compile (version managed from 3.2)
+[INFO] |  |  +- commons-lang:commons-lang:jar:2.1:compile (version managed from 2.3)
+[INFO] |  |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  |  \- net.sf.ezmorph:ezmorph:jar:1.0.3:compile
+[INFO] |  +- org.codehaus.jettison:jettison:jar:1.0.1:compile
+[INFO] |  |  \- stax:stax-api:jar:1.0.1:compile
+[INFO] |  +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  |  \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |     +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |     +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |     +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |     +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |     |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |     +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |     +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |     +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |     +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |     |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |     |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |     |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |     +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |     +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |     +- org.jdom:jdom:jar:1.1:compile
+[INFO] |     +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |     +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |     +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |     +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |     |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |     |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |     \- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] +- org.geotools:gt-arcgrid:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |     \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] +- it.geosolutions.imageio-ext:imageio-ext-arcgrid:jar:1.0.5:compile
+[INFO] |  +- it.geosolutions.imageio-ext:imageio-ext-utilities:jar:1.0.5:compile
+[INFO] |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  \- javax.media:jai_imageio:jar:1.1:compile
+[INFO] +- it.geosolutions.imageio-ext:imageio-ext-customstreams:jar:1.0.5:compile
+[INFO] +- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: ESRI Shapefiles
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-action-shapefile:jar:0.9-SNAPSHOT
+[INFO] +- org.geotools:gt-shapefile:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  |  \- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- java3d:vecmath:jar:1.3.1:compile (version managed from 1.3.2)
+[INFO] |  |  +- commons-pool:commons-pool:jar:1.3:compile (version managed from 1.5.3)
+[INFO] |  |  \- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |     +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |     +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |     \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  \- jdom:jdom:jar:1.0:compile
+[INFO] +- it.geosolutions:gb-action-geoserver:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- net.sf.json-lib:json-lib:jar:jdk15:2.1:compile
+[INFO] |  |  +- commons-collections:commons-collections:jar:3.1:compile (version managed from 3.2)
+[INFO] |  |  +- commons-lang:commons-lang:jar:2.1:compile (version managed from 2.3)
+[INFO] |  |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  |  \- net.sf.ezmorph:ezmorph:jar:1.0.3:compile
+[INFO] |  +- org.codehaus.jettison:jettison:jar:1.0.1:compile
+[INFO] |  |  \- stax:stax-api:jar:1.0.1:compile
+[INFO] |  +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  |  \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |     +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |     +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |     +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |     +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |     |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |     +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |     +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |     +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |     |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |     +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |     +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |     +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |     +- org.jdom:jdom:jar:1.1:compile
+[INFO] |     +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |     +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |     +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |     |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |     |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |     \- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: Task Executor
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-action-taskexecutor:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |  +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  +- org.jdom:jdom:jar:1.1:compile
+[INFO] |  +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |     +- commons-io:commons-io:jar:1.4:compile
+[INFO] |     \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] +- org.apache.ant:ant:jar:1.7.1:compile
+[INFO] +- org.apache.ant:ant-launcher:jar:1.7.1:compile
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: SAS Tiles processor
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-action-sas:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |  +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  +- org.jdom:jdom:jar:1.1:compile
+[INFO] |  +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] |  +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] +- it.geosolutions:gb-action-geoserver:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- net.sf.json-lib:json-lib:jar:jdk15:2.1:compile
+[INFO] |  |  \- net.sf.ezmorph:ezmorph:jar:1.0.3:compile
+[INFO] |  \- org.codehaus.jettison:jettison:jar:1.0.1:compile
+[INFO] |     \- stax:stax-api:jar:1.0.1:compile
+[INFO] +- it.geosolutions:gb-action-geoserver-restclient:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- log4j:log4j:jar:1.2.12:compile
+[INFO] |  \- commons-httpclient:commons-httpclient:jar:3.1:compile
+[INFO] |     \- commons-codec:commons-codec:jar:1.2:compile
+[INFO] +- it.geosolutions:gb-action-geotiff:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-action-shapefile:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-action-taskexecutor:jar:0.9-SNAPSHOT:compile
+[INFO] +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] +- org.geotools:gt-geotiff:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions.imageio-ext:imageio-ext-tiff:jar:1.0.5:compile
+[INFO] |     \- it.geosolutions.imageio-ext:imageio-ext-utilities:jar:1.0.5:compile
+[INFO] +- org.geotools:gt-matfile5:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions.imageio-ext:imageio-ext-mat-sas:jar:1.1M012010:compile
+[INFO] |  |  \- it.geosolutions.imageio-ext:imageio-ext-mat-core:jar:1.1M012010:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-customstreams:jar:1.0.5:compile
+[INFO] |  |     \- it.geosolutions.imageio-ext:imageio-ext-jmatio:jar:1.1M012010:compile
+[INFO] |  \- it.geosolutions.imageio-ext:imageio-ext-imagereadmt:jar:1.1M012010:compile
+[INFO] +- org.geotools:gt-coveragetools:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-arcgrid:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- it.geosolutions.imageio-ext:imageio-ext-arcgrid:jar:1.0.5:compile
+[INFO] |  +- org.geotools:gt-image:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-imagemosaic:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.geotools.jdbc:gt-jdbc-postgis:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  \- org.geotools:gt-jdbc:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |     +- org.geotools:gt-data:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |     \- commons-dbcp:commons-dbcp:jar:1.2.2:compile
+[INFO] |  |  \- org.geotools:gt-jp2k:jar:2.7-SNAPSHOT:compile
+[INFO] |  |     \- it.geosolutions.imageio-ext:imageio-ext-kakadu:jar:1.0.5:compile
+[INFO] |  |        \- it.geosolutions.imageio-ext:imageio-ext-kakadujni:jar:5.2.6:compile
+[INFO] |  +- org.geotools:gt-imagepyramid:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- org.geotools:gt-imageio-ext-gdal:jar:2.7-SNAPSHOT:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalarcbinarygrid:jar:1.0.5:compile
+[INFO] |     |  \- it.geosolutions.imageio-ext:imageio-ext-gdalframework:jar:1.0.5:compile
+[INFO] |     |     +- it.geosolutions.imageio-ext:imageio-ext-gdal-bindings:jar:1.4.5b:compile
+[INFO] |     |     \- it.geosolutions.imageio-ext:imageio-ext-geocore:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalmrsid:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalecw:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdaldted:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalkakadujp2:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalmrsidjp2:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalecwjp2:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalehdr:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalenvihdr:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalerdasimg:jar:1.0.5:compile
+[INFO] |     \- it.geosolutions.imageio-ext:imageio-ext-gdalnitf:jar:1.0.5:compile
+[INFO] +- org.geotools:gt-shapefile:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- jdom:jdom:jar:1.0:compile
+[INFO] +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] +- org.apache.ant:ant:jar:1.7.1:compile
+[INFO] +- org.apache.ant:ant-launcher:jar:1.7.1:compile
+[INFO] +- it.geosolutions.opensdi.sas:sas-model:jar:0.1-SNAPSHOT:compile
+[INFO] |  +- javax.xml.bind:jaxb-api:jar:2.1:compile
+[INFO] |  |  +- javax.xml.stream:stax-api:jar:1.0-2:compile
+[INFO] |  |  \- javax.activation:activation:jar:1.1:compile
+[INFO] |  +- com.sun.xml.bind:jaxb-impl:jar:2.1.2:compile
+[INFO] |  +- org.slf4j:slf4j-log4j12:jar:1.5.8:compile
+[INFO] |  |  \- org.slf4j:slf4j-api:jar:1.5.6:compile (version managed from 1.5.8)
+[INFO] |  +- org.springframework:spring:jar:2.5.6:compile
+[INFO] |  +- org.hibernate:hibernate-entitymanager:jar:3.3.2.GA:compile
+[INFO] |  |  +- org.hibernate:hibernate:jar:3.2.6.ga:compile
+[INFO] |  |  |  +- net.sf.ehcache:ehcache:jar:1.2.3:compile
+[INFO] |  |  |  +- javax.transaction:jta:jar:1.1:compile
+[INFO] |  |  |  +- dom4j:dom4j:jar:1.6.1:compile
+[INFO] |  |  |  \- antlr:antlr:jar:2.7.6:compile
+[INFO] |  |  +- org.hibernate:ejb3-persistence:jar:1.0.2.GA:compile
+[INFO] |  |  \- javassist:javassist:jar:3.4.GA:compile
+[INFO] |  +- org.hibernate:hibernate-annotations:jar:3.3.1.GA:compile
+[INFO] |  +- org.hibernate:hibernate-commons-annotations:jar:3.1.0.GA:compile
+[INFO] |  +- org.hibernatespatial:hibernate-spatial-postgis:jar:1.0-SNAPSHOT:compile (version managed from 1.0)
+[INFO] |  |  +- org.hibernatespatial:hibernate-spatial:jar:1.0-SNAPSHOT:compile
+[INFO] |  |  +- org.postgis:postgis-jdbc:jar:1.1.6:compile
+[INFO] |  |  \- postgresql:postgresql:jar:8.4-701.jdbc3:compile
+[INFO] |  +- asm:asm:jar:2.2.3:compile
+[INFO] |  \- cglib:cglib-nodep:jar:2.1_3:compile
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch action: SAS ESB messaging
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[WARNING] POM for 'org.apache.servicemix.specs:org.apache.servicemix.specs.jbi-api-1.0:pom:1.1.0:compile' is invalid.
+
+Its dependencies (if any) will NOT be available to the current build.
+[INFO] [dependency:tree {execution: default-cli}]
+[WARNING] POM for 'org.apache.servicemix.specs:org.apache.servicemix.specs.jbi-api-1.0:pom:1.1.0:compile' is invalid.
+
+Its dependencies (if any) will NOT be available to the current build.
+[INFO] it.geosolutions:gb-action-sasesb:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  \- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |  |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |  +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  +- org.jdom:jdom:jar:1.1:compile
+[INFO] |  +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] |  +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] +- it.geosolutions:gb-action-geoserver:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- net.sf.json-lib:json-lib:jar:jdk15:2.1:compile
+[INFO] |  |  \- net.sf.ezmorph:ezmorph:jar:1.0.3:compile
+[INFO] |  \- org.codehaus.jettison:jettison:jar:1.0.1:compile
+[INFO] |     \- stax:stax-api:jar:1.0.1:compile
+[INFO] +- it.geosolutions:gb-action-geotiff:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-action-shapefile:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- org.geotools:gt-shapefile:jar:2.7-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-action-sas:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-action-geoserver-restclient:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  \- commons-httpclient:commons-httpclient:jar:3.1:compile
+[INFO] |  |     \- commons-codec:commons-codec:jar:1.2:compile
+[INFO] |  +- it.geosolutions:gb-action-taskexecutor:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  \- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] +- org.geotools:gt-geotiff:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions.imageio-ext:imageio-ext-tiff:jar:1.0.5:compile
+[INFO] |     \- it.geosolutions.imageio-ext:imageio-ext-utilities:jar:1.0.5:compile
+[INFO] +- org.geotools:gt-matfile5:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions.imageio-ext:imageio-ext-mat-sas:jar:1.1M012010:compile
+[INFO] |  |  \- it.geosolutions.imageio-ext:imageio-ext-mat-core:jar:1.1M012010:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-customstreams:jar:1.0.5:compile
+[INFO] |  |     \- it.geosolutions.imageio-ext:imageio-ext-jmatio:jar:1.1M012010:compile
+[INFO] |  \- it.geosolutions.imageio-ext:imageio-ext-imagereadmt:jar:1.1M012010:compile
+[INFO] +- org.geotools:gt-coveragetools:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-arcgrid:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- it.geosolutions.imageio-ext:imageio-ext-arcgrid:jar:1.0.5:compile
+[INFO] |  +- org.geotools:gt-image:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-imagemosaic:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.geotools.jdbc:gt-jdbc-postgis:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  \- org.geotools:gt-jdbc:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |     \- org.geotools:gt-data:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- org.geotools:gt-jp2k:jar:2.7-SNAPSHOT:compile
+[INFO] |  |     \- it.geosolutions.imageio-ext:imageio-ext-kakadu:jar:1.0.5:compile
+[INFO] |  |        \- it.geosolutions.imageio-ext:imageio-ext-kakadujni:jar:5.2.6:compile
+[INFO] |  +- org.geotools:gt-imagepyramid:jar:2.7-SNAPSHOT:compile
+[INFO] |  \- org.geotools:gt-imageio-ext-gdal:jar:2.7-SNAPSHOT:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalarcbinarygrid:jar:1.0.5:compile
+[INFO] |     |  \- it.geosolutions.imageio-ext:imageio-ext-gdalframework:jar:1.0.5:compile
+[INFO] |     |     +- it.geosolutions.imageio-ext:imageio-ext-gdal-bindings:jar:1.4.5b:compile
+[INFO] |     |     \- it.geosolutions.imageio-ext:imageio-ext-geocore:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalmrsid:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalecw:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdaldted:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalkakadujp2:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalmrsidjp2:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalecwjp2:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalehdr:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalenvihdr:jar:1.0.5:compile
+[INFO] |     +- it.geosolutions.imageio-ext:imageio-ext-gdalerdasimg:jar:1.0.5:compile
+[INFO] |     \- it.geosolutions.imageio-ext:imageio-ext-gdalnitf:jar:1.0.5:compile
+[INFO] +- org.apache.ant:ant:jar:1.7.1:compile
+[INFO] +- org.apache.ant:ant-launcher:jar:1.7.1:compile
+[INFO] +- it.geosolutions.opensdi.sas:sas-model:jar:0.1-SNAPSHOT:compile
+[INFO] |  +- javax.xml.bind:jaxb-api:jar:2.1:compile
+[INFO] |  |  +- javax.xml.stream:stax-api:jar:1.0-2:compile
+[INFO] |  |  \- javax.activation:activation:jar:1.1:compile
+[INFO] |  +- com.sun.xml.bind:jaxb-impl:jar:2.1.2:compile
+[INFO] |  +- org.slf4j:slf4j-log4j12:jar:1.5.8:compile
+[INFO] |  |  \- org.slf4j:slf4j-api:jar:1.5.6:compile (version managed from 1.5.8)
+[INFO] |  +- org.springframework:spring:jar:2.5.6:compile
+[INFO] |  +- org.hibernate:hibernate-entitymanager:jar:3.3.2.GA:compile
+[INFO] |  |  +- org.hibernate:hibernate:jar:3.2.6.ga:compile
+[INFO] |  |  |  +- net.sf.ehcache:ehcache:jar:1.2.3:compile
+[INFO] |  |  |  +- javax.transaction:jta:jar:1.1:compile
+[INFO] |  |  |  \- antlr:antlr:jar:2.7.6:compile
+[INFO] |  |  +- org.hibernate:ejb3-persistence:jar:1.0.2.GA:compile
+[INFO] |  |  \- javassist:javassist:jar:3.4.GA:compile
+[INFO] |  +- org.hibernate:hibernate-annotations:jar:3.3.1.GA:compile
+[INFO] |  +- org.hibernate:hibernate-commons-annotations:jar:3.1.0.GA:compile
+[INFO] |  +- org.hibernatespatial:hibernate-spatial-postgis:jar:1.0-SNAPSHOT:compile (version managed from 1.0)
+[INFO] |  |  \- org.hibernatespatial:hibernate-spatial:jar:1.0-SNAPSHOT:compile
+[INFO] |  +- asm:asm:jar:2.2.3:compile
+[INFO] |  \- cglib:cglib-nodep:jar:2.1_3:compile
+[INFO] +- it.geosolutions.opensdi.sas:sas-ws-su:jar:0.1-SNAPSHOT:compile
+[INFO] |  +- org.apache.servicemix:servicemix-cxf-se:jar:2009.02:compile
+[INFO] |  |  +- org.apache.servicemix:servicemix-shared:jar:2009.02:compile
+[INFO] |  |  |  +- org.apache.servicemix:servicemix-common:jar:2009.02:compile
+[INFO] |  |  |  |  +- org.apache.xbean:xbean-spring:jar:3.4.3:compile
+[INFO] |  |  |  |  \- org.apache.xbean:xbean-classloader:jar:3.4.3:compile
+[INFO] |  |  |  +- org.apache.servicemix:servicemix-soap:jar:2009.02:compile
+[INFO] |  |  |  |  +- org.apache.ws.security:wss4j:jar:1.5.8:compile
+[INFO] |  |  |  |  |  \- xalan:xalan:jar:2.7.1:compile
+[INFO] |  |  |  |  |     \- xalan:serializer:jar:2.7.1:compile
+[INFO] |  |  |  |  +- bouncycastle:bcprov-jdk15:jar:140:compile
+[INFO] |  |  |  |  +- org.opensaml:opensaml:jar:1.1:compile
+[INFO] |  |  |  |  \- org.apache.santuario:xmlsec:jar:1.4.3:compile
+[INFO] |  |  |  +- org.apache.servicemix:servicemix-soap2:jar:2009.02:compile
+[INFO] |  |  |  |  \- org.apache.woden:woden:jar:1.0.0M6:compile
+[INFO] |  |  |  \- wsdl4j:wsdl4j:jar:1.6.2:compile
+[INFO] |  |  +- org.apache.ws.commons.schema:XmlSchema:jar:1.4.3:compile
+[INFO] |  |  +- org.apache.cxf:cxf-rt-frontend-jaxws:jar:2.2.5:compile
+[INFO] |  |  |  +- xml-resolver:xml-resolver:jar:1.2:compile
+[INFO] |  |  |  +- org.apache.geronimo.specs:geronimo-jaxws_2.1_spec:jar:1.0:compile
+[INFO] |  |  |  +- org.apache.geronimo.specs:geronimo-ws-metadata_2.0_spec:jar:1.1.2:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-bindings-soap:jar:2.2.5:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-bindings-xml:jar:2.2.5:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-frontend-simple:jar:2.2.5:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-ws-addr:jar:2.2.5:compile
+[INFO] |  |  |  +- javax.xml.soap:saaj-api:jar:1.3:compile
+[INFO] |  |  |  \- com.sun.xml.messaging.saaj:saaj-impl:jar:1.3.2:compile
+[INFO] |  |  +- org.springframework:spring-aop:jar:2.5.6:compile
+[INFO] |  |  +- org.apache.cxf:cxf-rt-transports-jbi:jar:2.2.5:compile
+[INFO] |  |  +- org.apache.cxf:cxf-rt-transports-local:jar:2.2.5:compile
+[INFO] |  |  +- org.apache.cxf:cxf-rt-bindings-jbi:jar:2.2.5:compile
+[INFO] |  |  |  \- org.apache.cxf:cxf-rt-databinding-jaxb:jar:2.2.5:compile
+[INFO] |  |  |     \- com.sun.xml.bind:jaxb-xjc:jar:2.1.12:compile
+[INFO] |  |  +- org.apache.cxf:cxf-rt-databinding-aegis:jar:2.2.5:compile
+[INFO] |  |  \- org.apache.cxf:cxf-rt-databinding-xmlbeans:jar:2.2.5:compile
+[INFO] |  |     +- org.apache.cxf:cxf-tools-common:jar:2.2.5:compile
+[INFO] |  |     |  \- org.apache.velocity:velocity:jar:1.6.2:compile
+[INFO] |  |     |     \- oro:oro:jar:2.0.8:compile
+[INFO] |  |     \- org.apache.xmlbeans:xmlbeans:jar:2.4.0:compile
+[INFO] |  +- dom4j:dom4j:jar:1.6.1:compile
+[INFO] |  |  \- xml-apis:xml-apis:jar:1.0.b2:compile
+[INFO] |  +- log4j:log4j:jar:1.2.12:compile
+[INFO] |  +- com.trg:trg-dao:jar:0.5.1:compile
+[INFO] |  |  \- com.trg:trg-search:jar:0.5.1:compile
+[INFO] |  |     \- javax.persistence:persistence-api:jar:1.0:compile
+[INFO] |  +- com.trg:trg-search-jpa-hibernate:jar:0.5.1:compile
+[INFO] |  |  \- com.trg:trg-search-hibernate:jar:0.5.1:compile
+[INFO] |  |     \- org.hibernate:hibernate-core:jar:3.3.1.GA:compile
+[INFO] |  +- commons-dbcp:commons-dbcp:jar:1.2.2:compile
+[INFO] |  +- org.postgis:postgis-jdbc:jar:1.1.6:compile
+[INFO] |  +- postgresql:postgresql:jar:8.4-701.jdbc3:compile
+[INFO] |  +- org.aspectj:aspectjrt:jar:1.5.4:compile
+[INFO] |  +- org.aspectj:aspectjweaver:jar:1.5.4:compile
+[INFO] |  +- org.geotools:gt-epsg-extension:jar:2.6-SNAPSHOT:compile
+[INFO] |  \- org.apache.servicemix:servicemix-utils:jar:1.1.0.1-fuse:compile
+[INFO] |     +- org.apache.geronimo.specs:geronimo-stax-api_1.0_spec:jar:1.0.1:compile
+[INFO] |     +- org.codehaus.woodstox:wstx-asl:jar:3.2.6:compile
+[INFO] |     \- org.apache.servicemix.specs:org.apache.servicemix.specs.jbi-api-1.0:jar:1.3.0.1-fuse:compile
+[INFO] +- org.apache.cxf:cxf-rt-transports-http-jetty:jar:2.2.7:compile
+[INFO] |  +- org.apache.cxf:cxf-api:jar:2.2.7:compile
+[INFO] |  |  +- org.apache.geronimo.specs:geronimo-activation_1.1_spec:jar:1.0.2:compile
+[INFO] |  |  +- org.apache.cxf:cxf-common-utilities:jar:2.2.7:compile
+[INFO] |  |  +- org.apache.geronimo.specs:geronimo-annotation_1.0_spec:jar:1.1.1:compile
+[INFO] |  |  +- org.apache.neethi:neethi:jar:2.0.4:compile
+[INFO] |  |  \- org.apache.cxf:cxf-common-schemas:jar:2.2.7:compile
+[INFO] |  +- org.apache.cxf:cxf-rt-transports-http:jar:2.2.7:compile
+[INFO] |  +- org.apache.cxf:cxf-rt-core:jar:2.2.7:compile
+[INFO] |  |  \- org.apache.geronimo.specs:geronimo-javamail_1.4_spec:jar:1.6:compile
+[INFO] |  +- org.mortbay.jetty:jetty:jar:6.1.8:compile (version managed from 6.1.21)
+[INFO] |  |  \- org.mortbay.jetty:jetty-util:jar:6.1.8:compile
+[INFO] |  \- org.apache.geronimo.specs:geronimo-servlet_2.5_spec:jar:1.2:compile
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch users management
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-users:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] |  +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |  +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  +- org.jdom:jdom:jar:1.1:compile
+[INFO] |  +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |     +- commons-io:commons-io:jar:1.4:compile
+[INFO] |     +- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] |     \- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |        \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |           \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.5.6:compile
+[INFO] +- org.slf4j:slf4j-simple:jar:1.5.6:compile
+[INFO] +- log4j:log4j:jar:1.2.12:compile
+[INFO] +- org.hibernate:ejb3-persistence:jar:1.0.2.GA:compile
+[INFO] +- org.hibernate:hibernate-annotations:jar:3.3.1.GA:compile
+[INFO] |  \- org.hibernate:hibernate:jar:3.2.6.ga:compile
+[INFO] |     \- net.sf.ehcache:ehcache:jar:1.2.3:compile
+[INFO] +- org.hibernate:hibernate-commons-annotations:jar:3.1.0.GA:compile
+[INFO] +- org.hibernate:hibernate-c3p0:jar:3.3.1.GA:compile
+[INFO] |  \- c3p0:c3p0:jar:0.9.1:compile
+[INFO] +- org.hibernate:hibernate-core:jar:3.3.1.GA:compile
+[INFO] |  +- antlr:antlr:jar:2.7.6:compile
+[INFO] |  +- dom4j:dom4j:jar:1.6.1:compile
+[INFO] |  |  \- xml-apis:xml-apis:jar:1.0.b2:compile
+[INFO] |  \- javax.transaction:jta:jar:1.1:compile
+[INFO] +- org.slf4j:slf4j-jdk14:jar:1.5.6:compile
+[INFO] +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-orm:jar:2.5.6:compile
+[INFO] |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] +- org.springframework:spring-tx:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-test:jar:2.5.6:test
+[INFO] +- junit:junit:jar:4.5:test
+[INFO] +- com.h2database:h2:jar:1.1.119:compile
+[INFO] +- commons-dbcp:commons-dbcp:jar:1.2.2:compile
+[INFO] +- org.postgis:postgis-jdbc:jar:1.1.6:compile
+[INFO] \- postgresql:postgresql:jar:8.4-701.jdbc3:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch FTP Server
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[INFO] [dependency:tree {execution: default-cli}]
+[INFO] it.geosolutions:gb-ftp-server:jar:0.9-SNAPSHOT
+[INFO] +- it.geosolutions:gb-users:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] |  |  +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] |  |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  |  |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  |  |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |  |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  |  +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |  |  +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |  |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  |  +- org.jdom:jdom:jar:1.1:compile
+[INFO] |  |  +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  |  +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] |  |  +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |  |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  |  +- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  \- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  |     +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  |     +- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] |  |     \- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] |  |        \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |  |           \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] |  +- commons-dbcp:commons-dbcp:jar:1.2.2:compile
+[INFO] |  +- org.postgis:postgis-jdbc:jar:1.1.6:compile
+[INFO] |  \- postgresql:postgresql:jar:8.4-701.jdbc3:compile
+[INFO] +- org.apache.ftpserver:ftpserver-core:jar:1.0.4:compile
+[INFO] |  +- org.apache.ftpserver:ftplet-api:jar:1.0.4:compile
+[INFO] |  \- org.apache.mina:mina-core:jar:2.0.0-RC1:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.5.6:compile
+[INFO] +- org.slf4j:slf4j-simple:jar:1.5.6:compile
+[INFO] +- log4j:log4j:jar:1.2.12:compile
+[INFO] +- org.hibernate:ejb3-persistence:jar:1.0.2.GA:compile
+[INFO] +- org.hibernate:hibernate-annotations:jar:3.3.1.GA:compile
+[INFO] |  +- org.hibernate:hibernate:jar:3.2.6.ga:compile
+[INFO] |  |  \- net.sf.ehcache:ehcache:jar:1.2.3:compile
+[INFO] |  \- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] +- org.hibernate:hibernate-commons-annotations:jar:3.1.0.GA:compile
+[INFO] +- org.hibernate:hibernate-c3p0:jar:3.3.1.GA:compile
+[INFO] |  \- c3p0:c3p0:jar:0.9.1:compile
+[INFO] +- org.hibernate:hibernate-core:jar:3.3.1.GA:compile
+[INFO] |  +- antlr:antlr:jar:2.7.6:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- dom4j:dom4j:jar:1.6.1:compile
+[INFO] |  |  \- xml-apis:xml-apis:jar:1.0.b2:compile
+[INFO] |  \- javax.transaction:jta:jar:1.1:compile
+[INFO] +- org.slf4j:slf4j-jdk14:jar:1.5.6:compile
+[INFO] +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-orm:jar:2.5.6:compile
+[INFO] |  +- aopalliance:aopalliance:jar:1.0:compile
+[INFO] |  +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] |  \- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-tx:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-test:jar:2.5.6:test
+[INFO] +- junit:junit:jar:4.5:test
+[INFO] \- com.h2database:h2:jar:1.1.119:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Building GeoBatch web module
+[INFO]    task-segment: [dependency:tree]
+[INFO] ------------------------------------------------------------------------
+[WARNING] While downloading aspectj:aspectjrt:1.5.4
+  This artifact has been relocated to org.aspectj:aspectjrt:1.5.4.
+
+
+[INFO] [dependency:tree {execution: default-cli}]
+[WARNING] POM for 'org.apache.servicemix.specs:org.apache.servicemix.specs.jbi-api-1.0:pom:1.1.0:compile' is invalid.
+
+Its dependencies (if any) will NOT be available to the current build.
+[INFO] it.geosolutions:gb-web:war:0.9-SNAPSHOT
+[INFO] +- org.springframework:spring-core:jar:2.5.6:compile
+[INFO] |  \- commons-logging:commons-logging:jar:1.1.1:compile
+[INFO] +- org.springframework:spring-beans:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-aop:jar:2.5.6:compile
+[INFO] |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] +- org.springframework:spring-context:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-context-support:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-web:jar:2.5.6:compile
+[INFO] +- org.springframework:spring-webmvc:jar:2.5.6:compile
+[INFO] +- javax.servlet:jstl:jar:1.1.2:compile
+[INFO] +- taglibs:standard:jar:1.1.2:compile
+[INFO] +- org.aspectj:aspectjrt:jar:1.5.4:compile
+[INFO] +- javax.servlet:servlet-api:jar:2.5:compile
+[INFO] +- javax.servlet:jsp-api:jar:2.0:provided
+[INFO] +- org.mortbay.jetty:jetty:jar:6.1.8:test (scope not updated to compile)
+[INFO] |  +- org.mortbay.jetty:jetty-util:jar:6.1.8:test
+[INFO] |  \- org.mortbay.jetty:servlet-api-2.5:jar:6.1.8:test
+[INFO] +- org.mortbay.jetty:jsp-2.0:pom:6.1.8:test
+[INFO] |  +- tomcat:jasper-compiler-jdt:jar:5.5.15:test
+[INFO] |  |  \- org.eclipse.jdt:core:jar:3.1.1:test
+[INFO] |  +- org.slf4j:jcl-over-slf4j:jar:1.5.6:test
+[INFO] |  +- xerces:xmlParserAPIs:jar:2.6.2:test
+[INFO] |  +- commons-el:commons-el:jar:1.0:test
+[INFO] |  +- xerces:xercesImpl:jar:2.7.1:test (version managed from 2.6.2)
+[INFO] |  +- tomcat:jasper-compiler:jar:5.5.15:test
+[INFO] |  +- org.mortbay.jetty:jsp-api-2.0:jar:6.1.8:test
+[INFO] |  +- ant:ant:jar:1.6.5:test
+[INFO] |  \- tomcat:jasper-runtime:jar:5.5.15:test
+[INFO] +- it.geosolutions:gb-core-impl:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- commons-collections:commons-collections:jar:3.1:compile
+[INFO] |  +- commons-io:commons-io:jar:1.4:compile
+[INFO] |  +- org.geotools:gt-main:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- jdom:jdom:jar:1.0:compile
+[INFO] |  +- it.geosolutions:gb-core-model:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-alias-registry:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-fs-catalog:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-api:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-referencing:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-metadata:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- net.java.dev.jsr-275:jsr-275:jar:1.0-beta-2:compile
+[INFO] |  +- org.geotools:gt-coverage:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-epsg-hsql:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- hsqldb:hsqldb:jar:1.8.0.7:compile
+[INFO] |  +- javax.media:jai_core:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_codec:jar:1.1.3:compile
+[INFO] |  +- javax.media:jai_imageio:jar:1.1:compile
+[INFO] |  +- java3d:vecmath:jar:1.3.1:compile
+[INFO] |  +- com.vividsolutions:jts:jar:1.9:compile
+[INFO] |  +- org.jdom:jdom:jar:1.1:compile
+[INFO] |  +- commons-cli:commons-cli:jar:2.0-gt2-pre1:compile
+[INFO] |  +- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.1:compile
+[INFO] |  +- commons-pool:commons-pool:jar:1.3:compile
+[INFO] |  +- it.geosolutions:gb-fsm-purejava:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-fsm-native:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- jnotify:jnotify:jar:0.91:compile
+[INFO] |  |  \- it.geosolutions:test-data:jar:1.0-SNAPSHOT:compile
+[INFO] |  \- it.geosolutions:gb-fsm-core:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-ftp-server:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-users:jar:0.9-SNAPSHOT:compile
+[INFO] |  |  +- org.postgis:postgis-jdbc:jar:1.1.6:compile
+[INFO] |  |  \- postgresql:postgresql:jar:8.4-701.jdbc3:compile
+[INFO] |  +- org.apache.ftpserver:ftpserver-core:jar:1.0.4:compile
+[INFO] |  |  +- org.apache.ftpserver:ftplet-api:jar:1.0.4:compile
+[INFO] |  |  \- org.apache.mina:mina-core:jar:2.0.0-RC1:compile
+[INFO] |  +- org.slf4j:slf4j-api:jar:1.5.6:compile
+[INFO] |  +- org.slf4j:slf4j-simple:jar:1.5.6:compile
+[INFO] |  +- log4j:log4j:jar:1.2.12:compile
+[INFO] |  +- org.hibernate:ejb3-persistence:jar:1.0.2.GA:compile
+[INFO] |  +- org.hibernate:hibernate-annotations:jar:3.3.1.GA:compile
+[INFO] |  |  \- org.hibernate:hibernate:jar:3.2.6.ga:compile
+[INFO] |  |     \- net.sf.ehcache:ehcache:jar:1.2.3:compile
+[INFO] |  +- org.hibernate:hibernate-commons-annotations:jar:3.1.0.GA:compile
+[INFO] |  +- org.hibernate:hibernate-c3p0:jar:3.3.1.GA:compile
+[INFO] |  |  \- c3p0:c3p0:jar:0.9.1:compile
+[INFO] |  +- org.hibernate:hibernate-core:jar:3.3.1.GA:compile
+[INFO] |  |  +- antlr:antlr:jar:2.7.6:compile
+[INFO] |  |  +- dom4j:dom4j:jar:1.6.1:compile
+[INFO] |  |  |  \- xml-apis:xml-apis:jar:1.0.b2:compile
+[INFO] |  |  \- javax.transaction:jta:jar:1.1:compile
+[INFO] |  +- org.slf4j:slf4j-jdk14:jar:1.5.6:compile
+[INFO] |  +- org.springframework:spring-orm:jar:2.5.6:compile
+[INFO] |  +- org.springframework:spring-tx:jar:2.5.6:compile
+[INFO] |  \- com.h2database:h2:jar:1.1.119:compile
+[INFO] +- com.noelios.restlet:com.noelios.restlet:jar:1.1.6:compile
+[INFO] |  \- org.restlet:org.restlet:jar:1.1.6:compile
+[INFO] +- com.noelios.restlet:com.noelios.restlet.ext.servlet:jar:1.1.6:compile
+[INFO] +- com.noelios.restlet:com.noelios.restlet.ext.spring:jar:1.1.6:compile
+[INFO] +- org.restlet:org.restlet.ext.spring:jar:1.1.5:compile
+[INFO] +- org.codehaus.jettison:jettison:jar:1.0.1:compile
+[INFO] |  \- stax:stax-api:jar:1.0.1:compile
+[INFO] +- org.springframework.security:spring-security-acl:jar:2.0.5.RELEASE:compile
+[INFO] |  \- org.springframework:spring-jdbc:jar:2.5.6:compile (version managed from 2.0.8)
+[INFO] +- org.springframework.security:spring-security-core:jar:2.0.5.RELEASE:compile
+[INFO] |  +- org.springframework:spring-support:jar:2.0.8:runtime
+[INFO] |  \- commons-codec:commons-codec:jar:1.3:compile
+[INFO] +- org.springframework.security:spring-security-taglibs:jar:2.0.5.RELEASE:compile
+[INFO] +- it.geosolutions:gb-dao-xstream:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- com.thoughtworks.xstream:xstream:jar:1.3.1:compile
+[INFO] |     \- xpp3:xpp3_min:jar:1.1.4c:compile
+[INFO] +- it.geosolutions:gb-action-sas:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions:gb-action-geoserver:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.opengis:geoapi:jar:2.3-M1:compile
+[INFO] |  +- org.opengis:geoapi-pending:jar:2.3-M1:compile
+[INFO] |  +- org.geotools:gt-geotiff:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- it.geosolutions.imageio-ext:imageio-ext-tiff:jar:1.0.5:compile
+[INFO] |  +- org.geotools:gt-matfile5:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- it.geosolutions.imageio-ext:imageio-ext-mat-sas:jar:1.1M012010:compile
+[INFO] |  |  |  \- it.geosolutions.imageio-ext:imageio-ext-mat-core:jar:1.1M012010:compile
+[INFO] |  |  |     \- it.geosolutions.imageio-ext:imageio-ext-jmatio:jar:1.1M012010:compile
+[INFO] |  |  \- it.geosolutions.imageio-ext:imageio-ext-imagereadmt:jar:1.1M012010:compile
+[INFO] |  +- org.geotools:gt-coveragetools:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.geotools:gt-image:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  +- org.geotools:gt-imagemosaic:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  +- org.geotools.jdbc:gt-jdbc-postgis:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  |  \- org.geotools:gt-jdbc:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  |     \- org.geotools:gt-data:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |  \- org.geotools:gt-jp2k:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  |     \- it.geosolutions.imageio-ext:imageio-ext-kakadu:jar:1.0.5:compile
+[INFO] |  |  |        \- it.geosolutions.imageio-ext:imageio-ext-kakadujni:jar:5.2.6:compile
+[INFO] |  |  +- org.geotools:gt-imagepyramid:jar:2.7-SNAPSHOT:compile
+[INFO] |  |  \- org.geotools:gt-imageio-ext-gdal:jar:2.7-SNAPSHOT:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-gdalarcbinarygrid:jar:1.0.5:compile
+[INFO] |  |     |  \- it.geosolutions.imageio-ext:imageio-ext-gdalframework:jar:1.0.5:compile
+[INFO] |  |     |     +- it.geosolutions.imageio-ext:imageio-ext-gdal-bindings:jar:1.4.5b:compile
+[INFO] |  |     |     \- it.geosolutions.imageio-ext:imageio-ext-geocore:jar:1.0.5:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-gdalmrsid:jar:1.0.5:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-gdalecw:jar:1.0.5:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-gdaldted:jar:1.0.5:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-gdalkakadujp2:jar:1.0.5:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-gdalmrsidjp2:jar:1.0.5:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-gdalecwjp2:jar:1.0.5:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-gdalehdr:jar:1.0.5:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-gdalenvihdr:jar:1.0.5:compile
+[INFO] |  |     +- it.geosolutions.imageio-ext:imageio-ext-gdalerdasimg:jar:1.0.5:compile
+[INFO] |  |     \- it.geosolutions.imageio-ext:imageio-ext-gdalnitf:jar:1.0.5:compile
+[INFO] |  +- org.geotools:gt-shapefile:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- org.apache.ant:ant:jar:1.7.1:compile
+[INFO] |  +- org.apache.ant:ant-launcher:jar:1.7.1:compile
+[INFO] |  \- it.geosolutions.opensdi.sas:sas-model:jar:0.1-SNAPSHOT:compile
+[INFO] |     +- javax.xml.bind:jaxb-api:jar:2.1:compile
+[INFO] |     |  +- javax.xml.stream:stax-api:jar:1.0-2:compile
+[INFO] |     |  \- javax.activation:activation:jar:1.1:compile
+[INFO] |     +- com.sun.xml.bind:jaxb-impl:jar:2.1.2:compile
+[INFO] |     +- org.slf4j:slf4j-log4j12:jar:1.5.8:compile
+[INFO] |     +- org.springframework:spring:jar:2.5.6:compile
+[INFO] |     +- org.hibernate:hibernate-entitymanager:jar:3.3.2.GA:compile
+[INFO] |     |  \- javassist:javassist:jar:3.4.GA:compile
+[INFO] |     +- org.hibernatespatial:hibernate-spatial-postgis:jar:1.0-SNAPSHOT:compile (version managed from 1.0)
+[INFO] |     |  \- org.hibernatespatial:hibernate-spatial:jar:1.0-SNAPSHOT:compile
+[INFO] |     +- asm:asm:jar:2.2.3:compile
+[INFO] |     \- cglib:cglib-nodep:jar:2.1_3:compile
+[INFO] +- it.geosolutions:gb-action-sasesb:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions.opensdi.sas:sas-ws-su:jar:0.1-SNAPSHOT:compile
+[INFO] |  |  +- org.apache.servicemix:servicemix-cxf-se:jar:2009.02:compile
+[INFO] |  |  |  +- org.apache.servicemix:servicemix-shared:jar:2009.02:compile
+[INFO] |  |  |  |  +- org.apache.servicemix:servicemix-common:jar:2009.02:compile
+[INFO] |  |  |  |  |  +- org.apache.xbean:xbean-spring:jar:3.4.3:compile
+[INFO] |  |  |  |  |  \- org.apache.xbean:xbean-classloader:jar:3.4.3:compile
+[INFO] |  |  |  |  +- org.apache.servicemix:servicemix-soap:jar:2009.02:compile
+[INFO] |  |  |  |  |  +- org.apache.ws.security:wss4j:jar:1.5.8:compile
+[INFO] |  |  |  |  |  |  \- xalan:xalan:jar:2.7.1:compile
+[INFO] |  |  |  |  |  |     \- xalan:serializer:jar:2.7.1:compile
+[INFO] |  |  |  |  |  +- bouncycastle:bcprov-jdk15:jar:140:compile
+[INFO] |  |  |  |  |  +- org.opensaml:opensaml:jar:1.1:compile
+[INFO] |  |  |  |  |  \- org.apache.santuario:xmlsec:jar:1.4.3:compile
+[INFO] |  |  |  |  +- org.apache.servicemix:servicemix-soap2:jar:2009.02:compile
+[INFO] |  |  |  |  |  \- org.apache.woden:woden:jar:1.0.0M6:compile
+[INFO] |  |  |  |  \- wsdl4j:wsdl4j:jar:1.6.2:compile
+[INFO] |  |  |  +- org.apache.ws.commons.schema:XmlSchema:jar:1.4.3:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-frontend-jaxws:jar:2.2.5:compile
+[INFO] |  |  |  |  +- xml-resolver:xml-resolver:jar:1.2:compile
+[INFO] |  |  |  |  +- org.apache.geronimo.specs:geronimo-jaxws_2.1_spec:jar:1.0:compile
+[INFO] |  |  |  |  +- org.apache.geronimo.specs:geronimo-ws-metadata_2.0_spec:jar:1.1.2:compile
+[INFO] |  |  |  |  +- org.apache.cxf:cxf-rt-bindings-soap:jar:2.2.5:compile
+[INFO] |  |  |  |  +- org.apache.cxf:cxf-rt-bindings-xml:jar:2.2.5:compile
+[INFO] |  |  |  |  +- org.apache.cxf:cxf-rt-frontend-simple:jar:2.2.5:compile
+[INFO] |  |  |  |  +- org.apache.cxf:cxf-rt-ws-addr:jar:2.2.5:compile
+[INFO] |  |  |  |  +- javax.xml.soap:saaj-api:jar:1.3:compile
+[INFO] |  |  |  |  \- com.sun.xml.messaging.saaj:saaj-impl:jar:1.3.2:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-transports-jbi:jar:2.2.5:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-transports-local:jar:2.2.5:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-bindings-jbi:jar:2.2.5:compile
+[INFO] |  |  |  |  \- org.apache.cxf:cxf-rt-databinding-jaxb:jar:2.2.5:compile
+[INFO] |  |  |  |     \- com.sun.xml.bind:jaxb-xjc:jar:2.1.12:compile
+[INFO] |  |  |  +- org.apache.cxf:cxf-rt-databinding-aegis:jar:2.2.5:compile
+[INFO] |  |  |  \- org.apache.cxf:cxf-rt-databinding-xmlbeans:jar:2.2.5:compile
+[INFO] |  |  |     +- org.apache.cxf:cxf-tools-common:jar:2.2.5:compile
+[INFO] |  |  |     |  \- org.apache.velocity:velocity:jar:1.6.2:compile
+[INFO] |  |  |     |     \- oro:oro:jar:2.0.8:compile
+[INFO] |  |  |     \- org.apache.xmlbeans:xmlbeans:jar:2.4.0:compile
+[INFO] |  |  +- com.trg:trg-dao:jar:0.5.1:compile
+[INFO] |  |  |  \- com.trg:trg-search:jar:0.5.1:compile
+[INFO] |  |  |     \- javax.persistence:persistence-api:jar:1.0:compile
+[INFO] |  |  +- com.trg:trg-search-jpa-hibernate:jar:0.5.1:compile
+[INFO] |  |  |  \- com.trg:trg-search-hibernate:jar:0.5.1:compile
+[INFO] |  |  +- org.aspectj:aspectjweaver:jar:1.5.4:compile
+[INFO] |  |  +- org.geotools:gt-epsg-extension:jar:2.6-SNAPSHOT:compile
+[INFO] |  |  \- org.apache.servicemix:servicemix-utils:jar:1.1.0.1-fuse:compile
+[INFO] |  |     +- org.apache.geronimo.specs:geronimo-stax-api_1.0_spec:jar:1.0.1:compile
+[INFO] |  |     +- org.codehaus.woodstox:wstx-asl:jar:3.2.6:compile
+[INFO] |  |     \- org.apache.servicemix.specs:org.apache.servicemix.specs.jbi-api-1.0:jar:1.3.0.1-fuse:compile
+[INFO] |  \- org.apache.cxf:cxf-rt-transports-http-jetty:jar:2.2.7:compile
+[INFO] |     +- org.apache.cxf:cxf-api:jar:2.2.7:compile
+[INFO] |     |  +- org.apache.geronimo.specs:geronimo-activation_1.1_spec:jar:1.0.2:compile
+[INFO] |     |  +- org.apache.cxf:cxf-common-utilities:jar:2.2.7:compile
+[INFO] |     |  +- org.apache.geronimo.specs:geronimo-annotation_1.0_spec:jar:1.1.1:compile
+[INFO] |     |  +- org.apache.neethi:neethi:jar:2.0.4:compile
+[INFO] |     |  \- org.apache.cxf:cxf-common-schemas:jar:2.2.7:compile
+[INFO] |     +- org.apache.cxf:cxf-rt-transports-http:jar:2.2.7:compile
+[INFO] |     +- org.apache.cxf:cxf-rt-core:jar:2.2.7:compile
+[INFO] |     |  \- org.apache.geronimo.specs:geronimo-javamail_1.4_spec:jar:1.6:compile
+[INFO] |     \- org.apache.geronimo.specs:geronimo-servlet_2.5_spec:jar:1.2:compile
+[INFO] +- it.geosolutions:gb-action-geoserver-restclient:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- commons-httpclient:commons-httpclient:jar:3.1:compile
+[INFO] +- it.geosolutions:gb-action-geotiff:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-action-ascii:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- org.geotools:gt-arcgrid:jar:2.7-SNAPSHOT:compile
+[INFO] |  +- it.geosolutions.imageio-ext:imageio-ext-arcgrid:jar:1.0.5:compile
+[INFO] |  |  \- it.geosolutions.imageio-ext:imageio-ext-utilities:jar:1.0.5:compile
+[INFO] |  \- it.geosolutions.imageio-ext:imageio-ext-customstreams:jar:1.0.5:compile
+[INFO] +- it.geosolutions:gb-action-shapefile:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-action-taskexecutor:jar:0.9-SNAPSHOT:compile
+[INFO] +- it.geosolutions:gb-action-geowebcache:jar:0.9-SNAPSHOT:compile
+[INFO] |  +- com.noelios.restlet:com.noelios.restlet.ext.net:jar:1.1.6:compile
+[INFO] |  +- com.noelios.restlet:com.noelios.restlet.ext.asyncweb:jar:1.0.9:compile
+[INFO] |  |  \- org.safehaus.asyncweb:org.safehaus.asyncweb:jar:0.8.2:compile
+[INFO] |  \- net.sf.json-lib:json-lib:jar:jdk15:2.1:compile
+[INFO] |     \- net.sf.ezmorph:ezmorph:jar:1.0.3:compile
+[INFO] +- it.geosolutions:gb-action-ftp:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- com.enterprisedt:edtFTPj:jar:2.0.3:compile
+[INFO] +- it.geosolutions:gb-action-imagemosaic:jar:0.9-SNAPSHOT:compile
+[INFO] |  \- commons-dbcp:commons-dbcp:jar:1.2.2:compile
+[INFO] \- junit:junit:jar:4.5:test
+[INFO] 
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] ------------------------------------------------------------------------
+[INFO] GeoSolutions GeoBatch ................................. SUCCESS [13.534s]
+[INFO] File System Monitor ................................... SUCCESS [0.026s]
+[INFO] File System Monitor - Deployer ........................ SUCCESS [0.029s]
+[INFO] File System Monitor - JAR Deployer .................... SUCCESS [0.023s]
+[INFO] GeoBatch core ......................................... SUCCESS [0.024s]
+[INFO] GeoBatch core model ................................... SUCCESS [0.968s]
+[INFO] GeoBatch DAOs ......................................... SUCCESS [0.026s]
+[INFO] GeoBatch DAOs - XStream base project .................. SUCCESS [0.114s]
+[INFO] GeoBatch DAOs - XStream Alias Registry ................ SUCCESS [0.030s]
+[INFO] GeoBatch core implementation .......................... SUCCESS [0.185s]
+[INFO] Monitor module ........................................ SUCCESS [0.310s]
+[INFO] FileSystemMonitor Core modules ........................ SUCCESS [0.019s]
+[INFO] FileSystemMonitor plugins ............................. SUCCESS [0.060s]
+[INFO] Directory Monitor native plugin ....................... SUCCESS [0.357s]
+[INFO] Directory Monitor Pure Java plugin .................... SUCCESS [0.214s]
+[INFO] GeoBatch filesystem catalog ........................... SUCCESS [0.665s]
+[INFO] GeoBatch actions ...................................... SUCCESS [0.020s]
+[INFO] GeoBatch action: GeoServer parent ..................... SUCCESS [0.021s]
+[INFO] GeoBatch action: GeoServer config ..................... SUCCESS [0.479s]
+[INFO] GeoBatch DAOs - XStream main .......................... SUCCESS [0.324s]
+[INFO] GeoBatch action: FTP client ........................... SUCCESS [0.412s]
+[INFO] GeoBatch action: GeoServer 2 REST client .............. SUCCESS [0.517s]
+[INFO] GeoBatch action: GeoTIFF .............................. SUCCESS [3.495s]
+[INFO] GeoBatch action: GWC config ........................... SUCCESS [0.394s]
+[INFO] GeoBatch action: ImageMosaic ingester ................. SUCCESS [0.546s]
+[INFO] GeoBatch action: ASCII Grids .......................... SUCCESS [0.356s]
+[INFO] GeoBatch action: ESRI Shapefiles ...................... SUCCESS [0.364s]
+[INFO] GeoBatch action: Task Executor ........................ SUCCESS [0.301s]
+[INFO] GeoBatch action: SAS Tiles processor .................. SUCCESS [2.490s]
+[INFO] GeoBatch action: SAS ESB messaging .................... SUCCESS [6.988s]
+[INFO] GeoBatch users management ............................. SUCCESS [0.391s]
+[INFO] GeoBatch FTP Server ................................... SUCCESS [0.479s]
+[INFO] GeoBatch web module ................................... SUCCESS [4.080s]
+[INFO] ------------------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 47 seconds
+[INFO] Finished at: Fri May 07 10:27:29 CEST 2010
+[INFO] Final Memory: 46M/63M
+[INFO] ------------------------------------------------------------------------
