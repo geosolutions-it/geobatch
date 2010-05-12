@@ -88,7 +88,7 @@
 	</beans:bean>
 
 	<beans:bean id="remoteAuthenticationManager" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-		<beans:property name="serviceUrl" value="https://localhost:8192/securityService/" />
+		<beans:property name="serviceUrl" value="https://172.19.96.73:8192/securityService/" />
 		<beans:property name="serviceInterface" value="org.springframework.security.providers.rcp.RemoteAuthenticationManager" />
 		<beans:property name="httpInvokerRequestExecutor">
             <beans:bean class="org.springframework.remoting.httpinvoker.CommonsHttpInvokerRequestExecutor"  />

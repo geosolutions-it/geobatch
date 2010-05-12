@@ -54,8 +54,12 @@ public class SASUtils {
 
     public static String MISSION_DETECTIONS_LOCATION_END = "</missionDetectionsLocation>";
 
+    public static String MISSION_TRACKS_LOCATION = "<missionTracksLocation>";
+
+    public static String MISSION_TRACKS_LOCATION_END = "</missionTracksLocation>";
+
     public enum FolderContentType{
-    	LEGS, DETECTIONS;
+    	LEGS, DETECTIONS, TRACKS;
     }
     
     
@@ -114,6 +118,10 @@ public class SASUtils {
     	case DETECTIONS:
     		startTag = MISSION_DETECTIONS_LOCATION;
     		endTag = MISSION_DETECTIONS_LOCATION_END;
+    		break;
+    	case TRACKS:
+    		startTag = MISSION_TRACKS_LOCATION;
+    		endTag = MISSION_TRACKS_LOCATION_END;
     		break;
     	}
     	

@@ -21,12 +21,33 @@
  */
 package it.geosolutions.geobatch.geoserver.rest;
 
+import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Connect to a GeoServer instance for publishing or modify data.
@@ -181,6 +202,32 @@ public class GeoServerRESTPublisher {
     }
 
     /**
+     * Publish a zipped shapefile with a defaultStyle.
+     *
+     * @param workspace
+     * @param storename
+     * @param layerName
+     * @param nativeCrs
+     * @param defaultStyle
+     * @return true if the operation completed successfully.
+     * @throws FileNotFoundException
+     */
+    public boolean publishShp(String workspace, String storename, String layerName, File zipFile, String nativeCrs, String defaultStyle) throws FileNotFoundException {
+    	boolean sent = publishShp(workspace, storename, layerName, zipFile, nativeCrs);
+    	if (sent && defaultStyle != null) {
+     	   final Map<String, String> queryParams = new HashMap<String, String>();
+     	   
+     	   try {
+     		   configureLayer(queryParams, defaultStyle, restURL, gsuser, gspass, layerName);
+     	   } catch (Exception e) {
+     		   sent = false;
+     	   }
+        }
+    	
+    	return sent;
+    }
+    
+    /**
      * <BR>
      * <TT>curl -u admin:geoserver -XPUT -H 'Content-type: application/zip' \ <BR>
      *      &nbsp;&nbsp;&nbsp;--data-binary @$ZIPFILE \<BR>
@@ -249,40 +296,89 @@ public class GeoServerRESTPublisher {
     /**
      *
      * @param workspace
-     * @param storeName
+     * @param layerName
      * @param geotiff
      * @return true if the operation completed successfully.
      * @throws FileNotFoundException
      */
-    public boolean publishExternalGeoTIFF(String workspace, String storeName, File geotiff) throws FileNotFoundException {
-        String sUrl = restURL + "/rest/workspaces/" + workspace + "/coveragestores/" + storeName + "/external.geotiff";
-//			URL url = new URL(restURL + "/rest/folders/" + storeName + "/layers/" + layerName + "/external.geotiff");
-//			InputStream is = new FileInputStream(geotiff);
+    public boolean publishExternalGeoTIFF(String workspace, String layerName, File geotiff) throws FileNotFoundException {
+        String sUrl = restURL + "/rest/workspaces/" + workspace + "/coveragestores/" + layerName + "/external.geotiff";
         boolean sent = HTTPUtils.put(sUrl, geotiff.toURI().toString(), "text/plain", gsuser, gspass);
         return sent;
     }
 
     /**
+    *
+    * @param workspace
+    * @param layerName
+    * @param geotiff
+    * @param defaultStyle
+    * @return true if the operation completed successfully.
+    * @throws FileNotFoundException
+    */
+   public boolean publishExternalGeoTIFF(String workspace, String layerName, File geotiff, String defaultStyle) throws FileNotFoundException {
+       boolean sent = publishExternalGeoTIFF(workspace, layerName, geotiff);
+       if (sent && defaultStyle != null) {
+    	   final Map<String, String> queryParams = new HashMap<String, String>();
+    	   
+    	   try {
+    		   configureLayer(queryParams, defaultStyle, restURL, gsuser, gspass, layerName);
+    	   } catch (Exception e) {
+    		   sent = false;
+    	   }
+       }
+       
+       return sent;
+   }
 
+    /**
      * <P> Sample cUrl usage:<BR>
      * <TT>curl -u admin:geoserver -XPUT -H 'Content-type: text' -d "file:$ABSPORTDIR"
      *          http://$GSIP:$GSPORT/$SERVLET/rest/workspaces/$WORKSPACE/coveragestores/$BAREDIR/external.imagemosaic </TT>
      *
      * @param workspace
-     * @param storeName
+     * @param layerName
      * @param mosaicDir
      * @return true if the operation completed successfully.
      * @throws FileNotFoundException
      * @deprecated UNTESTED
      */
-    public boolean publishExternalMosaic(String workspace, String storeName, File mosaicDir) throws FileNotFoundException {
+    public boolean publishExternalMosaic(String workspace, String layerName, File mosaicDir) throws FileNotFoundException {
         if(! mosaicDir.isDirectory())
             throw new IllegalArgumentException("Not a directory '"+mosaicDir+"'");
-        String sUrl = restURL + "/rest/workspaces/" + workspace + "/coveragestores/" + storeName + "/external.imagemosaic";
+        String sUrl = restURL + "/rest/workspaces/" + workspace + "/coveragestores/" + layerName + "/external.imagemosaic";
         boolean sent = HTTPUtils.put(sUrl, mosaicDir.toURI().toString(), "text/plain", gsuser, gspass);
         return sent;
     }
 
+    /**
+     * <P> Sample cUrl usage:<BR>
+     * <TT>curl -u admin:geoserver -XPUT -H 'Content-type: text' -d "file:$ABSPORTDIR"
+     *          http://$GSIP:$GSPORT/$SERVLET/rest/workspaces/$WORKSPACE/coveragestores/$BAREDIR/external.imagemosaic </TT>
+     *
+     * @param workspace
+     * @param layerName
+     * @param mosaicDir
+     * @param defaultStyle
+     * @return true if the operation completed successfully.
+     * @throws FileNotFoundException
+     * @deprecated UNTESTED
+     */
+    public boolean publishExternalMosaic(String workspace, String layerName, File mosaicDir, String defaultStyle) throws FileNotFoundException {
+        boolean sent = publishExternalMosaic(workspace, layerName, mosaicDir);
+        if (sent && defaultStyle != null) {
+     	   final Map<String, String> queryParams = new HashMap<String, String>();
+     	   
+     	   try {
+     		   configureLayer(queryParams, defaultStyle, restURL, gsuser, gspass, layerName);
+     	   } catch (Exception e) {
+     		   sent = false;
+     	   }
+        }
+        
+        return sent;
+    }
+    
     /**
      * Remove the Coverage configuration from GeoServer.
      * <BR>
@@ -366,4 +462,108 @@ public class GeoServerRESTPublisher {
             return false;
         }
     }
+    
+	public static void configureLayer(final Map<String, String> queryParams, final String defaultStyle, 
+			final String geoserverBaseURL, final String geoserverUID, final String geoserverPWD, final String layerName) 
+		throws ParserConfigurationException, IOException, TransformerException {
+		Map<String,String> configElements = new HashMap<String, String>(2);
+		if (queryParams.containsKey("wmspath")){
+			//Configuring wmsPath
+			final String wmsPath = queryParams.get("wmspath");
+			configElements.put("path", wmsPath);
+		}
+		if (defaultStyle != null && defaultStyle.trim().length()>0){
+			configElements.put("defaultStyle", defaultStyle);
+		}
+		if (!configElements.isEmpty()){
+			sendLayerConfiguration(configElements, geoserverBaseURL, geoserverUID, geoserverPWD, layerName);	
+		}
+		
+	}
+	
+	/**
+	 * Allows to configure some layer attributes such as WmsPath and DefaultStyle
+	 * @param configElements
+	 * @param geoserverBaseURL
+	 * @param geoserverUID
+	 * @param geoserverPWD
+	 * @param layerName
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws TransformerException
+	 */
+	private static void sendLayerConfiguration(final Map<String,String> configElements, final String geoserverBaseURL, 
+			final String geoserverUID, final String geoserverPWD, final String layerName) throws ParserConfigurationException, IOException, TransformerException {
+		
+		String layer = URLEncoder.encode(layerName,"UTF-8"); 
+		if (layer.contains("."))
+			layer = layer + ".fake";
+		final URL geoserverREST_URL = new URL(new StringBuilder(geoserverBaseURL).append( "/rest/layers/" ).append(layer).toString());
+		File file = null;
+		FileInputStream inStream = null;
+		try{
+			file = buildXMLConfiguration(configElements);
+			inStream = new FileInputStream(file);
+			final boolean send = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, inStream, geoserverUID, geoserverPWD, null, "text/xml");
+			if (send)
+				LOGGER.info("GeoServerConfiguratorAction: Layer SUCCESSFULLY configured!");	
+		}finally{
+			if (file != null){
+				try{
+					file.delete();
+				}catch (Throwable t){
+					//Eat me
+				}
+			}
+			if (inStream != null){
+				try{
+					inStream.close();
+				}catch (Throwable t){
+					//eat me;
+				}
+			}
+	
+		}
+		
+	}
+	
+	/**
+	 * Setup an XML file to be sent via REST to configure the Layer
+	 * @param configElements
+	 * @return
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws TransformerException
+	 */
+	private static File buildXMLConfiguration(final Map <String, String> configElements) 
+	throws ParserConfigurationException, IOException, TransformerException{
+		final DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+	    
+		//Get the DocumentBuilder
+	    DocumentBuilder parser = dfactory.newDocumentBuilder();
+	    //Create blank DOM Document
+	    Document doc = parser.newDocument();
+	    Element root = doc.createElement("layer");
+		doc.appendChild(root);
+	    
+	    Set<String> keys = configElements.keySet();
+	    Element enabledElement = doc.createElement("enabled");
+    	root.appendChild(enabledElement);
+    	enabledElement.insertBefore(doc.createTextNode("true"), null);
+	    
+	    for (String key:keys){
+	    	final String value = configElements.get(key);
+	    	final Element element = doc.createElement(key);
+	    	root.appendChild(element);
+	    	element.insertBefore(doc.createTextNode(value), null);
+	    }
+
+	    final TransformerFactory factory = TransformerFactory.newInstance();
+	    final Transformer transformer = factory.newTransformer();
+	    final File file = File.createTempFile("config", ".xml");
+	    final Result result = new StreamResult(file);
+	    final Source xmlSource = new DOMSource(doc);
+	    transformer.transform(xmlSource, result);
+	    return file;
+	}
 }

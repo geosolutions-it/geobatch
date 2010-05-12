@@ -53,6 +53,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 
+import com.thoughtworks.xstream.XStream.InitializationException;
+
 /**
  * Comments here ...
  * 

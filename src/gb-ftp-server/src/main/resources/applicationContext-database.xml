@@ -9,12 +9,18 @@
 
 	<!--  Data source -->
 	<bean id="dataSource-gb-ftp-server" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-		<property name="driverClass" value="org.h2.Driver" />
+		<!-- property name="driverClass" value="org.h2.Driver" />
 		<property name="jdbcUrl" value="jdbc:h2:ftp" />
 		<property name="user" value="ftp" />
-		<property name="password" value="ftp" />
-		<property name="minPoolSize" value="10" />
-		<property name="maxPoolSize" value="20" />
+		<property name="password" value="ftp" / -->
+		
+		<property name="driverClass" value="org.postgresql.Driver" />
+		<property name="jdbcUrl" value="jdbc:postgresql://172.19.96.73:5432/ftpusers" />
+		<property name="user" value="postgres" />
+		<property name="password" value="postgres" />
+		
+		<property name="minPoolSize" value="4" />
+		<property name="maxPoolSize" value="10" />
 		<property name="maxStatements" value="100" />
 	</bean>
 
@@ -35,8 +41,11 @@
 				<prop key="hibernate.transaction.factory_class">
 					org.hibernate.transaction.JDBCTransactionFactory
 				</prop>
-				<prop key="dialect">
+				<!-- prop key="dialect">
 					org.hibernate.dialect.H2Dialect
+                </prop -->
+				<prop key="dialect">
+					org.hibernate.dialect.PostgreSQLDialect
                 </prop>
 				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.connection.autocommit">false</prop>

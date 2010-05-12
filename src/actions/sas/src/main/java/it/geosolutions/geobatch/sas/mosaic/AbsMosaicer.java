@@ -399,7 +399,7 @@ public abstract class AbsMosaicer
             
             // minX minY, maxX minY, maxX maxY, minX maxY, minX minY
             Polygon nativeEnvelope = (Polygon) wktReader.read(
-            		"POLYGON(("+originalEnvelope.getLowerCorner().getOrdinate(0)+" "+originalEnvelope.getLowerCorner().getOrdinate(1)+", " +
+            				 "POLYGON(("+originalEnvelope.getLowerCorner().getOrdinate(0)+" "+originalEnvelope.getLowerCorner().getOrdinate(1)+", " +
             				 ""+originalEnvelope.getUpperCorner().getOrdinate(0)+" "+originalEnvelope.getLowerCorner().getOrdinate(1)+", " +
             				 ""+originalEnvelope.getUpperCorner().getOrdinate(0)+" "+originalEnvelope.getUpperCorner().getOrdinate(1)+", " +
             				 ""+originalEnvelope.getLowerCorner().getOrdinate(0)+" "+originalEnvelope.getUpperCorner().getOrdinate(1)+", " +
@@ -411,7 +411,7 @@ public abstract class AbsMosaicer
             mosaicLayer.setSrs(srsID != null ? "EPSG:" + srsID : "UNKNOWN");
             Envelope originalToWgs84Envelope = CRS.transform(originalEnvelope, CRS.decode("EPSG:4326", true));
             Polygon wgs84Envelope = (Polygon) wktReader.read(
-            		"POLYGON(("+originalToWgs84Envelope.getLowerCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getLowerCorner().getOrdinate(1)+", " +
+            				 "POLYGON(("+originalToWgs84Envelope.getLowerCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getLowerCorner().getOrdinate(1)+", " +
             				 ""+originalToWgs84Envelope.getUpperCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getLowerCorner().getOrdinate(1)+", " +
             				 ""+originalToWgs84Envelope.getUpperCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getUpperCorner().getOrdinate(1)+", " +
             				 ""+originalToWgs84Envelope.getLowerCorner().getOrdinate(0)+" "+originalToWgs84Envelope.getUpperCorner().getOrdinate(1)+", " +

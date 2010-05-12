@@ -4,9 +4,11 @@
 package it.geosolutions.geobatch.flow.event;
 
 import it.geosolutions.geobatch.misc.ListenerRegistry;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
 import org.geotools.resources.UnmodifiableArrayList;
 
 /**

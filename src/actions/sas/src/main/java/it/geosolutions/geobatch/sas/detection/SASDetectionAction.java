@@ -28,10 +28,10 @@ import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.sas.base.SASDirNameParser;
 import it.geosolutions.geobatch.sas.base.SASUtils;
 import it.geosolutions.geobatch.sas.base.SASUtils.FolderContentType;
 import it.geosolutions.geobatch.sas.event.SASDetectionEvent;
+import it.geosolutions.geobatch.sas.event.SASTrackEvent;
 import it.geosolutions.geobatch.task.TaskExecutor;
 import it.geosolutions.geobatch.task.TaskExecutorConfiguration;
 import it.geosolutions.geobatch.utils.IOUtils;
@@ -151,22 +151,22 @@ public class SASDetectionAction
             // XML file
             //
             // //
-            final List<String> missionDirs = SASUtils.getDataDirectories(inputFile, FolderContentType.DETECTIONS);
+            final List<String> detectionDirs = SASUtils.getDataDirectories(inputFile, FolderContentType.DETECTIONS);
 
-            if (missionDirs==null || missionDirs.isEmpty()){
+            if (detectionDirs==null || detectionDirs.isEmpty()){
             	LOGGER.warning("Unable to find target data location from the specified file: "+inputFile.getAbsolutePath());
             	return events;
             }
-            final int nMissions = missionDirs.size();
+            final int nDetections = detectionDirs.size();
             if (LOGGER.isLoggable(Level.INFO))
-            	LOGGER.info(new StringBuilder("Found ").append(nMissions).append(" mission").append(nMissions>1?"s":"").toString());
+            	LOGGER.info(new StringBuilder("Found ").append(nDetections).append(" detection").append(nDetections>1?"s":"").toString());
 
-            for (String mission : missionDirs){
+            for (String detection : detectionDirs){
             	String initTime = null;
             	if (LOGGER.isLoggable(Level.INFO))
-                	LOGGER.info("Processing Mission: " + mission);
+                	LOGGER.info("Processing Detection: " + detection);
 
-            	final String directory = mission;
+            	final String directory = detection;
 	            final File fileDir = new File(directory); //Mission dir
 	            if (fileDir != null && fileDir.isDirectory()) {
 	                final File[] foundFiles = fileDir.listFiles(FILEFILTER);
@@ -180,6 +180,30 @@ public class SASDetectionAction
 	            if (LOGGER.isLoggable(Level.INFO))
 	            	LOGGER.info("Done");
             }
+            
+            final List<String> trackDirs = SASUtils.getDataDirectories(inputFile, FolderContentType.TRACKS);
+            
+            if (trackDirs!=null && !trackDirs.isEmpty()){
+            	final int nTracks = trackDirs.size();
+                if (LOGGER.isLoggable(Level.INFO))
+                	LOGGER.info(new StringBuilder("Found ").append(nTracks).append(" track").append(nTracks>1?"s":"").toString());
+
+                for (String track : trackDirs){
+                	if (LOGGER.isLoggable(Level.INFO))
+                    	LOGGER.info("Processing Track: " + track);
+
+                	final String zipFileLocation = track;
+    	            final File zipFile = new File(zipFileLocation);
+    	            if (zipFile != null && zipFile.exists() && !zipFile.isDirectory()) {
+    	            	SASTrackEvent trackEvent = ingestTrack(zipFile);
+    	            	if (trackEvent != null)
+    	            		returnEvents.add(trackEvent);
+    	            }
+    	            if (LOGGER.isLoggable(Level.INFO))
+    	            	LOGGER.info("Done");
+                }
+            }
+            
             if (LOGGER.isLoggable(Level.INFO))
             	LOGGER.info("End Of processing");
 
@@ -260,7 +284,7 @@ public class SASDetectionAction
         layer.setFileURL(zipFile.getAbsolutePath());
         layer.setNamespace("it.geosolutions");
         layer.setServerURL(null);
-        layer.setStyle("polygon");
+        layer.setStyle("detection");
         
         ShapefileDataStore shpDs = new ShapefileDataStore(new File(dataPrefix + ".shp").toURI().toURL());
         ReferencedEnvelope originalEnvelope = shpDs.getFeatureSource().getBounds();
@@ -271,7 +295,7 @@ public class SASDetectionAction
         
         // minX minY, maxX minY, maxX maxY, minX maxY, minX minY
         Polygon nativeEnvelope = (Polygon) wktReader.read(
-        		"POLYGON(("+originalEnvelope.getMinX()+" "+originalEnvelope.getMinY()+", " +
+        				 "POLYGON(("+originalEnvelope.getMinX()+" "+originalEnvelope.getMinY()+", " +
         				 ""+originalEnvelope.getMaxX()+" "+originalEnvelope.getMinY()+", " +
         				 ""+originalEnvelope.getMaxX()+" "+originalEnvelope.getMaxY()+", " +
         				 ""+originalEnvelope.getMinX()+" "+originalEnvelope.getMaxY()+", " +
@@ -283,7 +307,7 @@ public class SASDetectionAction
         layer.setSrs(srsID != null ? "EPSG:" + srsID : "UNKNOWN");
         BoundingBox originalToWgs84Envelope = originalEnvelope.toBounds(CRS.decode("EPSG:4326", true));
         Polygon wgs84Envelope = (Polygon) wktReader.read(
-        		"POLYGON(("+originalToWgs84Envelope.getMinX()+" "+originalToWgs84Envelope.getMinY()+", " +
+        				 "POLYGON(("+originalToWgs84Envelope.getMinX()+" "+originalToWgs84Envelope.getMinY()+", " +
         				 ""+originalToWgs84Envelope.getMaxX()+" "+originalToWgs84Envelope.getMinY()+", " +
         				 ""+originalToWgs84Envelope.getMaxX()+" "+originalToWgs84Envelope.getMaxY()+", " +
         				 ""+originalToWgs84Envelope.getMinX()+" "+originalToWgs84Envelope.getMaxY()+", " +
@@ -299,6 +323,75 @@ public class SASDetectionAction
 //        sendShape(dataPrefix + ".zip");
     }
 
+    /**
+     * 
+     * @param shapeFileArchive
+     * @throws Exception
+     */
+    protected SASTrackEvent ingestTrack(final File zipFile) throws Exception {
+        SASTrackEvent event = new SASTrackEvent(zipFile);
+        event.setMissionName(getMissionName(zipFile));
+        event.setFormat("shp");
+        event.setWmsPath(buildWmsPath(zipFile));
+        
+        Layer layer = new Layer();
+        layer.setFileURL(zipFile.getAbsolutePath());
+        layer.setNamespace("it.geosolutions");
+        layer.setServerURL(null);
+        layer.setStyle("line");
+        
+        File destDir = new File(File.createTempFile("gbSASDetection", ".tmp").getParentFile(), FilenameUtils.getBaseName(zipFile.getAbsolutePath()));
+        destDir.mkdir();
+		IOUtils.unzipFlat(zipFile, destDir);
+		
+		if (destDir != null && destDir.isDirectory() && destDir.listFiles().length > 0) {
+			for (String fileName : destDir.list()) {
+				if (FilenameUtils.getExtension(fileName).equalsIgnoreCase("shp")) {
+					ShapefileDataStore shpDs = new ShapefileDataStore(new File(destDir, FilenameUtils.getBaseName(fileName) + ".shp").toURI().toURL());
+			        layer.setName(FilenameUtils.getBaseName(fileName));
+			        layer.setTitle(FilenameUtils.getBaseName(fileName));
+			        layer.setDesctiption("");
+			        ReferencedEnvelope originalEnvelope = shpDs.getFeatureSource().getBounds();
+			        Integer srsID = CRS.lookupEpsgCode(originalEnvelope.getCoordinateReferenceSystem(), true);
+			        layer.setNativeCRS(srsID != null ? "EPSG:" + srsID : originalEnvelope.getCoordinateReferenceSystem().toWKT());
+			        
+			        WKTReader wktReader = new WKTReader();
+			        
+			        // minX minY, maxX minY, maxX maxY, minX maxY, minX minY
+			        Polygon nativeEnvelope = (Polygon) wktReader.read(
+			        				 "POLYGON(("+originalEnvelope.getMinX()+" "+originalEnvelope.getMinY()+", " +
+			        				 ""+originalEnvelope.getMaxX()+" "+originalEnvelope.getMinY()+", " +
+			        				 ""+originalEnvelope.getMaxX()+" "+originalEnvelope.getMaxY()+", " +
+			        				 ""+originalEnvelope.getMinX()+" "+originalEnvelope.getMaxY()+", " +
+			        				 ""+originalEnvelope.getMinX()+" "+originalEnvelope.getMinY()+"))");
+			        if (srsID != null ) 
+			        	nativeEnvelope.setSRID(srsID);
+					layer.setNativeEnvelope(nativeEnvelope);
+					
+			        layer.setSrs(srsID != null ? "EPSG:" + srsID : "UNKNOWN");
+			        BoundingBox originalToWgs84Envelope = originalEnvelope.toBounds(CRS.decode("EPSG:4326", true));
+			        Polygon wgs84Envelope = (Polygon) wktReader.read(
+			        				 "POLYGON(("+originalToWgs84Envelope.getMinX()+" "+originalToWgs84Envelope.getMinY()+", " +
+			        				 ""+originalToWgs84Envelope.getMaxX()+" "+originalToWgs84Envelope.getMinY()+", " +
+			        				 ""+originalToWgs84Envelope.getMaxX()+" "+originalToWgs84Envelope.getMaxY()+", " +
+			        				 ""+originalToWgs84Envelope.getMinX()+" "+originalToWgs84Envelope.getMaxY()+", " +
+			        				 ""+originalToWgs84Envelope.getMinX()+" "+originalToWgs84Envelope.getMinY()+"))");
+
+			        wgs84Envelope.setSRID(4326);
+					layer.setWgs84Envelope(wgs84Envelope);
+
+			        event.setLayer(layer);
+			        
+					return event;
+
+//			        sendShape(dataPrefix + ".zip");
+				}
+			}
+		}
+        
+        return null;
+    }
+    
     /**
      * Produce an XML file containing the configuration for a script to be launched
      * by the Task Executor.

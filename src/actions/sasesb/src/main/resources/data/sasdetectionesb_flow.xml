@@ -12,8 +12,8 @@
 		<name>sasdetectionesb_flow</name>
 		<description>sasdetectionesb_flow</description>
 
-		<listenerId>SASDetectionConsumerLogger0</listenerId>
-        <listenerId>SASCumulator0</listenerId>
+        <listenerId>ConsumerLogger0</listenerId>
+        <listenerId>Cumulator</listenerId>
 
 		<workingDirectory>sasdetectionesb_work</workingDirectory>
 		<performBackup>true</performBackup>
@@ -33,8 +33,8 @@
 			<name>SAS Detections Manager</name>
 			<serviceID>DetectionManagerService</serviceID>
 
-			<listenerId>SASDetectionStatusActionLogger0</listenerId>
-			<listenerId>SASDetectionActionLogger0</listenerId>
+			<listenerId>StatusActionLogger0</listenerId>
+            <listenerId>ActionLogger0</listenerId>
         
 			<workingDirectory>sasdetectionesb_work</workingDirectory>
 			<detectionsErrorLog>sasdetectionesb_work/config/errorlog.txt</detectionsErrorLog>
@@ -61,7 +61,8 @@
 			<name>SAS Detection ESB</name>
 			<description>Sends SOAP messages to ESB</description>
 
-            <listenerId>ESBCumulator0</listenerId>
+			<listenerId>StatusActionLogger0</listenerId>
+            <listenerId>ActionLogger0</listenerId>
 
             <serverURL>http://localhost:9090/sas-service/soap</serverURL>
             <geoserverURL>http://localhost:8080/geoserver-sas</geoserverURL>
@@ -82,43 +83,31 @@
         <eventType>FILE_ADDED</eventType>
     </EventGeneratorConfiguration>
     
-	<ListenerConfigurations>
+    <ListenerConfigurations>
     	<StatusProgressListener>
     		<serviceID>statusListenerService</serviceID>
-            <id>SASDetectionStatusActionLogger0</id>
+            <id>StatusActionLogger0</id>
     	</StatusProgressListener>
-        
+    	
         <LoggingProgressListener>
             <serviceID>loggingListenerService</serviceID>
-            <id>SASDetectionActionLogger0</id>
+            <id>ActionLogger0</id>
 
-            <loggerName>SASDetectionActionLogger0</loggerName>
+            <loggerName>ActionLogger</loggerName>
         </LoggingProgressListener>
 
         <LoggingProgressListener>
             <serviceID>loggingListenerService</serviceID>
-            <id>SASDetectionESBLogger0</id>
+            <id>ConsumerLogger0</id>
 
-            <loggerName>SASDetectionESBLogger0</loggerName>
-        </LoggingProgressListener>
-
-        <LoggingProgressListener>
-            <serviceID>loggingListenerService</serviceID>
-            <id>SASDetectionConsumerLogger0</id>
-
-            <loggerName>SASDetectionConsumerLogger0</loggerName>
+            <loggerName>ConsLogger</loggerName>
         </LoggingProgressListener>
 
         <CumulatingProgressListener>
             <serviceID>cumulatingListenerService</serviceID>
-            <id>SASCumulator0</id>
+            <id>Cumulator</id>
         </CumulatingProgressListener>
 
-        <CumulatingProgressListener>
-            <serviceID>cumulatingListenerService</serviceID>
-            <id>ESBCumulator0</id>
-        </CumulatingProgressListener>
-        
     </ListenerConfigurations>
     
 </FlowConfiguration>

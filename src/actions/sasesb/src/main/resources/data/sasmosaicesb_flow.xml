@@ -12,8 +12,8 @@
 		<name>sasmosaicesb_flow</name>
 		<description>sasmosaicesb_flow</description>
 
-		<listenerId>SASConsumerLogger0</listenerId>
-	    <listenerId>SASCumulator0</listenerId>
+        <listenerId>ConsumerLogger0</listenerId>
+        <listenerId>Cumulator</listenerId>
 
 		<workingDirectory>sasmosaicesb_work</workingDirectory>
 		<performBackup>true</performBackup>
@@ -34,8 +34,8 @@
 			<name>SAS Tiles Mosaic composer</name>
 			<description>description</description>
 
-			<listenerId>SASStatusActionLogger0</listenerId>
-			<listenerId>SASActionLogger0</listenerId>
+			<listenerId>StatusActionLogger0</listenerId>
+            <listenerId>ActionLogger0</listenerId>
 
 			<workingDirectory>sasmosaicesb_work</workingDirectory>
 			<outputFormat>GeoTIFF</outputFormat>
@@ -74,7 +74,8 @@
 			<name>SAS Mosaic ESB</name>
 			<description>Sends SOAP messages to ESB</description>
 
-            <listenerId>ESBCumulator0</listenerId>
+			<listenerId>StatusActionLogger0</listenerId>
+            <listenerId>ActionLogger0</listenerId>
 
             <serverURL>http://localhost:9090/sas-service/soap</serverURL>
             <geoserverURL>http://localhost:8080/geoserver-sas</geoserverURL>
@@ -111,31 +112,26 @@
     <ListenerConfigurations>
     	<StatusProgressListener>
     		<serviceID>statusListenerService</serviceID>
-            <id>SASStatusActionLogger0</id>
+            <id>StatusActionLogger0</id>
     	</StatusProgressListener>
-        
+    	
         <LoggingProgressListener>
             <serviceID>loggingListenerService</serviceID>
-            <id>SASActionLogger0</id>
+            <id>ActionLogger0</id>
 
-            <loggerName>SASActionLogger0</loggerName>
+            <loggerName>ActionLogger</loggerName>
         </LoggingProgressListener>
 
         <LoggingProgressListener>
             <serviceID>loggingListenerService</serviceID>
-            <id>SASConsumerLogger0</id>
+            <id>ConsumerLogger0</id>
 
-            <loggerName>SASConsumerLogger0</loggerName>
+            <loggerName>ConsLogger</loggerName>
         </LoggingProgressListener>
 
         <CumulatingProgressListener>
             <serviceID>cumulatingListenerService</serviceID>
-            <id>SASCumulator0</id>
-        </CumulatingProgressListener>
-
-        <CumulatingProgressListener>
-            <serviceID>cumulatingListenerService</serviceID>
-            <id>ESBCumulator0</id>
+            <id>Cumulator</id>
         </CumulatingProgressListener>
 
     </ListenerConfigurations>

@@ -23,17 +23,20 @@
 package it.geosolutions.geobatch.sas.esb;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.sas.event.SASDetectionEvent;
 import it.geosolutions.geobatch.sas.event.SASMosaicEvent;
 import it.geosolutions.geobatch.sas.event.SASTileEvent;
+import it.geosolutions.geobatch.sas.event.SASTrackEvent;
 import it.geosolutions.opensdi.sas.model.Contact;
 import it.geosolutions.opensdi.sas.model.Leg;
 import it.geosolutions.opensdi.sas.model.Mission;
 import it.geosolutions.opensdi.sas.model.SonarMosaic;
 import it.geosolutions.opensdi.sas.model.SonarTile;
 import it.geosolutions.opensdi.sas.model.TileMetadata;
+import it.geosolutions.opensdi.sas.model.VehicleTrack;
 import it.geosolutions.opensdi.sas.services.SASManagerService;
 import it.geosolutions.opensdi.sas.services.exception.ResourceNotFoundFault;
 import it.geosolutions.opensdi.sas.services.request.GetLegRequest;
@@ -97,54 +100,25 @@ public class SasEsbAction
                 throw new IllegalStateException("Config is null.");
             }
             
-//            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
-//                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-
-//            final String dataType = configuration.getDatatype();
-            
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // Checking input files.
-            //
-            // ////////////////////////////////////////////////////////////////////
-            
-//            final String inputFileName = workingDir.getAbsolutePath();
-//            String baseFileName = null;
-//            final String coverageStoreId;
-
-//            if (dataType.equalsIgnoreCase("imagemosaic")){
-//                coverageStoreId = FilenameUtils.getName(inputFileName);
-//                checkMosaic(workingDir);
-//            } else if (dataType.equalsIgnoreCase("geotiff")){
-//            	coverageStoreId = FilenameUtils.getBaseName(inputFileName);
-//                checkGeotiff(workingDir);
-//            } else {
-//            	LOGGER.log(Level.SEVERE,"Unsupported format type '" + dataType + "'");
-//                return null;
-//            }
-
-
-            //== scan event queue
-            // if called after a SASComposerAction: there will be MosaicEvents and TileEvents in the event queue
-            // if called after a SASDetectionAction: there will be DetectionEvents in the event queue
-
             List<SASMosaicEvent> mosaicEvents = new ArrayList<SASMosaicEvent>();
             List<SASTileEvent> tileEvents = new ArrayList<SASTileEvent>();
 
             List<SASDetectionEvent> detectEvents = new ArrayList<SASDetectionEvent>();
+            List<SASTrackEvent> trackEvents = new ArrayList<SASTrackEvent>();
 
             Queue<FileSystemMonitorEvent> unhandledEvents = new LinkedList<FileSystemMonitorEvent>();
 
-            while(! events.isEmpty()) {
+            while(!events.isEmpty()) {
                 FileSystemMonitorEvent event = events.remove();
 
                 if(event instanceof SASMosaicEvent) {
                     mosaicEvents.add((SASMosaicEvent)event);
-                    break;
                 } else if (event instanceof SASTileEvent) {
                     tileEvents.add((SASTileEvent)event);
                 } else if (event instanceof SASDetectionEvent) {
                     detectEvents.add((SASDetectionEvent)event);
+                } else if (event instanceof SASTrackEvent) {
+                	trackEvents.add((SASTrackEvent)event);
                 } else {
                     if(LOGGER.isLoggable(Level.INFO)) {
                         LOGGER.info("Skipping unhandled event " + event);
@@ -161,7 +135,8 @@ public class SasEsbAction
         			"Scanned "
         			+ mosaicEvents.size() + " mosaics, "
         			+ tileEvents.size() + " tiles, "
-        			+ detectEvents.size() + " detections" );
+        			+ detectEvents.size() + " detections, " 
+        			+ trackEvents.size() + " tracks" );
             
             // ////////////////////////////////////////////////////////////////
             //
@@ -213,6 +188,56 @@ public class SasEsbAction
             	}
             } 
 
+            // ////////////////////////////////////////////////////////////////
+            //
+            // Processing Tracks ...
+            //
+            // ////////////////////////////////////////////////////////////////
+            if(!trackEvents.isEmpty()) {
+            	for (SASTrackEvent track : trackEvents) {
+            		String missionName = track.getMissionName();
+            		
+            		Mission mission = null;
+            		
+            		try {
+            			mission = getClient().getMissionByName(missionName);
+            		} catch (Exception e) {
+            			mission = null;
+            		}
+            		
+            		if (mission == null) {
+            			mission = new Mission();
+            			mission.setName(missionName);
+            			mission.setDate(new Date());
+            			mission.setSrs(track.getLayer().getNativeCRS());
+            			
+            			long missionId = getClient().insertMission(mission);
+            			
+            			if (missionId < 0) {
+            				throw new ActionException(this, "Could not create the new Mission " + mission.getName());
+            			}
+
+            			mission.setId(missionId);
+            		}
+            		
+            		// TODO: This will be replaced by ESB ...
+            		if (track.getLayer().getServerURL() == null) {
+            			track.getLayer().setServerURL(configuration.getGeoserverURL());
+            		}
+            		
+            		VehicleTrack vehicleTrack = new VehicleTrack();
+            		vehicleTrack.setVehicle("AUV");
+            		vehicleTrack.setLayer(track.getLayer());
+					mission.setVehicleTrack(vehicleTrack);
+					
+					long missionId = getClient().updateMission(mission);
+
+					if (missionId < 0) {
+        				throw new ActionException(this, "Unable to update Mission " + mission.getName());
+        			}
+            	}
+            } 
+            
             // ////////////////////////////////////////////////////////////////
             //
             // Processing Tiles ...
@@ -387,8 +412,13 @@ public class SasEsbAction
             }
             
             listenerForwarder.completed();
-            events.clear();
-            return events;
+            
+            // Avoid status failed...
+            if (unhandledEvents == null || unhandledEvents.isEmpty()) {
+            	unhandledEvents.add(new FileSystemMonitorEvent(File.createTempFile("esbDummy", ".tmp"), FileSystemMonitorNotifications.FILE_ADDED));
+            }
+            
+            return unhandledEvents;
         } catch (ActionException e) {
             LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
             listenerForwarder.failed(e);
@@ -440,7 +470,6 @@ public class SasEsbAction
             factory.getOutInterceptors().add(new LoggingOutInterceptor());
             factory.setServiceClass(SASManagerService.class);
             factory.setAddress(configuration.getServerURL());
-            //factory.getServiceFactory().setDataBinding(new AegisDatabinding());
             __client = (SASManagerService) factory.create();
         }
 

@@ -85,7 +85,21 @@
             <artifactId>gb-action-taskexecutor</artifactId>
         </dependency>
 
-		<!-- GeoTools -->
+			<!-- GeoTools -->
+		<dependency>
+			<groupId>org.opengis</groupId>
+			<artifactId>geoapi</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.opengis</groupId>
+					<artifactId>geoapi-dummy-pending</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.opengis</groupId>
+			<artifactId>geoapi-pending</artifactId>
+		</dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geotiff</artifactId>
@@ -97,6 +111,10 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-coveragetools</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-shapefile</artifactId>
         </dependency>
 
 		<!-- JAI & ImageIO -->

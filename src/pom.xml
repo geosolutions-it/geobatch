@@ -82,6 +82,7 @@
         <test.maxHeapSize>512M</test.maxHeapSize>
         <src.output>${basedir}/target</src.output>
         <gt.version>2.7-SNAPSHOT</gt.version>
+        <opengis.version>2.3-M1</opengis.version>
         <gb.version>0.9-SNAPSHOT</gb.version>
         <imageio-ext.version>1.0.5</imageio-ext.version>
         <spring.version>2.5.6</spring.version>
@@ -518,6 +519,21 @@
 
             <!-- GeoTools ===================================================-->
 
+						<dependency>
+					     <groupId>org.opengis</groupId>
+					     <artifactId>geoapi</artifactId>
+					     <version>${opengis.version}</version>
+					   </dependency>
+					   <dependency>
+					     <groupId>org.opengis</groupId>
+					     <artifactId>geoapi-dummy-pending</artifactId>
+					     <version>${opengis.version}</version>
+					   </dependency>
+					   <dependency>
+					     <groupId>org.opengis</groupId>
+					     <artifactId>geoapi-pending</artifactId>
+					     <version>${opengis.version}</version>
+					   </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-api</artifactId>
