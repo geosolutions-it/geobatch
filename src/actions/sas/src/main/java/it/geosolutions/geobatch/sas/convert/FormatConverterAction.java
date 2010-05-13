@@ -209,8 +209,11 @@ public class FormatConverterAction
 
                             SASDirNameParser nameParser = SASDirNameParser.parse(filePath);
                             if(nameParser != null) {
-                                tileEvent.setMissionName(FilenameUtils.getBaseName(outFile.getParentFile().getParentFile().getParent()));
+                                //tileEvent.setMissionName(FilenameUtils.getBaseName(outFile.getParentFile().getParentFile().getParent()));
+                            	tileEvent.setMissionName(nameParser.getMission());
                                 tileEvent.setDate(nameParser.getDate());
+                            } else {
+                            	LOGGER.severe("ATTENTION: Unparsable Mission name for Tile Event!");
                             }
 
 //	                        SasMosaicGeoServerAction.ingest(outputFileName, wmsPath, configuration.getGeoserverURL(),

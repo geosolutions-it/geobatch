@@ -23,24 +23,27 @@ public class SASDirNameParser {
     private String mission;
     private String leg;
     private String channel;
-    private static Pattern PATTERN = Pattern.compile("(.*)_(.*)_Leg(.*)_(.*)");
-    private static DateFormat DATEFRM = new SimpleDateFormat("yyMMdd");
+    private static Pattern MISSIONPATTERN = Pattern.compile("_mission(.*)_Leg(.*)_(.*)");
+    private static Pattern DATEPATTERN = Pattern.compile("(.*)-(\\d+)");
+    private static DateFormat DATEFRM = new SimpleDateFormat("yyyyMMdd");
 
     public static SASDirNameParser parse(String fileName) {
         SASDirNameParser ret = new SASDirNameParser();
-        Matcher m = PATTERN.matcher(fileName);
+        Matcher m = MISSIONPATTERN.matcher(fileName);
         if (!m.find()) {
             Logger.getLogger(SASDirNameParser.class.getName()).log(Level.SEVERE, "Can't parse '" + fileName + "'");
             return null;
         }
         try {
-            ret.date = (Date) DATEFRM.parse(m.group(1));
+        	Matcher d = DATEPATTERN.matcher(m.group(1));
+        	d.lookingAt();
+            ret.date = (Date) DATEFRM.parse(d.group(2));
         } catch (ParseException ex) {
             Logger.getLogger(SASDirNameParser.class.getName()).log(Level.SEVERE, "Can't parse date for '" + fileName + "'", ex);
         }
-        ret.mission = m.group(2);
-        ret.leg = m.group(3);
-        ret.channel = m.group(4);
+        ret.mission = m.group(1);
+        ret.leg = m.group(2);
+        ret.channel = m.group(3);
 
         return ret;
     }

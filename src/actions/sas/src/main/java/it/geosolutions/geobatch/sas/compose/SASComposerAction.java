@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
+import it.geosolutions.geobatch.sas.base.SASDirNameParser;
 import it.geosolutions.geobatch.sas.base.SASUtils;
 import it.geosolutions.geobatch.sas.base.SASUtils.FolderContentType;
 import it.geosolutions.geobatch.sas.event.SASMosaicEvent;
@@ -50,7 +51,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 
 /**
@@ -245,9 +245,7 @@ public class SASComposerAction
 
                                             final File realDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
                                                     new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-
-                                            SASMosaicEvent mosaicEvent = new SASMosaicEvent(realDir);
-                                            mosaicEvent.setMissionName(FilenameUtils.getBaseName(new File(mosaicTobeIngested.getFileURL()).getParentFile().getParentFile().getParent()));
+                                        	SASMosaicEvent mosaicEvent = new SASMosaicEvent(realDir);
                                             mosaicEvent.setWmsPath(wmsPath);
                                             mosaicEvent.setFormat("imagemosaic");
                                             mosaicEvent.getLegNames().add(legDir.getName() + "_" + leafName.toUpperCase());
@@ -255,6 +253,14 @@ public class SASComposerAction
                                             mosaicEvent.setLayer(mosaicTobeIngested);
                                             if (LOGGER.isLoggable(Level.FINE)) {
                                                 LOGGER.fine("Adding " + mosaicEvent);
+                                            }
+
+                                            SASDirNameParser nameParser = SASDirNameParser.parse(path);
+                                            if(nameParser != null) {
+                                                //mosaicEvent.setMissionName(FilenameUtils.getBaseName(new File(mosaicTobeIngested.getFileURL()).getParentFile().getParentFile().getParent()));
+                                            	mosaicEvent.setMissionName(nameParser.getMission());
+                                            } else {
+                                            	LOGGER.severe("ATTENTION: Unparsable Mission name for Mosaic Event!");
                                             }
                                             sasEvents.add(mosaicEvent);
                                         } else {

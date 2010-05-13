@@ -1,0 +1,6 @@
+ERROR 1: G:\data\sas\muscleshapes\090316\MUSCLE_CAT1_20090316_T\target_MUSCLE_CAT1_20090316_T\target_MUSCLE_CAT1_20090316_T.shp is not a directory.
+
+Traceback (most recent call last):
+  File "G:\work\geobatch.git\src\web\src\main\webapp\WEB-INF\data\sasdetectionesb_work\config\shapegen.py", line 168, in <module>
+    layer = ds.CreateLayer(ds.GetName(), geom_type = ogr.wkbPolygon, srs = t_srs)
+AttributeError: 'NoneType' object has no attribute 'CreateLayer'

@@ -8,19 +8,19 @@
 	<session-factory>
 
 		<!-- Database connection settings -->
-		<!-- property name="connection.driver_class">org.h2.Driver</property>
-		<property name="connection.url">jdbc:h2:ftp</property>
-		<property name="connection.username">ftp</property>
-		<property name="connection.password">ftp</property -->
+		<property name="connection.driver_class">org.h2.Driver</property>
+		<property name="connection.url">jdbc:h2:ftpusers</property>
+		<property name="connection.username">geobatch</property>
+		<property name="connection.password">geobatch</property>
 
-		<property name="connection.driver_class">org.postgresql.Driver</property>
+		<!-- property name="connection.driver_class">org.postgresql.Driver</property>
 		<property name="connection.url">jdbc:postgresql://172.19.96.73:5432/ftpusers</property>
 		<property name="connection.username">postgres</property>
-		<property name="connection.password">postgres</property>
+		<property name="connection.password">postgres</property -->
 
 		<!-- SQL dialect -->
-		<!-- property name="dialect">org.hibernate.dialect.H2Dialect</property -->
-		<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+		<property name="dialect">org.hibernate.dialect.H2Dialect</property>
+		<!-- property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property -->
 
 		<!-- Enable Hibernate's automatic session context management -->
 		<property name="current_session_context_class">thread</property>

@@ -57,6 +57,8 @@
 			<tileW>512</tileW>
 			<chunkW>10240</chunkW>
 			<chunkH>10240</chunkH>
+			<logarithmBase>10</logarithmBase>
+			<logarithmMultiplier>20</logarithmMultiplier>
 			<compressionRatio>0.75</compressionRatio>
 			<compressionScheme>LZW</compressionScheme>
 <!--		<geoserverURL>http://192.168.1.17:8086/geoserver</geoserverURL>

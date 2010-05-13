@@ -22,8 +22,9 @@
 
 package it.geosolutions.geobatch.sas.mosaic;
 
-import it.geosolutions.geobatch.sas.base.BaseImageProcessingConfiguration;
 import it.geosolutions.geobatch.catalog.Configuration;
+import it.geosolutions.geobatch.sas.base.BaseImageProcessingConfiguration;
+import it.geosolutions.geobatch.sas.compose.SASComposerConfiguration;
 
 
 /**
@@ -43,6 +44,13 @@ public class MosaicerConfiguration extends BaseImageProcessingConfiguration impl
 
     public MosaicerConfiguration(BaseImageProcessingConfiguration imageProcessingConfiguration) {
         super(imageProcessingConfiguration);
+        
+        if (imageProcessingConfiguration instanceof SASComposerConfiguration) {
+        	this.chunkHeight   		 = ((SASComposerConfiguration) imageProcessingConfiguration).getChunkH();
+        	this.chunkWidth    		 = ((SASComposerConfiguration) imageProcessingConfiguration).getChunkW();
+        	this.logarithmBase		 = ((SASComposerConfiguration) imageProcessingConfiguration).getLogarithmBase();
+        	this.logarithmMultiplier = ((SASComposerConfiguration) imageProcessingConfiguration).getLogarithmMultiplier();
+        }
     }
 
     protected MosaicerConfiguration(String id, String name, String description,
@@ -58,7 +66,7 @@ public class MosaicerConfiguration extends BaseImageProcessingConfiguration impl
 
     private int tileSizeLimit;
     
-   private float logarithmMultiplier = 20;
+    private float logarithmMultiplier = 20;
     
     private float logarithmBase = 10;
 

@@ -82,16 +82,7 @@ public class SASUtils {
          final String legName = legF.getName();
          final String mission = legF.getParent();
          final File missionF = new File(mission);
-//         final String missionName = missionF.getName();
-         String missionName = missionF.getName();
-         final int missionIndex = missionName.lastIndexOf("_");
-         if (missionIndex!=-1){
-        	 final String missionCollapsed = missionName.substring(0,missionIndex).replace("_", "-");
-             missionName = new StringBuilder("mission").append(missionCollapsed).append(missionName.substring(missionIndex+1)).toString();
-         }
-         else {
-        	 missionName = new StringBuilder("mission").append(missionName).toString();
-         }
+         String missionName = getMissionName(missionF.getName());
         	 
          dirName = new StringBuilder(location).append(SASUtils.SEPARATOR).append(prefix)
          .append(time).append("_")
@@ -100,6 +91,22 @@ public class SASUtils {
          .append(channelName).toString();
          return dirName;
     }
+
+	/**
+	 * @param missionF
+	 * @return
+	 */
+	public static String getMissionName(String missionName) {
+         final int missionIndex = missionName.lastIndexOf("_");
+         if (missionIndex!=-1){
+        	 final String missionCollapsed = missionName.substring(0,missionIndex).replace("_", "-");
+             missionName = new StringBuilder("mission").append(missionCollapsed).append(missionName.substring(missionIndex+1)).toString();
+         }
+         else {
+        	 missionName = new StringBuilder("mission").append(missionName).toString();
+         }
+		return missionName;
+	}
 	
 	/**
      * Find Data directories from the specified input file.

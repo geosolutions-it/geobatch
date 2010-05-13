@@ -52,6 +52,8 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -72,6 +74,7 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -79,6 +82,9 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.WKTReader;
 
@@ -237,7 +243,6 @@ public class SASDetectionAction
      * @throws Exception
      */
     protected SASDetectionEvent ingestDetection(final File inputDir, final String subDir) throws Exception {
-//        final String baseName = FilenameUtils.getBaseName(inputDir.getAbsolutePath());
         final String baseName = FilenameUtils.getBaseName(inputDir.getAbsolutePath());
         // //
         //
@@ -273,7 +278,16 @@ public class SASDetectionAction
         File zipFile = zipShape(dataPrefix);
 
         SASDetectionEvent event = new SASDetectionEvent(zipFile);
-        event.setMissionName(getMissionName(zipFile));
+        
+        Pattern MISSIONPATTERN = Pattern.compile("mission(.*)");
+        Matcher m = MISSIONPATTERN.matcher(SASUtils.getMissionName(baseName));
+        
+        if (m.find()) {
+        	event.setMissionName(m.group(1));
+        } else {
+        	LOGGER.severe("ATTENTION: Unparsable Mission name for Detection Event!");
+        }
+        
         event.setFormat("shp");
         event.setWmsPath(buildWmsPath(zipFile));
         
@@ -319,8 +333,6 @@ public class SASDetectionAction
         event.setLayer(layer);
         
 		return event;
-
-//        sendShape(dataPrefix + ".zip");
     }
 
     /**
@@ -328,9 +340,21 @@ public class SASDetectionAction
      * @param shapeFileArchive
      * @throws Exception
      */
-    protected SASTrackEvent ingestTrack(final File zipFile) throws Exception {
+    @SuppressWarnings("unchecked")
+	protected SASTrackEvent ingestTrack(final File zipFile) throws Exception {
+    	final String baseName = FilenameUtils.getBaseName(zipFile.getParentFile().getParentFile().getAbsolutePath());
+    	
         SASTrackEvent event = new SASTrackEvent(zipFile);
-        event.setMissionName(getMissionName(zipFile));
+        
+        Pattern MISSIONPATTERN = Pattern.compile("mission(.*)");
+        Matcher m = MISSIONPATTERN.matcher(SASUtils.getMissionName(baseName));
+        
+        if (m.find()) {
+        	event.setMissionName(m.group(1));
+        } else {
+        	LOGGER.severe("ATTENTION: Unparsable Mission name for Detection Event!");
+        }
+
         event.setFormat("shp");
         event.setWmsPath(buildWmsPath(zipFile));
         
@@ -338,7 +362,6 @@ public class SASDetectionAction
         layer.setFileURL(zipFile.getAbsolutePath());
         layer.setNamespace("it.geosolutions");
         layer.setServerURL(null);
-        layer.setStyle("line");
         
         File destDir = new File(File.createTempFile("gbSASDetection", ".tmp").getParentFile(), FilenameUtils.getBaseName(zipFile.getAbsolutePath()));
         destDir.mkdir();
@@ -379,6 +402,18 @@ public class SASDetectionAction
 
 			        wgs84Envelope.setSRID(4326);
 					layer.setWgs84Envelope(wgs84Envelope);
+
+					FeatureType schema = shpDs.getSchema();
+			        Class binding = schema.getDescriptor("the_geom").getType().getBinding();
+					if (Polygon.class == binding ||
+			        	MultiPolygon.class == binding) {
+				        layer.setStyle("polygon");			        	
+			        } else if (LineString.class == binding ||
+			        	MultiLineString.class == binding) {
+				        layer.setStyle("line");			        	
+			        } else {
+				        layer.setStyle("point");
+			        }
 
 			        event.setLayer(layer);
 			        
