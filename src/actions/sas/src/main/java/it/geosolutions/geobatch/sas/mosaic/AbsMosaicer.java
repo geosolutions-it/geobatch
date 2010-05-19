@@ -309,8 +309,7 @@ public abstract class AbsMosaicer
                 if (files != null) {
                     final int numFiles = files.length;
                     for (int i = 0; i < numFiles; i++) {
-                        final String path = files[i].getAbsolutePath()
-                                .toLowerCase();
+                        final String path = files[i].getAbsolutePath().toLowerCase();
                         if (!path.endsWith("tif"))
                             continue;
 
@@ -625,7 +624,7 @@ public abstract class AbsMosaicer
         	final Rectangle sourceRegion = new Rectangle(column * chunkWidth, row * chunkHeight, chunkWidth, chunkHeight);
         	if(sourceRegion.isEmpty())
         	{
-        		LOGGER.warning("Empty regione when writing down mosaic tile:"+sourceRegion);
+        		LOGGER.warning("Empty region when writing down mosaic tile: "+sourceRegion);
         		continue;
         	}
         	// create task as a future
@@ -681,7 +680,7 @@ public abstract class AbsMosaicer
         concurrentLatch= new CountDownLatch(numTiles);
         final GeoTiffOverviewsEmbedderConfiguration gtovConfiguration = initGeotiffOverviewsEmbedderConfiguration();        
         
-        for (String fileOverviews: filesToAddOverviews){
+        for (String fileOverviews : filesToAddOverviews){
             // TODO: Leverage on GeoTiffOverviewsEmbedder when involving
             // no more FileSystemEvent only
             // Or merge retiling and overviews adding to a single step

@@ -46,26 +46,22 @@
 			<!--outputBaseFolder>/mnt/datastorage/sas/mosaic_output</outputBaseFolder-->
 			<!-- LINUX LOCAL -->
 			<outputBaseFolder>G:\data\sas\output</outputBaseFolder>
-			<JAICacheCapacity>768</JAICacheCapacity>
+			<JAICacheCapacity>8912</JAICacheCapacity>
 	    	<JAIParallelism>8</JAIParallelism>
 			<JAICacheThreshold>1</JAICacheThreshold>
 			<numSteps>6</numSteps>
 			<downsampleStep>2</downsampleStep>
 			<rawScaleAlgorithm>nn</rawScaleAlgorithm>
 			<mosaicScaleAlgorithm>avg</mosaicScaleAlgorithm>
-			<tileH>512</tileH>
-			<tileW>512</tileW>
-			<chunkW>10240</chunkW>
-			<chunkH>10240</chunkH>
+			<tileH>1024</tileH>
+			<tileW>1024</tileW>
+			<chunkW>20480</chunkW>
+			<chunkH>20480</chunkH>
 			<logarithmBase>10</logarithmBase>
 			<logarithmMultiplier>20</logarithmMultiplier>
 			<compressionRatio>0.75</compressionRatio>
 			<compressionScheme>LZW</compressionScheme>
-<!--		<geoserverURL>http://192.168.1.17:8086/geoserver</geoserverURL>
-			<geoserverUID>admin</geoserverUID>
-			<geoserverPWD>geoserver</geoserverPWD>
-			<geoserverUploadMethod>EXTERNAL</geoserverUploadMethod>
--->			<corePoolSize>3</corePoolSize>
+			<corePoolSize>3</corePoolSize>
 			<maxPoolSize>3</maxPoolSize>
 			<maxWaitingTime>300</maxWaitingTime>
 		</ComposerConfiguration>

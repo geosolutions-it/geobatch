@@ -105,7 +105,7 @@ public class GeoTiffOverviewsEmbedder
             final OverviewsEmbedder oe = new OverviewsEmbedder();
             oe.setDownsampleStep(downsampleStep);
             oe.setNumSteps(configuration.getNumSteps());
-            oe.setInterp(Interpolation.getInstance(configuration.getInterp()));
+//            oe.setInterp(Interpolation.getInstance(configuration.getInterp()));
             oe.setScaleAlgorithm(configuration.getScaleAlgorithm());
             oe.setTileHeight(configuration.getTileH());
             oe.setTileWidth(configuration.getTileW());

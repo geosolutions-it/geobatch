@@ -14,7 +14,7 @@
 		<property name="connection.password">geobatch</property>
 		
 		<!-- property name="connection.driver_class">org.postgresql.Driver</property>
-		<property name="connection.url">jdbc:postgresql://172.19.96.73:5432/gbusers</property>
+		<property name="connection.url">jdbc:postgresql://localhost:5432/gbusers</property>
 		<property name="connection.username">postgres</property>
 		<property name="connection.password">postgres</property -->
 

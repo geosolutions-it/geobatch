@@ -418,8 +418,6 @@ public class SASDetectionAction
 			        event.setLayer(layer);
 			        
 					return event;
-
-//			        sendShape(dataPrefix + ".zip");
 				}
 			}
 		}
