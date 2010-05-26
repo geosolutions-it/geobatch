@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<GdalContour>
+    <a>elev</a>
+    <i>10.0</i>
+	<srcfile>Y:\data\geotiff\small_world.tif</srcfile>
+	<dstfile>Y:\data\geotiff\contour.shp</dstfile>
+</GdalContour>
