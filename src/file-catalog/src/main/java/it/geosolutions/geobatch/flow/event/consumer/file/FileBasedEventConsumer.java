@@ -328,6 +328,9 @@ public class FileBasedEventConsumer
                     CatalogHolder.getCatalog().getResource(actionServiceID, ActionService.class);
             if (actionService != null) {
                 Action<FileSystemMonitorEvent> action = actionService.createAction(actionConfig);
+                if(action == null) {
+                    throw new IllegalArgumentException("Action could not be created for config " + actionConfig);
+                }
 
                 // attach listeners to actions
                 for (ProgressListenerConfiguration plConfig : actionConfig.getListenerConfigurations()) {
@@ -345,6 +348,8 @@ public class FileBasedEventConsumer
                 }
 
                 loadedActions.add(action);
+            } else {
+                throw new IllegalArgumentException("ActionService not found '"+actionServiceID+"' for ActionConfig '" + actionConfig.getName() + "'");
             }
         }
         super.addActions(loadedActions);

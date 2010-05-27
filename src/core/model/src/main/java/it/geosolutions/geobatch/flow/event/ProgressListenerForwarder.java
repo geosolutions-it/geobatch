@@ -7,6 +7,7 @@ import it.geosolutions.geobatch.misc.ListenerRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.resources.UnmodifiableArrayList;
@@ -40,7 +41,8 @@ public class ProgressListenerForwarder
 
     public void completed() {
         for (IProgressListener l : listeners) {
-            LOGGER.info(getClass().getSimpleName()+ " FORWARDING completed message to " + l.getClass().getSimpleName());
+            if(LOGGER.isLoggable(Level.FINE))
+                LOGGER.fine(getClass().getSimpleName()+ " FORWARDING completed message to " + l.getClass().getSimpleName());
             try{
 				l.setProgress(100f); // forcing 100% progress
                 l.completed();
@@ -53,7 +55,8 @@ public class ProgressListenerForwarder
     public void failed(Throwable exception) {
         for (IProgressListener l : listeners) {
             try{
-                LOGGER.info(getClass().getSimpleName()+ " FORWARDING failed message ("+exception+") to " + l.getClass().getSimpleName());
+                if(LOGGER.isLoggable(Level.FINE))
+                    LOGGER.fine(getClass().getSimpleName()+ " FORWARDING failed message ("+exception+") to " + l.getClass().getSimpleName());
                 l.failed(exception);
             }catch(Exception e) {
                 LOGGER.warning("Exception in event forwarder: " + e);
@@ -74,7 +77,8 @@ public class ProgressListenerForwarder
     public void paused() {
         for (IProgressListener l : listeners) {
             try{
-            LOGGER.info(getClass().getSimpleName()+ " FORWARDING paused message to " + l.getClass().getSimpleName());
+                if(LOGGER.isLoggable(Level.FINE))
+                    LOGGER.fine(getClass().getSimpleName()+ " FORWARDING paused message to " + l.getClass().getSimpleName());
                 l.paused();
             }catch(Exception e) {
                 LOGGER.warning("Exception in event forwarder: " + e);
@@ -85,7 +89,8 @@ public class ProgressListenerForwarder
     public void progressing() {
         for (IProgressListener l : listeners) {
             try{
-            LOGGER.info(getClass().getSimpleName()+ " FORWARDING progressing message to " + l.getClass().getSimpleName());
+                if(LOGGER.isLoggable(Level.FINE))
+                    LOGGER.fine(getClass().getSimpleName()+ " FORWARDING progressing message to " + l.getClass().getSimpleName());
                 l.progressing();
             }catch(Exception e) {
                 LOGGER.warning("Exception in event forwarder: " + e);
@@ -96,7 +101,8 @@ public class ProgressListenerForwarder
     public void resumed() {
         for (IProgressListener l : listeners) {
             try{
-            LOGGER.info(getClass().getSimpleName()+ " FORWARDING resumed message to " + l.getClass().getSimpleName());
+                if(LOGGER.isLoggable(Level.FINE))
+                    LOGGER.fine(getClass().getSimpleName()+ " FORWARDING resumed message to " + l.getClass().getSimpleName());
                 l.resumed();
             }catch(Exception e) {
                 LOGGER.warning("Exception in event forwarder: " + e);
@@ -108,7 +114,8 @@ public class ProgressListenerForwarder
     public void setProgress(float progress) {
         for (IProgressListener l : listeners) {
             try{
-            LOGGER.info(getClass().getSimpleName()+ " FORWARDING setProgress message to " + l.getClass().getSimpleName());
+                if(LOGGER.isLoggable(Level.FINE))
+                    LOGGER.fine(getClass().getSimpleName()+ " FORWARDING setProgress message to " + l.getClass().getSimpleName());
                 l.setProgress(progress);
             }catch(Exception e) {
                 LOGGER.warning("Exception in event forwarder: " + e);
@@ -119,7 +126,8 @@ public class ProgressListenerForwarder
     @Override
     public void setTask(String currentTask) {
         for (IProgressListener l : listeners) {
-            LOGGER.info(getClass().getSimpleName()+ " FORWARDING setTask message to " + l.getClass().getSimpleName());
+            if(LOGGER.isLoggable(Level.FINE))
+                LOGGER.fine(getClass().getSimpleName()+ " FORWARDING setTask message to " + l.getClass().getSimpleName());
             try{
                 l.setTask(currentTask);
             }catch(Exception e) {
@@ -130,7 +138,8 @@ public class ProgressListenerForwarder
 
     public void started() {
         for (IProgressListener l : listeners) {
-            LOGGER.info(getClass().getSimpleName()+ " FORWARDING started message to " + l.getClass().getSimpleName());
+            if(LOGGER.isLoggable(Level.FINE))
+                LOGGER.fine(getClass().getSimpleName()+ " FORWARDING started message to " + l.getClass().getSimpleName());
             try{
                 l.started();
             }catch(Exception e) {
@@ -141,7 +150,8 @@ public class ProgressListenerForwarder
 
     public void terminated() {
         for (IProgressListener l : listeners) {
-            LOGGER.info(getClass().getSimpleName()+ " FORWARDING terminated message to " + l.getClass().getSimpleName());
+            if(LOGGER.isLoggable(Level.FINE))
+                LOGGER.fine(getClass().getSimpleName()+ " FORWARDING terminated message to " + l.getClass().getSimpleName());
             try{
                 l.terminated();
             }catch(Exception e) {

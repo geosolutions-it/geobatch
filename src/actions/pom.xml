@@ -281,7 +281,18 @@
             </modules>
         </profile>
 
-    </profiles>
+        <profile>
+            <id>scripting</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>scripting</module>
+            </modules>
+        </profile>
 
+    </profiles>
 
 </project>
