@@ -419,12 +419,6 @@
         <profile>
             <id>sas</id>
 
-            <activation>
-                <property>
-                    <name>all_actions</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
