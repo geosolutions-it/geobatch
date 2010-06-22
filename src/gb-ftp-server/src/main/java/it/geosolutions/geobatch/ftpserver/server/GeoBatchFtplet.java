@@ -34,6 +34,7 @@ import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.ftpserver.ftplet.DefaultFtpReply;
@@ -71,14 +72,12 @@ public class GeoBatchFtplet
 			IOException {
         super.onConnect(ftpSession);
 
-		LOGGER.info("FTP Stats: CONNECTIONS : "
-                + this.ftpStats.getCurrentConnectionNumber()
-                + " / "
-				+ this.ftpStats.getTotalConnectionNumber()
-                + " -- LOGINS : "
-                + this.ftpStats.getCurrentLoginNumber()
-                + " / "
-				+ this.ftpStats.getTotalLoginNumber());
+		LOGGER.log(Level.INFO, "FTP Stats: CONNECTIONS : {0} / {1} -- LOGINS : {2} / {3}",
+                new Object[]{
+                    this.ftpStats.getCurrentConnectionNumber(),
+                    this.ftpStats.getTotalConnectionNumber(),
+                    this.ftpStats.getCurrentLoginNumber(),
+                    this.ftpStats.getTotalLoginNumber()});
 
 		return FtpletResult.DEFAULT;
 	}
@@ -87,13 +86,16 @@ public class GeoBatchFtplet
     public FtpletResult onUploadEnd(FtpSession session, FtpRequest request) throws FtpException, IOException {
         super.onUploadEnd(session, request);
 
-        String spath = session.getFileSystemView().getWorkingDirectory().getAbsolutePath();
+        String userPath = session.getUser().getHomeDirectory();
+        String currDirPath = session.getFileSystemView().getWorkingDirectory().getAbsolutePath();
         String filename = request.getArgument();
-        File targetFile = new File(spath, filename);
 
-        String flowid = FilenameUtils.getName(spath);
+        File dirFile = new File(userPath, currDirPath);
+        File targetFile = new File(dirFile, filename);
 
-        LOGGER.info("FTP upload ended - session working dir: '" + spath + "' - file: '"+filename+"'");
+        String flowid = FilenameUtils.getName(currDirPath);
+
+        LOGGER.log(Level.INFO, "FTP upload ended - session working dir: ''{0}'' - file: ''{1}''", new Object[]{currDirPath, filename});
 
         Catalog catalog = CatalogHolder.getCatalog();
 
@@ -113,7 +115,7 @@ public class GeoBatchFtplet
             LOGGER.info("Firing FILEADDED event to " + fm);
             fm.postEvent(new FileSystemMonitorEvent(targetFile, FileSystemMonitorNotifications.FILE_ADDED));
         } else {
-            LOGGER.info("No FlowManager '"+flowid+"' to notify about " + targetFile  + " -- " + availFmSb);
+            LOGGER.log(Level.INFO, "No FlowManager ''{0}'' to notify about {1} -- {2}", new Object[]{flowid, targetFile, availFmSb});
         }
 
 		return FtpletResult.DEFAULT;

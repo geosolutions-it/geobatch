@@ -258,11 +258,6 @@
 
         <profile>
             <id>sas</id>
-            <activation>
-                <property>
-                    <name>all_actions</name>
-                </property>
-            </activation>
             <modules>
                 <module>sas</module>
                 <module>gb-task-executor</module>
@@ -271,11 +266,6 @@
 
         <profile>
             <id>sasesb</id>
-            <activation>
-                <property>
-                    <name>all_actions</name>
-                </property>
-            </activation>
             <modules>
                 <module>sas</module>
                 <module>sasesb</module>
@@ -285,11 +275,6 @@
 
         <profile>
             <id>sasgs</id>
-            <!--            <activation>
-                <property>
-                    <name>all_actions</name>
-                </property>
-            </activation>-->
             <modules>
                 <module>sas</module>
                 <module>sasgs</module>
@@ -297,7 +282,18 @@
             </modules>
         </profile>
 
-    </profiles>
+        <profile>
+            <id>scripting</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>scripting</module>
+            </modules>
+        </profile>
 
+    </profiles>
 
 </project>
