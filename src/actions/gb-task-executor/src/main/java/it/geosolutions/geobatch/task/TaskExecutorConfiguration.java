@@ -114,7 +114,9 @@ public class TaskExecutorConfiguration extends ActionConfiguration implements
 	private String outputName;
 	
 	private String defaultScript;
-	
+
+	private String output;
+
 //	private boolean spawn;
 	
     private Map<String,String> variables;
@@ -150,5 +152,19 @@ public class TaskExecutorConfiguration extends ActionConfiguration implements
 			throw cns;
 		}
     }
+
+	/**
+	 * @param output the output to set
+	 */
+	public void setOutput(String output) {
+		this.output = output;
+	}
+
+	/**
+	 * @return the output
+	 */
+	public String getOutput() {
+		return output;
+	}
 
 }

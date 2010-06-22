@@ -32,6 +32,7 @@ import it.geosolutions.geobatch.utils.IOUtils;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.logging.Logger;
@@ -122,56 +123,60 @@ public class GeoServerRESTConfiguratorAction extends GeoServerConfiguratorAction
 
     		// Fetch the first event in the queue.
     		listenerForwarder.progressing(10, "In progress");
-            FileSystemMonitorEvent event = events.peek();
-    		final File fileToSend = event.getSource();
-			final String fileBaseName = FilenameUtils.getBaseName(fileToSend.getName());
+			Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
+			
+			while (events.size() > 0) {
+    			FileSystemMonitorEvent event = events.remove();
+        		final File fileToSend = event.getSource();
+    			final String fileBaseName = FilenameUtils.getBaseName(fileToSend.getName());
 
 
-    		// TODO: check if a layer with the same name already exists in GS
+        		// TODO: check if a layer with the same name already exists in GS
 
-    		// ////////////////////////////////////////////////////////////////////
-    		//
-    		// SENDING data to GeoServer via REST protocol.
-    		//
-    		// ////////////////////////////////////////////////////////////////////
-    		// http://localhost:8080/geoserver/rest/coveragestores/test_cv_store/test/file.tiff
+        		// ////////////////////////////////////////////////////////////////////
+        		//
+        		// SENDING data to GeoServer via REST protocol.
+        		//
+        		// ////////////////////////////////////////////////////////////////////
+        		// http://localhost:8080/geoserver/rest/coveragestores/test_cv_store/test/file.tiff
 
-    		listenerForwarder.progressing(40, "Preparing file");
+        		listenerForwarder.progressing(10 + (30 / (events.size() == 0 ? 1 : events.size())), "Preparing file");
 
-    		LOGGER.info("Sending ShapeFile to GeoServer ... " + getConfiguration().getGeoserverURL());
-    		Map<String, String> queryParams = new HashMap<String, String>();
-    		queryParams.put("namespace", getConfiguration().getDefaultNamespace());
-    		queryParams.put("wmspath",   getConfiguration().getWmsPath());
+        		LOGGER.info("Sending ShapeFile to GeoServer ... " + getConfiguration().getGeoserverURL());
+        		Map<String, String> queryParams = new HashMap<String, String>();
+        		queryParams.put("namespace", getConfiguration().getDefaultNamespace());
+        		queryParams.put("wmspath",   getConfiguration().getWmsPath());
 
-    		listenerForwarder.progressing(60, "Sending");
-    		final String[] returnedLayer = GeoServerRESTHelper.send(
-    				fileToSend, 
-    				fileToSend, 
-    				configuration.isVectorialLayer(),
-    				configuration.getGeoserverURL(),
-    				configuration.getGeoserverUID(),
-    				configuration.getGeoserverPWD(),
-    				configuration.getStoreId() != null ? configuration.getStoreId() : fileBaseName, 
-    				configuration.getStoreFilePrefix() != null ? configuration.getStoreFilePrefix() : fileBaseName, 
-    				queryParams, 
-    				"",
-    				configuration.getDataTransferMethod(),
-    				configuration.getStoreType(), 
-    				configuration.getGeoserverVersion(), 
-    				configuration.getStyles(), 
-    				configuration.getDefaultStyle()
-    		);
+        		listenerForwarder.progressing(10 + (50 / (events.size() == 0 ? 1 : events.size())), "Sending");
+        		final String[] returnedLayer = GeoServerRESTHelper.send(
+        				fileToSend, 
+        				fileToSend, 
+        				configuration.isVectorialLayer(),
+        				configuration.getGeoserverURL(),
+        				configuration.getGeoserverUID(),
+        				configuration.getGeoserverPWD(),
+        				configuration.getStoreId() != null ? configuration.getStoreId() : fileBaseName, 
+        				configuration.getStoreFilePrefix() != null ? configuration.getStoreFilePrefix() : fileBaseName, 
+        				queryParams, 
+        				configuration.getQueryString() != null ? configuration.getQueryString() : "",
+        				configuration.getDataTransferMethod(),
+        				configuration.getStoreType(), 
+        				configuration.getGeoserverVersion(), 
+        				configuration.getStyles(), 
+        				configuration.getDefaultStyle()
+        		);
 
-    		if(returnedLayer != null) {
-    			listenerForwarder.setProgress(100);
-    			listenerForwarder.completed();
-    			
-    			events.add(new FileSystemMonitorEvent(fileToSend, FileSystemMonitorNotifications.FILE_ADDED));
-    			return events;
-    		} else {
-    			throw new RuntimeException("Error configuring the layer on GeoServer");
+        		if(returnedLayer != null) {
+        			outEvents.add(new FileSystemMonitorEvent(fileToSend, FileSystemMonitorNotifications.FILE_ADDED));
+        		} else {
+        			throw new RuntimeException("Error configuring the layer on GeoServer");
+        		}
     		}
 
+			listenerForwarder.setProgress(100);
+			listenerForwarder.completed();
+    		
+			return outEvents;
     	} catch (Throwable t) {
     		//	LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // we're rethrowing it, so don't log
     		listenerForwarder.failed(t); // fails the Action

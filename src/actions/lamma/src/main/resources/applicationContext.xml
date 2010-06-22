@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- Environment Initialization -->
+	<bean id="LammaGribMetadataExtractorService" class="it.geosolutions.geobatch.lamma.extract.LammaGribMetadataExtractorService">
+		<property  name="id">
+    		<value>LammaGribMetadataExtractorService</value>
+    	</property>
+    	<property name="description">
+    		<value>LammaGribMetadataExtractorService</value>
+    	</property>
+    	<property name="name">
+    		<value>LammaGribMetadataExtractorService</value>
+    	</property>
+    </bean>
+
+	<bean id="LammaGribBuilderService" class="it.geosolutions.geobatch.lamma.build.LammaGribBuilderService">
+		<property  name="id">
+    		<value>LammaGribBuilderService</value>
+    	</property>
+    	<property name="description">
+    		<value>LammaGribBuilderService</value>
+    	</property>
+    	<property name="name">
+    		<value>LammaGribBuilderService</value>
+    	</property>
+    </bean>
+
+	<bean id="LammaMosaicDataService" class="it.geosolutions.geobatch.lamma.configure.LammaMosaicDataService">
+		<property  name="id">
+    		<value>LammaMosaicDataService</value>
+    	</property>
+    	<property name="description">
+    		<value>LammaMosaicDataService</value>
+    	</property>
+    	<property name="name">
+    		<value>LammaMosaicDataService</value>
+    	</property>
+    </bean>
+    
+    <bean id="LammaContourBuilderService" class="it.geosolutions.geobatch.lamma.build.LammaContourBuilderService">
+		<property  name="id">
+    		<value>LammaContourBuilderService</value>
+    	</property>
+    	<property name="description">
+    		<value>LammaContourBuilderService</value>
+    	</property>
+    	<property name="name">
+    		<value>LammaContourBuilderService</value>
+    	</property>
+    </bean>
+    
+	<!-- Aliases Registrars -->
+    <bean id="lammaRegistrar" class="it.geosolutions.geobatch.lamma.LammaAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+    
+</beans>

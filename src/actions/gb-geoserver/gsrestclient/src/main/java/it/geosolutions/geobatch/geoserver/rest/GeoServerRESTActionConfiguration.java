@@ -31,6 +31,8 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
 		// TODO Auto-generated constructor stub
 	}
 
+    private String queryString;
+    
     private String geoserverVersion;
     
     private String storeType;
@@ -63,6 +65,7 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
 		setStoreType(baseConfiguration.getStoreType());
 		setStyles(baseConfiguration.getStyles());
 		setWmsPath(baseConfiguration.getWmsPath());
+		setQueryString(baseConfiguration.getQueryString());
 		setWorkingDirectory(baseConfiguration.getWorkingDirectory());
 		setVectorialLayer(baseConfiguration.isVectorialLayer());
     }
@@ -90,6 +93,7 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
                 (GeoServerRESTActionConfiguration)super.clone();
 
 		configuration.setGeoserverVersion(geoserverVersion);
+		configuration.setQueryString(queryString);
 		
 		return configuration;
 	}
@@ -145,5 +149,19 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
 	 */
 	public Boolean isVectorialLayer() {
 		return vectorialLayer;
+	}
+
+	/**
+	 * @param queryString the queryString to set
+	 */
+	public void setQueryString(String queryString) {
+		this.queryString = queryString;
+	}
+
+	/**
+	 * @return the queryString
+	 */
+	public String getQueryString() {
+		return queryString;
 	}
 }

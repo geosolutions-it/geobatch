@@ -241,6 +241,22 @@
         </profile>
 
         <profile>
+            <id>lamma</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>lamma</module>
+                <module>gb-geoserver</module>
+                <module>imagemosaic</module>
+                <module>shapefile</module>
+                <module>gb-task-executor</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>sas</id>
             <activation>
                 <property>

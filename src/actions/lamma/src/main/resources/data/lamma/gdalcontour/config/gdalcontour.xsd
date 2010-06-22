@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.geobatch.org/gdalwarp"
+	xmlns="http://www.geobatch.org/gdalwarp">
+	<xsd:element name="GdalContour">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>
+					image reprojection and warping utility
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:all>
+			<xsd:element name="b" type="xsd:int" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							srs_def:
+
+							source spatial reference set. 
+							The coordinate systems that can be passed 
+							includes EPSG PCS and GCSes (ie. EPSG:4296), 
+							PROJ.4 declarations, or the name of a .prf 
+							file containing well known text.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			    <xsd:element name="a" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							trs_def:
+
+							Target spatial reference set. 
+							The coordinate systems that can be passed 
+							includes EPSG PCS and GCSes (ie. EPSG:4296), 
+							PROJ.4 declarations, or the name of a .prf 
+							file containing well known text.
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="3d" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							"NAME=VALUE":
+    						set a transformer option suitable to pass to GDALCreateGenImgProjTransformer2(). 
+ 						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="inodata" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							n:
+    						order of polynomial used for warping (1 to 3). 
+    						The default is to select a polynomial order based 
+    						on the number of GCPs. 
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="snodata" type="xsd:double" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							    Force use of thin plate spline transformer based on available GCPs. 
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="f" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							    Force use of RPCs.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="i" type="xsd:double" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							    Force use of Geolocation Arrays.
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="off" type="xsd:double"
+					minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							err_threshold:
+              error threshold for transformation approximation 
+              (in pixel units - defaults to 0.125).
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="fl" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							xmin ymin xmax ymax:
+              set georeferenced extents of output file 
+              to be created (in target SRS).
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="nln" type="xsd:string" minOccurs="0"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							xres yres:
+              set output file resolution (in target georeferenced units)
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				
+				
+				
+				<xsd:element name="srcfile" type="xsd:string" minOccurs="1"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							The source file name(s). 
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="dstfile" type="xsd:string"
+					minOccurs="1" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>The destination file name. </xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema> 

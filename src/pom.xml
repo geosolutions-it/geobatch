@@ -595,6 +595,11 @@
                 <artifactId>gt-geotiff</artifactId>
                 <version>${gt.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.geotools.jdbc</groupId>
+                <artifactId>gt-jdbc-postgis</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -908,6 +913,11 @@
             <dependency>
                 <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-geotiff</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-action-lamma</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
