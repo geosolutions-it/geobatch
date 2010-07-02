@@ -419,12 +419,6 @@
         <profile>
             <id>lamma</id>
 
-            <activation>
-                <property>
-                    <name>all_actions</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
@@ -473,10 +467,6 @@
                     <groupId>it.geosolutions</groupId>
                     <artifactId>gb-action-sas</artifactId>
                 </dependency>
-                <dependency>
-                    <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-action-sasesb</artifactId>
-                </dependency>
             </dependencies>
             <build>
                 <plugins>
@@ -493,16 +483,6 @@
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
                                             <artifactId>gb-action-sas</artifactId>
-                                            <version>${gb.version}</version>
-                                            <classifier>flowdata</classifier>
-                                            <type>jar</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
-                                            <includes>data/**</includes>
-                                        </artifactItem>
-                                        <artifactItem>
-                                            <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-action-sasesb</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>

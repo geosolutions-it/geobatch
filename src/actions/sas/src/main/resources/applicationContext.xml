@@ -55,8 +55,18 @@
     	</property>
     </bean>	     
 
+     <!-- Environment Initialization -->
+	<bean id="sasEsbService" class="it.geosolutions.geobatch.sas.esb.SasEsbService">
+		<property name="id" value="sasEsbService"/>
+    	<property name="description" value="sasEsbService"/>
+    	<property name="name" value="sasEsbService"/>
+    </bean>	 
+
 	<!-- Aliases Registrars -->
     <bean id="sasRegistrar" class="it.geosolutions.geobatch.sas.SASAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+    <bean id="sasEsbRegistrar" class="it.geosolutions.geobatch.sas.SasEsbAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
     
