@@ -345,7 +345,7 @@ public class LammaContourBuilderActionDB extends LammaBaseAction {
     		}
     	} catch (IOException e) {
     		LOGGER.severe(e.getLocalizedMessage());
-    		throw new IOException(e);
+    		throw e;
     	} finally {
     		if (fw != null) {
     			fw.close();

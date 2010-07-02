@@ -117,7 +117,7 @@
         </dependency>
         <dependency>
             <groupId>it.geosolutions.opensdi.sas</groupId>
-			<artifactId>sas-ws-su</artifactId>
+						<artifactId>sas-ws-su</artifactId>
             <version>0.1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
