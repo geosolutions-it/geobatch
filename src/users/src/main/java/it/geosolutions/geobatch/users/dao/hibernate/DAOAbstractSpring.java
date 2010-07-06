@@ -34,6 +34,7 @@ import it.geosolutions.geobatch.users.dao.GenericDAO;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hibernate.Criteria;
@@ -50,17 +51,19 @@ public abstract class DAOAbstractSpring<T, ID extends Serializable>
 	extends HibernateDaoSupport
 	implements GenericDAO<T, ID> {
 
-	private static Logger logger = Logger.getLogger(DAOAbstractSpring.class.getName());
+	private static final Logger logger = Logger.getLogger(DAOAbstractSpring.class.getName());
 
 	private Class<T> persistentClass;
 
 	public DAOAbstractSpring(Class<T> persistentClass) {
-		logger.info("Persistent Class : " + persistentClass);
+        if(logger.isLoggable(Level.FINE))
+            logger.log(Level.FINE, "Persistent Class : {0}", persistentClass);
 		this.persistentClass = persistentClass;
 	}
 
 	protected Class<T> getPersistentClass() {
-		logger.info("Persistent class: " + persistentClass.getName());
+        if(logger.isLoggable(Level.FINE))
+    		logger.log(Level.FINE, "Persistent class: {0}", persistentClass.getName());
 		return persistentClass;
 	}
 
