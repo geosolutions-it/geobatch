@@ -233,7 +233,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             this.fsMonitor.addListener(fsListener);
         }
         else
-        	throw new IllegalArgumentException("Unable to start the FileSystemMonitor for directory:"+dir.getAbsolutePath());
+        	throw new IllegalArgumentException("Unable to start the FileSystemMonitor for directory:"+dir);
     }
 
     // ----------------------------------------------- PUBLIC ACCESS METHODS
