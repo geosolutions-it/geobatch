@@ -67,15 +67,20 @@ public class GeoBatchFtplet
 
     public FtpletResult onConnect(FtpSession ftpSession) throws FtpException,
 			IOException {
-		LOGGER.log(Level.INFO, "FTP Stats: CONNECTIONS : {0} / {1} -- LOGINS : {2} / {3}",
+
+		logStatus();
+		return FtpletResult.DEFAULT;
+	}
+
+    private void logStatus() {
+        LOGGER.log(Level.INFO,
+                "FTP Stats: CONNECTIONS : {0} / {1} -- LOGINS : {2} / {3}",
                 new Object[]{
                     this.ftpStats.getCurrentConnectionNumber(),
                     this.ftpStats.getTotalConnectionNumber(),
                     this.ftpStats.getCurrentLoginNumber(),
                     this.ftpStats.getTotalLoginNumber()});
-
-		return FtpletResult.DEFAULT;
-	}
+    }
     
 	public FtpletResult onDisconnect(FtpSession session) throws FtpException,
 			IOException {
@@ -146,11 +151,11 @@ public class GeoBatchFtplet
     public FtpletResult onUploadEnd(FtpSession session, FtpRequest request, FtpReply reply) throws FtpException, IOException {
     	if( reply.getCode() != FtpReply.REPLY_226_CLOSING_DATA_CONNECTION) { // There has been an error
     		if(LOGGER.isLoggable(Level.INFO))
-	  			LOGGER.log(Level.INFO, "Upload of file '{0}' failed.", request.getArgument());
+	  			LOGGER.log(Level.INFO, "Upload of file '"+ request.getArgument()+"' failed.");
     		return FtpletResult.DEFAULT;    		
     	} else {
     		if(LOGGER.isLoggable(Level.INFO))
-	  			LOGGER.log(Level.INFO, "Upload of file '{0}' completed.", request.getArgument());
+	  			LOGGER.log(Level.INFO, "Upload of file '"+ request.getArgument()+"' completed.");
     		return fireGeoBatchFileAdd(session, request);
     	}
     }
@@ -158,11 +163,11 @@ public class GeoBatchFtplet
     public FtpletResult onAppendEnd(FtpSession session, FtpRequest request, FtpReply reply) throws FtpException, IOException {
 	  	if( reply.getCode() != FtpReply.REPLY_226_CLOSING_DATA_CONNECTION) { // There has been an error
 	  		if(LOGGER.isLoggable(Level.INFO))
-	  			LOGGER.log(Level.INFO, "Append of file '{0}' failed.", request.getArgument());
+	  			LOGGER.log(Level.INFO, "Append of file '"+ request.getArgument()+"' failed.");
 	  		return FtpletResult.DEFAULT;    		
 	  	} else {
     		if(LOGGER.isLoggable(Level.INFO))
-	  			LOGGER.log(Level.INFO, "Append of file '{0}' completed.", request.getArgument());
+	  			LOGGER.log(Level.INFO, "Append of file '"+ request.getArgument()+"' completed.");
 	  		return fireGeoBatchFileAdd(session, request);
 	  	}
     }
@@ -178,8 +183,8 @@ public class GeoBatchFtplet
 
         String flowid = FilenameUtils.getName(currDirPath);
 
-  		if(LOGGER.isLoggable(Level.INFO))
-  			LOGGER.log(Level.INFO, "FTP upload ended - session working dir: ''{0}'' - file: ''{1}''", new Object[]{currDirPath, filename});
+        if(LOGGER.isLoggable(Level.INFO))
+            LOGGER.log(Level.INFO, "File upload/append finished: - session working dir: ''{0}'' - file: ''{1}''", new Object[]{currDirPath, filename});
 
         Catalog catalog = CatalogHolder.getCatalog();
 
@@ -196,7 +201,7 @@ public class GeoBatchFtplet
         }
 
         if(fm != null) {
-            LOGGER.info("Firing FILEADDED event to " + fm);
+            LOGGER.log(Level.INFO, "Firing FILEADDED event to {0}", fm);
             fm.postEvent(new FileSystemMonitorEvent(targetFile, FileSystemMonitorNotifications.FILE_ADDED));
         } else {
             LOGGER.log(Level.INFO, "No FlowManager ''{0}'' to notify about {1} -- {2}", new Object[]{flowid, targetFile, availFmSb});
