@@ -27,7 +27,7 @@
 			<name>test</name>
 		</FileEventRule>
 
-		<TaskExecutorConfiguration>
+		<!-- TaskExecutorConfiguration>
 			<id>GDALTRANSLATE</id>
 			<description>Flow to run gdal_translate operations</description>
 			<name>GdalTranslate action</name>
@@ -81,7 +81,7 @@
 				  </entry>
 			</variables>
 			<xsl>geotiff_work/config/gdaladdo.xsl</xsl>
-		</TaskExecutorConfiguration>
+		</TaskExecutorConfiguration-->
 
 		<GeoServerRESTActionConfiguration>
             <serviceID>geoServerRESTGeneratorService</serviceID>
