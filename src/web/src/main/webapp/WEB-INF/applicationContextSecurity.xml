@@ -84,7 +84,8 @@
 	</beans:bean>
 
 	<beans:bean id="remoteAuthenticationManager" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-		<beans:property name="serviceUrl" value="https://localhost:8192/securityService/" />
+		<!-- beans:property name="serviceUrl" value="https://betelgeuse:8192/securityService/" / -->
+		<beans:property name="serviceUrl" value="https://demo.geo-solutions.it:8443/dgwatch-services/jbi/securityService/" />
 		<beans:property name="serviceInterface" value="org.springframework.security.providers.rcp.RemoteAuthenticationManager" />
 		<beans:property name="httpInvokerRequestExecutor">
             <beans:bean class="org.springframework.remoting.httpinvoker.CommonsHttpInvokerRequestExecutor"  />
