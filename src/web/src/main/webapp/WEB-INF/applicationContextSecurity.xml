@@ -70,7 +70,7 @@
  <!-- #####################################################################
       RMI Security
       ##################################################################### -->  
-<!--	<beans:bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
+	<!-- beans:bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
 		<beans:property name="providers">
 			<beans:list>
 				<beans:ref bean="remoteAuthenticationProvider" />
@@ -84,7 +84,6 @@
 	</beans:bean>
 
 	<beans:bean id="remoteAuthenticationManager" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
-		<!-- beans:property name="serviceUrl" value="https://betelgeuse:8192/securityService/" / -->
 		<beans:property name="serviceUrl" value="https://demo.geo-solutions.it:8443/dgwatch-services/jbi/securityService/" />
 		<beans:property name="serviceInterface" value="org.springframework.security.providers.rcp.RemoteAuthenticationManager" />
 		<beans:property name="httpInvokerRequestExecutor">
@@ -96,6 +95,6 @@
    			data-source-ref="dataSource-gb-users" 
       		role-prefix="" 
       		users-by-username-query="SELECT USER_NAME AS username, USER_PASSWORD AS password, USER_ENABLED AS enabled FROM GBUser WHERE USER_NAME = ?" 
-        	authorities-by-username-query="SELECT USER_NAME AS username, USER_ROLE AS authority FROM GBUser WHERE USER_NAME = ?" />-->
+        	authorities-by-username-query="SELECT USER_NAME AS username, USER_ROLE AS authority FROM GBUser WHERE USER_NAME = ?" / -->
         	
 </beans:beans>

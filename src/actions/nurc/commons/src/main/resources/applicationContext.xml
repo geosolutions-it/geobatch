@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+		 
+	<!-- Environment Initialization -->
+	<bean id="NetCDFCFGeodetic2GeoTIFFsGeneratorService" class="it.geosolutions.geobatch.nurc.base.NetCDFCFGeodetic2GeoTIFFsGeneratorService">
+		<property  name="id">
+    		<value>NetCDFCFGeodetic2GeoTIFFsGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>NetCDFCFGeodetic2GeoTIFFsGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>NetCDFCFGeodetic2GeoTIFFsGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="HDF42GeoTIFFsGeneratorService" class="it.geosolutions.geobatch.nurc.remsens.HDF42GeoTIFFsGeneratorService">
+		<property  name="id">
+    		<value>HDF42GeoTIFFsGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>HDF42GeoTIFFsGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>HDF42GeoTIFFsGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<!-- Registry Harvesting -->
+	<bean id="RegistryHarvestingGeneratorService" class="it.geosolutions.geobatch.nurc.registry.harvest.RegistryHarvestingGeneratorService">
+		<property  name="id">
+    		<value>RegistryHarvestingGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>RegistryHarvestingGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>RegistryHarvestingGeneratorService</value>
+    	</property>
+	</bean>
+	
+	<bean id="NURCActionsAliasRegistrar" class="it.geosolutions.geobatch.nurc.commons.NURCActionsAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+
+</beans>

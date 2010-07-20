@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+		 
+	<!-- Environment Initialization -->
+	
+	<!-- lscv08-SEM fluxes  -->	
+	<bean id="MERCATORGeneratorService" class="it.geosolutions.geobatch.nurc.sem.lscv08.MERCATORGeneratorService">
+		<property  name="id">
+    		<value>MERCATORGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>MERCATORGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>MERCATORGeneratorService</value>
+    	</property>	
+	</bean>
+
+	<bean id="NRLNCOMGeneratorService" class="it.geosolutions.geobatch.nurc.sem.lscv08.NRLNCOMGeneratorService">
+		<property  name="id">
+    		<value>NRLNCOMGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>NRLNCOMGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>NRLNCOMGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="INGVGeneratorService" class="it.geosolutions.geobatch.nurc.sem.lscv08.INGVGeneratorService">
+		<property  name="id">
+    		<value>IGNVGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>INGVGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>INGVGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="NURCWPSOutput2WMCGeneratorService" class="it.geosolutions.geobatch.nurc.sem.wmc.NURCWPSOutput2WMCGeneratorService">
+		<property  name="id">
+    		<value>NURCWPSOutput2WMCGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>NURCWPSOutput2WMCGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>NURCWPSOutput2WMCGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="NURCSEMActionsAliasRegistrar" class="it.geosolutions.geobatch.nurc.sem.NURCSEMActionsAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+
+</beans>

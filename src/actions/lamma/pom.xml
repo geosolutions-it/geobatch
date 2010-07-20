@@ -34,7 +34,7 @@
     </scm>
 
     <description>
-        GeoSolutions GeoBatch flow managers - Matlab5 SAS flow.
+        GeoSolutions GeoBatch flow managers - Lamma flow.
     </description>
 
     <licenses>
@@ -89,21 +89,21 @@
             <artifactId>gb-action-taskexecutor</artifactId>
         </dependency>
 
-			<!-- GeoTools -->
-		<dependency>
-			<groupId>org.opengis</groupId>
-			<artifactId>geoapi</artifactId>
-			<exclusions>
-				<exclusion>
+				<!-- GeoTools -->
+				<dependency>
 					<groupId>org.opengis</groupId>
-					<artifactId>geoapi-dummy-pending</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.opengis</groupId>
-			<artifactId>geoapi-pending</artifactId>
-		</dependency>
+					<artifactId>geoapi</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>org.opengis</groupId>
+							<artifactId>geoapi-dummy-pending</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>org.opengis</groupId>
+					<artifactId>geoapi-pending</artifactId>
+				</dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geotiff</artifactId>
@@ -241,6 +241,15 @@
     </dependencies>
 
     <profiles>
+        <profile>
+            <id>nurc</id>
+            <modules>
+                <module>commons</module>
+                <module>nurc-tda</module>
+                <module>nurc-sem</module>
+            </modules>
+        </profile>
+
         <profile>
             <id>dao.jibx</id>
             <!--<activation>...</activation>-->
