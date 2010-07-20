@@ -117,6 +117,12 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geotiff</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>it.geosolutions.imageio-ext</groupId>
+            		<artifactId>imageio-ext-tiff</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
 		    <dependency>
 		      	<groupId>org.geotools</groupId>
@@ -131,6 +137,18 @@
             <groupId>org.geotools</groupId>
             <artifactId>gt-shapefile</artifactId>
         </dependency>	    
+
+
+        <!-- imageio-ext ================================================-->
+
+        <dependency>
+						<groupId>it.geosolutions.imageio-ext</groupId>
+						<artifactId>imageio-ext-tiff</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions.imageio-ext</groupId>
+            <artifactId>imageio-ext-utilities</artifactId>
+        </dependency>
 				<dependency>
 					<groupId>it.geosolutions.imageio-ext</groupId>
 					<artifactId>imageio-ext-customstreams</artifactId>

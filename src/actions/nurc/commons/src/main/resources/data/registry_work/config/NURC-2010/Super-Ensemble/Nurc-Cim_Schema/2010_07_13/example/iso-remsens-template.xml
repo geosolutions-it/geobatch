@@ -193,7 +193,7 @@
 		</variablesList>
 		<temporalInformation>
 			<!-- Sorted (ascending order) Remote Sensing Time List. (Times are in milliseconds since 01/01/1970 and are separated by commas)-->
-			<timeList>4000000,5000000,6000000,7000000</timeList>
+			<timeList>#TIME_LIST#</timeList>
 		</temporalInformation>
 		<dataInformation>
 			<experimentOrCruise>#CRUISE_OR_EXP#</experimentOrCruise>

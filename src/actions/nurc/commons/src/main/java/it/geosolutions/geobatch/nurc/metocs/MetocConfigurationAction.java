@@ -26,7 +26,10 @@ import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +52,16 @@ public abstract class MetocConfigurationAction
 
     protected final MetocActionConfiguration configuration;
 
+	protected final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddmm_HHH");
+
+	public static final long startTime;
+
+	static {
+		GregorianCalendar calendar = new GregorianCalendar(1980, 00, 01, 00, 00, 00);
+		calendar.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+		startTime = calendar.getTimeInMillis();
+	}
+
     /**
      * Constructs a producer.
 	 * The operation name will be the same than the parameter descriptor name.
@@ -59,11 +72,15 @@ public abstract class MetocConfigurationAction
     	super(configuration);
         this.configuration = configuration;
         // //
+        // initialize params...
+        // //
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+        
+        // //
         //
         // get required parameters
         //
         // //
-
 		if ((configuration.getMetocDictionaryPath() == null) || "".equals(configuration.getMetocHarvesterXMLTemplatePath())) {
 			LOGGER.log(Level.SEVERE, "MetcoDictionaryPath || MetocHarvesterXMLTemplatePath is null.");
 			throw new IllegalStateException("MetcoDictionaryPath || MetocHarvesterXMLTemplatePath is null.");

@@ -56,6 +56,16 @@
 
 
 	<dependencies>	
+    <!-- imageio-ext ================================================-->
+
+    <dependency>
+				<groupId>it.geosolutions.imageio-ext</groupId>
+				<artifactId>imageio-ext-tiff</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>it.geosolutions.imageio-ext</groupId>
+        <artifactId>imageio-ext-utilities</artifactId>
+    </dependency>
 		<dependency>
 			<groupId>it.geosolutions.imageio-ext</groupId>
 			<artifactId>imageio-ext-customstreams</artifactId>
@@ -81,25 +91,27 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-main</artifactId>
-			<version>${gt.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-hsql</artifactId>
-			<version>${gt.version}</version>
 		</dependency>
 	    
 	    <dependency>
 	      <groupId>org.geotools</groupId>
 	      <artifactId>gt-geotiff</artifactId>
-	      <version>${gt.version}</version>
+        <exclusions>
+        	<exclusion>
+        		<groupId>it.geosolutions.imageio-ext</groupId>
+        		<artifactId>imageio-ext-tiff</artifactId>
+        	</exclusion>
+        </exclusions>
 	    </dependency>
 
 	    <dependency>
 	    	<groupId>org.geotools</groupId>
 	    	<artifactId>gt-coveragetools</artifactId>
-	    	<version>${gt.version}</version>
 	    </dependency>
 	    
 	    <dependency>

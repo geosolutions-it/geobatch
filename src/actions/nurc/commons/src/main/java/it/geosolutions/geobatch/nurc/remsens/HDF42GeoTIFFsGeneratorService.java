@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+
 /**
  * Public class to generate HDF4-2-GeoTIFFs Services 
  * 
@@ -51,7 +54,15 @@ public class HDF42GeoTIFFsGeneratorService extends
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
             return null;
-        }
+        } catch (NoSuchAuthorityCodeException e) {
+        	if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+		} catch (FactoryException e) {
+			if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+		}
     }
 
     @Override

@@ -49,7 +49,6 @@ import javax.media.jai.JAI;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.Category;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.io.CoverageAccess;
 import org.geotools.coverage.io.CoverageReadRequest;
 import org.geotools.coverage.io.CoverageResponse;
@@ -67,8 +66,11 @@ import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
 import org.geotools.coverage.processing.Operations;
 import org.geotools.factory.Hints;
+import org.geotools.referencing.CRS;
 import org.opengis.coverage.Coverage;
 import org.opengis.feature.type.Name;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.temporal.Period;
 import org.opengis.temporal.TemporalGeometricPrimitive;
@@ -86,8 +88,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
 	 */
 	public final static String GEOSERVER_VERSION = "2.x";
 
-	private final static CoordinateReferenceSystem WGS84 = AbstractGridFormat
-			.getDefaultCRS();
+	private final CoordinateReferenceSystem WGS84;
 
 	private final static Operations OPERATIONS = new Operations(new Hints(
 			Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
@@ -100,8 +101,9 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
 
 	protected HDF42GeoTIFFsFileConfiguratorAction(
 			final GeoServerActionConfiguration configuration)
-			throws IOException {
+			throws IOException, NoSuchAuthorityCodeException, FactoryException {
 		super(configuration);
+		WGS84 = CRS.decode("EPSG:4326");
 	}
 
 	/**

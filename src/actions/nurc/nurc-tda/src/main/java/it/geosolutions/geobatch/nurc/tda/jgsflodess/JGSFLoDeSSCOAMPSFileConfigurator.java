@@ -75,8 +75,7 @@ import ucar.nc2.Variable;
  * Public class to insert NetCDF data file (gliders measurements) into DB
  * 
  */
-public class JGSFLoDeSSCOAMPSFileConfigurator 
-		extends MetocConfigurationAction {
+public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction {
 
 	protected JGSFLoDeSSCOAMPSFileConfigurator(
 			MetocActionConfiguration configuration) throws IOException {

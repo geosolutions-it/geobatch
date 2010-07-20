@@ -22,14 +22,12 @@
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.nurc.metocs.MetocActionConfiguration;
-import it.geosolutions.geobatch.nurc.metocs.MetocConfigurationAction;
 import it.geosolutions.geobatch.nurc.metocs.jaxb.model.MetocElementType;
 import it.geosolutions.geobatch.nurc.metocs.jaxb.model.Metocs;
+import it.geosolutions.geobatch.nurc.sem.NURCSEMBaseConfiguratorAction;
 import it.geosolutions.geobatch.nurc.utils.io.NURCActionsIOUtils;
 import it.geosolutions.geobatch.nurc.utils.io.Utilities;
 import it.geosolutions.geobatch.utils.IOUtils;
@@ -39,22 +37,17 @@ import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
 import java.util.TimeZone;
-import java.util.logging.Level;
 
-import javax.media.jai.JAI;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
@@ -67,7 +60,6 @@ import ucar.ma2.Index;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
-import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
@@ -76,419 +68,233 @@ import ucar.nc2.Variable;
  * Public class to transform lscv08::MERCATOR Model
  * 
  */
-public class MERCATORFileConfiguratorAction extends MetocConfigurationAction {
+public class MERCATORFileConfiguratorAction extends NURCSEMBaseConfiguratorAction {
 
-	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddmm_HHH");
-
-	public static final long startTime;
-
-	static {
-		GregorianCalendar calendar = new GregorianCalendar(1980, 00, 01, 00,
-				00, 00);
-		calendar.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-		startTime = calendar.getTimeInMillis();
-	}
-
-	protected MERCATORFileConfiguratorAction(
-			MetocActionConfiguration configuration) throws IOException {
+	protected MERCATORFileConfiguratorAction(MetocActionConfiguration configuration) throws IOException {
 		super(configuration);
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 	}
 
-	/**
-	 * 
-	 */
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+	@Override
+	protected File unzipMetocArchive(FileSystemMonitorEvent event,
+			String fileSuffix, File outDir, File tempFile) throws IOException {
+		return ("zip"
+				.equalsIgnoreCase(fileSuffix) || "tar"
+				.equalsIgnoreCase(fileSuffix)) ? Utilities.decompress(
+				"MERCATOR", event.getSource(), tempFile) : Utilities
+				.createTodayPrefixedDirectory("MERCATOR", outDir);
+	}
 
-		if (LOGGER.isLoggable(Level.INFO))
-			LOGGER.info("Starting with processing...");
-		NetcdfFile ncGridFile = null;
-		NetcdfFileWriteable ncFileOut = null;
-		File outputFile = null;
-		try {
-			// looking for file
-			if (events.size() != 1)
-				throw new IllegalArgumentException(
-						"Wrong number of elements for this action: "
-								+ events.size());
-			FileSystemMonitorEvent event = events.remove();
-			final String configId = configuration.getName();
+	@Override
+	protected void writeDownNetCDF(File outDir, String inputFileName)
+			throws IOException, InvalidRangeException, JAXBException,
+			ParseException {
+		// input dimensions
+		final Dimension lon_dim = ncGridFile.findDimension("longitude");
 
-			// //
-			// data flow configuration and dataStore name must not be null.
-			// //
-			if (configuration == null) {
-				LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
-				throw new IllegalStateException("DataFlowConfig is null.");
-			}
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Initializing input variables
-			//
-			// ////////////////////////////////////////////////////////////////////
-			final File workingDir = IOUtils.findLocation(configuration
-					.getWorkingDirectory(), new File(
-					((FileBaseCatalog) CatalogHolder.getCatalog())
-							.getBaseDirectory()));
+		final Dimension lat_dim = ncGridFile.findDimension("latitude");
 
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Checking input files.
-			//
-			// ////////////////////////////////////////////////////////////////////
-			if ((workingDir == null) || !workingDir.exists()
-					|| !workingDir.isDirectory()) {
-				LOGGER.log(Level.SEVERE,
-						"GeoServerDataDirectory is null or does not exist.");
-				throw new IllegalStateException(
-						"GeoServerDataDirectory is null or does not exist.");
-			}
+		final Dimension depth_dim = ncGridFile.findDimension("depth");
 
-			// ... BUSINESS LOGIC ... //
-			String inputFileName = event.getSource().getAbsolutePath();
-			final String filePrefix = FilenameUtils.getBaseName(inputFileName);
-			final String fileSuffix = FilenameUtils.getExtension(inputFileName);
-			final String fileNameFilter = getConfiguration()
-					.getStoreFilePrefix();
+		// input VARIABLES
+		final Variable lonOriginalVar = ncGridFile.findVariable("longitude");
+		@SuppressWarnings("unused")
+		final DataType lonDataType = lonOriginalVar.getDataType();
 
-			String baseFileName = null;
+		final Variable latOriginalVar = ncGridFile.findVariable("latitude");
+		@SuppressWarnings("unused")
+		final DataType latDataType = latOriginalVar.getDataType();
 
-			if (fileNameFilter != null) {
-				if ((filePrefix.equals(fileNameFilter) || filePrefix
-						.matches(fileNameFilter))
-						&& ("zip".equalsIgnoreCase(fileSuffix)
-								|| "tar".equalsIgnoreCase(fileSuffix) || "nc"
-								.equalsIgnoreCase(fileSuffix))) {
-					// etj: are we missing something here?
-					baseFileName = filePrefix;
-				}
-			} else if ("zip".equalsIgnoreCase(fileSuffix)
-					|| "tar".equalsIgnoreCase(fileSuffix)
-					|| "nc".equalsIgnoreCase(fileSuffix)) {
-				baseFileName = filePrefix;
-			}
+		final Variable depthOriginalVar = ncGridFile.findVariable("depth");
+		@SuppressWarnings("unused")
+		final DataType depthDataType = depthOriginalVar.getDataType();
 
-			if (baseFileName == null) {
-				LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName
-						+ "'");
-				throw new IllegalStateException("Unexpected file '"
-						+ inputFileName + "'");
-			}
+		final Array lonOriginalData = lonOriginalVar.read();
+		final Array latOriginalData = latOriginalVar.read();
+		final Array depthOriginalData = depthOriginalVar.read();
 
-			inputFileName = FilenameUtils.getName(inputFileName);
+		double[] bbox = NURCActionsIOUtils.computeExtrema(latOriginalData,
+				lonOriginalData, lat_dim, lon_dim);
 
-			final File outDir = Utilities.createTodayDirectory(workingDir,
-					FilenameUtils.getBaseName(inputFileName));
+		// building Envelope
+		final GeneralEnvelope envelope = new GeneralEnvelope(
+				NURCActionsIOUtils.WGS_84);
+		envelope.setRange(0, bbox[0], bbox[2]);
+		envelope.setRange(1, bbox[1], bbox[3]);
 
-			// decompress input file into a temp directory
-			final File tempFile = File.createTempFile(inputFileName, ".tmp",
-					outDir);
-			final File ncomsDatasetDirectory = ("zip"
-					.equalsIgnoreCase(fileSuffix) || "tar"
-					.equalsIgnoreCase(fileSuffix)) ? Utilities.decompress(
-					"MERCATOR", event.getSource(), tempFile) : Utilities
-					.createTodayPrefixedDirectory("MERCATOR", outDir);
+		// ////
+		// ... create the output file data structure
+		// ////
+		outputFile = new File(outDir, "lscv08_MERCATOR-Forecast-T"
+				+ new Date().getTime()
+				+ FilenameUtils.getBaseName(inputFileName).replaceAll("-",
+						"") + ".nc");
+		ncFileOut = NetcdfFileWriteable.createNew(outputFile
+				.getAbsolutePath());
 
-			// move the file if it's not an archive
-			if (!("zip".equalsIgnoreCase(fileSuffix) || "tar"
-					.equalsIgnoreCase(fileSuffix)))
-				event.getSource().renameTo(
-						new File(ncomsDatasetDirectory, inputFileName));
+		// NetCDFConverterUtilities.copyGlobalAttributes(ncFileOut,
+		// ncFileIn.getGlobalAttributes());
 
-			tempFile.delete();
+		// Grabbing the Variables Dictionary
+		JAXBContext context = JAXBContext.newInstance(Metocs.class);
+		Unmarshaller um = context.createUnmarshaller();
 
-			// ////
-			// STEP 1: Looking for grid NetCDF files
-			// - The files are already NetCDF-CF and regular. The time has to be
-			// translated.
-			// ////
-			File[] NCOMGridFiles = ncomsDatasetDirectory
-					.listFiles(new FilenameFilter() {
+		File metocDictionaryFile = IOUtils.findLocation(configuration
+				.getMetocDictionaryPath(), new File(
+				((FileBaseCatalog) CatalogHolder.getCatalog())
+						.getBaseDirectory()));
+		Metocs metocDictionary = (Metocs) um.unmarshal(new FileReader(
+				metocDictionaryFile));
 
-						public boolean accept(File dir, String name) {
-							if (FilenameUtils.getExtension(name)
-									.equalsIgnoreCase("nc")
-									|| FilenameUtils.getExtension(name)
-											.equalsIgnoreCase("netcdf")) {
-								return true;
-							}
+		for (Object obj : ncGridFile.getVariables()) {
+			final Variable var = (Variable) obj;
+			final String varName = var.getName();
+			if (!varName.equalsIgnoreCase("longitude")
+					&& !varName.equalsIgnoreCase("latitude")
+					&& !varName.equalsIgnoreCase("depth")) {
 
-							return false;
+				if (foundVariables.get(varName) == null) {
+					String longName = null;
+					String briefName = null;
+					String uom = null;
+
+					for (MetocElementType m : metocDictionary.getMetoc()) {
+						if ((varName.equalsIgnoreCase("salinity") && m
+								.getName().equals("salinity"))
+								|| (varName.equalsIgnoreCase("temperature") && m
+										.getName().equals(
+												"water temperature"))
+								|| (varName.equalsIgnoreCase("u") && m
+										.getName()
+										.equals(
+												"water velocity u-component"))
+								|| (varName.equalsIgnoreCase("v") && m
+										.getName()
+										.equals(
+												"water velocity v-component"))) {
+							longName = m.getName();
+							briefName = m.getBrief();
+							uom = m.getDefaultUom();
+							uom = uom.indexOf(":") > 0 ? URLDecoder
+									.decode(uom.substring(uom
+											.lastIndexOf(":") + 1), "UTF-8")
+									: uom;
+							break;
 						}
+					}
 
-					});
-
-			if (NCOMGridFiles.length != 1) {
-				if (LOGGER.isLoggable(Level.SEVERE))
-					LOGGER.severe("Could not find any NCOM Grid file.");
-				throw new IOException("Could not find any NCOM Grid file.");
-			}
-
-			ncGridFile = NetcdfFile.open(NCOMGridFiles[0].getAbsolutePath());
-
-			// input dimensions
-			final Dimension lon_dim = ncGridFile.findDimension("longitude");
-
-			final Dimension lat_dim = ncGridFile.findDimension("latitude");
-
-			final Dimension depth_dim = ncGridFile.findDimension("depth");
-
-			// input VARIABLES
-			final Variable lonOriginalVar = ncGridFile
-					.findVariable("longitude");
-			final DataType lonDataType = lonOriginalVar.getDataType();
-
-			final Variable latOriginalVar = ncGridFile.findVariable("latitude");
-			final DataType latDataType = latOriginalVar.getDataType();
-
-			final Variable depthOriginalVar = ncGridFile.findVariable("depth");
-			final DataType depthDataType = depthOriginalVar.getDataType();
-
-			final Array lonOriginalData = lonOriginalVar.read();
-			final Array latOriginalData = latOriginalVar.read();
-			final Array depthOriginalData = depthOriginalVar.read();
-
-			double[] bbox = NURCActionsIOUtils.computeExtrema(latOriginalData,
-					lonOriginalData, lat_dim, lon_dim);
-
-			// building Envelope
-			final GeneralEnvelope envelope = new GeneralEnvelope(
-					NURCActionsIOUtils.WGS_84);
-			envelope.setRange(0, bbox[0], bbox[2]);
-			envelope.setRange(1, bbox[1], bbox[3]);
-
-			// ////
-			// ... create the output file data structure
-			// ////
-			outputFile = new File(outDir, "lscv08_MERCATOR-Forecast-T"
-					+ new Date().getTime()
-					+ FilenameUtils.getBaseName(inputFileName).replaceAll("-",
-							"") + ".nc");
-			ncFileOut = NetcdfFileWriteable.createNew(outputFile
-					.getAbsolutePath());
-
-			// NetCDFConverterUtilities.copyGlobalAttributes(ncFileOut,
-			// ncFileIn.getGlobalAttributes());
-
-			// defining the file header and structure
-			final List<Dimension> outDimensions = NURCActionsIOUtils
-					.createNetCDFCFGeodeticDimensions(ncFileOut, true, 1, true,
-							depth_dim.getLength(), NURCActionsIOUtils.DOWN,
-							true, lat_dim.getLength(), true, lon_dim
-									.getLength());
-
-			// Grabbing the Variables Dictionary
-			JAXBContext context = JAXBContext.newInstance(Metocs.class);
-			Unmarshaller um = context.createUnmarshaller();
-
-			File metocDictionaryFile = IOUtils.findLocation(configuration
-					.getMetocDictionaryPath(), new File(
-					((FileBaseCatalog) CatalogHolder.getCatalog())
-							.getBaseDirectory()));
-			Metocs metocDictionary = (Metocs) um.unmarshal(new FileReader(
-					metocDictionaryFile));
-
-			Map<String, Variable> foundVariables = new HashMap<String, Variable>();
-			Map<String, String> foundVariableLongNames = new HashMap<String, String>();
-			Map<String, String> foundVariableBriefNames = new HashMap<String, String>();
-			Map<String, String> foundVariableUoM = new HashMap<String, String>();
-
-			for (Object obj : ncGridFile.getVariables()) {
-				final Variable var = (Variable) obj;
-				final String varName = var.getName();
-				if (!varName.equalsIgnoreCase("longitude")
-						&& !varName.equalsIgnoreCase("latitude")
-						&& !varName.equalsIgnoreCase("depth")) {
-
-					if (foundVariables.get(varName) == null) {
-						String longName = null;
-						String briefName = null;
-						String uom = null;
-
-						for (MetocElementType m : metocDictionary.getMetoc()) {
-							if ((varName.equalsIgnoreCase("salinity") && m
-									.getName().equals("salinity"))
-									|| (varName.equalsIgnoreCase("temperature") && m
-											.getName().equals(
-													"water temperature"))
-									|| (varName.equalsIgnoreCase("u") && m
-											.getName()
-											.equals(
-													"water velocity u-component"))
-									|| (varName.equalsIgnoreCase("v") && m
-											.getName()
-											.equals(
-													"water velocity v-component"))) {
-								longName = m.getName();
-								briefName = m.getBrief();
-								uom = m.getDefaultUom();
-								uom = uom.indexOf(":") > 0 ? URLDecoder
-										.decode(uom.substring(uom
-												.lastIndexOf(":") + 1), "UTF-8")
-										: uom;
-								break;
-							}
-						}
-
-						if (longName != null && briefName != null) {
-							foundVariables.put(varName, var);
-							foundVariableLongNames.put(varName, longName);
-							foundVariableBriefNames.put(varName, briefName);
-							foundVariableUoM.put(varName, uom);
-						}
+					if (longName != null && briefName != null) {
+						foundVariables.put(varName, var);
+						foundVariableLongNames.put(varName, longName);
+						foundVariableBriefNames.put(varName, briefName);
+						foundVariableUoM.put(varName, uom);
 					}
 				}
 			}
+		}
 
-			double noData = Double.NaN;
+		// defining the file header and structure
+		final List<Dimension> outDimensions = NURCActionsIOUtils.createNetCDFCFGeodeticDimensions(ncFileOut, true, 1, true, depth_dim.getLength(), NURCActionsIOUtils.DOWN, true, lat_dim.getLength(), true, lon_dim.getLength());
+		
+		double noData = Double.NaN;
 
-			// defining output variable
-			for (String varName : foundVariables.keySet()) {
-				ncFileOut.addVariable(foundVariableBriefNames.get(varName),
-						foundVariables.get(varName).getDataType(),
-						outDimensions);
-				// NetCDFConverterUtilities.setVariableAttributes(foundVariables.get(varName),
-				// ncFileOut, foundVariableBriefNames.get(varName), new String[]
-				// { "positions" });
-				ncFileOut.addVariableAttribute(foundVariableBriefNames
-						.get(varName), "long_name", foundVariableLongNames
-						.get(varName));
-				ncFileOut.addVariableAttribute(foundVariableBriefNames
-						.get(varName), "units", foundVariableUoM.get(varName));
+		// defining output variable
+		for (String varName : foundVariables.keySet()) {
+			// SIMONE: replaced foundVariables.get(varName).getDataType()
+			// with DataType.DOUBLE
+			ncFileOut.addVariable(foundVariableBriefNames.get(varName), foundVariables.get(varName).getDataType(), outDimensions);
+			// NetCDFConverterUtilities.setVariableAttributes(foundVariables.get(varName),
+			// ncFileOut, foundVariableBriefNames.get(varName), new String[]
+			// { "positions" });
+			ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "long_name", foundVariableLongNames.get(varName));
+			ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "units", foundVariableUoM.get(varName));
 
-				if (Double.isNaN(noData)) {
-					Attribute missingValue = foundVariables.get(varName)
-							.findAttribute("_FillValue");
-					if (missingValue != null) {
-						noData = missingValue.getNumericValue().doubleValue();
-						ncFileOut.addVariableAttribute(foundVariableBriefNames
-								.get(varName), "missing_value", noData);
-					}
+			if (Double.isNaN(noData)) {
+				Attribute missingValue = foundVariables.get(varName).findAttribute("_FillValue");
+				if (missingValue != null) {
+					noData = missingValue.getNumericValue().doubleValue();
+					ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "missing_value", noData);
 				}
 			}
+		}
 
-			// MERCATOR OCEAN MODEL Global Attributes
-			Attribute referenceTime = ncGridFile
-					.findGlobalAttributeIgnoreCase("bulletin_date");
-			Attribute forecastDate = ncGridFile
-					.findGlobalAttributeIgnoreCase("forecast_range");
+		// MERCATOR OCEAN MODEL Global Attributes
+		Attribute referenceTime = ncGridFile.findGlobalAttributeIgnoreCase("bulletin_date");
+		Attribute forecastDate = ncGridFile.findGlobalAttributeIgnoreCase("forecast_range");
 
-			final SimpleDateFormat toSdf = new SimpleDateFormat(
-					"yyyy-MM-dd HH:mm:ss");
-			final SimpleDateFormat fromSdf = new SimpleDateFormat(
-					"yyyyMMdd'T'HHmmsss'Z'");
-			toSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-			fromSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+		final SimpleDateFormat toSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		toSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 
-			final Date timeOriginDate = toSdf.parse(referenceTime
-					.getStringValue().trim().toLowerCase());
-			int TAU = 0;
+		final Date timeOriginDate = toSdf.parse(referenceTime.getStringValue().trim().toLowerCase());
+		int TAU = 0;
 
-			final String forecastDays = forecastDate.getStringValue();
-			if (forecastDays != null) {
-				final int index = forecastDays.indexOf("-day_forecast");
-				if (index != -1) {
-					int numDay = Integer.parseInt(forecastDays.substring(0,
-							index));
-					TAU = numDay * 24;
-				}
+		final String forecastDays = forecastDate.getStringValue();
+		if (forecastDays != null) {
+			final int index = forecastDays.indexOf("-day_forecast");
+			if (index != -1) {
+				int numDay = Integer.parseInt(forecastDays.substring(0, index));
+				TAU = numDay * 24;
 			}
+		}
 
-			// Setting up global Attributes ...
-			ncFileOut.addGlobalAttribute("base_time", fromSdf
-					.format(timeOriginDate));
-			ncFileOut.addGlobalAttribute("tau", TAU);
-			ncFileOut.addGlobalAttribute("nodata", noData);
+		// Setting up global Attributes ...
+		settingNCGlobalAttributes(noData, timeOriginDate, TAU);
 
-			// writing bin data ...
-			ncFileOut.create();
+		// writing bin data ...
+		ncFileOut.create();
 
-			// writing time Variable data
-			setTime(ncFileOut, referenceTime, forecastDate);
+		// writing time Variable data
+		setTime(ncFileOut, referenceTime, forecastDate);
 
-			// writing depth Variable data
-			ncFileOut.write(NURCActionsIOUtils.DEPTH_DIM, depthOriginalData);
+		// writing depth Variable data
+		ncFileOut.write(NURCActionsIOUtils.DEPTH_DIM, depthOriginalData);
 
-			// writing lat Variable data
-			ncFileOut.write(NURCActionsIOUtils.LAT_DIM, latOriginalData);
+		// writing lat Variable data
+		ncFileOut.write(NURCActionsIOUtils.LAT_DIM, latOriginalData);
 
-			// writing lon Variable data
-			ncFileOut.write(NURCActionsIOUtils.LON_DIM, lonOriginalData);
+		// writing lon Variable data
+		ncFileOut.write(NURCActionsIOUtils.LON_DIM, lonOriginalData);
 
-			for (String varName : foundVariables.keySet()) {
-				final Variable var = foundVariables.get(varName);
+		for (String varName : foundVariables.keySet()) {
+			final Variable var = foundVariables.get(varName);
 
-				// //
-				// defining the SampleModel data type
-				// //
-				final SampleModel outSampleModel = Utilities.getSampleModel(var
-						.getDataType(), lon_dim.getLength(), lat_dim
-						.getLength(), 1);
+			// //
+			// defining the SampleModel data type
+			// //
+			final SampleModel outSampleModel = Utilities.getSampleModel(var
+					.getDataType(), lon_dim.getLength(), lat_dim
+					.getLength(), 1);
 
-				Array originalVarArray = var.read();
+			Array originalVarArray = var.read();
 
-				for (int z = 0; z < depth_dim.getLength(); z++) {
+			for (int z = 0; z < depth_dim.getLength(); z++) {
 
-					WritableRaster userRaster = Raster.createWritableRaster(
-							outSampleModel, null);
+				WritableRaster userRaster = Raster.createWritableRaster(outSampleModel, null);
 
-					NURCActionsIOUtils.write2DData(userRaster, var,
-							originalVarArray, false, false, new int[] { z,
-									lat_dim.getLength(), lon_dim.getLength() },
-							false);
+				NURCActionsIOUtils.write2DData(userRaster, var, originalVarArray, false, false, new int[] { z, lat_dim.getLength(), lon_dim.getLength() }, false);
 
-					// Resampling to a Regular Grid ...
-					// if (LOGGER.isLoggable(Level.INFO))
-					// LOGGER.info("Resampling to a Regular Grid ...");
-					// userRaster = NURCActionsIOUtils.warping(
-					// bbox,
-					// lonOriginalData,
-					// latOriginalData,
-					// lon_dim.getLength(), lat_dim.getLength(),
-					// 2, userRaster, 0,
-					// false);
+				// Resampling to a Regular Grid ...
+				// if (LOGGER.isLoggable(Level.INFO))
+				// LOGGER.info("Resampling to a Regular Grid ...");
+				// userRaster = NURCActionsIOUtils.warping(
+				// bbox,
+				// lonOriginalData,
+				// latOriginalData,
+				// lon_dim.getLength(), lat_dim.getLength(),
+				// 2, userRaster, 0,
+				// false);
 
-					final Variable outVar = ncFileOut
-							.findVariable(foundVariableBriefNames.get(varName));
-					final Array outVarData = outVar.read();
+				final Variable outVar = ncFileOut.findVariable(foundVariableBriefNames.get(varName));
+				final Array outVarData = outVar.read();
 
-					for (int y = 0; y < lat_dim.getLength(); y++)
-						for (int x = 0; x < lon_dim.getLength(); x++)
-							outVarData.setFloat(outVarData.getIndex().set(0, z,
-									y, x), userRaster.getSampleFloat(x, y, 0));
+				for (int y = 0; y < lat_dim.getLength(); y++)
+					for (int x = 0; x < lon_dim.getLength(); x++)
+						outVarData.setFloat(outVarData.getIndex().set(0, z, y, x), userRaster.getSampleFloat(x, y, 0));
 
-					ncFileOut.write(foundVariableBriefNames.get(varName),
-							outVarData);
-				}
-			}
-
-			// ... setting up the appropriate event for the next action
-			events.add(new FileSystemMonitorEvent(outputFile,
-					FileSystemMonitorNotifications.FILE_ADDED));
-			return events;
-		} catch (Throwable t) {
-			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-			JAI.getDefaultInstance().getTileCache().flush();
-			return null;
-		} finally {
-			try {
-				if (ncGridFile != null) {
-					ncGridFile.close();
-				}
-
-				if (ncFileOut != null) {
-					ncFileOut.close();
-				}
-			} catch (IOException e) {
-				if (LOGGER.isLoggable(Level.WARNING))
-					LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
-			} finally {
-				JAI.getDefaultInstance().getTileCache().flush();
+				ncFileOut.write(foundVariableBriefNames.get(varName), outVarData);
 			}
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param ncFileOut

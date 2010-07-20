@@ -84,7 +84,7 @@
         <gt.version>2.7-SNAPSHOT</gt.version>
         <opengis.version>2.3-M1</opengis.version>
         <gb.version>0.9-SNAPSHOT</gb.version>
-        <imageio-ext.version>1.0.5</imageio-ext.version>
+        <imageio-ext.version>1.1-SNAPSHOT</imageio-ext.version>
         <spring.version>2.5.6</spring.version>
         <spring.security.version>2.0.5.RELEASE</spring.security.version>
         <dao.type>xstream</dao.type> <!-- the default dao type -->
@@ -563,6 +563,12 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-coverage</artifactId>
                 <version>${gt.version}</version>
+		            <exclusions>
+		            	<exclusion>
+		            		<groupId>it.geosolutions.imageio-ext</groupId>
+		            		<artifactId>imageio-ext-tiff</artifactId>
+		            	</exclusion>
+		            </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -594,6 +600,12 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-geotiff</artifactId>
                 <version>${gt.version}</version>
+		            <exclusions>
+		            	<exclusion>
+		            		<groupId>it.geosolutions.imageio-ext</groupId>
+		            		<artifactId>imageio-ext-tiff</artifactId>
+		            	</exclusion>
+		            </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.geotools.jdbc</groupId>
@@ -611,6 +623,11 @@
             <!-- imageio-ext ================================================-->
 
             <dependency>
+								<groupId>it.geosolutions.imageio-ext</groupId>
+  							<artifactId>imageio-ext-tiff</artifactId>
+                <version>${imageio-ext.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>it.geosolutions.imageio-ext</groupId>
                 <artifactId>imageio-ext-arcgrid</artifactId>
                 <version>${imageio-ext.version}</version>
@@ -618,6 +635,11 @@
             <dependency>
                 <groupId>it.geosolutions.imageio-ext</groupId>
                 <artifactId>imageio-ext-customstreams</artifactId>
+                <version>${imageio-ext.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.imageio-ext</groupId>
+                <artifactId>imageio-ext-utilities</artifactId>
                 <version>${imageio-ext.version}</version>
             </dependency>
 
