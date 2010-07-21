@@ -243,22 +243,24 @@
         <profile>
             <id>nurc</id>
             <modules>
-                <module>nurc</module>
+                <module>geotiff</module>
                 <module>gb-geoserver</module>
                 <module>imagemosaic</module>
                 <module>shapefile</module>
                 <module>gb-task-executor</module>
+                <module>nurc</module>
             </modules>
         </profile>
 
         <profile>
             <id>lamma</id>
             <modules>
-                <module>lamma</module>
+                <module>geotiff</module>
                 <module>gb-geoserver</module>
                 <module>imagemosaic</module>
                 <module>shapefile</module>
                 <module>gb-task-executor</module>
+                <module>lamma</module>
             </modules>
         </profile>
 
