@@ -9,10 +9,10 @@
     </parent>
 
     <groupId>it.geosolutions</groupId>
-    <artifactId>gb-action-geoserver-restclient</artifactId>
+    <artifactId>gb-action-gsrest</artifactId>
     <packaging>jar</packaging>
 
-    <name>GeoBatch action: GeoServer 2 REST client</name>
+    <name>GeoBatch action: GeoServer 2 REST Action</name>
 
     <url>http://maven.apache.org</url>
 
@@ -43,11 +43,31 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- GEOBATCH lib -->
+<!--        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-core-impl</artifactId>
+        </dependency>-->
+
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <scope>test</scope>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-alias-registry</artifactId>
         </dependency>
+<!--        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fs-catalog</artifactId>
+        </dependency>-->
+        
+        <dependency>
+        	<groupId>it.geosolutions</groupId>
+    		<artifactId>gb-action-geoserver</artifactId>
+        </dependency>
+
+        <dependency>
+        	<groupId>it.geosolutions</groupId>
+    		<artifactId>gb-action-geoserver-restclient</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
 

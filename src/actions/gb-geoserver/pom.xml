@@ -50,8 +50,9 @@
     </licenses>
 
     <modules>
-        <module>gb-geoserver-action</module>
+        <module>gb-geoserver-action</module> <!-- legacy stuff --> 
         <module>gsrestclient</module>
+        <module>gsrest-action</module>
     </modules>
 
 </project>

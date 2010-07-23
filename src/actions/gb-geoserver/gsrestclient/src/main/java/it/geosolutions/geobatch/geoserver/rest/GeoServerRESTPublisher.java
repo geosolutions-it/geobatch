@@ -21,13 +21,18 @@
  */
 package it.geosolutions.geobatch.geoserver.rest;
 
-import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.Authenticator;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -44,6 +49,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Level;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -462,9 +469,12 @@ public class GeoServerRESTPublisher {
             return false;
         }
     }
-    
-	public static void configureLayer(final Map<String, String> queryParams, final String defaultStyle, 
-			final String geoserverBaseURL, final String geoserverUID, final String geoserverPWD, final String layerName) 
+
+    /**
+     * @deprecated to be reviewed
+     */
+	public static void configureLayer(final Map<String, String> queryParams, final String defaultStyle,
+			final String geoserverBaseURL, final String geoserverUID, final String geoserverPWD, final String layerName)
 		throws ParserConfigurationException, IOException, TransformerException {
 		Map<String,String> configElements = new HashMap<String, String>(2);
 		if (queryParams.containsKey("wmspath")){
@@ -476,9 +486,9 @@ public class GeoServerRESTPublisher {
 			configElements.put("defaultStyle", defaultStyle);
 		}
 		if (!configElements.isEmpty()){
-			sendLayerConfiguration(configElements, geoserverBaseURL, geoserverUID, geoserverPWD, layerName);	
+			sendLayerConfiguration(configElements, geoserverBaseURL, geoserverUID, geoserverPWD, layerName);
 		}
-		
+
 	}
 	
 	/**
@@ -491,11 +501,13 @@ public class GeoServerRESTPublisher {
 	 * @throws ParserConfigurationException
 	 * @throws IOException
 	 * @throws TransformerException
+     *
+     * @deprecated to be reviewed
 	 */
-	private static void sendLayerConfiguration(final Map<String,String> configElements, final String geoserverBaseURL, 
+	private static void sendLayerConfiguration(final Map<String,String> configElements, final String geoserverBaseURL,
 			final String geoserverUID, final String geoserverPWD, final String layerName) throws ParserConfigurationException, IOException, TransformerException {
-		
-		String layer = URLEncoder.encode(layerName,"UTF-8"); 
+
+		String layer = URLEncoder.encode(layerName,"UTF-8");
 		if (layer.contains("."))
 			layer = layer + ".fake";
 		final URL geoserverREST_URL = new URL(new StringBuilder(geoserverBaseURL).append( "/rest/layers/" ).append(layer).toString());
@@ -504,9 +516,9 @@ public class GeoServerRESTPublisher {
 		try{
 			file = buildXMLConfiguration(configElements);
 			inStream = new FileInputStream(file);
-			final boolean send = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, inStream, geoserverUID, geoserverPWD, null, "text/xml");
+			final boolean send = putBinaryFileTo(geoserverREST_URL, inStream, geoserverUID, geoserverPWD, null, "text/xml");
 			if (send)
-				LOGGER.info("GeoServerConfiguratorAction: Layer SUCCESSFULLY configured!");	
+				LOGGER.info("GeoServerConfiguratorAction: Layer SUCCESSFULLY configured!");
 		}finally{
 			if (file != null){
 				try{
@@ -515,16 +527,9 @@ public class GeoServerRESTPublisher {
 					//Eat me
 				}
 			}
-			if (inStream != null){
-				try{
-					inStream.close();
-				}catch (Throwable t){
-					//eat me;
-				}
-			}
-	
+            IOUtils.closeQuietly(inStream);		
 		}
-		
+
 	}
 	
 	/**
@@ -534,6 +539,8 @@ public class GeoServerRESTPublisher {
 	 * @throws ParserConfigurationException
 	 * @throws IOException
 	 * @throws TransformerException
+     *
+     * @deprecated to be moved in parser package
 	 */
 	private static File buildXMLConfiguration(final Map <String, String> configElements) 
 	throws ParserConfigurationException, IOException, TransformerException{
@@ -566,4 +573,137 @@ public class GeoServerRESTPublisher {
 	    transformer.transform(xmlSource, result);
 	    return file;
 	}
+
+
+    /**
+     * @deprecated use HTTPUtils -- review!!!
+     */
+    public static boolean putBinaryFileTo(URL geoserverREST_URL, InputStream inputStream,
+            String geoserverUser, String geoserverPassword, final String[] returnedLayerName,
+            final String contentType) {
+        boolean res = false;
+
+        try {
+            HttpURLConnection con = (HttpURLConnection) geoserverREST_URL.openConnection();
+            con.setDoOutput(true);
+            con.setDoInput(true);
+            con.setRequestMethod("PUT");
+            if (contentType != null && contentType.trim().length()>0)
+            	con.setRequestProperty("Content-Type", contentType);
+
+            final String login = geoserverUser;
+            final String password = geoserverPassword;
+
+            if ((login != null) && (login.trim().length() > 0)) {
+                Authenticator.setDefault(new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(login, password.toCharArray());
+                    }
+                });
+            }
+
+            OutputStream outputStream = con.getOutputStream();
+            IOUtils.copy(inputStream, outputStream);
+            inputStream.close();
+            outputStream.flush();
+            outputStream.close();
+
+            final int responseCode = con.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                InputStreamReader is = new InputStreamReader(con.getInputStream());
+                String response = IOUtils.toString(is);
+                is.close();
+                LOGGER.info("HTTP OK: {"+response+"}");
+                res = true;
+            } else if (responseCode == HttpURLConnection.HTTP_CREATED){
+                InputStreamReader is = new InputStreamReader(con.getInputStream());
+                String response = IOUtils.toString(is);
+                is.close();
+                final String name = extractName(response);
+                extractContent(response, returnedLayerName);
+//              if (returnedLayerName!=null && returnedLayerName.length>0)
+//              	returnedLayerName[0]=name;
+                if (LOGGER.isEnabledFor(Level.DEBUG))
+                    LOGGER.debug("HTTP CREATED: {"+response+"}");
+                else{
+                    LOGGER.info("HTTP CREATED: {"+name+"}");
+                }
+                res = true;
+            } else {
+                LOGGER.log(Level.INFO, "HTTP ERROR: {"+ con.getResponseMessage()+"}");
+                res = false;
+            }
+        } catch (MalformedURLException e) {
+            LOGGER.log(Level.INFO, "HTTP ERROR: {"+ e.getLocalizedMessage()+"}");
+            res = false;
+        } catch (IOException e) {
+            LOGGER.log(Level.INFO, "HTTP ERROR: {"+ e.getLocalizedMessage() +"}");
+            res = false;
+        }
+        return res;
+
+    }
+
+    /**
+     * @deprecated use HTTPUtils
+     *
+     */
+    public static boolean putBinaryFileTo(URL geoserverREST_URL, InputStream inputStream,
+            String geoserverUser, String geoserverPassword) {
+    	return putBinaryFileTo(geoserverREST_URL, inputStream, geoserverUser, geoserverPassword, null, null);
+
+    }
+
+    /**
+     * 
+     * @deprecated move into parser package
+     */
+    private static String extractName(final String response) {
+        String name ="";
+        if (response!=null && response.trim().length()>0){
+            final int indexOfNameStart = response.indexOf("<name>");
+            final int indexOfNameEnd = response.indexOf("</name>");
+            try {
+            	name = response.substring(indexOfNameStart+6, indexOfNameEnd);
+            } catch (StringIndexOutOfBoundsException e) {
+            	name = response;
+            }
+        }
+        return name;
+    }
+    /**
+     *
+     * @param response
+     * @param result will contain the following elements:
+     * 	result[0]: the store name
+     *  result[1]: the namespace
+     *  result[2]: the layername
+     *
+     * @deprecated move into parser package
+     */
+    private static void extractContent(final String response, final String[] result) {
+        if (response!=null && response.trim().length()>0){
+            final int indexOfName1Start = response.indexOf("<name>");
+            final int indexOfName1End = response.indexOf("</name>");
+            final int indexOfName2Start = response.indexOf("<name>",indexOfName1Start+1);
+            final int indexOfName2End = response.indexOf("</name>",indexOfName2Start+1);
+            final int indexOfWorkspaceStart = response.indexOf("<workspace>");
+            try{
+	            if (indexOfName1Start < indexOfWorkspaceStart){
+	            	result[2]= response.substring(indexOfName1Start+6, indexOfName1End);
+	            	result[1]= response.substring(indexOfName2Start+6, indexOfName2End);
+	            }
+	            else {
+	            	result[1]= response.substring(indexOfName1Start+6, indexOfName1End);
+	            	result[2]= response.substring(indexOfName2Start+6, indexOfName2End);
+	            }
+
+            } catch (StringIndexOutOfBoundsException e) {
+
+            }
+        }
+    }
+
 }
+
+
