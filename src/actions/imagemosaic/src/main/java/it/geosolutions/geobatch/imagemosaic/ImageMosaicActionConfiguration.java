@@ -39,6 +39,8 @@ public class ImageMosaicActionConfiguration extends GeoServerActionConfiguration
 
     private String elevationRegex;
     
+    private String runtimeRegex;
+    
     private double backgroundValue;
 
     public double getBackgroundValue() {
@@ -95,6 +97,20 @@ public class ImageMosaicActionConfiguration extends GeoServerActionConfiguration
 		return elevationRegex;
 	}
 
+	/**
+	 * @param runtimeRegex the runtimeRegex to set
+	 */
+	public void setRuntimeRegex(String runtimeRegex) {
+		this.runtimeRegex = runtimeRegex;
+	}
+
+	/**
+	 * @return the runtimeRegex
+	 */
+	public String getRuntimeRegex() {
+		return runtimeRegex;
+	}
+
 	@Override
 	public ImageMosaicActionConfiguration clone() { // throws CloneNotSupportedException {
 //		final ImageMosaicActionConfiguration configuration =
@@ -121,6 +137,7 @@ public class ImageMosaicActionConfiguration extends GeoServerActionConfiguration
 		configuration.setDatastorePropertiesPath(getDatastorePropertiesPath());
 		configuration.setTimeRegex(getTimeRegex());
 		configuration.setElevationRegex(getElevationRegex());
+		configuration.setRuntimeRegex(getRuntimeRegex());
 		
 		return configuration;
 	}

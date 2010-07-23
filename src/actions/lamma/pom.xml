@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+        =======================================================================
+        Maven Project Configuration File GeoSolutions GeoBatch Project
+        http://geobatch.codehaus.org Version: $Id: pom.xml 382 2010-01-07
+        18:00:13Z dany111 $
+        =======================================================================
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>it.geosolutions</groupId>
+        <artifactId>gb-actions</artifactId>
+        <version>0.9-SNAPSHOT</version>
+    </parent>
+
+    <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb-action-lamma</artifactId>
+    <packaging>jar</packaging>
+    <name>GeoBatch action: LaMMa Grib1 processor</name>
+    <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
+
+    <scm>
+        <connection>
+            scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
+        </connection>
+        <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
+    </scm>
+
+    <description>
+        GeoSolutions GeoBatch flow managers - Lamma flow.
+    </description>
+
+    <licenses>
+        <license>
+            <name>Lesser General Public License (LGPL)</name>
+            <url>http://www.gnu.org/copyleft/lesser.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- =========================================================== -->
+    <!--     Dependency Management                                   -->
+    <!-- =========================================================== -->
+    <dependencies>
+    	<!-- GeoBatch CORE -->
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-core-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fs-catalog</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-alias-registry</artifactId>
+        </dependency>
+
+    	<!-- GeoBatch ACTIONS -->
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-geoserver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-geoserver-restclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-geotiff</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-imagemosaic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-shapefile</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-taskexecutor</artifactId>
+        </dependency>
+
+				<!-- GeoTools -->
+				<dependency>
+					<groupId>org.opengis</groupId>
+					<artifactId>geoapi</artifactId>
+					<exclusions>
+						<exclusion>
+							<groupId>org.opengis</groupId>
+							<artifactId>geoapi-dummy-pending</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				<dependency>
+					<groupId>org.opengis</groupId>
+					<artifactId>geoapi-pending</artifactId>
+				</dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-geotiff</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>it.geosolutions.imageio-ext</groupId>
+            		<artifactId>imageio-ext-tiff</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-coveragetools</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-shapefile</artifactId>
+        </dependency>
+
+          <!-- imageio-ext ================================================-->
+
+          <dependency>
+							<groupId>it.geosolutions.imageio-ext</groupId>
+							<artifactId>imageio-ext-tiff</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>it.geosolutions.imageio-ext</groupId>
+              <artifactId>imageio-ext-utilities</artifactId>
+          </dependency>
+
+          <!-- Java Advanced Imaging (JAI) ================================-->
+
+          <dependency>
+              <groupId>javax.media</groupId>
+              <artifactId>jai_core</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>javax.media</groupId>
+              <artifactId>jai_codec</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>javax.media</groupId>
+              <artifactId>jai_imageio</artifactId>
+          </dependency>
+
+		<!-- Utils -->
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-launcher</artifactId>
+        </dependency>
+
+        <!-- ================================================================-->
+        <!-- OpenSDI LaMMa                                                     -->
+        <!-- ================================================================-->
+
+        <dependency>
+            <groupId>it.geosolutions.opensdi.lamma</groupId>
+						<artifactId>lamma-ws-su</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib</artifactId>
+                </exclusion>
+				<exclusion>
+					<groupId>org.opengis</groupId>
+					<artifactId>geoapi-dummy-pending</artifactId>
+				</exclusion>
+            </exclusions>
+        </dependency>
+        
+      <!-- CXF -->
+	    <!-- =========================================================== -->
+	    <!--     JAVAX PERSISTENCE                                       -->
+	    <!-- =========================================================== -->
+	    <dependency>
+	      <groupId>javax.persistence</groupId>
+	      <artifactId>persistence-api</artifactId>
+	      <version>1.0</version>
+	    </dependency>
+		    <!-- HIBERNATE DEPENDENCY -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>ejb3-persistence</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-annotations</artifactId>
+	            <exclusions>
+	                <exclusion>
+	                    <groupId>asm</groupId>
+	                    <artifactId>asm</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>asm</groupId>
+	                    <artifactId>asm-attrs</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>cglib</groupId>
+	                    <artifactId>cglib</artifactId>
+	                </exclusion>
+	            </exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-commons-annotations</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-c3p0</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-jdk14</artifactId>
+			</dependency>
+
+			<dependency>
+		      <groupId>javax.xml.ws</groupId>
+		      <artifactId>jaxws-api</artifactId>
+		      <version>2.1</version>
+		    </dependency>
+			<dependency>
+		      <groupId>org.apache.cxf</groupId>
+		      <artifactId>cxf-rt-frontend-jaxws</artifactId>
+				  <version>2.2.7</version>
+		    </dependency>
+		    <dependency>
+		      <groupId>org.apache.cxf</groupId>
+		      <artifactId>cxf-rt-bindings-soap</artifactId>
+				  <version>2.2.7</version>
+		    </dependency>
+				<dependency>
+				  <groupId>org.apache.cxf</groupId>
+				  <artifactId>cxf-rt-transports-http-jetty</artifactId>
+				  <version>2.2.7</version>
+				</dependency>        
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>nurc</id>
+            <modules>
+                <module>commons</module>
+                <module>nurc-tda</module>
+                <module>nurc-sem</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>dao.jibx</id>
+            <!--<activation>...</activation>-->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jibx</groupId>
+                        <artifactId>maven-jibx-plugin</artifactId>
+                        <version>1.1.6</version>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <directory>src/main/resources/jibx</directory>
+                            <includes>
+                                <includes>binding.xml</includes>
+                            </includes>
+                            <verbose>true</verbose>
+                            <multi-module>true</multi-module>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>bind</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <!--
+            <modules>...</modules>
+            <repositories>...</repositories>
+            <pluginRepositories>...</pluginRepositories>
+             -->
+            <dependencies>
+                <dependency>
+                    <groupId>org.jibx</groupId>
+                    <artifactId>jibx-run</artifactId>
+                    <version>1.1.6</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.jibx</groupId>
+                    <artifactId>jibx-extras</artifactId>
+                    <version>1.1.6</version>
+                </dependency>
+            </dependencies>
+            <!--
+            <reporting>...</reporting>
+            <dependencyManagement>...</dependencyManagement>
+            <distributionManagement>...</distributionManagement>
+-->
+        </profile>
+    </profiles>
+
+</project>
+
+
+
+

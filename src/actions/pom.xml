@@ -241,18 +241,33 @@
         </profile>
 
         <profile>
-            <id>sas</id>
+            <id>nurc</id>
             <modules>
-                <module>sas</module>
+                <module>geotiff</module>
+                <module>gb-geoserver</module>
+                <module>imagemosaic</module>
+                <module>shapefile</module>
                 <module>gb-task-executor</module>
+                <module>nurc</module>
             </modules>
         </profile>
 
         <profile>
-            <id>sasesb</id>
+            <id>lamma</id>
+            <modules>
+                <module>geotiff</module>
+                <module>gb-geoserver</module>
+                <module>imagemosaic</module>
+                <module>shapefile</module>
+                <module>gb-task-executor</module>
+                <module>lamma</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>sas</id>
             <modules>
                 <module>sas</module>
-                <module>sasesb</module>
                 <module>gb-task-executor</module>
             </modules>
         </profile>

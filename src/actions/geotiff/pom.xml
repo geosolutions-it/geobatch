@@ -58,6 +58,12 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geotiff</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>it.geosolutions.imageio-ext</groupId>
+            		<artifactId>imageio-ext-tiff</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -77,6 +83,33 @@
             <groupId>org.geotools</groupId>
             <artifactId>gt-coveragetools</artifactId>
         </dependency>
+
+            <!-- imageio-ext ================================================-->
+
+            <dependency>
+								<groupId>it.geosolutions.imageio-ext</groupId>
+  							<artifactId>imageio-ext-tiff</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>it.geosolutions.imageio-ext</groupId>
+                <artifactId>imageio-ext-utilities</artifactId>
+            </dependency>
+
+            <!-- Java Advanced Imaging (JAI) ================================-->
+
+            <dependency>
+                <groupId>javax.media</groupId>
+                <artifactId>jai_core</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>javax.media</groupId>
+                <artifactId>jai_codec</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>javax.media</groupId>
+                <artifactId>jai_imageio</artifactId>
+            </dependency>
+
     </dependencies>
 
     <profiles>

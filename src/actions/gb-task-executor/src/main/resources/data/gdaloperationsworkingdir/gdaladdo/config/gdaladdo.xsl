@@ -5,7 +5,7 @@
     <xsl:output method="text" omit-xml-declaration="yes" indent="no"/>
     <xsl:template match="r">
         <xsl:value-of select="concat(' -r ', .)"/>
-         <xsl:apply-templates select="@*|node()"/>
+        <xsl:apply-templates select="@*|node()"/>
     </xsl:template>
     
     <xsl:template match="ro">

@@ -305,6 +305,88 @@ public class GeoServerRESTHelper {
     	return putContent(geoserverREST_URL, content, geoserverUser, geoserverPassword, null, null);
     }
 
+    /**
+     * 
+     * @param geoserverREST_URL
+     * @param inputStream
+     * @param geoserverPassword
+     * @param geoserverUser
+     * @return
+     */
+    public static boolean postTextFileTo(URL geoserverREST_URL, InputStream inputStream,
+            String geoserverPassword, String geoserverUser, final String contentType, final String[] returnedLayerName) {
+        boolean res = false;
+
+        try {
+            HttpURLConnection con = (HttpURLConnection) geoserverREST_URL.openConnection();
+            con.setDoOutput(true);
+            con.setDoInput(true);
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", contentType) ;
+
+            final String login = geoserverUser;
+            final String password = geoserverPassword;
+
+            if ((login != null) && (login.trim().length() > 0)) {
+                Authenticator.setDefault(new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(login, password.toCharArray());
+                    }
+                });
+            }
+
+            InputStreamReader inReq = new InputStreamReader(inputStream);
+            OutputStreamWriter outReq = new OutputStreamWriter(con.getOutputStream());
+            char[] buffer = new char[1024];
+            int len;
+
+            while ((len = inReq.read(buffer)) >= 0)
+                outReq.write(buffer, 0, len);
+
+            outReq.flush();
+            outReq.close();
+            inReq.close();
+            
+            final int responseCode = con.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                InputStreamReader is = new InputStreamReader(con.getInputStream());
+                String response = readIs(is);
+                is.close();
+                LOGGER.info("HTTP OK: " + response);
+                res = true;
+            } else if (responseCode == HttpURLConnection.HTTP_CREATED){
+                InputStreamReader is = new InputStreamReader(con.getInputStream());
+                String response = readIs(is);
+                is.close();
+                final String name = extractName(response);  
+                extractContent(response, returnedLayerName);
+//              if (returnedLayerName!=null && returnedLayerName.length>0)
+//            		returnedLayerName[0]=name;
+                if (LOGGER.isLoggable(Level.FINE))
+                    LOGGER.log(Level.FINE,"HTTP CREATED: " + response);
+                else
+                    LOGGER.info("HTTP CREATED: " + name);
+                res = true;
+            } else {
+                LOGGER.info("HTTP ERROR: " + con.getResponseMessage());
+                res = false;
+            }
+        } catch (MalformedURLException e) {
+            LOGGER.info("HTTP ERROR: " + e.getLocalizedMessage());
+            res = false;
+        } catch (IOException e) {
+            LOGGER.info("HTTP ERROR: " + e.getLocalizedMessage());
+            res = false;
+        } finally {
+            return res;
+        }
+    }
+    
+    public static boolean postTextFileTo(URL geoserverREST_URL, InputStream inputStream,
+            String geoserverPassword, String geoserverUser, String contetType) {
+    	return postTextFileTo(geoserverREST_URL, inputStream, geoserverPassword, geoserverUser,contetType,null);
+    }
+    
     // ////////////////////////////////////////////////////////////////////////
     //
     // HELPER METHODS
@@ -436,7 +518,7 @@ public class GeoServerRESTHelper {
 			throws ParserConfigurationException, IOException, TransformerException {
 			
     	if (isVectorialLayer)
-    		return sendFeature(inputDataDir, data, geoserverBaseURL, geoserverUID, geoserverPWD, originalStoreId, storeFilePrefix, queryParams, dataTransferMethod, type, geoserverVersion, dataStyles, defaultStyle);
+    		return sendFeature(inputDataDir, data, geoserverBaseURL, geoserverUID, geoserverPWD, originalStoreId, storeFilePrefix, queryParams, queryString, dataTransferMethod, type, geoserverVersion, dataStyles, defaultStyle);
     	else
     		return sendCoverage(inputDataDir, data, geoserverBaseURL, geoserverUID, geoserverPWD, originalStoreId, storeFilePrefix, queryParams, queryString, dataTransferMethod, type, geoserverVersion, dataStyles, defaultStyle);
     }
@@ -486,7 +568,7 @@ public class GeoServerRESTHelper {
 				geoserverREST_URL = new URL(new StringBuilder(geoserverBaseURL)
 					.append( "/rest/folders/").append( coverageStoreId )
 					.append( "/layers/" ).append(layerName).append( "/file.").append(type)
-					.append( queryString).toString());
+					.append( suffix).toString());
 				if (LOGGER.isLoggable(Level.INFO))
 					LOGGER.info("GeoServerConfiguratorAction sending binary content to ... " + geoserverREST_URL);
 				sent = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL,
@@ -571,6 +653,7 @@ public class GeoServerRESTHelper {
 	 * @param dataStyles
 	 * @param defaultStyle
 	 * @param queryParams
+	 * @param geoserverVersion2 
 	 * @throws TransformerException 
 	 * @throws IOException 
 	 * @throws ParserConfigurationException 
@@ -581,6 +664,7 @@ public class GeoServerRESTHelper {
 			final String geoserverPWD,
 			final String originalStoreId, final String storeFilePrefix,
 			final Map<String, String> queryParams,
+			final String queryString,
 			final String dataTransferMethod, final String type, final String geoserverVersion, 
 			final List<String> dataStyles, final String defaultStyle )
 			throws ParserConfigurationException, IOException, TransformerException {
@@ -590,12 +674,13 @@ public class GeoServerRESTHelper {
         final String[] layer = new String[3];
         layer[0] = storeFilePrefix != null ? storeFilePrefix : datastoreId;
 		String layerName = storeFilePrefix != null ? storeFilePrefix : datastoreId;
-
+		final String suffix = (queryString != null && queryString.trim().length()>0) ? "?"+queryString : "";
+		
 		if ("DIRECT".equals(dataTransferMethod)) {
 			geoserverREST_URL = new URL(new StringBuilder(geoserverBaseURL)
 				.append( "/rest/workspaces/" ).append(queryParams.get("namespace"))
 				.append( "/datastores/" ).append( datastoreId)
-				.append( "/file.").append(type).toString());
+				.append( "/file.").append(type).append(suffix).toString());
 			FileInputStream inStream = null;
 			try{
 				inStream = new FileInputStream(data);
@@ -615,14 +700,14 @@ public class GeoServerRESTHelper {
 			geoserverREST_URL = new URL(new StringBuilder(geoserverBaseURL)
 				.append( "/rest/workspaces/" ).append( queryParams.get("namespace"))
 				.append( "/datastores/" ).append( datastoreId ).append( "/url.")
-				.append(type).toString());
+				.append(type).append(suffix).toString());
 			sent = GeoServerRESTHelper.putContent(geoserverREST_URL, 
 					data.toURL().toExternalForm(), geoserverUID, geoserverPWD, layer, null);
 		} else if ("EXTERNAL".equals(dataTransferMethod)) {
 			geoserverREST_URL = new URL(new StringBuilder(geoserverBaseURL)
 				.append( "/rest/workspaces/" ).append( queryParams.get("namespace"))
 				.append( "/datastores/" ).append( datastoreId)
-				.append( "/external.").append(type).toString());
+				.append( "/external.").append(suffix).append(type).toString());
 			sent = GeoServerRESTHelper.putContent(geoserverREST_URL, 
 					data.toURL().toExternalForm(), geoserverUID, geoserverPWD, layer, null);
 		}
@@ -659,6 +744,50 @@ public class GeoServerRESTHelper {
 			sendLayerConfiguration(configElements, geoserverBaseURL, geoserverUID, geoserverPWD, layerName);	
 		}
 		
+	}
+	
+	/**
+	 * Check if a layer exixts.
+	 * 
+	 * @param geoserverBaseURL
+	 * @param geoserverUID
+	 * @param geoserverPWD
+	 * @param layerName
+	 * @return
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws TransformerException
+	 */
+	public static boolean checkLayerExistence(final String geoserverBaseURL, 
+			final String geoserverUID, final String geoserverPWD, final String layerName) throws ParserConfigurationException, IOException, TransformerException {
+		boolean exists = false;
+		
+		String layer = URLEncoder.encode(layerName,"UTF-8"); 
+		if (layer.contains("."))
+			layer = layer + ".fake";
+		final URL geoserverREST_URL = new URL(new StringBuilder(geoserverBaseURL).append( "/rest/layers/" ).append(layer).toString());
+		
+		HttpURLConnection con = (HttpURLConnection) geoserverREST_URL.openConnection();
+        con.setDoOutput(true);
+        con.setDoInput(true);
+        con.setRequestMethod("GET");
+        
+        final String login = geoserverUID;
+        final String password = geoserverPWD;
+
+        if ((login != null) && (login.trim().length() > 0)) {
+            Authenticator.setDefault(new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(login, password.toCharArray());
+                }
+            });
+        }
+
+        final int responseCode = con.getResponseCode();
+        
+        exists = (responseCode == HttpURLConnection.HTTP_OK);
+        
+		return exists;
 	}
 	
 	/**

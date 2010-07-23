@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+		 
+	<!-- Environment Initialization -->
+	
+    <!-- TDA fluxes  -->
+	<bean id="JGSFLoDeSSNCOMGeneratorService" class="it.geosolutions.geobatch.nurc.tda.jgsflodess.JGSFLoDeSSNCOMGeneratorService">
+		<property  name="id">
+    		<value>JGSFLoDeSSNCOMGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>JGSFLoDeSSNCOMGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>JGSFLoDeSSNCOMGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="JGSFLoDeSSSWANGeneratorService" class="it.geosolutions.geobatch.nurc.tda.jgsflodess.JGSFLoDeSSSWANGeneratorService">
+		<property  name="id">
+    		<value>JGSFLoDeSSSWANGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>JGSFLoDeSSSWANGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>JGSFLoDeSSSWANGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="JGSFLoDeSSCOAMPSGeneratorService" class="it.geosolutions.geobatch.nurc.tda.jgsflodess.JGSFLoDeSSCOAMPSGeneratorService">
+		<property  name="id">
+    		<value>JGSFLoDeSSCOAMPSGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>JGSFLoDeSSCOAMPSGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>JGSFLoDeSSCOAMPSGeneratorService</value>
+    	</property>	
+	</bean>
+	
+	<bean id="JGSFlossDessAliasRegistrar" class="it.geosolutions.geobatch.nurc.tda.NURCTDAActionsAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+
+</beans>

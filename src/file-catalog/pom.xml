@@ -96,6 +96,12 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-coverage</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>it.geosolutions.imageio-ext</groupId>
+            		<artifactId>imageio-ext-tiff</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
