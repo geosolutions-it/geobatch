@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.jetty;
 
 import java.io.File;
@@ -36,75 +34,78 @@ import org.mortbay.thread.BoundedThreadPool;
 
 /**
  * Jetty starter, will run GeoBatch inside the Jetty web container.<br>
- * Useful for debugging, especially in IDE were you have direct dependencies between the sources of
- * the various modules (such as Eclipse).
+ * Useful for debugging, especially in IDE were you have direct dependencies
+ * between the sources of the various modules (such as Eclipse).
  * 
  * @author wolf
  * 
  */
 public class Start {
-    private static final Logger log = Logger.getLogger(Start.class.getName());
+	private static final Logger log = Logger.getLogger(Start.class.getName());
 
-    public static void main(String[] args) {
-        Server jettyServer = null;
+	public static void main(String[] args) {
+		Server jettyServer = null;
 
-        try {
-            jettyServer = new Server();
+		try {
+			jettyServer = new Server();
 
-            // don't even think of serving more than XX requests in parallel... we
-            // have a limit in our processing and memory capacities
-            BoundedThreadPool tp = new BoundedThreadPool();
-            tp.setMaxThreads(50);
+			// don't even think of serving more than XX requests in parallel...
+			// we
+			// have a limit in our processing and memory capacities
+			BoundedThreadPool tp = new BoundedThreadPool();
+			tp.setMaxThreads(50);
 
-            SocketConnector conn = new SocketConnector();
-            String portVariable = System.getProperty("jetty.port");
-            int port = parsePort(portVariable);
+			SocketConnector conn = new SocketConnector();
+			String portVariable = System.getProperty("jetty.port");
+			int port = parsePort(portVariable);
 
-            if (port <= 0) {
-                port = 8080;
-            }
+			if (port <= 0) {
+				port = 8080;
+			}
 
-            conn.setPort(port);
-            conn.setThreadPool(tp);
-            conn.setAcceptQueueSize(100);
-            jettyServer.setConnectors(new Connector[] { conn });
+			conn.setPort(port);
+			conn.setThreadPool(tp);
+			conn.setAcceptQueueSize(100);
+			jettyServer.setConnectors(new Connector[] { conn });
 
-            WebAppContext wah = new WebAppContext();
-            wah.setContextPath("/geobatch");
-            //wah.setWar("target/geobatch");
-            wah.setWar("src/main/webapp");
-            jettyServer.setHandler(wah);
-            wah.setTempDirectory(new File("target/work"));
+			WebAppContext wah = new WebAppContext();
+			wah.setContextPath("/geobatch");
+			// wah.setWar("target/geobatch");
+			wah.setWar("src/main/webapp");
+			jettyServer.setHandler(wah);
+			wah.setTempDirectory(new File("target/work"));
 
-            jettyServer.start();
+			jettyServer.start();
 
-            // use this to test normal stop behavior, that is, to check stuff that
-            // need to be done on container shutdown (and yes, this will make
-            // jetty stop just after you started it...)
-            // jettyServer.stop();
-        } catch (Exception e) {
-            log.log(Level.SEVERE, "Could not start the Jetty server: " + e.getMessage(), e);
+			// use this to test normal stop behavior, that is, to check stuff
+			// that
+			// need to be done on container shutdown (and yes, this will make
+			// jetty stop just after you started it...)
+			// jettyServer.stop();
+		} catch (Exception e) {
+			log.log(Level.SEVERE, "Could not start the Jetty server: "
+					+ e.getMessage(), e);
 
-            if (jettyServer != null) {
-                try {
-                    jettyServer.stop();
-                } catch (Exception e1) {
-                    log.log(Level.SEVERE,
-                            "Unable to stop the " + "Jetty server:" + e1.getMessage(), e1);
-                }
-            }
-        }
-    }
+			if (jettyServer != null) {
+				try {
+					jettyServer.stop();
+				} catch (Exception e1) {
+					log.log(Level.SEVERE, "Unable to stop the "
+							+ "Jetty server:" + e1.getMessage(), e1);
+				}
+			}
+		}
+	}
 
-    private static int parsePort(String portVariable) {
-        if (portVariable == null) {
-            return -1;
-        }
+	private static int parsePort(String portVariable) {
+		if (portVariable == null) {
+			return -1;
+		}
 
-        try {
-            return Integer.valueOf(portVariable).intValue();
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-    }
+		try {
+			return Integer.valueOf(portVariable).intValue();
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+	}
 }

@@ -20,41 +20,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.gwc;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
-
-
-public class GeoWebCacheActionConfiguration extends ActionConfiguration implements Configuration {
+public class GeoWebCacheActionConfiguration extends ActionConfiguration
+		implements Configuration {
 
 	protected GeoWebCacheActionConfiguration(String id, String name,
 			String description, boolean dirty) {
 		super(id, name, description, dirty);
 	}
-    
+
 	private String gwcUrl;
-    private String workingDirectory;
-    private String geoserverUrl;    
-    private String zoomStart;  
-    private String zoomStop;     
-    private String metaWidth;    
-    private String metaHeight;    
-    private String gutter;    
-    private String transparent;
-    private String tiled;
-    private String expireCache;    
-    private String expireClients;    
-    private String gwcUser;
-    private String gwcPassword;
-    
-    public GeoWebCacheActionConfiguration() {
-        super();
-    }
-    
+	private String workingDirectory;
+	private String geoserverUrl;
+	private String zoomStart;
+	private String zoomStop;
+	private String metaWidth;
+	private String metaHeight;
+	private String gutter;
+	private String transparent;
+	private String tiled;
+	private String expireCache;
+	private String expireClients;
+	private String gwcUser;
+	private String gwcPassword;
+
+	public GeoWebCacheActionConfiguration() {
+		super();
+	}
+
 	public String getWorkingDirectory() {
 		return workingDirectory;
 	}
@@ -62,7 +59,7 @@ public class GeoWebCacheActionConfiguration extends ActionConfiguration implemen
 	public void setWorkingDirectory(String workingDirectory) {
 		this.workingDirectory = workingDirectory;
 	}
-	
+
 	public String getGwcUrl() {
 		return gwcUrl;
 	}
@@ -70,7 +67,7 @@ public class GeoWebCacheActionConfiguration extends ActionConfiguration implemen
 	public void setGwcUrl(String gwcUrl) {
 		this.gwcUrl = gwcUrl;
 	}
-	
+
 	public String getGeoserverUrl() {
 		return geoserverUrl;
 	}
@@ -78,7 +75,7 @@ public class GeoWebCacheActionConfiguration extends ActionConfiguration implemen
 	public void setGeoserverUrl(String geoserverUrl) {
 		this.geoserverUrl = geoserverUrl;
 	}
-	
+
 	public String getZoomStart() {
 		return zoomStart;
 	}
@@ -150,7 +147,7 @@ public class GeoWebCacheActionConfiguration extends ActionConfiguration implemen
 	public void setExpireClients(String expireClients) {
 		this.expireClients = expireClients;
 	}
-	
+
 	public String getGwcUser() {
 		return gwcUser;
 	}
@@ -166,15 +163,16 @@ public class GeoWebCacheActionConfiguration extends ActionConfiguration implemen
 	public void setGwcPassword(String gwcPassword) {
 		this.gwcPassword = gwcPassword;
 	}
-	
-    @Override
-    public ActionConfiguration clone() { // throws CloneNotSupportedException {
-//		final GeoWebCacheActionConfiguration configuration =
-//			new GeoWebCacheActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
-		final GeoWebCacheActionConfiguration configuration =
-                (GeoWebCacheActionConfiguration)super.clone();
-		
-//		configuration.setServiceID(getServiceID());
+
+	@Override
+	public ActionConfiguration clone() { // throws CloneNotSupportedException {
+	// final GeoWebCacheActionConfiguration configuration =
+	// new
+	// GeoWebCacheActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+		final GeoWebCacheActionConfiguration configuration = (GeoWebCacheActionConfiguration) super
+				.clone();
+
+		// configuration.setServiceID(getServiceID());
 		configuration.setGwcUrl(gwcUrl);
 		configuration.setWorkingDirectory(workingDirectory);
 		configuration.setGeoserverUrl(geoserverUrl);
@@ -186,10 +184,10 @@ public class GeoWebCacheActionConfiguration extends ActionConfiguration implemen
 		configuration.setGutter(gutter);
 		configuration.setMetaHeight(metaHeight);
 		configuration.setMetaWidth(metaWidth);
-		configuration.setTransparent(transparent);		
-		configuration.setGwcPassword(gwcPassword);		
+		configuration.setTransparent(transparent);
+		configuration.setGwcPassword(gwcPassword);
 		configuration.setGwcUser(gwcUser);
 
 		return configuration;
-    }
+	}
 }

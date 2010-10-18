@@ -39,11 +39,11 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author etj
  */
-public class HibFtpServerConfigDAO 
-		extends DAOAbstractSpring<FtpServerConfig, Long>
-		implements FtpServerConfigDAO {
+public class HibFtpServerConfigDAO extends
+		DAOAbstractSpring<FtpServerConfig, Long> implements FtpServerConfigDAO {
 
-	private final static Logger LOGGER = Logger.getLogger(HibFtpServerConfigDAO.class.getName());
+	private final static Logger LOGGER = Logger
+			.getLogger(HibFtpServerConfigDAO.class.getName());
 
 	public HibFtpServerConfigDAO() {
 		super(FtpServerConfig.class);
@@ -58,18 +58,19 @@ public class HibFtpServerConfigDAO
 	@Transactional(propagation = Propagation.REQUIRED)
 	public FtpServerConfig load() throws DAOException {
 		List<FtpServerConfig> list = super.findAll();
-		switch(list.size()) {
-			case 0:
-				LOGGER.info("No FTP server config found. Storing a brand new one.");
-				FtpServerConfig config = new FtpServerConfig();
-				return super.makePersistent(config);
-				
-			case 1:
-				return list.get(0);
-				
-			default:
-				LOGGER.severe("Too many FTP server configs found("+list.size()+").");
-				return list.get(0);
+		switch (list.size()) {
+		case 0:
+			LOGGER.info("No FTP server config found. Storing a brand new one.");
+			FtpServerConfig config = new FtpServerConfig();
+			return super.makePersistent(config);
+
+		case 1:
+			return list.get(0);
+
+		default:
+			LOGGER.severe("Too many FTP server configs found(" + list.size()
+					+ ").");
+			return list.get(0);
 		}
 
 	}

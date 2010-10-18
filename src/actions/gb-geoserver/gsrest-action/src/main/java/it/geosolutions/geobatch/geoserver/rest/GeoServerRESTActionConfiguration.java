@@ -23,32 +23,34 @@ package it.geosolutions.geobatch.geoserver.rest;
 
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
-public class GeoServerRESTActionConfiguration extends GeoServerActionConfiguration {
+public class GeoServerRESTActionConfiguration extends
+		GeoServerActionConfiguration {
 
-    public GeoServerRESTActionConfiguration(String id, String name,
+	public GeoServerRESTActionConfiguration(String id, String name,
 			String description, boolean dirty) {
 		super(id, name, description, dirty);
 		// TODO Auto-generated constructor stub
 	}
 
-    private String queryString;
-    
-    private String geoserverVersion;
-    
-    private String storeType;
-    
-    private String storeId;
-    
-    private Boolean vectorialLayer;
+	private String queryString;
 
-    public GeoServerRESTActionConfiguration() {
-        super();
-    }
+	private String geoserverVersion;
 
-    public GeoServerRESTActionConfiguration(GeoServerRESTActionConfiguration baseConfiguration) {
-        super();
+	private String storeType;
 
-        setCrs(baseConfiguration.getCrs());
+	private String storeId;
+
+	private Boolean vectorialLayer;
+
+	public GeoServerRESTActionConfiguration() {
+		super();
+	}
+
+	public GeoServerRESTActionConfiguration(
+			GeoServerRESTActionConfiguration baseConfiguration) {
+		super();
+
+		setCrs(baseConfiguration.getCrs());
 		setDataTransferMethod(baseConfiguration.getDataTransferMethod());
 		setDatatype(baseConfiguration.getDatatype());
 		setDefaultNamespace(baseConfiguration.getDefaultNamespace());
@@ -68,15 +70,15 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
 		setQueryString(baseConfiguration.getQueryString());
 		setWorkingDirectory(baseConfiguration.getWorkingDirectory());
 		setVectorialLayer(baseConfiguration.isVectorialLayer());
-    }
-    
+	}
+
 	/**
-	 * @param geoserverVersion the geoserverVersion to set
+	 * @param geoserverVersion
+	 *            the geoserverVersion to set
 	 */
 	public void setGeoserverVersion(String geoserverVersion) {
 		this.geoserverVersion = geoserverVersion;
 	}
-
 
 	/**
 	 * @return the geoserverVersion
@@ -86,31 +88,31 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
 	}
 
 	@Override
-	public GeoServerRESTActionConfiguration clone() { // throws CloneNotSupportedException {
-//		final GeoServerRESTActionConfiguration configuration =
-//			new GeoServerRESTActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
-		final GeoServerRESTActionConfiguration configuration =
-                (GeoServerRESTActionConfiguration)super.clone();
+	public GeoServerRESTActionConfiguration clone() { // throws
+														// CloneNotSupportedException
+														// {
+	// final GeoServerRESTActionConfiguration configuration =
+	// new
+	// GeoServerRESTActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+		final GeoServerRESTActionConfiguration configuration = (GeoServerRESTActionConfiguration) super
+				.clone();
 
 		configuration.setGeoserverVersion(geoserverVersion);
 		configuration.setQueryString(queryString);
-		
+
 		return configuration;
 	}
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() +"["
-				+ "id:" + getId()
-				+ " name:" + getName()
-				+ " srvId:" + getServiceID()
-				+ " wkdir:" + getWorkingDirectory()
-				+ " GSurl:" + getGeoserverURL()
-				+"]";
+		return getClass().getSimpleName() + "[" + "id:" + getId() + " name:"
+				+ getName() + " srvId:" + getServiceID() + " wkdir:"
+				+ getWorkingDirectory() + " GSurl:" + getGeoserverURL() + "]";
 	}
 
 	/**
-	 * @param storeType the storeType to set
+	 * @param storeType
+	 *            the storeType to set
 	 */
 	public void setStoreType(String storeType) {
 		this.storeType = storeType;
@@ -124,7 +126,8 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
 	}
 
 	/**
-	 * @param storeId the storeId to set
+	 * @param storeId
+	 *            the storeId to set
 	 */
 	public void setStoreId(String storeId) {
 		this.storeId = storeId;
@@ -138,7 +141,8 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
 	}
 
 	/**
-	 * @param vectorialLayer the vectorialLayer to set
+	 * @param vectorialLayer
+	 *            the vectorialLayer to set
 	 */
 	public void setVectorialLayer(Boolean vectorialLayer) {
 		this.vectorialLayer = vectorialLayer;
@@ -152,7 +156,8 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
 	}
 
 	/**
-	 * @param queryString the queryString to set
+	 * @param queryString
+	 *            the queryString to set
 	 */
 	public void setQueryString(String queryString) {
 		this.queryString = queryString;

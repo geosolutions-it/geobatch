@@ -31,16 +31,17 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * @author   Alessio
+ * @author Alessio
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners({})
-@ContextConfiguration(locations={"/applicationContext.xml"})
+@TestExecutionListeners( {})
+@ContextConfiguration(locations = { "/applicationContext.xml" })
 public class JNITest extends AbstractJUnit4SpringContextTests {
 	// //
 	// default logger
 	// //
-	private final static Logger LOGGER = Logger.getLogger(JNITest.class.toString());
+	private final static Logger LOGGER = Logger.getLogger(JNITest.class
+			.toString());
 
 	private TestListener listener;
 
@@ -50,15 +51,14 @@ public class JNITest extends AbstractJUnit4SpringContextTests {
 
 	private boolean go;
 
-
 	@Before
 	public void setUp() throws Exception {
-		go=false;
+		go = false;
 		try {
 			System.loadLibrary("jnotify");
-			go=true;
+			go = true;
 		} catch (UnsatisfiedLinkError e) {
-			go=false;
+			go = false;
 			return;
 		}
 		listener = new TestListener();
@@ -75,37 +75,35 @@ public class JNITest extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public  void testPolling() {
-		if(!go)
-		{
+	public void testPolling() {
+		if (!go) {
 			LOGGER.severe("Missing native libs, skipping tests.");
 			return;
 		}
 
 		String osName = System.getProperty("os.name").toLowerCase();
 		OsType os;
-		if(osName.contains("linux"))
-			os=OsType.OS_LINUX;
-		else
-			if(osName.contains("windows"))
-				os=OsType.OS_WINDOWS;
-			else
-			{
-				LOGGER.severe("JNI version of this code works only on widnows and linux.");
-				return;
-			}
-		final Map<String,Object>params= new HashMap<String, Object>();
+		if (osName.contains("linux"))
+			os = OsType.OS_LINUX;
+		else if (osName.contains("windows"))
+			os = OsType.OS_WINDOWS;
+		else {
+			LOGGER
+					.severe("JNI version of this code works only on widnows and linux.");
+			return;
+		}
+		final Map<String, Object> params = new HashMap<String, Object>();
 		params.put(NativeFileSystemWatcherSPI.SOURCE, dir);
 		params.put(NativeFileSystemWatcherSPI.SUBDIRS, Boolean.FALSE);
 		params.put(NativeFileSystemWatcherSPI.WILDCARD, "*.txt");
-		monitor = new NativeFileSystemWatcherSPI().createInstance(params);	
+		monitor = new NativeFileSystemWatcherSPI().createInstance(params);
 		listener = new TestListener();
 
 		LOGGER.info("Aggiungo la dir prova ai listener");
 		// Add a dummy listener
 		monitor.addListener(listener);
 		monitor.start();
-		//Thread.yield();
+		// Thread.yield();
 		LOGGER.info("Inizio l'ascolto della directory");
 
 		// prepare the pause
@@ -142,7 +140,8 @@ public class JNITest extends AbstractJUnit4SpringContextTests {
 			}
 		}, 25000);
 
-		FileCreatorThread fileCreator = new FileCreatorThread(dir.getAbsolutePath(), "txt");
+		FileCreatorThread fileCreator = new FileCreatorThread(dir
+				.getAbsolutePath(), "txt");
 
 		// Avoid program exit
 		synchronized (this) {
@@ -170,14 +169,12 @@ public class JNITest extends AbstractJUnit4SpringContextTests {
 			LOGGER.info(new StringBuffer("\nFile changed: ").append(
 					fe.getSource()).toString());
 			String s = "";
-			if (fe.getNotification()==FileSystemMonitorNotifications.FILE_ADDED)
+			if (fe.getNotification() == FileSystemMonitorNotifications.FILE_ADDED)
 				s = "file added";
-			else
-				if(fe.getNotification()==FileSystemMonitorNotifications.FILE_REMOVED)
+			else if (fe.getNotification() == FileSystemMonitorNotifications.FILE_REMOVED)
 				s = "file removed";
-				else
-					if(fe.getNotification()==FileSystemMonitorNotifications.FILE_MODIFIED)
-						s = "file modified";
+			else if (fe.getNotification() == FileSystemMonitorNotifications.FILE_MODIFIED)
+				s = "file modified";
 			LOGGER.info(new StringBuffer("Event: ").append(s).toString());
 			LOGGER.info(Thread.currentThread().getName());
 		}

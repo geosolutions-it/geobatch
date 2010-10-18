@@ -28,9 +28,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-
-
-
 /**
  * Comments here ...
  * 
@@ -39,34 +36,36 @@ import org.apache.commons.beanutils.BeanUtils;
 public class LammaMosaicDataConfiguration extends LammaBaseConfiguration {
 
 	public LammaMosaicDataConfiguration() {
-        super();
-    }
+		super();
+	}
 
-    protected LammaMosaicDataConfiguration(String id, String name, String description,
-            boolean dirty) {
-        super(id, name, description, dirty);
-    }
-	
-    @Override
-    public LammaMosaicDataConfiguration clone() { // throws CloneNotSupportedException {
-    	try {
+	protected LammaMosaicDataConfiguration(String id, String name,
+			String description, boolean dirty) {
+		super(id, name, description, dirty);
+	}
+
+	@Override
+	public LammaMosaicDataConfiguration clone() { // throws
+													// CloneNotSupportedException
+													// {
+		try {
 			return (LammaMosaicDataConfiguration) BeanUtils.cloneBean(this);
 		} catch (IllegalAccessException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InstantiationException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InvocationTargetException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (NoSuchMethodException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		}
-    }
+	}
 }

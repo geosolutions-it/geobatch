@@ -32,8 +32,9 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  */
 public class TaskExecutorAliasRegistrar extends AliasRegistrar {
 
-     public TaskExecutorAliasRegistrar(AliasRegistry registry) {
-         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-         registry.putAlias("TaskExecutorConfiguration", it.geosolutions.geobatch.task.TaskExecutorConfiguration.class);
-     }
- }
+	public TaskExecutorAliasRegistrar(AliasRegistry registry) {
+		LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+		registry.putAlias("TaskExecutorConfiguration",
+				it.geosolutions.geobatch.task.TaskExecutorConfiguration.class);
+	}
+}

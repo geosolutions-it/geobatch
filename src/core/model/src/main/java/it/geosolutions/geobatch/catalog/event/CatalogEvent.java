@@ -27,8 +27,8 @@ package it.geosolutions.geobatch.catalog.event;
  * 
  */
 public interface CatalogEvent<T> {
-    /**
-     * The source of the event.
-     */
-    T getSource();
+	/**
+	 * The source of the event.
+	 */
+	T getSource();
 }

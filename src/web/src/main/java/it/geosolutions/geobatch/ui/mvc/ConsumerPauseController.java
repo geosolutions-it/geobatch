@@ -29,18 +29,18 @@ import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
 import org.springframework.web.servlet.ModelAndView;
 
-
 /**
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
  */
 public class ConsumerPauseController extends ConsumerAbstractController {
 
-    @Override
-    protected void runStuff(ModelAndView mav, FileBasedFlowManager fm, BaseEventConsumer consumer) {
-        if (fm != null && consumer != null)
-        	consumer.pause(true);
-        
-        mav.addObject("consumer", consumer);
-    }
+	@Override
+	protected void runStuff(ModelAndView mav, FileBasedFlowManager fm,
+			BaseEventConsumer consumer) {
+		if (fm != null && consumer != null)
+			consumer.pause(true);
+
+		mav.addObject("consumer", consumer);
+	}
 }

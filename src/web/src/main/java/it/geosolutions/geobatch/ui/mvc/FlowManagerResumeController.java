@@ -36,36 +36,40 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * 
  */
 public class FlowManagerResumeController extends AbstractController {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal(javax.servlet
-     * .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected ModelAndView handleRequestInternal(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
-        Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
+	 * (javax.servlet .http.HttpServletRequest,
+	 * javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+	protected ModelAndView handleRequestInternal(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
 
-        String fmId = request.getParameter("fmId");
-        ModelAndView mav = new ModelAndView("flows");
+		String fmId = request.getParameter("fmId");
+		ModelAndView mav = new ModelAndView("flows");
 
-        if (fmId != null) {
-            FileBasedFlowManager fm = catalog.getResource(fmId, FileBasedFlowManager.class);
+		if (fmId != null) {
+			FileBasedFlowManager fm = catalog.getResource(fmId,
+					FileBasedFlowManager.class);
 
-            if (fm == null) {
-                mav.addObject("error", "Flow '"+fmId+"' not found");
-            } else if( fm.isRunning()) {
-                mav.addObject("error", "Flow '"+fmId+"' is already running.");
-            } else {
-                fm.resume();
-                mav.addObject("message", "Flow '"+fmId+"' resumed.");
-            }
-        }
+			if (fm == null) {
+				mav.addObject("error", "Flow '" + fmId + "' not found");
+			} else if (fm.isRunning()) {
+				mav.addObject("error", "Flow '" + fmId
+						+ "' is already running.");
+			} else {
+				fm.resume();
+				mav.addObject("message", "Flow '" + fmId + "' resumed.");
+			}
+		}
 
-        mav.addObject("flowManagers", catalog.getFlowManagers(FileBasedFlowManager.class));
+		mav.addObject("flowManagers", catalog
+				.getFlowManagers(FileBasedFlowManager.class));
 
-        return mav;
-    }
+		return mav;
+	}
 }

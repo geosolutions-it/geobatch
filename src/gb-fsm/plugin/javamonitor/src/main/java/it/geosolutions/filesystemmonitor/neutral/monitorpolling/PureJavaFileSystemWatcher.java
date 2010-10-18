@@ -24,8 +24,8 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
-	
-	public final static long DEFAULT_POLLING_INTERVAL=1000;
+
+	public final static long DEFAULT_POLLING_INTERVAL = 1000;
 
 	/**
 	 * This is the timer thread which is executed every n milliseconds according
@@ -55,13 +55,15 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 
 	}
 
-	protected final Map<String, Long> filesMap = Collections.synchronizedMap(new TreeMap<String, Long>());
+	protected final Map<String, Long> filesMap = Collections
+			.synchronizedMap(new TreeMap<String, Long>());
 	protected long lastModifiedTime = -1;
 	protected Thread workers[];
 
 	public PureJavaFileSystemWatcher(File file) {
 		this(file, DEFAULT_POLLING_INTERVAL);
 	}
+
 	/**
 	 * Create a file monitor instance with specified polling interval.
 	 * 
@@ -69,11 +71,13 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 	 *            Polling interval in milli seconds.extension
 	 */
 	public PureJavaFileSystemWatcher(File file, long pollingInterval) {
-		this(file, null,pollingInterval);
+		this(file, null, pollingInterval);
 	}
+
 	public PureJavaFileSystemWatcher(File file, String wildCard) {
 		this(file, wildCard, DEFAULT_POLLING_INTERVAL);
 	}
+
 	/**
 	 * Create a file monitor instance with specified polling interval.
 	 * 
@@ -85,26 +89,27 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 		super(file, wildCard);
 		long modifiedTime = file.exists() ? file.lastModified() : -1;
 		lastModifiedTime = modifiedTime;
-		if (this.file.exists()&&file.canRead()) {
+		if (this.file.exists() && file.canRead()) {
 			final File[] files;
-			if(wildCard==null){
-				if(file.isDirectory())
-					files =this.file.listFiles();
+			if (wildCard == null) {
+				if (file.isDirectory())
+					files = this.file.listFiles();
 				else
-					files = new File[]{file};
-			}else
-				if(file.isDirectory())
-					files =this.file.listFiles((FileFilter) new WildcardFileFilter(wildCardString,IOCase.INSENSITIVE));
-				else
-					throw new IllegalStateException("Cannot use a wildcard with aplain file");
+					files = new File[] { file };
+			} else if (file.isDirectory())
+				files = this.file
+						.listFiles((FileFilter) new WildcardFileFilter(
+								wildCardString, IOCase.INSENSITIVE));
+			else
+				throw new IllegalStateException(
+						"Cannot use a wildcard with aplain file");
 
 			for (int i = 0; i < files.length; i++) {
 				filesMap.put(files[i].getName(), new Long(files[i]
 						.lastModified()));// name -- last modified
 
 			}
-		}
-		else
+		} else
 			throw new IllegalArgumentException("Input File not valid!");
 
 		this.workers = new Thread[] { new PureJavaMonitorNotifier(
@@ -126,9 +131,9 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 	 * 
 	 */
 	protected void checkFileSystem() {
-	
+
 		synchronized (filesMap) {
-	
+
 			// //
 			//
 			// If we do not have anything to watch let's proceed.
@@ -136,14 +141,15 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 			// //
 			if (file == null)
 				return;
-	
+
 			// //
 			//
 			// Get the newest modified time for this directoy.
 			//
 			// //
-			final long newModifiedTime = file.exists() ? file.lastModified(): -1;
-	
+			final long newModifiedTime = file.exists() ? file.lastModified()
+					: -1;
+
 			// //
 			//
 			// In case I had some changes in the modified time for the
@@ -160,7 +166,7 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 			//
 			// //
 			if (newModifiedTime != lastModifiedTime) {
-	
+
 				// //
 				//
 				// Directory removed
@@ -188,14 +194,16 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 					final String prefix = new StringBuffer(file
 							.getAbsolutePath().trim()).append(File.separator)
 							.toString();
-	
+
 					// get updated file list
 					final String[] newFiles = wildCardString != null ? file
-							.list((FilenameFilter) new WildcardFileFilter(wildCardString,IOCase.INSENSITIVE)) : file.list();
+							.list((FilenameFilter) new WildcardFileFilter(
+									wildCardString, IOCase.INSENSITIVE)) : file
+							.list();
 					// converting to a list
 					final List<String> newFilesList = new ArrayList<String>();
 					newFilesList.addAll(Arrays.asList(newFiles));
-	
+
 					// //
 					//
 					// First look for removed and modified by looping
@@ -221,8 +229,9 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 					while (it.hasNext()) {
 						// modified ar removed
 						oldFileName = it.next();
-						file = new File(new StringBuffer(prefix).append(oldFileName).toString());
-	
+						file = new File(new StringBuffer(prefix).append(
+								oldFileName).toString());
+
 						// //
 						//
 						// If the new list does not contain the old file
@@ -238,7 +247,7 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 						if (newFilesList.contains(oldFileName)) {
 							// remove it from the new files list
 							newFilesList.remove(oldFileName);
-	
+
 							// change modification time if it has
 							// changed. It is worth to note that I CANNOT
 							// modify the list while the Iterator is
@@ -246,25 +255,30 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 							// have to remove the key,value pair and add it
 							// to the new files list.
 							newLastModified = file.lastModified();
-							if (newLastModified != filesMap.get(oldFileName).longValue()) {
-	
+							if (newLastModified != filesMap.get(oldFileName)
+									.longValue()) {
+
 								it.remove();
-								newValues.put(oldFileName, new Long(newLastModified));
-	
+								newValues.put(oldFileName, new Long(
+										newLastModified));
+
 								// event
-								sendEvent(new FileSystemMonitorEvent(file,FileSystemMonitorNotifications.FILE_MODIFIED));
+								sendEvent(new FileSystemMonitorEvent(
+										file,
+										FileSystemMonitorNotifications.FILE_MODIFIED));
 							}
 						} else {
 							// the file has been removed
 							// remove it
 							it.remove();
-	
+
 							// removed
-							sendEvent(new FileSystemMonitorEvent(file,FileSystemMonitorNotifications.FILE_REMOVED));
+							sendEvent(new FileSystemMonitorEvent(file,
+									FileSystemMonitorNotifications.FILE_REMOVED));
 						}
-	
+
 					}
-	
+
 					// //
 					//
 					// Now the files that are still in the new list have
@@ -274,21 +288,24 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 					it = newFilesList.iterator();
 					String newFileName;
 					while (it.hasNext()) {
-	
+
 						// get the name
 						newFileName = it.next();
 						// create a file
-						file = new File(new StringBuffer(prefix).append(newFileName).toString());
-	
+						file = new File(new StringBuffer(prefix).append(
+								newFileName).toString());
+
 						// add it
-						newValues.put(newFileName,new Long(file.lastModified()));
-	
+						newValues.put(newFileName,
+								new Long(file.lastModified()));
+
 						// fire event
-						sendEvent(new FileSystemMonitorEvent(file,FileSystemMonitorNotifications.FILE_ADDED));
+						sendEvent(new FileSystemMonitorEvent(file,
+								FileSystemMonitorNotifications.FILE_ADDED));
 					}
 					// add them all
 					filesMap.putAll(newValues);
-	
+
 				}
 				// Register new modified time for the enclosing dir
 				lastModifiedTime = newModifiedTime;
@@ -303,9 +320,9 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 			((AbstractPausableThread) this.workers[i]).dispose();
 			this.workers[i] = null;
 		}
-	
+
 		this.workers = null;
-	
+
 		if (listeners != null) {
 			Object[] listenerArray = listeners.getListenerList();
 			final int length = listenerArray.length;
@@ -327,11 +344,12 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 		if (this.workers != null) {
 			for (int i = 0; i < workers.length; i++) {
 				if (this.workers[i] != null
-						&& ((AbstractPausableThread) this.workers[i]).isPaused()) {
+						&& ((AbstractPausableThread) this.workers[i])
+								.isPaused()) {
 					return true;
 				}
 			}
-	
+
 		}
 		return false;
 	}
@@ -348,7 +366,7 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 			}
 		} else
 			isAlive = false;
-	
+
 		return this.workers != null && isAlive;
 	}
 
@@ -363,9 +381,9 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 							.setPauseRequested(true);
 				}
 			}
-	
+
 		}
-	
+
 	}
 
 	/**
@@ -381,11 +399,10 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 					((AbstractPausableThread) this.workers[i]).setPaused(false);
 				}
 			}
-	
-		}
-	
-	}
 
+		}
+
+	}
 
 	/**
 	 * Starts watching changes in the directory. Note that a worker thread will
@@ -396,14 +413,14 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 	 * isRunning() to check whether the worker thread is running or not.
 	 */
 	public synchronized void start() {
-		if(isRunning())
-			return ;
+		if (isRunning())
+			return;
 		for (int i = 0; i < workers.length; i++) {
 			if (workers[i] != null) {
 				this.workers[i].start();
 			}
 		}
-	
+
 	}
 
 	/**
@@ -414,9 +431,8 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
 			for (int i = 0; i < workers.length; i++) {
 				((AbstractPausableThread) this.workers[i]).requestTermination();
 			}
-	
+
 		}
 	}
-
 
 }

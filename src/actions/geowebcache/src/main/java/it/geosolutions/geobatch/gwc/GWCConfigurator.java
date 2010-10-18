@@ -49,299 +49,330 @@ import org.restlet.data.Response;
 
 /**
  * 
- * Public class to insert layer configuration file into GeoWebCache 
- *  
+ * Public class to insert layer configuration file into GeoWebCache
+ * 
  */
-public class GWCConfigurator extends GeoWebCacheConfiguratorAction<FileSystemMonitorEvent> {
+public class GWCConfigurator extends
+		GeoWebCacheConfiguratorAction<FileSystemMonitorEvent> {
 
-    protected GWCConfigurator(GeoWebCacheActionConfiguration configuration)
-            throws IOException {
-        super(configuration);
-    }
+	protected GWCConfigurator(GeoWebCacheActionConfiguration configuration)
+			throws IOException {
+		super(configuration);
+	}
 
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
-            throws ActionException {
+	public Queue<FileSystemMonitorEvent> execute(
+			Queue<FileSystemMonitorEvent> events) throws ActionException {
 
-        try {
-            listenerForwarder.started();
+		try {
+			listenerForwarder.started();
 
-            if (configuration == null) {
-                throw new IllegalStateException("ActionConfig is null.");
-            }
+			if (configuration == null) {
+				throw new IllegalStateException("ActionConfig is null.");
+			}
 
-            // ///////////////////////////////////
-            // Initializing input variables
-            // ///////////////////////////////////
+			// ///////////////////////////////////
+			// Initializing input variables
+			// ///////////////////////////////////
 
-            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
-                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+			final File workingDir = IOUtils.findLocation(configuration
+					.getWorkingDirectory(), new File(
+					((FileBaseCatalog) CatalogHolder.getCatalog())
+							.getBaseDirectory()));
 
-            // ///////////////////////////////////
-            // Checking input files.
-            // ///////////////////////////////////
+			// ///////////////////////////////////
+			// Checking input files.
+			// ///////////////////////////////////
 
-            if (workingDir == null) {
-                LOGGER.log(Level.SEVERE, "Working directory is null.");
-                throw new IllegalStateException("Working directory is null.");
-            }
+			if (workingDir == null) {
+				LOGGER.log(Level.SEVERE, "Working directory is null.");
+				throw new IllegalStateException("Working directory is null.");
+			}
 
-            if (!workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "Working directory does not exist (" + workingDir.getAbsolutePath() + ").");
-                throw new IllegalStateException("Working directory does not exist (" + workingDir.getAbsolutePath() + ").");
-            }
+			if (!workingDir.exists() || !workingDir.isDirectory()) {
+				LOGGER.log(Level.SEVERE, "Working directory does not exist ("
+						+ workingDir.getAbsolutePath() + ").");
+				throw new IllegalStateException(
+						"Working directory does not exist ("
+								+ workingDir.getAbsolutePath() + ").");
+			}
 
-            File[] dataList;
-            dataList = handleDataFile(events);
+			File[] dataList;
+			dataList = handleDataFile(events);
 
-            if (dataList == null) {
-                throw new Exception("Error while processing the layer data file set");
-            }
+			if (dataList == null) {
+				throw new Exception(
+						"Error while processing the layer data file set");
+			}
 
-            // /////////////////////////////////////////////
-            // Look for the main netcdf file in the set
-            // /////////////////////////////////////////////
+			// /////////////////////////////////////////////
+			// Look for the main netcdf file in the set
+			// /////////////////////////////////////////////
 
-            File dataFile = null;
-            for (File file : dataList) {
-                if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("txt")) {
-                    dataFile = file;
-                    break;
-                }
-            }
+			File dataFile = null;
+			for (File file : dataList) {
+				if (FilenameUtils.getExtension(file.getName())
+						.equalsIgnoreCase("txt")) {
+					dataFile = file;
+					break;
+				}
+			}
 
-            if (dataFile == null) {
-                LOGGER.log(Level.SEVERE, "layer data file not found in fileset.");
-                throw new IllegalStateException("layer data file not found in fileset.");
-            }
+			if (dataFile == null) {
+				LOGGER.log(Level.SEVERE,
+						"layer data file not found in fileset.");
+				throw new IllegalStateException(
+						"layer data file not found in fileset.");
+			}
 
-            String dataString = IOUtils.toString(dataFile);
-            String[] layerData = dataString.split("&");
+			String dataString = IOUtils.toString(dataFile);
+			String[] layerData = dataString.split("&");
 
-            String namespace = layerData[0].split("=")[1];
-            String store = layerData[1].split("=")[1];
-            String wmsLayerName = layerData[2].split("=")[1];
+			String namespace = layerData[0].split("=")[1];
+			String store = layerData[1].split("=")[1];
+			String wmsLayerName = layerData[2].split("=")[1];
 
-            String json = getGSLayerData(namespace, store, wmsLayerName, configuration.getGeoserverUrl());
+			String json = getGSLayerData(namespace, store, wmsLayerName,
+					configuration.getGeoserverUrl());
 
-            JSONObject obj = new JSONObject(json);
-            String layerSRS = "EPSG:4326";
-            String minX = "";
-            String minY = "";
-            String maxX = "";
-            String maxY = "";
+			JSONObject obj = new JSONObject(json);
+			String layerSRS = "EPSG:4326";
+			String minX = "";
+			String minY = "";
+			String maxX = "";
+			String maxY = "";
 
-            Object features = obj.get("coverage");
-            if (features instanceof JSONObject) {
-                JSONObject object = (JSONObject) features;
-                layerSRS = (String) object.get("srs");
+			Object features = obj.get("coverage");
+			if (features instanceof JSONObject) {
+				JSONObject object = (JSONObject) features;
+				layerSRS = (String) object.get("srs");
 
-                JSONObject envelope = (JSONObject) object.get("nativeBoundingBox");
-                minX = envelope.getString("minx");
-                minY = envelope.getString("miny");
-                maxX = envelope.getString("maxx");
-                maxY = envelope.getString("maxy");
-            }
+				JSONObject envelope = (JSONObject) object
+						.get("nativeBoundingBox");
+				minX = envelope.getString("minx");
+				minY = envelope.getString("miny");
+				maxX = envelope.getString("maxx");
+				maxY = envelope.getString("maxy");
+			}
 
-            layerSRS = layerSRS.split(":")[1];
+			layerSRS = layerSRS.split(":")[1];
 
-            SimpleDateFormat simple_date = new SimpleDateFormat("yyMMddHHmmss");
-            Date date = new Date();
-            String layerName = wmsLayerName + "_" + simple_date.format(date);
+			SimpleDateFormat simple_date = new SimpleDateFormat("yyMMddHHmmss");
+			Date date = new Date();
+			String layerName = wmsLayerName + "_" + simple_date.format(date);
 
-            StringBuilder bf = buildGWCLayerConfiguration(layerSRS, minX, minY, maxX, maxY, configuration.getGeoserverUrl(),
-                    namespace, wmsLayerName, layerName);
+			StringBuilder bf = buildGWCLayerConfiguration(layerSRS, minX, minY,
+					maxX, maxY, configuration.getGeoserverUrl(), namespace,
+					wmsLayerName, layerName);
 
-            sendLayerConfiguration(bf, configuration.getGwcUrl(), configuration.getGwcUser(),
-                    configuration.getGwcPassword(), namespace, layerName);
+			sendLayerConfiguration(bf, configuration.getGwcUrl(), configuration
+					.getGwcUser(), configuration.getGwcPassword(), namespace,
+					layerName);
 
-            listenerForwarder.completed();
-            return events;
+			listenerForwarder.completed();
+			return events;
 
-        } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to log: rethrowing
-            listenerForwarder.failed(t);
-            throw new ActionException(this, t.getMessage(), t);
-        } finally {
-        }
-    }
+		} catch (Throwable t) {
+			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to
+																	// log:
+																	// rethrowing
+			listenerForwarder.failed(t);
+			throw new ActionException(this, t.getMessage(), t);
+		} finally {
+		}
+	}
 
-    /**
-     * Pack the files received in the events into an array.
-     *
-     *
-     * @param events The received event queue
-     * @return
-     */
-    private File[] handleDataFile(Queue<FileSystemMonitorEvent> events) {
-        File ret[] = new File[events.size()];
-        int idx = 0;
-        for (FileSystemMonitorEvent event : events) {
-            ret[idx++] = event.getSource();
-        }
-        return ret;
-    }
+	/**
+	 * Pack the files received in the events into an array.
+	 * 
+	 * 
+	 * @param events
+	 *            The received event queue
+	 * @return
+	 */
+	private File[] handleDataFile(Queue<FileSystemMonitorEvent> events) {
+		File ret[] = new File[events.size()];
+		int idx = 0;
+		for (FileSystemMonitorEvent event : events) {
+			ret[idx++] = event.getSource();
+		}
+		return ret;
+	}
 
-    private String getGSLayerData(final String namespace, final String store, final String layerName, final String geoserverUrl) throws Exception {
-        try {
-            if (namespace != null && layerName != null) {
+	private String getGSLayerData(final String namespace, final String store,
+			final String layerName, final String geoserverUrl) throws Exception {
+		try {
+			if (namespace != null && layerName != null) {
 
-                // //////////////
-                // Prepare HTTP client connector.
-                // //////////////
+				// //////////////
+				// Prepare HTTP client connector.
+				// //////////////
 
-                Client client = new Client(Protocol.HTTP);
-                Response response = client.get(geoserverUrl + "rest/workspaces/" + namespace + "/coveragestores/" + store + "/coverages/"
-                        + layerName + ".json");
+				Client client = new Client(Protocol.HTTP);
+				Response response = client.get(geoserverUrl
+						+ "rest/workspaces/" + namespace + "/coveragestores/"
+						+ store + "/coverages/" + layerName + ".json");
 
-                if (response.getStatus().isSuccess()) {
-                    LOGGER.log(Level.INFO, "Client succes !");
-                    return response.getEntity().getText();
-                } else {
-                    throw new Exception("Client failure! an unexpected status was returned: " + response.getStatus());
-                }
+				if (response.getStatus().isSuccess()) {
+					LOGGER.log(Level.INFO, "Client succes !");
+					return response.getEntity().getText();
+				} else {
+					throw new Exception(
+							"Client failure! an unexpected status was returned: "
+									+ response.getStatus());
+				}
 
-            } else {
-                throw new Exception("Client failure! buffer is null");
-            }
-        } catch (Exception e) {
-            throw new Exception("EXCEPTION -> " + e.getLocalizedMessage());
-        }
-    }
+			} else {
+				throw new Exception("Client failure! buffer is null");
+			}
+		} catch (Exception e) {
+			throw new Exception("EXCEPTION -> " + e.getLocalizedMessage());
+		}
+	}
 
-    private StringBuilder buildGWCLayerConfiguration(String srs, String minX, String minY, String maxX,
-            String maxY, String geoserverUrl, String namespace, String wmsLayerName, String layerName) {
+	private StringBuilder buildGWCLayerConfiguration(String srs, String minX,
+			String minY, String maxX, String maxY, String geoserverUrl,
+			String namespace, String wmsLayerName, String layerName) {
 
-        StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
-        sb.append("<wmsLayer><name>");
-        sb.append(namespace + ":" + layerName);
-        sb.append("</name>");
-        sb.append("<mimeFormats><string>image/png</string><string>image/jpeg</string></mimeFormats>");
-        sb.append("<grids>");
-        sb.append("<entry>");
-        sb.append("<srs><number>" + srs + "</number></srs>");
-        sb.append("<grid>");
-        sb.append("<srs><number>" + srs + "</number></srs>");
-        sb.append("<dataBounds>");
-        sb.append("<coords>");
-        sb.append("<double>" + minX + "</double>");
-        sb.append("<double>" + minY + "</double>");
-        sb.append("<double>" + maxX + "</double>");
-        sb.append("<double>" + maxY + "</double>");
-        sb.append("</coords>");
-        sb.append("</dataBounds>");
-        sb.append("<gridBounds>");
-        sb.append("<coords>");
-        sb.append("<double>" + minX + "</double>");
-        sb.append("<double>" + minY + "</double>");
-        sb.append("<double>" + maxX + "</double>");
-        sb.append("<double>" + maxY + "</double>");
-        sb.append("</coords>");
-        sb.append("</gridBounds>");
-        sb.append("<zoomStart>" + configuration.getZoomStart() + "</zoomStart>");
-        sb.append("<zoomStop>" + configuration.getZoomStop() + "</zoomStop>");
-        sb.append("</grid>");
-        sb.append("</entry>");
-        sb.append("</grids>");
+		sb.append("<wmsLayer><name>");
+		sb.append(namespace + ":" + layerName);
+		sb.append("</name>");
+		sb
+				.append("<mimeFormats><string>image/png</string><string>image/jpeg</string></mimeFormats>");
+		sb.append("<grids>");
+		sb.append("<entry>");
+		sb.append("<srs><number>" + srs + "</number></srs>");
+		sb.append("<grid>");
+		sb.append("<srs><number>" + srs + "</number></srs>");
+		sb.append("<dataBounds>");
+		sb.append("<coords>");
+		sb.append("<double>" + minX + "</double>");
+		sb.append("<double>" + minY + "</double>");
+		sb.append("<double>" + maxX + "</double>");
+		sb.append("<double>" + maxY + "</double>");
+		sb.append("</coords>");
+		sb.append("</dataBounds>");
+		sb.append("<gridBounds>");
+		sb.append("<coords>");
+		sb.append("<double>" + minX + "</double>");
+		sb.append("<double>" + minY + "</double>");
+		sb.append("<double>" + maxX + "</double>");
+		sb.append("<double>" + maxY + "</double>");
+		sb.append("</coords>");
+		sb.append("</gridBounds>");
+		sb
+				.append("<zoomStart>" + configuration.getZoomStart()
+						+ "</zoomStart>");
+		sb.append("<zoomStop>" + configuration.getZoomStop() + "</zoomStop>");
+		sb.append("</grid>");
+		sb.append("</entry>");
+		sb.append("</grids>");
 
-        sb.append("<wmsUrl>");
-        sb.append("<string>" + geoserverUrl + "wms" + "</string>");
-        sb.append("<string>" + geoserverUrl + "wms" + "</string>");
-        sb.append("</wmsUrl>");
-        sb.append("<wmsLayers>" + namespace + ":" + wmsLayerName + "</wmsLayers>");
-        sb.append("<wmsStyles></wmsStyles>");
-        sb.append("<metaWidthHeight>");
-        sb.append("<int>" + configuration.getMetaWidth() + "</int>");
-        sb.append("<int>" + configuration.getMetaHeight() + "</int>");
-        sb.append("</metaWidthHeight>");
-        sb.append("<gutter>" + configuration.getGutter() + "</gutter>");
-        sb.append("<tiled>" + configuration.getTiled() + "</tiled>");
-        sb.append("<transparent>" + configuration.getTransparent() + "</transparent>");
-        sb.append("<bgColor></bgColor>");
-        sb.append("<palette></palette>");
-        sb.append("<expireCache>" + configuration.getExpireCache() + "</expireCache>");
-        sb.append("<expireClients>" + configuration.getExpireClients() + "</expireClients>");
-        sb.append("</wmsLayer>");
+		sb.append("<wmsUrl>");
+		sb.append("<string>" + geoserverUrl + "wms" + "</string>");
+		sb.append("<string>" + geoserverUrl + "wms" + "</string>");
+		sb.append("</wmsUrl>");
+		sb.append("<wmsLayers>" + namespace + ":" + wmsLayerName
+				+ "</wmsLayers>");
+		sb.append("<wmsStyles></wmsStyles>");
+		sb.append("<metaWidthHeight>");
+		sb.append("<int>" + configuration.getMetaWidth() + "</int>");
+		sb.append("<int>" + configuration.getMetaHeight() + "</int>");
+		sb.append("</metaWidthHeight>");
+		sb.append("<gutter>" + configuration.getGutter() + "</gutter>");
+		sb.append("<tiled>" + configuration.getTiled() + "</tiled>");
+		sb.append("<transparent>" + configuration.getTransparent()
+				+ "</transparent>");
+		sb.append("<bgColor></bgColor>");
+		sb.append("<palette></palette>");
+		sb.append("<expireCache>" + configuration.getExpireCache()
+				+ "</expireCache>");
+		sb.append("<expireClients>" + configuration.getExpireClients()
+				+ "</expireClients>");
+		sb.append("</wmsLayer>");
 
-        return sb;
-    }
+		return sb;
+	}
 
-    private boolean sendLayerConfiguration(final StringBuilder buffer, final String gwcUrl,
-            final String gwcUser, final String gwcPassword, final String namespace, final String layerName) throws Exception {
+	private boolean sendLayerConfiguration(final StringBuilder buffer,
+			final String gwcUrl, final String gwcUser,
+			final String gwcPassword, final String namespace,
+			final String layerName) throws Exception {
 
-        boolean res = false;
+		boolean res = false;
 
-        try {
+		try {
 
-            final URL url = new URL(gwcUrl + namespace + ":" + layerName + ".xml");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setDoOutput(true);
-            con.setDoInput(true);
-            con.setRequestMethod("PUT");
-            con.setRequestProperty("Content-Type", "text/xml");
+			final URL url = new URL(gwcUrl + namespace + ":" + layerName
+					+ ".xml");
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setDoOutput(true);
+			con.setDoInput(true);
+			con.setRequestMethod("PUT");
+			con.setRequestProperty("Content-Type", "text/xml");
 
-            final String login = gwcUser;
-            final String password = gwcPassword;
+			final String login = gwcUser;
+			final String password = gwcPassword;
 
-            if ((login != null) && (login.trim().length() > 0)) {
-                Authenticator.setDefault(new Authenticator() {
+			if ((login != null) && (login.trim().length() > 0)) {
+				Authenticator.setDefault(new Authenticator() {
 
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(login, password.toCharArray());
-                    }
-                });
-            }
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(login, password
+								.toCharArray());
+					}
+				});
+			}
 
-            OutputStreamWriter outReq = new OutputStreamWriter(con.getOutputStream());
-            outReq.write(buffer.toString());
-            outReq.flush();
-            outReq.close();
+			OutputStreamWriter outReq = new OutputStreamWriter(con
+					.getOutputStream());
+			outReq.write(buffer.toString());
+			outReq.flush();
+			outReq.close();
 
-            final int responseCode = con.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                InputStreamReader is = new InputStreamReader(con.getInputStream());
-                String response = IOUtils.toString(is);
-                is.close();
-                LOGGER.info("HTTP OK: " + response);
-                res = true;
-            } else if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                InputStreamReader is = new InputStreamReader(con.getInputStream());
-                String response = IOUtils.toString(is);
-                is.close();
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, "HTTP CREATED: " + response);
-                } else {
-                    final String name = extractName(response);
-                    LOGGER.info("HTTP CREATED: " + name);
-                }
-                res = true;
-            } else {
-                LOGGER.info("HTTP ERROR: " + con.getResponseMessage());
-                res = false;
-            }
-        } catch (MalformedURLException e) {
-            LOGGER.info("HTTP ERROR: " + e.getLocalizedMessage());
-            res = false;
-        } catch (IOException e) {
-            LOGGER.info("HTTP ERROR: " + e.getLocalizedMessage());
-            res = false;
-        }
+			final int responseCode = con.getResponseCode();
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				InputStreamReader is = new InputStreamReader(con
+						.getInputStream());
+				String response = IOUtils.toString(is);
+				is.close();
+				LOGGER.info("HTTP OK: " + response);
+				res = true;
+			} else if (responseCode == HttpURLConnection.HTTP_CREATED) {
+				InputStreamReader is = new InputStreamReader(con
+						.getInputStream());
+				String response = IOUtils.toString(is);
+				is.close();
+				if (LOGGER.isLoggable(Level.FINE)) {
+					LOGGER.log(Level.FINE, "HTTP CREATED: " + response);
+				} else {
+					final String name = extractName(response);
+					LOGGER.info("HTTP CREATED: " + name);
+				}
+				res = true;
+			} else {
+				LOGGER.info("HTTP ERROR: " + con.getResponseMessage());
+				res = false;
+			}
+		} catch (MalformedURLException e) {
+			LOGGER.info("HTTP ERROR: " + e.getLocalizedMessage());
+			res = false;
+		} catch (IOException e) {
+			LOGGER.info("HTTP ERROR: " + e.getLocalizedMessage());
+			res = false;
+		}
 
-        return res;
-    }
+		return res;
+	}
 
-    private static String extractName(final String response) {
-        String name = "";
-        if (response != null && response.trim().length() > 0) {
-            final int indexOfNameStart = response.indexOf("<name>");
-            final int indexOfNameEnd = response.indexOf("</name>");
-            name = response.substring(indexOfNameStart + 6, indexOfNameEnd);
-        }
-        return name;
-    }
+	private static String extractName(final String response) {
+		String name = "";
+		if (response != null && response.trim().length() > 0) {
+			final int indexOfNameStart = response.indexOf("<name>");
+			final int indexOfNameEnd = response.indexOf("</name>");
+			name = response.substring(indexOfNameStart + 6, indexOfNameEnd);
+		}
+		return name;
+	}
 }
-
-
-
-
-

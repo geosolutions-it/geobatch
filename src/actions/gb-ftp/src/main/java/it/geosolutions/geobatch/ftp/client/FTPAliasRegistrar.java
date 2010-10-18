@@ -36,14 +36,17 @@ import java.util.logging.Level;
 public class FTPAliasRegistrar extends AliasRegistrar {
 
 	/**
-	 * A basic constructor to put the FTP Action Configuration alias in to registry.
+	 * A basic constructor to put the FTP Action Configuration alias in to
+	 * registry.
 	 * 
-	 * @param registry The alias registry.
+	 * @param registry
+	 *            The alias registry.
 	 */
-     public FTPAliasRegistrar(AliasRegistry registry) {    	 
-         if (LOGGER.isLoggable(Level.INFO))
-        	 LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-         
-           registry.putAlias("FTPActionConfiguration", FTPActionConfiguration.class);
-     }
- }
+	public FTPAliasRegistrar(AliasRegistry registry) {
+		if (LOGGER.isLoggable(Level.INFO))
+			LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+
+		registry.putAlias("FTPActionConfiguration",
+				FTPActionConfiguration.class);
+	}
+}

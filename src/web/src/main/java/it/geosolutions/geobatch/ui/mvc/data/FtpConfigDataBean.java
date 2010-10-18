@@ -22,7 +22,6 @@
 
 package it.geosolutions.geobatch.ui.mvc.data;
 
-
 /**
  * @author Alessio Fabiani
  * 
@@ -57,7 +56,8 @@ public class FtpConfigDataBean {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(int id) {
 		this.id = id;
@@ -71,7 +71,8 @@ public class FtpConfigDataBean {
 	}
 
 	/**
-	 * @param maxLogins the maxLogins to set
+	 * @param maxLogins
+	 *            the maxLogins to set
 	 */
 	public void setMaxLogins(int maxLogins) {
 		this.maxLogins = maxLogins;
@@ -85,7 +86,8 @@ public class FtpConfigDataBean {
 	}
 
 	/**
-	 * @param anonEnabled the anonEnabled to set
+	 * @param anonEnabled
+	 *            the anonEnabled to set
 	 */
 	public void setAnonEnabled(boolean anonEnabled) {
 		this.anonEnabled = anonEnabled;
@@ -99,7 +101,8 @@ public class FtpConfigDataBean {
 	}
 
 	/**
-	 * @param maxAnonLogins the maxAnonLogins to set
+	 * @param maxAnonLogins
+	 *            the maxAnonLogins to set
 	 */
 	public void setMaxAnonLogins(int maxAnonLogins) {
 		this.maxAnonLogins = maxAnonLogins;
@@ -113,7 +116,8 @@ public class FtpConfigDataBean {
 	}
 
 	/**
-	 * @param maxLoginFailures the maxLoginFailures to set
+	 * @param maxLoginFailures
+	 *            the maxLoginFailures to set
 	 */
 	public void setMaxLoginFailures(int maxLoginFailures) {
 		this.maxLoginFailures = maxLoginFailures;
@@ -127,7 +131,8 @@ public class FtpConfigDataBean {
 	}
 
 	/**
-	 * @param loginFailureDelay the loginFailureDelay to set
+	 * @param loginFailureDelay
+	 *            the loginFailureDelay to set
 	 */
 	public void setLoginFailureDelay(int loginFailureDelay) {
 		this.loginFailureDelay = loginFailureDelay;
@@ -141,7 +146,8 @@ public class FtpConfigDataBean {
 	}
 
 	/**
-	 * @param port the port to set
+	 * @param port
+	 *            the port to set
 	 */
 	public void setPort(int port) {
 		this.port = port;
@@ -155,7 +161,8 @@ public class FtpConfigDataBean {
 	}
 
 	/**
-	 * @param ssl the ssl to set
+	 * @param ssl
+	 *            the ssl to set
 	 */
 	public void setSsl(boolean ssl) {
 		this.ssl = ssl;
@@ -169,7 +176,8 @@ public class FtpConfigDataBean {
 	}
 
 	/**
-	 * @param autoStart the autoStart to set
+	 * @param autoStart
+	 *            the autoStart to set
 	 */
 	public void setAutoStart(boolean autoStart) {
 		this.autoStart = autoStart;
@@ -183,13 +191,16 @@ public class FtpConfigDataBean {
 	}
 
 	/**
-	 * @param ftpBaseDir the ftpBaseDir to set
+	 * @param ftpBaseDir
+	 *            the ftpBaseDir to set
 	 */
 	public void setFtpBaseDir(String ftpBaseDir) {
 		this.ftpBaseDir = ftpBaseDir;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -208,7 +219,9 @@ public class FtpConfigDataBean {
 		return builder.toString();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -229,7 +242,9 @@ public class FtpConfigDataBean {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

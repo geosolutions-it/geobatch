@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<GdalContour>
+    <a>elev</a>
+    <i>10.0</i>
+	<srcfile>G:\data\Lamma\test\dem.tiff</srcfile>
+	<dstfile>G:\data\Lamma\test\contour.shp</dstfile>
+</GdalContour>

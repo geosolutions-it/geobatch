@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.catalog.dao.file.xstream;
 
 import com.thoughtworks.xstream.XStream;
@@ -37,51 +35,57 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  * 
  * @author Simone Giannecchini, GeoSolutions SAS
- *
+ * 
  */
-public class XStreamCatalogDAO extends XStreamDAO<CatalogConfiguration> implements
-        CatalogConfigurationDAO {
-	
-	public final static Logger LOGGER= Logger.getLogger(XStreamCatalogDAO.class.toString());
+public class XStreamCatalogDAO extends XStreamDAO<CatalogConfiguration>
+		implements CatalogConfigurationDAO {
 
-    public XStreamCatalogDAO(String directory, Alias alias) {
-        super(directory, alias);
-    }
+	public final static Logger LOGGER = Logger
+			.getLogger(XStreamCatalogDAO.class.toString());
 
-    public CatalogConfiguration find(CatalogConfiguration exampleInstance, boolean lock)  throws IOException{
-        return find(exampleInstance.getId(), lock);
-    }
+	public XStreamCatalogDAO(String directory, Alias alias) {
+		super(directory, alias);
+	}
 
-    public CatalogConfiguration find(String id, boolean lock) throws IOException {
-    	InputStream inStream=null;
-        try {
-            final File entityfile = new File(getBaseDirectory(), id + ".xml");
-            if (entityfile.canRead() && !entityfile.isDirectory()) {
+	public CatalogConfiguration find(CatalogConfiguration exampleInstance,
+			boolean lock) throws IOException {
+		return find(exampleInstance.getId(), lock);
+	}
 
-            	inStream=new FileInputStream(entityfile);
-                XStream xstream = new XStream();
-                alias.setAliases(xstream);
-                FileBasedCatalogConfiguration obj = (FileBasedCatalogConfiguration) xstream.fromXML(inStream);
-                if (obj.getWorkingDirectory() == null)
-                    obj.setWorkingDirectory(getBaseDirectory());
-                if(LOGGER.isLoggable(Level.INFO))
-             	   LOGGER.info("XStreamCatalogDAO:: FOUND " + id + ">" + obj + "<");
-                return obj;
+	public CatalogConfiguration find(String id, boolean lock)
+			throws IOException {
+		InputStream inStream = null;
+		try {
+			final File entityfile = new File(getBaseDirectory(), id + ".xml");
+			if (entityfile.canRead() && !entityfile.isDirectory()) {
 
-            }
-        } catch (Throwable e) {
-        	final IOException ioe= new IOException("Unable to load flow config:"+id);
-        	ioe.initCause(e);
-        	throw ioe;
-        }
-        finally{
-        	if(inStream!=null)
-        		IOUtils.closeQuietly(inStream);
-        }        
-        return null;
-    }
+				inStream = new FileInputStream(entityfile);
+				XStream xstream = new XStream();
+				alias.setAliases(xstream);
+				FileBasedCatalogConfiguration obj = (FileBasedCatalogConfiguration) xstream
+						.fromXML(inStream);
+				if (obj.getWorkingDirectory() == null)
+					obj.setWorkingDirectory(getBaseDirectory());
+				if (LOGGER.isLoggable(Level.INFO))
+					LOGGER.info("XStreamCatalogDAO:: FOUND " + id + ">" + obj
+							+ "<");
+				return obj;
+
+			}
+		} catch (Throwable e) {
+			final IOException ioe = new IOException(
+					"Unable to load flow config:" + id);
+			ioe.initCause(e);
+			throw ioe;
+		} finally {
+			if (inStream != null)
+				IOUtils.closeQuietly(inStream);
+		}
+		return null;
+	}
 
 }

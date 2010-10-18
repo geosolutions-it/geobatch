@@ -26,16 +26,14 @@ import org.jdom.Element;
 /**
  * Parses fields of a layer got via a
  * {@link it.geosolutions.geobatch.geoserver.rest.GeoServerRESTReader}.
- *
+ * 
  * @author etj
  */
 public class GSRestLayerParser {
 	private final Element layerElem;
 
 	public enum TYPE {
-		VECTOR("VECTOR"),
-		RASTER("RASTER"),
-		UNKNOWN(null);
+		VECTOR("VECTOR"), RASTER("RASTER"), UNKNOWN(null);
 
 		private final String restName;
 
@@ -45,9 +43,9 @@ public class GSRestLayerParser {
 
 		public static TYPE get(String restName) {
 			for (TYPE type : values()) {
-				if(type == UNKNOWN)
+				if (type == UNKNOWN)
 					continue;
-				if(type.restName.equals(restName))
+				if (type.restName.equals(restName))
 					return type;
 			}
 			return UNKNOWN;
@@ -72,8 +70,8 @@ public class GSRestLayerParser {
 
 	public String getDefaultStyle() {
 		Element defaultStyle = layerElem.getChild("defaultStyle");
-		return defaultStyle == null? null : defaultStyle.getChildText("name");
-  	}
+		return defaultStyle == null ? null : defaultStyle.getChildText("name");
+	}
 
 	public String getTitle() {
 		Element resource = layerElem.getChild("resource");
@@ -115,12 +113,15 @@ public class GSRestLayerParser {
 	public double getMinX() {
 		return getLatLonEdge("minx");
 	}
+
 	public double getMaxX() {
 		return getLatLonEdge("maxx");
 	}
+
 	public double getMinY() {
 		return getLatLonEdge("miny");
 	}
+
 	public double getMaxY() {
 		return getLatLonEdge("maxy");
 	}

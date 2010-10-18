@@ -56,11 +56,12 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
  * 
  * @author AlFa
  * 
- * @version $ GeoTIFFFolderGeoServerConfigurator.java $ Revision: x.x $ 23/mar/07 11:42:25
+ * @version $ GeoTIFFFolderGeoServerConfigurator.java $ Revision: x.x $
+ *          23/mar/07 11:42:25
  */
-public class GeoTIFFFolderGeoServerConfigurator 
-        extends GeoServerConfiguratorAction<FileSystemMonitorEvent> {
-	
+public class GeoTIFFFolderGeoServerConfigurator extends
+		GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+
 	public final static String GEOSERVER_VERSION = "2.X";
 
 	protected GeoTIFFFolderGeoServerConfigurator(
@@ -68,17 +69,20 @@ public class GeoTIFFFolderGeoServerConfigurator
 		super(configuration);
 	}
 
-	public Queue<FileSystemMonitorEvent> execute ( Queue<FileSystemMonitorEvent> events) throws ActionException {
+	public Queue<FileSystemMonitorEvent> execute(
+			Queue<FileSystemMonitorEvent> events) throws ActionException {
 		if (LOGGER.isLoggable(Level.INFO))
 			LOGGER.info("Starting with processing...");
 
 		try {
 			// looking for file
 			if (events.size() == 0)
-				throw new IllegalArgumentException("Wrong number of elements for this action: " + events.size());
-			
+				throw new IllegalArgumentException(
+						"Wrong number of elements for this action: "
+								+ events.size());
+
 			Collection<FileSystemMonitorEvent> layers = new ArrayList<FileSystemMonitorEvent>();
-			
+
 			while (events.size() > 0) {
 				FileSystemMonitorEvent event = events.remove();
 				final String configId = configuration.getName();
@@ -95,18 +99,21 @@ public class GeoTIFFFolderGeoServerConfigurator
 				// Initializing input variables
 				//
 				// ////////////////////////////////////////////////////////////////////
-				final File workingDir = IOUtils.findLocation(
-                        configuration.getWorkingDirectory(),
-                        new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+				final File workingDir = IOUtils.findLocation(configuration
+						.getWorkingDirectory(), new File(
+						((FileBaseCatalog) CatalogHolder.getCatalog())
+								.getBaseDirectory()));
 
 				// ////////////////////////////////////////////////////////////////////
 				//
 				// Checking input files.
 				//
 				// ////////////////////////////////////////////////////////////////////
-				if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-					LOGGER.log(Level.SEVERE,
-							"GeoServerDataDirectory is null or does not exist.");
+				if ((workingDir == null) || !workingDir.exists()
+						|| !workingDir.isDirectory()) {
+					LOGGER
+							.log(Level.SEVERE,
+									"GeoServerDataDirectory is null or does not exist.");
 					throw new IllegalStateException(
 							"GeoServerDataDirectory is null or does not exist.");
 				}
@@ -114,24 +121,29 @@ public class GeoTIFFFolderGeoServerConfigurator
 				// ... BUSINESS LOGIC ... //
 				File inputDir = new File(event.getSource().getAbsolutePath());
 
-				if (inputDir == null || !inputDir.exists() || !inputDir.isDirectory()) {
-					LOGGER.log(Level.SEVERE, "Unexpected file '" + inputDir.getAbsolutePath() + "'");
-					throw new IllegalStateException("Unexpected file '" + inputDir.getAbsolutePath() + "'");
+				if (inputDir == null || !inputDir.exists()
+						|| !inputDir.isDirectory()) {
+					LOGGER.log(Level.SEVERE, "Unexpected file '"
+							+ inputDir.getAbsolutePath() + "'");
+					throw new IllegalStateException("Unexpected file '"
+							+ inputDir.getAbsolutePath() + "'");
 				}
 
 				FileWriter outFile = null;
 				PrintWriter out = null;
 
-				String[] fileNames = inputDir.list(new SuffixFileFilter(new String[]{".tif",".tiff"}));
-				
+				String[] fileNames = inputDir.list(new SuffixFileFilter(
+						new String[] { ".tif", ".tiff" }));
+
 				List<String> fileNameList = Arrays.asList(fileNames);
 				Collections.sort(fileNameList);
 				fileNames = fileNameList.toArray(new String[1]);
-				
+
 				if (fileNames != null && fileNames.length > 0) {
 					for (String fileName : fileNames) {
-						String coverageStoreId = FilenameUtils.getBaseName(fileName);
-							
+						String coverageStoreId = FilenameUtils
+								.getBaseName(fileName);
+
 						LOGGER.info("Coverage Store ID: " + coverageStoreId);
 						// ////////////////////////////////////////////////////////////////////
 						//
@@ -139,66 +151,80 @@ public class GeoTIFFFolderGeoServerConfigurator
 						//
 						// ////////////////////////////////////////////////////////////////////
 						Map<String, String> queryParams = new HashMap<String, String>();
-						queryParams.put("namespace", getConfiguration().getDefaultNamespace());
-						queryParams.put("wmspath", getConfiguration().getWmsPath());
-						final String[] layerResponse = GeoServerRESTHelper.sendCoverage(
-								inputDir,
-								new File(inputDir, fileName),
-								getConfiguration().getGeoserverURL(), 
-								getConfiguration().getGeoserverUID(),
-								getConfiguration().getGeoserverPWD(),
-								coverageStoreId,
-								coverageStoreId,
-								queryParams,
-								"",
-								getConfiguration().getDataTransferMethod(),
-								"geotiff",
-								GEOSERVER_VERSION,
-								getConfiguration().getStyles(),
-								getConfiguration().getDefaultStyle()
-						);
-						
+						queryParams.put("namespace", getConfiguration()
+								.getDefaultNamespace());
+						queryParams.put("wmspath", getConfiguration()
+								.getWmsPath());
+						final String[] layerResponse = GeoServerRESTHelper
+								.sendCoverage(inputDir, new File(inputDir,
+										fileName), getConfiguration()
+										.getGeoserverURL(), getConfiguration()
+										.getGeoserverUID(), getConfiguration()
+										.getGeoserverPWD(), coverageStoreId,
+										coverageStoreId, queryParams, "",
+										getConfiguration()
+												.getDataTransferMethod(),
+										"geotiff", GEOSERVER_VERSION,
+										getConfiguration().getStyles(),
+										getConfiguration().getDefaultStyle());
+
 						if (layerResponse != null && layerResponse.length > 2) {
 							String layer = layerResponse[0];
-							LOGGER.info("ImageMosaicConfigurator layer: " + layer);
-							
-							final File layerDescriptor = new File(inputDir, layer + ".layer");
-							
-							if(layerDescriptor.createNewFile()) {
+							LOGGER.info("ImageMosaicConfigurator layer: "
+									+ layer);
+
+							final File layerDescriptor = new File(inputDir,
+									layer + ".layer");
+
+							if (layerDescriptor.createNewFile()) {
 								try {
 									outFile = new FileWriter(layerDescriptor);
 									out = new PrintWriter(outFile);
-									
+
 									// Write text to file
-									out.println("namespace=" + layerResponse[1]);
+									out
+											.println("namespace="
+													+ layerResponse[1]);
 									out.println("storeid=" + layerResponse[2]);
 									out.println("layerid=" + layer);
 									out.println("driver=GeoTIFF");
-									out.println("path=" + File.separator + FilenameUtils.getName(new File(inputDir, fileName).getAbsolutePath()));
-								} catch (IOException e){
-									LOGGER.log(Level.SEVERE, "Error occurred while writing indexer.properties file!", e);
+									out.println("path="
+											+ File.separator
+											+ FilenameUtils.getName(new File(
+													inputDir, fileName)
+													.getAbsolutePath()));
+								} catch (IOException e) {
+									LOGGER
+											.log(
+													Level.SEVERE,
+													"Error occurred while writing indexer.properties file!",
+													e);
 								} finally {
 									if (out != null) {
 										out.flush();
 										out.close();
 									}
-									
+
 									outFile = null;
 									out = null;
 								}
-								
-								layers.add(new FileSystemMonitorEvent(layerDescriptor, FileSystemMonitorNotifications.FILE_ADDED));
+
+								layers
+										.add(new FileSystemMonitorEvent(
+												layerDescriptor,
+												FileSystemMonitorNotifications.FILE_ADDED));
 							}
 						}
 					}
 				}
 			}
-            
+
 			// ... setting up the appropriate event for the next action
 			events.addAll(layers);
 			return events;
 		} catch (Exception t) {
-			// LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // not logging since we are rethrowing
+			// LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // not
+			// logging since we are rethrowing
 			JAI.getDefaultInstance().getTileCache().flush();
 			throw new ActionException(this, t.getMessage(), t);
 		} finally {

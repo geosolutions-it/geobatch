@@ -9,7 +9,8 @@ import java.io.File;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public final class DummyMonitor implements FileSystemMonitorSPI, FileSystemMonitor {
+public final class DummyMonitor implements FileSystemMonitorSPI,
+		FileSystemMonitor {
 	public DummyMonitor() {
 	}
 
@@ -22,7 +23,6 @@ public final class DummyMonitor implements FileSystemMonitorSPI, FileSystemMonit
 	public void start() {
 		LOGGER.info("Dummy-ThreadedFileSystemMonitor Started ...");
 	}
-
 
 	public void stop() {
 		LOGGER.info("Dummy-ThreadedFileSystemMonitor Stopped ...");
@@ -43,8 +43,6 @@ public final class DummyMonitor implements FileSystemMonitorSPI, FileSystemMonit
 
 	public void dispose() {
 	}
-
-
 
 	public boolean canWatch(OsType osType) {
 		return true;
@@ -74,7 +72,6 @@ public final class DummyMonitor implements FileSystemMonitorSPI, FileSystemMonit
 
 	}
 
-
 	public File getFile() {
 		// TODO Auto-generated method stub
 		return null;
@@ -87,15 +84,13 @@ public final class DummyMonitor implements FileSystemMonitorSPI, FileSystemMonit
 
 	public void setFile(File file) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	public boolean isAvailable() {
 		// TODO Auto-generated method stub
 		return true;
 	}
-
 
 	public FileSystemMonitor createInstance(Map<String, ?> configuration) {
 		return new DummyMonitor();

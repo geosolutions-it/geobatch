@@ -55,7 +55,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 public class FTPUserFormController extends SimpleFormController {
 
 	private GeoBatchServer server;
-	
+
 	private UserFlowAccessDAO userFlowAccess;
 
 	/**
@@ -67,7 +67,8 @@ public class FTPUserFormController extends SimpleFormController {
 	}
 
 	/**
-	 * @param userFlowAccess the userFlowAccess to set
+	 * @param userFlowAccess
+	 *            the userFlowAccess to set
 	 */
 	public void setUserFlowAccess(UserFlowAccessDAO userFlowAccess) {
 		this.userFlowAccess = userFlowAccess;
@@ -84,25 +85,29 @@ public class FTPUserFormController extends SimpleFormController {
 	protected Object formBackingObject(HttpServletRequest request)
 			throws Exception {
 		FtpUserDataBean backingObject = new FtpUserDataBean();
-		
+
 		final String userId = request.getParameter("userId");
 		if (userId != null && userId.length() > 0) {
-			FtpUser user = (FtpUser) server.getUserManager().getUserById(Long.parseLong(userId));
+			FtpUser user = (FtpUser) server.getUserManager().getUserById(
+					Long.parseLong(userId));
 			if (user != null) {
 				backingObject.setUserId(Long.parseLong(userId));
 				backingObject.setUserName(user.getName());
 				backingObject.setPassword(user.getPassword());
 				backingObject.setRepeatPassword(user.getPassword());
 				backingObject.setWritePermission(user.isWritePermission());
-				backingObject.setUploadRate(String.valueOf(user.getUploadRate()));
-				backingObject.setDownloadRate(String.valueOf(user.getDownloadRate()));
+				backingObject.setUploadRate(String
+						.valueOf(user.getUploadRate()));
+				backingObject.setDownloadRate(String.valueOf(user
+						.getDownloadRate()));
 				backingObject.setIdleTime(user.getMaxIdleTime());
 				backingObject.setMaxLoginNumber(user.getMaxLoginNumber());
 				backingObject.setMaxLoginPerIp(user.getMaxLoginPerIp());
-				backingObject.setAllowedFlowManagers(userFlowAccess.findFlows(Long.parseLong(userId)));
+				backingObject.setAllowedFlowManagers(userFlowAccess
+						.findFlows(Long.parseLong(userId)));
 			}
 		}
-		
+
 		List<GBUserRole> availableRoles = new ArrayList<GBUserRole>();
 		availableRoles.add(GBUserRole.ROLE_ADMIN);
 		availableRoles.add(GBUserRole.ROLE_POWERUSER);
@@ -110,7 +115,8 @@ public class FTPUserFormController extends SimpleFormController {
 		backingObject.setAvailableRoles(availableRoles);
 
 		Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
-		backingObject.setAvailableFlowManagers(catalog.getFlowManagers(FileBasedFlowManager.class));
+		backingObject.setAvailableFlowManagers(catalog
+				.getFlowManagers(FileBasedFlowManager.class));
 
 		// this.setValidator(new FtpUserFormValidator(getApplicationContext()));
 		return backingObject;
@@ -132,14 +138,17 @@ public class FTPUserFormController extends SimpleFormController {
 		logger.debug(givenData.toString());
 
 		FtpUser user = null;
-		
-		if (givenData.getUserId() == null || !server.getUserManager().doesExist(givenData.getUserId())) {
-			user = FtpUser.createInstance(); 
-			user.setHomeDirectory(givenData.getUserName().toLowerCase().trim().replaceAll(" ", "_"));
+
+		if (givenData.getUserId() == null
+				|| !server.getUserManager().doesExist(givenData.getUserId())) {
+			user = FtpUser.createInstance();
+			user.setHomeDirectory(givenData.getUserName().toLowerCase().trim()
+					.replaceAll(" ", "_"));
 		} else {
-			user = (FtpUser) server.getUserManager().getUserById(givenData.getUserId());
+			user = (FtpUser) server.getUserManager().getUserById(
+					givenData.getUserId());
 		}
-		
+
 		user.setName(givenData.getUserName());
 		user.setPassword(givenData.getPassword());
 		user.setRole(givenData.getRole());
@@ -147,35 +156,36 @@ public class FTPUserFormController extends SimpleFormController {
 		user.setMaxIdleTime(givenData.getIdleTime());
 		user.setMaxLoginNumber(givenData.getMaxLoginNumber());
 		user.setMaxLoginPerIp(givenData.getMaxLoginPerIp());
-		
+
 		if (!givenData.getUploadRate().equals(""))
 			user.setUploadRate(Integer.parseInt(givenData.getUploadRate()));
 		if (!givenData.getDownloadRate().equals(""))
 			user.setDownloadRate(Integer.parseInt(givenData.getDownloadRate()));
 
-        server.getUserManager().save(user);
+		server.getUserManager().save(user);
 
-        if (givenData.getAllowedFlowManagers() != null) {
-        	userFlowAccess.remove(user.getId());
-        	for (String flowId : givenData.getAllowedFlowManagers()) {
-        		userFlowAccess.add(user.getId(), flowId);
-        	}
-        }
+		if (givenData.getAllowedFlowManagers() != null) {
+			userFlowAccess.remove(user.getId());
+			for (String flowId : givenData.getAllowedFlowManagers()) {
+				userFlowAccess.add(user.getId(), flowId);
+			}
+		}
 
-        ModelAndView mav = new ModelAndView(getSuccessView());
-        List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
+		ModelAndView mav = new ModelAndView(getSuccessView());
+		List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
 		mav.addObject("ftpUsers", ftpUsers);
 		mav.addObject("ftpServer", server);
 		mav.addObject("ftpConfig", server.getLastConfig());
 
-        // add statistics
-        FtpStatistics stats = null;
-   		final FtpServer ftp = server.getFtpServer();
-		if(ftp instanceof DefaultFtpServer) {
-			//get the context and check if the context is of the right type
-			final FtpServerContext context = ((DefaultFtpServer)ftp).getServerContext();
-			if(context instanceof DefaultFtpServerContext)
-				stats = ((DefaultFtpServerContext)context).getFtpStatistics();
+		// add statistics
+		FtpStatistics stats = null;
+		final FtpServer ftp = server.getFtpServer();
+		if (ftp instanceof DefaultFtpServer) {
+			// get the context and check if the context is of the right type
+			final FtpServerContext context = ((DefaultFtpServer) ftp)
+					.getServerContext();
+			if (context instanceof DefaultFtpServerContext)
+				stats = ((DefaultFtpServerContext) context).getFtpStatistics();
 		}
 		mav.addObject("ftpStats", stats);
 		logger.debug("Form data successfully submitted");
@@ -199,47 +209,63 @@ public class FTPUserFormController extends SimpleFormController {
 			errors.reject("error.nullpointer", "Null data received");
 		} else {
 			/* VALIDATE ALL FIELDS */
-			if ((givenData.getUserName() == null) || (givenData.getUserName().trim().length() <= 0)) {
-				errors.rejectValue("userName", "error.code", "Ftp User Name is mandatory.");
+			if ((givenData.getUserName() == null)
+					|| (givenData.getUserName().trim().length() <= 0)) {
+				errors.rejectValue("userName", "error.code",
+						"Ftp User Name is mandatory.");
 			}
 
-			if ((givenData.getPassword() == null) || (givenData.getPassword().trim().length() <= 0)) {
-				errors.rejectValue("password", "error.code", "Ftp User Password is mandatory.");
+			if ((givenData.getPassword() == null)
+					|| (givenData.getPassword().trim().length() <= 0)) {
+				errors.rejectValue("password", "error.code",
+						"Ftp User Password is mandatory.");
 			}
 
-			if ((givenData.getRepeatPassword() == null) || (givenData.getRepeatPassword().trim().length() <= 0)) {
-				errors.rejectValue("repeatPassword", "error.code", "Ftp User Repeat Password is mandatory.");
+			if ((givenData.getRepeatPassword() == null)
+					|| (givenData.getRepeatPassword().trim().length() <= 0)) {
+				errors.rejectValue("repeatPassword", "error.code",
+						"Ftp User Repeat Password is mandatory.");
 			}
 
-			if ((!givenData.getPassword().equals("")) && (!givenData.getRepeatPassword().equals(""))) {
-				if (!givenData.getPassword().equals(givenData.getRepeatPassword())) {
-					errors.rejectValue("password", "error.code", "The password must be the same.");
+			if ((!givenData.getPassword().equals(""))
+					&& (!givenData.getRepeatPassword().equals(""))) {
+				if (!givenData.getPassword().equals(
+						givenData.getRepeatPassword())) {
+					errors.rejectValue("password", "error.code",
+							"The password must be the same.");
 				}
 
 			}
 
 			if (request.getParameter("writePermission") == null)
 				givenData.setWritePermission(false);
-			
+
 			if (!givenData.getDownloadRate().equals("")) {
 				try {
-					int downloadRate = Integer.parseInt(givenData.getDownloadRate());
+					int downloadRate = Integer.parseInt(givenData
+							.getDownloadRate());
 					if (downloadRate < 0) {
-						errors.rejectValue("downloadRate", "error.code", "Ftp User Download Rate must be greater than 0.");
+						errors
+								.rejectValue("downloadRate", "error.code",
+										"Ftp User Download Rate must be greater than 0.");
 					}
 				} catch (NumberFormatException e) {
-					errors.rejectValue("downloadRate", "error.code", "Ftp User Download Rate must be an integer.");
+					errors.rejectValue("downloadRate", "error.code",
+							"Ftp User Download Rate must be an integer.");
 				}
 			}
 
 			if (!givenData.getUploadRate().equals("")) {
 				try {
-					int uploadRate = Integer.parseInt(givenData.getUploadRate());
+					int uploadRate = Integer
+							.parseInt(givenData.getUploadRate());
 					if (uploadRate < 0) {
-						errors.rejectValue("uploadRate", "error.code", "Ftp User Upload Rate must be greater than 0.");
+						errors.rejectValue("uploadRate", "error.code",
+								"Ftp User Upload Rate must be greater than 0.");
 					}
 				} catch (NumberFormatException e) {
-					errors.rejectValue("uploadRate", "error.code", "Ftp User Upload Rate must be an integer.");
+					errors.rejectValue("uploadRate", "error.code",
+							"Ftp User Upload Rate must be an integer.");
 				}
 			}
 		}

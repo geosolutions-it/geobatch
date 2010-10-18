@@ -20,7 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 package it.geosolutions.geobatch.ftp.client.download;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
@@ -32,50 +31,51 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  * This class manage the download service running the FTP download action.
  * 
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  * 
  */
-public class FTPDownloadActionService
-        extends BaseService implements ActionService<FileSystemMonitorEvent, FTPActionConfiguration> {
+public class FTPDownloadActionService extends BaseService implements
+		ActionService<FileSystemMonitorEvent, FTPActionConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(FTPDownloadActionService.class
-            .toString());
-    
-    /**
-     * The FTPDownloadActionService default constructor.
-     */
-    public FTPDownloadActionService() {
-        super(true);
-    }
+	private final static Logger LOGGER = Logger
+			.getLogger(FTPDownloadActionService.class.toString());
 
-    /**
-     * Method to verify if the action creation is available.
-     * 
-     * @param configuration The FTP action configuration.
-     * @return boolean
-     */
-    public boolean canCreateAction(FTPActionConfiguration configuration) {
-        return true;
-    }
+	/**
+	 * The FTPDownloadActionService default constructor.
+	 */
+	public FTPDownloadActionService() {
+		super(true);
+	}
 
-    /**
-     * Method to create a download action using the FTP action configuration.
-     * 
-     * @param configuration The FTP action configuration.
-     * @return The FTPDownloadAction
-     */
+	/**
+	 * Method to verify if the action creation is available.
+	 * 
+	 * @param configuration
+	 *            The FTP action configuration.
+	 * @return boolean
+	 */
+	public boolean canCreateAction(FTPActionConfiguration configuration) {
+		return true;
+	}
+
+	/**
+	 * Method to create a download action using the FTP action configuration.
+	 * 
+	 * @param configuration
+	 *            The FTP action configuration.
+	 * @return The FTPDownloadAction
+	 */
 	public FTPDownloadAction createAction(FTPActionConfiguration configuration) {
 		try {
 			return new FTPDownloadAction(configuration);
 		} catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			if (LOGGER.isLoggable(Level.SEVERE))
+				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 		}
-		
+
 		return null;
 	}
 }

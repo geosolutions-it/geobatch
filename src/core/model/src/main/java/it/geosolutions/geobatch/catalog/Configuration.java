@@ -23,19 +23,19 @@ package it.geosolutions.geobatch.catalog;
 
 public interface Configuration extends Identifiable {
 
-    public boolean isDirty();
+	public boolean isDirty();
 
-    public void setDirty(boolean dirty);
+	public void setDirty(boolean dirty);
 
-    /**
-     * @return the serviceID
-     */
-    public String getServiceID();
+	/**
+	 * @return the serviceID
+	 */
+	public String getServiceID();
 
-    /**
-     * @param serviceID
-     *            the serviceID to set
-     */
-    public void setServiceID(String serviceID);
+	/**
+	 * @param serviceID
+	 *            the serviceID to set
+	 */
+	public void setServiceID(String serviceID);
 
 }

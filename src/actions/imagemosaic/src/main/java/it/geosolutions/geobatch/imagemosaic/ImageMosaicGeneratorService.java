@@ -28,34 +28,38 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Public class to generate JGSFLoDeSS Services 
+ * Public class to generate JGSFLoDeSS Services
  * 
  */
-public class ImageMosaicGeneratorService extends
+public class ImageMosaicGeneratorService
+		extends
 		ImageMosaicConfiguratorService<FileSystemMonitorEvent, ImageMosaicActionConfiguration> {
-	
-    private final static Logger LOGGER = Logger.getLogger(ImageMosaicGeneratorService.class.toString());
 
-    /**
-     *  Action creator
-     * 
-     *  @param configuration The data base action configuration 
-     *  @return new JGSFLoDeSSSWANFileConfigurator()
-     */
-    public ImageMosaicConfigurator createAction(ImageMosaicActionConfiguration configuration) {
-        try {
-            return new ImageMosaicConfigurator(configuration);
-        } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-            return null;
-        }
-    }
+	private final static Logger LOGGER = Logger
+			.getLogger(ImageMosaicGeneratorService.class.toString());
 
-    @Override
-    public boolean canCreateAction(ImageMosaicActionConfiguration configuration) {
-        final boolean superRetVal = super.canCreateAction(configuration);
-        return superRetVal;
-    }
+	/**
+	 * Action creator
+	 * 
+	 * @param configuration
+	 *            The data base action configuration
+	 * @return new JGSFLoDeSSSWANFileConfigurator()
+	 */
+	public ImageMosaicConfigurator createAction(
+			ImageMosaicActionConfiguration configuration) {
+		try {
+			return new ImageMosaicConfigurator(configuration);
+		} catch (IOException e) {
+			if (LOGGER.isLoggable(Level.INFO))
+				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+			return null;
+		}
+	}
+
+	@Override
+	public boolean canCreateAction(ImageMosaicActionConfiguration configuration) {
+		final boolean superRetVal = super.canCreateAction(configuration);
+		return superRetVal;
+	}
 
 }

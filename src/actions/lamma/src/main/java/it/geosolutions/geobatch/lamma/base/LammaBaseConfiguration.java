@@ -7,10 +7,11 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-public abstract class LammaBaseConfiguration extends ActionConfiguration implements Configuration {
+public abstract class LammaBaseConfiguration extends ActionConfiguration
+		implements Configuration {
 
 	private String baseOutputDir;
-	
+
 	private String lammaServiceURL;
 
 	public LammaBaseConfiguration() {
@@ -23,7 +24,8 @@ public abstract class LammaBaseConfiguration extends ActionConfiguration impleme
 	}
 
 	/**
-	 * @param baseOutputDir the baseOutputDir to set
+	 * @param baseOutputDir
+	 *            the baseOutputDir to set
 	 */
 	public void setBaseOutputDir(String baseOutputDir) {
 		this.baseOutputDir = baseOutputDir;
@@ -37,30 +39,32 @@ public abstract class LammaBaseConfiguration extends ActionConfiguration impleme
 	}
 
 	@Override
-	public LammaBaseConfiguration clone() { // throws CloneNotSupportedException {
+	public LammaBaseConfiguration clone() { // throws CloneNotSupportedException
+											// {
 		try {
 			return (LammaBaseConfiguration) BeanUtils.cloneBean(this);
 		} catch (IllegalAccessException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InstantiationException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InvocationTargetException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (NoSuchMethodException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		}
 	}
 
 	/**
-	 * @param lammaServiceURL the lammaServiceURL to set
+	 * @param lammaServiceURL
+	 *            the lammaServiceURL to set
 	 */
 	public void setLammaServiceURL(String lammaServiceURL) {
 		this.lammaServiceURL = lammaServiceURL;

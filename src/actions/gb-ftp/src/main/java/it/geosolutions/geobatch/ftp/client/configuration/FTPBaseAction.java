@@ -30,46 +30,47 @@ import java.io.IOException;
 import java.util.EventObject;
 import java.util.logging.Logger;
 
-
 /**
  * This class represent a basic FTP action.
  * 
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  */
-public abstract class FTPBaseAction <T extends EventObject> 
-	extends BaseAction<T>
-	implements Action<T> {
-	
-    /**
-     * Default logger
-     */
-    protected final static Logger LOGGER = Logger.getLogger(FTPBaseAction.class.toString());
+public abstract class FTPBaseAction<T extends EventObject> extends
+		BaseAction<T> implements Action<T> {
 
-    protected final FTPActionConfiguration configuration;
+	/**
+	 * Default logger
+	 */
+	protected final static Logger LOGGER = Logger.getLogger(FTPBaseAction.class
+			.toString());
 
-    /**
-     * Constructs a producer. The operation name will be the same than the parameter descriptor
-     * name.
-     * 
-     * @param descriptor The parameters descriptor.
-     * @throws IOException
-     */
-    public FTPBaseAction(FTPActionConfiguration configuration) throws IOException {
+	protected final FTPActionConfiguration configuration;
+
+	/**
+	 * Constructs a producer. The operation name will be the same than the
+	 * parameter descriptor name.
+	 * 
+	 * @param descriptor
+	 *            The parameters descriptor.
+	 * @throws IOException
+	 */
+	public FTPBaseAction(FTPActionConfiguration configuration)
+			throws IOException {
 		super(configuration);
-//        try {
-			this.configuration = configuration.clone();
-//		} catch (CloneNotSupportedException e) {
-//			final IOException ioe = new IOException();
-//			ioe.initCause(e);
-//			throw ioe;
-//		} 
-    }
+		// try {
+		this.configuration = configuration.clone();
+		// } catch (CloneNotSupportedException e) {
+		// final IOException ioe = new IOException();
+		// ioe.initCause(e);
+		// throw ioe;
+		// }
+	}
 
-    /**
-     * @return The configuration of the action.
-     */
-    public ActionConfiguration getConfiguration() {
-        return configuration;
-    }
+	/**
+	 * @return The configuration of the action.
+	 */
+	public ActionConfiguration getConfiguration() {
+		return configuration;
+	}
 
 }

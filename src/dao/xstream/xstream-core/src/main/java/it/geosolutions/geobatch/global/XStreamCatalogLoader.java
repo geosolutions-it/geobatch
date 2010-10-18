@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.global;
 
 import it.geosolutions.geobatch.catalog.Catalog;
@@ -56,184 +54,195 @@ import org.springframework.web.context.WebApplicationContext;
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public class XStreamCatalogLoader extends CatalogHolder implements ApplicationContextAware {
+public class XStreamCatalogLoader extends CatalogHolder implements
+		ApplicationContextAware {
 
+	private static final Logger LOGGER = Logger
+			.getLogger(XStreamCatalogLoader.class.toString());
 
-	private static final Logger LOGGER = Logger.getLogger(XStreamCatalogLoader.class.toString());
-	
-    private final Alias alias;
+	private final Alias alias;
 
-    public void setDataDir(File dataDir) {
+	public void setDataDir(File dataDir) {
 		this.dataDir = dataDir;
 	}
 
+	// enforcing singleton
+	private XStreamCatalogLoader(Catalog catalog, Alias alias) {
+		CatalogHolder.setCatalog(catalog);
+		this.alias = alias;
+	}
 
-    // enforcing singleton
-    private XStreamCatalogLoader(Catalog catalog, Alias alias) {
-        CatalogHolder.setCatalog(catalog);
-        this.alias = alias;
-    }
+	ApplicationContext context;
 
-    ApplicationContext context;
+	/**
+	 * GeoBatch data dir. This directory is used by the GeoBatch to store Flows
+	 * configuration files.
+	 */
+	private File dataDir;
 
-    /**
-     * GeoBatch data dir. This directory is used by the GeoBatch to store Flows
-     * configuration files.
-     */
-    private File dataDir;
+	public void setApplicationContext(ApplicationContext context)
+			throws BeansException {
+		this.context = context;
 
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
-        this.context = context;
+	}
 
-    }
+	@SuppressWarnings("unchecked")
+	public void init() throws Exception {
+		// see if exists a system property...
 
-    @SuppressWarnings("unchecked")
-    public void init() throws Exception {
-        // see if exists a system property...
+		// //
+		//
+		// We might have introduced the data dir via env var
+		//
+		// //
+		try {
 
-        // //
-        //
-        // We might have introduced the data dir via env var
-        //
-        // //
-        try {
+			if (dataDir == null) {
+				// its defined!!
+				String prop = System.getProperty("GEOBATCH_DATA_DIR");
+				if (prop != null)
+					dataDir = new File(prop);
+				else {
+					prop = System.getenv("GEOBATCH_DATA_DIR");
+					if (prop != null)
+						dataDir = new File(prop);
+					else {
+						if (this.context instanceof WebApplicationContext) {
+							final WebApplicationContext wContext = (WebApplicationContext) context;
+							final ServletContext servletContext = wContext
+									.getServletContext();
+							String rootDir = servletContext
+									.getInitParameter("GEOBATCH_DATA_DIR");
+							if (rootDir != null)
+								dataDir = new File(rootDir);
+							else {
+								rootDir = ((WebApplicationContext) context)
+										.getServletContext().getRealPath(
+												"/WEB-INF/data");
+								if (rootDir != null)
+									dataDir = new File(rootDir);
+							}
+						} else
+							dataDir = new File("./data");
+					}
+				}
 
-            if (dataDir == null) {
-                // its defined!!
-                String prop = System.getProperty("GEOBATCH_DATA_DIR");
-                if (prop != null)
-                    dataDir = new File(prop);
-                else {
-                    prop = System.getenv("GEOBATCH_DATA_DIR");
-                    if (prop != null)
-                        dataDir = new File(prop);
-                    else {
-                        if (this.context instanceof WebApplicationContext) {
-                        	final WebApplicationContext wContext=(WebApplicationContext) context;
-                        	final ServletContext servletContext = wContext.getServletContext();
-                            String rootDir = servletContext.getInitParameter("GEOBATCH_DATA_DIR");
-		                    if (rootDir != null)
-		                        dataDir = new File(rootDir);     
-		                    else {
-	                            rootDir = ((WebApplicationContext) context).getServletContext().getRealPath("/WEB-INF/data");
-	                            if (rootDir != null)
-	                                dataDir = new File(rootDir);
-		                    }
-                        } else
-                            dataDir = new File("./data");
-                    }
-                }
+			}
 
-            }
+		} catch (SecurityException e) {
+			// gobble exception
+			if (LOGGER.isLoggable(Level.INFO))
+				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+		}
 
-        } catch (SecurityException e) {
-            // gobble exception
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-        }
+		if (dataDir == null)
+			throw new NullPointerException(
+					"Could not initialize Data Directory: The provided path is null.");
 
-        if (dataDir == null) 
-            throw new NullPointerException("Could not initialize Data Directory: The provided path is null.");
-        
-        if (!dataDir.exists()) 
-            throw new IllegalStateException("Could not initialize Data Directory: The provided path does not exists ("+dataDir+").");
-        
-        if ( !dataDir.isDirectory() || !dataDir.canRead())
-            throw new IllegalStateException("Could not initialize Data Directory: The provided path is not a readable directory ("+dataDir+")");
+		if (!dataDir.exists())
+			throw new IllegalStateException(
+					"Could not initialize Data Directory: The provided path does not exists ("
+							+ dataDir + ").");
 
+		if (!dataDir.isDirectory() || !dataDir.canRead())
+			throw new IllegalStateException(
+					"Could not initialize Data Directory: The provided path is not a readable directory ("
+							+ dataDir + ")");
 
-        ((FileBaseCatalog) CatalogHolder.getCatalog()).setBaseDirectory(dataDir.getAbsolutePath());
-        System.out.println("----------------------------------");
-        System.out.println("- GEOBATCH_DATA_DIR: " + dataDir.getAbsolutePath());
-        System.out.println("----------------------------------");
-        
+		((FileBaseCatalog) CatalogHolder.getCatalog()).setBaseDirectory(dataDir
+				.getAbsolutePath());
+		System.out.println("----------------------------------");
+		System.out.println("- GEOBATCH_DATA_DIR: " + dataDir.getAbsolutePath());
+		System.out.println("----------------------------------");
 
+		// //
+		//
+		// force loading all alias registerers
+		//
+		// //
+		context.getBeansOfType(AliasRegistrar.class);
 
-        // //
-        //
-        // force loading all alias registerers
-        //
-        // //
-        context.getBeansOfType(AliasRegistrar.class);
+		// //
+		//
+		// Now get the catalog we have been injected
+		//
+		// //
+		final Catalog catalog = getCatalog();
+		final FileBasedCatalogConfiguration configuration = new FileBasedCatalogConfiguration();
+		configuration.setId(catalog.getId());
+		catalog.setConfiguration(configuration);
+		catalog.setDAO(new XStreamCatalogDAO(dataDir.getAbsolutePath(), alias));
+		catalog.load();
 
-        // //
-        //
-        // Now get the catalog we have been injected
-        //
-        // //
-        final Catalog catalog = getCatalog();
-        final FileBasedCatalogConfiguration configuration = new FileBasedCatalogConfiguration();
-        configuration.setId(catalog.getId());
-        catalog.setConfiguration(configuration);
-        catalog.setDAO(new XStreamCatalogDAO(dataDir.getAbsolutePath(), alias));
-        catalog.load();
+		// //
+		//
+		// Force loading all all services
+		//
+		// //
+		final Map<String, ? extends Service> services = context
+				.getBeansOfType(Service.class);
+		for (Entry<String, ? extends Service> servicePair : services.entrySet()) {
+			final Service service = servicePair.getValue();
+			if (!service.isAvailable()) {
+				if (LOGGER.isLoggable(Level.INFO))
+					LOGGER.info(new StringBuilder("Skipping service ").append(
+							servicePair.getKey()).append(
+							service.getClass().toString()).toString());
+				continue;
+			}
+			if (LOGGER.isLoggable(Level.INFO))
+				LOGGER.info(new StringBuilder("Loading service ").append(
+						servicePair.getKey()).append(
+						service.getClass().toString()).toString());
+			catalog.add(servicePair.getValue());
+		}
 
-        // //
-        //
-        // Force loading all all services
-        //
-        // //
-        final Map<String, ? extends Service> services = context.getBeansOfType(Service.class);
-        for (Entry<String, ? extends Service> servicePair : services.entrySet()) {
-            final Service service = servicePair.getValue();
-            if (!service.isAvailable()) {
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info(new StringBuilder("Skipping service ").append(servicePair.getKey())
-                            .append(service.getClass().toString()).toString());
-                continue;
-            }
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.info(new StringBuilder("Loading service ").append(servicePair.getKey())
-                        .append(service.getClass().toString()).toString());
-            catalog.add(servicePair.getValue());
-        }
-        
-        // //
-        //
-        // load all flows
-        //
-        // //
-        final Iterator<File> it = FileUtils.iterateFiles(dataDir, new String[] { "xml" }, false);
-        while (it.hasNext()) {
-            final File o = it.next();
+		// //
+		//
+		// load all flows
+		//
+		// //
+		final Iterator<File> it = FileUtils.iterateFiles(dataDir,
+				new String[] { "xml" }, false);
+		while (it.hasNext()) {
+			final File o = it.next();
 
-            // skip catalog config file
-            if (o.getName().equalsIgnoreCase(catalog.getId() + ".xml"))
-                continue;
+			// skip catalog config file
+			if (o.getName().equalsIgnoreCase(catalog.getId() + ".xml"))
+				continue;
 
-            try {
-            	
+			try {
 
-                // loaded
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info(new StringBuilder("Loading flow from file ").append(
-                            o.getAbsolutePath()).toString());
-                
-                // try to load the flow and add it to the catalog
-                final FileBasedFlowManager flow = new FileBasedFlowManager();
-                flow.setId(FilenameUtils.getBaseName(o.getName()));
-                flow.setDAO(new XStreamFlowConfigurationDAO(dataDir.getAbsolutePath(), alias));
-                flow.load();
+				// loaded
+				if (LOGGER.isLoggable(Level.INFO))
+					LOGGER.info(new StringBuilder("Loading flow from file ")
+							.append(o.getAbsolutePath()).toString());
 
+				// try to load the flow and add it to the catalog
+				final FileBasedFlowManager flow = new FileBasedFlowManager();
+				flow.setId(FilenameUtils.getBaseName(o.getName()));
+				flow.setDAO(new XStreamFlowConfigurationDAO(dataDir
+						.getAbsolutePath(), alias));
+				flow.load();
 
-                // add to the catalog
-                catalog.add(flow);
+				// add to the catalog
+				catalog.add(flow);
 
-                // loaded
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info(new StringBuilder("Loaded flow from file ").append(
-                            o.getAbsolutePath()).toString());
-            } catch (Throwable t) {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING, "Skipping flow", t);
-            }
+				// loaded
+				if (LOGGER.isLoggable(Level.INFO))
+					LOGGER.info(new StringBuilder("Loaded flow from file ")
+							.append(o.getAbsolutePath()).toString());
+			} catch (Throwable t) {
+				if (LOGGER.isLoggable(Level.WARNING))
+					LOGGER.log(Level.WARNING, "Skipping flow", t);
+			}
 
-        }
+		}
 
-    }
+	}
 
-    public File getDataDir() {
-        return dataDir;
-    }
+	public File getDataDir() {
+		return dataDir;
+	}
 
 }

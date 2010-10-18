@@ -27,26 +27,27 @@ import java.util.Date;
 
 /**
  * Comments here ...
- *
+ * 
  * @author Alessio Fabiani, GeoSolutions S.A.S.
- *
+ * 
  */
 public class WgribRecordDescriptor {
-	
+
 	private Long rId;
-	
+
 	private Date baseTime;
-	
+
 	private String paramId;
 
 	private String paramDescription;
 
 	private String level;
-	
+
 	private String forecastTime;
 
 	/**
-	 * @param rId the rId to set
+	 * @param rId
+	 *            the rId to set
 	 */
 	public void setrId(Long rId) {
 		this.rId = rId;
@@ -60,7 +61,8 @@ public class WgribRecordDescriptor {
 	}
 
 	/**
-	 * @param baseTime the baseTime to set
+	 * @param baseTime
+	 *            the baseTime to set
 	 */
 	public void setBaseTime(Date baseTime) {
 		this.baseTime = baseTime;
@@ -74,7 +76,8 @@ public class WgribRecordDescriptor {
 	}
 
 	/**
-	 * @param paramId the paramId to set
+	 * @param paramId
+	 *            the paramId to set
 	 */
 	public void setParamId(String paramId) {
 		this.paramId = paramId;
@@ -88,7 +91,8 @@ public class WgribRecordDescriptor {
 	}
 
 	/**
-	 * @param paramDescription the paramDescription to set
+	 * @param paramDescription
+	 *            the paramDescription to set
 	 */
 	public void setParamDescription(String paramDescription) {
 		this.paramDescription = paramDescription;
@@ -102,7 +106,8 @@ public class WgribRecordDescriptor {
 	}
 
 	/**
-	 * @param level the level to set
+	 * @param level
+	 *            the level to set
 	 */
 	public void setLevel(String level) {
 		this.level = level;
@@ -114,13 +119,14 @@ public class WgribRecordDescriptor {
 	public String getLevel() {
 		String elevationNumber = null;
 		String[] parts = level.split(" ");
-		
+
 		DecimalFormatSymbols ds = new DecimalFormatSymbols();
 		ds.setDecimalSeparator('.');
 		DecimalFormat df = new DecimalFormat("0000.000", ds);
-		
+
 		if (parts[0].indexOf("-") > 0) {
-			elevationNumber = df.format(Double.parseDouble(parts[0].split("-")[0]));
+			elevationNumber = df.format(Double
+					.parseDouble(parts[0].split("-")[0]));
 		} else {
 			try {
 				elevationNumber = df.format(Double.parseDouble(parts[0]));
@@ -128,7 +134,7 @@ public class WgribRecordDescriptor {
 				elevationNumber = "0000.000";
 			}
 		}
-		
+
 		return elevationNumber;
 	}
 
@@ -138,9 +144,10 @@ public class WgribRecordDescriptor {
 	public String getRawLevel() {
 		return this.level;
 	}
-	
+
 	/**
-	 * @param forecastTime the forecastTime to set
+	 * @param forecastTime
+	 *            the forecastTime to set
 	 */
 	public void setForecastTime(String forecastTime) {
 		this.forecastTime = forecastTime;
@@ -155,9 +162,10 @@ public class WgribRecordDescriptor {
 		}
 
 		String hours = forecastTime.substring(0, forecastTime.indexOf("hr"));
-		
-		hours = (hours.length() == 1 ? "00" + hours : (hours.length() == 2 ? "0" + hours : hours)); 
-			
+
+		hours = (hours.length() == 1 ? "00" + hours
+				: (hours.length() == 2 ? "0" + hours : hours));
+
 		return hours;
 	}
 
@@ -167,8 +175,10 @@ public class WgribRecordDescriptor {
 	public String getRawForecastTime() {
 		return this.forecastTime;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -188,7 +198,9 @@ public class WgribRecordDescriptor {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -248,7 +260,9 @@ public class WgribRecordDescriptor {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -271,5 +285,5 @@ public class WgribRecordDescriptor {
 		builder.append("]");
 		return builder.toString();
 	}
-	
+
 }

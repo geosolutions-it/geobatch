@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.flow.event.action;
 
 import it.geosolutions.geobatch.catalog.Service;
@@ -29,10 +27,10 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.EventObject;
 
-public interface ActionService<EO extends EventObject, AC extends ActionConfiguration> 
-        extends Service {
+public interface ActionService<EO extends EventObject, AC extends ActionConfiguration>
+		extends Service {
 
-    public Action<EO> createAction(AC configuration);
+	public Action<EO> createAction(AC configuration);
 
-    public boolean canCreateAction(AC configuration);
+	public boolean canCreateAction(AC configuration);
 }

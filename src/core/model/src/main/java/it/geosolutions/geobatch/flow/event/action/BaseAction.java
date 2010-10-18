@@ -35,43 +35,45 @@ import java.util.logging.Logger;
 /**
  * 
  * @author Simone Giannecchini, GeoSolutions S.A.S.
- *
- * @param <XEO> Kind of EventObject to be eXecuted
+ * 
+ * @param <XEO>
+ *            Kind of EventObject to be eXecuted
  */
-public abstract class BaseAction<XEO extends EventObject>
-        extends BaseIdentifiable
-        implements Action<XEO>, Job {
+public abstract class BaseAction<XEO extends EventObject> extends
+		BaseIdentifiable implements Action<XEO>, Job {
 
-    private final static Logger LOGGER = Logger.getLogger(BaseAction.class.toString());
-    
-    protected ProgressListenerForwarder listenerForwarder = new ProgressListenerForwarder();
-	
+	private final static Logger LOGGER = Logger.getLogger(BaseAction.class
+			.toString());
+
+	protected ProgressListenerForwarder listenerForwarder = new ProgressListenerForwarder();
+
 	protected boolean failIgnored = false;
 
 	public BaseAction(ActionConfiguration actionConfiguration) {
 		failIgnored = actionConfiguration.isFailIgnored();
 	}
 
-    public void destroy() {
-    }
+	public void destroy() {
+	}
 
-    public boolean isPaused() {
-        return false;
-    }
+	public boolean isPaused() {
+		return false;
+	}
 
-    public boolean pause() {
-        LOGGER.info("Pause request for " + getClass().getSimpleName());
-        return false; // pause has not been honoured
-    }
+	public boolean pause() {
+		LOGGER.info("Pause request for " + getClass().getSimpleName());
+		return false; // pause has not been honoured
+	}
 
-    public boolean pause(boolean sub) {
-        LOGGER.info("Pause("+sub+") request for " + getClass().getSimpleName());
-        return false; // pause has not been honoured
-    }
+	public boolean pause(boolean sub) {
+		LOGGER.info("Pause(" + sub + ") request for "
+				+ getClass().getSimpleName());
+		return false; // pause has not been honoured
+	}
 
-    public void resume() {
-        LOGGER.info("Resuming " + getClass().getSimpleName());
-    }
+	public void resume() {
+		LOGGER.info("Resuming " + getClass().getSimpleName());
+	}
 
 	public boolean isFailIgnored() {
 		return failIgnored;
@@ -81,20 +83,20 @@ public abstract class BaseAction<XEO extends EventObject>
 		this.failIgnored = failIgnored;
 	}
 
-    public void removeListener(ProgressListener listener) {
-        this.listenerForwarder.removeListener(listener);
-    }
+	public void removeListener(ProgressListener listener) {
+		this.listenerForwarder.removeListener(listener);
+	}
 
-    public void addListener(ProgressListener listener) {
-        this.listenerForwarder.addListener(listener);
-    }
+	public void addListener(ProgressListener listener) {
+		this.listenerForwarder.addListener(listener);
+	}
 
-    public <PL extends IProgressListener> PL getProgressListener(Class<PL> clazz) {
-        for (IProgressListener ipl : listenerForwarder.getListeners()) {
-            if(clazz.isAssignableFrom(ipl.getClass()))
-                return (PL)ipl;
-        }
+	public <PL extends IProgressListener> PL getProgressListener(Class<PL> clazz) {
+		for (IProgressListener ipl : listenerForwarder.getListeners()) {
+			if (clazz.isAssignableFrom(ipl.getClass()))
+				return (PL) ipl;
+		}
 
-        return null;
-    }
+		return null;
+	}
 }

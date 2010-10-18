@@ -40,37 +40,37 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
  */
 @Transactional
-public class HibUserFlowAccessDAO
-        extends DAOAbstractSpring<UserFlowAccess, String>
-		implements UserFlowAccessDAO {
+public class HibUserFlowAccessDAO extends
+		DAOAbstractSpring<UserFlowAccess, String> implements UserFlowAccessDAO {
 
-    private final static Logger LOGGER = Logger.getLogger(HibUserFlowAccessDAO.class.getName());
+	private final static Logger LOGGER = Logger
+			.getLogger(HibUserFlowAccessDAO.class.getName());
 
 	public HibUserFlowAccessDAO() {
 		super(UserFlowAccess.class);
 	}
 
-    /**
+	/**
      */
 	protected void initDao() throws Exception {
-        super.initDao();
+		super.initDao();
 	}
 
-    public void add(Long userId, String flowId) throws DAOException {
-        UserFlowAccess flowAccess = new UserFlowAccess(userId, flowId);
-        super.makePersistent(flowAccess);
-    }
+	public void add(Long userId, String flowId) throws DAOException {
+		UserFlowAccess flowAccess = new UserFlowAccess(userId, flowId);
+		super.makePersistent(flowAccess);
+	}
 
-    public void remove(Long userId, String flowName) throws DAOException {
-        UserFlowAccess flowAccess = new UserFlowAccess(userId, flowName);
-        super.makeTransient(flowAccess);
-    }
+	public void remove(Long userId, String flowName) throws DAOException {
+		UserFlowAccess flowAccess = new UserFlowAccess(userId, flowName);
+		super.makeTransient(flowAccess);
+	}
 
-    public void remove(final Long userId) throws DAOException {
+	public void remove(final Long userId) throws DAOException {
 		try {
 			getHibernateTemplate().execute(new HibernateCallback() {
 
@@ -86,9 +86,9 @@ public class HibUserFlowAccessDAO
 		} catch (HibernateException e) {
 			throw new DAOException(e);
 		}
-    }
+	}
 
-    public void remove(final String flowId) throws DAOException {
+	public void remove(final String flowId) throws DAOException {
 		try {
 			getHibernateTemplate().execute(new HibernateCallback() {
 
@@ -104,25 +104,26 @@ public class HibUserFlowAccessDAO
 		} catch (HibernateException e) {
 			throw new DAOException(e);
 		}
-    }
+	}
 
+	public List<String> findFlows(Long userId) throws DAOException {
+		List<UserFlowAccess> acc = super.findByCriteria(Restrictions.eq(
+				"userId", userId));
+		List<String> ret = new ArrayList<String>(acc.size());
+		for (UserFlowAccess userFlowAccess : acc) {
+			ret.add(userFlowAccess.getFlowId());
+		}
+		return ret;
+	}
 
-    public List<String> findFlows(Long userId) throws DAOException {
-   		List<UserFlowAccess> acc = super.findByCriteria(Restrictions.eq("userId", userId));
-        List<String> ret = new ArrayList<String>(acc.size());
-        for (UserFlowAccess userFlowAccess : acc) {
-            ret.add(userFlowAccess.getFlowId());
-        }
-        return ret;
-    }
-
-    public List<Long> findUsersId(String flowId) throws DAOException {
-   		List<UserFlowAccess> acc = super.findByCriteria(Restrictions.eq("flow", flowId));
-        List<Long> ret = new ArrayList<Long>(acc.size());
-        for (UserFlowAccess userFlowAccess : acc) {
-            ret.add(userFlowAccess.getUserId());
-        }
-        return ret;
-    }
+	public List<Long> findUsersId(String flowId) throws DAOException {
+		List<UserFlowAccess> acc = super.findByCriteria(Restrictions.eq("flow",
+				flowId));
+		List<Long> ret = new ArrayList<Long>(acc.size());
+		for (UserFlowAccess userFlowAccess : acc) {
+			ret.add(userFlowAccess.getUserId());
+		}
+		return ret;
+	}
 
 }

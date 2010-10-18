@@ -50,33 +50,34 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 
  */
-public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
-		implements GBUserDAO, InitializingBean {
+public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long> implements
+		GBUserDAO, InitializingBean {
 
-    private final static Logger LOGGER = Logger.getLogger(HibGBUserDAO.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(HibGBUserDAO.class
+			.getName());
 
 	public HibGBUserDAO() {
 		super(GBUser.class);
 	}
 
-    /**
-     * Creates the default admin if no admin user is found.
-     * @throws Exception
-     */
+	/**
+	 * Creates the default admin if no admin user is found.
+	 * 
+	 * @throws Exception
+	 */
 	protected void initDao() throws Exception {
-        super.initDao();
+		super.initDao();
 
-        if( ! existsAdmin() ) {
-            LOGGER.info("Admin user does not exist. Creating default one.");
-            GBUser user = new GBUser();
-            user.setName("admin");
-            user.setPassword("admin");
-            user.setEnabled(true);
-            user.setRole(GBUserRole.ROLE_ADMIN);
-            save(user);
-        }
+		if (!existsAdmin()) {
+			LOGGER.info("Admin user does not exist. Creating default one.");
+			GBUser user = new GBUser();
+			user.setName("admin");
+			user.setPassword("admin");
+			user.setEnabled(true);
+			user.setRole(GBUserRole.ROLE_ADMIN);
+			save(user);
+		}
 	}
-
 
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public GBUser findByUserId(Long userId) throws DAOException {
@@ -85,15 +86,17 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
 
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public GBUser findByUserName(String userName) throws DAOException {
-		List<GBUser> users = super.findByCriteria(Restrictions.eq("name", userName));
+		List<GBUser> users = super.findByCriteria(Restrictions.eq("name",
+				userName));
 		if (users.size() > 0)
 			return users.get(0);
 		return null;
 	}
 
 	public boolean existsAdmin() throws DAOException {
-		List<GBUser> users = super.findByCriteria(Restrictions.eq("role", GBUserRole.ROLE_ADMIN));
-        return ! users.isEmpty();
+		List<GBUser> users = super.findByCriteria(Restrictions.eq("role",
+				GBUserRole.ROLE_ADMIN));
+		return !users.isEmpty();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -101,8 +104,10 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long>
 		try {
 			getHibernateTemplate().execute(new HibernateCallback() {
 
-				public Object doInHibernate(Session session) throws HibernateException, SQLException {
-					Query query = session.createQuery("delete from User user where user.id = :id");
+				public Object doInHibernate(Session session)
+						throws HibernateException, SQLException {
+					Query query = session
+							.createQuery("delete from User user where user.id = :id");
 					query.setParameter("id", id);
 					query.executeUpdate();
 					return null;

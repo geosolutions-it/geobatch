@@ -28,6 +28,6 @@ package it.geosolutions.geobatch.catalog;
  */
 public interface Service extends Resource, Identifiable {
 
-    public boolean isAvailable();
+	public boolean isAvailable();
 
 }

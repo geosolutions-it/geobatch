@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+        =======================================================================
+        Maven Project Configuration File GeoSolutions GeoBatch Project
+        http://geobatch.codehaus.org Version: $Id: pom.xml 382 2010-01-07
+        18:00:13Z dany111 $
+        =======================================================================
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>it.geosolutions</groupId>
+				<artifactId>gb-action-metocs</artifactId>
+        <version>0.9-SNAPSHOT</version>
+    </parent>
+
+    <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
+		<groupId>it.geosolutions</groupId>
+		<artifactId>gb-action-nurc-tda</artifactId>
+		<packaging>jar</packaging>
+		<name>GeoBatch action: NURC TDA</name>
+		<url>http://mvn.geo-solutions.it/maven_reports/ie/flowmanagers/</url>
+  
+	<scm>
+    <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</connection>
+		<url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
+	</scm>
+  
+	<description>
+		GeoSolutions GeoBatch flow managers - NURC/TDA flow manager.
+	</description>
+
+	<licenses>
+		<license>
+			<name>Lesser General Public License (LGPL)</name>
+			<url>http://www.gnu.org/copyleft/lesser.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<!-- =========================================================== -->
+	<!--     Dependency Management                                   -->
+	<!-- =========================================================== -->
+	<dependencies>
+    	<!-- METOCS Commons -->
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+						<artifactId>gb-action-metocs-commons</artifactId>
+        </dependency>
+
+	</dependencies>
+
+    <profiles>
+        <profile>
+            <id>dao.jibx</id>
+            <!--<activation>...</activation>-->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jibx</groupId>
+                        <artifactId>maven-jibx-plugin</artifactId>
+                        <version>1.1.6</version>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <directory>src/main/resources/jibx</directory>
+                            <includes>
+                                <includes>binding.xml</includes>
+                            </includes>
+                            <verbose>true</verbose>
+                            <multi-module>true</multi-module>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>bind</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <!--
+            <modules>...</modules>
+            <repositories>...</repositories>
+            <pluginRepositories>...</pluginRepositories>
+             -->
+            <dependencies>
+                <dependency>
+                    <groupId>org.jibx</groupId>
+                    <artifactId>jibx-run</artifactId>
+                    <version>1.1.6</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.jibx</groupId>
+                    <artifactId>jibx-extras</artifactId>
+                    <version>1.1.6</version>
+                </dependency>
+            </dependencies>
+            <!--
+            <reporting>...</reporting>
+            <dependencyManagement>...</dependencyManagement>
+            <distributionManagement>...</distributionManagement>
+-->
+        </profile>
+    </profiles>
+    
+</project>

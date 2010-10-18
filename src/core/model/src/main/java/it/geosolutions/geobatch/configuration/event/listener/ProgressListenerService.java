@@ -25,10 +25,10 @@ package it.geosolutions.geobatch.configuration.event.listener;
 import it.geosolutions.geobatch.catalog.Service;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 
-public interface ProgressListenerService<PLC extends ProgressListenerConfiguration> 
-        extends Service
-{
-    public <T extends ProgressListener> T createProgressListener(PLC configuration);
+public interface ProgressListenerService<PLC extends ProgressListenerConfiguration>
+		extends Service {
+	public <T extends ProgressListener> T createProgressListener(
+			PLC configuration);
 
-//    public boolean canCreateProgressListener(PLC configuration);
+	// public boolean canCreateProgressListener(PLC configuration);
 }

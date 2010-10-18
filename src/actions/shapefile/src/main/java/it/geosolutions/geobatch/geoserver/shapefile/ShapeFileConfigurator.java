@@ -48,83 +48,98 @@ import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 
 /**
  * Geoserver ShapeFile Configuration action.
- *
- * <P>Process shapefiles and inject them into a Geoserver instance.
+ * 
+ * <P>
+ * Process shapefiles and inject them into a Geoserver instance.
  * 
  * @author AlFa
  * @author ETj
  * @author Daniele Romagnoli, GeoSolutions S.A.S.
  */
-public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> implements Action<FileSystemMonitorEvent> {
-	
-	private final static Logger LOGGER = Logger.getLogger(ShapeFileConfigurator.class.toString());
-	
+public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent>
+		implements Action<FileSystemMonitorEvent> {
+
+	private final static Logger LOGGER = Logger
+			.getLogger(ShapeFileConfigurator.class.toString());
+
 	private File tempOutDir = null;
 	private File zipFileToSend = null;
 
 	private ShapeFileConfiguration configuration;
-	
-    public ShapeFileConfigurator(final ShapeFileConfiguration configuration)
-            throws IOException {
-    	super(configuration);
-    	this.configuration = configuration;
-    }
 
-    /**
+	public ShapeFileConfigurator(final ShapeFileConfiguration configuration)
+			throws IOException {
+		super(configuration);
+		this.configuration = configuration;
+	}
+
+	/**
      * 
      */
-	public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
-            throws ActionException {
+	public Queue<FileSystemMonitorEvent> execute(
+			Queue<FileSystemMonitorEvent> events) throws ActionException {
 
-       listenerForwarder.setTask("config");
-       listenerForwarder.started();
+		listenerForwarder.setTask("config");
+		listenerForwarder.started();
 
-        try {
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // Initializing input variables
-            //
-            // ////////////////////////////////////////////////////////////////////
-            if (configuration == null) {
-//                LOGGER.log(Level.SEVERE, "ActionConfig is null."); // we're rethrowing it, so don't log
-                throw new IllegalStateException("ActionConfig is null.");
-            }
+		try {
+			// ////////////////////////////////////////////////////////////////////
+			//
+			// Initializing input variables
+			//
+			// ////////////////////////////////////////////////////////////////////
+			if (configuration == null) {
+				// LOGGER.log(Level.SEVERE, "ActionConfig is null."); // we're
+				// rethrowing it, so don't log
+				throw new IllegalStateException("ActionConfig is null.");
+			}
 
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // Initializing input variables
-            //
-            // ////////////////////////////////////////////////////////////////////
-            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
-                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+			// ////////////////////////////////////////////////////////////////////
+			//
+			// Initializing input variables
+			//
+			// ////////////////////////////////////////////////////////////////////
+			final File workingDir = IOUtils.findLocation(configuration
+					.getWorkingDirectory(), new File(
+					((FileBaseCatalog) CatalogHolder.getCatalog())
+							.getBaseDirectory()));
 
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // Checking input files.
-            //
-            // ////////////////////////////////////////////////////////////////////
-            if (workingDir == null) {
-//                LOGGER.log(Level.SEVERE, "Working directory is null."); // we're rethrowing it, so don't log
-                throw new IllegalStateException("Working directory is null.");
-            }
+			// ////////////////////////////////////////////////////////////////////
+			//
+			// Checking input files.
+			//
+			// ////////////////////////////////////////////////////////////////////
+			if (workingDir == null) {
+				// LOGGER.log(Level.SEVERE, "Working directory is null."); //
+				// we're rethrowing it, so don't log
+				throw new IllegalStateException("Working directory is null.");
+			}
 
-            if ( !workingDir.exists() || !workingDir.isDirectory()) {
-//                LOGGER.log(Level.SEVERE, "Working directory does not exist ("+workingDir.getAbsolutePath()+")."); // we're rethrowing it, so don't log
-                throw new IllegalStateException("Working directory does not exist ("+workingDir.getAbsolutePath()+").");
-            }
+			if (!workingDir.exists() || !workingDir.isDirectory()) {
+				// LOGGER.log(Level.SEVERE,
+				// "Working directory does not exist ("+workingDir.getAbsolutePath()+").");
+				// // we're rethrowing it, so don't log
+				throw new IllegalStateException(
+						"Working directory does not exist ("
+								+ workingDir.getAbsolutePath() + ").");
+			}
 
 			// Fetch the first event in the queue.
 			// We may have one in these 2 cases:
 			// 1) a single event for a .zip file
-			// 2) a list of events for the .shp+.dbf+.shx+ some other optional files
-			
-            FileSystemMonitorEvent event = events.peek();
+			// 2) a list of events for the .shp+.dbf+.shx+ some other optional
+			// files
+
+			FileSystemMonitorEvent event = events.peek();
 
 			File[] shpList;
-			final boolean isZipped; 
+			final boolean isZipped;
 			File zippedFile = null;
-			if(events.size() == 1 && FilenameUtils.getExtension(event.getSource().getAbsolutePath()).equalsIgnoreCase("zip")) {
-                listenerForwarder.progressing(5, "unzipping");
+			if (events.size() == 1
+					&& FilenameUtils.getExtension(
+							event.getSource().getAbsolutePath())
+							.equalsIgnoreCase("zip")) {
+				listenerForwarder.progressing(5, "unzipping");
 				zippedFile = event.getSource();
 				shpList = handleZipFile(zippedFile, workingDir);
 				isZipped = true;
@@ -133,75 +148,87 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
 				isZipped = false;
 			}
 
-			if(shpList == null)
+			if (shpList == null)
 				throw new Exception("Error while processing the shape file set");
 
-            listenerForwarder.progressing(10, "In progress");
-            
+			listenerForwarder.progressing(10, "In progress");
+
 			// look for the main shp file in the set
 			File shapeFile = null;
 			for (File file : shpList) {
-				if(FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("shp")) {
+				if (FilenameUtils.getExtension(file.getName())
+						.equalsIgnoreCase("shp")) {
 					shapeFile = file;
 					break;
 				}
 			}
 
-			if(shapeFile == null) {
-//                LOGGER.log(Level.SEVERE, "Shp file not found in fileset."); // we're rethrowing it, so don't log
-                throw new IllegalStateException("Shp file not found in fileset.");
+			if (shapeFile == null) {
+				// LOGGER.log(Level.SEVERE, "Shp file not found in fileset.");
+				// // we're rethrowing it, so don't log
+				throw new IllegalStateException(
+						"Shp file not found in fileset.");
 			}
-			final String shpBaseName; 
+			final String shpBaseName;
 			if (!isZipped)
 				shpBaseName = FilenameUtils.getBaseName(shapeFile.getName());
-			else{
+			else {
 				shpBaseName = FilenameUtils.getBaseName(zippedFile.getName());
 			}
 
-            // //
-            // creating dataStore
-            // //
-            DataStoreFactorySpi factory = new ShapefileDataStoreFactory();
+			// //
+			// creating dataStore
+			// //
+			DataStoreFactorySpi factory = new ShapefileDataStoreFactory();
 
-            // //
-            // Convert Params into the kind of Map we actually need
-            // //
-            Map<String, Serializable> connectionParams = new HashMap<String, Serializable>(); // values used for connection
+			// //
+			// Convert Params into the kind of Map we actually need
+			// //
+			Map<String, Serializable> connectionParams = new HashMap<String, Serializable>(); // values
+																								// used
+																								// for
+																								// connection
 
-            /**
-             * GeoServer url: "file:data/" + dataStoreId + "/" + shpFileName
-             */
-            try {
-                connectionParams.put("url", shapeFile.toURI().toURL());
-            } catch (MalformedURLException e) {
-//                LOGGER.log(Level.SEVERE, "No valid ShapeFile URL found for this Data Flow: "
-//                        + e.getLocalizedMessage()); // we're rethrowing it, so don't log
-                throw new IllegalStateException("No valid ShapeFile URL found for this Data Flow: "
-                        + e.getLocalizedMessage());
-            }
+			/**
+			 * GeoServer url: "file:data/" + dataStoreId + "/" + shpFileName
+			 */
+			try {
+				connectionParams.put("url", shapeFile.toURI().toURL());
+			} catch (MalformedURLException e) {
+				// LOGGER.log(Level.SEVERE,
+				// "No valid ShapeFile URL found for this Data Flow: "
+				// + e.getLocalizedMessage()); // we're rethrowing it, so don't
+				// log
+				throw new IllegalStateException(
+						"No valid ShapeFile URL found for this Data Flow: "
+								+ e.getLocalizedMessage());
+			}
 
-            connectionParams.put("namespace", configuration.getNamespace());
+			connectionParams.put("namespace", configuration.getNamespace());
 
-            boolean validShape = factory.canProcess(connectionParams);
-            factory = null;
+			boolean validShape = factory.canProcess(connectionParams);
+			factory = null;
 
-            if (!validShape) {
-//                LOGGER.log(Level.SEVERE, "No valid ShapeFile found for this Data Flow!"); // we're rethrowing it, so don't log
-                throw new IllegalStateException("No valid ShapeFiles found for this Data Flow!");
-            }
+			if (!validShape) {
+				// LOGGER.log(Level.SEVERE,
+				// "No valid ShapeFile found for this Data Flow!"); // we're
+				// rethrowing it, so don't log
+				throw new IllegalStateException(
+						"No valid ShapeFiles found for this Data Flow!");
+			}
 
 			// TODO: check if a layer with the same name already exists in GS
 
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // SENDING data to GeoServer via REST protocol.
-            //
-            // ////////////////////////////////////////////////////////////////////
-            // http://localhost:8080/geoserver/rest/coveragestores/test_cv_store/test/file.tiff
+			// ////////////////////////////////////////////////////////////////////
+			//
+			// SENDING data to GeoServer via REST protocol.
+			//
+			// ////////////////////////////////////////////////////////////////////
+			// http://localhost:8080/geoserver/rest/coveragestores/test_cv_store/test/file.tiff
 
-            listenerForwarder.progressing(40, "Preparing shape");
+			listenerForwarder.progressing(40, "Preparing shape");
 
-			if(LOGGER.isLoggable(Level.FINE)) {
+			if (LOGGER.isLoggable(Level.FINE)) {
 				StringBuilder sb = new StringBuilder("Packing shapefiles: ");
 				for (File file : shpList) {
 					sb.append('[').append(file.getName()).append(']');
@@ -210,42 +237,49 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
 			}
 			if (isZipped) {
 				zipFileToSend = zippedFile;
-            } else {
-                listenerForwarder.progressing(50, "Rezipping shape");
-				zipFileToSend = IOUtils.deflate(workingDir, "sending_" + shpBaseName + System.currentTimeMillis(), shpList);
-            }
+			} else {
+				listenerForwarder.progressing(50, "Rezipping shape");
+				zipFileToSend = IOUtils.deflate(workingDir, "sending_"
+						+ shpBaseName + System.currentTimeMillis(), shpList);
+			}
 			LOGGER.info("ZIP file: " + zipFileToSend.getAbsolutePath());
 
-            listenerForwarder.progressing(100, "File prepared ... forwarding to the next action");
-			
-            // Removing old files...
-            events.clear();
-            // Adding the zipped file to send...
-            events.add(new FileSystemMonitorEvent(zipFileToSend, FileSystemMonitorNotifications.FILE_ADDED));
+			listenerForwarder.progressing(100,
+					"File prepared ... forwarding to the next action");
+
+			// Removing old files...
+			events.clear();
+			// Adding the zipped file to send...
+			events.add(new FileSystemMonitorEvent(zipFileToSend,
+					FileSystemMonitorNotifications.FILE_ADDED));
 			return events;
-        } catch (Throwable t) {
-//			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // we're rethrowing it, so don't log
-            listenerForwarder.failed(t); // fails the Action
-            throw new ActionException(this, t.getMessage(), t);
-        } finally {
+		} catch (Throwable t) {
+			// LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // we're
+			// rethrowing it, so don't log
+			listenerForwarder.failed(t); // fails the Action
+			throw new ActionException(this, t.getMessage(), t);
+		} finally {
 			// Clear unzipped files, if any
-			if(tempOutDir != null) {
-                try {
-                    FileUtils.deleteDirectory(tempOutDir);
-                } catch (IOException ex) {
-                    LOGGER.log(Level.WARNING, "Could not delete temp dir: " + ex.getMessage(), ex);
-                }
-            }
+			if (tempOutDir != null) {
+				try {
+					FileUtils.deleteDirectory(tempOutDir);
+				} catch (IOException ex) {
+					LOGGER.log(Level.WARNING, "Could not delete temp dir: "
+							+ ex.getMessage(), ex);
+				}
+			}
 		}
-    }
+	}
 
 	/**
 	 * Pack the files received in the events into an array.
 	 * 
-	 * <P><B>TODO</B>: should we check if all the needed files are in place
-	 *                 (such as in {@link handleZipFile(File,File)} ?
-	 *
-	 * @param events The received event queue
+	 * <P>
+	 * <B>TODO</B>: should we check if all the needed files are in place (such
+	 * as in {@link handleZipFile(File,File)} ?
+	 * 
+	 * @param events
+	 *            The received event queue
 	 * @return
 	 */
 	private File[] handleShapefile(Queue<FileSystemMonitorEvent> events) {
@@ -258,77 +292,89 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
 	}
 
 	/**
-	 * Unzip and inspect the contained files, and check if they are a proper shapefileset.
-	 *
-	 * <P>We want the fileset in the zip file:<UL>
+	 * Unzip and inspect the contained files, and check if they are a proper
+	 * shapefileset.
+	 * 
+	 * <P>
+	 * We want the fileset in the zip file:
+	 * <UL>
 	 * <LI>To have all the same basename</LI>
 	 * <LI>To include all of the mandatory files shp, shx, dbf</LI>
 	 * <LI>To optionally include the prj file</LI>
-	 * <LI>To have no other files than the ones described above.</LI></UL>
-	 *
-	 * @param source The source zip file.
+	 * <LI>To have no other files than the ones described above.</LI>
+	 * </UL>
+	 * 
+	 * @param source
+	 *            The source zip file.
 	 * @return the array of unzipped files, or null if an error was encountered
 	 */
 	private File[] handleZipFile(File source, File workingdir) {
 
-		tempOutDir = new File(workingdir, "unzip_"+System.currentTimeMillis());
+		tempOutDir = new File(workingdir, "unzip_" + System.currentTimeMillis());
 
-		try{
-			if(!tempOutDir.mkdir()) {
-				throw new IOException("Can't create temp dir '"+tempOutDir.getAbsolutePath()+"'");
+		try {
+			if (!tempOutDir.mkdir()) {
+				throw new IOException("Can't create temp dir '"
+						+ tempOutDir.getAbsolutePath() + "'");
 			}
 			List<File> fileList = IOUtils.unzipFlat(source, tempOutDir);
-			if(fileList == null) {
+			if (fileList == null) {
 				throw new Exception("Error unzipping file");
 			}
 
-			if(fileList.isEmpty()) {
+			if (fileList.isEmpty()) {
 				throw new IllegalStateException("Unzip returned no files");
 			}
 
-			int shp=0, shx=0, dbf=0;
-			int prj=0;
+			int shp = 0, shx = 0, dbf = 0;
+			int prj = 0;
 
 			// check that all the files have the same basename
 			File file0 = fileList.get(0);
 			String basename = FilenameUtils.getBaseName(file0.getName());
 			for (File file : fileList) {
-				if( ! basename.equals(FilenameUtils.getBaseName(file.getAbsolutePath()))) {
-					throw new Exception("Basename mismatch (expected:'"+basename+"', file found:'"+file.getAbsolutePath()+"')");
+				if (!basename.equals(FilenameUtils.getBaseName(file
+						.getAbsolutePath()))) {
+					throw new Exception("Basename mismatch (expected:'"
+							+ basename + "', file found:'"
+							+ file.getAbsolutePath() + "')");
 				}
 				String ext = FilenameUtils.getExtension(file.getAbsolutePath());
 				// do we want such an hardcoded list?
-				if("shp".equalsIgnoreCase(ext))
+				if ("shp".equalsIgnoreCase(ext))
 					shp++;
-				else if("shx".equalsIgnoreCase(ext))
+				else if ("shx".equalsIgnoreCase(ext))
 					shx++;
-				else if("dbf".equalsIgnoreCase(ext))
+				else if ("dbf".equalsIgnoreCase(ext))
 					dbf++;
-				else if("prj".equalsIgnoreCase(ext))
+				else if ("prj".equalsIgnoreCase(ext))
 					prj++;
 				else {
-					// Do we want to be more lenient if unexpected/useless files are found?
-					throw new IllegalStateException("Unexpected file extension in zipfile '"+ext+"'");
+					// Do we want to be more lenient if unexpected/useless files
+					// are found?
+					throw new IllegalStateException(
+							"Unexpected file extension in zipfile '" + ext
+									+ "'");
 				}
 			}
 
-			if(shp*shx*dbf != 1) {
+			if (shp * shx * dbf != 1) {
 				throw new Exception("Bad fileset in zip file.");
 			}
 
 			return fileList.toArray(new File[fileList.size()]);
 
-		} catch(Throwable t) {
+		} catch (Throwable t) {
 			LOGGER.log(Level.WARNING, "Error examining zipfile", t);
 			try {
-				//org.apache.commons.io.IOUtils.
+				// org.apache.commons.io.IOUtils.
 				FileUtils.forceDelete(tempOutDir);
 			} catch (IOException ex) {
-				LOGGER.log(Level.SEVERE, "Can't delete temp dir '"+tempOutDir+"'", ex);
+				LOGGER.log(Level.SEVERE, "Can't delete temp dir '" + tempOutDir
+						+ "'", ex);
 			}
 			return null;
 		}
 	}
 
 }
-

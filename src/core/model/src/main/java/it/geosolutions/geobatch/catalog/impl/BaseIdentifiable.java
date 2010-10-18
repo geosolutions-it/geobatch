@@ -20,77 +20,75 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.Identifiable;
 
 public abstract class BaseIdentifiable implements Identifiable, Cloneable {
 
-    private String id;
+	private String id;
 
-    private String name;
+	private String name;
 
-    private String description = "No description set.";
+	private String description = "No description set.";
 
-    public BaseIdentifiable() {
-    }
+	public BaseIdentifiable() {
+	}
 
-    public BaseIdentifiable(String id, String name, String description) {
-        super();
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
+	public BaseIdentifiable(String id, String name, String description) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * @param description
-     *            the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	/**
+	 * @param description
+	 *            the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public BaseIdentifiable clone() {
-        try {
-            BaseIdentifiable bi = (BaseIdentifiable) super.clone();
-            bi.description = this.description;
-            bi.id = this.id;
-            bi.name = this.name;
-            return bi;
-        } catch (CloneNotSupportedException e) {
-            // this shouldn't happen, since we are Cloneable
-            throw new InternalError();
-        }
-    }
-    
+	public BaseIdentifiable clone() {
+		try {
+			BaseIdentifiable bi = (BaseIdentifiable) super.clone();
+			bi.description = this.description;
+			bi.id = this.id;
+			bi.name = this.name;
+			return bi;
+		} catch (CloneNotSupportedException e) {
+			// this shouldn't happen, since we are Cloneable
+			throw new InternalError();
+		}
+	}
+
 }

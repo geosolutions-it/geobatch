@@ -20,23 +20,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.configuration.event.consumer;
-
-import java.util.List;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 
+import java.util.List;
+
 public interface EventConsumerConfiguration extends Configuration {
 
-    public List<? extends ActionConfiguration> getActions();
+	public List<? extends ActionConfiguration> getActions();
 
-    public void setActions(List<? extends ActionConfiguration> actions);
+	public void setActions(List<? extends ActionConfiguration> actions);
 
-    public List<String> getListenerIds();
-    public void addListenerConfiguration(ProgressListenerConfiguration plc);
-    public List<ProgressListenerConfiguration> getListenerConfigurations();
+	public List<String> getListenerIds();
+
+	public void addListenerConfiguration(ProgressListenerConfiguration plc);
+
+	public List<ProgressListenerConfiguration> getListenerConfigurations();
 }

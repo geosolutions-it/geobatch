@@ -48,7 +48,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 public class FTPConfigFormController extends SimpleFormController {
 
 	private GeoBatchServer server;
-	
+
 	/**
 	 * @param server
 	 *            the server to set
@@ -83,7 +83,7 @@ public class FTPConfigFormController extends SimpleFormController {
 			backingObject.setPort(config.getPort());
 			backingObject.setSsl(config.isSsl());
 		}
-	
+
 		return backingObject;
 	}
 
@@ -112,22 +112,23 @@ public class FTPConfigFormController extends SimpleFormController {
 		config.setMaxLogins(givenData.getMaxLogins());
 		config.setPort(givenData.getPort());
 		config.setSsl(givenData.isSsl());
-		
+
 		server.getServerConfigDAO().save(config);
 		server.setLastConfig(config);
-		
-        ModelAndView mav = new ModelAndView(getSuccessView());
+
+		ModelAndView mav = new ModelAndView(getSuccessView());
 		mav.addObject("ftpServer", server);
 		mav.addObject("ftpConfig", server.getLastConfig());
 
-        // add statistics
-        FtpStatistics stats = null;
-   		final FtpServer ftp = server.getFtpServer();
-		if(ftp instanceof DefaultFtpServer) {
-			//get the context and check if the context is of the right type
-			final FtpServerContext context = ((DefaultFtpServer)ftp).getServerContext();
-			if(context instanceof DefaultFtpServerContext)
-				stats = ((DefaultFtpServerContext)context).getFtpStatistics();
+		// add statistics
+		FtpStatistics stats = null;
+		final FtpServer ftp = server.getFtpServer();
+		if (ftp instanceof DefaultFtpServer) {
+			// get the context and check if the context is of the right type
+			final FtpServerContext context = ((DefaultFtpServer) ftp)
+					.getServerContext();
+			if (context instanceof DefaultFtpServerContext)
+				stats = ((DefaultFtpServerContext) context).getFtpStatistics();
 		}
 		mav.addObject("ftpStats", stats);
 		logger.debug("Form data successfully submitted");
@@ -156,22 +157,25 @@ public class FTPConfigFormController extends SimpleFormController {
 
 			if (request.getParameter("autoStart") == null)
 				givenData.setAutoStart(false);
-			
+
 			if (request.getParameter("anonEnabled") == null)
 				givenData.setAnonEnabled(false);
-			
+
 			if (givenData.getMaxLogins() < 0) {
-				errors.rejectValue("maxLogins", "error.code", "Ftp Max Logins must be greater than 0.");
+				errors.rejectValue("maxLogins", "error.code",
+						"Ftp Max Logins must be greater than 0.");
 			}
-			
+
 			if (givenData.getMaxLoginFailures() < 0) {
-				errors.rejectValue("maxLoginFailures", "error.code", "Ftp Max Logins Failuers must be greater than 0.");
+				errors.rejectValue("maxLoginFailures", "error.code",
+						"Ftp Max Logins Failuers must be greater than 0.");
 			}
 
 			if (givenData.getLoginFailureDelay() < 0) {
-				errors.rejectValue("loginFailureDelay", "error.code", "Ftp Login Failuers Delay must be greater than 0.");
+				errors.rejectValue("loginFailureDelay", "error.code",
+						"Ftp Login Failuers Delay must be greater than 0.");
 			}
-			
+
 		}
 	}
 }

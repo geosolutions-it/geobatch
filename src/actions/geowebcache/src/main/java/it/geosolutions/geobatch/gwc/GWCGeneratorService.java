@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.gwc;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
@@ -31,35 +29,38 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Public class to generate NetCDF Service 
+ * Public class to generate NetCDF Service
  * 
  */
-public class GWCGeneratorService extends
+public class GWCGeneratorService
+		extends
 		GeoWebCacheConfiguratorService<FileSystemMonitorEvent, GeoWebCacheActionConfiguration> {
-	
-    private final static Logger LOGGER = Logger.getLogger(GWCGeneratorService.class
-            .toString());
 
-    /**
-     *  Action creator
-     * 
-     *  @param configuration The data base action configuration 
-     *  @return new NetCDFFileConfigurator()
-     */
-    public GWCConfigurator createAction(GeoWebCacheActionConfiguration configuration) {
-        try {
-            return new GWCConfigurator(configuration);
-        } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-            return null;
-        }
-    }
+	private final static Logger LOGGER = Logger
+			.getLogger(GWCGeneratorService.class.toString());
 
-    @Override
-    public boolean canCreateAction(GeoWebCacheActionConfiguration configuration) {
-        final boolean superRetVal = super.canCreateAction(configuration);
-        return superRetVal;
-    }
+	/**
+	 * Action creator
+	 * 
+	 * @param configuration
+	 *            The data base action configuration
+	 * @return new NetCDFFileConfigurator()
+	 */
+	public GWCConfigurator createAction(
+			GeoWebCacheActionConfiguration configuration) {
+		try {
+			return new GWCConfigurator(configuration);
+		} catch (IOException e) {
+			if (LOGGER.isLoggable(Level.INFO))
+				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+			return null;
+		}
+	}
+
+	@Override
+	public boolean canCreateAction(GeoWebCacheActionConfiguration configuration) {
+		final boolean superRetVal = super.canCreateAction(configuration);
+		return superRetVal;
+	}
 
 }

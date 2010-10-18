@@ -3,14 +3,18 @@ package it.geosolutions.filesystemmonitor.monitor.thread;
 import java.util.logging.Level;
 
 /**
- * This is the timer thread which is executed every n milliseconds according to the setting of the file monitor. It investigates the file in question and notify listeners if changed.
- * @author   SImone Giannecchini
+ * This is the timer thread which is executed every n milliseconds according to
+ * the setting of the file monitor. It investigates the file in question and
+ * notify listeners if changed.
+ * 
+ * @author SImone Giannecchini
  */
 public abstract class AbstractPeriodicThread extends AbstractPausableThread {
 
 	/**
 	 * Interval at which we will check the file system.
-	 * @uml.property  name="pollingInterval"
+	 * 
+	 * @uml.property name="pollingInterval"
 	 */
 	protected long pollingInterval = 10;
 
@@ -22,7 +26,7 @@ public abstract class AbstractPeriodicThread extends AbstractPausableThread {
 
 	/**
 	 * @return
-	 * @uml.property  name="pollingInterval"
+	 * @uml.property name="pollingInterval"
 	 */
 	public long getPollingInterval() {
 		return pollingInterval;

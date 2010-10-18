@@ -44,297 +44,296 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
 
 /**
- * This class represent an extended FTP action to delete remote files or directory.
+ * This class represent an extended FTP action to delete remote files or
+ * directory.
  * 
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  * 
  */
 public class FTPDeleteAction extends FTPBaseAction<FileSystemMonitorEvent> {
 
-    /**
-     * The constructor of the delete action.
-     *
-     * @param configuration The action configuration.
-     * @throws IOException
-     */
-    protected FTPDeleteAction(FTPActionConfiguration configuration)
-            throws IOException {
-        super(configuration);
-    }
+	/**
+	 * The constructor of the delete action.
+	 * 
+	 * @param configuration
+	 *            The action configuration.
+	 * @throws IOException
+	 */
+	protected FTPDeleteAction(FTPActionConfiguration configuration)
+			throws IOException {
+		super(configuration);
+	}
 
-    /**
-     * Method to launch the action operations when a file system monitor event occurred.
-     *
-     * @param events The events queue.
-     * @throws IOException
-     */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events) throws ActionException {
+	/**
+	 * Method to launch the action operations when a file system monitor event
+	 * occurred.
+	 * 
+	 * @param events
+	 *            The events queue.
+	 * @throws IOException
+	 */
+	public Queue<FileSystemMonitorEvent> execute(
+			Queue<FileSystemMonitorEvent> events) throws ActionException {
 
-        try {
-            listenerForwarder.started();
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // Initializing input variables
-            //
-            // ////////////////////////////////////////////////////////////////////
+		try {
+			listenerForwarder.started();
+			// ////////////////////////////////////////////////////////////////////
+			//
+			// Initializing input variables
+			//
+			// ////////////////////////////////////////////////////////////////////
 
-            if (configuration == null) {
-                throw new IllegalStateException("DataFlowConfig is null.");
-            }
+			if (configuration == null) {
+				throw new IllegalStateException("DataFlowConfig is null.");
+			}
 
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // Initializing input variables
-            //
-            // ////////////////////////////////////////////////////////////////////
+			// ////////////////////////////////////////////////////////////////////
+			//
+			// Initializing input variables
+			//
+			// ////////////////////////////////////////////////////////////////////
 
-            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
-                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+			final File workingDir = IOUtils.findLocation(configuration
+					.getWorkingDirectory(), new File(
+					((FileBaseCatalog) CatalogHolder.getCatalog())
+							.getBaseDirectory()));
 
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // Checking input files.
-            //
-            // ////////////////////////////////////////////////////////////////////
+			// ////////////////////////////////////////////////////////////////////
+			//
+			// Checking input files.
+			//
+			// ////////////////////////////////////////////////////////////////////
 
-            if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                throw new IllegalStateException("FTP client data directory is null or does not exist.");
-            }
+			if ((workingDir == null) || !workingDir.exists()
+					|| !workingDir.isDirectory()) {
+				throw new IllegalStateException(
+						"FTP client data directory is null or does not exist.");
+			}
 
-            String ftpserverHost = configuration.getFtpserverHost();
-            String ftpserverUSR = configuration.getFtpserverUSR();
-            String ftpserverPWD = configuration.getFtpserverPWD();
-            int ftpserverPort = configuration.getFtpserverPort();
+			String ftpserverHost = configuration.getFtpserverHost();
+			String ftpserverUSR = configuration.getFtpserverUSR();
+			String ftpserverPWD = configuration.getFtpserverPWD();
+			int ftpserverPort = configuration.getFtpserverPort();
 
-            if ((ftpserverHost == null) || "".equals(ftpserverHost)) {
-                throw new IllegalStateException("configuration.getFtpserverHost() is null.");
-            }
+			if ((ftpserverHost == null) || "".equals(ftpserverHost)) {
+				throw new IllegalStateException(
+						"configuration.getFtpserverHost() is null.");
+			}
 
-            // //////////////////////////////////////////////
-            // Retrive the added files from flow working dir
-            // //////////////////////////////////////////////
+			// //////////////////////////////////////////////
+			// Retrive the added files from flow working dir
+			// //////////////////////////////////////////////
 
-            final List<File> filesToDelete = new ArrayList<File>();
-            for (FileSystemMonitorEvent event : events) {
-                final File input = event.getSource();
-                if (input.exists() && input.isFile() && input.canRead()) {
-                    filesToDelete.add(input);
+			final List<File> filesToDelete = new ArrayList<File>();
+			for (FileSystemMonitorEvent event : events) {
+				final File input = event.getSource();
+				if (input.exists() && input.isFile() && input.canRead()) {
+					filesToDelete.add(input);
 
-                } else {
-                    throw new IllegalStateException("No valid input file found for this data flow!");
-                }
-            }
+				} else {
+					throw new IllegalStateException(
+							"No valid input file found for this data flow!");
+				}
+			}
 
-            if (filesToDelete.size() <= 0) {
-                throw new IllegalStateException("No valid file found for this data flow!");
+			if (filesToDelete.size() <= 0) {
+				throw new IllegalStateException(
+						"No valid file found for this data flow!");
 
-                // /////////////////////////////////////////
-                //
-                // Deleting files from remote FTP Server
-                //
-                // /////////////////////////////////////////
+				// /////////////////////////////////////////
+				//
+				// Deleting files from remote FTP Server
+				//
+				// /////////////////////////////////////////
 
+			}
+			if (LOGGER.isLoggable(Level.INFO)) {
+				LOGGER.info("Deleting file from FtpServer ... "
+						+ configuration.getFtpserverHost());
 
-            }
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info("Deleting file from FtpServer ... " + configuration.getFtpserverHost());
+			}
+			boolean ok = false;
+			final FTPConnectMode connectMode = configuration.getConnectMode()
+					.toString().equalsIgnoreCase(
+							FTPConnectMode.ACTIVE.toString()) ? FTPConnectMode.ACTIVE
+					: FTPConnectMode.PASV;
+			final int timeout = configuration.getTimeout();
 
+			boolean zipOutput = configuration.isZipInput();
+			String zipFileName = configuration.getZipFileName();
 
-            }
-            boolean ok = false;
-            final FTPConnectMode connectMode = configuration.getConnectMode().toString().equalsIgnoreCase(FTPConnectMode.ACTIVE.toString())
-                    ? FTPConnectMode.ACTIVE : FTPConnectMode.PASV;
-            final int timeout = configuration.getTimeout();
+			String path = "path";
 
-            boolean zipOutput = configuration.isZipInput();
-            String zipFileName = configuration.getZipFileName();
+			if (zipOutput) {
 
-            String path = "path";
+				// ////////////////////////////////////////////////////////////////////
+				// Build the real name of the remote zipped file before deleting
+				// this
+				// ////////////////////////////////////////////////////////////////////
 
-            if (zipOutput) {
+				String remoteZipFile = zipFileName.concat(".zip");
 
-                // ////////////////////////////////////////////////////////////////////
-                // Build the real name of the remote zipped file before deleting this
-                // ////////////////////////////////////////////////////////////////////
+				// /////////////////////////////////
+				// Deleting the remote zipped file
+				// /////////////////////////////////
 
-                String remoteZipFile = zipFileName.concat(".zip");
+				FTPHelperBare.deleteFileOrDirectory(ftpserverHost,
+						remoteZipFile, false, path, ftpserverUSR, ftpserverPWD,
+						ftpserverPort, connectMode, timeout);
+			} else {
 
-                // /////////////////////////////////
-                // Deleting the remote zipped file
-                // /////////////////////////////////
+				// /////////////////////////////////////////////////////////////////////////
+				// Scanning the files to delete array to distinguish files and
+				// directories
+				// /////////////////////////////////////////////////////////////////////////
 
-                FTPHelperBare.deleteFileOrDirectory(
-                        ftpserverHost,
-                        remoteZipFile, false, path,
-                        ftpserverUSR, ftpserverPWD,
-                        ftpserverPort,
-                        connectMode,
-                        timeout);
-            } else {
+				for (File file : filesToDelete) {
+					if (file.isFile()) {
+						FTPHelperBare.deleteFileOrDirectory(ftpserverHost, file
+								.getName(), false, path, ftpserverUSR,
+								ftpserverPWD, ftpserverPort, connectMode,
+								timeout);
 
-                // /////////////////////////////////////////////////////////////////////////
-                // Scanning the files to delete array to distinguish files and directories
-                // /////////////////////////////////////////////////////////////////////////
+						// if(!ok)
+						// break;
+					} else {
+						// sent = deleteDirectory("test", path);
+						ok = deleteDirectory(file.getName(), path);
 
-                for (File file : filesToDelete) {
-                    if (file.isFile()) {
-                        FTPHelperBare.deleteFileOrDirectory(
-                                ftpserverHost,
-                                file.getName(), false, path,
-                                ftpserverUSR, ftpserverPWD,
-                                ftpserverPort,
-                                connectMode,
-                                timeout);
+						if (!ok) {
+							break;
 
-//                		if(!ok)
-//                			break;
-                    } else {
-//            		    sent = deleteDirectory("test", path);
-                        ok = deleteDirectory(file.getName(), path);
+						} else {
+							// sent =
+							// FTPHelper.deleteFileOrDirectory(configuration.getFtpserverHost(),
+							// "test", true, path, ftpserverUSR, ftpserverPWD,
+							// ftpserverPort, connectMode, timeout);
+							FTPHelperBare.deleteFileOrDirectory(ftpserverHost,
+									file.getName(), true, path, ftpserverUSR,
+									ftpserverPWD, ftpserverPort, connectMode,
+									timeout);
 
-                        if (!ok) {
-                            break;
+							// if (!ok) {
+							// break;
+							// }
+						}
+					}
+				}
+			}
 
-                        } else {
-//                    		sent = FTPHelper.deleteFileOrDirectory(configuration.getFtpserverHost(), "test", true, path, ftpserverUSR, ftpserverPWD, 
-//                    				ftpserverPort, connectMode, timeout);
-                            FTPHelperBare.deleteFileOrDirectory(
-                                    ftpserverHost,
-                                    file.getName(), true, path,
-                                    ftpserverUSR, ftpserverPWD,
-                                    ftpserverPort,
-                                    connectMode,
-                                    timeout);
+			// TODO: restruct previous calls so that if we are here, all went
+			// well.
+			// i.e. "ok" var should be useless
 
-//                            if (!ok) {
-//                                break;
-//                            }
-                        }
-                    }
-                }
-            }
+			if (ok) {
+				if (LOGGER.isLoggable(Level.INFO)) {
+					LOGGER
+							.info("FTPDeleteAction: file SUCCESSFULLY deleted from FtpServer!");
+				}
+				listenerForwarder.completed();
+			} else {
+				if (LOGGER.isLoggable(Level.INFO)) {
+					LOGGER
+							.info("FTPDeleteAction: file was NOT deleted from FtpServer due to connection errors!");
+				}
+				listenerForwarder.failed(null);
+			}
 
-            // TODO: restruct previous calls so that if we are here, all went well.
-            // i.e. "ok" var should be useless
+			return events;
 
-            if (ok) {
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.info("FTPDeleteAction: file SUCCESSFULLY deleted from FtpServer!");
-                }
-                listenerForwarder.completed();
-            } else {
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.info("FTPDeleteAction: file was NOT deleted from FtpServer due to connection errors!");
-                }
-                listenerForwarder.failed(null);
-            }
+		} catch (Exception ex) {
+			// if (LOGGER.isLoggable(Level.SEVERE))
+			// LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // not
+			// logging rethrown exception
+			listenerForwarder.failed(ex);
+			throw new ActionException(this, ex.getMessage(), ex); // wrap
+																	// exception
+		}
+	}
 
-            return events;
+	/**
+	 * This function perform the elimination of the remote directory
+	 * recursively.
+	 * 
+	 * @param dirName
+	 *            The directory name to delete.
+	 * @param remotePath
+	 *            The remote directory path to delete
+	 * @return boolean If true the deleting operation has been successful
+	 */
+	private boolean deleteDirectory(final String dirName,
+			final String remotePath) {
 
-        } catch (Exception ex) {
-//            if (LOGGER.isLoggable(Level.SEVERE))
-//                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // not logging rethrown exception
-            listenerForwarder.failed(ex);
-            throw new ActionException(this, ex.getMessage(), ex); // wrap exception
-        }
-    }
+		boolean sent = false;
 
-    /**
-     * This function perform the elimination of the remote directory recursively.
-     * 
-     * @param dirName The directory name to delete. 
-     * @param remotePath The remote directory path to delete  
-     * @return boolean If true the deleting operation has been successful
-     */
-    private boolean deleteDirectory(final String dirName, final String remotePath) {
+		final FTPConnectMode connectMode = configuration.getConnectMode()
+				.toString().equalsIgnoreCase(FTPConnectMode.ACTIVE.toString()) ? FTPConnectMode.ACTIVE
+				: FTPConnectMode.PASV;
+		final int timeout = configuration.getTimeout();
+		String ftpserverHost = configuration.getFtpserverHost();
+		String ftpserverUSR = configuration.getFtpserverUSR();
+		String ftpserverPWD = configuration.getFtpserverPWD();
+		int ftpserverPort = configuration.getFtpserverPort();
 
-        boolean sent = false;
+		// ////////////////////////////////////////////////////////
+		// Get the remote directory details to delete this content
+		// ////////////////////////////////////////////////////////
 
-        final FTPConnectMode connectMode = configuration.getConnectMode().toString().equalsIgnoreCase(FTPConnectMode.ACTIVE.toString())
-                ? FTPConnectMode.ACTIVE : FTPConnectMode.PASV;
-        final int timeout = configuration.getTimeout();
-        String ftpserverHost = configuration.getFtpserverHost();
-        String ftpserverUSR = configuration.getFtpserverUSR();
-        String ftpserverPWD = configuration.getFtpserverPWD();
-        int ftpserverPort = configuration.getFtpserverPort();
+		FTPFile[] ftpFiles = FTPHelper.dirDetails(ftpserverHost, dirName,
+				remotePath, ftpserverUSR, ftpserverPWD, ftpserverPort,
+				FTPTransferType.BINARY, WriteMode.OVERWRITE, connectMode,
+				timeout);
 
-        // ////////////////////////////////////////////////////////
-        // Get the remote directory details to delete this content
-        // ////////////////////////////////////////////////////////
+		// //////////////////////////////////////
+		// Deleting the remote directory content
+		// //////////////////////////////////////
 
-        FTPFile[] ftpFiles = FTPHelper.dirDetails(
-                ftpserverHost,
-                dirName,
-                remotePath,
-                ftpserverUSR,
-                ftpserverPWD,
-                ftpserverPort,
-                FTPTransferType.BINARY,
-                WriteMode.OVERWRITE,
-                connectMode,
-                timeout);
+		if (ftpFiles != null && ftpFiles.length >= 1) {
+			String dirPath = remotePath.concat("/" + dirName);
 
-        // //////////////////////////////////////
-        // Deleting the remote directory content
-        // //////////////////////////////////////
+			for (int i = 0, n = ftpFiles.length; i < n; i++) {
+				if (ftpFiles[i].isDir()) {
+					sent = deleteDirectory(ftpFiles[i].getName(), dirPath);
 
-        if (ftpFiles != null && ftpFiles.length >= 1) {
-            String dirPath = remotePath.concat("/" + dirName);
+					if (!sent) {
+						break;
 
-            for (int i = 0, n = ftpFiles.length; i < n; i++) {
-                if (ftpFiles[i].isDir()) {
-                    sent = deleteDirectory(ftpFiles[i].getName(), dirPath);
+					} else {
+						sent = FTPHelper.deleteFileOrDirectory(ftpserverHost,
+								ftpFiles[i].getName(), true, dirPath,
+								ftpserverUSR, ftpserverPWD, ftpserverPort,
+								connectMode, timeout);
 
-                    if (!sent) {
-                        break;
+						if (!sent) {
+							break;
 
-                    } else {
-                        sent = FTPHelper.deleteFileOrDirectory(
-                                ftpserverHost,
-                                ftpFiles[i].getName(),
-                                true, dirPath,
-                                ftpserverUSR,
-                                ftpserverPWD,
-                                ftpserverPort,
-                                connectMode,
-                                timeout);
+						}
+					}
+				} else {
+					sent = FTPHelper.deleteFileOrDirectory(ftpserverHost,
+							ftpFiles[i].getName(), false, dirPath,
+							ftpserverUSR, ftpserverPWD, ftpserverPort,
+							connectMode, timeout);
 
-                        if (!sent) {
-                            break;
+					if (!sent) {
+						break;
 
-                        }
-                    }
-                } else {
-                    sent = FTPHelper.deleteFileOrDirectory(
-                            ftpserverHost,
-                            ftpFiles[i].getName(),
-                            false, dirPath,
-                            ftpserverUSR,
-                            ftpserverPWD,
-                            ftpserverPort,
-                            connectMode,
-                            timeout);
+					}
+				}
+			}
 
-                    if (!sent) {
-                        break;
+			if (sent) {
+				return true;
 
-                    }
-                }
-            }
+			} else {
+				return false;
 
-            if (sent) {
-                return true;
+			}
+		} else if (ftpFiles != null && ftpFiles.length < 1) {
+			return true;
+		} else {
+			return false;
 
-            } else {
-                return false;
-
-
-            }
-        } else if (ftpFiles != null && ftpFiles.length < 1) {
-            return true;
-        } else {
-            return false;
-
-        }
-    }
+		}
+	}
 }

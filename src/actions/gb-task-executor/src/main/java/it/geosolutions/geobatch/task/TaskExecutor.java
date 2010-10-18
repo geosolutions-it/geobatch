@@ -61,218 +61,258 @@ import org.apache.tools.ant.taskdefs.ExecTask;
 import org.apache.tools.ant.types.Environment.Variable;
 
 /**
- * Action to execute tasks such as invoking python scripts, gdal utilities and 
+ * Action to execute tasks such as invoking python scripts, gdal utilities and
  * similar command lines.
  * 
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
-public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements Action<FileSystemMonitorEvent> {
+public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements
+		Action<FileSystemMonitorEvent> {
 
-	private final static Logger LOGGER = Logger.getLogger(TaskExecutor.class.toString());
-	
+	private final static Logger LOGGER = Logger.getLogger(TaskExecutor.class
+			.toString());
+
 	private final static String SOURCE_TAG_OPEN = "<source>";
-	
-	private final static String SOURCE_TAG_CLOSE = "</source>";
-	
-	private final static String DESTINATION_TAG_OPEN = "<destination>";
-	
-	private final static String DESTINATION_TAG_CLOSE = "</destination>";
-	
-    private TaskExecutorConfiguration configuration;
 
-	public TaskExecutor(final TaskExecutorConfiguration configuration) throws IOException {
+	private final static String SOURCE_TAG_CLOSE = "</source>";
+
+	private final static String DESTINATION_TAG_OPEN = "<destination>";
+
+	private final static String DESTINATION_TAG_CLOSE = "</destination>";
+
+	private TaskExecutorConfiguration configuration;
+
+	public TaskExecutor(final TaskExecutorConfiguration configuration)
+			throws IOException {
 		super(configuration);
-    	this.configuration = configuration;
-    }
+		this.configuration = configuration;
+	}
 
 	public Queue<FileSystemMonitorEvent> execute(
 			Queue<FileSystemMonitorEvent> events) throws ActionException {
 
-        listenerForwarder.started();
+		listenerForwarder.started();
 
-        if (configuration == null) {
-            throw new IllegalStateException("DataFlowConfig is null.");
-        }
+		if (configuration == null) {
+			throw new IllegalStateException("DataFlowConfig is null.");
+		}
 
-        Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
-        
-        while(events.size() > 0) {
-            // get the first event
-            final FileSystemMonitorEvent event = events.remove();
-            final File inputFile = event.getSource();
-            if (inputFile == null){
-            	throw new IllegalArgumentException("Input File is null");
-            }
-            if (!inputFile.exists()){	
-            	throw new IllegalArgumentException("Input File doesn't exist");
-            }
-            final String inputFilePath = inputFile.getAbsolutePath();
-            
-            final String inputFileExt = FilenameUtils.getExtension(inputFilePath);
-            
-            //Getting XSL file definition
-            final String xslPath = configuration.getXsl();
-            final boolean useDefaultScript;
-            
-            String defaultScriptPath = configuration.getDefaultScript();
-            if (inputFileExt.equalsIgnoreCase("xml")){
-            	defaultScriptPath = inputFilePath;
-            	useDefaultScript = false;
-            } else {
-            	useDefaultScript = true;
-            }
-            
-            final String outputName = configuration.getOutputName();
-            
-            File xslFile = null;
-    		InputStream is = null;
+		Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
 
-    		try {
+		while (events.size() > 0) {
+			// get the first event
+			final FileSystemMonitorEvent event = events.remove();
+			final File inputFile = event.getSource();
+			if (inputFile == null) {
+				throw new IllegalArgumentException("Input File is null");
+			}
+			if (!inputFile.exists()) {
+				throw new IllegalArgumentException("Input File doesn't exist");
+			}
+			final String inputFilePath = inputFile.getAbsolutePath();
 
-    			if (xslPath != null && xslPath.trim().length()>0){
-    				 xslFile = IOUtils.findLocation(xslPath,
-    						 new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-    			}
-    			if (xslFile == null || !xslFile.exists())
-    				throw new IllegalArgumentException("The specified XSL file hasn't been found: "+xslPath);
+			final String inputFileExt = FilenameUtils
+					.getExtension(inputFilePath);
 
-    			File xmlFile = null;
-    			String outputFile = null;
-    			if (useDefaultScript){
-    				if (defaultScriptPath != null && defaultScriptPath.trim().length()>0){
-    					xmlFile = IOUtils.findLocation(defaultScriptPath,
-    						 new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-    					final File outXmlFile = File.createTempFile("script", ".xml");
-    					outXmlFile.deleteOnExit();
-    					outputFile = setScriptArguments(xmlFile.getAbsolutePath(), inputFilePath, outputName, outXmlFile);
-    					xmlFile = outXmlFile;
-    				}
+			// Getting XSL file definition
+			final String xslPath = configuration.getXsl();
+			final boolean useDefaultScript;
 
-    			} else {
-    				xmlFile = inputFile;
-    			}
+			String defaultScriptPath = configuration.getDefaultScript();
+			if (inputFileExt.equalsIgnoreCase("xml")) {
+				defaultScriptPath = inputFilePath;
+				useDefaultScript = false;
+			} else {
+				useDefaultScript = true;
+			}
 
-    			//Setup an XML source from the input XML file
-    			final Source xmlSource = new StreamSource(xmlFile);
+			final String outputName = configuration.getOutputName();
 
-    			is = new FileInputStream(xslFile);
-    	        	
-            	//XML parsing to setup a command line
-    			final String argument = buildArgument(xmlSource, is);
-    			   
-    			final Project project = new Project();
-    			project.init();
-    	
-    			final ExecTask execTask = new ExecTask();
-    			execTask.setProject(project);
-    			
-    			// Setting environment variables coming from the configuration
-    			// as an instance: PATH, LD_LIBRARY_PATH and similar
-    			Map<String,String> variables = configuration.getVariables();
-    			if (variables != null && !variables.isEmpty()){
-    				for (String key: variables.keySet()){
-    					Variable var = new Variable();
-    					var.setKey(key);
-    					final String value = variables.get(key);
-    					if (value != null){
-    						var.setValue(variables.get(key));
-    						execTask.addEnv(var);
-    					}
-    				}
-    			}
-    			
-    			//Setting executable
-    			execTask.setExecutable(configuration.getExecutable());
-    			
-    			//Setting Error logging
-    			final String errorPath = configuration.getErrorFile();
-    			if (errorPath!=null && errorPath.trim().length()>0){
-    				File errorFile = IOUtils.findLocation(errorPath,
-    			                 new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-    				if (errorFile != null){
-    					if(!errorFile.exists()){
-    						try{
-    							errorFile.createNewFile();
-    						} catch (Throwable t){
-    							if (LOGGER.isLoggable(Level.WARNING))
-    									LOGGER.warning(new StringBuilder("The specified errorFile doesn't exist.").append(" Unable to create it due to:").append(t.getLocalizedMessage()).toString());
-    						}
-    					}
-    					if (errorFile.exists()){
-    						execTask.setLogError(true);
-    						execTask.setError(errorFile);
-    						execTask.setFailonerror(true);
-    					}
-    				}
-    			}
-    				
-    			//Setting the timeout
-    			Long timeOut = configuration.getTimeOut();
-    			if (timeOut!=null){
-    				execTask.setTimeout(timeOut);
-    			}
-    			
-    			//Setting command line argument
-    			execTask.createArg().setLine(argument);
-    			
-    			File output = null;
-    			if (configuration.getOutput() != null) {
-    				output = new File(configuration.getOutput());
-    				if (output.exists() && output.isDirectory()) {
-    					final File outXmlFile = File.createTempFile("script", ".xml");
-    					outXmlFile.deleteOnExit();
-    					String destFile = getScriptArguments(xmlFile.getAbsolutePath(), "srcfile");
-    					if (output.isAbsolute()) {
-    						output = new File(output, FilenameUtils.getBaseName(destFile) + configuration.getOutputName().substring(configuration.getOutputName().indexOf(".")));
-    					} else {
-    						output = IOUtils.findLocation(configuration.getOutput(), inputFile.getParentFile() );
-    						output = new File(output, FilenameUtils.getBaseName(inputFile.getName()) + configuration.getOutputName().substring(configuration.getOutputName().indexOf(".")));
-    					}
-    				}
-    				execTask.setOutput(output);
-    			}
-    			
-    			//Executing
-    			execTask.execute();
-    			
-    			File outFile = (outputFile != null ? new File(outputFile) : null);
-    			if (configuration.getOutput() != null) {
-    				if (new File(configuration.getOutput()).isAbsolute()) {
-    					if (output.exists() && output.isFile()) {
-    						//outFile = output;
-    						final File outXmlFile = File.createTempFile("script", ".xml");
-    						outXmlFile.deleteOnExit();
-    						outputFile = setScriptArguments(xmlFile.getAbsolutePath(), output.getAbsolutePath(), outputName, outXmlFile);
-    						outFile = new File(configuration.getOutput(), FilenameUtils.getBaseName(outputFile)+".xml");
-    						FileUtils.copyFile(outXmlFile, outFile);
-    					}
-    				} else {
-    	    			if (outFile == null)
-    	    				outFile = inputFile;
-    				}
-    			} else if (outFile == null) {
-    				outFile = inputFile;
-    			}
-    			
-    			outEvents.add(new FileSystemMonitorEvent(outFile, FileSystemMonitorNotifications.FILE_ADDED));
-    		} catch (Throwable e) {
-    			if (LOGGER.isLoggable(Level.FINE))
-    				LOGGER.fine(e.getLocalizedMessage());
+			File xslFile = null;
+			InputStream is = null;
 
-                listenerForwarder.failed(e);
+			try {
 
-    		}finally{
-    			if(is!=null)
-    				org.apache.commons.io.IOUtils.closeQuietly(is);
-    		}
-        }
+				if (xslPath != null && xslPath.trim().length() > 0) {
+					xslFile = IOUtils.findLocation(xslPath, new File(
+							((FileBaseCatalog) CatalogHolder.getCatalog())
+									.getBaseDirectory()));
+				}
+				if (xslFile == null || !xslFile.exists())
+					throw new IllegalArgumentException(
+							"The specified XSL file hasn't been found: "
+									+ xslPath);
 
-        listenerForwarder.completed();
+				File xmlFile = null;
+				String outputFile = null;
+				if (useDefaultScript) {
+					if (defaultScriptPath != null
+							&& defaultScriptPath.trim().length() > 0) {
+						xmlFile = IOUtils.findLocation(defaultScriptPath,
+								new File(((FileBaseCatalog) CatalogHolder
+										.getCatalog()).getBaseDirectory()));
+						final File outXmlFile = File.createTempFile("script",
+								".xml");
+						outXmlFile.deleteOnExit();
+						outputFile = setScriptArguments(xmlFile
+								.getAbsolutePath(), inputFilePath, outputName,
+								outXmlFile);
+						xmlFile = outXmlFile;
+					}
+
+				} else {
+					xmlFile = inputFile;
+				}
+
+				// Setup an XML source from the input XML file
+				final Source xmlSource = new StreamSource(xmlFile);
+
+				is = new FileInputStream(xslFile);
+
+				// XML parsing to setup a command line
+				final String argument = buildArgument(xmlSource, is);
+
+				final Project project = new Project();
+				project.init();
+
+				final ExecTask execTask = new ExecTask();
+				execTask.setProject(project);
+
+				// Setting environment variables coming from the configuration
+				// as an instance: PATH, LD_LIBRARY_PATH and similar
+				Map<String, String> variables = configuration.getVariables();
+				if (variables != null && !variables.isEmpty()) {
+					for (String key : variables.keySet()) {
+						Variable var = new Variable();
+						var.setKey(key);
+						final String value = variables.get(key);
+						if (value != null) {
+							var.setValue(variables.get(key));
+							execTask.addEnv(var);
+						}
+					}
+				}
+
+				// Setting executable
+				execTask.setExecutable(configuration.getExecutable());
+
+				// Setting Error logging
+				final String errorPath = configuration.getErrorFile();
+				if (errorPath != null && errorPath.trim().length() > 0) {
+					File errorFile = IOUtils.findLocation(errorPath, new File(
+							((FileBaseCatalog) CatalogHolder.getCatalog())
+									.getBaseDirectory()));
+					if (errorFile != null) {
+						if (!errorFile.exists()) {
+							try {
+								errorFile.createNewFile();
+							} catch (Throwable t) {
+								if (LOGGER.isLoggable(Level.WARNING))
+									LOGGER
+											.warning(new StringBuilder(
+													"The specified errorFile doesn't exist.")
+													.append(
+															" Unable to create it due to:")
+													.append(
+															t
+																	.getLocalizedMessage())
+													.toString());
+							}
+						}
+						if (errorFile.exists()) {
+							execTask.setLogError(true);
+							execTask.setError(errorFile);
+							execTask.setFailonerror(true);
+						}
+					}
+				}
+
+				// Setting the timeout
+				Long timeOut = configuration.getTimeOut();
+				if (timeOut != null) {
+					execTask.setTimeout(timeOut);
+				}
+
+				// Setting command line argument
+				execTask.createArg().setLine(argument);
+
+				File output = null;
+				if (configuration.getOutput() != null) {
+					output = new File(configuration.getOutput());
+					if (output.exists() && output.isDirectory()) {
+						final File outXmlFile = File.createTempFile("script",
+								".xml");
+						outXmlFile.deleteOnExit();
+						String destFile = getScriptArguments(xmlFile
+								.getAbsolutePath(), "srcfile");
+						if (output.isAbsolute()) {
+							output = new File(output, FilenameUtils
+									.getBaseName(destFile)
+									+ configuration.getOutputName().substring(
+											configuration.getOutputName()
+													.indexOf(".")));
+						} else {
+							output = IOUtils.findLocation(configuration
+									.getOutput(), inputFile.getParentFile());
+							output = new File(output, FilenameUtils
+									.getBaseName(inputFile.getName())
+									+ configuration.getOutputName().substring(
+											configuration.getOutputName()
+													.indexOf(".")));
+						}
+					}
+					execTask.setOutput(output);
+				}
+
+				// Executing
+				execTask.execute();
+
+				File outFile = (outputFile != null ? new File(outputFile)
+						: null);
+				if (configuration.getOutput() != null) {
+					if (new File(configuration.getOutput()).isAbsolute()) {
+						if (output.exists() && output.isFile()) {
+							// outFile = output;
+							final File outXmlFile = File.createTempFile(
+									"script", ".xml");
+							outXmlFile.deleteOnExit();
+							outputFile = setScriptArguments(xmlFile
+									.getAbsolutePath(), output
+									.getAbsolutePath(), outputName, outXmlFile);
+							outFile = new File(configuration.getOutput(),
+									FilenameUtils.getBaseName(outputFile)
+											+ ".xml");
+							FileUtils.copyFile(outXmlFile, outFile);
+						}
+					} else {
+						if (outFile == null)
+							outFile = inputFile;
+					}
+				} else if (outFile == null) {
+					outFile = inputFile;
+				}
+
+				outEvents.add(new FileSystemMonitorEvent(outFile,
+						FileSystemMonitorNotifications.FILE_ADDED));
+			} catch (Throwable e) {
+				if (LOGGER.isLoggable(Level.FINE))
+					LOGGER.fine(e.getLocalizedMessage());
+
+				listenerForwarder.failed(e);
+
+			} finally {
+				if (is != null)
+					org.apache.commons.io.IOUtils.closeQuietly(is);
+			}
+		}
+
+		listenerForwarder.completed();
 		return outEvents;
 	}
 
-	private String buildArgument(final Source xmlSource, final InputStream is) throws TransformerException {
-		//XML parsing to setup a command line
+	private String buildArgument(final Source xmlSource, final InputStream is)
+			throws TransformerException {
+		// XML parsing to setup a command line
 		final TransformerFactory f = TransformerFactory.newInstance();
 		final StringWriter result = new StringWriter();
 		final Templates transformation = f.newTemplates(new StreamSource(is));
@@ -281,106 +321,132 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements 
 		final String argument = result.toString();
 		return argument;
 	}
-	
-	private String setScriptArguments(final String defaultScriptPath, final String inputFilePath, 
-			String outputName, final File outXmlFile) throws IOException{
+
+	private String setScriptArguments(final String defaultScriptPath,
+			final String inputFilePath, String outputName, final File outXmlFile)
+			throws IOException {
 		String destFilePath = null;
 		boolean overwriteOutput = false;
-		if (outputName != null && outputName.trim().length()>0){
+		if (outputName != null && outputName.trim().length() > 0) {
 			overwriteOutput = true;
-			if (outputName.startsWith("*.")){
-				final String outputExt = outputName.substring(2,outputName.length());
-				destFilePath = new StringBuilder(FilenameUtils.getFullPath(inputFilePath)).append(File.separator).append(FilenameUtils.getBaseName(inputFilePath)).append(".").append(outputExt).toString();
+			if (outputName.startsWith("*.")) {
+				final String outputExt = outputName.substring(2, outputName
+						.length());
+				destFilePath = new StringBuilder(FilenameUtils
+						.getFullPath(inputFilePath)).append(File.separator)
+						.append(FilenameUtils.getBaseName(inputFilePath))
+						.append(".").append(outputExt).toString();
 			} else {
-				destFilePath = new StringBuilder(FilenameUtils.getFullPath(inputFilePath)).append(File.separator).append(FilenameUtils.getBaseName(inputFilePath)).append(".").append(outputName).toString();
+				destFilePath = new StringBuilder(FilenameUtils
+						.getFullPath(inputFilePath)).append(File.separator)
+						.append(FilenameUtils.getBaseName(inputFilePath))
+						.append(".").append(outputName).toString();
 			}
-        }
-		
+		}
+
 		// Create FileReader Object
-        FileReader inputFileReader   = new FileReader(defaultScriptPath);
-        FileWriter outputFileWriter  = new FileWriter(outXmlFile);
+		FileReader inputFileReader = new FileReader(defaultScriptPath);
+		FileWriter outputFileWriter = new FileWriter(outXmlFile);
 
-        try {
+		try {
 
-            // Create Buffered/PrintWriter Objects
-            BufferedReader inputStream   = new BufferedReader(inputFileReader);
-            PrintWriter    outputStream  = new PrintWriter(outputFileWriter);
+			// Create Buffered/PrintWriter Objects
+			BufferedReader inputStream = new BufferedReader(inputFileReader);
+			PrintWriter outputStream = new PrintWriter(outputFileWriter);
 
-            String inLine = null;
-            boolean sourcePresent = false;
-            boolean destinationPresent = false;
-            
-            while ((inLine = inputStream.readLine()) != null) {
-            	// Handle KeyWords
+			String inLine = null;
+			boolean sourcePresent = false;
+			boolean destinationPresent = false;
 
-            	if (inLine.trim().startsWith(SOURCE_TAG_OPEN)) {
-            		if (inLine.trim().endsWith(SOURCE_TAG_CLOSE)){
-            			// source file specified on the same line
-            			inLine = new StringBuilder(SOURCE_TAG_OPEN).append(inputFilePath).append(SOURCE_TAG_CLOSE).toString();
-            		} else {
-            			while ((inLine = inputStream.readLine()) != null) {
-            				if (inLine.trim().endsWith(SOURCE_TAG_CLOSE)){
-            					// source file specified on different lines
-            					inLine = new StringBuilder(SOURCE_TAG_OPEN).append(inputFilePath).append(SOURCE_TAG_CLOSE).toString();
-            				} 
-            			}
-            		}
-            		sourcePresent = true;
-            	}
+			while ((inLine = inputStream.readLine()) != null) {
+				// Handle KeyWords
 
-            	
-        		if (inLine.trim().startsWith(DESTINATION_TAG_OPEN)) {
-            		if (inLine.trim().endsWith(DESTINATION_TAG_CLOSE)){
-            			// source file specified on the same line
-            			if (overwriteOutput){
-            				inLine = new StringBuilder(DESTINATION_TAG_OPEN).append(destFilePath).append(DESTINATION_TAG_CLOSE).toString();
-            			} else {
-            				final int start = inLine.indexOf(DESTINATION_TAG_OPEN);
-            				final int end = inLine.indexOf(DESTINATION_TAG_CLOSE, start+1);
-            				destFilePath = inLine.substring(start + DESTINATION_TAG_OPEN.length(), end);
-            			}
-            			
-            		} else {
-            			while ((inLine = inputStream.readLine()) != null) {
-            				if (overwriteOutput){
-	            				if (inLine.trim().endsWith(DESTINATION_TAG_CLOSE)){
-	            					// source file specified on different lines
-	            					inLine = new StringBuilder(DESTINATION_TAG_OPEN).append(destFilePath).append(DESTINATION_TAG_CLOSE).toString();
-	            				} 
-            				} else {
-            					String newLine = inLine.trim();
-            					if (newLine.trim().endsWith(DESTINATION_TAG_CLOSE)){
-	            					// source file specified on different lines
-            						if (!newLine.trim().startsWith(DESTINATION_TAG_CLOSE)) {
-            							destFilePath = newLine.substring(0, newLine.indexOf(DESTINATION_TAG_CLOSE));
-            						}
-	            				} else {
-	            					if (newLine.length()>0){
-	            						destFilePath = newLine;
-	            					}
-	            				}
-            				}
-            			}
-            		}
-            		destinationPresent = true;
-        		}
-            	
-        		outputStream.println(inLine);
-            }
+				if (inLine.trim().startsWith(SOURCE_TAG_OPEN)) {
+					if (inLine.trim().endsWith(SOURCE_TAG_CLOSE)) {
+						// source file specified on the same line
+						inLine = new StringBuilder(SOURCE_TAG_OPEN).append(
+								inputFilePath).append(SOURCE_TAG_CLOSE)
+								.toString();
+					} else {
+						while ((inLine = inputStream.readLine()) != null) {
+							if (inLine.trim().endsWith(SOURCE_TAG_CLOSE)) {
+								// source file specified on different lines
+								inLine = new StringBuilder(SOURCE_TAG_OPEN)
+										.append(inputFilePath).append(
+												SOURCE_TAG_CLOSE).toString();
+							}
+						}
+					}
+					sourcePresent = true;
+				}
 
-            if (sourcePresent && !destinationPresent) {
-            	destFilePath = inputFilePath;
-            }
-            
-        } catch (IOException e) {
-        } finally {
-        	inputFileReader.close();
-        	outputFileWriter.close();
-        }
-        
+				if (inLine.trim().startsWith(DESTINATION_TAG_OPEN)) {
+					if (inLine.trim().endsWith(DESTINATION_TAG_CLOSE)) {
+						// source file specified on the same line
+						if (overwriteOutput) {
+							inLine = new StringBuilder(DESTINATION_TAG_OPEN)
+									.append(destFilePath).append(
+											DESTINATION_TAG_CLOSE).toString();
+						} else {
+							final int start = inLine
+									.indexOf(DESTINATION_TAG_OPEN);
+							final int end = inLine.indexOf(
+									DESTINATION_TAG_CLOSE, start + 1);
+							destFilePath = inLine.substring(start
+									+ DESTINATION_TAG_OPEN.length(), end);
+						}
+
+					} else {
+						while ((inLine = inputStream.readLine()) != null) {
+							if (overwriteOutput) {
+								if (inLine.trim().endsWith(
+										DESTINATION_TAG_CLOSE)) {
+									// source file specified on different lines
+									inLine = new StringBuilder(
+											DESTINATION_TAG_OPEN).append(
+											destFilePath).append(
+											DESTINATION_TAG_CLOSE).toString();
+								}
+							} else {
+								String newLine = inLine.trim();
+								if (newLine.trim().endsWith(
+										DESTINATION_TAG_CLOSE)) {
+									// source file specified on different lines
+									if (!newLine.trim().startsWith(
+											DESTINATION_TAG_CLOSE)) {
+										destFilePath = newLine
+												.substring(
+														0,
+														newLine
+																.indexOf(DESTINATION_TAG_CLOSE));
+									}
+								} else {
+									if (newLine.length() > 0) {
+										destFilePath = newLine;
+									}
+								}
+							}
+						}
+					}
+					destinationPresent = true;
+				}
+
+				outputStream.println(inLine);
+			}
+
+			if (sourcePresent && !destinationPresent) {
+				destFilePath = inputFilePath;
+			}
+
+		} catch (IOException e) {
+		} finally {
+			inputFileReader.close();
+			outputFileWriter.close();
+		}
+
 		return destFilePath;
 	}
-	
+
 	/**
 	 * 
 	 * @param defaultScriptPath
@@ -388,42 +454,45 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements 
 	 * @return
 	 * @throws IOException
 	 */
-	private static String getScriptArguments(final String defaultScriptPath, final String tagName) throws IOException{
+	private static String getScriptArguments(final String defaultScriptPath,
+			final String tagName) throws IOException {
 		String value = null;
-		
+
 		// Create FileReader Object
-        FileReader inputFileReader   = new FileReader(defaultScriptPath);
+		FileReader inputFileReader = new FileReader(defaultScriptPath);
 
-        try {
-            // Create Buffered/PrintWriter Objects
-            BufferedReader inputStream   = new BufferedReader(inputFileReader);
+		try {
+			// Create Buffered/PrintWriter Objects
+			BufferedReader inputStream = new BufferedReader(inputFileReader);
 
-            String inLine = null;
-            
-            while ((inLine = inputStream.readLine()) != null) {
-            	// Handle KeyWords
+			String inLine = null;
 
-            	if (inLine.trim().startsWith("<"+tagName+">")) {
-            		if (inLine.trim().endsWith("</"+tagName+">")){
-            			int beginIndex = inLine.indexOf("<"+tagName+">") + ("<"+tagName+">").length();
-						int endIndex = inLine.length() - ("</"+tagName+">").length();
-						value = inLine.substring(beginIndex, endIndex); 
-            		} else {
-            			while ((inLine = inputStream.readLine()) != null) {
-            				if (!inLine.trim().endsWith("</"+tagName+">"))
-            					value = inLine;
-            				else
-            					break;
-            			}
-            		}
-            	}
-            }
-            
-        } catch (IOException e) {
-        } finally {
-        	inputFileReader.close();
-        }
-        
+			while ((inLine = inputStream.readLine()) != null) {
+				// Handle KeyWords
+
+				if (inLine.trim().startsWith("<" + tagName + ">")) {
+					if (inLine.trim().endsWith("</" + tagName + ">")) {
+						int beginIndex = inLine.indexOf("<" + tagName + ">")
+								+ ("<" + tagName + ">").length();
+						int endIndex = inLine.length()
+								- ("</" + tagName + ">").length();
+						value = inLine.substring(beginIndex, endIndex);
+					} else {
+						while ((inLine = inputStream.readLine()) != null) {
+							if (!inLine.trim().endsWith("</" + tagName + ">"))
+								value = inLine;
+							else
+								break;
+						}
+					}
+				}
+			}
+
+		} catch (IOException e) {
+		} finally {
+			inputFileReader.close();
+		}
+
 		return value;
 	}
 }

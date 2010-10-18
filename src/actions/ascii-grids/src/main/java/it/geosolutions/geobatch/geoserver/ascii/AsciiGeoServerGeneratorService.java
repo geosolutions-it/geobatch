@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.geoserver.ascii;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
@@ -37,26 +35,28 @@ import java.util.logging.Logger;
  * @author Simone Giannecchini, GeoSolutions
  * 
  */
-public class AsciiGeoServerGeneratorService 
-        extends GeoServerConfiguratorService<FileSystemMonitorEvent,
-                                             GeoServerActionConfiguration> {
+public class AsciiGeoServerGeneratorService
+		extends
+		GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(AsciiGeoServerGeneratorService.class.getName());
+	private final static Logger LOGGER = Logger
+			.getLogger(AsciiGeoServerGeneratorService.class.getName());
 
-    public AsciiGeoServerGenerator createAction(GeoServerActionConfiguration configuration) {
-        try {
-            return new AsciiGeoServerGenerator(configuration);
-        } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-            return null;
-        }
-    }
+	public AsciiGeoServerGenerator createAction(
+			GeoServerActionConfiguration configuration) {
+		try {
+			return new AsciiGeoServerGenerator(configuration);
+		} catch (IOException e) {
+			if (LOGGER.isLoggable(Level.INFO))
+				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+			return null;
+		}
+	}
 
-    @Override
-    public boolean canCreateAction(GeoServerActionConfiguration configuration) {
-        final boolean superRetVal = super.canCreateAction(configuration);
-        return superRetVal;
-    }
+	@Override
+	public boolean canCreateAction(GeoServerActionConfiguration configuration) {
+		final boolean superRetVal = super.canCreateAction(configuration);
+		return superRetVal;
+	}
 
 }

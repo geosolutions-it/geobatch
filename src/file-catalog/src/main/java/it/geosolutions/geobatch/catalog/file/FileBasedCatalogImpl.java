@@ -30,49 +30,50 @@ import it.geosolutions.geobatch.catalog.impl.BaseCatalog;
  * @author Simone Giannecchini, GeoSolutions
  */
 @SuppressWarnings("unchecked")
-public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog {
+public class FileBasedCatalogImpl extends BaseCatalog implements
+		FileBaseCatalog {
 
-    /**
-     * Default Constructor.
-     */
-    private FileBasedCatalogImpl() {
-        super();
-    }
+	/**
+	 * Default Constructor.
+	 */
+	private FileBasedCatalogImpl() {
+		super();
+	}
 
-    /**
-     * 
-     * @param baseDirectory
-     */
-    private FileBasedCatalogImpl(String baseDirectory) {
-        super();
-        this.baseDirectory = baseDirectory;
-    }
+	/**
+	 * 
+	 * @param baseDirectory
+	 */
+	private FileBasedCatalogImpl(String baseDirectory) {
+		super();
+		this.baseDirectory = baseDirectory;
+	}
 
-    /**
-     * baseDirectory: represents the base directory where the xml files are located. The
-     * workingDirecotry will be relative to this base directory unless an absolute path has been
-     * specified.
-     */
-    private String baseDirectory;
+	/**
+	 * baseDirectory: represents the base directory where the xml files are
+	 * located. The workingDirecotry will be relative to this base directory
+	 * unless an absolute path has been specified.
+	 */
+	private String baseDirectory;
 
-    /**
-     * Getter for the baseDirectory.
-     */
-    public String getBaseDirectory() {
-        return this.baseDirectory;
-    }
+	/**
+	 * Getter for the baseDirectory.
+	 */
+	public String getBaseDirectory() {
+		return this.baseDirectory;
+	}
 
-    /**
-     * Setter for the baseDirectory.
-     */
-    public void setBaseDirectory(final String baseDirectory) {
-        this.baseDirectory = baseDirectory;
+	/**
+	 * Setter for the baseDirectory.
+	 */
+	public void setBaseDirectory(final String baseDirectory) {
+		this.baseDirectory = baseDirectory;
 
-    }
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " [" + baseDirectory + "]";
-    }
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " [" + baseDirectory + "]";
+	}
 
 }

@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.geoserver.geotiff;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
@@ -39,24 +37,27 @@ import java.util.logging.Logger;
  * 
  * @version $ ShapeFileDTOProducerSPI.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
-public class GeoTIFFGeoServerGeneratorService extends
-        GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
+public class GeoTIFFGeoServerGeneratorService
+		extends
+		GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(GeoTIFFGeoServerGenerator.class.toString());
+	private final static Logger LOGGER = Logger
+			.getLogger(GeoTIFFGeoServerGenerator.class.toString());
 
-    public GeoTIFFGeoServerGenerator createAction(GeoServerActionConfiguration configuration) {
-        try {
-            return new GeoTIFFGeoServerGenerator(configuration);
-        } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-            return null;
-        }
-    }
+	public GeoTIFFGeoServerGenerator createAction(
+			GeoServerActionConfiguration configuration) {
+		try {
+			return new GeoTIFFGeoServerGenerator(configuration);
+		} catch (IOException e) {
+			if (LOGGER.isLoggable(Level.INFO))
+				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+			return null;
+		}
+	}
 
-    public boolean canCreateAction(GeoServerActionConfiguration configuration) {
-        final boolean superRetVal = super.canCreateAction(configuration);
-        return superRetVal;
-    }
+	public boolean canCreateAction(GeoServerActionConfiguration configuration) {
+		final boolean superRetVal = super.canCreateAction(configuration);
+		return superRetVal;
+	}
 
 }

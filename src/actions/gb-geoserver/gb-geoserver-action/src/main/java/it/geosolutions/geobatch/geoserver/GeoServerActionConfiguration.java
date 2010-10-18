@@ -26,180 +26,184 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.List;
 
-public class GeoServerActionConfiguration extends ActionConfiguration implements Configuration {
+public class GeoServerActionConfiguration extends ActionConfiguration implements
+		Configuration {
 
-    public GeoServerActionConfiguration(String id, String name,
+	public GeoServerActionConfiguration(String id, String name,
 			String description, boolean dirty) {
 		super(id, name, description, dirty);
 	}
 
 	private String workingDirectory;
-	
-    private String crs;
 
-    private String envelope;
+	private String crs;
 
-    private String geoserverPWD;
+	private String envelope;
 
-    private String geoserverUID;
+	private String geoserverPWD;
 
-    private String geoserverURL;
+	private String geoserverUID;
 
-    private String storeFilePrefix;
+	private String geoserverURL;
 
-    private String configId;
+	private String storeFilePrefix;
 
-    private String datatype;
+	private String configId;
 
-    private String defaultNamespace;
+	private String datatype;
 
-    private String defaultNamespaceUri;
+	private String defaultNamespace;
 
-    private String defaultStyle;
+	private String defaultNamespaceUri;
 
-    private String wmsPath;
+	private String defaultStyle;
 
-    private List<String> styles;
+	private String wmsPath;
 
-    private String dataTransferMethod;
+	private List<String> styles;
 
-    public GeoServerActionConfiguration() {
-        super();
-    }
+	private String dataTransferMethod;
 
-    /**
-     * @return the workingDirectory
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
+	public GeoServerActionConfiguration() {
+		super();
+	}
 
-    /**
-     * @param workingDirectory
-     *            the workingDirectory to set
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
-    }
+	/**
+	 * @return the workingDirectory
+	 */
+	public String getWorkingDirectory() {
+		return workingDirectory;
+	}
 
-    public String getCrs() {
-        return crs;
-    }
+	/**
+	 * @param workingDirectory
+	 *            the workingDirectory to set
+	 */
+	public void setWorkingDirectory(String workingDirectory) {
+		this.workingDirectory = workingDirectory;
+	}
 
-    public void setCrs(String crs) {
-        this.crs = crs;
-    }
+	public String getCrs() {
+		return crs;
+	}
 
-    public String getEnvelope() {
-        return envelope;
-    }
+	public void setCrs(String crs) {
+		this.crs = crs;
+	}
 
-    public void setEnvelope(String envelope) {
-        this.envelope = envelope;
-    }
+	public String getEnvelope() {
+		return envelope;
+	}
 
-    public String getGeoserverPWD() {
-        return geoserverPWD;
-    }
+	public void setEnvelope(String envelope) {
+		this.envelope = envelope;
+	}
 
-    public void setGeoserverPWD(String geoserverPWD) {
-        this.geoserverPWD = geoserverPWD;
-    }
+	public String getGeoserverPWD() {
+		return geoserverPWD;
+	}
 
-    public String getGeoserverUID() {
-        return geoserverUID;
-    }
+	public void setGeoserverPWD(String geoserverPWD) {
+		this.geoserverPWD = geoserverPWD;
+	}
 
-    public void setGeoserverUID(String geoserverUID) {
-        this.geoserverUID = geoserverUID;
-    }
+	public String getGeoserverUID() {
+		return geoserverUID;
+	}
 
-    public String getGeoserverURL() {
-        return geoserverURL;
-    }
+	public void setGeoserverUID(String geoserverUID) {
+		this.geoserverUID = geoserverUID;
+	}
 
-    public void setGeoserverURL(String geoserverURL) {
-        this.geoserverURL = geoserverURL;
-    }
+	public String getGeoserverURL() {
+		return geoserverURL;
+	}
 
-    public String getStoreFilePrefix() {
-        return storeFilePrefix;
-    }
+	public void setGeoserverURL(String geoserverURL) {
+		this.geoserverURL = geoserverURL;
+	}
 
-    public void setStoreFilePrefix(String storeFilePrefix) {
-        this.storeFilePrefix = storeFilePrefix;
-    }
+	public String getStoreFilePrefix() {
+		return storeFilePrefix;
+	}
 
-    public List<String> getStyles() {
-        return styles;
-    }
+	public void setStoreFilePrefix(String storeFilePrefix) {
+		this.storeFilePrefix = storeFilePrefix;
+	}
 
-    public void setStyles(List<String> styles) {
-        this.styles = styles;
-    }
+	public List<String> getStyles() {
+		return styles;
+	}
 
-    public String getConfigId() {
-        return configId;
-    }
+	public void setStyles(List<String> styles) {
+		this.styles = styles;
+	}
 
-    public void setConfigId(String configId) {
-        this.configId = configId;
-    }
+	public String getConfigId() {
+		return configId;
+	}
 
-    public String getDatatype() {
-        return datatype;
-    }
+	public void setConfigId(String configId) {
+		this.configId = configId;
+	}
 
-    public void setDatatype(String datatype) {
-        this.datatype = datatype;
-    }
+	public String getDatatype() {
+		return datatype;
+	}
 
-    public String getDefaultNamespace() {
-        return defaultNamespace;
-    }
+	public void setDatatype(String datatype) {
+		this.datatype = datatype;
+	}
 
-    public void setDefaultNamespace(String defaultNamespace) {
-        this.defaultNamespace = defaultNamespace;
-    }
+	public String getDefaultNamespace() {
+		return defaultNamespace;
+	}
 
-    public String getDefaultNamespaceUri() {
-        return defaultNamespaceUri;
-    }
+	public void setDefaultNamespace(String defaultNamespace) {
+		this.defaultNamespace = defaultNamespace;
+	}
 
-    public void setDefaultNamespaceUri(String defaultNamespaceUri) {
-        this.defaultNamespaceUri = defaultNamespaceUri;
-    }
+	public String getDefaultNamespaceUri() {
+		return defaultNamespaceUri;
+	}
 
-    public String getDefaultStyle() {
-        return defaultStyle;
-    }
+	public void setDefaultNamespaceUri(String defaultNamespaceUri) {
+		this.defaultNamespaceUri = defaultNamespaceUri;
+	}
 
-    public void setDefaultStyle(String defaultStyle) {
-        this.defaultStyle = defaultStyle;
-    }
+	public String getDefaultStyle() {
+		return defaultStyle;
+	}
 
-    public String getWmsPath() {
-        return wmsPath;
-    }
+	public void setDefaultStyle(String defaultStyle) {
+		this.defaultStyle = defaultStyle;
+	}
 
-    public void setWmsPath(String wmsPath) {
-        this.wmsPath = wmsPath;
-    }
+	public String getWmsPath() {
+		return wmsPath;
+	}
 
-    public String getDataTransferMethod() {
-        return dataTransferMethod;
-    }
+	public void setWmsPath(String wmsPath) {
+		this.wmsPath = wmsPath;
+	}
 
-    public void setDataTransferMethod(String dataTransferMethod) {
-        this.dataTransferMethod = dataTransferMethod;
-    }
+	public String getDataTransferMethod() {
+		return dataTransferMethod;
+	}
+
+	public void setDataTransferMethod(String dataTransferMethod) {
+		this.dataTransferMethod = dataTransferMethod;
+	}
 
 	@Override
-	public GeoServerActionConfiguration clone() { // throws CloneNotSupportedException {
-//		final GeoServerActionConfiguration configuration =
-//			new GeoServerActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
-		final GeoServerActionConfiguration configuration =
-                (GeoServerActionConfiguration)super.clone();
+	public GeoServerActionConfiguration clone() { // throws
+													// CloneNotSupportedException
+													// {
+	// final GeoServerActionConfiguration configuration =
+	// new
+	// GeoServerActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+		final GeoServerActionConfiguration configuration = (GeoServerActionConfiguration) super
+				.clone();
 
 		configuration.setCrs(crs);
 		configuration.setDataTransferMethod(dataTransferMethod);
@@ -211,24 +215,20 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
 		configuration.setGeoserverPWD(geoserverPWD);
 		configuration.setGeoserverUID(geoserverUID);
 		configuration.setGeoserverURL(geoserverURL);
-//		configuration.setServiceID(getServiceID());
+		// configuration.setServiceID(getServiceID());
 		configuration.setStoreFilePrefix(storeFilePrefix);
 		configuration.setStyles(styles);
 		configuration.setWmsPath(wmsPath);
 		configuration.setWorkingDirectory(workingDirectory);
-		
+
 		return configuration;
 	}
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() +"["
-				+ "id:" + getId()
-				+ " name:" + getName()
-				+ " srvId:" + getServiceID()
-				+ " wkdir:" + getWorkingDirectory()
-				+ " GSurl:" + getGeoserverURL()
-				+"]";
+		return getClass().getSimpleName() + "[" + "id:" + getId() + " name:"
+				+ getName() + " srvId:" + getServiceID() + " wkdir:"
+				+ getWorkingDirectory() + " GSurl:" + getGeoserverURL() + "]";
 	}
 
 }

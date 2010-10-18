@@ -15,17 +15,17 @@ import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 
-public abstract class LammaBaseAction 
-	extends BaseAction<FileSystemMonitorEvent> 
-	implements Action<FileSystemMonitorEvent> {
+public abstract class LammaBaseAction extends
+		BaseAction<FileSystemMonitorEvent> implements
+		Action<FileSystemMonitorEvent> {
 
 	protected final LammaBaseConfiguration configuration;
-	
+
 	protected static final TimeZone LAMMA_TZ = TimeZone.getTimeZone("GMT+2");
 
 	protected final LammaService esbClient;
-	
-    protected final LammaLog logMessage = new LammaLog();
+
+	protected final LammaLog logMessage = new LammaLog();
 
 	public LammaBaseAction(LammaBaseConfiguration actionConfiguration) {
 		super(actionConfiguration);
@@ -39,8 +39,8 @@ public abstract class LammaBaseAction
 	 */
 	private LammaService initializeClient() {
 		// ////////////////////////////////////
-    	// Client initialization 
-    	// ////////////////////////////////////
+		// Client initialization
+		// ////////////////////////////////////
 
 		if (this.configuration.getLammaServiceURL() != null) {
 			JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
@@ -52,7 +52,7 @@ public abstract class LammaBaseAction
 
 			return client;
 		}
-		
+
 		return null;
 	}
 
@@ -68,7 +68,7 @@ public abstract class LammaBaseAction
 			return false;
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param scriptPath
@@ -76,42 +76,45 @@ public abstract class LammaBaseAction
 	 * @return
 	 * @throws IOException
 	 */
-	protected static String getScriptArguments(final String scriptPath, final String tagName) throws IOException{
+	protected static String getScriptArguments(final String scriptPath,
+			final String tagName) throws IOException {
 		String value = null;
-		
+
 		// Create FileReader Object
-        FileReader inputFileReader   = new FileReader(scriptPath);
+		FileReader inputFileReader = new FileReader(scriptPath);
 
-        try {
-            // Create Buffered/PrintWriter Objects
-            BufferedReader inputStream   = new BufferedReader(inputFileReader);
+		try {
+			// Create Buffered/PrintWriter Objects
+			BufferedReader inputStream = new BufferedReader(inputFileReader);
 
-            String inLine = null;
-            
-            while ((inLine = inputStream.readLine()) != null) {
-            	// Handle KeyWords
+			String inLine = null;
 
-            	if (inLine.trim().startsWith("<"+tagName+">")) {
-            		if (inLine.trim().endsWith("</"+tagName+">")){
-            			int beginIndex = inLine.indexOf("<"+tagName+">") + ("<"+tagName+">").length();
-						int endIndex = inLine.length() - ("</"+tagName+">").length();
-						value = inLine.substring(beginIndex, endIndex); 
-            		} else {
-            			while ((inLine = inputStream.readLine()) != null) {
-            				if (!inLine.trim().endsWith("</"+tagName+">"))
-            					value = inLine;
-            				else
-            					break;
-            			}
-            		}
-            	}
-            }
-            
-        } catch (IOException e) {
-        } finally {
-        	inputFileReader.close();
-        }
-        
+			while ((inLine = inputStream.readLine()) != null) {
+				// Handle KeyWords
+
+				if (inLine.trim().startsWith("<" + tagName + ">")) {
+					if (inLine.trim().endsWith("</" + tagName + ">")) {
+						int beginIndex = inLine.indexOf("<" + tagName + ">")
+								+ ("<" + tagName + ">").length();
+						int endIndex = inLine.length()
+								- ("</" + tagName + ">").length();
+						value = inLine.substring(beginIndex, endIndex);
+					} else {
+						while ((inLine = inputStream.readLine()) != null) {
+							if (!inLine.trim().endsWith("</" + tagName + ">"))
+								value = inLine;
+							else
+								break;
+						}
+					}
+				}
+			}
+
+		} catch (IOException e) {
+		} finally {
+			inputFileReader.close();
+		}
+
 		return value;
 	}
 }

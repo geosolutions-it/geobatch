@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.catalog.dao.file.xstream;
 
 import it.geosolutions.geobatch.catalog.Configuration;
@@ -32,39 +30,38 @@ import it.geosolutions.geobatch.configuration.CatalogConfiguration;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 import it.geosolutions.geobatch.xstream.Alias;
 
-public class XStreamDAOService<T extends Configuration>
-        extends BaseService
-        implements DAOService<T, String> {
+public class XStreamDAOService<T extends Configuration> extends BaseService
+		implements DAOService<T, String> {
 
-    private String baseDirectory;
-    private final Alias alias;
+	private String baseDirectory;
+	private final Alias alias;
 
-    public XStreamDAOService(Alias alias) {
-        super(true);
-        this.alias = alias;
-    }
+	public XStreamDAOService(Alias alias) {
+		super(true);
+		this.alias = alias;
+	}
 
-    public XStreamDAOService(String baseDirectory, Alias alias) {
-        super(true);
-        this.baseDirectory = baseDirectory;
-        this.alias = alias;
-    }
+	public XStreamDAOService(String baseDirectory, Alias alias) {
+		super(true);
+		this.baseDirectory = baseDirectory;
+		this.alias = alias;
+	}
 
-    public DAO createDAO(Class<T> clazz) {
-        if (clazz.isAssignableFrom(FlowConfiguration.class))
-            return new XStreamFlowConfigurationDAO(this.baseDirectory, alias);
-        else if (clazz.isAssignableFrom(CatalogConfiguration.class))
-            return new XStreamCatalogDAO(this.baseDirectory, alias);
-        else
-            return null;
-    }
+	public DAO createDAO(Class<T> clazz) {
+		if (clazz.isAssignableFrom(FlowConfiguration.class))
+			return new XStreamFlowConfigurationDAO(this.baseDirectory, alias);
+		else if (clazz.isAssignableFrom(CatalogConfiguration.class))
+			return new XStreamCatalogDAO(this.baseDirectory, alias);
+		else
+			return null;
+	}
 
-    public String getBaseDirectory() {
-        return baseDirectory;
-    }
+	public String getBaseDirectory() {
+		return baseDirectory;
+	}
 
-    public void setBaseDirectory(String baseDirectory) {
-        this.baseDirectory = baseDirectory;
-    }
+	public void setBaseDirectory(String baseDirectory) {
+		this.baseDirectory = baseDirectory;
+	}
 
 }

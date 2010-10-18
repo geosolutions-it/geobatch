@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.geotiff.retile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
@@ -40,28 +38,28 @@ import java.util.logging.Logger;
  * @version $ ShapeFileDTOProducerSPI.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
 public class GeoTiffRetilerService extends BaseService implements
-        ActionService<FileSystemMonitorEvent, GeoTiffRetilerConfiguration> {
+		ActionService<FileSystemMonitorEvent, GeoTiffRetilerConfiguration> {
 
-    private GeoTiffRetilerService() {
-        super(true);
-    }
+	private GeoTiffRetilerService() {
+		super(true);
+	}
 
-    private final static Logger LOGGER = Logger
-            .getLogger(GeoTiffRetiler.class.toString());
+	private final static Logger LOGGER = Logger.getLogger(GeoTiffRetiler.class
+			.toString());
 
-    public boolean canCreateAction(GeoTiffRetilerConfiguration configuration) {
-        // XXX
-        return true;
-    }
+	public boolean canCreateAction(GeoTiffRetilerConfiguration configuration) {
+		// XXX
+		return true;
+	}
 
-    public GeoTiffRetiler createAction(GeoTiffRetilerConfiguration configuration) {
-        try {
-            return new GeoTiffRetiler(configuration);
-        } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-            return null;
-        }
-    }
+	public GeoTiffRetiler createAction(GeoTiffRetilerConfiguration configuration) {
+		try {
+			return new GeoTiffRetiler(configuration);
+		} catch (IOException e) {
+			if (LOGGER.isLoggable(Level.INFO))
+				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+			return null;
+		}
+	}
 
 }

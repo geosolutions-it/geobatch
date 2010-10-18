@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.flow.event.consumer.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
@@ -31,100 +29,104 @@ import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileEventRule extends BaseConfiguration implements Configuration, Cloneable {
+public class FileEventRule extends BaseConfiguration implements Configuration,
+		Cloneable {
 
-    private String regex;
+	private String regex;
 
-    private int originalOccurrencies;
+	private int originalOccurrencies;
 
-    private int actualOccurrencies;
+	private int actualOccurrencies;
 
-    private boolean optional;
+	private boolean optional;
 
-    private List<FileSystemMonitorNotifications> acceptableNotifications;
+	private List<FileSystemMonitorNotifications> acceptableNotifications;
 
-    public FileEventRule() {
-        super();
-    }
+	public FileEventRule() {
+		super();
+	}
 
-    public FileEventRule(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
-    }
+	public FileEventRule(String id, String name, String description,
+			boolean dirty) {
+		super(id, name, description, dirty);
+	}
 
-    public String getRegex() {
-        return regex;
-    }
+	public String getRegex() {
+		return regex;
+	}
 
-    public void setRegex(String regex) {
-        this.regex = regex;
-    }
+	public void setRegex(String regex) {
+		this.regex = regex;
+	}
 
-    public int getOriginalOccurrencies() {
-        return originalOccurrencies;
-    }
+	public int getOriginalOccurrencies() {
+		return originalOccurrencies;
+	}
 
-    public void setActualOccurrencies(int occurrencies) {
-        this.actualOccurrencies = occurrencies;
-    }
+	public void setActualOccurrencies(int occurrencies) {
+		this.actualOccurrencies = occurrencies;
+	}
 
-    public boolean isOptional() {
-        return optional;
-    }
+	public boolean isOptional() {
+		return optional;
+	}
 
-    public void setOptional(boolean optional) {
-        this.optional = optional;
-    }
+	public void setOptional(boolean optional) {
+		this.optional = optional;
+	}
 
-    public List<FileSystemMonitorNotifications> getAcceptableNotifications() {
-        return acceptableNotifications;
-    }
+	public List<FileSystemMonitorNotifications> getAcceptableNotifications() {
+		return acceptableNotifications;
+	}
 
-    public void setAcceptableNotifications(
-            List<FileSystemMonitorNotifications> acceptableNotifications) {
-        this.acceptableNotifications = acceptableNotifications;
-    }
+	public void setAcceptableNotifications(
+			List<FileSystemMonitorNotifications> acceptableNotifications) {
+		this.acceptableNotifications = acceptableNotifications;
+	}
 
-    public int getActualOccurrencies() {
-        return actualOccurrencies;
-    }
+	public int getActualOccurrencies() {
+		return actualOccurrencies;
+	}
 
-    public void setOriginalOccurrencies(int originalOccurrencies) {
-        this.originalOccurrencies = originalOccurrencies;
-    }
+	public void setOriginalOccurrencies(int originalOccurrencies) {
+		this.originalOccurrencies = originalOccurrencies;
+	}
 
-    @Override
-    public FileEventRule clone() { // throws CloneNotSupportedException {
-//        final FileEventRule rule = new FileEventRule();
-        final FileEventRule rule = (FileEventRule)super.clone();
-//        rule.setId(getId());
-//        rule.setName(getName());
-//        rule.setDescription(getDescription());
-        if (acceptableNotifications != null)
-            rule.setAcceptableNotifications(new ArrayList<FileSystemMonitorNotifications>(acceptableNotifications));
-        rule.setOptional(optional);
-        rule.setRegex(regex);
-        rule.setOriginalOccurrencies(originalOccurrencies);
-        rule.setActualOccurrencies(actualOccurrencies);
-        return rule;
-    }
+	@Override
+	public FileEventRule clone() { // throws CloneNotSupportedException {
+	// final FileEventRule rule = new FileEventRule();
+		final FileEventRule rule = (FileEventRule) super.clone();
+		// rule.setId(getId());
+		// rule.setName(getName());
+		// rule.setDescription(getDescription());
+		if (acceptableNotifications != null)
+			rule
+					.setAcceptableNotifications(new ArrayList<FileSystemMonitorNotifications>(
+							acceptableNotifications));
+		rule.setOptional(optional);
+		rule.setRegex(regex);
+		rule.setOriginalOccurrencies(originalOccurrencies);
+		rule.setActualOccurrencies(actualOccurrencies);
+		return rule;
+	}
 
-    // ??? why is it overridden?
-    public void setServiceID(String serviceID) {
-    	
-    }
+	// ??? why is it overridden?
+	public void setServiceID(String serviceID) {
 
-    // ??? why is it overridden?
-    public String getServiceID() {
-        return null;
-    }
+	}
+
+	// ??? why is it overridden?
+	public String getServiceID() {
+		return null;
+	}
 
 	@Override
 	public String toString() {
-		final StringBuilder builder= new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		builder.append(getClass().getSimpleName());
 		builder.append("[");
 		builder.append("id:");
-		builder.append( getId());
+		builder.append(getId());
 		builder.append(", name:" + getName());
 		builder.append(", regex:" + getRegex());
 		builder.append("]");

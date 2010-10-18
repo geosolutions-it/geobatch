@@ -9,7 +9,7 @@
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.3.xsd">
 
     <http>
     	<!-- Welcome and Error pages -->
@@ -59,13 +59,13 @@
  <!-- #####################################################################
       JDBC Security
       ##################################################################### -->  
-     <authentication-manager alias="authenticationManager" />
-
-	<authentication-provider>
-		<jdbc-user-service data-source-ref="dataSource-gb-users"
-			users-by-username-query="SELECT USER_NAME AS username, USER_PASSWORD AS password, USER_ENABLED AS enabled FROM GBUser WHERE USER_NAME = ?"
-			authorities-by-username-query="SELECT USER_NAME AS username, USER_ROLE AS authority FROM GBUser WHERE USER_NAME = ?" />
-	</authentication-provider> 
+     <authentication-manager alias="authenticationManager">
+		 <authentication-provider>
+			<jdbc-user-service data-source-ref="dataSource-gb-users"
+				users-by-username-query="SELECT USER_NAME AS username, USER_PASSWORD AS password, USER_ENABLED AS enabled FROM GBUser WHERE USER_NAME = ?"
+				authorities-by-username-query="SELECT USER_NAME AS username, USER_ROLE AS authority FROM GBUser WHERE USER_NAME = ?" />
+		 </authentication-provider> 
+     </authentication-manager>
 
  <!-- #####################################################################
       RMI Security

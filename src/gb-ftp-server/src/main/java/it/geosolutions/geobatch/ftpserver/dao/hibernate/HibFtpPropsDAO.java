@@ -46,9 +46,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author giuseppe
  * 
  */
-public class HibFtpPropsDAO
-		extends DAOAbstractSpring<FtpProps, Long>
-		implements FtpPropsDAO {
+public class HibFtpPropsDAO extends DAOAbstractSpring<FtpProps, Long> implements
+		FtpPropsDAO {
 
 	public HibFtpPropsDAO() {
 		super(FtpProps.class);
@@ -56,24 +55,24 @@ public class HibFtpPropsDAO
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void delete(final Long id) throws DAOException {
-        FtpProps props = super.findById(id, true);
-        super.makeTransient(props);
-//
-//		try {super.
-//			getHibernateTemplate().execute(new HibernateCallback() {
-//
-//				public Object doInHibernate(Session session)
-//						throws HibernateException, SQLException {
-//					Query query = session
-//							.createQuery("delete from FtpProps props where props.id = :id");
-//					query.setParameter("id", id);
-//					query.executeUpdate();
-//					return null;
-//				}
-//			});
-//		} catch (HibernateException e) {
-//			throw new DAOException(e);
-//		}
+		FtpProps props = super.findById(id, true);
+		super.makeTransient(props);
+		//
+		// try {super.
+		// getHibernateTemplate().execute(new HibernateCallback() {
+		//
+		// public Object doInHibernate(Session session)
+		// throws HibernateException, SQLException {
+		// Query query = session
+		// .createQuery("delete from FtpProps props where props.id = :id");
+		// query.setParameter("id", id);
+		// query.executeUpdate();
+		// return null;
+		// }
+		// });
+		// } catch (HibernateException e) {
+		// throw new DAOException(e);
+		// }
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)

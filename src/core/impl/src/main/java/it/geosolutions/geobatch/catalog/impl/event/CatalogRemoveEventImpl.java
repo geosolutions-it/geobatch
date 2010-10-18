@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.catalog.impl.event;
 
 import it.geosolutions.geobatch.catalog.event.CatalogRemoveEvent;
@@ -30,9 +28,10 @@ import it.geosolutions.geobatch.catalog.event.CatalogRemoveEvent;
  * @author Alessio
  * 
  */
-public class CatalogRemoveEventImpl<T> extends CatalogEventImpl<T> implements CatalogRemoveEvent<T> {
+public class CatalogRemoveEventImpl<T> extends CatalogEventImpl<T> implements
+		CatalogRemoveEvent<T> {
 
-    public CatalogRemoveEventImpl(T source) {
-        super(source);
-    }
+	public CatalogRemoveEventImpl(T source) {
+		super(source);
+	}
 }

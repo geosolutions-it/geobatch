@@ -37,43 +37,45 @@ import java.util.logging.Logger;
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  * @author Ivano Picco
  */
-public class FTPUploadActionService
-        extends BaseService implements ActionService<FileSystemMonitorEvent, FTPActionConfiguration> {
+public class FTPUploadActionService extends BaseService implements
+		ActionService<FileSystemMonitorEvent, FTPActionConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(FTPUploadActionService.class
-            .toString());
-    
-    /**
-     * The FTPUploadActionService default constructor.
-     */
-    public FTPUploadActionService() {
-        super(true);
-    }
+	private final static Logger LOGGER = Logger
+			.getLogger(FTPUploadActionService.class.toString());
 
-    /**
-     * Method to verify if the action creation is available.
-     * 
-     * @param configuration The FTP action configuration.
-     * @return boolean
-     */
-    public boolean canCreateAction(FTPActionConfiguration configuration) {
-        return true;
-    }
+	/**
+	 * The FTPUploadActionService default constructor.
+	 */
+	public FTPUploadActionService() {
+		super(true);
+	}
 
-    /**
-     * Method to create an upload action using the FTP action configuration.
-     * 
-     * @param configuration The FTP action configuration.
-     * @return The FTPUploadAction
-     */
+	/**
+	 * Method to verify if the action creation is available.
+	 * 
+	 * @param configuration
+	 *            The FTP action configuration.
+	 * @return boolean
+	 */
+	public boolean canCreateAction(FTPActionConfiguration configuration) {
+		return true;
+	}
+
+	/**
+	 * Method to create an upload action using the FTP action configuration.
+	 * 
+	 * @param configuration
+	 *            The FTP action configuration.
+	 * @return The FTPUploadAction
+	 */
 	public FTPUploadAction createAction(FTPActionConfiguration configuration) {
 		try {
 			return new FTPUploadAction(configuration);
 		} catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			if (LOGGER.isLoggable(Level.SEVERE))
+				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 		}
-		
+
 		return null;
 	}
 }

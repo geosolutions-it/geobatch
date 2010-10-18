@@ -21,7 +21,8 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class GeoBatchServer implements InitializingBean {
 
-	private final static Logger LOGGER = Logger.getLogger(GeoBatchServer.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(GeoBatchServer.class
+			.getName());
 
 	private FtpServer ftpServer;
 	private FtpServerConfig lastConfig;
@@ -33,40 +34,40 @@ public class GeoBatchServer implements InitializingBean {
 		userManager.setServerConfig(getLastConfig());
 		ftpServer = create(getLastConfig(), userManager);
 
-		if(getLastConfig().isAutoStart())
+		if (getLastConfig().isAutoStart())
 			ftpServer.start();
 	}
 
-
-	public static FtpServer create(FtpServerConfig config, UserManager userManager) { 
+	public static FtpServer create(FtpServerConfig config,
+			UserManager userManager) {
 		// base configuration
 		final FtpServerFactory serverFactory = new FtpServerFactory();
 
-		final ConnectionConfigFactory configFactory= new ConnectionConfigFactory();
+		final ConnectionConfigFactory configFactory = new ConnectionConfigFactory();
 		configFactory.setAnonymousLoginEnabled(config.isAnonEnabled());
 		configFactory.setLoginFailureDelay(config.getLoginFailureDelay());
 		configFactory.setMaxAnonymousLogins(config.getMaxAnonLogins());
 		configFactory.setMaxLoginFailures(config.getMaxLoginFailures());
 		configFactory.setMaxLogins(config.getMaxLogins());
-		serverFactory.setConnectionConfig(configFactory.createConnectionConfig());
+		serverFactory.setConnectionConfig(configFactory
+				.createConnectionConfig());
 
-		//change port
+		// change port
 		final ListenerFactory factory = new ListenerFactory();
 		factory.setPort(config.getPort());
 		factory.setImplicitSsl(config.isSsl());
 		serverFactory.addListener("default", factory.createListener());
 
 		// user management
-        serverFactory.setUserManager(userManager);
+		serverFactory.setUserManager(userManager);
 
-        // callback
+		// callback
 		final Map<String, Ftplet> map = new HashMap<String, Ftplet>();
 		map.put("GB-Ftplet", new GeoBatchFtplet());
 		serverFactory.setFtplets(map);
 
 		return serverFactory.createServer();
 	}
-
 
 	public void suspend() {
 		ftpServer.suspend();
@@ -77,21 +78,27 @@ public class GeoBatchServer implements InitializingBean {
 	}
 
 	public synchronized void start() throws FtpException {
-		if( ! ftpServer.isStopped()) {
-			LOGGER.log(Level.WARNING, "FTP server is already running and will not be started again.");
+		if (!ftpServer.isStopped()) {
+			LOGGER
+					.log(Level.WARNING,
+							"FTP server is already running and will not be started again.");
 			return;
 		}
 
 		try {
 			FtpServerConfig config = serverConfigDAO.load();
-			if(true) { // !config.equals(lastConfig)) {
+			if (true) { // !config.equals(lastConfig)) {
 				// config has changed: recreate server with new config
 				setLastConfig(config);
-                userManager.setServerConfig(getLastConfig());                
+				userManager.setServerConfig(getLastConfig());
 				ftpServer = create(getLastConfig(), userManager);
 			}
-		} catch(DAOException ex) {
-			LOGGER.log(Level.WARNING, "Could not retrieve server config. Using old server instance", ex);
+		} catch (DAOException ex) {
+			LOGGER
+					.log(
+							Level.WARNING,
+							"Could not retrieve server config. Using old server instance",
+							ex);
 		}
 
 		ftpServer.start();
@@ -109,18 +116,18 @@ public class GeoBatchServer implements InitializingBean {
 		return ftpServer.isStopped();
 	}
 
-    public FtpServerConfig getLastConfig() {
-        return lastConfig.clone();
-    }
+	public FtpServerConfig getLastConfig() {
+		return lastConfig.clone();
+	}
 
 	/**
-	 * @param lastConfig the lastConfig to set
-	 * @throws DAOException 
+	 * @param lastConfig
+	 *            the lastConfig to set
+	 * @throws DAOException
 	 */
 	public void setLastConfig(FtpServerConfig lastConfig) throws DAOException {
 		this.lastConfig = serverConfigDAO.load();
 	}
-
 
 	/**
 	 * @param ftpServer

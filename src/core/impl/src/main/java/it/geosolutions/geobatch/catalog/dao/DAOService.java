@@ -26,8 +26,9 @@ import it.geosolutions.geobatch.catalog.Service;
 
 import java.io.Serializable;
 
-public interface DAOService<T extends Configuration, ID extends Serializable> extends Service {
+public interface DAOService<T extends Configuration, ID extends Serializable>
+		extends Service {
 
-    DAO<T, ID> createDAO(Class<T> clazz);
+	DAO<T, ID> createDAO(Class<T> clazz);
 
 }

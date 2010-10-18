@@ -36,11 +36,15 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  */
 public class LammaAliasRegistrar extends AliasRegistrar {
 
-     public LammaAliasRegistrar(AliasRegistry registry) {
-         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-         registry.putAlias("LammaGribMetadataExtractorConfiguration",LammaGribMetadataExtractorConfiguration.class);
-         registry.putAlias("LammaGribBuilderConfiguration",LammaGribBuilderConfiguration.class);
-         registry.putAlias("LammaMosaicDataConfiguration",LammaMosaicDataConfiguration.class);
-         registry.putAlias("LammaContourBuilderConfiguration",LammaContourBuilderConfiguration.class);
-     }
- }
+	public LammaAliasRegistrar(AliasRegistry registry) {
+		LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+		registry.putAlias("LammaGribMetadataExtractorConfiguration",
+				LammaGribMetadataExtractorConfiguration.class);
+		registry.putAlias("LammaGribBuilderConfiguration",
+				LammaGribBuilderConfiguration.class);
+		registry.putAlias("LammaMosaicDataConfiguration",
+				LammaMosaicDataConfiguration.class);
+		registry.putAlias("LammaContourBuilderConfiguration",
+				LammaContourBuilderConfiguration.class);
+	}
+}

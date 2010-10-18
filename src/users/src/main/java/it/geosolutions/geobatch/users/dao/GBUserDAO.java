@@ -38,7 +38,7 @@ import it.geosolutions.geobatch.users.model.GBUser;
 public interface GBUserDAO extends GenericDAO<GBUser, Long> {
 
 	public GBUser findByUserId(Long userId) throws DAOException;
-	
+
 	public GBUser findByUserName(String userName) throws DAOException;
 
 	public GBUser save(GBUser user) throws DAOException;

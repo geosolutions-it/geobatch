@@ -36,11 +36,12 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class ConsumerDisposeController extends ConsumerAbstractController {
 
-    @Override
-    protected void runStuff(ModelAndView mav, FileBasedFlowManager fm, BaseEventConsumer consumer) {
-    	if (fm != null && consumer != null)
-    		fm.dispose((FileBasedEventConsumer) consumer);
-    	
-        mav.addObject("consumer", consumer);
-    }
+	@Override
+	protected void runStuff(ModelAndView mav, FileBasedFlowManager fm,
+			BaseEventConsumer consumer) {
+		if (fm != null && consumer != null)
+			fm.dispose((FileBasedEventConsumer) consumer);
+
+		mav.addObject("consumer", consumer);
+	}
 }

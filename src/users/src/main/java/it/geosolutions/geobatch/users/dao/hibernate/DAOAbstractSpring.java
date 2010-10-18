@@ -47,23 +47,24 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
  * @author giuseppe
  * 
  */
-public abstract class DAOAbstractSpring<T, ID extends Serializable> 
-	extends HibernateDaoSupport
-	implements GenericDAO<T, ID> {
+public abstract class DAOAbstractSpring<T, ID extends Serializable> extends
+		HibernateDaoSupport implements GenericDAO<T, ID> {
 
-	private static final Logger logger = Logger.getLogger(DAOAbstractSpring.class.getName());
+	private static final Logger logger = Logger
+			.getLogger(DAOAbstractSpring.class.getName());
 
 	private Class<T> persistentClass;
 
 	public DAOAbstractSpring(Class<T> persistentClass) {
-        if(logger.isLoggable(Level.FINE))
-            logger.log(Level.FINE, "Persistent Class : {0}", persistentClass);
+		if (logger.isLoggable(Level.FINE))
+			logger.log(Level.FINE, "Persistent Class : {0}", persistentClass);
 		this.persistentClass = persistentClass;
 	}
 
 	protected Class<T> getPersistentClass() {
-        if(logger.isLoggable(Level.FINE))
-    		logger.log(Level.FINE, "Persistent class: {0}", persistentClass.getName());
+		if (logger.isLoggable(Level.FINE))
+			logger.log(Level.FINE, "Persistent class: {0}", persistentClass
+					.getName());
 		return persistentClass;
 	}
 
@@ -111,7 +112,8 @@ public abstract class DAOAbstractSpring<T, ID extends Serializable>
 		T entity;
 		try {
 			if (lock) {
-				entity = (T) getSession().load(getPersistentClass(), id, LockMode.UPGRADE);
+				entity = (T) getSession().load(getPersistentClass(), id,
+						LockMode.UPGRADE);
 			} else {
 				entity = (T) getSession().load(getPersistentClass(), id);
 			}

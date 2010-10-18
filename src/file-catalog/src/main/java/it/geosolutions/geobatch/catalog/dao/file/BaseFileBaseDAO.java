@@ -25,22 +25,22 @@ package it.geosolutions.geobatch.catalog.dao.file;
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.dao.DAO;
 
-public abstract class BaseFileBaseDAO<T extends Configuration>
-        implements DAO<T, String> {
+public abstract class BaseFileBaseDAO<T extends Configuration> implements
+		DAO<T, String> {
 
-    public BaseFileBaseDAO(String directory) {
-        this.directory = directory;
-    }
+	public BaseFileBaseDAO(String directory) {
+		this.directory = directory;
+	}
 
-    private String directory;
+	private String directory;
 
-    public String getBaseDirectory() {
-        return directory;
-    }
+	public String getBaseDirectory() {
+		return directory;
+	}
 
-    public void setBaseDirectory(String dir) {
-        this.directory = dir;
+	public void setBaseDirectory(String dir) {
+		this.directory = dir;
 
-    }
+	}
 
 }

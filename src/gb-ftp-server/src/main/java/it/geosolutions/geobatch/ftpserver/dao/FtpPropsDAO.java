@@ -37,7 +37,7 @@ import it.geosolutions.geobatch.users.dao.DAOException;
  */
 public interface FtpPropsDAO extends GenericDAO<FtpProps, Long> {
 
-//	public FtpProps findByUserName(String userName) throws DAOException;
+	// public FtpProps findByUserName(String userName) throws DAOException;
 
 	public FtpProps save(FtpProps props) throws DAOException;
 

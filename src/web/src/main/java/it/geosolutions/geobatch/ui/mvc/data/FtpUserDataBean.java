@@ -34,36 +34,37 @@ import java.util.List;
  */
 public class FtpUserDataBean {
 
-	private Long   userId;
-	
+	private Long userId;
+
 	private String userName;
 
 	private String password;
-	
+
 	private String repeatPassword;
 
 	private GBUserRole role;
-	
+
 	private boolean writePermission;
 
 	private String uploadRate;
 
 	private String downloadRate;
-	
+
 	private int maxLoginPerIp;
-	
+
 	private int maxLoginNumber;
-	
+
 	private int idleTime;
 
 	private List<GBUserRole> availableRoles;
-	
+
 	private List<FileBasedFlowManager> availableFlowManagers;
-	
+
 	private List<String> allowedFlowManagers;
 
 	/**
-	 * @param userId the userId to set
+	 * @param userId
+	 *            the userId to set
 	 */
 	public void setUserId(Long userId) {
 		this.userId = userId;
@@ -107,7 +108,8 @@ public class FtpUserDataBean {
 	}
 
 	/**
-	 * @param repeatPassword the repeatPassword to set
+	 * @param repeatPassword
+	 *            the repeatPassword to set
 	 */
 	public void setRepeatPassword(String repeatPassword) {
 		this.repeatPassword = repeatPassword;
@@ -121,7 +123,8 @@ public class FtpUserDataBean {
 	}
 
 	/**
-	 * @param role the role to set
+	 * @param role
+	 *            the role to set
 	 */
 	public void setRole(GBUserRole role) {
 		this.role = role;
@@ -180,7 +183,8 @@ public class FtpUserDataBean {
 	}
 
 	/**
-	 * @param maxLoginPerIp the maxLoginPerIp to set
+	 * @param maxLoginPerIp
+	 *            the maxLoginPerIp to set
 	 */
 	public void setMaxLoginPerIp(int maxLoginPerIp) {
 		this.maxLoginPerIp = maxLoginPerIp;
@@ -194,7 +198,8 @@ public class FtpUserDataBean {
 	}
 
 	/**
-	 * @param maxLoginNumber the maxLoginNumber to set
+	 * @param maxLoginNumber
+	 *            the maxLoginNumber to set
 	 */
 	public void setMaxLoginNumber(int maxLoginNumber) {
 		this.maxLoginNumber = maxLoginNumber;
@@ -208,7 +213,8 @@ public class FtpUserDataBean {
 	}
 
 	/**
-	 * @param idleTime the idleTime to set
+	 * @param idleTime
+	 *            the idleTime to set
 	 */
 	public void setIdleTime(int idleTime) {
 		this.idleTime = idleTime;
@@ -222,7 +228,8 @@ public class FtpUserDataBean {
 	}
 
 	/**
-	 * @param availableRoles the availableRoles to set
+	 * @param availableRoles
+	 *            the availableRoles to set
 	 */
 	public void setAvailableRoles(List<GBUserRole> availableRoles) {
 		this.availableRoles = availableRoles;
@@ -236,9 +243,11 @@ public class FtpUserDataBean {
 	}
 
 	/**
-	 * @param availableFlowManagers the availableFlowManagers to set
+	 * @param availableFlowManagers
+	 *            the availableFlowManagers to set
 	 */
-	public void setAvailableFlowManagers(List<FileBasedFlowManager> availableFlowManagers) {
+	public void setAvailableFlowManagers(
+			List<FileBasedFlowManager> availableFlowManagers) {
 		this.availableFlowManagers = availableFlowManagers;
 	}
 
@@ -250,7 +259,8 @@ public class FtpUserDataBean {
 	}
 
 	/**
-	 * @param list the allowedFlowManagers to set
+	 * @param list
+	 *            the allowedFlowManagers to set
 	 */
 	public void setAllowedFlowManagers(List<String> allowedFlowManagers) {
 		this.allowedFlowManagers = allowedFlowManagers;
@@ -263,7 +273,9 @@ public class FtpUserDataBean {
 		return allowedFlowManagers;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -326,7 +338,9 @@ public class FtpUserDataBean {
 		return builder.toString();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -359,7 +373,9 @@ public class FtpUserDataBean {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

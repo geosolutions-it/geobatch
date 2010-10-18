@@ -4,8 +4,8 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitor;
 
 import java.util.Map;
 
-public final class FSMSPIFinder{
-	
+public final class FSMSPIFinder {
+
 	static FSSPIRegistry registry;
 
 	/**
@@ -14,11 +14,10 @@ public final class FSMSPIFinder{
 	private FSMSPIFinder() {
 	}
 
-	public static FileSystemMonitor getMonitor(final Map<String,?>config,final OsType osType) {
+	public static FileSystemMonitor getMonitor(final Map<String, ?> config,
+			final OsType osType) {
 		return registry.getMonitor(config, osType);
-		
+
 	}
-	
-	
 
 }

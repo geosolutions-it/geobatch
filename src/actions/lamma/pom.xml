@@ -27,9 +27,7 @@
     <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
 
     <scm>
-        <connection>
-            scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
-        </connection>
+        <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</connection>
         <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
     </scm>
 
@@ -89,21 +87,21 @@
             <artifactId>gb-action-taskexecutor</artifactId>
         </dependency>
 
-				<!-- GeoTools -->
-				<dependency>
+		<!-- GeoTools -->
+		<dependency>
+			<groupId>org.opengis</groupId>
+			<artifactId>geoapi</artifactId>
+			<exclusions>
+				<exclusion>
 					<groupId>org.opengis</groupId>
-					<artifactId>geoapi</artifactId>
-					<exclusions>
-						<exclusion>
-							<groupId>org.opengis</groupId>
-							<artifactId>geoapi-dummy-pending</artifactId>
-						</exclusion>
-					</exclusions>
-				</dependency>
-				<dependency>
-					<groupId>org.opengis</groupId>
-					<artifactId>geoapi-pending</artifactId>
-				</dependency>
+					<artifactId>geoapi-dummy-pending</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.opengis</groupId>
+			<artifactId>geoapi-pending</artifactId>
+		</dependency>
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geotiff</artifactId>
@@ -165,7 +163,7 @@
 
         <dependency>
             <groupId>it.geosolutions.opensdi.lamma</groupId>
-						<artifactId>lamma-ws-su</artifactId>
+			<artifactId>lamma-ws-su</artifactId>
             <version>0.1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
@@ -183,7 +181,7 @@
             </exclusions>
         </dependency>
         
-      <!-- CXF -->
+        <!-- CXF -->
 	    <!-- =========================================================== -->
 	    <!--     JAVAX PERSISTENCE                                       -->
 	    <!-- =========================================================== -->
@@ -244,7 +242,21 @@
 			<dependency>
 		      <groupId>org.apache.cxf</groupId>
 		      <artifactId>cxf-rt-frontend-jaxws</artifactId>
-				  <version>2.2.7</version>
+			  <version>2.2.7</version>
+	            <exclusions>
+	                <exclusion>
+	                    <groupId>asm</groupId>
+	                    <artifactId>asm</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>asm</groupId>
+	                    <artifactId>asm-attrs</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>cglib</groupId>
+	                    <artifactId>cglib</artifactId>
+	                </exclusion>
+	            </exclusions>
 		    </dependency>
 		    <dependency>
 		      <groupId>org.apache.cxf</groupId>
@@ -252,22 +264,13 @@
 				  <version>2.2.7</version>
 		    </dependency>
 				<dependency>
-				  <groupId>org.apache.cxf</groupId>
-				  <artifactId>cxf-rt-transports-http-jetty</artifactId>
-				  <version>2.2.7</version>
-				</dependency>        
+			  	<groupId>org.apache.cxf</groupId>
+			  	<artifactId>cxf-rt-transports-http-jetty</artifactId>
+			  	<version>2.2.7</version>
+			</dependency>        
     </dependencies>
 
     <profiles>
-        <profile>
-            <id>nurc</id>
-            <modules>
-                <module>commons</module>
-                <module>nurc-tda</module>
-                <module>nurc-sem</module>
-            </modules>
-        </profile>
-
         <profile>
             <id>dao.jibx</id>
             <!--<activation>...</activation>-->

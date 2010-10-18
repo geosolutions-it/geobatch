@@ -34,71 +34,63 @@ import java.util.logging.Logger;
  * Comments here ...
  * 
  * @author Alessio Fabiani, GeoSolutions S.A.S.
- *
+ * 
  */
 public class WgribInventory {
 
 	/**
 	 * Default logger
 	 */
-	private final static Logger LOGGER = Logger.getLogger(WgribInventory.class.toString());
-	
+	private final static Logger LOGGER = Logger.getLogger(WgribInventory.class
+			.toString());
+
 	private boolean valid = false;
 
 	private boolean initialized = false;
-	
+
 	private Map<Long, WgribRecordDescriptor> records = new HashMap<Long, WgribRecordDescriptor>();
 
 	public enum SUPPORTED_PARAMS {
-		PRMSL("Pressure reduced to MSL"),
-		VIS("Visibility"),
+		PRMSL("Pressure reduced to MSL"), VIS("Visibility"),
 
-		HGT("Geopotential height"),
-		TMP("Temp"),
-		RH("Relative humidity"),
-		DPT("Dew point temp"),
-		UGRD("u wind"),
-		VGRD("v wind"),
-		PRES("Pressure"),
+		HGT("Geopotential height"), TMP("Temp"), RH("Relative humidity"), DPT(
+				"Dew point temp"), UGRD("u wind"), VGRD("v wind"), PRES(
+				"Pressure"),
 
-		APCP("Total precipitation"),
-		ACPCP("Convective precipitation"),
-		LFTX("Surface lifted index"),
-		CAPE("Convective Avail Pot Energy"),
-		CIN("Convective inhibition"),
-		PWAT("Precipitable water"),
-		LCDC("Low level cloud cover"),
-		MCDC("Mid level cloud cover"),
-		HCDC("High level cloud cover"),
-		TCDC("Total cloud cover"),
-		HLCY("Storm relative helicity"),
-		GUST("Surface wind gust"),
-		WTMP("Water temp");
-		
+		APCP("Total precipitation"), ACPCP("Convective precipitation"), LFTX(
+				"Surface lifted index"), CAPE("Convective Avail Pot Energy"), CIN(
+				"Convective inhibition"), PWAT("Precipitable water"), LCDC(
+				"Low level cloud cover"), MCDC("Mid level cloud cover"), HCDC(
+				"High level cloud cover"), TCDC("Total cloud cover"), HLCY(
+				"Storm relative helicity"), GUST("Surface wind gust"), WTMP(
+				"Water temp");
+
 		private final String paramDescription;
+
 		SUPPORTED_PARAMS(String description) {
 			this.paramDescription = description;
 		}
-		
+
 		public String getParamDescription() {
 			return this.paramDescription;
 		}
 	};
-	
+
 	/**
 	 * 
 	 * @param source
 	 */
 	public WgribInventory(final File source) {
 		this.valid = checkValidSource(source);
-		
+
 		if (isValid()) {
 			this.initialized = initializeInventory(source);
 		}
 	}
 
 	/**
-	 * @param initialized the initialized to set
+	 * @param initialized
+	 *            the initialized to set
 	 */
 	public void setInitialized(boolean initialized) {
 		this.initialized = initialized;
@@ -112,7 +104,8 @@ public class WgribInventory {
 	}
 
 	/**
-	 * @param valid the valid to set
+	 * @param valid
+	 *            the valid to set
 	 */
 	public void setValid(boolean valid) {
 		this.valid = valid;
@@ -139,19 +132,19 @@ public class WgribInventory {
 	 */
 	private static boolean checkValidSource(File source) {
 		boolean isValid = false;
-		
+
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(source, "UTF-8");
-			if(scanner.hasNextLine()) {
+			if (scanner.hasNextLine()) {
 				final String line = scanner.nextLine();
-				
+
 				final String[] fields = line.split(":");
-				
+
 				if (fields.length == 9) {
 					isValid = true;
 				}
-				
+
 				if (isValid && fields[0].equals("1")) {
 					isValid = true;
 				} else {
@@ -159,20 +152,21 @@ public class WgribInventory {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			LOGGER.warning("checkValidSource::FileNotFoundException -> " + e.getLocalizedMessage());
+			LOGGER.warning("checkValidSource::FileNotFoundException -> "
+					+ e.getLocalizedMessage());
 			isValid = false;
 		} finally {
 			if (scanner != null)
 				scanner.close();
 		}
-		
+
 		return isValid;
 	}
 
 	/**
 	 * 
 	 * @param source
-	 * @return 
+	 * @return
 	 */
 	private boolean initializeInventory(File source) {
 		boolean isInitialized = false;
@@ -180,13 +174,14 @@ public class WgribInventory {
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(source, "UTF-8");
-			while(scanner.hasNextLine()) {
+			while (scanner.hasNextLine()) {
 				final String line = scanner.nextLine();
-				
+
 				final String[] fields = line.split(":");
-				
+
 				try {
-					SUPPORTED_PARAMS Param = SUPPORTED_PARAMS.valueOf(fields[3]);
+					SUPPORTED_PARAMS Param = SUPPORTED_PARAMS
+							.valueOf(fields[3]);
 
 					WgribRecordDescriptor record = new WgribRecordDescriptor();
 					record.setrId(Long.parseLong(fields[0]));
@@ -194,12 +189,13 @@ public class WgribInventory {
 					record.setParamDescription(fields[8].substring(1));
 
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH");
-					//sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-					record.setBaseTime(sdf.parse(fields[2].substring("D=".length())));
+					// sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+					record.setBaseTime(sdf.parse(fields[2].substring("D="
+							.length())));
 					record.setForecastTime(fields[6]);
-					
+
 					record.setLevel(fields[4]);
-					
+
 					this.records.put(record.getrId(), record);
 				} catch (IllegalArgumentException e) {
 					// continue...
@@ -207,10 +203,12 @@ public class WgribInventory {
 			}
 			isInitialized = true;
 		} catch (FileNotFoundException e) {
-			LOGGER.warning("initializeInventory::FileNotFoundException -> " + e.getLocalizedMessage());
+			LOGGER.warning("initializeInventory::FileNotFoundException -> "
+					+ e.getLocalizedMessage());
 			isInitialized = false;
 		} catch (ParseException e) {
-			LOGGER.warning("initializeInventory::ParseException -> " + e.getLocalizedMessage());
+			LOGGER.warning("initializeInventory::ParseException -> "
+					+ e.getLocalizedMessage());
 			isInitialized = false;
 		} finally {
 			if (scanner != null)

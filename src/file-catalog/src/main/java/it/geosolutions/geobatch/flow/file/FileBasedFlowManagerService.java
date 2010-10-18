@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.flow.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
@@ -36,56 +34,56 @@ import java.util.logging.Logger;
 
 import org.geotools.data.DataAccessFactory.Param;
 
-public class FileBasedFlowManagerService
-        extends BaseService
-        implements FlowManagerService<FileSystemMonitorEvent, FileBasedFlowConfiguration> {
+public class FileBasedFlowManagerService extends BaseService implements
+		FlowManagerService<FileSystemMonitorEvent, FileBasedFlowConfiguration> {
 
-    private FileBasedFlowManagerService() {
-        super(true);
-    }
+	private FileBasedFlowManagerService() {
+		super(true);
+	}
 
-    public final static Param WORKING_DIR = new Param("WorkingDir", 
-            String.class, "WorkingDir", true);
+	public final static Param WORKING_DIR = new Param("WorkingDir",
+			String.class, "WorkingDir", true);
 
-    private final static Logger LOGGER = Logger.getLogger(FileBasedFlowManagerService.class
-            .toString());
+	private final static Logger LOGGER = Logger
+			.getLogger(FileBasedFlowManagerService.class.toString());
 
-    public boolean canCreateFlowManager(FileBasedFlowConfiguration configuration) {
+	public boolean canCreateFlowManager(FileBasedFlowConfiguration configuration) {
 
-        final String workingDir = configuration.getWorkingDirectory();
-        if (workingDir != null) {
-            final File dir = new File((String) workingDir);
-            if (!dir.exists() || !dir.isDirectory() || !dir.canRead()) {
-                LOGGER.warning("Bad working dir '"+dir+"'");
-                return false;
-            }
-        }
+		final String workingDir = configuration.getWorkingDirectory();
+		if (workingDir != null) {
+			final File dir = new File((String) workingDir);
+			if (!dir.exists() || !dir.isDirectory() || !dir.canRead()) {
+				LOGGER.warning("Bad working dir '" + dir + "'");
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    public FileBasedFlowManager createFlowManager(FileBasedFlowConfiguration configuration) {
+	public FileBasedFlowManager createFlowManager(
+			FileBasedFlowConfiguration configuration) {
 
-        final String workingDir = configuration.getWorkingDirectory();
-        if (workingDir != null) {
-            final File dir = new File((String) workingDir);
-            if (!dir.exists() || !dir.isDirectory() || !dir.canRead()) {
-                LOGGER.warning("Bad working dir '"+dir+"'");
-                return null;
-            }
+		final String workingDir = configuration.getWorkingDirectory();
+		if (workingDir != null) {
+			final File dir = new File((String) workingDir);
+			if (!dir.exists() || !dir.isDirectory() || !dir.canRead()) {
+				LOGGER.warning("Bad working dir '" + dir + "'");
+				return null;
+			}
 
-            try {
-                final FileBasedFlowManager manager = new FileBasedFlowManager();
-                manager.setConfiguration(configuration);
-                return manager;
-            } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			try {
+				final FileBasedFlowManager manager = new FileBasedFlowManager();
+				manager.setConfiguration(configuration);
+				return manager;
+			} catch (IOException e) {
+				if (LOGGER.isLoggable(Level.SEVERE))
+					LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 
-            }
+			}
 
-        }
-        return null;
-    }
+		}
+		return null;
+	}
 
 }

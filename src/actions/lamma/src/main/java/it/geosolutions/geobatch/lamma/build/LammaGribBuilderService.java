@@ -36,28 +36,29 @@ import java.util.logging.Logger;
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public class LammaGribBuilderService
-        extends BaseService
-        implements ActionService<FileSystemMonitorEvent, LammaGribBuilderConfiguration> {
+public class LammaGribBuilderService extends BaseService implements
+		ActionService<FileSystemMonitorEvent, LammaGribBuilderConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(LammaGribBuilderService.class.toString());
+	private final static Logger LOGGER = Logger
+			.getLogger(LammaGribBuilderService.class.toString());
 
-    /**
+	/**
      * 
      */
-    public LammaGribBuilderAction createAction(LammaGribBuilderConfiguration configuration) {
-        try {
-            return new LammaGribBuilderAction(configuration);
-        } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-            return null;
-        }
-    }
+	public LammaGribBuilderAction createAction(
+			LammaGribBuilderConfiguration configuration) {
+		try {
+			return new LammaGribBuilderAction(configuration);
+		} catch (IOException e) {
+			if (LOGGER.isLoggable(Level.INFO))
+				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+			return null;
+		}
+	}
 
-    public boolean canCreateAction(LammaGribBuilderConfiguration configuration) {
-//        final boolean superRetVal = super.canCreateAction(configuration);
-        return true;
-    }
+	public boolean canCreateAction(LammaGribBuilderConfiguration configuration) {
+		// final boolean superRetVal = super.canCreateAction(configuration);
+		return true;
+	}
 
 }

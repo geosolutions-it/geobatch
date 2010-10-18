@@ -19,23 +19,25 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
 
 /**
  * Represents a GBuser merged with its related FTP props
- *
+ * 
  * @author etj
  */
 public class FtpUser implements User {
-    private final static Logger LOGGER = Logger.getLogger(FtpUser.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(FtpUser.class
+			.getName());
 
 	private GBUser delegateUser;
 	private FtpProps delegateFtpProps;
 
 	/**
-	 * This is a required data used in class User, holding the full path of the homedir
+	 * This is a required data used in class User, holding the full path of the
+	 * homedir
 	 */
 	private String homeDirectory;
 
-    private List<Authority> authorities = new ArrayList<Authority>();
+	private List<Authority> authorities = new ArrayList<Authority>();
 
-	public static FtpUser createInstance()  {
+	public static FtpUser createInstance() {
 		return new FtpUser(new GBUser(), new FtpProps());
 	}
 
@@ -43,9 +45,9 @@ public class FtpUser implements User {
 		this.delegateUser = delegateUser;
 		this.delegateFtpProps = delegateFtpProps;
 	}
-	
-    //==========================================================================
-    // GBUser props
+
+	// ==========================================================================
+	// GBUser props
 
 	public Long getId() {
 		return delegateUser.getId();
@@ -72,7 +74,8 @@ public class FtpUser implements User {
 	}
 
 	public String getRelativeHomeDir() {
-		return (delegateUser.getRelativeHomeDir() != null ? delegateUser.getRelativeHomeDir() : delegateUser.getName().toLowerCase());
+		return (delegateUser.getRelativeHomeDir() != null ? delegateUser
+				.getRelativeHomeDir() : delegateUser.getName().toLowerCase());
 	}
 
 	public void setRelativeHomeDir(String homeDirectory) {
@@ -87,16 +90,16 @@ public class FtpUser implements User {
 		delegateUser.setEnabled(enableFlag);
 	}
 
-    public void setRole(GBUserRole role) {
-        delegateUser.setRole(role);
-    }
+	public void setRole(GBUserRole role) {
+		delegateUser.setRole(role);
+	}
 
-    public GBUserRole getRole() {
-        return delegateUser.getRole();
-    }
+	public GBUserRole getRole() {
+		return delegateUser.getRole();
+	}
 
-    //==========================================================================
-    // FTP props
+	// ==========================================================================
+	// FTP props
 
 	public void setWritePermission(boolean writePermission) {
 		delegateFtpProps.setWritePermission(writePermission);
@@ -146,92 +149,93 @@ public class FtpUser implements User {
 		return delegateFtpProps.getDownloadRate();
 	}
 
+	public List<Authority> getAuthorities() {
+		if (authorities != null) {
+			return Collections.unmodifiableList(authorities);
+		} else {
+			// try to lazily create auths
+			List<Authority> a = createAuthorities();
+			if (!a.isEmpty()) {
+				authorities = a;
+				return Collections.unmodifiableList(authorities);
+			} else
+				return null;
+		}
+	}
 
-    public List<Authority> getAuthorities() {
-        if (authorities != null) {
-            return Collections.unmodifiableList(authorities);
-        } else {
-            // try to lazily create auths
-            List<Authority> a = createAuthorities();
-            if( ! a.isEmpty()) {
-                authorities = a;
-                return Collections.unmodifiableList(authorities);
-            } else
-                return null;
-        }
-    }
+	public void setAuthorities(List<Authority> authorities) {
+		if (authorities != null) {
+			this.authorities = Collections.unmodifiableList(authorities);
+		} else {
+			this.authorities = null;
+		}
+	}
 
-    public void setAuthorities(List<Authority> authorities) {
-        if (authorities != null) {
-            this.authorities = Collections.unmodifiableList(authorities);
-        } else {
-            this.authorities = null;
-        }
-    }
-	
-    /**
-     * {@inheritDoc}
-     */
-    public AuthorizationRequest authorize(AuthorizationRequest request) {
-        // check for no authorities at all
-        if(authorities == null || authorities.isEmpty()) {
-            authorities = createAuthorities();
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public AuthorizationRequest authorize(AuthorizationRequest request) {
+		// check for no authorities at all
+		if (authorities == null || authorities.isEmpty()) {
+			authorities = createAuthorities();
+		}
 
-        boolean someoneCouldAuthorize = false;
-        for (Authority authority : authorities) {
-            if (authority.canAuthorize(request)) {
-                someoneCouldAuthorize = true;
+		boolean someoneCouldAuthorize = false;
+		for (Authority authority : authorities) {
+			if (authority.canAuthorize(request)) {
+				someoneCouldAuthorize = true;
 
-                request = authority.authorize(request);
+				request = authority.authorize(request);
 
-                // authorization failed, return null
-                if (request == null) {
-                    return null;
-                }
-            }
+				// authorization failed, return null
+				if (request == null) {
+					return null;
+				}
+			}
 
-        }
+		}
 
-        if (someoneCouldAuthorize) {
-            return request;
-        } else {
-            return null;
-        }
-    }
+		if (someoneCouldAuthorize) {
+			return request;
+		} else {
+			return null;
+		}
+	}
 
+	/**
+	 * Creates Authorities based on ftp properties.
+	 * 
+	 */
+	protected List<Authority> createAuthorities() {
 
-    /**
-     * Creates Authorities based on ftp properties.
-     * 
-     */
-    protected List<Authority> createAuthorities() {
+		List<Authority> auth = new ArrayList<Authority>();
 
-        List<Authority> auth = new ArrayList<Authority>();
+		if (isWritePermission()) {
+			auth.add(new WritePermission());
+		}
+		auth.add(new ConcurrentLoginPermission(getMaxLoginNumber(),
+				getMaxLoginPerIp()));
+		auth
+				.add(new TransferRatePermission(getDownloadRate(),
+						getUploadRate()));
 
-        if (isWritePermission()) {
-            auth.add(new WritePermission());
-        }
-        auth.add(new ConcurrentLoginPermission(getMaxLoginNumber(), getMaxLoginPerIp()));
-        auth.add(new TransferRatePermission(getDownloadRate(), getUploadRate()));
+		return auth;
+	}
 
-        return auth;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Authority> getAuthorities(Class<? extends Authority> clazz) {
+		List<Authority> selected = new ArrayList<Authority>();
 
-    /**
-     * {@inheritDoc}
-     */
-    public List<Authority> getAuthorities(Class<? extends Authority> clazz) {
-        List<Authority> selected = new ArrayList<Authority>();
+		for (Authority authority : authorities) {
+			if (authority.getClass().equals(clazz)) {
+				selected.add(authority);
+			}
+		}
 
-        for (Authority authority : authorities) {
-            if (authority.getClass().equals(clazz)) {
-                selected.add(authority);
-            }
-        }
-
-        return selected;
-    }
+		return selected;
+	}
 
 	public FtpProps getSourceFtpProps() {
 		return delegateFtpProps;
@@ -259,20 +263,18 @@ public class FtpUser implements User {
 
 	@Override
 	public String toString() {
-		return "[ ID : " + getId()
-				+ " - NAME : " + getName()
-//				+ " - PWD : " + getPassword()
-				+ " - HOME_DIR : " + getRelativeHomeDir()
-				+ " - ENABLE_FLAG : " + getEnabled()
-				+ " - ROLE : " + getRole()
-                + "]["
+		return "[ ID : "
+				+ getId()
+				+ " - NAME : "
+				+ getName()
+				// + " - PWD : " + getPassword()
+				+ " - HOME_DIR : " + getRelativeHomeDir() + " - ENABLE_FLAG : "
+				+ getEnabled() + " - ROLE : " + getRole() + "]["
 				+ " - WRITE_PERMISSION " + isWritePermission()
-				+ " - IDLE_TIME " + getMaxIdleTime()
-				+ " - UPLOAD_RATE " + getUploadRate()
-				+ " - DOWNLOAD_RATE " + getDownloadRate()
+				+ " - IDLE_TIME " + getMaxIdleTime() + " - UPLOAD_RATE "
+				+ getUploadRate() + " - DOWNLOAD_RATE " + getDownloadRate()
 				+ " - MAX_LOGIN_NUMBER " + getMaxLoginNumber()
-				+ " - MAX_LOGIN_PER_IP " + getMaxLoginPerIp()
-                + "]";
+				+ " - MAX_LOGIN_PER_IP " + getMaxLoginPerIp() + "]";
 	}
 
 }

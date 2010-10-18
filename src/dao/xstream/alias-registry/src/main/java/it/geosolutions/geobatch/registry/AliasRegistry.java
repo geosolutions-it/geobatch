@@ -31,26 +31,28 @@ import java.util.logging.Logger;
 /**
  * @author ETj <etj at geo-solutions.it>
  */
-public class AliasRegistry implements Iterable<Map.Entry<String, Class<?>>>{
-	
-	private final static Logger LOGGER = Logger.getLogger(AliasRegistrar.class.getName());
+public class AliasRegistry implements Iterable<Map.Entry<String, Class<?>>> {
 
-    private Map<String, Class<?>> alias = new HashMap<String, Class<?>>();
+	private final static Logger LOGGER = Logger.getLogger(AliasRegistrar.class
+			.getName());
 
-    public AliasRegistry() {
-    }
+	private Map<String, Class<?>> alias = new HashMap<String, Class<?>>();
 
-    public int size() {
-        return alias.size();
-    }
+	public AliasRegistry() {
+	}
 
-    public void putAlias(String name, Class<?> clazz) {
-    	if(LOGGER.isLoggable(Level.INFO))
-    		LOGGER.info("Adding alias " + name + " for class " + clazz.getSimpleName());
-        alias.put(name, clazz);
-    }
+	public int size() {
+		return alias.size();
+	}
 
-    public Iterator<Entry<String, Class<?>>> iterator() {
-        return alias.entrySet().iterator();
-    }
+	public void putAlias(String name, Class<?> clazz) {
+		if (LOGGER.isLoggable(Level.INFO))
+			LOGGER.info("Adding alias " + name + " for class "
+					+ clazz.getSimpleName());
+		alias.put(name, clazz);
+	}
+
+	public Iterator<Entry<String, Class<?>>> iterator() {
+		return alias.entrySet().iterator();
+	}
 }

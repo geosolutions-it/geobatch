@@ -23,6 +23,9 @@
 package it.geosolutions.geobatch.catalog.dao.file.xstream;
 
 import it.geosolutions.geobatch.catalog.dao.FlowManagerConfigurationDAO;
+import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
+import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 import it.geosolutions.geobatch.utils.IOUtils;
@@ -33,122 +36,138 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Logger;
-
-import com.thoughtworks.xstream.XStream;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
-import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
-public class XStreamFlowConfigurationDAO
-        extends XStreamDAO<FlowConfiguration>
-        implements FlowManagerConfigurationDAO {
+import com.thoughtworks.xstream.XStream;
 
-	private final static Logger LOGGER = Logger.getLogger(XStreamFlowConfigurationDAO.class.toString());
-	
-    public XStreamFlowConfigurationDAO(String directory, Alias alias) {
-        super(directory, alias);
-    }
+public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration>
+		implements FlowManagerConfigurationDAO {
 
-    public FileBasedFlowConfiguration find(FlowConfiguration exampleInstance, boolean lock) throws IOException {
-        return find(exampleInstance.getId(), lock);
-    }
+	private final static Logger LOGGER = Logger
+			.getLogger(XStreamFlowConfigurationDAO.class.toString());
 
-    public FileBasedFlowConfiguration find(String id, boolean lock) throws IOException {
-        final File entityfile = new File(getBaseDirectory(), id + ".xml");
-        if (entityfile.canRead() && !entityfile.isDirectory()) {
-            XStream xstream = new XStream();
-            alias.setAliases(xstream);
+	public XStreamFlowConfigurationDAO(String directory, Alias alias) {
+		super(directory, alias);
+	}
 
-            InputStream inStream=null;
-            try{
-            	inStream= new FileInputStream(entityfile);
-            	FileBasedFlowConfiguration obj = (FileBasedFlowConfiguration) xstream.fromXML(new BufferedInputStream(inStream));
+	public FileBasedFlowConfiguration find(FlowConfiguration exampleInstance,
+			boolean lock) throws IOException {
+		return find(exampleInstance.getId(), lock);
+	}
 
-				if(obj.getEventConsumerConfiguration() == null)
-					LOGGER.severe("FileBasedFlowConfiguration " + obj + " does not have a ConsumerCfg");
-	
-				if(obj.getEventGeneratorConfiguration() == null)
-					LOGGER.severe("FileBasedFlowConfiguration " + obj + " does not have a GeneratorCfg");
+	public FileBasedFlowConfiguration find(String id, boolean lock)
+			throws IOException {
+		final File entityfile = new File(getBaseDirectory(), id + ".xml");
+		if (entityfile.canRead() && !entityfile.isDirectory()) {
+			XStream xstream = new XStream();
+			alias.setAliases(xstream);
 
-                resolveReferences(obj);
+			InputStream inStream = null;
+			try {
+				inStream = new FileInputStream(entityfile);
+				FileBasedFlowConfiguration obj = (FileBasedFlowConfiguration) xstream
+						.fromXML(new BufferedInputStream(inStream));
 
-	            return obj;
-            }
-            catch (Throwable e) {
-            	final IOException ioe= new IOException("Unable to load flow config:"+id);
-            	ioe.initCause(e);
-            	throw ioe;
+				if (obj.getEventConsumerConfiguration() == null)
+					LOGGER.severe("FileBasedFlowConfiguration " + obj
+							+ " does not have a ConsumerCfg");
+
+				if (obj.getEventGeneratorConfiguration() == null)
+					LOGGER.severe("FileBasedFlowConfiguration " + obj
+							+ " does not have a GeneratorCfg");
+
+				resolveReferences(obj);
+
+				return obj;
+			} catch (Throwable e) {
+				final IOException ioe = new IOException(
+						"Unable to load flow config:" + id);
+				ioe.initCause(e);
+				throw ioe;
+			} finally {
+				if (inStream != null)
+					IOUtils.closeQuietly(inStream);
 			}
-            finally{
-            	if(inStream!=null)
-            		IOUtils.closeQuietly(inStream);
-            }
-        }
-        return null;
-    }
+		}
+		return null;
+	}
 
-    /**
-     * Resolve references in the flow configuration.
-     *
-     * <P>At the moment only listeners are cross referenced.
-     * <BR>XStream may handle references on its own (using xpath),
-     * but this way we can refactor the file format with less problems.
-     *
-     * @param obj
-     */
-    private void resolveReferences(FileBasedFlowConfiguration obj) {
-        //=== resolve listener references
+	/**
+	 * Resolve references in the flow configuration.
+	 * 
+	 * <P>
+	 * At the moment only listeners are cross referenced. <BR>
+	 * XStream may handle references on its own (using xpath), but this way we
+	 * can refactor the file format with less problems.
+	 * 
+	 * @param obj
+	 */
+	private void resolveReferences(FileBasedFlowConfiguration obj) {
+		// === resolve listener references
 
-        // caches listeners locally
-        Map<String, ProgressListenerConfiguration> listenersMap = new HashMap<String, ProgressListenerConfiguration>();
-        if(obj.getProgressListenerConfigurations() != null) {
-            for (ProgressListenerConfiguration plc : obj.getProgressListenerConfigurations()) {
-                String plcId = plc.getId();
-                if(plcId == null) {
-                    LOGGER.severe("FileBasedFlowConfiguration " + obj + " declares a Listener with no id: " + plc);
-                    continue; // skip the listener definition
-                }
+		// caches listeners locally
+		Map<String, ProgressListenerConfiguration> listenersMap = new HashMap<String, ProgressListenerConfiguration>();
+		if (obj.getProgressListenerConfigurations() != null) {
+			for (ProgressListenerConfiguration plc : obj
+					.getProgressListenerConfigurations()) {
+				String plcId = plc.getId();
+				if (plcId == null) {
+					LOGGER.severe("FileBasedFlowConfiguration " + obj
+							+ " declares a Listener with no id: " + plc);
+					continue; // skip the listener definition
+				}
 
-                listenersMap.put(plcId, plc);
-            }
-        }
+				listenersMap.put(plcId, plc);
+			}
+		}
 
-        // resolve consumer listener
-        EventConsumerConfiguration ecc = obj.getEventConsumerConfiguration();
-        if(ecc.getListenerIds() != null) {
-            for (String listenerId : ecc.getListenerIds()) {
-                if(listenerId != null) {
-                    if(listenersMap.containsKey(listenerId)) {
-                        ecc.addListenerConfiguration(listenersMap.get(listenerId));
-                    } else {
-                        LOGGER.severe("FileBasedFlowConfiguration " + obj + " declares an invalid listener in the ConsumerConfiguration '"+listenerId+"'");
-                    }
-                }
-            }
-        }
+		// resolve consumer listener
+		EventConsumerConfiguration ecc = obj.getEventConsumerConfiguration();
+		if (ecc.getListenerIds() != null) {
+			for (String listenerId : ecc.getListenerIds()) {
+				if (listenerId != null) {
+					if (listenersMap.containsKey(listenerId)) {
+						ecc.addListenerConfiguration(listenersMap
+								.get(listenerId));
+					} else {
+						LOGGER
+								.severe("FileBasedFlowConfiguration "
+										+ obj
+										+ " declares an invalid listener in the ConsumerConfiguration '"
+										+ listenerId + "'");
+					}
+				}
+			}
+		}
 
-        // resolve actions listener
+		// resolve actions listener
 
-        for (ActionConfiguration ac : ecc.getActions()) {
-            if(ac.getListenerConfigurations()==null) { // this happens in XStream...
-                ac.setListenerConfigurations(new ArrayList<ProgressListenerConfiguration>());
-            }
+		for (ActionConfiguration ac : ecc.getActions()) {
+			if (ac.getListenerConfigurations() == null) { // this happens in
+				// XStream...
+				ac
+						.setListenerConfigurations(new ArrayList<ProgressListenerConfiguration>());
+			}
 
-            if(ac.getListenerIds() != null) {
-                for (String actionListenerId : ac.getListenerIds()) {
-                    if(actionListenerId != null) {
-                        if(listenersMap.containsKey(actionListenerId)) {
-                            ac.addListenerConfiguration(listenersMap.get(actionListenerId));
-                        } else {
-                            LOGGER.severe("FileBasedFlowConfiguration " + obj + " declares an invalid listener in an action configuration '"+actionListenerId+"'");
-                        }
-                    }
-                }
-            }
-        }
-    }
+			if (ac.getListenerIds() != null) {
+				for (String actionListenerId : ac.getListenerIds()) {
+					if (actionListenerId != null) {
+						if (listenersMap.containsKey(actionListenerId)) {
+							ac.addListenerConfiguration(listenersMap
+									.get(actionListenerId));
+						} else {
+							LOGGER
+									.severe("FileBasedFlowConfiguration "
+											+ obj
+											+ " declares an invalid listener in an action configuration '"
+											+ actionListenerId + "'");
+						}
+					}
+				}
+			}
+		}
+	}
 }

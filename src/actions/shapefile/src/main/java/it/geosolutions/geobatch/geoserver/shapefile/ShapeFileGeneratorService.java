@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.geoserver.shapefile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
@@ -37,26 +35,28 @@ import java.util.logging.Logger;
  * 
  * @author AlFa
  * 
- * @version $ ShapeFileGeoServerGeneratorService.java $ Revision: x.x $ 19/feb/07 16:16:13
+ * @version $ ShapeFileGeoServerGeneratorService.java $ Revision: x.x $
+ *          19/feb/07 16:16:13
  */
 public class ShapeFileGeneratorService extends BaseService implements
-ActionService<FileSystemMonitorEvent, ShapeFileConfiguration> {
-	
-    private final static Logger LOGGER = Logger.getLogger(ShapeFileGeneratorService.class.toString());
+		ActionService<FileSystemMonitorEvent, ShapeFileConfiguration> {
 
-    public ShapeFileConfigurator createAction(final ShapeFileConfiguration configuration) {
-        try {
-            return new ShapeFileConfigurator(configuration);
-        } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
-            return null;
-        }
-    }
+	private final static Logger LOGGER = Logger
+			.getLogger(ShapeFileGeneratorService.class.toString());
 
-    public boolean canCreateAction(final ShapeFileConfiguration configuration) {
-        return true;
-    }
+	public ShapeFileConfigurator createAction(
+			final ShapeFileConfiguration configuration) {
+		try {
+			return new ShapeFileConfigurator(configuration);
+		} catch (IOException e) {
+			if (LOGGER.isLoggable(Level.WARNING))
+				LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+			return null;
+		}
+	}
+
+	public boolean canCreateAction(final ShapeFileConfiguration configuration) {
+		return true;
+	}
 
 }
-

@@ -47,6 +47,45 @@
         </license>
     </licenses>
 
+		<!-- APACHE CAMEL Dependencies -->
+	  <dependencies>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+			</dependency> 
+	    <dependency>
+	      <groupId>org.apache.camel</groupId>
+	      <artifactId>camel-spring</artifactId>
+	      <version>2.4.0</version>
+	    </dependency>
+	
+	    <!-- xquery support -->
+	    <dependency>
+	      <groupId>org.apache.camel</groupId>
+	      <artifactId>camel-saxon</artifactId>
+	      <version>2.4.0</version>
+	    </dependency>
+	
+	    <!-- jms support -->
+	    <dependency>
+	      <groupId>org.apache.camel</groupId>
+	      <artifactId>camel-jms</artifactId>
+	      <version>2.4.0</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.apache.activemq</groupId>
+	      <artifactId>activemq-core</artifactId>
+	      <version>5.3.2</version>
+	      <exclusions>
+	      	<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-context</artifactId>
+	      	</exclusion>
+	      </exclusions>
+	    </dependency>
+		
+	  </dependencies>		
+
     <build>
         <plugins>
             <!--
@@ -241,14 +280,15 @@
         </profile>
 
         <profile>
-            <id>nurc</id>
+            <id>metocs</id>
             <modules>
                 <module>geotiff</module>
                 <module>gb-geoserver</module>
                 <module>imagemosaic</module>
                 <module>shapefile</module>
                 <module>gb-task-executor</module>
-                <module>nurc</module>
+                <module>scripting</module>
+                <module>metocs</module>
             </modules>
         </profile>
 

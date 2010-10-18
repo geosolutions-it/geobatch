@@ -85,11 +85,22 @@
         <opengis.version>2.3-M1</opengis.version>
         <gb.version>0.9-SNAPSHOT</gb.version>
         <imageio-ext.version>1.1-SNAPSHOT</imageio-ext.version>
-        <spring.version>2.5.6</spring.version>
-        <spring.security.version>2.0.5.RELEASE</spring.security.version>
+        <spring.version>3.0.3.RELEASE</spring.version>
+        <spring.security.version>3.0.3.RELEASE</spring.security.version>
         <dao.type>xstream</dao.type> <!-- the default dao type -->
     </properties>
 
+     <distributionManagement>
+		  <!--..................................-->
+		  <!--      GeoSolutions Repository     -->
+		  <!--..................................-->
+      <repository>
+       <uniqueVersion>false</uniqueVersion>
+       <id>geosolutions</id>
+       <url>ftp://maven.geo-solutions.it/home/maven</url>
+      </repository>
+    </distributionManagement>
+    
     <!-- Profiles set on the command-line overwrite default properties. -->
     <profiles>
         <profile>
@@ -937,11 +948,13 @@
                 <artifactId>gb-action-geotiff</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+
             <dependency>
 								<groupId>it.geosolutions</groupId>
-								<artifactId>gb-action-nurc-commons</artifactId>
+								<artifactId>gb-action-metocs-commons</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-nurc-tda</artifactId>
@@ -952,6 +965,13 @@
                 <artifactId>gb-action-nurc-sem</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-action-e-geos</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-lamma</artifactId>
@@ -1112,6 +1132,8 @@
                     <include>**/*.prj</include>
                     <include>**/*.py</include>
                     <include>**/*.properties</include>
+                    <include>**/*.query</include>
+                    <include>**/*.xquery</include>
                     <include>**/*.serialized</include>
                     <include>META-INF/*.jai</include>
                     <include>META-INF/mailcap</include>
@@ -1269,6 +1291,14 @@
             </plugin>
 
         </plugins>
+        
+       <extensions>
+	       <extension>
+		       <groupId>org.apache.maven.wagon</groupId>
+		       <artifactId>wagon-ftp</artifactId>
+		       <version>1.0-beta-2</version>
+	       </extension>
+       </extensions>
     </build>
 
     <!-- ================================================================== -->

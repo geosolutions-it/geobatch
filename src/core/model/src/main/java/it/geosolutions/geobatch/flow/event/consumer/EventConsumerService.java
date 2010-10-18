@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.flow.event.consumer;
 
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
@@ -29,7 +27,7 @@ import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfig
 import java.util.EventObject;
 
 public interface EventConsumerService<EO extends EventObject, ECC extends EventConsumerConfiguration> {
-    public EventConsumer<EO, ECC> createEventConsumer(ECC configuration);
+	public EventConsumer<EO, ECC> createEventConsumer(ECC configuration);
 
-    public boolean canCreateEventConsumer(ECC configuration);
+	public boolean canCreateEventConsumer(ECC configuration);
 }

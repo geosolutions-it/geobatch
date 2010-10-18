@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.flow.event.consumer;
 
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
@@ -31,57 +29,58 @@ import it.geosolutions.geobatch.flow.Job;
 import java.util.EventObject;
 
 public interface EventConsumer<EO extends EventObject, ECC extends EventConsumerConfiguration>
-    extends ListenerRegistry<EventConsumerListener>,
-            Job {
-    /**
-     * Clean up code for this {@link EventConsumer}.
-     */
-    public void dispose();
+		extends ListenerRegistry<EventConsumerListener>, Job {
+	/**
+	 * Clean up code for this {@link EventConsumer}.
+	 */
+	public void dispose();
 
-    /**
-     * Retrieves the configuration for this {@link EventConsumer}.
-     * 
-     * @return the configuration for this {@link EventConsumer}.
-     */
-    public ECC getConfiguration();
+	/**
+	 * Retrieves the configuration for this {@link EventConsumer}.
+	 * 
+	 * @return the configuration for this {@link EventConsumer}.
+	 */
+	public ECC getConfiguration();
 
-    /**
-     * Sets the configuration for this {@link EventConsumer}.
-     * 
-     * @param configuration
-     *            to set for this {@link EventConsumer}.
-     */
-    public void setConfiguration(ECC configuration);
+	/**
+	 * Sets the configuration for this {@link EventConsumer}.
+	 * 
+	 * @param configuration
+	 *            to set for this {@link EventConsumer}.
+	 */
+	public void setConfiguration(ECC configuration);
 
-    /**
-     * Retrieves the status for this {@link EventConsumer}.
-     * 
-     * @return the status for this {@link EventConsumer}.
-     */
-    public EventConsumerStatus getStatus();
+	/**
+	 * Retrieves the status for this {@link EventConsumer}.
+	 * 
+	 * @return the status for this {@link EventConsumer}.
+	 */
+	public EventConsumerStatus getStatus();
 
-    /**
-     * Tries to consume the provided event. In case the provided event cannot be consumed it return
-     * false.
-     * 
-     * @param event
-     *            The event to consume
-     * @return <code>true</code> if we can consume the provided event, <code>false</code> otherwise.
-     */
-    public boolean consume(EO event);
+	/**
+	 * Tries to consume the provided event. In case the provided event cannot be
+	 * consumed it return false.
+	 * 
+	 * @param event
+	 *            The event to consume
+	 * @return <code>true</code> if we can consume the provided event,
+	 *         <code>false</code> otherwise.
+	 */
+	public boolean consume(EO event);
 
-    /**
-     * Asks this {@link EventConsumer} to cancel its execution.
-     *
-     */
-    public void cancel();
+	/**
+	 * Asks this {@link EventConsumer} to cancel its execution.
+	 * 
+	 */
+	public void cancel();
 
-    /**
-     * Tells us whether or not this {@link EventConsumer} was asked to cancel its execution.
-     * 
-     * @return <code>true</code> in case this {@link EventConsumer} was asked to cancel its
-     *         execution, <code>false</code> otherwise.
-     */
-    public boolean isCanceled();
+	/**
+	 * Tells us whether or not this {@link EventConsumer} was asked to cancel
+	 * its execution.
+	 * 
+	 * @return <code>true</code> in case this {@link EventConsumer} was asked to
+	 *         cancel its execution, <code>false</code> otherwise.
+	 */
+	public boolean isCanceled();
 
 }

@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.flow;
 
 import it.geosolutions.geobatch.catalog.Service;
@@ -33,9 +31,9 @@ import java.util.EventObject;
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public interface FlowManagerService<EO extends EventObject, FC extends FlowConfiguration> 
-        extends Service {
-    public FlowManager<EO, FC> createFlowManager(FC type);
+public interface FlowManagerService<EO extends EventObject, FC extends FlowConfiguration>
+		extends Service {
+	public FlowManager<EO, FC> createFlowManager(FC type);
 
-    public boolean canCreateFlowManager(FC type);
+	public boolean canCreateFlowManager(FC type);
 }

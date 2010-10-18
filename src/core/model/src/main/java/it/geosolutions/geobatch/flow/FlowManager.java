@@ -34,45 +34,46 @@ import java.util.List;
 /**
  * @author Alessio Fabiani
  */
-public interface FlowManager<EO extends EventObject, FC extends FlowConfiguration> 
-        extends PersistentResource<FC>,
-                Job {
-    /**
-     * The Flow BaseEventConsumer identifier.
-     */
-    public void setName(String name);
+public interface FlowManager<EO extends EventObject, FC extends FlowConfiguration>
+		extends PersistentResource<FC>, Job {
+	/**
+	 * The Flow BaseEventConsumer identifier.
+	 */
+	public void setName(String name);
 
-    /**
+	/**
      *
      */
-    public boolean isRunning();
+	public boolean isRunning();
 
-    /**
+	/**
      *
      */
-    public void reset();
+	public void reset();
 
-    /**
+	/**
      *
      */
-    public void dispose();
+	public void dispose();
 
-    /**
-     * Output Directory
-     */
-    public File getWorkingDirectory();
-    /**
-     * Output Directory
-     */
-    public void setWorkingDirectory(File workingDir);
+	/**
+	 * Output Directory
+	 */
+	public File getWorkingDirectory();
 
-    public EventGenerator<EO> getEventGenerator();
-    public void setEventGenerator(EventGenerator<EO> eventGenerator);
-    
-    public List<? extends EventConsumer> getEventConsumers();
+	/**
+	 * Output Directory
+	 */
+	public void setWorkingDirectory(File workingDir);
 
-    /**
-     * Post an event to the flow
-     */
-    public void postEvent(EO event);
+	public EventGenerator<EO> getEventGenerator();
+
+	public void setEventGenerator(EventGenerator<EO> eventGenerator);
+
+	public List<? extends EventConsumer> getEventConsumers();
+
+	/**
+	 * Post an event to the flow
+	 */
+	public void postEvent(EO event);
 }

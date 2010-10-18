@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.catalog.impl;
 
 import java.io.IOException;
@@ -31,53 +29,53 @@ import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.PersistentResource;
 import it.geosolutions.geobatch.catalog.dao.DAO;
 
-public abstract class BasePersistentResource<C extends Configuration>
-        extends BaseResource
-        implements PersistentResource<C> {
+public abstract class BasePersistentResource<C extends Configuration> extends
+		BaseResource implements PersistentResource<C> {
 
-	private final static Logger LOGGER= Logger.getLogger(BasePersistentResource.class.toString());
-	
-    private C configuration;
+	private final static Logger LOGGER = Logger
+			.getLogger(BasePersistentResource.class.toString());
 
-    private DAO dao;
+	private C configuration;
 
-    private boolean removed;
+	private DAO dao;
 
-    public C getConfiguration() {
-        return configuration;
-    }
+	private boolean removed;
 
-    public DAO getDAO() {
-        return dao;
-    }
+	public C getConfiguration() {
+		return configuration;
+	}
 
-    public void persist() throws IOException{
-        if (configuration.isDirty())
-            configuration = (C) dao.persist(configuration);
+	public DAO getDAO() {
+		return dao;
+	}
 
-    }
+	public void persist() throws IOException {
+		if (configuration.isDirty())
+			configuration = (C) dao.persist(configuration);
 
-    public void load() throws IOException{
-    	final Configuration config=dao.find(this.getId(), false);
-        setConfiguration((C) config);
-        configuration.setDirty(false);
+	}
 
-    }
+	public void load() throws IOException {
+		final Configuration config = dao.find(this.getId(), false);
+		setConfiguration((C) config);
+		configuration.setDirty(false);
 
-    public boolean remove() throws IOException{
-        removed = dao.remove(configuration);
-        return removed;
+	}
 
-    }
+	public boolean remove() throws IOException {
+		removed = dao.remove(configuration);
+		return removed;
 
-    public void setConfiguration(C configuration) {
-        this.configuration = configuration;
+	}
 
-    }
+	public void setConfiguration(C configuration) {
+		this.configuration = configuration;
 
-    public void setDAO(DAO flowConfigurationDAO) {
-        this.dao = flowConfigurationDAO;
+	}
 
-    }
+	public void setDAO(DAO flowConfigurationDAO) {
+		this.dao = flowConfigurationDAO;
+
+	}
 
 }

@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.flow.event.generator;
 
 import java.util.EventObject;
@@ -33,15 +31,16 @@ import java.util.EventObject;
  */
 public interface EventGenerator<EO extends EventObject> {
 
-    public void start();
-    public void stop();
+	public void start();
 
-    public boolean isRunning();
+	public void stop();
 
-    public void dispose();
+	public boolean isRunning();
 
-    public void addListener(FlowEventListener<EO> listener);
-    public void removeListener(FlowEventListener<EO> listener);
+	public void dispose();
 
+	public void addListener(FlowEventListener<EO> listener);
+
+	public void removeListener(FlowEventListener<EO> listener);
 
 }

@@ -31,13 +31,12 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * @author   Alessio
+ * @author Alessio
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners({})
-@ContextConfiguration(locations={"/applicationContext.xml"})
+@TestExecutionListeners( {})
+@ContextConfiguration(locations = { "/applicationContext.xml" })
 public class PureJavaTest extends AbstractJUnit4SpringContextTests {
-
 
 	private final static Logger LOGGER = Logger
 			.getLogger("it.geosolutions.filesystemmonitor.monitorpolling");
@@ -47,7 +46,6 @@ public class PureJavaTest extends AbstractJUnit4SpringContextTests {
 	private FileSystemMonitor monitor;
 
 	private File dir;
-
 
 	@Before
 	public void setUp() throws Exception {
@@ -72,11 +70,12 @@ public class PureJavaTest extends AbstractJUnit4SpringContextTests {
 		// ///////////////////////////////////////////////////////////
 
 		// Create the monitor
-		final Map<String,Object>params= new HashMap<String, Object>();
+		final Map<String, Object> params = new HashMap<String, Object>();
 		params.put(PureJavaFileSystemWatcherSPI.SOURCE, dir);
 		params.put(PureJavaFileSystemWatcherSPI.INTERVAL, 1000L);
 		params.put(PureJavaFileSystemWatcherSPI.WILDCARD, "*.txt");
-		monitor = ((FileSystemMonitorSPI)this.applicationContext.getBean("pureJavaFSMSPI")).createInstance(params);
+		monitor = ((FileSystemMonitorSPI) this.applicationContext
+				.getBean("pureJavaFSMSPI")).createInstance(params);
 		listener = new TestListener();
 
 		LOGGER.info("Add a dummy listener");
@@ -85,28 +84,29 @@ public class PureJavaTest extends AbstractJUnit4SpringContextTests {
 		monitor.start();
 		Thread.yield();
 		LOGGER.info("Start folder observer");
-		
-		//prepare the pause
+
+		// prepare the pause
 		LOGGER.info("prepare the pause");
-		final Timer t= new Timer("MonitorPolling Test",true);
-		t.schedule(new TimerTask(){
+		final Timer t = new Timer("MonitorPolling Test", true);
+		t.schedule(new TimerTask() {
 
 			public void run() {
 				LOGGER.info("pause");
 				monitor.pause();
-				
-			}}, 6000);
-		
-		
-		//prepare the wake up
+
+			}
+		}, 6000);
+
+		// prepare the wake up
 		LOGGER.info("prepare the restart");
-		t.schedule(new TimerTask(){
+		t.schedule(new TimerTask() {
 
 			public void run() {
 				LOGGER.info("restart");
 				monitor.start();
-				
-			}}, 20000);
+
+			}
+		}, 20000);
 
 		FileCreatorThread fileCreator = new FileCreatorThread(dir
 				.getAbsolutePath(), "txt");
@@ -135,14 +135,12 @@ public class PureJavaTest extends AbstractJUnit4SpringContextTests {
 			LOGGER.info(new StringBuffer("\nFile changed: ").append(
 					fe.getSource()).toString());
 			String s = "";
-			if (fe.getNotification()==FileSystemMonitorNotifications.FILE_ADDED)
+			if (fe.getNotification() == FileSystemMonitorNotifications.FILE_ADDED)
 				s = "file added";
-			else
-				if(fe.getNotification()==FileSystemMonitorNotifications.FILE_REMOVED)
+			else if (fe.getNotification() == FileSystemMonitorNotifications.FILE_REMOVED)
 				s = "file removed";
-				else
-					if(fe.getNotification()==FileSystemMonitorNotifications.FILE_MODIFIED)
-						s = "file modified";
+			else if (fe.getNotification() == FileSystemMonitorNotifications.FILE_MODIFIED)
+				s = "file modified";
 			LOGGER.info(new StringBuffer("Event: ").append(s).toString());
 			LOGGER.info(Thread.currentThread().getName());
 		}
@@ -274,8 +272,9 @@ public class PureJavaTest extends AbstractJUnit4SpringContextTests {
 					for (int f = 0; f < numFiles; f++) {
 
 						sleep(2000);
-						copyFile(tempFile, new File(new StringBuffer(destFileName).append(f)
-								.append(".").append(this.outputExt).toString()));
+						copyFile(tempFile, new File(new StringBuffer(
+								destFileName).append(f).append(".").append(
+								this.outputExt).toString()));
 
 					}
 

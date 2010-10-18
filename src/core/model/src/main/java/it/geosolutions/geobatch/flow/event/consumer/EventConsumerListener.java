@@ -26,8 +26,9 @@ import it.geosolutions.geobatch.flow.event.IProgressListener;
 /**
  * 
  * @author Simone Giannecchini, GeoSolutions
- *
+ * 
  */
 public interface EventConsumerListener extends IProgressListener {
-	public void statusChanged(EventConsumerStatus oldStatus, EventConsumerStatus neeStatus);
+	public void statusChanged(EventConsumerStatus oldStatus,
+			EventConsumerStatus neeStatus);
 }

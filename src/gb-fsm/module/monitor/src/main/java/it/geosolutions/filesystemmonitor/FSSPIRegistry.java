@@ -15,58 +15,62 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-class FSSPIRegistry implements ApplicationContextAware,InitializingBean{
+class FSSPIRegistry implements ApplicationContextAware, InitializingBean {
 
 	public static final OsType SUGGESTED_OS_TYPE;
 	static {
-		final String osName=System.getProperty("os.name").toLowerCase();	
-		
-		if(osName.contains("linux"))
-			SUGGESTED_OS_TYPE= OsType.OS_LINUX;
+		final String osName = System.getProperty("os.name").toLowerCase();
+
+		if (osName.contains("linux"))
+			SUGGESTED_OS_TYPE = OsType.OS_LINUX;
+		else if (osName.contains("windows"))
+			SUGGESTED_OS_TYPE = OsType.OS_WINDOWS;
 		else
-			if(osName.contains("windows"))
-				SUGGESTED_OS_TYPE= OsType.OS_WINDOWS;
-			else
-				SUGGESTED_OS_TYPE=OsType.OS_UNDEFINED;		
+			SUGGESTED_OS_TYPE = OsType.OS_UNDEFINED;
 	}
 
-	private final static Logger LOGGER = Logger.getLogger(FSSPIRegistry.class.toString());
-	
-	private ApplicationContext applicationContext=null;
+	private final static Logger LOGGER = Logger.getLogger(FSSPIRegistry.class
+			.toString());
+
+	private ApplicationContext applicationContext = null;
 
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
-		this.applicationContext=applicationContext;
-		
+		this.applicationContext = applicationContext;
+
 	}
+
 	@SuppressWarnings("unchecked")
-	FileSystemMonitor getMonitor(final Map<String,?>config,final OsType osType) {
-		if(applicationContext==null)
-		{
-			if(LOGGER.isLoggable(Level.SEVERE))
+	FileSystemMonitor getMonitor(final Map<String, ?> config,
+			final OsType osType) {
+		if (applicationContext == null) {
+			if (LOGGER.isLoggable(Level.SEVERE))
 				LOGGER.severe("Underlying applicationContext is null!");
 			return null;
 		}
 		FileSystemMonitorSPI monitorSPI = null;
-		final Map beans = applicationContext.getBeansOfType(FileSystemMonitorSPI.class);
+		final Map beans = applicationContext
+				.getBeansOfType(FileSystemMonitorSPI.class);
 		final Set beanSet = beans.entrySet();
-		for(final Iterator it=beanSet.iterator();it.hasNext();){
-			final Map.Entry entry=(Entry) it.next();
+		for (final Iterator it = beanSet.iterator(); it.hasNext();) {
+			final Map.Entry entry = (Entry) it.next();
 			monitorSPI = (FileSystemMonitorSPI) entry.getValue();
-			if (monitorSPI!=null&&monitorSPI.isAvailable()&&monitorSPI.canWatch(osType)) {
+			if (monitorSPI != null && monitorSPI.isAvailable()
+					&& monitorSPI.canWatch(osType)) {
 				break;
 			}
 		}
-		if (monitorSPI != null) 
+		if (monitorSPI != null)
 			return monitorSPI.createInstance(config);
-		
+
 		return null;
 
-		
 	}
+
 	public void afterPropertiesSet() throws Exception {
-		if(applicationContext==null)
-			throw new IllegalStateException("The provided applicationContext is null!");
-		FSMSPIFinder.registry=this;
+		if (applicationContext == null)
+			throw new IllegalStateException(
+					"The provided applicationContext is null!");
+		FSMSPIFinder.registry = this;
 	}
 }

@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.geotiff.overview;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
@@ -49,104 +47,109 @@ import org.geotools.utils.progress.ProcessingEventListener;
  * 
  * @version $GeoTIFFOverviewsEmbedder.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
-public class GeoTiffOverviewsEmbedder
-        extends BaseAction<FileSystemMonitorEvent>
-        implements Action<FileSystemMonitorEvent> {
+public class GeoTiffOverviewsEmbedder extends
+		BaseAction<FileSystemMonitorEvent> implements
+		Action<FileSystemMonitorEvent> {
 
-    private GeoTiffOverviewsEmbedderConfiguration configuration;
+	private GeoTiffOverviewsEmbedderConfiguration configuration;
 
-    private final static Logger LOGGER = Logger
-            .getLogger(GeoTiffOverviewsEmbedder.class.toString());
+	private final static Logger LOGGER = Logger
+			.getLogger(GeoTiffOverviewsEmbedder.class.toString());
 
-    public GeoTiffOverviewsEmbedder(GeoTiffOverviewsEmbedderConfiguration configuration)
-            throws IOException {
+	public GeoTiffOverviewsEmbedder(
+			GeoTiffOverviewsEmbedderConfiguration configuration)
+			throws IOException {
 		super(configuration);
-        this.configuration = configuration;
-    }
+		this.configuration = configuration;
+	}
 
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
-            throws ActionException {
+	public Queue<FileSystemMonitorEvent> execute(
+			Queue<FileSystemMonitorEvent> events) throws ActionException {
 
-        listenerForwarder.setTask("config");
-        listenerForwarder.started();
-        
-        try {
-            // looking for file
-            if (events.size() != 1)
-                throw new IllegalArgumentException("Wrong number of elements for this action: "
-                        + events.size());
-            
-            // get the first event
-            final FileSystemMonitorEvent event = events.peek();
+		listenerForwarder.setTask("config");
+		listenerForwarder.started();
 
-            // //
-            //
-            // data flow configuration and dataStore name must not be null.
-            //
-            // //
-            if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
-                throw new IllegalStateException("DataFlowConfig is null.");
-            }
+		try {
+			// looking for file
+			if (events.size() != 1)
+				throw new IllegalArgumentException(
+						"Wrong number of elements for this action: "
+								+ events.size());
 
-            // //
-            //
-            // check the configuration and prepare the overviews embedder
-            //
-            // //
-            int downsampleStep = configuration.getDownsampleStep();
-            if (downsampleStep <= 0)
-                throw new IllegalArgumentException("Illegal downsampleStep: " + downsampleStep);
-            final String inputFileName = event.getSource().getAbsolutePath();
-            int numberOfSteps = configuration.getNumSteps();
-            if (numberOfSteps <= 0)
-                throw new IllegalArgumentException("Illegal numberOfSteps: " + numberOfSteps);
+			// get the first event
+			final FileSystemMonitorEvent event = events.peek();
 
-            final OverviewsEmbedder oe = new OverviewsEmbedder();
-            oe.setDownsampleStep(downsampleStep);
-            oe.setNumSteps(configuration.getNumSteps());
-//            oe.setInterp(Interpolation.getInstance(configuration.getInterp()));
-            oe.setScaleAlgorithm(configuration.getScaleAlgorithm());
-            oe.setTileHeight(configuration.getTileH());
-            oe.setTileWidth(configuration.getTileW());
-            oe.setSourcePath(inputFileName);
-//            oe.setTileCacheSize(configuration.getJAICapacity());
+			// //
+			//
+			// data flow configuration and dataStore name must not be null.
+			//
+			// //
+			if (configuration == null) {
+				LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+				throw new IllegalStateException("DataFlowConfig is null.");
+			}
 
-            // add logger/listener
-            if (configuration.isLogNotification())
-	            oe.addProcessingEventListener(new ProcessingEventListener() {
-	
-	                public void exceptionOccurred(ExceptionEvent event) {
-	                    if (LOGGER.isLoggable(Level.SEVERE))
-	                        LOGGER.info(event.getMessage());
-	
-	                }
-	
-	                public void getNotification(ProcessingEvent event) {
-	                    if (LOGGER.isLoggable(Level.SEVERE))
-	                        LOGGER.info(event.getMessage());
-                        listenerForwarder.progressing((float)event.getPercentage(), event.getMessage());
-	                }
-	            });
-            // run
+			// //
+			//
+			// check the configuration and prepare the overviews embedder
+			//
+			// //
+			int downsampleStep = configuration.getDownsampleStep();
+			if (downsampleStep <= 0)
+				throw new IllegalArgumentException("Illegal downsampleStep: "
+						+ downsampleStep);
+			final String inputFileName = event.getSource().getAbsolutePath();
+			int numberOfSteps = configuration.getNumSteps();
+			if (numberOfSteps <= 0)
+				throw new IllegalArgumentException("Illegal numberOfSteps: "
+						+ numberOfSteps);
 
-            listenerForwarder.progressing(0, "Embedding overviews");
-            oe.run();
+			final OverviewsEmbedder oe = new OverviewsEmbedder();
+			oe.setDownsampleStep(downsampleStep);
+			oe.setNumSteps(configuration.getNumSteps());
+			// oe.setInterp(Interpolation.getInstance(configuration.getInterp()));
+			oe.setScaleAlgorithm(configuration.getScaleAlgorithm());
+			oe.setTileHeight(configuration.getTileH());
+			oe.setTileWidth(configuration.getTileW());
+			oe.setSourcePath(inputFileName);
+			// oe.setTileCacheSize(configuration.getJAICapacity());
 
-            listenerForwarder.setProgress(100);
-            listenerForwarder.completed();
-            return events;
-        } catch (Exception t) {
-//            if (LOGGER.isLoggable(Level.SEVERE))
-//                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-            listenerForwarder.failed(t);
-            return null;
-        }
+			// add logger/listener
+			if (configuration.isLogNotification())
+				oe.addProcessingEventListener(new ProcessingEventListener() {
 
-    }
+					public void exceptionOccurred(ExceptionEvent event) {
+						if (LOGGER.isLoggable(Level.SEVERE))
+							LOGGER.info(event.getMessage());
 
-    public ActionConfiguration getConfiguration() {
-        return configuration;
-    }
+					}
+
+					public void getNotification(ProcessingEvent event) {
+						if (LOGGER.isLoggable(Level.SEVERE))
+							LOGGER.info(event.getMessage());
+						listenerForwarder.progressing((float) event
+								.getPercentage(), event.getMessage());
+					}
+				});
+			// run
+
+			listenerForwarder.progressing(0, "Embedding overviews");
+			oe.run();
+
+			listenerForwarder.setProgress(100);
+			listenerForwarder.completed();
+			return events;
+		} catch (Exception t) {
+			// if (LOGGER.isLoggable(Level.SEVERE))
+			// LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+			listenerForwarder.failed(t);
+			return null;
+		}
+
+	}
+
+	public ActionConfiguration getConfiguration() {
+		return configuration;
+	}
 
 }

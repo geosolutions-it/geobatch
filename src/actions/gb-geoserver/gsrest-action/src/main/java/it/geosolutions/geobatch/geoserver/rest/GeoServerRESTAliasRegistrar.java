@@ -25,13 +25,14 @@ import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 
 /**
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
  */
 public class GeoServerRESTAliasRegistrar extends AliasRegistrar {
 
-     public GeoServerRESTAliasRegistrar(AliasRegistry registry) {
-        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-        registry.putAlias("GeoServerRESTActionConfiguration", GeoServerRESTActionConfiguration.class);
-     }
+	public GeoServerRESTAliasRegistrar(AliasRegistry registry) {
+		LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+		registry.putAlias("GeoServerRESTActionConfiguration",
+				GeoServerRESTActionConfiguration.class);
+	}
 }

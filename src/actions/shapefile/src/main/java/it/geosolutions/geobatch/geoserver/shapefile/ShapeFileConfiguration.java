@@ -28,25 +28,25 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-
 /**
  * Comments here ...
  * 
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
 public class ShapeFileConfiguration extends ActionConfiguration implements
-        Configuration {
+		Configuration {
 
 	private String workingDirectory;
-	
-    private String namespace;
-	
-    public ShapeFileConfiguration() {
-        super();
-    }
+
+	private String namespace;
+
+	public ShapeFileConfiguration() {
+		super();
+	}
 
 	/**
-	 * @param namespace the namespace to set
+	 * @param namespace
+	 *            the namespace to set
 	 */
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
@@ -60,7 +60,8 @@ public class ShapeFileConfiguration extends ActionConfiguration implements
 	}
 
 	/**
-	 * @param workingDirectory the workingDirectory to set
+	 * @param workingDirectory
+	 *            the workingDirectory to set
 	 */
 	public void setWorkingDirectory(String workingDirectory) {
 		this.workingDirectory = workingDirectory;
@@ -76,26 +77,27 @@ public class ShapeFileConfiguration extends ActionConfiguration implements
 	/**
 	 * 
 	 */
-    public ShapeFileConfiguration clone() { // throws CloneNotSupportedException {
-    	try {
+	public ShapeFileConfiguration clone() { // throws CloneNotSupportedException
+											// {
+		try {
 			return (ShapeFileConfiguration) BeanUtils.cloneBean(this);
 		} catch (IllegalAccessException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InstantiationException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InvocationTargetException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (NoSuchMethodException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		}
-    }
+	}
 
 }

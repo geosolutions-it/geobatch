@@ -30,14 +30,13 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-
 /**
  * Comments here ...
  * 
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
 public class TaskExecutorConfiguration extends ActionConfiguration implements
-        Configuration {
+		Configuration {
 
 	public String getXsl() {
 		return xsl;
@@ -71,14 +70,14 @@ public class TaskExecutorConfiguration extends ActionConfiguration implements
 		this.timeOut = timeOut;
 	}
 
-	public Map<String,String> getVariables() {
+	public Map<String, String> getVariables() {
 		return variables;
 	}
 
-	public void setVariables(Map<String,String> variables) {
+	public void setVariables(Map<String, String> variables) {
 		this.variables = variables;
 	}
-	
+
 	public String getWorkingDirectory() {
 		return workingDirectory;
 	}
@@ -86,15 +85,15 @@ public class TaskExecutorConfiguration extends ActionConfiguration implements
 	public void setWorkingDirectory(String workingDirectory) {
 		this.workingDirectory = workingDirectory;
 	}
-	
+
 	public String getDefaultScript() {
-			return defaultScript;
+		return defaultScript;
 	}
 
 	public void setDefaultScript(String defaultScript) {
 		this.defaultScript = defaultScript;
 	}
-	
+
 	public void setOutputName(String outputName) {
 		this.outputName = outputName;
 	}
@@ -102,59 +101,62 @@ public class TaskExecutorConfiguration extends ActionConfiguration implements
 	public String getOutputName() {
 		return outputName;
 	}
-	
+
 	private String workingDirectory;
 
 	private String executable;
-	
+
 	private String errorFile;
-	
+
 	private Long timeOut;
-	
+
 	private String outputName;
-	
+
 	private String defaultScript;
 
 	private String output;
 
-//	private boolean spawn;
-	
-    private Map<String,String> variables;
-    
-    private String xsl;
-	
-    public TaskExecutorConfiguration() {
-        super();
-    }
+	// private boolean spawn;
 
-    protected TaskExecutorConfiguration(String id, String name, String description,boolean dirty) {
-        super(id, name, description, dirty);
-    }
-    
-    public TaskExecutorConfiguration clone() { // throws CloneNotSupportedException {
-    	try {
+	private Map<String, String> variables;
+
+	private String xsl;
+
+	public TaskExecutorConfiguration() {
+		super();
+	}
+
+	protected TaskExecutorConfiguration(String id, String name,
+			String description, boolean dirty) {
+		super(id, name, description, dirty);
+	}
+
+	public TaskExecutorConfiguration clone() { // throws
+												// CloneNotSupportedException {
+		try {
 			return (TaskExecutorConfiguration) BeanUtils.cloneBean(this);
 		} catch (IllegalAccessException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InstantiationException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InvocationTargetException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (NoSuchMethodException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		}
-    }
+	}
 
 	/**
-	 * @param output the output to set
+	 * @param output
+	 *            the output to set
 	 */
 	public void setOutput(String output) {
 		this.output = output;

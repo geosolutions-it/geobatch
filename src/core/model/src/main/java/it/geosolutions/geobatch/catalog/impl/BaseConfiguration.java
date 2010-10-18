@@ -20,70 +20,65 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 
-public class BaseConfiguration extends BaseIdentifiable 
-        implements Configuration, Cloneable {
+public class BaseConfiguration extends BaseIdentifiable implements
+		Configuration, Cloneable {
 
-    private String serviceID;
-    
-    private boolean dirty;
+	private String serviceID;
 
-    public BaseConfiguration() {
-        super();
-    }
+	private boolean dirty;
 
-    public BaseConfiguration(String id, String name, String description) {
-        super(id, name, description);
-    }
+	public BaseConfiguration() {
+		super();
+	}
 
-    public BaseConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description);
-        this.dirty = dirty;
-    }
+	public BaseConfiguration(String id, String name, String description) {
+		super(id, name, description);
+	}
 
-    public boolean isDirty() {
-        return dirty;
-    }
+	public BaseConfiguration(String id, String name, String description,
+			boolean dirty) {
+		super(id, name, description);
+		this.dirty = dirty;
+	}
 
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
+	public boolean isDirty() {
+		return dirty;
+	}
 
-    /**
-     * @return the serviceID
-     */
-    public String getServiceID() {
-        return serviceID;
-    }
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
 
-    /**
-     * @param serviceID
-     *            the serviceID to set
-     */
-    public void setServiceID(String serviceID) {
-        this.serviceID = serviceID;
-    }
+	/**
+	 * @return the serviceID
+	 */
+	public String getServiceID() {
+		return serviceID;
+	}
 
-    @Override
-    public BaseConfiguration clone() {
-        BaseConfiguration bc = (BaseConfiguration) super.clone();
-        bc.dirty = this.dirty;
-        bc.serviceID = this.serviceID;
-        return bc;
-    }
+	/**
+	 * @param serviceID
+	 *            the serviceID to set
+	 */
+	public void setServiceID(String serviceID) {
+		this.serviceID = serviceID;
+	}
+
+	@Override
+	public BaseConfiguration clone() {
+		BaseConfiguration bc = (BaseConfiguration) super.clone();
+		bc.dirty = this.dirty;
+		bc.serviceID = this.serviceID;
+		return bc;
+	}
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "id:" + getId()
-				+ " srvId:" + serviceID
-				+ " name:" + getName()
-				+ " drty:" + isDirty()
-				+ "]";
+		return getClass().getSimpleName() + "[" + "id:" + getId() + " srvId:"
+				+ serviceID + " name:" + getName() + " drty:" + isDirty() + "]";
 	}
 }

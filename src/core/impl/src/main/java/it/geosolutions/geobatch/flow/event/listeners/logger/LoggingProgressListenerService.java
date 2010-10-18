@@ -8,22 +8,23 @@ import it.geosolutions.geobatch.flow.event.ProgressListener;
 import java.util.logging.Logger;
 
 /**
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class LoggingProgressListenerService
-        extends BaseService
-        implements ProgressListenerService<LoggingProgressListenerConfiguration> {
-//        implements Service<FileSystemMonitorEvent, GeoTiffOverviewsEmbedderConfiguration> {
+public class LoggingProgressListenerService extends BaseService implements
+		ProgressListenerService<LoggingProgressListenerConfiguration> {
+	// implements Service<FileSystemMonitorEvent,
+	// GeoTiffOverviewsEmbedderConfiguration> {
 
-    private LoggingProgressListenerService() {
-    }
-    
-    private final static Logger LOGGER =
-            Logger.getLogger(LoggingProgressListenerService.class.toString());
+	private LoggingProgressListenerService() {
+	}
 
-    public ProgressListener createProgressListener(LoggingProgressListenerConfiguration configuration) {
-        LoggingProgressListener ret = new LoggingProgressListener(configuration);
-        return ret;
-    }
+	private final static Logger LOGGER = Logger
+			.getLogger(LoggingProgressListenerService.class.toString());
+
+	public ProgressListener createProgressListener(
+			LoggingProgressListenerConfiguration configuration) {
+		LoggingProgressListener ret = new LoggingProgressListener(configuration);
+		return ret;
+	}
 }

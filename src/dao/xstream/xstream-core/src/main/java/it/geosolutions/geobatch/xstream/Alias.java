@@ -34,77 +34,94 @@ import java.util.logging.Logger;
  */
 public class Alias {
 
-    private final static Logger LOGGER = Logger.getLogger(Alias.class.getName());
-    private AliasRegistry aliasRegistry;
+	private final static Logger LOGGER = Logger
+			.getLogger(Alias.class.getName());
+	private AliasRegistry aliasRegistry;
 
-    public AliasRegistry getAliasRegistry() {
-        return aliasRegistry;
-    }
+	public AliasRegistry getAliasRegistry() {
+		return aliasRegistry;
+	}
 
-    public void setAliasRegistry(AliasRegistry registry) {
-        aliasRegistry = registry;
-    }
+	public void setAliasRegistry(AliasRegistry registry) {
+		aliasRegistry = registry;
+	}
 
-    public void setAliases(XStream xstream) {
+	public void setAliases(XStream xstream) {
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info("Setting aliases.");
-        }
-        xstream.alias("CatalogConfiguration",
-                it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration.class);
+		if (LOGGER.isLoggable(Level.INFO)) {
+			LOGGER.info("Setting aliases.");
+		}
+		xstream
+				.alias(
+						"CatalogConfiguration",
+						it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration.class);
 
-        xstream.alias("FlowConfiguration",
-                it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class);
-        xstream.alias("FileEventRule",
-                it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
+		xstream
+				.alias(
+						"FlowConfiguration",
+						it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class);
+		xstream
+				.alias(
+						"FileEventRule",
+						it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
 
-        xstream.alias("EventConsumerConfiguration",
-                it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration.class,
-                it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class);
+		xstream
+				.alias(
+						"EventConsumerConfiguration",
+						it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration.class,
+						it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class);
 
-        xstream.alias("EventGeneratorConfiguration",
-                it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration.class,
-                it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration.class);
+		xstream
+				.alias(
+						"EventGeneratorConfiguration",
+						it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration.class,
+						it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration.class);
 
-        xstream.aliasField("EventConsumerConfiguration",
-                it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
-                "eventConsumerConfiguration");
+		xstream
+				.aliasField(
+						"EventConsumerConfiguration",
+						it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
+						"eventConsumerConfiguration");
 
-        xstream.aliasField("EventGeneratorConfiguration",
-                it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
-                "eventGeneratorConfiguration");
+		xstream
+				.aliasField(
+						"EventGeneratorConfiguration",
+						it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
+						"eventGeneratorConfiguration");
 
-        xstream.aliasField("ListenerConfigurations",
-                it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
-                "progressListenerConfigurations");
+		xstream
+				.aliasField(
+						"ListenerConfigurations",
+						it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
+						"progressListenerConfigurations");
 
-        xstream.addImplicitCollection(
-                it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
-                "rules",
-                it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
+		xstream
+				.addImplicitCollection(
+						it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
+						"rules",
+						it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
 
-        xstream.addImplicitCollection(
-                it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
-                "actions",
-                it.geosolutions.geobatch.configuration.event.action.ActionConfiguration.class);
-        
-        xstream.addImplicitCollection(
-                it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
-                "listenerIds",
-                "listenerId",
-                String.class);
+		xstream
+				.addImplicitCollection(
+						it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
+						"actions",
+						it.geosolutions.geobatch.configuration.event.action.ActionConfiguration.class);
 
-        xstream.addImplicitCollection(
-                it.geosolutions.geobatch.configuration.event.action.ActionConfiguration.class,
-                "listenerIds",
-                "listenerId",
-                String.class);
+		xstream
+				.addImplicitCollection(
+						it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
+						"listenerIds", "listenerId", String.class);
 
-        // adding registered alias
-        if (aliasRegistry != null) {
-            for (Entry<String, Class<?>> entry : aliasRegistry) {
-                xstream.alias(entry.getKey(), entry.getValue());
-            }
-        }
-    }
+		xstream
+				.addImplicitCollection(
+						it.geosolutions.geobatch.configuration.event.action.ActionConfiguration.class,
+						"listenerIds", "listenerId", String.class);
+
+		// adding registered alias
+		if (aliasRegistry != null) {
+			for (Entry<String, Class<?>> entry : aliasRegistry) {
+				xstream.alias(entry.getKey(), entry.getValue());
+			}
+		}
+	}
 }

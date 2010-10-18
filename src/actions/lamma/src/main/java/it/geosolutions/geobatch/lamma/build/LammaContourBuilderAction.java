@@ -63,71 +63,87 @@ import com.vividsolutions.jts.geom.MultiLineString;
  */
 public class LammaContourBuilderAction extends LammaBaseAction {
 
-    protected final static Logger LOGGER = Logger.getLogger(LammaContourBuilderAction.class.toString());
+	protected final static Logger LOGGER = Logger
+			.getLogger(LammaContourBuilderAction.class.toString());
 	protected final LammaContourBuilderConfiguration configuration;
 
-    /**
-     *
-     * @param configuration
-     */
-    public LammaContourBuilderAction(LammaContourBuilderConfiguration configuration) throws IOException {
-        super(configuration);
-        this.configuration = configuration;
-    }
+	/**
+	 * 
+	 * @param configuration
+	 */
+	public LammaContourBuilderAction(
+			LammaContourBuilderConfiguration configuration) throws IOException {
+		super(configuration);
+		this.configuration = configuration;
+	}
 
-    /**
-     * 
-     * @param events
-     * @return
-     * @throws ActionException
-     */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
-            throws ActionException {
-        try {
-            listenerForwarder.started();
+	/**
+	 * 
+	 * @param events
+	 * @return
+	 * @throws ActionException
+	 */
+	public Queue<FileSystemMonitorEvent> execute(
+			Queue<FileSystemMonitorEvent> events) throws ActionException {
+		try {
+			listenerForwarder.started();
 
-            // //
-            //
-            // data flow configuration and dataStore name must not be null.
-            //
-            // //
-            if (configuration == null) {
-                throw new IllegalStateException("DataFlowConfig is null.");
-            }
+			// //
+			//
+			// data flow configuration and dataStore name must not be null.
+			//
+			// //
+			if (configuration == null) {
+				throw new IllegalStateException("DataFlowConfig is null.");
+			}
 
-            Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
-            
+			Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
+
 			// Logging to ESB ...
-            logMessage.setMessage("Building contour shapefiles...");
-            logMessage.setMessageTime(new Date());
+			logMessage.setMessage("Building contour shapefiles...");
+			logMessage.setMessageTime(new Date());
 			logToESB(logMessage);
 
-            while(events.size() > 0) {
-                final FileSystemMonitorEvent event = events.remove();
-                final File inputFile = event.getSource();
-                final File inputDir  = inputFile.getParentFile();
+			while (events.size() > 0) {
+				final FileSystemMonitorEvent event = events.remove();
+				final File inputFile = event.getSource();
+				final File inputDir = inputFile.getParentFile();
 
-				final File timeregex      = new File(inputDir, "timeregex.properties");
-				final File elevationregex = new File(inputDir, "elevationregex.properties");
-				final File runtimeregex   = new File(inputDir, "runtimeregex.properties");
-				
+				final File timeregex = new File(inputDir,
+						"timeregex.properties");
+				final File elevationregex = new File(inputDir,
+						"elevationregex.properties");
+				final File runtimeregex = new File(inputDir,
+						"runtimeregex.properties");
+
 				Pattern timePattern = null, elevPattern = null, runtimePattern = null;
 				if (timeregex.exists()) {
-					Properties timeProps = Utils.loadPropertiesFromURL(DataUtilities.fileToURL(timeregex));
-					timePattern = Pattern.compile(timeProps.getProperty("regex")); 
+					Properties timeProps = Utils
+							.loadPropertiesFromURL(DataUtilities
+									.fileToURL(timeregex));
+					timePattern = Pattern.compile(timeProps
+							.getProperty("regex"));
 				}
 
 				if (elevationregex.exists()) {
-					Properties elevProps = Utils.loadPropertiesFromURL(DataUtilities.fileToURL(elevationregex));
-					elevPattern = Pattern.compile(elevProps.getProperty("regex")); 
+					Properties elevProps = Utils
+							.loadPropertiesFromURL(DataUtilities
+									.fileToURL(elevationregex));
+					elevPattern = Pattern.compile(elevProps
+							.getProperty("regex"));
 				}
 
 				if (runtimeregex.exists()) {
-					Properties runtimeProps = Utils.loadPropertiesFromURL(DataUtilities.fileToURL(runtimeregex));
-					runtimePattern = Pattern.compile(runtimeProps.getProperty("regex")); 
+					Properties runtimeProps = Utils
+							.loadPropertiesFromURL(DataUtilities
+									.fileToURL(runtimeregex));
+					runtimePattern = Pattern.compile(runtimeProps
+							.getProperty("regex"));
 				}
 
-				final File contourShapefile = new File(inputDir, FilenameUtils.getBaseName(inputFile.getName()) + "-contour.shp");
+				final File contourShapefile = new File(inputDir, FilenameUtils
+						.getBaseName(inputFile.getName())
+						+ "-contour.shp");
 
 				/**
 				 * Initialize shapefile
@@ -135,105 +151,148 @@ public class LammaContourBuilderAction extends LammaBaseAction {
 				if (contourShapefile.exists()) {
 					IOUtils.deleteFile(contourShapefile);
 					try {
-						IOUtils.deleteFile(new File(inputDir, FilenameUtils.getBaseName(contourShapefile.getName())+".shx"));
-						IOUtils.deleteFile(new File(inputDir, FilenameUtils.getBaseName(contourShapefile.getName())+".dbf"));
-						IOUtils.deleteFile(new File(inputDir, FilenameUtils.getBaseName(contourShapefile.getName())+".prj"));
-						IOUtils.deleteFile(new File(inputDir, FilenameUtils.getBaseName(contourShapefile.getName())+".zip"));
+						IOUtils.deleteFile(new File(inputDir, FilenameUtils
+								.getBaseName(contourShapefile.getName())
+								+ ".shx"));
+						IOUtils.deleteFile(new File(inputDir, FilenameUtils
+								.getBaseName(contourShapefile.getName())
+								+ ".dbf"));
+						IOUtils.deleteFile(new File(inputDir, FilenameUtils
+								.getBaseName(contourShapefile.getName())
+								+ ".prj"));
+						IOUtils.deleteFile(new File(inputDir, FilenameUtils
+								.getBaseName(contourShapefile.getName())
+								+ ".zip"));
 					} catch (Exception e) {
 						// do nothing ...
 					}
 				}
-				
-				final IndexedShapefileDataStore dsW = new IndexedShapefileDataStore(contourShapefile.toURI().toURL(), false, true);
-				
+
+				final IndexedShapefileDataStore dsW = new IndexedShapefileDataStore(
+						contourShapefile.toURI().toURL(), false, true);
+
 				try {
 					final String typeSpec = "*the_geom:MultiLineString:srid=4326,elevation:Double,elev:Double,basetime:java.util.Date,runtime:Integer";
-					final SimpleFeatureType schema = DataUtilities.createType(FilenameUtils.getBaseName(contourShapefile.getName()), typeSpec);
+					final SimpleFeatureType schema = DataUtilities.createType(
+							FilenameUtils.getBaseName(contourShapefile
+									.getName()), typeSpec);
 					dsW.createSchema(schema);
 				} finally {
 					dsW.dispose();
 				}
-				
-				final File[] contourFiles = inputDir.listFiles(new FilenameFilter() {
-				
-					/**
-					 * Accept shapefiles
-					 */
-					public boolean accept(File dir, String filename) {
-						boolean res = 
-							!FilenameUtils.getBaseName(filename).equals(FilenameUtils.getBaseName(contourShapefile.getName())) &&
-							FilenameUtils.getExtension(filename).equalsIgnoreCase("shp"); 
-						return res;
-					}
-				});
+
+				final File[] contourFiles = inputDir
+						.listFiles(new FilenameFilter() {
+
+							/**
+							 * Accept shapefiles
+							 */
+							public boolean accept(File dir, String filename) {
+								boolean res = !FilenameUtils.getBaseName(
+										filename).equals(
+										FilenameUtils
+												.getBaseName(contourShapefile
+														.getName()))
+										&& FilenameUtils.getExtension(filename)
+												.equalsIgnoreCase("shp");
+								return res;
+							}
+						});
 
 				if (contourFiles != null && contourFiles.length > 0) {
 					for (File contourShp : contourFiles) {
-						final IndexedShapefileDataStore dsR = new IndexedShapefileDataStore(contourShp.toURI().toURL(), false, true);
-						
+						final IndexedShapefileDataStore dsR = new IndexedShapefileDataStore(
+								contourShp.toURI().toURL(), false, true);
+
 						FeatureWriter<SimpleFeatureType, SimpleFeature> fw = null;
 						FeatureReader<SimpleFeatureType, SimpleFeature> fr = null;
 						try {
-							fw = dsW.getFeatureWriterAppend(Transaction.AUTO_COMMIT);
+							fw = dsW
+									.getFeatureWriterAppend(Transaction.AUTO_COMMIT);
 							fr = dsR.getFeatureReader();
-							
+
 							while (fr.hasNext()) {
 								final SimpleFeature dstFeature = fw.next();
 								final SimpleFeature srcFeature = fr.next();
-								
+
 								// get attributes and copy them over
-								boolean isSetBasetime  = false;
-								for(int i=srcFeature.getAttributeCount()-1;i>=0;i--){
-									Object attribute = srcFeature.getAttribute(i);
-									
-									final AttributeDescriptor descriptor = dsR.getSchema(dsR.getTypeNames()[0]).getDescriptor(i);
-									if(descriptor.getType().getBinding().equals(MultiLineString.class))
-									{
-										dstFeature.setAttribute("the_geom", attribute);
+								boolean isSetBasetime = false;
+								for (int i = srcFeature.getAttributeCount() - 1; i >= 0; i--) {
+									Object attribute = srcFeature
+											.getAttribute(i);
+
+									final AttributeDescriptor descriptor = dsR
+											.getSchema(dsR.getTypeNames()[0])
+											.getDescriptor(i);
+									if (descriptor.getType().getBinding()
+											.equals(MultiLineString.class)) {
+										dstFeature.setAttribute("the_geom",
+												attribute);
 									}
 
-									if(descriptor.getType().getBinding().equals(Date.class))
-									{
-										dstFeature.setAttribute("basetime", attribute);
+									if (descriptor.getType().getBinding()
+											.equals(Date.class)) {
+										dstFeature.setAttribute("basetime",
+												attribute);
 										isSetBasetime = true;
 									}
-									
-									if(descriptor.getLocalName().equalsIgnoreCase("elev"))
-									{
-										dstFeature.setAttribute("elev", attribute);
+
+									if (descriptor.getLocalName()
+											.equalsIgnoreCase("elev")) {
+										dstFeature.setAttribute("elev",
+												attribute);
 									}
 								}
 
 								if (!isSetBasetime && timePattern != null) {
-									final Matcher matcher = timePattern.matcher(FilenameUtils.getBaseName(contourShp.getName()));
+									final Matcher matcher = timePattern
+											.matcher(FilenameUtils
+													.getBaseName(contourShp
+															.getName()));
 									if (matcher.find()) {
 										TimeParser timeParser = new TimeParser();
-										List<Date> dates = timeParser.parse(matcher.group());
+										List<Date> dates = timeParser
+												.parse(matcher.group());
 										if (dates != null && dates.size() > 0) {
-											Calendar cal = Calendar.getInstance();
-											cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+											Calendar cal = Calendar
+													.getInstance();
+											cal.setTimeZone(TimeZone
+													.getTimeZone("UTC"));
 											cal.setTime(dates.get(0));
 											cal.setTimeZone(LAMMA_TZ);
 
-											dstFeature.setAttribute("basetime", cal.getTime());
+											dstFeature.setAttribute("basetime",
+													cal.getTime());
 										}
 									}
 								}
 
 								if (elevPattern != null) {
-									final Matcher matcher = elevPattern.matcher(FilenameUtils.getBaseName(contourShp.getName()));
+									final Matcher matcher = elevPattern
+											.matcher(FilenameUtils
+													.getBaseName(contourShp
+															.getName()));
 									if (matcher.find()) {
-										dstFeature.setAttribute("elevation", Double.valueOf(matcher.group()));
+										dstFeature
+												.setAttribute("elevation",
+														Double.valueOf(matcher
+																.group()));
 									}
 								}
-								
+
 								if (runtimePattern != null) {
-									final Matcher matcher = runtimePattern.matcher(FilenameUtils.getBaseName(contourShp.getName()));
+									final Matcher matcher = runtimePattern
+											.matcher(FilenameUtils
+													.getBaseName(contourShp
+															.getName()));
 									if (matcher.find()) {
-										dstFeature.setAttribute("runtime", Integer.valueOf(matcher.group()));
+										dstFeature.setAttribute("runtime",
+												Integer
+														.valueOf(matcher
+																.group()));
 									}
 								}
-								
+
 								fw.write();
 							}
 						} finally {
@@ -244,58 +303,69 @@ public class LammaContourBuilderAction extends LammaBaseAction {
 							if (fr != null) {
 								fr.close();
 							}
-							
+
 							dsW.dispose();
 							dsR.dispose();
 						}
 					}
 				}
-				
-                final File[] files = inputDir.listFiles(new FilenameFilter() {
-					
-                	/**
+
+				final File[] files = inputDir.listFiles(new FilenameFilter() {
+
+					/**
 					 * Accept shapefiles
 					 */
 					public boolean accept(File dir, String filename) {
-						boolean res = 
-							FilenameUtils.getBaseName(filename).equals(FilenameUtils.getBaseName(contourShapefile.getName())) &&
-							(FilenameUtils.getExtension(filename).equalsIgnoreCase("shp") || 
-							 FilenameUtils.getExtension(filename).equalsIgnoreCase("shx") ||
-							 FilenameUtils.getExtension(filename).equalsIgnoreCase("dbf") ||
-							 FilenameUtils.getExtension(filename).equalsIgnoreCase("prj")); 
+						boolean res = FilenameUtils.getBaseName(filename)
+								.equals(
+										FilenameUtils
+												.getBaseName(contourShapefile
+														.getName()))
+								&& (FilenameUtils.getExtension(filename)
+										.equalsIgnoreCase("shp")
+										|| FilenameUtils.getExtension(filename)
+												.equalsIgnoreCase("shx")
+										|| FilenameUtils.getExtension(filename)
+												.equalsIgnoreCase("dbf") || FilenameUtils
+										.getExtension(filename)
+										.equalsIgnoreCase("prj"));
 						return res;
 					}
 				});
-				final File compressedShapefile = IOUtils.deflate(inputDir, FilenameUtils.getBaseName(contourShapefile.getName()), files);
-				outEvents.add(new FileSystemMonitorEvent(compressedShapefile, FileSystemMonitorNotifications.FILE_ADDED));
-            }
-            
-            listenerForwarder.completed();
-            
-            return outEvents;
-        } catch (Throwable t) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-            }
+				final File compressedShapefile = IOUtils.deflate(inputDir,
+						FilenameUtils.getBaseName(contourShapefile.getName()),
+						files);
+				outEvents.add(new FileSystemMonitorEvent(compressedShapefile,
+						FileSystemMonitorNotifications.FILE_ADDED));
+			}
+
+			listenerForwarder.completed();
+
+			return outEvents;
+		} catch (Throwable t) {
+			if (LOGGER.isLoggable(Level.SEVERE)) {
+				LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+			}
 			// Logging to ESB ...
-            logMessage.setMessage("[ERROR] " + t.getLocalizedMessage());
-            logMessage.setMessageTime(new Date());
+			logMessage.setMessage("[ERROR] " + t.getLocalizedMessage());
+			logMessage.setMessageTime(new Date());
 			logToESB(logMessage);
 
-            listenerForwarder.failed(t);
-            throw new ActionException(this, t.getMessage(), t);
-        }
+			listenerForwarder.failed(t);
+			throw new ActionException(this, t.getMessage(), t);
+		}
 
-    }
+	}
 
 	@Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
-        builder.append(" [");
-        if (configuration != null) {
-            builder.append("configuration=").append(configuration);
-        }
-        builder.append("]");
-        return builder.toString();
-    }
+	public String toString() {
+		StringBuilder builder = new StringBuilder(this.getClass()
+				.getSimpleName());
+		builder.append(" [");
+		if (configuration != null) {
+			builder.append("configuration=").append(configuration);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 }

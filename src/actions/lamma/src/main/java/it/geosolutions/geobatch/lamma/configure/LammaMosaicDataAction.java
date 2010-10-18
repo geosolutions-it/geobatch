@@ -43,83 +43,88 @@ import java.util.logging.Logger;
  */
 public class LammaMosaicDataAction extends LammaBaseAction {
 
-    protected final static Logger LOGGER = Logger.getLogger(LammaMosaicDataAction.class.toString());
-    protected final LammaMosaicDataConfiguration configuration;
+	protected final static Logger LOGGER = Logger
+			.getLogger(LammaMosaicDataAction.class.toString());
+	protected final LammaMosaicDataConfiguration configuration;
 
-    /**
-     *
-     * @param configuration
-     */
-    public LammaMosaicDataAction(LammaMosaicDataConfiguration configuration) throws IOException {
-        super(configuration);
-        this.configuration = configuration;
-    }
+	/**
+	 * 
+	 * @param configuration
+	 */
+	public LammaMosaicDataAction(LammaMosaicDataConfiguration configuration)
+			throws IOException {
+		super(configuration);
+		this.configuration = configuration;
+	}
 
-    /**
-     * 
-     * @param events
-     * @return
-     * @throws ActionException
-     */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
-            throws ActionException {
-        try {
-            listenerForwarder.started();
+	/**
+	 * 
+	 * @param events
+	 * @return
+	 * @throws ActionException
+	 */
+	public Queue<FileSystemMonitorEvent> execute(
+			Queue<FileSystemMonitorEvent> events) throws ActionException {
+		try {
+			listenerForwarder.started();
 
-            // //
-            //
-            // data flow configuration and dataStore name must not be null.
-            //
-            // //
-            if (configuration == null) {
-                throw new IllegalStateException("DataFlowConfig is null.");
-            }
+			// //
+			//
+			// data flow configuration and dataStore name must not be null.
+			//
+			// //
+			if (configuration == null) {
+				throw new IllegalStateException("DataFlowConfig is null.");
+			}
 
-            Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
-            List<File> mosaicInputDirs = new ArrayList<File>();
-            
+			Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
+			List<File> mosaicInputDirs = new ArrayList<File>();
+
 			// Logging to ESB ...
-            logMessage.setMessage("Preparing mosaic input dirs ...");
-            logMessage.setMessageTime(new Date());
+			logMessage.setMessage("Preparing mosaic input dirs ...");
+			logMessage.setMessageTime(new Date());
 			logToESB(logMessage);
 
-            while(events.size() > 0) {
-                // get the first event
-                final FileSystemMonitorEvent event = events.remove();
-                final File inputFile = event.getSource();
+			while (events.size() > 0) {
+				// get the first event
+				final FileSystemMonitorEvent event = events.remove();
+				final File inputFile = event.getSource();
 
-                if (!mosaicInputDirs.contains(inputFile.getParentFile())) {
-                	mosaicInputDirs.add(inputFile.getParentFile());
-                	outEvents.add(new FileSystemMonitorEvent(inputFile.getParentFile(), FileSystemMonitorNotifications.FILE_ADDED));
-                }
-            }
-            
-            listenerForwarder.completed();
-            
-            return outEvents;
-        } catch (Throwable t) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-            }
+				if (!mosaicInputDirs.contains(inputFile.getParentFile())) {
+					mosaicInputDirs.add(inputFile.getParentFile());
+					outEvents.add(new FileSystemMonitorEvent(inputFile
+							.getParentFile(),
+							FileSystemMonitorNotifications.FILE_ADDED));
+				}
+			}
+
+			listenerForwarder.completed();
+
+			return outEvents;
+		} catch (Throwable t) {
+			if (LOGGER.isLoggable(Level.SEVERE)) {
+				LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+			}
 			// Logging to ESB ...
-            logMessage.setMessage("[ERROR] " + t.getLocalizedMessage());
-            logMessage.setMessageTime(new Date());
+			logMessage.setMessage("[ERROR] " + t.getLocalizedMessage());
+			logMessage.setMessageTime(new Date());
 			logToESB(logMessage);
 
 			listenerForwarder.failed(t);
-            throw new ActionException(this, t.getMessage(), t);
-        }
+			throw new ActionException(this, t.getMessage(), t);
+		}
 
-    }
+	}
 
 	@Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder(this.getClass().getSimpleName());
-        builder.append(" [");
-        if (configuration != null) {
-            builder.append("configuration=").append(configuration);
-        }
-        builder.append("]");
-        return builder.toString();
-    }
+	public String toString() {
+		StringBuilder builder = new StringBuilder(this.getClass()
+				.getSimpleName());
+		builder.append(" [");
+		if (configuration != null) {
+			builder.append("configuration=").append(configuration);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 }

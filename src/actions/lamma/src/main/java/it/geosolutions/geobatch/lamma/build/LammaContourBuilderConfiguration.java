@@ -28,9 +28,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-
-
-
 /**
  * Comments here ...
  * 
@@ -41,29 +38,30 @@ public class LammaContourBuilderConfiguration extends LammaBaseConfiguration {
 	/**
 	 * Custom fields
 	 */
-    private String geoserverPWD;
-    
-    private String geoserverUID;
-    
-    private String geoserverURL;
-    
-    private String wmsPath;
-    
-    private String defaultNamespace;
-    
-    private String defaultStyle;
-    
+	private String geoserverPWD;
+
+	private String geoserverUID;
+
+	private String geoserverURL;
+
+	private String wmsPath;
+
+	private String defaultNamespace;
+
+	private String defaultStyle;
+
 	public LammaContourBuilderConfiguration() {
-        super();
-    }
+		super();
+	}
 
-    protected LammaContourBuilderConfiguration(String id, String name, String description,
-            boolean dirty) {
-        super(id, name, description, dirty);
-    }
+	protected LammaContourBuilderConfiguration(String id, String name,
+			String description, boolean dirty) {
+		super(id, name, description, dirty);
+	}
 
-    /**
-	 * @param geoserverPWD the geoserverPWD to set
+	/**
+	 * @param geoserverPWD
+	 *            the geoserverPWD to set
 	 */
 	public void setGeoserverPWD(String geoserverPWD) {
 		this.geoserverPWD = geoserverPWD;
@@ -77,7 +75,8 @@ public class LammaContourBuilderConfiguration extends LammaBaseConfiguration {
 	}
 
 	/**
-	 * @param geoserverUID the geoserverUID to set
+	 * @param geoserverUID
+	 *            the geoserverUID to set
 	 */
 	public void setGeoserverUID(String geoserverUID) {
 		this.geoserverUID = geoserverUID;
@@ -91,7 +90,8 @@ public class LammaContourBuilderConfiguration extends LammaBaseConfiguration {
 	}
 
 	/**
-	 * @param geoserverURL the geoserverURL to set
+	 * @param geoserverURL
+	 *            the geoserverURL to set
 	 */
 	public void setGeoserverURL(String geoserverURL) {
 		this.geoserverURL = geoserverURL;
@@ -105,7 +105,8 @@ public class LammaContourBuilderConfiguration extends LammaBaseConfiguration {
 	}
 
 	/**
-	 * @param wmsPath the wmsPath to set
+	 * @param wmsPath
+	 *            the wmsPath to set
 	 */
 	public void setWmsPath(String wmsPath) {
 		this.wmsPath = wmsPath;
@@ -119,7 +120,8 @@ public class LammaContourBuilderConfiguration extends LammaBaseConfiguration {
 	}
 
 	/**
-	 * @param defaultNamespace the defaultNamespace to set
+	 * @param defaultNamespace
+	 *            the defaultNamespace to set
 	 */
 	public void setDefaultNamespace(String defaultNamespace) {
 		this.defaultNamespace = defaultNamespace;
@@ -133,7 +135,8 @@ public class LammaContourBuilderConfiguration extends LammaBaseConfiguration {
 	}
 
 	/**
-	 * @param defaultStyle the defaultStyle to set
+	 * @param defaultStyle
+	 *            the defaultStyle to set
 	 */
 	public void setDefaultStyle(String defaultStyle) {
 		this.defaultStyle = defaultStyle;
@@ -147,25 +150,27 @@ public class LammaContourBuilderConfiguration extends LammaBaseConfiguration {
 	}
 
 	@Override
-    public LammaContourBuilderConfiguration clone() { // throws CloneNotSupportedException {
-    	try {
+	public LammaContourBuilderConfiguration clone() { // throws
+														// CloneNotSupportedException
+														// {
+		try {
 			return (LammaContourBuilderConfiguration) BeanUtils.cloneBean(this);
 		} catch (IllegalAccessException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InstantiationException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (InvocationTargetException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		} catch (NoSuchMethodException e) {
-			final RuntimeException cns= new RuntimeException();
+			final RuntimeException cns = new RuntimeException();
 			cns.initCause(e);
 			throw cns;
 		}
-    }
+	}
 }

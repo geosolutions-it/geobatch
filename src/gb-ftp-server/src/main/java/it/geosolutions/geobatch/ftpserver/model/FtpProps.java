@@ -53,17 +53,17 @@ public class FtpProps implements Serializable {
 	@Column(name = "ID")
 	private Long id = null;
 
-//	@Column(name = "USER_ID", nullable = false, unique = true, length = 64)
-//	private String userId;
-//
-//	@Column(name = "USER_PASSWORD", nullable = false, length = 64)
-//	private String userPassword;
-//
-//	@Column(name = "HOME_DIRECTORY", length = 128)
-//	private String homeDirectory;
-//
-//	@Column(name = "ENABLE_FLAG", columnDefinition = "boolean default true")
-//	private boolean enableFlag;
+	// @Column(name = "USER_ID", nullable = false, unique = true, length = 64)
+	// private String userId;
+	//
+	// @Column(name = "USER_PASSWORD", nullable = false, length = 64)
+	// private String userPassword;
+	//
+	// @Column(name = "HOME_DIRECTORY", length = 128)
+	// private String homeDirectory;
+	//
+	// @Column(name = "ENABLE_FLAG", columnDefinition = "boolean default true")
+	// private boolean enableFlag;
 
 	@Column(name = "WRITE_PERMISSION")
 	private boolean writePermission = false;
@@ -166,8 +166,8 @@ public class FtpProps implements Serializable {
 
 	/**
 	 * @return the maxLoginNumber the user can perform at the same time
-     *
-     * @see org.apache.ftpserver.ConnectionConfigFactory#getMaxLogins()
+	 * 
+	 * @see org.apache.ftpserver.ConnectionConfigFactory#getMaxLogins()
 	 */
 	public int getMaxLoginNumber() {
 		return maxLoginNumber;
@@ -183,7 +183,7 @@ public class FtpProps implements Serializable {
 
 	/**
 	 * @return the maxLoginPerIp
-     *
+	 * 
 	 */
 	public int getMaxLoginPerIp() {
 		return maxLoginPerIp;
@@ -239,15 +239,15 @@ public class FtpProps implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "[ ID : " + getId()
-//				+ " - USER_ID : " + getUserId()
-//				+ " - USER_PASSWORD : " + getUserPassword()
-//				+ "  - HOME_DIRECTORY : " + getHomeDirectory()
-//				+ " - ENABLE_FLAG : " + isEnableFlag()
+		return "[ ID : "
+				+ getId()
+				// + " - USER_ID : " + getUserId()
+				// + " - USER_PASSWORD : " + getUserPassword()
+				// + "  - HOME_DIRECTORY : " + getHomeDirectory()
+				// + " - ENABLE_FLAG : " + isEnableFlag()
 				+ " - WRITE_PERMISSION " + isWritePermission()
-				+ " - IDLE_TIME " + getMaxIdleTime()
-				+ " - UPLOAD_RATE " + getUploadRate() 
-				+ " - DOWNLOAD_RATE " + getDownloadRate()
+				+ " - IDLE_TIME " + getMaxIdleTime() + " - UPLOAD_RATE "
+				+ getUploadRate() + " - DOWNLOAD_RATE " + getDownloadRate()
 				+ " - MAX_LOGIN_NUMBER " + getMaxLoginNumber()
 				+ " - MAX_LOGIN_PER_IP " + getMaxLoginPerIp() + "]";
 	}

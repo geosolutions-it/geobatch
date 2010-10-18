@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.catalog.file;
 
 import it.geosolutions.geobatch.catalog.Catalog;
@@ -35,18 +33,18 @@ import it.geosolutions.geobatch.catalog.Catalog;
  */
 public interface FileBaseCatalog extends Catalog {
 
-    /**
-     * Getter for the base directory.
-     * 
-     * @return baseDirectory
-     */
-    public String getBaseDirectory();
+	/**
+	 * Getter for the base directory.
+	 * 
+	 * @return baseDirectory
+	 */
+	public String getBaseDirectory();
 
-    /**
-     * Setter for the base directory.
-     * 
-     * @param baseDirectory
-     */
-    public void setBaseDirectory(String baseDirectory);
+	/**
+	 * Setter for the base directory.
+	 * 
+	 * @param baseDirectory
+	 */
+	public void setBaseDirectory(String baseDirectory);
 
 }

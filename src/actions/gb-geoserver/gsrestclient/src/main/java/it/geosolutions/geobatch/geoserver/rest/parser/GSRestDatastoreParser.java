@@ -27,16 +27,14 @@ import org.jdom.Element;
 /**
  * Parses fields of a Datastore got via a
  * {@link it.geosolutions.geobatch.geoserver.rest.GeoServerRESTReader}.
- *
+ * 
  * @author etj
  */
 public class GSRestDatastoreParser {
 	private final Element dsElem;
 
 	public enum DBType {
-		POSTGIS("postgis"),
-		SHP("shp"),
-		UNKNOWN(null);
+		POSTGIS("postgis"), SHP("shp"), UNKNOWN(null);
 
 		private final String restName;
 
@@ -46,15 +44,14 @@ public class GSRestDatastoreParser {
 
 		public static DBType get(String restName) {
 			for (DBType type : values()) {
-				if(type == UNKNOWN)
+				if (type == UNKNOWN)
 					continue;
-				if(type.restName.equals(restName))
+				if (type.restName.equals(restName))
 					return type;
 			}
 			return UNKNOWN;
 		}
 	};
-
 
 	public GSRestDatastoreParser(Element dsElem) {
 		this.dsElem = dsElem;
@@ -71,10 +68,11 @@ public class GSRestDatastoreParser {
 
 	protected String getConnectionParameter(String paramName) {
 		Element elConnparm = dsElem.getChild("connectionParameters");
-		if(elConnparm!=null) {
-			for (Element entry : (List<Element>)elConnparm.getChildren("entry")) {
+		if (elConnparm != null) {
+			for (Element entry : (List<Element>) elConnparm
+					.getChildren("entry")) {
 				String key = entry.getAttributeValue("key");
-				if(paramName.equals(key)) {
+				if (paramName.equals(key)) {
 					return entry.getTextTrim();
 				}
 			}

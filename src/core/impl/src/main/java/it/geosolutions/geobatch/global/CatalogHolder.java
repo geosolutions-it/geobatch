@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.global;
 
 import it.geosolutions.geobatch.catalog.Catalog;
@@ -31,14 +29,14 @@ import it.geosolutions.geobatch.catalog.Catalog;
  * 
  */
 public abstract class CatalogHolder {
-    private static Catalog catalog;
+	private static Catalog catalog;
 
-    public synchronized static Catalog getCatalog() {
-        return catalog;
-    }
+	public synchronized static Catalog getCatalog() {
+		return catalog;
+	}
 
-    protected synchronized final static void setCatalog(Catalog catalog) {
-        CatalogHolder.catalog = catalog;
-    }
+	protected synchronized final static void setCatalog(Catalog catalog) {
+		CatalogHolder.catalog = catalog;
+	}
 
 }

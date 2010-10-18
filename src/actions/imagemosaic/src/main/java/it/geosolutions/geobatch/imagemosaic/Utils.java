@@ -25,14 +25,15 @@ import org.geotools.util.Converters;
 /**
  * @author afabiani
  * 
- *
+ * 
  */
 public class Utils {
 	/**
 	 * Logger.
 	 */
-	private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(Utils.class.toString());
-	
+	private final static Logger LOGGER = org.geotools.util.logging.Logging
+			.getLogger(Utils.class.toString());
+
 	/**
 	 * Checks that a {@link File} is a real file, exists and is readable.
 	 * 
@@ -58,7 +59,7 @@ public class Utils {
 			return false;
 		return true;
 	}
-	
+
 	/**
 	 * 
 	 * @param propsURL
@@ -91,7 +92,7 @@ public class Utils {
 		}
 		return properties;
 	}
-	
+
 	/**
 	 * 
 	 * @param properties
@@ -108,11 +109,13 @@ public class Utils {
 		for (Param p : paramsInfo) {
 			// search for this param and set the value if found
 			if (properties.containsKey(p.key))
-				params.put(p.key, (Serializable) Converters.convert(properties.getProperty(p.key), p.type));
+				params.put(p.key, (Serializable) Converters.convert(properties
+						.getProperty(p.key), p.type));
 			else if (p.required && p.sample == null)
-				throw new IOException("Required parameter missing: "+ p.toString());
+				throw new IOException("Required parameter missing: "
+						+ p.toString());
 		}
-		
+
 		return params;
 	}
 }

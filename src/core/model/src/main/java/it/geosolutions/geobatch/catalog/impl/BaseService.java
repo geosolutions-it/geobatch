@@ -20,40 +20,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.Service;
 
 public class BaseService extends BaseResource implements Service {
 
-    private boolean available;
+	private boolean available;
 
-    public BaseService() {
-        super();
-        available = true;
-    }
+	public BaseService() {
+		super();
+		available = true;
+	}
 
-    public BaseService(String id, String name, String description) {
-        super(id, name, description);
-    }
+	public BaseService(String id, String name, String description) {
+		super(id, name, description);
+	}
 
-    public BaseService(boolean available) {
-        super();
-        this.available = available;
-    }
+	public BaseService(boolean available) {
+		super();
+		this.available = available;
+	}
 
-    public boolean isAvailable() {
-        return available;
-    }
+	public boolean isAvailable() {
+		return available;
+	}
 
-    /**
-     * @param available
-     *            the available to set
-     */
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
+	/**
+	 * @param available
+	 *            the available to set
+	 */
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
 
 }

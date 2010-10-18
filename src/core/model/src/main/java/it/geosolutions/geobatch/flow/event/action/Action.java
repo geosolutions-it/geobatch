@@ -23,50 +23,50 @@
 package it.geosolutions.geobatch.flow.event.action;
 
 import it.geosolutions.geobatch.catalog.Identifiable;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.misc.ListenerRegistry;
 import it.geosolutions.geobatch.flow.Job;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
+import it.geosolutions.geobatch.misc.ListenerRegistry;
+
 import java.util.EventObject;
 import java.util.Queue;
 
 /**
- * Takes a queue of events, process them ({@link execute(Queue events)}) and provides a new queue of event to be
- * processed by the next Action.
- *
- * <P><B>(WIP)</B> Will also provide ways to monitor whether the Action is currently
- * running, which Event is running
- *
+ * Takes a queue of events, process them ({@link execute(Queue events)}) and
+ * provides a new queue of event to be processed by the next Action.
+ * 
+ * <P>
+ * <B>(WIP)</B> Will also provide ways to monitor whether the Action is
+ * currently running, which Event is running
+ * 
  * @author Simone Giannecchini, GeoSolutions
- *
+ * 
  * @param <XEO>
  */
-public interface Action<XEO extends EventObject>
-    extends Identifiable,
-			Job,
-            ListenerRegistry<ProgressListener> {
-	
-    public Queue<XEO> execute(Queue<XEO> events) throws ActionException;
+public interface Action<XEO extends EventObject> extends Identifiable, Job,
+		ListenerRegistry<ProgressListener> {
 
-    public void destroy();
+	public Queue<XEO> execute(Queue<XEO> events) throws ActionException;
+
+	public void destroy();
 
 	/**
-	 *  Tells if an exception in this Actions should not break the entire flow.
-	 * <BR>Defaults to false.
-	 * <P>Some somehow "minor" actions would not break the logical flow, for 
-	 * instance a remote file deletion via FTP. 
+	 * Tells if an exception in this Actions should not break the entire flow. <BR>
+	 * Defaults to false.
+	 * <P>
+	 * Some somehow "minor" actions would not break the logical flow, for
+	 * instance a remote file deletion via FTP.
 	 * 
 	 * @return true if an error in this Actions should not stop the whole flow.
 	 */
 	public boolean isFailIgnored();
 
-//	public <T extends ActionConfiguration> T getConfiguration();
+	// public <T extends ActionConfiguration> T getConfiguration();
 
-//	public boolean isRunning();
+	// public boolean isRunning();
 
-//	public void stop();
-    
-//    public void addListener(ActionListener listener);
+	// public void stop();
 
-//    public void removeListener(ActionListener listener);
+	// public void addListener(ActionListener listener);
+
+	// public void removeListener(ActionListener listener);
 }

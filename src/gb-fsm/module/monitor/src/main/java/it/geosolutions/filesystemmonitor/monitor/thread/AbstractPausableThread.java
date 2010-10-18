@@ -4,7 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author   Alessio
+ * @author Alessio
  */
 public abstract class AbstractPausableThread extends Thread {
 
@@ -17,31 +17,35 @@ public abstract class AbstractPausableThread extends Thread {
 
 	/**
 	 * Indicates whether or not this thread is running.
-	 * @uml.property  name="isPaused"
+	 * 
+	 * @uml.property name="isPaused"
 	 */
 	protected volatile boolean isPaused = false;
 
 	/**
 	 * Indicates that we are requesting a pause.
-	 * @uml.property  name="pauseRequested"
+	 * 
+	 * @uml.property name="pauseRequested"
 	 */
 	protected volatile boolean pauseRequested;
 
 	/**
 	 * Indicates whether or not this thread is running.
-	 * @uml.property  name="isRunning"
+	 * 
+	 * @uml.property name="isRunning"
 	 */
 	protected volatile boolean isRunning = false;
 
 	/**
 	 * Indicates if a termination was requested to this thread.
-	 * @uml.property  name="terminationRequested"
+	 * 
+	 * @uml.property name="terminationRequested"
 	 */
 	protected volatile boolean terminationRequested = false;
 
 	/**
 	 * @return
-	 * @uml.property  name="isPaused"
+	 * @uml.property name="isPaused"
 	 */
 	public boolean isPaused() {
 		return isPaused;
@@ -49,7 +53,7 @@ public abstract class AbstractPausableThread extends Thread {
 
 	/**
 	 * @return
-	 * @uml.property  name="pauseRequested"
+	 * @uml.property name="pauseRequested"
 	 */
 	public boolean isPauseRequested() {
 
@@ -63,16 +67,16 @@ public abstract class AbstractPausableThread extends Thread {
 	}
 
 	/**
-	 * @param  isPaused
-	 * @uml.property  name="isPaused"
+	 * @param isPaused
+	 * @uml.property name="isPaused"
 	 */
 	public void setPaused(boolean isPaused) {
 		this.isPaused = isPaused;
 	}
 
 	/**
-	 * @param  pauseRequested
-	 * @uml.property  name="pauseRequested"
+	 * @param pauseRequested
+	 * @uml.property name="pauseRequested"
 	 */
 	public void setPauseRequested(boolean pauseRequested) {
 		this.pauseRequested = pauseRequested;
@@ -91,24 +95,26 @@ public abstract class AbstractPausableThread extends Thread {
 
 	/**
 	 * @return
-	 * @uml.property  name="isRunning"
+	 * @uml.property name="isRunning"
 	 */
 	public boolean isRunning() {
 		return isRunning;
 	}
 
 	/**
-	 * @param  isRunning
-	 * @uml.property  name="isRunning"
+	 * @param isRunning
+	 * @uml.property name="isRunning"
 	 */
 	public void setRunning(boolean isRunning) {
 		this.isRunning = isRunning;
 	}
 
 	/**
-	 * Checks whether any request has been received asking the working thread stop monitoring file system changes.
-	 * @return   True if at least one request has been received.
-	 * @uml.property  name="terminationRequested"
+	 * Checks whether any request has been received asking the working thread
+	 * stop monitoring file system changes.
+	 * 
+	 * @return True if at least one request has been received.
+	 * @uml.property name="terminationRequested"
 	 */
 	public boolean isTerminationRequested() {
 
@@ -125,16 +131,17 @@ public abstract class AbstractPausableThread extends Thread {
 	}
 
 	/**
-	 * @param  terminationRequested
-	 * @uml.property  name="terminationRequested"
+	 * @param terminationRequested
+	 * @uml.property name="terminationRequested"
 	 */
 	public void setTerminationRequested(boolean terminationRequested) {
 		this.terminationRequested = terminationRequested;
 	}
 
 	public abstract boolean execute() throws Exception;
-	
-	public abstract  void dispose()  ;
+
+	public abstract void dispose();
+
 	public void run() {
 		isRunning = true;
 
@@ -163,7 +170,6 @@ public abstract class AbstractPausableThread extends Thread {
 
 					}
 
-		
 				} catch (InterruptedException e) {
 					if (LOGGER.isLoggable(Level.SEVERE))
 						LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
@@ -175,13 +181,11 @@ public abstract class AbstractPausableThread extends Thread {
 		isRunning = false;
 	}
 
-	public void reset(){
-		pauseRequested=false;
-		isPaused=false;
-		isRunning=false;
-		terminationRequested=false;
+	public void reset() {
+		pauseRequested = false;
+		isPaused = false;
+		isRunning = false;
+		terminationRequested = false;
 	}
-	
-	
 
 }

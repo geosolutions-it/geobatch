@@ -27,19 +27,19 @@ package it.geosolutions.geobatch.catalog.event;
  * 
  */
 public interface CatalogListener {
-    /**
-     * Handles the event of an addition to the catalog.
-     */
-    <T, CAE extends CatalogAddEvent<T>> void handleAddEvent(CAE event);
+	/**
+	 * Handles the event of an addition to the catalog.
+	 */
+	<T, CAE extends CatalogAddEvent<T>> void handleAddEvent(CAE event);
 
-    /**
-     * Handles the event of a removal from the catalog.
-     * 
-     */
-    <T, CRE extends CatalogRemoveEvent<T>> void handleRemoveEvent(CRE event);
+	/**
+	 * Handles the event of a removal from the catalog.
+	 * 
+	 */
+	<T, CRE extends CatalogRemoveEvent<T>> void handleRemoveEvent(CRE event);
 
-    /**
-     * Handles the event of a modification to an object in the catalog.
-     */
-    <T, CME extends CatalogModifyEvent<T>> void handleModifyEvent(CME event);
+	/**
+	 * Handles the event of a modification to an object in the catalog.
+	 */
+	<T, CME extends CatalogModifyEvent<T>> void handleModifyEvent(CME event);
 }

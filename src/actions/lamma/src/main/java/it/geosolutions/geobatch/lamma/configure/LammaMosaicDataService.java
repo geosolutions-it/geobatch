@@ -36,28 +36,29 @@ import java.util.logging.Logger;
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public class LammaMosaicDataService
-        extends BaseService
-        implements ActionService<FileSystemMonitorEvent, LammaMosaicDataConfiguration> {
+public class LammaMosaicDataService extends BaseService implements
+		ActionService<FileSystemMonitorEvent, LammaMosaicDataConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(LammaMosaicDataService.class.toString());
+	private final static Logger LOGGER = Logger
+			.getLogger(LammaMosaicDataService.class.toString());
 
-    /**
+	/**
      * 
      */
-    public LammaMosaicDataAction createAction(LammaMosaicDataConfiguration configuration) {
-        try {
-            return new LammaMosaicDataAction(configuration);
-        } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-            return null;
-        }
-    }
+	public LammaMosaicDataAction createAction(
+			LammaMosaicDataConfiguration configuration) {
+		try {
+			return new LammaMosaicDataAction(configuration);
+		} catch (IOException e) {
+			if (LOGGER.isLoggable(Level.INFO))
+				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+			return null;
+		}
+	}
 
-    public boolean canCreateAction(LammaMosaicDataConfiguration configuration) {
-//        final boolean superRetVal = super.canCreateAction(configuration);
-        return true;
-    }
+	public boolean canCreateAction(LammaMosaicDataConfiguration configuration) {
+		// final boolean superRetVal = super.canCreateAction(configuration);
+		return true;
+	}
 
 }

@@ -19,53 +19,45 @@ import net.contentobjects.jnotify.JNotifyListener;
 public final class NativeFileSystemWatcher extends BaseFileSystemMonitor {
 	private final static Logger LOGGER = Logger
 			.getLogger("it.geosolutions.filesystemmonitor.osnative");
-	
+
 	private final class BaseJNotifyListener implements JNotifyListener {
 		public BaseJNotifyListener() {
 
 		}
 
-		public void fileRenamed(int wd, String rootPath,
-				String oldName, String newName) {
+		public void fileRenamed(int wd, String rootPath, String oldName,
+				String newName) {
 			// fire event
 			if (!isPaused() && isRunning()) {
-				sendEvent(new FileSystemMonitorEvent(
-						new File(rootPath
-								+ File.separatorChar
-								+ newName),
+				sendEvent(new FileSystemMonitorEvent(new File(rootPath
+						+ File.separatorChar + newName),
 						FileSystemMonitorNotifications.FILE_MODIFIED));
 			}
 		}
 
-		public void fileModified(int wd, String rootPath,
-				String name) {
+		public void fileModified(int wd, String rootPath, String name) {
 			// fire event
 			if (!isPaused() && isRunning()) {
-				sendEvent(new FileSystemMonitorEvent(
-						new File(rootPath
-								+ File.separatorChar + name),
+				sendEvent(new FileSystemMonitorEvent(new File(rootPath
+						+ File.separatorChar + name),
 						FileSystemMonitorNotifications.FILE_MODIFIED));
 			}
 		}
 
-		public void fileDeleted(int wd, String rootPath,
-				String name) {
+		public void fileDeleted(int wd, String rootPath, String name) {
 			// fire event
 			if (!isPaused() && isRunning()) {
-				sendEvent(new FileSystemMonitorEvent(
-						new File(rootPath
-								+ File.separatorChar + name),
+				sendEvent(new FileSystemMonitorEvent(new File(rootPath
+						+ File.separatorChar + name),
 						FileSystemMonitorNotifications.FILE_REMOVED));
 			}
 		}
 
-		public void fileCreated(int wd, String rootPath,
-				String name) {
+		public void fileCreated(int wd, String rootPath, String name) {
 			// fire event
 			if (!isPaused() && isRunning()) {
-				sendEvent(new FileSystemMonitorEvent(
-						new File(rootPath
-								+ File.separatorChar + name),
+				sendEvent(new FileSystemMonitorEvent(new File(rootPath
+						+ File.separatorChar + name),
 						FileSystemMonitorNotifications.FILE_ADDED));
 			}
 		}
@@ -95,8 +87,6 @@ public final class NativeFileSystemWatcher extends BaseFileSystemMonitor {
 	/** Watcher ID * */
 	private Long wd = null;
 
-
-
 	public NativeFileSystemWatcher(File file) {
 		this(file, false);
 	}
@@ -111,24 +101,26 @@ public final class NativeFileSystemWatcher extends BaseFileSystemMonitor {
 	 *            not
 	 */
 	public NativeFileSystemWatcher(File file, boolean includeSubdirectories) {
-		this(file,  includeSubdirectories,null);
+		this(file, includeSubdirectories, null);
 	}
+
 	/**
 	 * Create a file monitor instance with specified polling interval.
 	 * 
 	 * @param pollingInterval
 	 *            Polling interval in milli seconds.
 	 */
-	public NativeFileSystemWatcher(File file,boolean includeSubdirectories,String wildCard) {
+	public NativeFileSystemWatcher(File file, boolean includeSubdirectories,
+			String wildCard) {
 		super(file, wildCard);
 		this.mask = JNotify.FILE_ANY;
 		this.includeSubdirectories = includeSubdirectories;
-	
+
 	}
-	
+
 	public NativeFileSystemWatcher(File file, String wildCard) {
 		this(file, false, wildCard);
-	
+
 	}
 
 	public FileSystemMonitorSPI getSPI() {
@@ -145,38 +137,40 @@ public final class NativeFileSystemWatcher extends BaseFileSystemMonitor {
 	 */
 	public synchronized void start() {
 		// do not bother if I am running
-		if(isRunning)
+		if (isRunning)
 			return;
 		// ////
 		// if "start" method is invoked after "pause" method or "stop" method,
 		// then start watching events again
 		// ////
-		if (isPaused() ) {
+		if (isPaused()) {
 			isPaused = false;
 			isRunning = true;
 			return;
 		}
 
 		if (file == null || !file.exists() || !file.isDirectory()) {
-			final IllegalStateException ise= new IllegalStateException("Severe Error. FileSystemWatcher is not properly configured!!");
+			final IllegalStateException ise = new IllegalStateException(
+					"Severe Error. FileSystemWatcher is not properly configured!!");
 			throw ise;
-		} 
+		}
 		if (wd != null) {
-			final IllegalStateException ise= new IllegalStateException("Severe Error. FileSystemWatcher is not properly configured!!");
+			final IllegalStateException ise = new IllegalStateException(
+					"Severe Error. FileSystemWatcher is not properly configured!!");
 			throw ise;
-		} 
+		}
 
 		// register this worker for change notifications
 		try {
-			this.wd = new Long(JNotify.addWatch(file.getAbsolutePath(),
-					mask, includeSubdirectories,notificationsListener));
-			isRunning=true;
+			this.wd = new Long(JNotify.addWatch(file.getAbsolutePath(), mask,
+					includeSubdirectories, notificationsListener));
+			isRunning = true;
 		} catch (Throwable e) {
-			//rethrow
-			isRunning=false;
+			// rethrow
+			isRunning = false;
 			throw new RuntimeException(e);
 		}
-		
+
 	}
 
 	/**
@@ -186,7 +180,7 @@ public final class NativeFileSystemWatcher extends BaseFileSystemMonitor {
 		isPaused = false;
 		isRunning = false;
 
-		if(wd==null)
+		if (wd == null)
 			return;
 		try {
 			JNotify.removeWatch(wd.intValue());
@@ -201,8 +195,8 @@ public final class NativeFileSystemWatcher extends BaseFileSystemMonitor {
 
 	public void dispose() {
 		super.dispose();
-		//no big deal if we do this outside critical section
-		wd=null;
+		// no big deal if we do this outside critical section
+		wd = null;
 	}
 
 	/**
