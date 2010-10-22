@@ -23,9 +23,9 @@ package it.geosolutions.geobatch.catalog;
 
 public interface Resource extends Identifiable {
 
-	/**
+    /**
 	 *
 	 */
-	public void dispose();
+    public void dispose();
 
 }

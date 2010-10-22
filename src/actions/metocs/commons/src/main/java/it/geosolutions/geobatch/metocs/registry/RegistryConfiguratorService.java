@@ -33,19 +33,18 @@ import java.util.EventObject;
  * 
  * @author AlFa
  * 
- * @version $ RegistryConfiguratorService.java $ Revision: 0.1 $ 12/feb/07
- *          12:07:32
+ * @version $ RegistryConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
  */
 public abstract class RegistryConfiguratorService<T extends EventObject, C extends ActionConfiguration>
-		extends BaseService implements ActionService<T, C> {
+        extends BaseService implements ActionService<T, C> {
 
-	public RegistryConfiguratorService() {
-		super(true);
-	}
+    public RegistryConfiguratorService() {
+        super(true);
+    }
 
-	public boolean canCreateAction(C configuration) {
-		// XXX ImPLEMENT ME
-		return true;
-	}
+    public boolean canCreateAction(C configuration) {
+        // XXX ImPLEMENT ME
+        return true;
+    }
 
 }

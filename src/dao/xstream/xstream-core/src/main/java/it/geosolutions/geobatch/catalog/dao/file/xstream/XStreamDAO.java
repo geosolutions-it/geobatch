@@ -37,50 +37,48 @@ import java.io.OutputStream;
 
 import com.thoughtworks.xstream.XStream;
 
-public abstract class XStreamDAO<T extends Configuration> extends
-		BaseFileBaseDAO<T> implements DAO<T, String> {
+public abstract class XStreamDAO<T extends Configuration> extends BaseFileBaseDAO<T> implements
+        DAO<T, String> {
 
-	protected final Alias alias;
+    protected final Alias alias;
 
-	public XStreamDAO(String directory, Alias alias) {
-		super(directory);
-		this.alias = alias;
-	}
+    public XStreamDAO(String directory, Alias alias) {
+        super(directory);
+        this.alias = alias;
+    }
 
-	public T persist(T entity) throws IOException {
-		OutputStream os = null;
-		try {
-			XStream xstream = new XStream();
-			alias.setAliases(xstream);
-			final File outFile = new File(getBaseDirectory(), entity.getId()
-					+ ".xml");
-			os = new FileOutputStream(outFile);
-			xstream.toXML(entity, new BufferedOutputStream(os));
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (os != null)
-				IOUtils.closeQuietly(os);
-		}
+    public T persist(T entity) throws IOException {
+        OutputStream os = null;
+        try {
+            XStream xstream = new XStream();
+            alias.setAliases(xstream);
+            final File outFile = new File(getBaseDirectory(), entity.getId() + ".xml");
+            os = new FileOutputStream(outFile);
+            xstream.toXML(entity, new BufferedOutputStream(os));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (os != null)
+                IOUtils.closeQuietly(os);
+        }
 
-		return entity;
-	}
+        return entity;
+    }
 
-	public T refresh(T entity) throws IOException {
-		return find(entity.getId(), false);
-	}
+    public T refresh(T entity) throws IOException {
+        return find(entity.getId(), false);
+    }
 
-	public boolean remove(T entity) throws IOException {
+    public boolean remove(T entity) throws IOException {
 
-		final File entityfile = new File(getBaseDirectory(), entity.getId()
-				+ ".xml");
-		if (entityfile.exists()) {
-			if (!entityfile.delete())
-				IOUtils.deleteFile(entityfile);
-			return true;
-		}
-		return false;
+        final File entityfile = new File(getBaseDirectory(), entity.getId() + ".xml");
+        if (entityfile.exists()) {
+            if (!entityfile.delete())
+                IOUtils.deleteFile(entityfile);
+            return true;
+        }
+        return false;
 
-	}
+    }
 
 }

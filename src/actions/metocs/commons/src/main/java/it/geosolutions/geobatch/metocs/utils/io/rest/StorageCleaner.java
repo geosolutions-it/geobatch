@@ -18,107 +18,100 @@ import org.geotools.util.logging.Logging;
  * @author Simone Giannecchini, GeoSolutions SAS
  */
 public class StorageCleaner extends TimerTask {
-	private final static Logger LOGGER = Logging
-			.getLogger(StorageCleaner.class);
+    private final static Logger LOGGER = Logging.getLogger(StorageCleaner.class);
 
-	private long expirationDelay;
+    private long expirationDelay;
 
-	private PublishingRestletGlobalConfig config;
+    private PublishingRestletGlobalConfig config;
 
-	public PublishingRestletGlobalConfig getConfig() {
-		return config;
-	}
+    public PublishingRestletGlobalConfig getConfig() {
+        return config;
+    }
 
-	public void setConfig(PublishingRestletGlobalConfig config) {
-		this.config = config;
-	}
+    public void setConfig(PublishingRestletGlobalConfig config) {
+        this.config = config;
+    }
 
-	@Override
-	public void run() {
-		try {
+    @Override
+    public void run() {
+        try {
 
-			//
-			// getting base directory
-			//
-			final File workingDir = new File(config.getRootDirectory());
-			// final File workingDir =
-			// IOUtils.findLocation(config.getRootDirectory(),new
-			// File(((FileBaseCatalog)
-			// CatalogHolder.getCatalog()).getBaseDirectory()));
-			// if (workingDir == null ||
-			// !workingDir.exists()||!workingDir.canRead()||!workingDir.isDirectory())
-			// {
-			// if(LOGGER.isLoggable(Level.SEVERE))
-			// LOGGER.severe("Unable to work with the provided working directory:"+(workingDir!=null?workingDir:""));
-			// return;
-			// }
+            //
+            // getting base directory
+            //
+            final File workingDir = new File(config.getRootDirectory());
+            // final File workingDir =
+            // IOUtils.findLocation(config.getRootDirectory(),new
+            // File(((FileBaseCatalog)
+            // CatalogHolder.getCatalog()).getBaseDirectory()));
+            // if (workingDir == null ||
+            // !workingDir.exists()||!workingDir.canRead()||!workingDir.isDirectory())
+            // {
+            // if(LOGGER.isLoggable(Level.SEVERE))
+            // LOGGER.severe("Unable to work with the provided working directory:"+(workingDir!=null?workingDir:""));
+            // return;
+            // }
 
-			// ok, now scan for existing files there and clean up those
-			// that are too old
-			long now = System.currentTimeMillis();
-			for (File f : workingDir.listFiles()) {
-				if (now - f.lastModified() > (expirationDelay * 1000)) {
-					// lock the file
-					RandomAccessFile raf = null;
-					FileChannel channel = null;
-					FileLock lock = null;
-					try {
-						raf = new RandomAccessFile(f, "rw");
-						channel = raf.getChannel();
-						lock = channel.lock();
-						IOUtils.deleteFile(f);
-					} catch (Throwable e) {
-					} finally {
-						try {
-							if (raf != null)
-								raf.close();
-						} catch (Throwable e) {
-							if (LOGGER.isLoggable(Level.FINE))
-								LOGGER.log(Level.FINE, e.getLocalizedMessage(),
-										e);
-						}
-						try {
-							if (lock != null)
-								lock.release();
-						} catch (Throwable e) {
-							if (LOGGER.isLoggable(Level.FINE))
-								LOGGER.log(Level.FINE, e.getLocalizedMessage(),
-										e);
-						}
+            // ok, now scan for existing files there and clean up those
+            // that are too old
+            long now = System.currentTimeMillis();
+            for (File f : workingDir.listFiles()) {
+                if (now - f.lastModified() > (expirationDelay * 1000)) {
+                    // lock the file
+                    RandomAccessFile raf = null;
+                    FileChannel channel = null;
+                    FileLock lock = null;
+                    try {
+                        raf = new RandomAccessFile(f, "rw");
+                        channel = raf.getChannel();
+                        lock = channel.lock();
+                        IOUtils.deleteFile(f);
+                    } catch (Throwable e) {
+                    } finally {
+                        try {
+                            if (raf != null)
+                                raf.close();
+                        } catch (Throwable e) {
+                            if (LOGGER.isLoggable(Level.FINE))
+                                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+                        }
+                        try {
+                            if (lock != null)
+                                lock.release();
+                        } catch (Throwable e) {
+                            if (LOGGER.isLoggable(Level.FINE))
+                                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+                        }
 
-						try {
-							if (channel != null)
-								IOUtils.closeQuietly(channel);
-						} catch (Throwable e) {
-							if (LOGGER.isLoggable(Level.FINE))
-								LOGGER.log(Level.FINE, e.getLocalizedMessage(),
-										e);
-						}
+                        try {
+                            if (channel != null)
+                                IOUtils.closeQuietly(channel);
+                        } catch (Throwable e) {
+                            if (LOGGER.isLoggable(Level.FINE))
+                                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+                        }
 
-					}
-				}
-			}
-		} catch (Throwable e) {
-			LOGGER
-					.log(
-							Level.WARNING,
-							"Error occurred while trying to clean up old coverages from temp storage",
-							e);
-		}
-	}
+                    }
+                }
+            }
+        } catch (Throwable e) {
+            LOGGER.log(Level.WARNING,
+                    "Error occurred while trying to clean up old coverages from temp storage", e);
+        }
+    }
 
-	/**
-	 * The file expiration delay in seconds, a file will be deleted when it's
-	 * been around more than expirationDelay
-	 * 
-	 * @return
-	 */
-	public long getExpirationDelay() {
-		return expirationDelay;
-	}
+    /**
+     * The file expiration delay in seconds, a file will be deleted when it's been around more than
+     * expirationDelay
+     * 
+     * @return
+     */
+    public long getExpirationDelay() {
+        return expirationDelay;
+    }
 
-	public void setExpirationDelay(long expirationDelay) {
-		this.expirationDelay = expirationDelay;
-	}
+    public void setExpirationDelay(long expirationDelay) {
+        this.expirationDelay = expirationDelay;
+    }
 
 }

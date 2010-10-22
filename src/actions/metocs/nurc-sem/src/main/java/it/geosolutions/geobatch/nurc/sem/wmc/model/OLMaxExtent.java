@@ -35,73 +35,76 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLMaxExtent extends OLBaseClass {
 
-	private Double maxx = 180.0;
-	private Double maxy = 90.0;
-	private Double minx = -180.0;
-	private Double miny = -90.0;
+    private Double maxx = 180.0;
 
-	public OLMaxExtent(String content) {
-		super(content);
-	}
+    private Double maxy = 90.0;
 
-	/**
-	 * @return the maxx
-	 */
-	public Double getMaxx() {
-		return maxx;
-	}
+    private Double minx = -180.0;
 
-	/**
-	 * @param maxx
-	 *            the maxx to set
-	 */
-	public void setMaxx(Double maxx) {
-		this.maxx = maxx;
-	}
+    private Double miny = -90.0;
 
-	/**
-	 * @return the maxy
-	 */
-	public Double getMaxy() {
-		return maxy;
-	}
+    public OLMaxExtent(String content) {
+        super(content);
+    }
 
-	/**
-	 * @param maxy
-	 *            the maxy to set
-	 */
-	public void setMaxy(Double maxy) {
-		this.maxy = maxy;
-	}
+    /**
+     * @return the maxx
+     */
+    public Double getMaxx() {
+        return maxx;
+    }
 
-	/**
-	 * @return the minx
-	 */
-	public Double getMinx() {
-		return minx;
-	}
+    /**
+     * @param maxx
+     *            the maxx to set
+     */
+    public void setMaxx(Double maxx) {
+        this.maxx = maxx;
+    }
 
-	/**
-	 * @param minx
-	 *            the minx to set
-	 */
-	public void setMinx(Double minx) {
-		this.minx = minx;
-	}
+    /**
+     * @return the maxy
+     */
+    public Double getMaxy() {
+        return maxy;
+    }
 
-	/**
-	 * @return the miny
-	 */
-	public Double getMiny() {
-		return miny;
-	}
+    /**
+     * @param maxy
+     *            the maxy to set
+     */
+    public void setMaxy(Double maxy) {
+        this.maxy = maxy;
+    }
 
-	/**
-	 * @param miny
-	 *            the miny to set
-	 */
-	public void setMiny(Double miny) {
-		this.miny = miny;
-	}
+    /**
+     * @return the minx
+     */
+    public Double getMinx() {
+        return minx;
+    }
+
+    /**
+     * @param minx
+     *            the minx to set
+     */
+    public void setMinx(Double minx) {
+        this.minx = minx;
+    }
+
+    /**
+     * @return the miny
+     */
+    public Double getMiny() {
+        return miny;
+    }
+
+    /**
+     * @param miny
+     *            the miny to set
+     */
+    public void setMiny(Double miny) {
+        this.miny = miny;
+    }
 
 }

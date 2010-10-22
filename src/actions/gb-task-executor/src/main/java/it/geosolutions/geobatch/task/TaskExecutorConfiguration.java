@@ -35,138 +35,136 @@ import org.apache.commons.beanutils.BeanUtils;
  * 
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
-public class TaskExecutorConfiguration extends ActionConfiguration implements
-		Configuration {
+public class TaskExecutorConfiguration extends ActionConfiguration implements Configuration {
 
-	public String getXsl() {
-		return xsl;
-	}
+    public String getXsl() {
+        return xsl;
+    }
 
-	public void setXsl(String xsl) {
-		this.xsl = xsl;
-	}
+    public void setXsl(String xsl) {
+        this.xsl = xsl;
+    }
 
-	public String getExecutable() {
-		return executable;
-	}
+    public String getExecutable() {
+        return executable;
+    }
 
-	public void setExecutable(String executable) {
-		this.executable = executable;
-	}
+    public void setExecutable(String executable) {
+        this.executable = executable;
+    }
 
-	public String getErrorFile() {
-		return errorFile;
-	}
+    public String getErrorFile() {
+        return errorFile;
+    }
 
-	public void setErrorFile(String errorFile) {
-		this.errorFile = errorFile;
-	}
+    public void setErrorFile(String errorFile) {
+        this.errorFile = errorFile;
+    }
 
-	public Long getTimeOut() {
-		return timeOut;
-	}
+    public Long getTimeOut() {
+        return timeOut;
+    }
 
-	public void setTimeOut(Long timeOut) {
-		this.timeOut = timeOut;
-	}
+    public void setTimeOut(Long timeOut) {
+        this.timeOut = timeOut;
+    }
 
-	public Map<String, String> getVariables() {
-		return variables;
-	}
+    public Map<String, String> getVariables() {
+        return variables;
+    }
 
-	public void setVariables(Map<String, String> variables) {
-		this.variables = variables;
-	}
+    public void setVariables(Map<String, String> variables) {
+        this.variables = variables;
+    }
 
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
+    public String getWorkingDirectory() {
+        return workingDirectory;
+    }
 
-	public void setWorkingDirectory(String workingDirectory) {
-		this.workingDirectory = workingDirectory;
-	}
+    public void setWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
 
-	public String getDefaultScript() {
-		return defaultScript;
-	}
+    public String getDefaultScript() {
+        return defaultScript;
+    }
 
-	public void setDefaultScript(String defaultScript) {
-		this.defaultScript = defaultScript;
-	}
+    public void setDefaultScript(String defaultScript) {
+        this.defaultScript = defaultScript;
+    }
 
-	public void setOutputName(String outputName) {
-		this.outputName = outputName;
-	}
+    public void setOutputName(String outputName) {
+        this.outputName = outputName;
+    }
 
-	public String getOutputName() {
-		return outputName;
-	}
+    public String getOutputName() {
+        return outputName;
+    }
 
-	private String workingDirectory;
+    private String workingDirectory;
 
-	private String executable;
+    private String executable;
 
-	private String errorFile;
+    private String errorFile;
 
-	private Long timeOut;
+    private Long timeOut;
 
-	private String outputName;
+    private String outputName;
 
-	private String defaultScript;
+    private String defaultScript;
 
-	private String output;
+    private String output;
 
-	// private boolean spawn;
+    // private boolean spawn;
 
-	private Map<String, String> variables;
+    private Map<String, String> variables;
 
-	private String xsl;
+    private String xsl;
 
-	public TaskExecutorConfiguration() {
-		super();
-	}
+    public TaskExecutorConfiguration() {
+        super();
+    }
 
-	protected TaskExecutorConfiguration(String id, String name,
-			String description, boolean dirty) {
-		super(id, name, description, dirty);
-	}
+    protected TaskExecutorConfiguration(String id, String name, String description, boolean dirty) {
+        super(id, name, description, dirty);
+    }
 
-	public TaskExecutorConfiguration clone() { // throws
-												// CloneNotSupportedException {
-		try {
-			return (TaskExecutorConfiguration) BeanUtils.cloneBean(this);
-		} catch (IllegalAccessException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (InstantiationException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (InvocationTargetException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (NoSuchMethodException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		}
-	}
+    public TaskExecutorConfiguration clone() { // throws
+        // CloneNotSupportedException {
+        try {
+            return (TaskExecutorConfiguration) BeanUtils.cloneBean(this);
+        } catch (IllegalAccessException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (InstantiationException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (InvocationTargetException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (NoSuchMethodException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        }
+    }
 
-	/**
-	 * @param output
-	 *            the output to set
-	 */
-	public void setOutput(String output) {
-		this.output = output;
-	}
+    /**
+     * @param output
+     *            the output to set
+     */
+    public void setOutput(String output) {
+        this.output = output;
+    }
 
-	/**
-	 * @return the output
-	 */
-	public String getOutput() {
-		return output;
-	}
+    /**
+     * @return the output
+     */
+    public String getOutput() {
+        return output;
+    }
 
 }

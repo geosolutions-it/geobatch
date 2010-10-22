@@ -30,22 +30,18 @@ import java.util.logging.Level;
  * Register XStream aliases for the relevant services we ship in this class.
  * 
  */
-public class LoggingProgressListenerConfigurationAliasRegistrar extends
-		AliasRegistrar {
+public class LoggingProgressListenerConfigurationAliasRegistrar extends AliasRegistrar {
 
-	/**
-	 * A basic constructor to put the LoggingProgressListener Configuration
-	 * alias into registry.
-	 * 
-	 * @param registry
-	 *            The alias registry.
-	 */
-	public LoggingProgressListenerConfigurationAliasRegistrar(
-			AliasRegistry registry) {
-		if (LOGGER.isLoggable(Level.INFO))
-			LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+    /**
+     * A basic constructor to put the LoggingProgressListener Configuration alias into registry.
+     * 
+     * @param registry
+     *            The alias registry.
+     */
+    public LoggingProgressListenerConfigurationAliasRegistrar(AliasRegistry registry) {
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info(getClass().getSimpleName() + ": registering alias.");
 
-		registry.putAlias("LoggingProgressListener",
-				LoggingProgressListenerConfiguration.class);
-	}
+        registry.putAlias("LoggingProgressListener", LoggingProgressListenerConfiguration.class);
+    }
 }

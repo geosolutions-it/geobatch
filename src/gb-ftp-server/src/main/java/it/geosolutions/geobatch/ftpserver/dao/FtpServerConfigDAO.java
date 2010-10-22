@@ -33,7 +33,7 @@ import it.geosolutions.geobatch.users.dao.DAOException;
  */
 public interface FtpServerConfigDAO {
 
-	public void save(FtpServerConfig config) throws DAOException;
+    public void save(FtpServerConfig config) throws DAOException;
 
-	public FtpServerConfig load() throws DAOException;
+    public FtpServerConfig load() throws DAOException;
 }

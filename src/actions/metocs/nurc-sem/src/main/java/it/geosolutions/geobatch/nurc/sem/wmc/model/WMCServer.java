@@ -34,80 +34,83 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  * 
  */
 public class WMCServer {
-	private String service = "wms";
-	private String version = "1.1.1";
-	private String title;
-	private WMCOnlineResource onlineResource;
+    private String service = "wms";
 
-	/**
-	 * @param service
-	 * @param version
-	 * @param title
-	 */
-	public WMCServer(String service, String version, String title) {
-		this.service = service;
-		this.version = version;
-		this.title = title;
-	}
+    private String version = "1.1.1";
 
-	/**
-	 * @return the service
-	 */
-	public String getService() {
-		return service;
-	}
+    private String title;
 
-	/**
-	 * @param service
-	 *            the service to set
-	 */
-	public void setService(String service) {
-		this.service = service;
-	}
+    private WMCOnlineResource onlineResource;
 
-	/**
-	 * @return the version
-	 */
-	public String getVersion() {
-		return version;
-	}
+    /**
+     * @param service
+     * @param version
+     * @param title
+     */
+    public WMCServer(String service, String version, String title) {
+        this.service = service;
+        this.version = version;
+        this.title = title;
+    }
 
-	/**
-	 * @param version
-	 *            the version to set
-	 */
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    /**
+     * @return the service
+     */
+    public String getService() {
+        return service;
+    }
 
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
+    /**
+     * @param service
+     *            the service to set
+     */
+    public void setService(String service) {
+        this.service = service;
+    }
 
-	/**
-	 * @param title
-	 *            the title to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    /**
+     * @return the version
+     */
+    public String getVersion() {
+        return version;
+    }
 
-	/**
-	 * @return the onlineResource
-	 */
-	public WMCOnlineResource getOnlineResource() {
-		return onlineResource;
-	}
+    /**
+     * @param version
+     *            the version to set
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
-	/**
-	 * @param onlineResource
-	 *            the onlineResource to set
-	 */
-	public void setOnlineResource(WMCOnlineResource onlineResource) {
-		this.onlineResource = onlineResource;
-	}
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @param title
+     *            the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * @return the onlineResource
+     */
+    public WMCOnlineResource getOnlineResource() {
+        return onlineResource;
+    }
+
+    /**
+     * @param onlineResource
+     *            the onlineResource to set
+     */
+    public void setOnlineResource(WMCOnlineResource onlineResource) {
+        this.onlineResource = onlineResource;
+    }
 
 }

@@ -47,110 +47,107 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
  * @author giuseppe
  * 
  */
-public abstract class DAOAbstractSpring<T, ID extends Serializable> extends
-		HibernateDaoSupport implements GenericDAO<T, ID> {
+public abstract class DAOAbstractSpring<T, ID extends Serializable> extends HibernateDaoSupport
+        implements GenericDAO<T, ID> {
 
-	private static final Logger logger = Logger
-			.getLogger(DAOAbstractSpring.class.getName());
+    private static final Logger logger = Logger.getLogger(DAOAbstractSpring.class.getName());
 
-	private Class<T> persistentClass;
+    private Class<T> persistentClass;
 
-	public DAOAbstractSpring(Class<T> persistentClass) {
-		if (logger.isLoggable(Level.FINE))
-			logger.log(Level.FINE, "Persistent Class : {0}", persistentClass);
-		this.persistentClass = persistentClass;
-	}
+    public DAOAbstractSpring(Class<T> persistentClass) {
+        if (logger.isLoggable(Level.FINE))
+            logger.log(Level.FINE, "Persistent Class : {0}", persistentClass);
+        this.persistentClass = persistentClass;
+    }
 
-	protected Class<T> getPersistentClass() {
-		if (logger.isLoggable(Level.FINE))
-			logger.log(Level.FINE, "Persistent class: {0}", persistentClass
-					.getName());
-		return persistentClass;
-	}
+    protected Class<T> getPersistentClass() {
+        if (logger.isLoggable(Level.FINE))
+            logger.log(Level.FINE, "Persistent class: {0}", persistentClass.getName());
+        return persistentClass;
+    }
 
-	public List<T> findAll() throws DAOException {
-		return findByCriteria();
-	}
+    public List<T> findAll() throws DAOException {
+        return findByCriteria();
+    }
 
-	public List<T> findAll(int offset, int limite) throws DAOException {
-		return findByCriteria(offset, limite);
-	}
+    public List<T> findAll(int offset, int limite) throws DAOException {
+        return findByCriteria(offset, limite);
+    }
 
-	@SuppressWarnings("unchecked")
-	public List<T> findByCriteria(Criterion... criterion) throws DAOException {
-		try {
-			Criteria crit = getSession().createCriteria(getPersistentClass());
-			for (Criterion c : criterion) {
-				crit.add(c);
-			}
-			return crit.list();
-		} catch (HibernateException ex) {
-			logger.fine(ex.getMessage());
-			throw new DAOException(ex);
-		}
-	}
+    @SuppressWarnings("unchecked")
+    public List<T> findByCriteria(Criterion... criterion) throws DAOException {
+        try {
+            Criteria crit = getSession().createCriteria(getPersistentClass());
+            for (Criterion c : criterion) {
+                crit.add(c);
+            }
+            return crit.list();
+        } catch (HibernateException ex) {
+            logger.fine(ex.getMessage());
+            throw new DAOException(ex);
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	public List<T> findByCriteria(int offset, int limite,
-			Criterion... criterion) throws DAOException {
-		try {
-			Criteria crit = getSession().createCriteria(getPersistentClass());
-			for (Criterion c : criterion) {
-				crit.add(c);
-			}
-			crit.setFirstResult(offset);
-			crit.setMaxResults(limite);
-			return crit.list();
-		} catch (HibernateException ex) {
-			logger.fine(ex.getMessage());
-			throw new DAOException(ex);
-		}
-	}
+    @SuppressWarnings("unchecked")
+    public List<T> findByCriteria(int offset, int limite, Criterion... criterion)
+            throws DAOException {
+        try {
+            Criteria crit = getSession().createCriteria(getPersistentClass());
+            for (Criterion c : criterion) {
+                crit.add(c);
+            }
+            crit.setFirstResult(offset);
+            crit.setMaxResults(limite);
+            return crit.list();
+        } catch (HibernateException ex) {
+            logger.fine(ex.getMessage());
+            throw new DAOException(ex);
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	public T findById(ID id, boolean lock) throws DAOException {
-		T entity;
-		try {
-			if (lock) {
-				entity = (T) getSession().load(getPersistentClass(), id,
-						LockMode.UPGRADE);
-			} else {
-				entity = (T) getSession().load(getPersistentClass(), id);
-			}
-		} catch (HibernateException ex) {
-			logger.fine(ex.getMessage());
-			throw new DAOException(ex);
-		}
-		return entity;
+    @SuppressWarnings("unchecked")
+    public T findById(ID id, boolean lock) throws DAOException {
+        T entity;
+        try {
+            if (lock) {
+                entity = (T) getSession().load(getPersistentClass(), id, LockMode.UPGRADE);
+            } else {
+                entity = (T) getSession().load(getPersistentClass(), id);
+            }
+        } catch (HibernateException ex) {
+            logger.fine(ex.getMessage());
+            throw new DAOException(ex);
+        }
+        return entity;
 
-	}
+    }
 
-	public void lock(T entity) throws DAOException {
-		try {
-			getSession().lock(entity, LockMode.UPGRADE);
-		} catch (HibernateException ex) {
-			logger.fine(ex.getMessage());
-			throw new DAOException(ex);
-		}
-	}
+    public void lock(T entity) throws DAOException {
+        try {
+            getSession().lock(entity, LockMode.UPGRADE);
+        } catch (HibernateException ex) {
+            logger.fine(ex.getMessage());
+            throw new DAOException(ex);
+        }
+    }
 
-	public T makePersistent(T entity) throws DAOException {
-		try {
-			getSession().saveOrUpdate(entity);
-		} catch (HibernateException ex) {
-			logger.info(ex.getMessage());
-			throw new DAOException(ex);
-		}
-		return entity;
-	}
+    public T makePersistent(T entity) throws DAOException {
+        try {
+            getSession().saveOrUpdate(entity);
+        } catch (HibernateException ex) {
+            logger.info(ex.getMessage());
+            throw new DAOException(ex);
+        }
+        return entity;
+    }
 
-	public void makeTransient(T entity) throws DAOException {
-		try {
-			getSession().delete(entity);
-		} catch (HibernateException ex) {
-			logger.fine(ex.getMessage());
-			throw new DAOException(ex);
-		}
-	}
+    public void makeTransient(T entity) throws DAOException {
+        try {
+            getSession().delete(entity);
+        } catch (HibernateException ex) {
+            logger.fine(ex.getMessage());
+            throw new DAOException(ex);
+        }
+    }
 
 }

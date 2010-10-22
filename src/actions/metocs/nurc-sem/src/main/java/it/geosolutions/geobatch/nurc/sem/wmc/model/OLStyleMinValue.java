@@ -35,18 +35,18 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLStyleMinValue extends OLBaseClass {
 
-	private String defaultValue;
+    private String defaultValue;
 
-	public OLStyleMinValue(String content, String defaultValue) {
-		super(content);
-		this.defaultValue = defaultValue;
-	}
+    public OLStyleMinValue(String content, String defaultValue) {
+        super(content);
+        this.defaultValue = defaultValue;
+    }
 
-	/**
-	 * @return the defaultValue
-	 */
-	public String getDefaultValue() {
-		return defaultValue;
-	}
+    /**
+     * @return the defaultValue
+     */
+    public String getDefaultValue() {
+        return defaultValue;
+    }
 
 }

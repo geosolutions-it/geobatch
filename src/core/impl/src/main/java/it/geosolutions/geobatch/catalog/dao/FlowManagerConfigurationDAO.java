@@ -24,7 +24,6 @@ package it.geosolutions.geobatch.catalog.dao;
 
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 
-public interface FlowManagerConfigurationDAO extends
-		DAO<FlowConfiguration, String> {
+public interface FlowManagerConfigurationDAO extends DAO<FlowConfiguration, String> {
 
 }

@@ -12,20 +12,19 @@ import java.util.logging.Logger;
  * @author ETj <etj at geo-solutions.it>
  */
 public class CumulatingProgressListenerService extends BaseService implements
-		ProgressListenerService<CumulatingProgressListenerConfiguration> {
-	// implements Service<FileSystemMonitorEvent,
-	// GeoTiffOverviewsEmbedderConfiguration> {
+        ProgressListenerService<CumulatingProgressListenerConfiguration> {
+    // implements Service<FileSystemMonitorEvent,
+    // GeoTiffOverviewsEmbedderConfiguration> {
 
-	private CumulatingProgressListenerService() {
-	}
+    private CumulatingProgressListenerService() {
+    }
 
-	private final static Logger LOGGER = Logger
-			.getLogger(CumulatingProgressListenerService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(CumulatingProgressListenerService.class
+            .toString());
 
-	public ProgressListener createProgressListener(
-			CumulatingProgressListenerConfiguration configuration) {
-		CumulatingProgressListener ret = new CumulatingProgressListener(
-				configuration);
-		return ret;
-	}
+    public ProgressListener createProgressListener(
+            CumulatingProgressListenerConfiguration configuration) {
+        CumulatingProgressListener ret = new CumulatingProgressListener(configuration);
+        return ret;
+    }
 }

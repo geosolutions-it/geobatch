@@ -51,318 +51,301 @@ import org.apache.commons.collections.MultiHashMap;
  * @author Simone Giannecchini, GeoSolutions
  * 
  */
-public class BaseCatalog extends BasePersistentResource<CatalogConfiguration>
-		implements Catalog {
-	private final static Logger LOGGER = Logger.getLogger(BaseCatalog.class
-			.getName());
-	/**
-	 * flow manager types
-	 */
-	private final MultiHashMap /* <Class> */flowManagers = new MultiHashMap();
+public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> implements Catalog {
+    private final static Logger LOGGER = Logger.getLogger(BaseCatalog.class.getName());
 
-	/**
-	 * resources
-	 */
-	private final MultiHashMap /* <Class> */resources = new MultiHashMap();
+    /**
+     * flow manager types
+     */
+    private final MultiHashMap /* <Class> */flowManagers = new MultiHashMap();
 
-	/**
-	 * listeners
-	 */
-	private final List<CatalogListener> listeners = new CopyOnWriteArrayList<CatalogListener>();
+    /**
+     * resources
+     */
+    private final MultiHashMap /* <Class> */resources = new MultiHashMap();
 
-	/**
-	 * Default Constructor.
-	 */
-	public BaseCatalog() {
-	}
+    /**
+     * listeners
+     */
+    private final List<CatalogListener> listeners = new CopyOnWriteArrayList<CatalogListener>();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.Catalog#add(it.geosolutions.geobatch
-	 * .catalog.FlowManager)
-	 */
-	public <EO extends EventObject, FC extends FlowConfiguration> void add(
-			final FlowManager<EO, FC> resource) {
-		// sanity checks
-		if (resource.getId() == null) {
-			throw new IllegalArgumentException(
-					"No ID has been specified for this Flow BaseEventConsumer.");
-		}
+    /**
+     * Default Constructor.
+     */
+    public BaseCatalog() {
+    }
 
-		if (resource.getWorkingDirectory() == null) {
-			throw new IllegalArgumentException(
-					"No Output Dir has been specified for this Flow BaseEventConsumer.");
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.Catalog#add(it.geosolutions.geobatch
+     * .catalog.FlowManager)
+     */
+    public <EO extends EventObject, FC extends FlowConfiguration> void add(
+            final FlowManager<EO, FC> resource) {
+        // sanity checks
+        if (resource.getId() == null) {
+            throw new IllegalArgumentException(
+                    "No ID has been specified for this Flow BaseEventConsumer.");
+        }
 
-		// if (resource.getConfiguration() == null) {
-		// throw new IllegalArgumentException(
-		// "No Flow BaseEventConsumer Descriptor has been specified for this Flow BaseEventConsumer.");
-		// }
+        if (resource.getWorkingDirectory() == null) {
+            throw new IllegalArgumentException(
+                    "No Output Dir has been specified for this Flow BaseEventConsumer.");
+        }
 
-		synchronized (resources) {
-			resources.put(resource.getClass(), resource);
-		}
+        // if (resource.getConfiguration() == null) {
+        // throw new IllegalArgumentException(
+        // "No Flow BaseEventConsumer Descriptor has been specified for this Flow BaseEventConsumer.");
+        // }
 
-		added(resource);
-	}
+        synchronized (resources) {
+            resources.put(resource.getClass(), resource);
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see it.geosolutions.geobatch.catalog.Catalog#dispose()
-	 */
-	public void dispose() {
-		try {
-			persist();
-		} catch (Throwable e) {
-			// TODO
-			e.printStackTrace();
-		}
-		flowManagers.clear();
-		resources.clear();
-		listeners.clear();
-	}
+        added(resource);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.Catalog#getFlowManagerType(java.lang
-	 * .String, java.lang.Class)
-	 */
-	public <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> FM getFlowManager(
-			final String id, final Class<FM> clazz) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.Catalog#dispose()
+     */
+    public void dispose() {
+        try {
+            persist();
+        } catch (Throwable e) {
+            // TODO
+            e.printStackTrace();
+        }
+        flowManagers.clear();
+        resources.clear();
+        listeners.clear();
+    }
 
-		final List<FM> l = lookup(clazz, flowManagers);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.Catalog#getFlowManagerType(java.lang .String,
+     * java.lang.Class)
+     */
+    public <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> FM getFlowManager(
+            final String id, final Class<FM> clazz) {
 
-		for (final FM fm : l) {
-			if (id.equals(fm.getId())) {
-				return fm;
-			}
-		}
+        final List<FM> l = lookup(clazz, flowManagers);
 
-		return null;
-	}
+        for (final FM fm : l) {
+            if (id.equals(fm.getId())) {
+                return fm;
+            }
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.Catalog#getFlowManagerTypeByName(java
-	 * .lang.String, java.lang.Class)
-	 */
-	public <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> FM getFlowManagerByName(
-			final String name, final Class<FM> clazz) {
+        return null;
+    }
 
-		final List<FM> l = lookup(clazz, flowManagers);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.Catalog#getFlowManagerTypeByName(java .lang.String,
+     * java.lang.Class)
+     */
+    public <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> FM getFlowManagerByName(
+            final String name, final Class<FM> clazz) {
 
-		for (final FM fm : l) {
+        final List<FM> l = lookup(clazz, flowManagers);
 
-			if (name.equals(fm.getName())) {
-				return fm;
-			}
-		}
+        for (final FM fm : l) {
 
-		return null;
-	}
+            if (name.equals(fm.getName())) {
+                return fm;
+            }
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.Catalog#getFlowManagers(java.lang.Class)
-	 */
-	public <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> List<FM> getFlowManagers(
-			final Class<FM> clazz) {
-		return getResources(clazz);
-	}
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.Catalog#getResource(java.lang.String,
-	 * java.lang.Class)
-	 */
-	public <R extends Resource> R getResource(final String id,
-			final Class<R> clazz) {
-		final List<R> l = lookup(clazz, resources);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.Catalog#getFlowManagers(java.lang.Class)
+     */
+    public <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> List<FM> getFlowManagers(
+            final Class<FM> clazz) {
+        return getResources(clazz);
+    }
 
-		for (R resource : l) {
-			if (id.equals(resource.getId())) {
-				return resource;
-			}
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.Catalog#getResource(java.lang.String, java.lang.Class)
+     */
+    public <R extends Resource> R getResource(final String id, final Class<R> clazz) {
+        final List<R> l = lookup(clazz, resources);
 
-		return null;
-	}
+        for (R resource : l) {
+            if (id.equals(resource.getId())) {
+                return resource;
+            }
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.Catalog#getResourceByName(java.lang.
-	 * String, java.lang.Class)
-	 */
-	public <R extends Resource> R getResourceByName(final String name,
-			final Class<R> clazz) {
-		final List<R> l = lookup(clazz, resources);
+        return null;
+    }
 
-		for (R resource : l) {
-			if (name.equals(resource.getName())) {
-				return resource;
-			}
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.Catalog#getResourceByName(java.lang. String,
+     * java.lang.Class)
+     */
+    public <R extends Resource> R getResourceByName(final String name, final Class<R> clazz) {
+        final List<R> l = lookup(clazz, resources);
 
-		return null;
-	}
+        for (R resource : l) {
+            if (name.equals(resource.getName())) {
+                return resource;
+            }
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.Catalog#getResources(java.lang.Class)
-	 */
-	public <R extends Resource> List<R> getResources(final Class<R> clazz) {
-		return Collections.unmodifiableList(lookup(clazz, resources));
-	}
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.Catalog#remove(it.geosolutions.geobatch
-	 * .catalog.FlowManager)
-	 */
-	public <EO extends EventObject, FC extends FlowConfiguration> void remove(
-			final FlowManager<EO, FC> resource) {
-		synchronized (resources) {
-			resources.remove(resource.getClass(), resource);
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.Catalog#getResources(java.lang.Class)
+     */
+    public <R extends Resource> List<R> getResources(final Class<R> clazz) {
+        return Collections.unmodifiableList(lookup(clazz, resources));
+    }
 
-		removed(resource);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.Catalog#remove(it.geosolutions.geobatch
+     * .catalog.FlowManager)
+     */
+    public <EO extends EventObject, FC extends FlowConfiguration> void remove(
+            final FlowManager<EO, FC> resource) {
+        synchronized (resources) {
+            resources.remove(resource.getClass(), resource);
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.Catalog#save(it.geosolutions.geobatch
-	 * .catalog.FlowManager)
-	 */
-	public <EO extends EventObject, FC extends FlowConfiguration> void save(
-			final FlowManager<EO, FC> resource) {
-		// TODO
-		LOGGER.severe("To be implemented");
-	}
+        removed(resource);
+    }
 
-	// //
-	// Helper Methods
-	// //
-	/**
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.Catalog#save(it.geosolutions.geobatch
+     * .catalog.FlowManager)
+     */
+    public <EO extends EventObject, FC extends FlowConfiguration> void save(
+            final FlowManager<EO, FC> resource) {
+        // TODO
+        LOGGER.severe("To be implemented");
+    }
+
+    // //
+    // Helper Methods
+    // //
+    /**
      *
      */
-	@SuppressWarnings("unchecked")
-	<R extends Resource> List<R> lookup(final Class<R> clazz,
-			final MultiHashMap map) {
-		final List<R> result = new ArrayList<R>();
+    @SuppressWarnings("unchecked")
+    <R extends Resource> List<R> lookup(final Class<R> clazz, final MultiHashMap map) {
+        final List<R> result = new ArrayList<R>();
 
-		for (final Class<R> key : (Iterable<Class<R>>) map.keySet()) {
-			// for (final Iterator<Class<T>> k = map.keySet().iterator();
-			// k.hasNext();) {
-			// final Class<T> key = k.next();
-			if (clazz.isAssignableFrom(key)) {
-				result.addAll(map.getCollection(key));
-			}
-		}
+        for (final Class<R> key : (Iterable<Class<R>>) map.keySet()) {
+            // for (final Iterator<Class<T>> k = map.keySet().iterator();
+            // k.hasNext();) {
+            // final Class<T> key = k.next();
+            if (clazz.isAssignableFrom(key)) {
+                result.addAll(map.getCollection(key));
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	// //
-	// Event Methods
-	// //
-	public Collection<CatalogListener> getListeners() {
-		return Collections.unmodifiableCollection(listeners);
-	}
+    // //
+    // Event Methods
+    // //
+    public Collection<CatalogListener> getListeners() {
+        return Collections.unmodifiableCollection(listeners);
+    }
 
-	public void addListener(final CatalogListener listener) {
-		listeners.add(listener);
-	}
+    public void addListener(final CatalogListener listener) {
+        listeners.add(listener);
+    }
 
-	public void removeListener(final CatalogListener listener) {
-		listeners.remove(listener);
+    public void removeListener(final CatalogListener listener) {
+        listeners.remove(listener);
 
-	}
+    }
 
-	protected <T> void added(final T object) {
-		fireAdded(object);
-	}
+    protected <T> void added(final T object) {
+        fireAdded(object);
+    }
 
-	protected <T> void fireAdded(final T object) {
-		final CatalogAddEventImpl<T> event = new CatalogAddEventImpl<T>(object);
-		event(event);
-	}
+    protected <T> void fireAdded(final T object) {
+        final CatalogAddEventImpl<T> event = new CatalogAddEventImpl<T>(object);
+        event(event);
+    }
 
-	protected <T> void fireModified(final T object,
-			final List<String> propertyNames, final List<T> oldValues,
-			final List<T> newValues) {
-		final CatalogModifyEventImpl<T> event = new CatalogModifyEventImpl<T>(
-				object);
-		event.setPropertyNames(propertyNames);
-		event.setOldValues(oldValues);
-		event.setNewValues(newValues);
+    protected <T> void fireModified(final T object, final List<String> propertyNames,
+            final List<T> oldValues, final List<T> newValues) {
+        final CatalogModifyEventImpl<T> event = new CatalogModifyEventImpl<T>(object);
+        event.setPropertyNames(propertyNames);
+        event.setOldValues(oldValues);
+        event.setNewValues(newValues);
 
-		event(event);
-	}
+        event(event);
+    }
 
-	protected <T> void removed(final T object) {
-		final CatalogRemoveEventImpl<T> event = new CatalogRemoveEventImpl<T>(
-				object);
+    protected <T> void removed(final T object) {
+        final CatalogRemoveEventImpl<T> event = new CatalogRemoveEventImpl<T>(object);
 
-		event(event);
-	}
+        event(event);
+    }
 
-	@SuppressWarnings("unchecked")
-	protected <T> void event(final CatalogEvent<T> event) {
-		synchronized (listeners) {
-			for (final CatalogListener listener : listeners) {
-				if (event instanceof CatalogAddEvent) {
-					listener.handleAddEvent((CatalogAddEvent) event);
-				} else if (event instanceof CatalogRemoveEvent) {
-					listener.handleRemoveEvent((CatalogRemoveEvent) event);
-				} else if (event instanceof CatalogModifyEvent) {
-					listener.handleModifyEvent((CatalogModifyEvent) event);
-				}
-			}
-		}
-	}
+    @SuppressWarnings("unchecked")
+    protected <T> void event(final CatalogEvent<T> event) {
+        synchronized (listeners) {
+            for (final CatalogListener listener : listeners) {
+                if (event instanceof CatalogAddEvent) {
+                    listener.handleAddEvent((CatalogAddEvent) event);
+                } else if (event instanceof CatalogRemoveEvent) {
+                    listener.handleRemoveEvent((CatalogRemoveEvent) event);
+                } else if (event instanceof CatalogModifyEvent) {
+                    listener.handleModifyEvent((CatalogModifyEvent) event);
+                }
+            }
+        }
+    }
 
-	public <T extends Resource> void add(T resource) {
-		// sanity checks
-		if (resource.getId() == null) {
-			throw new IllegalArgumentException(
-					"No ID has been specified for this Flow BaseEventConsumer.");
-		}
+    public <T extends Resource> void add(T resource) {
+        // sanity checks
+        if (resource.getId() == null) {
+            throw new IllegalArgumentException(
+                    "No ID has been specified for this Flow BaseEventConsumer.");
+        }
 
-		if (resource.getName() == null) {
-			throw new IllegalArgumentException(
-					"No Output Dir has been specified for this Flow BaseEventConsumer.");
-		}
+        if (resource.getName() == null) {
+            throw new IllegalArgumentException(
+                    "No Output Dir has been specified for this Flow BaseEventConsumer.");
+        }
 
-		if (resource.getDescription() == null) {
-			throw new IllegalArgumentException(
-					"No Flow BaseEventConsumer Descriptor has been specified for this Flow BaseEventConsumer.");
-		}
+        if (resource.getDescription() == null) {
+            throw new IllegalArgumentException(
+                    "No Flow BaseEventConsumer Descriptor has been specified for this Flow BaseEventConsumer.");
+        }
 
-		synchronized (resources) {
-			resources.put(resource.getClass(), resource);
-		}
+        synchronized (resources) {
+            resources.put(resource.getClass(), resource);
+        }
 
-		added(resource);
+        added(resource);
 
-	}
+    }
 
 }

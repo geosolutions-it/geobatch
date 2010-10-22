@@ -35,8 +35,8 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLOpacity extends OLBaseClass {
 
-	public OLOpacity(String content) {
-		super(content);
-	}
+    public OLOpacity(String content) {
+        super(content);
+    }
 
 }

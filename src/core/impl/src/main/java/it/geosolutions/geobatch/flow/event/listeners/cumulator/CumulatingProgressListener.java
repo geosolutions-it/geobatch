@@ -19,74 +19,72 @@ import java.util.TimeZone;
  * @author ETj <etj at geo-solutions.it>
  */
 public class CumulatingProgressListener extends
-		ProgressListener<CumulatingProgressListenerConfiguration> {
+        ProgressListener<CumulatingProgressListenerConfiguration> {
 
-	private Object source;
-	private List<String> messages = new ArrayList<String>();
+    private Object source;
 
-	private static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat(
-			"yyyyMMdd'T'HHmmssSSSz");
-	static {
-		TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
-		DATEFORMAT.setTimeZone(TZ_UTC);
-	}
+    private List<String> messages = new ArrayList<String>();
 
-	public CumulatingProgressListener(
-			CumulatingProgressListenerConfiguration configuration) {
-		super(configuration);
-	}
+    private static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
+    static {
+        TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
+        DATEFORMAT.setTimeZone(TZ_UTC);
+    }
 
-	public void setSource(Object source) {
-		this.source = source;
-	}
+    public CumulatingProgressListener(CumulatingProgressListenerConfiguration configuration) {
+        super(configuration);
+    }
 
-	/**
-	 * Retrieves all the event messages arrived so far.
-	 * 
-	 * @return the internal List<String> instance.
-	 */
-	public List<String> getMessages() {
-		return messages;
-	}
+    public void setSource(Object source) {
+        this.source = source;
+    }
 
-	protected void msg(String msg) {
-		Calendar now = Calendar.getInstance();
-		StringBuilder sb = new StringBuilder();
-		sb.append(DATEFORMAT.format(now.getTime())).append(' ').append(msg)
-				.append(' ').append(getProgress()).append("% --").append(
-						getTask());
-		if (source != null) {
-			sb.append(" [").append(source.toString()).append(']');
-		}
-		messages.add(sb.toString());
-	}
+    /**
+     * Retrieves all the event messages arrived so far.
+     * 
+     * @return the internal List<String> instance.
+     */
+    public List<String> getMessages() {
+        return messages;
+    }
 
-	public void started() {
-		msg("Started");
-	}
+    protected void msg(String msg) {
+        Calendar now = Calendar.getInstance();
+        StringBuilder sb = new StringBuilder();
+        sb.append(DATEFORMAT.format(now.getTime())).append(' ').append(msg).append(' ').append(
+                getProgress()).append("% --").append(getTask());
+        if (source != null) {
+            sb.append(" [").append(source.toString()).append(']');
+        }
+        messages.add(sb.toString());
+    }
 
-	public void progressing() {
-		msg("Progressing");
-	}
+    public void started() {
+        msg("Started");
+    }
 
-	public void paused() {
-		msg("Paused");
-	}
+    public void progressing() {
+        msg("Progressing");
+    }
 
-	public void resumed() {
-		msg("Resumed");
-	}
+    public void paused() {
+        msg("Paused");
+    }
 
-	public void completed() {
-		msg("Completed");
-	}
+    public void resumed() {
+        msg("Resumed");
+    }
 
-	public void failed(Throwable exception) {
-		msg("Failed for '" + exception + "'");
-	}
+    public void completed() {
+        msg("Completed");
+    }
 
-	public void terminated() {
-		msg("Terminated");
-	}
+    public void failed(Throwable exception) {
+        msg("Failed for '" + exception + "'");
+    }
+
+    public void terminated() {
+        msg("Terminated");
+    }
 
 }

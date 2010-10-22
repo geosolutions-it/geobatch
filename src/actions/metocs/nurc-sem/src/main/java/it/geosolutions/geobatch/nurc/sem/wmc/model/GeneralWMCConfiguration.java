@@ -34,64 +34,65 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  * 
  */
 public class GeneralWMCConfiguration {
-	private WMCWindow window;
-	private String title;
-	private String _abstract;
+    private WMCWindow window;
 
-	/**
-	 * @param window
-	 * @param title
-	 * @param _abstract
-	 */
-	public GeneralWMCConfiguration(WMCWindow window, String title,
-			String _abstract) {
-		this.window = window;
-		this.title = title;
-		this._abstract = _abstract;
-	}
+    private String title;
 
-	/**
-	 * @param window
-	 *            the window to set
-	 */
-	public void setWindow(WMCWindow window) {
-		this.window = window;
-	}
+    private String _abstract;
 
-	/**
-	 * @return the window
-	 */
-	public WMCWindow getWindow() {
-		return window;
-	}
+    /**
+     * @param window
+     * @param title
+     * @param _abstract
+     */
+    public GeneralWMCConfiguration(WMCWindow window, String title, String _abstract) {
+        this.window = window;
+        this.title = title;
+        this._abstract = _abstract;
+    }
 
-	/**
-	 * @param title
-	 *            the title to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    /**
+     * @param window
+     *            the window to set
+     */
+    public void setWindow(WMCWindow window) {
+        this.window = window;
+    }
 
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
+    /**
+     * @return the window
+     */
+    public WMCWindow getWindow() {
+        return window;
+    }
 
-	/**
-	 * @param _abstract
-	 *            the _abstract to set
-	 */
-	public void setAbstract(String _abstract) {
-		this._abstract = _abstract;
-	}
+    /**
+     * @param title
+     *            the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	/**
-	 * @return the _abstract
-	 */
-	public String getAbstract() {
-		return _abstract;
-	}
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @param _abstract
+     *            the _abstract to set
+     */
+    public void setAbstract(String _abstract) {
+        this._abstract = _abstract;
+    }
+
+    /**
+     * @return the _abstract
+     */
+    public String getAbstract() {
+        return _abstract;
+    }
 }

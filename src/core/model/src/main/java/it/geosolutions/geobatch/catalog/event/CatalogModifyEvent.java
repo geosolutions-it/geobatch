@@ -29,18 +29,18 @@ import java.util.List;
  * 
  */
 public interface CatalogModifyEvent<T> extends CatalogEvent<T> {
-	/**
-	 * The names of the properties that were modified.
-	 */
-	List<String> getPropertyNames();
+    /**
+     * The names of the properties that were modified.
+     */
+    List<String> getPropertyNames();
 
-	/**
-	 * The old values of the properties that were modified.
-	 */
-	List<T> getOldValues();
+    /**
+     * The old values of the properties that were modified.
+     */
+    List<T> getOldValues();
 
-	/**
-	 * The new values of the properties that were modified.
-	 */
-	List<T> getNewValues();
+    /**
+     * The new values of the properties that were modified.
+     */
+    List<T> getNewValues();
 }

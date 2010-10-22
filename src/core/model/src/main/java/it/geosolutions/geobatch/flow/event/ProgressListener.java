@@ -9,61 +9,62 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
  * 
  * @author ETj <etj at geo-solutions.it>
  */
-public abstract class ProgressListener<PLC extends ProgressListenerConfiguration>
-		implements IProgressListener {
+public abstract class ProgressListener<PLC extends ProgressListenerConfiguration> implements
+        IProgressListener {
 
-	protected PLC configuration;
+    protected PLC configuration;
 
-	private String currentTask = null;
-	private float progress = 0;
+    private String currentTask = null;
 
-	protected ProgressListener(PLC configuration) {
-		this.configuration = configuration;
-	}
+    private float progress = 0;
 
-	protected ProgressListener() {
-	}
+    protected ProgressListener(PLC configuration) {
+        this.configuration = configuration;
+    }
 
-	// public void started() {
-	// }
-	//
-	// public void progressing() {
-	// }
-	//
-	// public void paused() {
-	// }
-	//
-	// public void resumed() {
-	// }
-	//
-	// public void completed() {
-	// }
-	//
-	// public void failed(Throwable exception) {
-	// }
-	//
-	// public void terminated() {
-	// }
+    protected ProgressListener() {
+    }
 
-	public float getProgress() {
-		return progress;
-	}
+    // public void started() {
+    // }
+    //
+    // public void progressing() {
+    // }
+    //
+    // public void paused() {
+    // }
+    //
+    // public void resumed() {
+    // }
+    //
+    // public void completed() {
+    // }
+    //
+    // public void failed(Throwable exception) {
+    // }
+    //
+    // public void terminated() {
+    // }
 
-	public String getTask() {
-		return currentTask;
-	}
+    public float getProgress() {
+        return progress;
+    }
 
-	/**
-	 * Used by the notifier.
-	 */
-	public void setTask(String currentTask) {
-		this.currentTask = currentTask;
-	}
+    public String getTask() {
+        return currentTask;
+    }
 
-	/**
-	 * Used by the notifier.
-	 */
-	public void setProgress(float progress) {
-		this.progress = progress;
-	}
+    /**
+     * Used by the notifier.
+     */
+    public void setTask(String currentTask) {
+        this.currentTask = currentTask;
+    }
+
+    /**
+     * Used by the notifier.
+     */
+    public void setProgress(float progress) {
+        this.progress = progress;
+    }
 }

@@ -36,109 +36,114 @@ import java.util.List;
  * 
  */
 public class ViewContext {
-	private String xmlns = "http://www.opengis.net/context";
-	private String xlink = "http://www.w3.org/1999/xlink";
-	private String id;
-	private String version;
-	private GeneralWMCConfiguration general;
-	private List<WMCLayer> layerList;
+    private String xmlns = "http://www.opengis.net/context";
 
-	/**
-	 * @param id
-	 * @param version
-	 */
-	public ViewContext(String id, String version) {
-		this.setId(id);
-		this.setVersion(version);
-	}
+    private String xlink = "http://www.w3.org/1999/xlink";
 
-	/**
-	 * @param general
-	 *            the general to set
-	 */
-	public void setGeneral(GeneralWMCConfiguration general) {
-		this.general = general;
-	}
+    private String id;
 
-	/**
-	 * @return the general
-	 */
-	public GeneralWMCConfiguration getGeneral() {
-		return general;
-	}
+    private String version;
 
-	/**
-	 * @param layerList
-	 *            the layerList to set
-	 */
-	public void setLayerList(List<WMCLayer> layerList) {
-		this.layerList = layerList;
-	}
+    private GeneralWMCConfiguration general;
 
-	/**
-	 * @return the layerList
-	 */
-	public List<WMCLayer> getLayerList() {
-		return layerList;
-	}
+    private List<WMCLayer> layerList;
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * @param id
+     * @param version
+     */
+    public ViewContext(String id, String version) {
+        this.setId(id);
+        this.setVersion(version);
+    }
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * @param general
+     *            the general to set
+     */
+    public void setGeneral(GeneralWMCConfiguration general) {
+        this.general = general;
+    }
 
-	/**
-	 * @param version
-	 *            the version to set
-	 */
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    /**
+     * @return the general
+     */
+    public GeneralWMCConfiguration getGeneral() {
+        return general;
+    }
 
-	/**
-	 * @return the version
-	 */
-	public String getVersion() {
-		return version;
-	}
+    /**
+     * @param layerList
+     *            the layerList to set
+     */
+    public void setLayerList(List<WMCLayer> layerList) {
+        this.layerList = layerList;
+    }
 
-	/**
-	 * @param xmlns
-	 *            the xmlns to set
-	 */
-	public void setXmlns(String xmlns) {
-		this.xmlns = xmlns;
-	}
+    /**
+     * @return the layerList
+     */
+    public List<WMCLayer> getLayerList() {
+        return layerList;
+    }
 
-	/**
-	 * @return the xmlns
-	 */
-	public String getXmlns() {
-		return xmlns;
-	}
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	/**
-	 * @param xlink
-	 *            the xlink to set
-	 */
-	public void setXlink(String xlink) {
-		this.xlink = xlink;
-	}
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * @return the xlink
-	 */
-	public String getXlink() {
-		return xlink;
-	}
+    /**
+     * @param version
+     *            the version to set
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * @return the version
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * @param xmlns
+     *            the xmlns to set
+     */
+    public void setXmlns(String xmlns) {
+        this.xmlns = xmlns;
+    }
+
+    /**
+     * @return the xmlns
+     */
+    public String getXmlns() {
+        return xmlns;
+    }
+
+    /**
+     * @param xlink
+     *            the xlink to set
+     */
+    public void setXlink(String xlink) {
+        this.xlink = xlink;
+    }
+
+    /**
+     * @return the xlink
+     */
+    public String getXlink() {
+        return xlink;
+    }
 }

@@ -14,57 +14,59 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class PauseHandler {
 
-	final Lock lock = new ReentrantLock();
-	final Condition pause = lock.newCondition();
-	private boolean isPaused;
+    final Lock lock = new ReentrantLock();
 
-	// private AtomicBoolean isPaused = new AtomicBoolean(false);
-	public PauseHandler(boolean paused) {
-		this.isPaused = paused;
-	}
+    final Condition pause = lock.newCondition();
 
-	/**
-	 * 
-	 * @return false if was already paused.
-	 */
-	public void pause() {
-		isPaused = true;
-	}
+    private boolean isPaused;
 
-	public void resume() {
-		lock.lock();
-		try {
-			isPaused = false;
-			pause.signalAll();
-		} finally {
-			lock.unlock();
-		}
-	}
+    // private AtomicBoolean isPaused = new AtomicBoolean(false);
+    public PauseHandler(boolean paused) {
+        this.isPaused = paused;
+    }
 
-	public boolean isPaused() {
-		return isPaused;
+    /**
+     * 
+     * @return false if was already paused.
+     */
+    public void pause() {
+        isPaused = true;
+    }
 
-	}
+    public void resume() {
+        lock.lock();
+        try {
+            isPaused = false;
+            pause.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
 
-	/**
-	 * Blocking call: if paused, will block until a {@link resume()} is invoked. <BR>
-	 * Will not block if not paused.
-	 * 
-	 * @return true if the call blocked.
-	 */
-	public boolean waitUntilResumed() {
-		boolean wasBlocked = false;
-		while (isPaused) {
-			wasBlocked = true;
-			lock.lock();
-			try {
-				pause.await();
-			} catch (InterruptedException _) {
-			} finally {
-				lock.unlock();
-			}
-		}
+    public boolean isPaused() {
+        return isPaused;
 
-		return wasBlocked;
-	}
+    }
+
+    /**
+     * Blocking call: if paused, will block until a {@link resume()} is invoked. <BR>
+     * Will not block if not paused.
+     * 
+     * @return true if the call blocked.
+     */
+    public boolean waitUntilResumed() {
+        boolean wasBlocked = false;
+        while (isPaused) {
+            wasBlocked = true;
+            lock.lock();
+            try {
+                pause.await();
+            } catch (InterruptedException _) {
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        return wasBlocked;
+    }
 }

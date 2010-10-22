@@ -11,7 +11,7 @@ import java.util.EventListener;
  */
 public interface ListenerRegistry<EL extends EventListener> {
 
-	public void addListener(EL listener);
+    public void addListener(EL listener);
 
-	public void removeListener(EL listener);
+    public void removeListener(EL listener);
 }

@@ -26,17 +26,17 @@ import it.geosolutions.geobatch.catalog.Resource;
 
 public class BaseResource extends BaseIdentifiable implements Resource {
 
-	public BaseResource() {
-		super();
-	}
+    public BaseResource() {
+        super();
+    }
 
-	public BaseResource(String id, String name, String description) {
-		super(id, name, description);
-	}
+    public BaseResource(String id, String name, String description) {
+        super(id, name, description);
+    }
 
-	public void dispose() {
-		// TODO Auto-generated method stub
+    public void dispose() {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

@@ -34,125 +34,120 @@ import java.util.List;
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public abstract class BaseFlowConfiguration extends BaseConfiguration implements
-		FlowConfiguration {
+public abstract class BaseFlowConfiguration extends BaseConfiguration implements FlowConfiguration {
 
-	private EventGeneratorConfiguration eventGeneratorConfiguration;
+    private EventGeneratorConfiguration eventGeneratorConfiguration;
 
-	private EventConsumerConfiguration eventConsumerConfiguration;
+    private EventConsumerConfiguration eventConsumerConfiguration;
 
-	/**
-	 * These configurations can be recalled by name by any Action or Consumer
-	 * that will need them.
-	 */
-	private List<ProgressListenerConfiguration> progressListenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
+    /**
+     * These configurations can be recalled by name by any Action or Consumer that will need them.
+     */
+    private List<ProgressListenerConfiguration> progressListenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
 
-	private int corePoolSize;
+    private int corePoolSize;
 
-	private int maximumPoolSize;
+    private int maximumPoolSize;
 
-	private long keepAliveTime;
+    private long keepAliveTime;
 
-	private int workQueueSize;
+    private int workQueueSize;
 
-	public int getWorkQueueSize() {
-		return workQueueSize;
-	}
+    public int getWorkQueueSize() {
+        return workQueueSize;
+    }
 
-	public void setWorkQueueSize(int workQueueSize) {
-		this.workQueueSize = workQueueSize;
-	}
+    public void setWorkQueueSize(int workQueueSize) {
+        this.workQueueSize = workQueueSize;
+    }
 
-	public BaseFlowConfiguration(String id, String name,
-			EventGeneratorConfiguration eventGeneratorConfiguration,
-			String description,
-			EventConsumerConfiguration eventConsumerConfiguration) {
-		super(id, name, description);
-		this.eventGeneratorConfiguration = eventGeneratorConfiguration;
-		this.eventConsumerConfiguration = eventConsumerConfiguration;
-	}
+    public BaseFlowConfiguration(String id, String name,
+            EventGeneratorConfiguration eventGeneratorConfiguration, String description,
+            EventConsumerConfiguration eventConsumerConfiguration) {
+        super(id, name, description);
+        this.eventGeneratorConfiguration = eventGeneratorConfiguration;
+        this.eventConsumerConfiguration = eventConsumerConfiguration;
+    }
 
-	public BaseFlowConfiguration() {
-		super();
-	}
+    public BaseFlowConfiguration() {
+        super();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see it.geosolutions.geobatch.catalog.FlowManagerDescriptor#getRuleSet()
-	 */
-	public EventGeneratorConfiguration getEventGeneratorConfiguration() {
-		return eventGeneratorConfiguration;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.FlowManagerDescriptor#getRuleSet()
+     */
+    public EventGeneratorConfiguration getEventGeneratorConfiguration() {
+        return eventGeneratorConfiguration;
+    }
 
-	/**
-	 * @param eventGeneratorConfiguration
-	 *            the eventGeneratorConfiguration to set
-	 */
-	public void setEventGeneratorConfiguration(
-			EventGeneratorConfiguration eventGeneratorConfiguration) {
-		this.eventGeneratorConfiguration = eventGeneratorConfiguration;
-	}
+    /**
+     * @param eventGeneratorConfiguration
+     *            the eventGeneratorConfiguration to set
+     */
+    public void setEventGeneratorConfiguration(
+            EventGeneratorConfiguration eventGeneratorConfiguration) {
+        this.eventGeneratorConfiguration = eventGeneratorConfiguration;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return getId();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return getId();
+    }
 
-	public EventConsumerConfiguration getEventConsumerConfiguration() {
-		return eventConsumerConfiguration;
-	}
+    public EventConsumerConfiguration getEventConsumerConfiguration() {
+        return eventConsumerConfiguration;
+    }
 
-	public void setEventConsumerConfiguration(
-			EventConsumerConfiguration eventConsumerConfiguration) {
-		this.eventConsumerConfiguration = eventConsumerConfiguration;
+    public void setEventConsumerConfiguration(EventConsumerConfiguration eventConsumerConfiguration) {
+        this.eventConsumerConfiguration = eventConsumerConfiguration;
 
-	}
+    }
 
-	public List<ProgressListenerConfiguration> getProgressListenerConfigurations() {
-		return progressListenerConfigurations;
-	}
+    public List<ProgressListenerConfiguration> getProgressListenerConfigurations() {
+        return progressListenerConfigurations;
+    }
 
-	public void setProgressListenerConfigurations(
-			List<ProgressListenerConfiguration> progressListenerConfigurations) {
-		this.progressListenerConfigurations = progressListenerConfigurations;
-	}
+    public void setProgressListenerConfigurations(
+            List<ProgressListenerConfiguration> progressListenerConfigurations) {
+        this.progressListenerConfigurations = progressListenerConfigurations;
+    }
 
-	public ProgressListenerConfiguration getProgressListenerConfiguration(
-			String id) {
-		for (ProgressListenerConfiguration progressListenerConfiguration : progressListenerConfigurations) {
-			if (id.equals(progressListenerConfiguration.getId()))
-				return progressListenerConfiguration;
-		}
-		return null;
-	}
+    public ProgressListenerConfiguration getProgressListenerConfiguration(String id) {
+        for (ProgressListenerConfiguration progressListenerConfiguration : progressListenerConfigurations) {
+            if (id.equals(progressListenerConfiguration.getId()))
+                return progressListenerConfiguration;
+        }
+        return null;
+    }
 
-	public int getCorePoolSize() {
-		return corePoolSize;
-	}
+    public int getCorePoolSize() {
+        return corePoolSize;
+    }
 
-	public void setCorePoolSize(int corePoolSize) {
-		this.corePoolSize = corePoolSize;
-	}
+    public void setCorePoolSize(int corePoolSize) {
+        this.corePoolSize = corePoolSize;
+    }
 
-	public int getMaximumPoolSize() {
-		return maximumPoolSize;
-	}
+    public int getMaximumPoolSize() {
+        return maximumPoolSize;
+    }
 
-	public void setMaximumPoolSize(int maximumPoolSize) {
-		this.maximumPoolSize = maximumPoolSize;
-	}
+    public void setMaximumPoolSize(int maximumPoolSize) {
+        this.maximumPoolSize = maximumPoolSize;
+    }
 
-	public long getKeepAliveTime() {
-		return keepAliveTime;
-	}
+    public long getKeepAliveTime() {
+        return keepAliveTime;
+    }
 
-	public void setKeepAliveTime(long keepAliveTime) {
-		this.keepAliveTime = keepAliveTime;
-	}
+    public void setKeepAliveTime(long keepAliveTime) {
+        this.keepAliveTime = keepAliveTime;
+    }
 }

@@ -33,19 +33,18 @@ import java.util.EventObject;
  * 
  * @author AlFa
  * 
- * @version $ ImageMosaicConfiguratorService.java $ Revision: 0.1 $ 12/feb/07
- *          12:07:32
+ * @version $ ImageMosaicConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
  */
 public abstract class ImageMosaicConfiguratorService<T extends EventObject, C extends ActionConfiguration>
-		extends BaseService implements ActionService<T, C> {
+        extends BaseService implements ActionService<T, C> {
 
-	public ImageMosaicConfiguratorService() {
-		super(true);
-	}
+    public ImageMosaicConfiguratorService() {
+        super(true);
+    }
 
-	public boolean canCreateAction(C configuration) {
-		// XXX ImPLEMENT ME
-		return true;
-	}
+    public boolean canCreateAction(C configuration) {
+        // XXX ImPLEMENT ME
+        return true;
+    }
 
 }

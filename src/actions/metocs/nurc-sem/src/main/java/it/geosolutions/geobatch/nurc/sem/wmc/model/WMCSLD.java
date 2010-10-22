@@ -34,28 +34,28 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  * 
  */
 public class WMCSLD {
-	private WMCOnlineResource onlineResource;
+    private WMCOnlineResource onlineResource;
 
-	/**
-	 * @param onlineResource
-	 */
-	public WMCSLD(WMCOnlineResource onlineResource) {
-		this.setOnlineResource(onlineResource);
-	}
+    /**
+     * @param onlineResource
+     */
+    public WMCSLD(WMCOnlineResource onlineResource) {
+        this.setOnlineResource(onlineResource);
+    }
 
-	/**
-	 * @param onlineResource
-	 *            the onlineResource to set
-	 */
-	public void setOnlineResource(WMCOnlineResource onlineResource) {
-		this.onlineResource = onlineResource;
-	}
+    /**
+     * @param onlineResource
+     *            the onlineResource to set
+     */
+    public void setOnlineResource(WMCOnlineResource onlineResource) {
+        this.onlineResource = onlineResource;
+    }
 
-	/**
-	 * @return the onlineResource
-	 */
-	public WMCOnlineResource getOnlineResource() {
-		return onlineResource;
-	}
+    /**
+     * @return the onlineResource
+     */
+    public WMCOnlineResource getOnlineResource() {
+        return onlineResource;
+    }
 
 }

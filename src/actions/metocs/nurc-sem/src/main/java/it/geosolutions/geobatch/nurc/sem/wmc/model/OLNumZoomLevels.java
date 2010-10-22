@@ -35,8 +35,8 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLNumZoomLevels extends OLBaseClass {
 
-	public OLNumZoomLevels(String content) {
-		super(content);
-	}
+    public OLNumZoomLevels(String content) {
+        super(content);
+    }
 
 }

@@ -61,59 +61,51 @@ import org.junit.Test;
  */
 public class WMCStreamingTest {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(WMCStreamingTest.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(WMCStreamingTest.class.toString());
 
-	@Test
-	public void testWMCStreamingOut() throws IOException, InterruptedException {
-		/**
-		 * creating objects ...
-		 */
-		ViewContext viewContext = new ViewContext("tstWMC", "1.0.0");
-		WMCWindow window = new WMCWindow(331, 560);
-		GeneralWMCConfiguration generalConfig = new GeneralWMCConfiguration(
-				window, "Prova", "prova");
-		WMCBoundingBox bbox = new WMCBoundingBox("EPSG:4326", -180.0, -90.0,
-				180.0, 90.0);
+    @Test
+    public void testWMCStreamingOut() throws IOException, InterruptedException {
+        /**
+         * creating objects ...
+         */
+        ViewContext viewContext = new ViewContext("tstWMC", "1.0.0");
+        WMCWindow window = new WMCWindow(331, 560);
+        GeneralWMCConfiguration generalConfig = new GeneralWMCConfiguration(window, "Prova",
+                "prova");
+        WMCBoundingBox bbox = new WMCBoundingBox("EPSG:4326", -180.0, -90.0, 180.0, 90.0);
 
-		List<WMCLayer> layerList = new ArrayList<WMCLayer>();
+        List<WMCLayer> layerList = new ArrayList<WMCLayer>();
 
-		WMCLayer testLayer = new WMCLayer("0", "1", "nurc:testLayer",
-				"Test Layer", "EPSG:4326");
-		WMCServer server = new WMCServer("wms", "1.1.1", "wms");
-		List<WMCFormat> formatList = new ArrayList<WMCFormat>();
-		List<WMCStyle> styleList = new ArrayList<WMCStyle>();
-		WMCExtension extension = new WMCExtension();
-		extension.setId(new OLLayerID("observations"));
-		extension.setMaxExtent(new OLMaxExtent(null));
-		extension.setIsBaseLayer(new OLIsBaseLayer("TRUE"));
-		extension.setSingleTile(new OLSingleTile("FALSE"));
-		extension.setTransparent(new OLTransparent("FALSE"));
-		extension.setTime(new OLDimension("0000-00-00T00:00:000Z", "TIME",
-				"current"));
-		extension.setElevation(new OLDimension("0.0,10.0", "ELEVATION", "0.0"));
+        WMCLayer testLayer = new WMCLayer("0", "1", "nurc:testLayer", "Test Layer", "EPSG:4326");
+        WMCServer server = new WMCServer("wms", "1.1.1", "wms");
+        List<WMCFormat> formatList = new ArrayList<WMCFormat>();
+        List<WMCStyle> styleList = new ArrayList<WMCStyle>();
+        WMCExtension extension = new WMCExtension();
+        extension.setId(new OLLayerID("observations"));
+        extension.setMaxExtent(new OLMaxExtent(null));
+        extension.setIsBaseLayer(new OLIsBaseLayer("TRUE"));
+        extension.setSingleTile(new OLSingleTile("FALSE"));
+        extension.setTransparent(new OLTransparent("FALSE"));
+        extension.setTime(new OLDimension("0000-00-00T00:00:000Z", "TIME", "current"));
+        extension.setElevation(new OLDimension("0.0,10.0", "ELEVATION", "0.0"));
 
-		formatList.add(new WMCFormat("1", "image/png"));
-		styleList
-				.add(new WMCStyle(
-						"1",
-						new WMCSLD(
-								new WMCOnlineResource("simple",
-										"http://localhost:8081/NurcCruises/resources/xml/SLDDefault.xml"))));
+        formatList.add(new WMCFormat("1", "image/png"));
+        styleList.add(new WMCStyle("1", new WMCSLD(new WMCOnlineResource("simple",
+                "http://localhost:8081/NurcCruises/resources/xml/SLDDefault.xml"))));
 
-		server.setOnlineResource(new WMCOnlineResource("simple",
-				"http://localhost:8081/geoserver/wms"));
-		testLayer.setServer(server);
-		testLayer.setFormatList(formatList);
-		testLayer.setStyleList(styleList);
-		testLayer.setExtension(extension);
+        server.setOnlineResource(new WMCOnlineResource("simple",
+                "http://localhost:8081/geoserver/wms"));
+        testLayer.setServer(server);
+        testLayer.setFormatList(formatList);
+        testLayer.setStyleList(styleList);
+        testLayer.setExtension(extension);
 
-		layerList.add(testLayer);
+        layerList.add(testLayer);
 
-		window.setBbox(bbox);
-		viewContext.setGeneral(generalConfig);
-		viewContext.setLayerList(layerList);
+        window.setBbox(bbox);
+        viewContext.setGeneral(generalConfig);
+        viewContext.setLayerList(layerList);
 
-		new WMCStream().toXML(viewContext, System.out);
-	}
+        new WMCStream().toXML(viewContext, System.out);
+    }
 }

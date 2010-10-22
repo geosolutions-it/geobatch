@@ -34,35 +34,33 @@ import java.util.logging.Logger;
  * 
  */
 public class WMCGeneratorService extends BaseService implements
-		ActionService<FileSystemMonitorEvent, WMCActionConfiguration> {
+        ActionService<FileSystemMonitorEvent, WMCActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(WMCGeneratorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(WMCGeneratorService.class.toString());
 
-	private WMCGeneratorService() {
-		super(true);
-	}
+    private WMCGeneratorService() {
+        super(true);
+    }
 
-	/**
-	 * Action creator
-	 * 
-	 * @param configuration
-	 *            The data base action configuration
-	 * @return new JGSFLoDeSSSWANFileConfigurator()
-	 */
-	public WMCFileConfiguratorAction createAction(
-			WMCActionConfiguration configuration) {
-		try {
-			return new WMCFileConfiguratorAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Action creator
+     * 
+     * @param configuration
+     *            The data base action configuration
+     * @return new JGSFLoDeSSSWANFileConfigurator()
+     */
+    public WMCFileConfiguratorAction createAction(WMCActionConfiguration configuration) {
+        try {
+            return new WMCFileConfiguratorAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	public boolean canCreateAction(WMCActionConfiguration configuration) {
-		return true;
-	}
+    public boolean canCreateAction(WMCActionConfiguration configuration) {
+        return true;
+    }
 
 }

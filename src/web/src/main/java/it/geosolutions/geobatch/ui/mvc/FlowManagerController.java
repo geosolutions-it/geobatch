@@ -38,23 +38,20 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * 
  */
 public class FlowManagerController extends AbstractController {
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
-	 * (javax.servlet .http.HttpServletRequest,
-	 * javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
+     * (javax.servlet .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected ModelAndView handleRequestInternal(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
 
-		ModelAndView mav = new ModelAndView("flows");
-		mav.addObject("flowManagers", catalog
-				.getFlowManagers(FileBasedFlowManager.class));
+        ModelAndView mav = new ModelAndView("flows");
+        mav.addObject("flowManagers", catalog.getFlowManagers(FileBasedFlowManager.class));
 
-		return mav;
-	}
+        return mav;
+    }
 }

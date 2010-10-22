@@ -36,43 +36,42 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
  * Public class to generate HDF4-2-GeoTIFFs Services
  * 
  */
-public class HDF42GeoTIFFsGeneratorService
-		extends
-		RegistryConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
+public class HDF42GeoTIFFsGeneratorService extends
+        RegistryConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(HDF42GeoTIFFsGeneratorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(HDF42GeoTIFFsGeneratorService.class
+            .toString());
 
-	/**
-	 * Action creator
-	 * 
-	 * @param configuration
-	 *            The data base action configuration
-	 * @return new JGSFLoDeSSSWANFileConfigurator()
-	 */
-	public HDF42GeoTIFFsFileConfiguratorAction createAction(
-			GeoServerActionConfiguration configuration) {
-		try {
-			return new HDF42GeoTIFFsFileConfiguratorAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		} catch (NoSuchAuthorityCodeException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		} catch (FactoryException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Action creator
+     * 
+     * @param configuration
+     *            The data base action configuration
+     * @return new JGSFLoDeSSSWANFileConfigurator()
+     */
+    public HDF42GeoTIFFsFileConfiguratorAction createAction(
+            GeoServerActionConfiguration configuration) {
+        try {
+            return new HDF42GeoTIFFsFileConfiguratorAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        } catch (NoSuchAuthorityCodeException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        } catch (FactoryException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	@Override
-	public boolean canCreateAction(GeoServerActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    @Override
+    public boolean canCreateAction(GeoServerActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

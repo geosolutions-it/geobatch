@@ -29,205 +29,203 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import org.geotools.utils.CoverageToolsConstants;
 
-public class GeoTiffOverviewsEmbedderConfiguration extends ActionConfiguration
-		implements Configuration {
+public class GeoTiffOverviewsEmbedderConfiguration extends ActionConfiguration implements
+        Configuration {
 
-	public GeoTiffOverviewsEmbedderConfiguration(String id, String name,
-			String description, boolean dirty) {
-		super(id, name, description, dirty);
-	}
+    public GeoTiffOverviewsEmbedderConfiguration(String id, String name, String description,
+            boolean dirty) {
+        super(id, name, description, dirty);
+    }
 
-	private long JAICapacity;
+    private long JAICapacity;
 
-	public long getJAICapacity() {
-		return JAICapacity;
-	}
+    public long getJAICapacity() {
+        return JAICapacity;
+    }
 
-	public void setJAICapacity(long JAICapacity) {
-		this.JAICapacity = JAICapacity;
-	}
+    public void setJAICapacity(long JAICapacity) {
+        this.JAICapacity = JAICapacity;
+    }
 
-	private String workingDirectory;
+    private String workingDirectory;
 
-	private double compressionRatio = CoverageToolsConstants.DEFAULT_COMPRESSION_RATIO;
+    private double compressionRatio = CoverageToolsConstants.DEFAULT_COMPRESSION_RATIO;
 
-	private String compressionScheme = CoverageToolsConstants.DEFAULT_COMPRESSION_SCHEME;
+    private String compressionScheme = CoverageToolsConstants.DEFAULT_COMPRESSION_SCHEME;
 
-	/** Downsampling step. */
-	private int downsampleStep;
+    /** Downsampling step. */
+    private int downsampleStep;
 
-	private int numSteps;
+    private int numSteps;
 
-	/** Scale algorithm. */
-	private String scaleAlgorithm;
+    /** Scale algorithm. */
+    private String scaleAlgorithm;
 
-	/** Tile height. */
-	private int tileH = -1;
+    /** Tile height. */
+    private int tileH = -1;
 
-	/** Tile width. */
-	private int tileW = -1;
+    /** Tile width. */
+    private int tileW = -1;
 
-	private String wildcardString = "*.*";
+    private String wildcardString = "*.*";
 
-	private boolean logNotification = true;
+    private boolean logNotification = true;
 
-	/**
-	 * 
-	 * Interpolation method used througout all the program.
-	 * 
-	 * @TODO make the interpolation method customizable from the user
-	 *       perpsective.
-	 * 
-	 */
-	private int interp = Interpolation.INTERP_NEAREST;
+    /**
+     * 
+     * Interpolation method used througout all the program.
+     * 
+     * @TODO make the interpolation method customizable from the user perpsective.
+     * 
+     */
+    private int interp = Interpolation.INTERP_NEAREST;
 
-	private String serviceID;
+    private String serviceID;
 
-	public GeoTiffOverviewsEmbedderConfiguration() {
-		super();
-	}
+    public GeoTiffOverviewsEmbedderConfiguration() {
+        super();
+    }
 
-	/**
-	 * @return the workingDirectory
-	 */
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
+    /**
+     * @return the workingDirectory
+     */
+    public String getWorkingDirectory() {
+        return workingDirectory;
+    }
 
-	/**
-	 * @param workingDirectory
-	 *            the workingDirectory to set
-	 */
-	public void setWorkingDirectory(String workingDirectory) {
-		this.workingDirectory = workingDirectory;
-	}
+    /**
+     * @param workingDirectory
+     *            the workingDirectory to set
+     */
+    public void setWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
 
-	public final double getCompressionRatio() {
-		return compressionRatio;
-	}
+    public final double getCompressionRatio() {
+        return compressionRatio;
+    }
 
-	public final String getCompressionScheme() {
-		return compressionScheme;
-	}
+    public final String getCompressionScheme() {
+        return compressionScheme;
+    }
 
-	public int getDownsampleStep() {
-		return downsampleStep;
-	}
+    public int getDownsampleStep() {
+        return downsampleStep;
+    }
 
-	public String getScaleAlgorithm() {
-		return scaleAlgorithm;
-	}
+    public String getScaleAlgorithm() {
+        return scaleAlgorithm;
+    }
 
-	public int getTileH() {
-		return tileH;
-	}
+    public int getTileH() {
+        return tileH;
+    }
 
-	public int getTileW() {
-		return tileW;
-	}
+    public int getTileW() {
+        return tileW;
+    }
 
-	public void setCompressionRatio(double compressionRatio) {
-		this.compressionRatio = compressionRatio;
-	}
+    public void setCompressionRatio(double compressionRatio) {
+        this.compressionRatio = compressionRatio;
+    }
 
-	public void setCompressionScheme(String compressionScheme) {
-		this.compressionScheme = compressionScheme;
-	}
+    public void setCompressionScheme(String compressionScheme) {
+        this.compressionScheme = compressionScheme;
+    }
 
-	public void setDownsampleStep(int downsampleWH) {
-		this.downsampleStep = downsampleWH;
-	}
+    public void setDownsampleStep(int downsampleWH) {
+        this.downsampleStep = downsampleWH;
+    }
 
-	public void setScaleAlgorithm(String scaleAlgorithm) {
-		this.scaleAlgorithm = scaleAlgorithm;
-	}
+    public void setScaleAlgorithm(String scaleAlgorithm) {
+        this.scaleAlgorithm = scaleAlgorithm;
+    }
 
-	public void setTileH(int tileH) {
-		this.tileH = tileH;
-	}
+    public void setTileH(int tileH) {
+        this.tileH = tileH;
+    }
 
-	public void setTileW(int tileW) {
-		this.tileW = tileW;
-	}
+    public void setTileW(int tileW) {
+        this.tileW = tileW;
+    }
 
-	public int getNumSteps() {
-		return numSteps;
-	}
+    public int getNumSteps() {
+        return numSteps;
+    }
 
-	public void setNumSteps(int numSteps) {
-		this.numSteps = numSteps;
-	}
+    public void setNumSteps(int numSteps) {
+        this.numSteps = numSteps;
+    }
 
-	public String getWildcardString() {
-		return wildcardString;
-	}
+    public String getWildcardString() {
+        return wildcardString;
+    }
 
-	public void setWildcardString(String wildcardString) {
-		this.wildcardString = wildcardString;
-	}
+    public void setWildcardString(String wildcardString) {
+        this.wildcardString = wildcardString;
+    }
 
-	public int getInterp() {
-		return interp;
-	}
+    public int getInterp() {
+        return interp;
+    }
 
-	public void setInterp(int interp) {
-		this.interp = interp;
-	}
+    public void setInterp(int interp) {
+        this.interp = interp;
+    }
 
-	public boolean isLogNotification() {
-		return logNotification;
-	}
+    public boolean isLogNotification() {
+        return logNotification;
+    }
 
-	public void setLogNotification(boolean logNotification) {
-		this.logNotification = logNotification;
-	}
+    public void setLogNotification(boolean logNotification) {
+        this.logNotification = logNotification;
+    }
 
-	/**
-	 * @return the serviceID
-	 */
-	public String getServiceID() {
-		return serviceID;
-	}
+    /**
+     * @return the serviceID
+     */
+    public String getServiceID() {
+        return serviceID;
+    }
 
-	/**
-	 * @param serviceID
-	 *            the serviceID to set
-	 */
-	public void setServiceID(String serviceID) {
-		this.serviceID = serviceID;
-	}
+    /**
+     * @param serviceID
+     *            the serviceID to set
+     */
+    public void setServiceID(String serviceID) {
+        this.serviceID = serviceID;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + "id:" + getId() + ", name:"
-				+ getName() + ", wxh:" + getTileW() + "x" + getTileH()
-				+ ", stp:" + getNumSteps() + "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + "id:" + getId() + ", name:" + getName()
+                + ", wxh:" + getTileW() + "x" + getTileH() + ", stp:" + getNumSteps() + "]";
+    }
 
-	@Override
-	public GeoTiffOverviewsEmbedderConfiguration clone() { // throws
-															// CloneNotSupportedException
-															// {
-	// final GeoTiffOverviewsEmbedderConfiguration configuration=
-	// new
-	// GeoTiffOverviewsEmbedderConfiguration(getId(),getName(),getDescription(),isDirty());
-		final GeoTiffOverviewsEmbedderConfiguration configuration = (GeoTiffOverviewsEmbedderConfiguration) super
-				.clone();
+    @Override
+    public GeoTiffOverviewsEmbedderConfiguration clone() { // throws
+        // CloneNotSupportedException
+        // {
+        // final GeoTiffOverviewsEmbedderConfiguration configuration=
+        // new
+        // GeoTiffOverviewsEmbedderConfiguration(getId(),getName(),getDescription(),isDirty());
+        final GeoTiffOverviewsEmbedderConfiguration configuration = (GeoTiffOverviewsEmbedderConfiguration) super
+                .clone();
 
-		configuration.setCompressionRatio(compressionRatio);
-		configuration.setCompressionScheme(compressionScheme);
-		configuration.setDownsampleStep(downsampleStep);
-		configuration.setInterp(interp);
-		configuration.setJAICapacity(JAICapacity);
-		configuration.setNumSteps(numSteps);
-		configuration.setScaleAlgorithm(scaleAlgorithm);
-		configuration.setTileH(tileH);
-		configuration.setTileW(tileW);
-		configuration.setWildcardString(wildcardString);
-		configuration.setWorkingDirectory(workingDirectory);
-		// configuration.setServiceID(serviceID);
-		configuration.setLogNotification(logNotification);
+        configuration.setCompressionRatio(compressionRatio);
+        configuration.setCompressionScheme(compressionScheme);
+        configuration.setDownsampleStep(downsampleStep);
+        configuration.setInterp(interp);
+        configuration.setJAICapacity(JAICapacity);
+        configuration.setNumSteps(numSteps);
+        configuration.setScaleAlgorithm(scaleAlgorithm);
+        configuration.setTileH(tileH);
+        configuration.setTileW(tileW);
+        configuration.setWildcardString(wildcardString);
+        configuration.setWorkingDirectory(workingDirectory);
+        // configuration.setServiceID(serviceID);
+        configuration.setLogNotification(logNotification);
 
-		return configuration;
-	}
+        return configuration;
+    }
 }

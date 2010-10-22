@@ -30,201 +30,199 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
  * @author Daniele Romagnoli, GeoSolutions SAS
  * 
  */
-public class WMCActionConfiguration extends ActionConfiguration implements
-		Configuration {
+public class WMCActionConfiguration extends ActionConfiguration implements Configuration {
 
-	private String workingDirectory;
+    private String workingDirectory;
 
-	private String crs;
+    private String crs;
 
-	private String boundingBox;
+    private String boundingBox;
 
-	private String geoserverURL;
+    private String geoserverURL;
 
-	private String width;
+    private String width;
 
-	private String height;
+    private String height;
 
-	private String baseLayerId;
+    private String baseLayerId;
 
-	private String baseLayerURL;
+    private String baseLayerURL;
 
-	private String baseLayerTitle;
+    private String baseLayerTitle;
 
-	private String baseLayerFormat;
+    private String baseLayerFormat;
 
-	private String outputDirectory;
+    private String outputDirectory;
 
-	public WMCActionConfiguration(String id, String name, String description,
-			boolean dirty) {
-		super(id, name, description, dirty);
-	}
+    public WMCActionConfiguration(String id, String name, String description, boolean dirty) {
+        super(id, name, description, dirty);
+    }
 
-	public WMCActionConfiguration() {
-		super();
-	}
+    public WMCActionConfiguration() {
+        super();
+    }
 
-	/**
-	 * @return the workingDirectory
-	 */
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
+    /**
+     * @return the workingDirectory
+     */
+    public String getWorkingDirectory() {
+        return workingDirectory;
+    }
 
-	/**
-	 * @param workingDirectory
-	 *            the workingDirectory to set
-	 */
-	public void setWorkingDirectory(final String workingDirectory) {
-		this.workingDirectory = workingDirectory;
-	}
+    /**
+     * @param workingDirectory
+     *            the workingDirectory to set
+     */
+    public void setWorkingDirectory(final String workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
 
-	public String getCrs() {
-		return crs;
-	}
+    public String getCrs() {
+        return crs;
+    }
 
-	public void setCrs(String crs) {
-		this.crs = crs;
-	}
+    public void setCrs(String crs) {
+        this.crs = crs;
+    }
 
-	public String getBoundingBox() {
-		return boundingBox;
-	}
+    public String getBoundingBox() {
+        return boundingBox;
+    }
 
-	public void setBoundingBox(String boundingBox) {
-		this.boundingBox = boundingBox;
-	}
+    public void setBoundingBox(String boundingBox) {
+        this.boundingBox = boundingBox;
+    }
 
-	public String getGeoserverURL() {
-		return geoserverURL;
-	}
+    public String getGeoserverURL() {
+        return geoserverURL;
+    }
 
-	public void setGeoserverURL(String geoserverURL) {
-		this.geoserverURL = geoserverURL;
-	}
+    public void setGeoserverURL(String geoserverURL) {
+        this.geoserverURL = geoserverURL;
+    }
 
-	@Override
-	public ActionConfiguration clone() {
-		final WMCActionConfiguration configuration = new WMCActionConfiguration(
-				getId(), getName(), getDescription(), isDirty());
-		configuration.setServiceID(getServiceID());
-		configuration.setWorkingDirectory(workingDirectory);
-		configuration.setBoundingBox(boundingBox);
-		configuration.setCrs(crs);
-		configuration.setGeoserverURL(geoserverURL);
-		configuration.setWidth(width);
-		configuration.setHeight(height);
-		configuration.setBaseLayerFormat(baseLayerFormat);
-		configuration.setBaseLayerId(baseLayerId);
-		configuration.setBaseLayerTitle(baseLayerTitle);
-		configuration.setBaseLayerURL(baseLayerURL);
-		configuration.setOutputDirectory(outputDirectory);
-		return configuration;
-	}
+    @Override
+    public ActionConfiguration clone() {
+        final WMCActionConfiguration configuration = new WMCActionConfiguration(getId(), getName(),
+                getDescription(), isDirty());
+        configuration.setServiceID(getServiceID());
+        configuration.setWorkingDirectory(workingDirectory);
+        configuration.setBoundingBox(boundingBox);
+        configuration.setCrs(crs);
+        configuration.setGeoserverURL(geoserverURL);
+        configuration.setWidth(width);
+        configuration.setHeight(height);
+        configuration.setBaseLayerFormat(baseLayerFormat);
+        configuration.setBaseLayerId(baseLayerId);
+        configuration.setBaseLayerTitle(baseLayerTitle);
+        configuration.setBaseLayerURL(baseLayerURL);
+        configuration.setOutputDirectory(outputDirectory);
+        return configuration;
+    }
 
-	/**
-	 * @param width
-	 *            the width to set
-	 */
-	public void setWidth(String width) {
-		this.width = width;
-	}
+    /**
+     * @param width
+     *            the width to set
+     */
+    public void setWidth(String width) {
+        this.width = width;
+    }
 
-	/**
-	 * @return the width
-	 */
-	public String getWidth() {
-		return width;
-	}
+    /**
+     * @return the width
+     */
+    public String getWidth() {
+        return width;
+    }
 
-	/**
-	 * @param height
-	 *            the height to set
-	 */
-	public void setHeight(String height) {
-		this.height = height;
-	}
+    /**
+     * @param height
+     *            the height to set
+     */
+    public void setHeight(String height) {
+        this.height = height;
+    }
 
-	/**
-	 * @return the height
-	 */
-	public String getHeight() {
-		return height;
-	}
+    /**
+     * @return the height
+     */
+    public String getHeight() {
+        return height;
+    }
 
-	/**
-	 * @param baseLayerId
-	 *            the baseLayerId to set
-	 */
-	public void setBaseLayerId(String baseLayerId) {
-		this.baseLayerId = baseLayerId;
-	}
+    /**
+     * @param baseLayerId
+     *            the baseLayerId to set
+     */
+    public void setBaseLayerId(String baseLayerId) {
+        this.baseLayerId = baseLayerId;
+    }
 
-	/**
-	 * @return the baseLayerId
-	 */
-	public String getBaseLayerId() {
-		return baseLayerId;
-	}
+    /**
+     * @return the baseLayerId
+     */
+    public String getBaseLayerId() {
+        return baseLayerId;
+    }
 
-	/**
-	 * @param baseLayerURL
-	 *            the baseLayerURL to set
-	 */
-	public void setBaseLayerURL(String baseLayerURL) {
-		this.baseLayerURL = baseLayerURL;
-	}
+    /**
+     * @param baseLayerURL
+     *            the baseLayerURL to set
+     */
+    public void setBaseLayerURL(String baseLayerURL) {
+        this.baseLayerURL = baseLayerURL;
+    }
 
-	/**
-	 * @return the baseLayerURL
-	 */
-	public String getBaseLayerURL() {
-		return baseLayerURL;
-	}
+    /**
+     * @return the baseLayerURL
+     */
+    public String getBaseLayerURL() {
+        return baseLayerURL;
+    }
 
-	/**
-	 * @param baseLayerTitle
-	 *            the baseLayerTitle to set
-	 */
-	public void setBaseLayerTitle(String baseLayerTitle) {
-		this.baseLayerTitle = baseLayerTitle;
-	}
+    /**
+     * @param baseLayerTitle
+     *            the baseLayerTitle to set
+     */
+    public void setBaseLayerTitle(String baseLayerTitle) {
+        this.baseLayerTitle = baseLayerTitle;
+    }
 
-	/**
-	 * @return the baseLayerTitle
-	 */
-	public String getBaseLayerTitle() {
-		return baseLayerTitle;
-	}
+    /**
+     * @return the baseLayerTitle
+     */
+    public String getBaseLayerTitle() {
+        return baseLayerTitle;
+    }
 
-	/**
-	 * @param baseLayerFormat
-	 *            the baseLayerFormat to set
-	 */
-	public void setBaseLayerFormat(String baseLayerFormat) {
-		this.baseLayerFormat = baseLayerFormat;
-	}
+    /**
+     * @param baseLayerFormat
+     *            the baseLayerFormat to set
+     */
+    public void setBaseLayerFormat(String baseLayerFormat) {
+        this.baseLayerFormat = baseLayerFormat;
+    }
 
-	/**
-	 * @return the baseLayerFormat
-	 */
-	public String getBaseLayerFormat() {
-		return baseLayerFormat;
-	}
+    /**
+     * @return the baseLayerFormat
+     */
+    public String getBaseLayerFormat() {
+        return baseLayerFormat;
+    }
 
-	/**
-	 * @param outputDirectory
-	 *            the outputDirectory to set
-	 */
-	public void setOutputDirectory(String outputDirectory) {
-		this.outputDirectory = outputDirectory;
-	}
+    /**
+     * @param outputDirectory
+     *            the outputDirectory to set
+     */
+    public void setOutputDirectory(String outputDirectory) {
+        this.outputDirectory = outputDirectory;
+    }
 
-	/**
-	 * @return the outputDirectory
-	 */
-	public String getOutputDirectory() {
-		return outputDirectory;
-	}
+    /**
+     * @return the outputDirectory
+     */
+    public String getOutputDirectory() {
+        return outputDirectory;
+    }
 
 }

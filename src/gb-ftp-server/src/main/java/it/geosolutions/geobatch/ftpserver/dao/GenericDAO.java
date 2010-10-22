@@ -37,15 +37,15 @@ import java.io.Serializable;
  */
 public interface GenericDAO<T, ID extends Serializable> {
 
-	public T findById(ID id, boolean lock) throws DAOException;
+    public T findById(ID id, boolean lock) throws DAOException;
 
-	// public List<T> findAll() throws DAOException;
-	//
-	// public List<T> findAll(int offset, int limit) throws DAOException;
+    // public List<T> findAll() throws DAOException;
+    //
+    // public List<T> findAll(int offset, int limit) throws DAOException;
 
-	public T makePersistent(T entity) throws DAOException;
+    public T makePersistent(T entity) throws DAOException;
 
-	public void makeTransient(T entity) throws DAOException;
+    public void makeTransient(T entity) throws DAOException;
 
-	public void lock(T entity) throws DAOException;
+    public void lock(T entity) throws DAOException;
 }

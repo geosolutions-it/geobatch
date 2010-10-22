@@ -8,35 +8,35 @@ import it.geosolutions.filesystemmonitor.OsType;
 import java.util.Map;
 
 /**
- * ServiceProviderInterface class for {@link ThreadedFileSystemMonitor}
- * implementations.
+ * ServiceProviderInterface class for {@link ThreadedFileSystemMonitor} implementations.
  * 
  * @author Simone Giannecchini
  * @since 0.2
  */
 public interface FileSystemMonitorSPI {
 
-	public final static String SOURCE = "source";
-	public final static String WILDCARD = "wildcard";
+    public final static String SOURCE = "source";
 
-	/**
-	 * Tells me if a certain implementation of this interface is able to run on
-	 * the specified operating system.
-	 * 
-	 * @param osType
-	 *            identfies an operating system.
-	 * @return <code>true</code> if this {@link FileSystemMonitor} runs on this
-	 *         operating system, <code>false</code> otherwise.
-	 */
-	public boolean canWatch(OsType osType);
+    public final static String WILDCARD = "wildcard";
 
-	/**
-	 * 
-	 * @return an instance of a {@link FileSystemMonitor}.
-	 * 
-	 */
-	public FileSystemMonitor createInstance(final Map<String, ?> configuration);
+    /**
+     * Tells me if a certain implementation of this interface is able to run on the specified
+     * operating system.
+     * 
+     * @param osType
+     *            identfies an operating system.
+     * @return <code>true</code> if this {@link FileSystemMonitor} runs on this operating system,
+     *         <code>false</code> otherwise.
+     */
+    public boolean canWatch(OsType osType);
 
-	public boolean isAvailable();
+    /**
+     * 
+     * @return an instance of a {@link FileSystemMonitor}.
+     * 
+     */
+    public FileSystemMonitor createInstance(final Map<String, ?> configuration);
+
+    public boolean isAvailable();
 
 }

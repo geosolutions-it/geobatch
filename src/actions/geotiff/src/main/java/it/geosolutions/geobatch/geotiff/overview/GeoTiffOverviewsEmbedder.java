@@ -47,109 +47,104 @@ import org.geotools.utils.progress.ProcessingEventListener;
  * 
  * @version $GeoTIFFOverviewsEmbedder.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
-public class GeoTiffOverviewsEmbedder extends
-		BaseAction<FileSystemMonitorEvent> implements
-		Action<FileSystemMonitorEvent> {
+public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemMonitorEvent> implements
+        Action<FileSystemMonitorEvent> {
 
-	private GeoTiffOverviewsEmbedderConfiguration configuration;
+    private GeoTiffOverviewsEmbedderConfiguration configuration;
 
-	private final static Logger LOGGER = Logger
-			.getLogger(GeoTiffOverviewsEmbedder.class.toString());
+    private final static Logger LOGGER = Logger
+            .getLogger(GeoTiffOverviewsEmbedder.class.toString());
 
-	public GeoTiffOverviewsEmbedder(
-			GeoTiffOverviewsEmbedderConfiguration configuration)
-			throws IOException {
-		super(configuration);
-		this.configuration = configuration;
-	}
+    public GeoTiffOverviewsEmbedder(GeoTiffOverviewsEmbedderConfiguration configuration)
+            throws IOException {
+        super(configuration);
+        this.configuration = configuration;
+    }
 
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+            throws ActionException {
 
-		listenerForwarder.setTask("config");
-		listenerForwarder.started();
+        listenerForwarder.setTask("config");
+        listenerForwarder.started();
 
-		try {
-			// looking for file
-			if (events.size() != 1)
-				throw new IllegalArgumentException(
-						"Wrong number of elements for this action: "
-								+ events.size());
+        try {
+            // looking for file
+            if (events.size() != 1)
+                throw new IllegalArgumentException("Wrong number of elements for this action: "
+                        + events.size());
 
-			// get the first event
-			final FileSystemMonitorEvent event = events.peek();
+            // get the first event
+            final FileSystemMonitorEvent event = events.peek();
 
-			// //
-			//
-			// data flow configuration and dataStore name must not be null.
-			//
-			// //
-			if (configuration == null) {
-				LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
-				throw new IllegalStateException("DataFlowConfig is null.");
-			}
+            // //
+            //
+            // data flow configuration and dataStore name must not be null.
+            //
+            // //
+            if (configuration == null) {
+                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+                throw new IllegalStateException("DataFlowConfig is null.");
+            }
 
-			// //
-			//
-			// check the configuration and prepare the overviews embedder
-			//
-			// //
-			int downsampleStep = configuration.getDownsampleStep();
-			if (downsampleStep <= 0)
-				throw new IllegalArgumentException("Illegal downsampleStep: "
-						+ downsampleStep);
-			final String inputFileName = event.getSource().getAbsolutePath();
-			int numberOfSteps = configuration.getNumSteps();
-			if (numberOfSteps <= 0)
-				throw new IllegalArgumentException("Illegal numberOfSteps: "
-						+ numberOfSteps);
+            // //
+            //
+            // check the configuration and prepare the overviews embedder
+            //
+            // //
+            int downsampleStep = configuration.getDownsampleStep();
+            if (downsampleStep <= 0)
+                throw new IllegalArgumentException("Illegal downsampleStep: " + downsampleStep);
+            final String inputFileName = event.getSource().getAbsolutePath();
+            int numberOfSteps = configuration.getNumSteps();
+            if (numberOfSteps <= 0)
+                throw new IllegalArgumentException("Illegal numberOfSteps: " + numberOfSteps);
 
-			final OverviewsEmbedder oe = new OverviewsEmbedder();
-			oe.setDownsampleStep(downsampleStep);
-			oe.setNumSteps(configuration.getNumSteps());
-			// oe.setInterp(Interpolation.getInstance(configuration.getInterp()));
-			oe.setScaleAlgorithm(configuration.getScaleAlgorithm());
-			oe.setTileHeight(configuration.getTileH());
-			oe.setTileWidth(configuration.getTileW());
-			oe.setSourcePath(inputFileName);
-			// oe.setTileCacheSize(configuration.getJAICapacity());
+            final OverviewsEmbedder oe = new OverviewsEmbedder();
+            oe.setDownsampleStep(downsampleStep);
+            oe.setNumSteps(configuration.getNumSteps());
+            // oe.setInterp(Interpolation.getInstance(configuration.getInterp()));
+            oe.setScaleAlgorithm(configuration.getScaleAlgorithm());
+            oe.setTileHeight(configuration.getTileH());
+            oe.setTileWidth(configuration.getTileW());
+            oe.setSourcePath(inputFileName);
+            // oe.setTileCacheSize(configuration.getJAICapacity());
 
-			// add logger/listener
-			if (configuration.isLogNotification())
-				oe.addProcessingEventListener(new ProcessingEventListener() {
+            // add logger/listener
+            if (configuration.isLogNotification())
+                oe.addProcessingEventListener(new ProcessingEventListener() {
 
-					public void exceptionOccurred(ExceptionEvent event) {
-						if (LOGGER.isLoggable(Level.SEVERE))
-							LOGGER.info(event.getMessage());
+                    public void exceptionOccurred(ExceptionEvent event) {
+                        if (LOGGER.isLoggable(Level.SEVERE))
+                            LOGGER.info(event.getMessage());
 
-					}
+                    }
 
-					public void getNotification(ProcessingEvent event) {
-						if (LOGGER.isLoggable(Level.SEVERE))
-							LOGGER.info(event.getMessage());
-						listenerForwarder.progressing((float) event
-								.getPercentage(), event.getMessage());
-					}
-				});
-			// run
+                    public void getNotification(ProcessingEvent event) {
+                        if (LOGGER.isLoggable(Level.SEVERE))
+                            LOGGER.info(event.getMessage());
+                        listenerForwarder.progressing((float) event.getPercentage(), event
+                                .getMessage());
+                    }
+                });
+            // run
 
-			listenerForwarder.progressing(0, "Embedding overviews");
-			oe.run();
+            listenerForwarder.progressing(0, "Embedding overviews");
+            oe.run();
 
-			listenerForwarder.setProgress(100);
-			listenerForwarder.completed();
-			return events;
-		} catch (Exception t) {
-			// if (LOGGER.isLoggable(Level.SEVERE))
-			// LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-			listenerForwarder.failed(t);
-			return null;
-		}
+            listenerForwarder.setProgress(100);
+            listenerForwarder.completed();
+            return events;
+        } catch (Exception t) {
+            // if (LOGGER.isLoggable(Level.SEVERE))
+            // LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            listenerForwarder.failed(t);
+            return null;
+        }
 
-	}
+    }
 
-	public ActionConfiguration getConfiguration() {
-		return configuration;
-	}
+    public ActionConfiguration getConfiguration() {
+        return configuration;
+    }
 
 }

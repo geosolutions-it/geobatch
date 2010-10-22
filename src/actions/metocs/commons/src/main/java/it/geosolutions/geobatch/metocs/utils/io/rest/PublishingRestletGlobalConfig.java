@@ -44,42 +44,41 @@ import java.util.logging.Logger;
  */
 public final class PublishingRestletGlobalConfig {
 
-	private static final Logger LOGGER = Logger
-			.getLogger(PublishingRestletGlobalConfig.class.toString());
+    private static final Logger LOGGER = Logger.getLogger(PublishingRestletGlobalConfig.class
+            .toString());
 
-	private static String rootDirectory;
+    private static String rootDirectory;
 
-	public PublishingRestletGlobalConfig(String rootDirectory) {
-		this.rootDirectory = rootDirectory;
-	}
+    public PublishingRestletGlobalConfig(String rootDirectory) {
+        this.rootDirectory = rootDirectory;
+    }
 
-	public static String getRootDirectory() {
-		return rootDirectory;
-	}
+    public static String getRootDirectory() {
+        return rootDirectory;
+    }
 
-	public void setRootDirectory(String rootDirectory) {
-		this.rootDirectory = rootDirectory;
-	}
+    public void setRootDirectory(String rootDirectory) {
+        this.rootDirectory = rootDirectory;
+    }
 
-	public void init() throws Exception {
-		File workingDir = null;
-		try {
-			workingDir = IOUtils.findLocation(rootDirectory, new File(
-					((FileBaseCatalog) CatalogHolder.getCatalog())
-							.getBaseDirectory()));
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.SEVERE))
-				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			throw new IllegalArgumentException(
-					"Unable to work with the provided working directory:"
-							+ (workingDir != null ? workingDir : ""));
-		}
-		if (workingDir == null || !workingDir.exists() || !workingDir.canRead()
-				|| !workingDir.isDirectory())
-			throw new IllegalArgumentException(
-					"Unable to work with the provided working directory:"
-							+ (workingDir != null ? workingDir : ""));
-		rootDirectory = workingDir.getAbsolutePath();
-	}
+    public void init() throws Exception {
+        File workingDir = null;
+        try {
+            workingDir = IOUtils.findLocation(rootDirectory, new File(
+                    ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            throw new IllegalArgumentException(
+                    "Unable to work with the provided working directory:"
+                            + (workingDir != null ? workingDir : ""));
+        }
+        if (workingDir == null || !workingDir.exists() || !workingDir.canRead()
+                || !workingDir.isDirectory())
+            throw new IllegalArgumentException(
+                    "Unable to work with the provided working directory:"
+                            + (workingDir != null ? workingDir : ""));
+        rootDirectory = workingDir.getAbsolutePath();
+    }
 
 }

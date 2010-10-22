@@ -29,15 +29,15 @@ import it.geosolutions.geobatch.flow.event.action.ActionService;
 import java.util.EventObject;
 
 public abstract class GeoWebCacheConfiguratorService<T extends EventObject, C extends ActionConfiguration>
-		extends BaseService implements ActionService<T, C> {
+        extends BaseService implements ActionService<T, C> {
 
-	public GeoWebCacheConfiguratorService() {
-		super(true);
-	}
+    public GeoWebCacheConfiguratorService() {
+        super(true);
+    }
 
-	public boolean canCreateAction(C configuration) {
-		// XXX ImPLEMENT ME
-		return true;
-	}
+    public boolean canCreateAction(C configuration) {
+        // XXX ImPLEMENT ME
+        return true;
+    }
 
 }

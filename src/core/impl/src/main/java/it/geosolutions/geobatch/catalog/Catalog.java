@@ -33,8 +33,8 @@ import java.util.EventObject;
 import java.util.List;
 
 /**
- * The GeoBatch catalog which provides access to meta information about the Flow
- * BaseEventConsumer Types and Flow Managers.
+ * The GeoBatch catalog which provides access to meta information about the Flow BaseEventConsumer
+ * Types and Flow Managers.
  * <p>
  * The following types of metadata are stored:
  * <ul>
@@ -47,64 +47,61 @@ import java.util.List;
  * @author Simone Giannecchini, GeoSolutions
  */
 public interface Catalog extends PersistentResource<CatalogConfiguration> {
-	/**
-	 * Adds a new resource.
-	 */
-	<EO extends EventObject, FC extends FlowConfiguration> void add(
-			FlowManager<EO, FC> resource);
+    /**
+     * Adds a new resource.
+     */
+    <EO extends EventObject, FC extends FlowConfiguration> void add(FlowManager<EO, FC> resource);
 
-	<EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> List<FM> getFlowManagers(
-			Class<FM> clazz);
+    <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> List<FM> getFlowManagers(
+            Class<FM> clazz);
 
-	<EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> FM getFlowManager(
-			String id, Class<FM> clazz);
+    <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> FM getFlowManager(
+            String id, Class<FM> clazz);
 
-	<EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> FM getFlowManagerByName(
-			String name, Class<FM> clazz);
+    <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> FM getFlowManagerByName(
+            String name, Class<FM> clazz);
 
-	<R extends Resource> R getResource(String id, Class<R> clazz);
+    <R extends Resource> R getResource(String id, Class<R> clazz);
 
-	<R extends Resource> R getResourceByName(String name, Class<R> clazz);
+    <R extends Resource> R getResourceByName(String name, Class<R> clazz);
 
-	<R extends Resource> List<R> getResources(Class<R> clazz);
+    <R extends Resource> List<R> getResources(Class<R> clazz);
 
-	<R extends Resource> void add(R resource);
+    <R extends Resource> void add(R resource);
 
-	/**
-	 * Removes an existing resource.
-	 */
-	<EO extends EventObject, FC extends FlowConfiguration> void remove(
-			FlowManager<EO, FC> resource);
+    /**
+     * Removes an existing resource.
+     */
+    <EO extends EventObject, FC extends FlowConfiguration> void remove(FlowManager<EO, FC> resource);
 
-	/**
-	 * Saves a resource which has been modified.
-	 */
-	<E extends EventObject, FC extends FlowConfiguration> void save(
-			FlowManager<E, FC> resource);
+    /**
+     * Saves a resource which has been modified.
+     */
+    <E extends EventObject, FC extends FlowConfiguration> void save(FlowManager<E, FC> resource);
 
-	<C extends Configuration> void setDAO(DAO<C, ?> dao);
+    <C extends Configuration> void setDAO(DAO<C, ?> dao);
 
-	<C extends Configuration> DAO<C, ?> getDAO();
+    <C extends Configuration> DAO<C, ?> getDAO();
 
-	/**
-	 * catalog listeners.
-	 * 
-	 */
-	Collection<CatalogListener> getListeners();
+    /**
+     * catalog listeners.
+     * 
+     */
+    Collection<CatalogListener> getListeners();
 
-	/**
-	 * Adds a listener to the catalog.
-	 */
-	void addListener(CatalogListener listener);
+    /**
+     * Adds a listener to the catalog.
+     */
+    void addListener(CatalogListener listener);
 
-	/**
-	 * Removes a listener from the catalog.
-	 */
-	void removeListener(CatalogListener listener);
+    /**
+     * Removes a listener from the catalog.
+     */
+    void removeListener(CatalogListener listener);
 
-	/**
-	 * Disposes the catalog, freeing up any resources.
-	 */
-	void dispose();
+    /**
+     * Disposes the catalog, freeing up any resources.
+     */
+    void dispose();
 
 }

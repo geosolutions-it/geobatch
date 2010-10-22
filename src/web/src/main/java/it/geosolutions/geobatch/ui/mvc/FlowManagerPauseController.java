@@ -38,36 +38,32 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * 
  */
 public class FlowManagerPauseController extends AbstractController {
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
-	 * (javax.servlet .http.HttpServletRequest,
-	 * javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
+     * (javax.servlet .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected ModelAndView handleRequestInternal(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
 
-		String fmId = request.getParameter("fmId");
-		String fullPause = request.getParameter("full");
-		boolean full = "true".equals(fullPause);
+        String fmId = request.getParameter("fmId");
+        String fullPause = request.getParameter("full");
+        boolean full = "true".equals(fullPause);
 
-		if (fmId != null) {
-			FileBasedFlowManager fm = catalog.getResource(fmId,
-					FileBasedFlowManager.class);
+        if (fmId != null) {
+            FileBasedFlowManager fm = catalog.getResource(fmId, FileBasedFlowManager.class);
 
-			if ((fm != null) && fm.isRunning()) {
-				fm.pause(full);
-			}
-		}
+            if ((fm != null) && fm.isRunning()) {
+                fm.pause(full);
+            }
+        }
 
-		ModelAndView mav = new ModelAndView("flows");
-		mav.addObject("flowManagers", catalog
-				.getFlowManagers(FileBasedFlowManager.class));
+        ModelAndView mav = new ModelAndView("flows");
+        mav.addObject("flowManagers", catalog.getFlowManagers(FileBasedFlowManager.class));
 
-		return mav;
-	}
+        return mav;
+    }
 }

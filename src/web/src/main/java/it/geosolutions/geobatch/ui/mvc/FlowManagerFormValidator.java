@@ -36,69 +36,63 @@ import org.springframework.validation.Validator;
  * 
  */
 public class FlowManagerFormValidator implements Validator {
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
-	 */
-	public boolean supports(Class givenClass) {
-		return givenClass.equals(FlowManagerDataBean.class);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.validation.Validator#supports(java.lang.Class)
+     */
+    public boolean supports(Class givenClass) {
+        return givenClass.equals(FlowManagerDataBean.class);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
-	 * org.springframework.validation.Errors)
-	 */
-	public void validate(Object obj, Errors errors) {
-		FlowManagerDataBean givenData = (FlowManagerDataBean) obj;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.validation.Validator#validate(java.lang.Object,
+     * org.springframework.validation.Errors)
+     */
+    public void validate(Object obj, Errors errors) {
+        FlowManagerDataBean givenData = (FlowManagerDataBean) obj;
 
-		if (givenData == null) {
-			errors.reject("error.nullpointer", "Null data received");
-		} else {
-			/* Test givenData�s fields here */
-			if ((givenData.getDescriptorId() == null)
-					|| (givenData.getDescriptorId().trim().length() <= 0)) {
-				errors.rejectValue("descriptorId", "error.code",
-						"Flow Manager Descriptor is mandatory.");
-			}
+        if (givenData == null) {
+            errors.reject("error.nullpointer", "Null data received");
+        } else {
+            /* Test givenData�s fields here */
+            if ((givenData.getDescriptorId() == null)
+                    || (givenData.getDescriptorId().trim().length() <= 0)) {
+                errors.rejectValue("descriptorId", "error.code",
+                        "Flow Manager Descriptor is mandatory.");
+            }
 
-			if ((givenData.getId() == null)
-					|| (givenData.getId().trim().length() <= 0)) {
-				errors.rejectValue("id", "error.code",
-						"Flow Manager ID is mandatory.");
-			}
+            if ((givenData.getId() == null) || (givenData.getId().trim().length() <= 0)) {
+                errors.rejectValue("id", "error.code", "Flow Manager ID is mandatory.");
+            }
 
-			if ((givenData.getName() == null)
-					|| (givenData.getName().trim().length() <= 0)) {
-				errors.rejectValue("name", "error.code",
-						"Flow Manager Name is mandatory.");
-			}
+            if ((givenData.getName() == null) || (givenData.getName().trim().length() <= 0)) {
+                errors.rejectValue("name", "error.code", "Flow Manager Name is mandatory.");
+            }
 
-			if ((givenData.getInputDir() == null)
-					|| (givenData.getInputDir().trim().length() <= 0)) {
-				errors.rejectValue("inputDir", "error.code",
-						"Input Directory is mandatory.");
-			}
+            if ((givenData.getInputDir() == null) || (givenData.getInputDir().trim().length() <= 0)) {
+                errors.rejectValue("inputDir", "error.code", "Input Directory is mandatory.");
+            }
 
-			if ((givenData.getInputDir() != null)
-					&& !(new File(givenData.getInputDir()).isDirectory())) {
-				errors.rejectValue("inputDir", "error.code",
-						"The specified Input Directory is not valid.");
-			}
+            if ((givenData.getInputDir() != null)
+                    && !(new File(givenData.getInputDir()).isDirectory())) {
+                errors.rejectValue("inputDir", "error.code",
+                        "The specified Input Directory is not valid.");
+            }
 
-			if ((givenData.getOutputDir() == null)
-					|| (givenData.getOutputDir().trim().length() <= 0)) {
-				errors.rejectValue("workingDirectory", "error.code",
-						"Output Directory is mandatory.");
-			}
+            if ((givenData.getOutputDir() == null)
+                    || (givenData.getOutputDir().trim().length() <= 0)) {
+                errors.rejectValue("workingDirectory", "error.code",
+                        "Output Directory is mandatory.");
+            }
 
-			if ((givenData.getOutputDir() != null)
-					&& !(new File(givenData.getOutputDir()).isDirectory())) {
-				errors.rejectValue("workingDirectory", "error.code",
-						"The specified Output Directory is not valid.");
-			}
-		}
-	}
+            if ((givenData.getOutputDir() != null)
+                    && !(new File(givenData.getOutputDir()).isDirectory())) {
+                errors.rejectValue("workingDirectory", "error.code",
+                        "The specified Output Directory is not valid.");
+            }
+        }
+    }
 }

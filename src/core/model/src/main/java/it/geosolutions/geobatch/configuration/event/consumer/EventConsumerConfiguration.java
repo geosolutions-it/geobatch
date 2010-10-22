@@ -30,13 +30,13 @@ import java.util.List;
 
 public interface EventConsumerConfiguration extends Configuration {
 
-	public List<? extends ActionConfiguration> getActions();
+    public List<? extends ActionConfiguration> getActions();
 
-	public void setActions(List<? extends ActionConfiguration> actions);
+    public void setActions(List<? extends ActionConfiguration> actions);
 
-	public List<String> getListenerIds();
+    public List<String> getListenerIds();
 
-	public void addListenerConfiguration(ProgressListenerConfiguration plc);
+    public void addListenerConfiguration(ProgressListenerConfiguration plc);
 
-	public List<ProgressListenerConfiguration> getListenerConfigurations();
+    public List<ProgressListenerConfiguration> getListenerConfigurations();
 }

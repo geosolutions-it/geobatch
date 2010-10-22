@@ -25,169 +25,181 @@ package it.geosolutions.geobatch.gwc;
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
-public class GeoWebCacheActionConfiguration extends ActionConfiguration
-		implements Configuration {
+public class GeoWebCacheActionConfiguration extends ActionConfiguration implements Configuration {
 
-	protected GeoWebCacheActionConfiguration(String id, String name,
-			String description, boolean dirty) {
-		super(id, name, description, dirty);
-	}
+    protected GeoWebCacheActionConfiguration(String id, String name, String description,
+            boolean dirty) {
+        super(id, name, description, dirty);
+    }
 
-	private String gwcUrl;
-	private String workingDirectory;
-	private String geoserverUrl;
-	private String zoomStart;
-	private String zoomStop;
-	private String metaWidth;
-	private String metaHeight;
-	private String gutter;
-	private String transparent;
-	private String tiled;
-	private String expireCache;
-	private String expireClients;
-	private String gwcUser;
-	private String gwcPassword;
+    private String gwcUrl;
 
-	public GeoWebCacheActionConfiguration() {
-		super();
-	}
+    private String workingDirectory;
 
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
+    private String geoserverUrl;
 
-	public void setWorkingDirectory(String workingDirectory) {
-		this.workingDirectory = workingDirectory;
-	}
+    private String zoomStart;
 
-	public String getGwcUrl() {
-		return gwcUrl;
-	}
+    private String zoomStop;
 
-	public void setGwcUrl(String gwcUrl) {
-		this.gwcUrl = gwcUrl;
-	}
+    private String metaWidth;
 
-	public String getGeoserverUrl() {
-		return geoserverUrl;
-	}
+    private String metaHeight;
 
-	public void setGeoserverUrl(String geoserverUrl) {
-		this.geoserverUrl = geoserverUrl;
-	}
+    private String gutter;
 
-	public String getZoomStart() {
-		return zoomStart;
-	}
+    private String transparent;
 
-	public void setZoomStart(String zoomStart) {
-		this.zoomStart = zoomStart;
-	}
+    private String tiled;
 
-	public String getZoomStop() {
-		return zoomStop;
-	}
+    private String expireCache;
 
-	public void setZoomStop(String zoomStop) {
-		this.zoomStop = zoomStop;
-	}
+    private String expireClients;
 
-	public String getMetaWidth() {
-		return metaWidth;
-	}
+    private String gwcUser;
 
-	public void setMetaWidth(String metaWidth) {
-		this.metaWidth = metaWidth;
-	}
+    private String gwcPassword;
 
-	public String getMetaHeight() {
-		return metaHeight;
-	}
+    public GeoWebCacheActionConfiguration() {
+        super();
+    }
 
-	public void setMetaHeight(String metaHeight) {
-		this.metaHeight = metaHeight;
-	}
+    public String getWorkingDirectory() {
+        return workingDirectory;
+    }
 
-	public String getGutter() {
-		return gutter;
-	}
+    public void setWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
 
-	public void setGutter(String gutter) {
-		this.gutter = gutter;
-	}
+    public String getGwcUrl() {
+        return gwcUrl;
+    }
 
-	public String getTransparent() {
-		return transparent;
-	}
+    public void setGwcUrl(String gwcUrl) {
+        this.gwcUrl = gwcUrl;
+    }
 
-	public void setTransparent(String transparent) {
-		this.transparent = transparent;
-	}
+    public String getGeoserverUrl() {
+        return geoserverUrl;
+    }
 
-	public String getTiled() {
-		return tiled;
-	}
+    public void setGeoserverUrl(String geoserverUrl) {
+        this.geoserverUrl = geoserverUrl;
+    }
 
-	public void setTiled(String tiled) {
-		this.tiled = tiled;
-	}
+    public String getZoomStart() {
+        return zoomStart;
+    }
 
-	public String getExpireCache() {
-		return expireCache;
-	}
+    public void setZoomStart(String zoomStart) {
+        this.zoomStart = zoomStart;
+    }
 
-	public void setExpireCache(String expireCache) {
-		this.expireCache = expireCache;
-	}
+    public String getZoomStop() {
+        return zoomStop;
+    }
 
-	public String getExpireClients() {
-		return expireClients;
-	}
+    public void setZoomStop(String zoomStop) {
+        this.zoomStop = zoomStop;
+    }
 
-	public void setExpireClients(String expireClients) {
-		this.expireClients = expireClients;
-	}
+    public String getMetaWidth() {
+        return metaWidth;
+    }
 
-	public String getGwcUser() {
-		return gwcUser;
-	}
+    public void setMetaWidth(String metaWidth) {
+        this.metaWidth = metaWidth;
+    }
 
-	public void setGwcUser(String gwcUser) {
-		this.gwcUser = gwcUser;
-	}
+    public String getMetaHeight() {
+        return metaHeight;
+    }
 
-	public String getGwcPassword() {
-		return gwcPassword;
-	}
+    public void setMetaHeight(String metaHeight) {
+        this.metaHeight = metaHeight;
+    }
 
-	public void setGwcPassword(String gwcPassword) {
-		this.gwcPassword = gwcPassword;
-	}
+    public String getGutter() {
+        return gutter;
+    }
 
-	@Override
-	public ActionConfiguration clone() { // throws CloneNotSupportedException {
-	// final GeoWebCacheActionConfiguration configuration =
-	// new
-	// GeoWebCacheActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
-		final GeoWebCacheActionConfiguration configuration = (GeoWebCacheActionConfiguration) super
-				.clone();
+    public void setGutter(String gutter) {
+        this.gutter = gutter;
+    }
 
-		// configuration.setServiceID(getServiceID());
-		configuration.setGwcUrl(gwcUrl);
-		configuration.setWorkingDirectory(workingDirectory);
-		configuration.setGeoserverUrl(geoserverUrl);
-		configuration.setZoomStart(zoomStart);
-		configuration.setZoomStop(zoomStop);
-		configuration.setTiled(tiled);
-		configuration.setExpireCache(expireCache);
-		configuration.setExpireClients(expireClients);
-		configuration.setGutter(gutter);
-		configuration.setMetaHeight(metaHeight);
-		configuration.setMetaWidth(metaWidth);
-		configuration.setTransparent(transparent);
-		configuration.setGwcPassword(gwcPassword);
-		configuration.setGwcUser(gwcUser);
+    public String getTransparent() {
+        return transparent;
+    }
 
-		return configuration;
-	}
+    public void setTransparent(String transparent) {
+        this.transparent = transparent;
+    }
+
+    public String getTiled() {
+        return tiled;
+    }
+
+    public void setTiled(String tiled) {
+        this.tiled = tiled;
+    }
+
+    public String getExpireCache() {
+        return expireCache;
+    }
+
+    public void setExpireCache(String expireCache) {
+        this.expireCache = expireCache;
+    }
+
+    public String getExpireClients() {
+        return expireClients;
+    }
+
+    public void setExpireClients(String expireClients) {
+        this.expireClients = expireClients;
+    }
+
+    public String getGwcUser() {
+        return gwcUser;
+    }
+
+    public void setGwcUser(String gwcUser) {
+        this.gwcUser = gwcUser;
+    }
+
+    public String getGwcPassword() {
+        return gwcPassword;
+    }
+
+    public void setGwcPassword(String gwcPassword) {
+        this.gwcPassword = gwcPassword;
+    }
+
+    @Override
+    public ActionConfiguration clone() { // throws CloneNotSupportedException {
+        // final GeoWebCacheActionConfiguration configuration =
+        // new
+        // GeoWebCacheActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+        final GeoWebCacheActionConfiguration configuration = (GeoWebCacheActionConfiguration) super
+                .clone();
+
+        // configuration.setServiceID(getServiceID());
+        configuration.setGwcUrl(gwcUrl);
+        configuration.setWorkingDirectory(workingDirectory);
+        configuration.setGeoserverUrl(geoserverUrl);
+        configuration.setZoomStart(zoomStart);
+        configuration.setZoomStop(zoomStop);
+        configuration.setTiled(tiled);
+        configuration.setExpireCache(expireCache);
+        configuration.setExpireClients(expireClients);
+        configuration.setGutter(gutter);
+        configuration.setMetaHeight(metaHeight);
+        configuration.setMetaWidth(metaWidth);
+        configuration.setTransparent(transparent);
+        configuration.setGwcPassword(gwcPassword);
+        configuration.setGwcUser(gwcUser);
+
+        return configuration;
+    }
 }

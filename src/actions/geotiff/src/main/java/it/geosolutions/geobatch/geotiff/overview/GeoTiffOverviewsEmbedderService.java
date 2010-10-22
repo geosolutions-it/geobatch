@@ -37,32 +37,29 @@ import java.util.logging.Logger;
  * 
  * @version $ ShapeFileDTOProducerSPI.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
-public class GeoTiffOverviewsEmbedderService extends BaseService
-		implements
-		ActionService<FileSystemMonitorEvent, GeoTiffOverviewsEmbedderConfiguration> {
+public class GeoTiffOverviewsEmbedderService extends BaseService implements
+        ActionService<FileSystemMonitorEvent, GeoTiffOverviewsEmbedderConfiguration> {
 
-	private GeoTiffOverviewsEmbedderService() {
-		super(true);
-	}
+    private GeoTiffOverviewsEmbedderService() {
+        super(true);
+    }
 
-	private final static Logger LOGGER = Logger
-			.getLogger(GeoTiffOverviewsEmbedder.class.toString());
+    private final static Logger LOGGER = Logger
+            .getLogger(GeoTiffOverviewsEmbedder.class.toString());
 
-	public boolean canCreateAction(
-			GeoTiffOverviewsEmbedderConfiguration configuration) {
-		// XXX
-		return true;
-	}
+    public boolean canCreateAction(GeoTiffOverviewsEmbedderConfiguration configuration) {
+        // XXX
+        return true;
+    }
 
-	public GeoTiffOverviewsEmbedder createAction(
-			GeoTiffOverviewsEmbedderConfiguration configuration) {
-		try {
-			return new GeoTiffOverviewsEmbedder(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    public GeoTiffOverviewsEmbedder createAction(GeoTiffOverviewsEmbedderConfiguration configuration) {
+        try {
+            return new GeoTiffOverviewsEmbedder(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
 }

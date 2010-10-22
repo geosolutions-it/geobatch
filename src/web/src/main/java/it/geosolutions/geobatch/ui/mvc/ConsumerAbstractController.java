@@ -43,46 +43,44 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * @author ETj <etj at geo-solutions.it>
  */
 public abstract class ConsumerAbstractController extends AbstractController {
-	/*
+    /*
      */
-	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
-		String fmId = request.getParameter("fmId");
-		String ecId = request.getParameter("ecId");
+    @Override
+    protected ModelAndView handleRequestInternal(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
+        String fmId = request.getParameter("fmId");
+        String ecId = request.getParameter("ecId");
 
-		BaseEventConsumer consumer = null;
-		FileBasedFlowManager fm = null;
+        BaseEventConsumer consumer = null;
+        FileBasedFlowManager fm = null;
 
-		if (fmId != null) {
-			fm = catalog.getResource(fmId, FileBasedFlowManager.class);
+        if (fmId != null) {
+            fm = catalog.getResource(fmId, FileBasedFlowManager.class);
 
-			if (fm != null) {
-				List<? extends EventConsumer> ecList = fm.getEventConsumers();
-				for (EventConsumer eventConsumer : ecList) {
-					if (((BaseEventConsumer) eventConsumer).getId()
-							.equals(ecId)) {
-						consumer = (BaseEventConsumer) eventConsumer;
-						break;
-					}
-				}
-			}
-		}
+            if (fm != null) {
+                List<? extends EventConsumer> ecList = fm.getEventConsumers();
+                for (EventConsumer eventConsumer : ecList) {
+                    if (((BaseEventConsumer) eventConsumer).getId().equals(ecId)) {
+                        consumer = (BaseEventConsumer) eventConsumer;
+                        break;
+                    }
+                }
+            }
+        }
 
-		ModelAndView mav = new ModelAndView("flows");
-		mav.addObject("flowManagers", catalog
-				.getFlowManagers(FileBasedFlowManager.class));
+        ModelAndView mav = new ModelAndView("flows");
+        mav.addObject("flowManagers", catalog.getFlowManagers(FileBasedFlowManager.class));
 
-		if (consumer != null) {
-			runStuff(mav, fm, consumer);
-		} else {
-			mav.addObject("error", "Flow instance '" + ecId + "' not found");
-		}
+        if (consumer != null) {
+            runStuff(mav, fm, consumer);
+        } else {
+            mav.addObject("error", "Flow instance '" + ecId + "' not found");
+        }
 
-		return mav;
-	}
+        return mav;
+    }
 
-	protected abstract void runStuff(ModelAndView mav, FileBasedFlowManager fm,
-			BaseEventConsumer consumer);
+    protected abstract void runStuff(ModelAndView mav, FileBasedFlowManager fm,
+            BaseEventConsumer consumer);
 }

@@ -33,26 +33,24 @@ import java.util.logging.Logger;
  */
 public class AliasRegistry implements Iterable<Map.Entry<String, Class<?>>> {
 
-	private final static Logger LOGGER = Logger.getLogger(AliasRegistrar.class
-			.getName());
+    private final static Logger LOGGER = Logger.getLogger(AliasRegistrar.class.getName());
 
-	private Map<String, Class<?>> alias = new HashMap<String, Class<?>>();
+    private Map<String, Class<?>> alias = new HashMap<String, Class<?>>();
 
-	public AliasRegistry() {
-	}
+    public AliasRegistry() {
+    }
 
-	public int size() {
-		return alias.size();
-	}
+    public int size() {
+        return alias.size();
+    }
 
-	public void putAlias(String name, Class<?> clazz) {
-		if (LOGGER.isLoggable(Level.INFO))
-			LOGGER.info("Adding alias " + name + " for class "
-					+ clazz.getSimpleName());
-		alias.put(name, clazz);
-	}
+    public void putAlias(String name, Class<?> clazz) {
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("Adding alias " + name + " for class " + clazz.getSimpleName());
+        alias.put(name, clazz);
+    }
 
-	public Iterator<Entry<String, Class<?>>> iterator() {
-		return alias.entrySet().iterator();
-	}
+    public Iterator<Entry<String, Class<?>>> iterator() {
+        return alias.entrySet().iterator();
+    }
 }

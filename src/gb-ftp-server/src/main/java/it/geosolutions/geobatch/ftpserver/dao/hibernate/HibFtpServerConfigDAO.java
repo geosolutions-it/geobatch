@@ -39,39 +39,37 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author etj
  */
-public class HibFtpServerConfigDAO extends
-		DAOAbstractSpring<FtpServerConfig, Long> implements FtpServerConfigDAO {
+public class HibFtpServerConfigDAO extends DAOAbstractSpring<FtpServerConfig, Long> implements
+        FtpServerConfigDAO {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(HibFtpServerConfigDAO.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(HibFtpServerConfigDAO.class.getName());
 
-	public HibFtpServerConfigDAO() {
-		super(FtpServerConfig.class);
-		// TODO Auto-generated constructor stub
-	}
+    public HibFtpServerConfigDAO() {
+        super(FtpServerConfig.class);
+        // TODO Auto-generated constructor stub
+    }
 
-	@Transactional(propagation = Propagation.REQUIRED)
-	public void save(FtpServerConfig props) throws DAOException {
-		super.makePersistent(props);
-	}
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void save(FtpServerConfig props) throws DAOException {
+        super.makePersistent(props);
+    }
 
-	@Transactional(propagation = Propagation.REQUIRED)
-	public FtpServerConfig load() throws DAOException {
-		List<FtpServerConfig> list = super.findAll();
-		switch (list.size()) {
-		case 0:
-			LOGGER.info("No FTP server config found. Storing a brand new one.");
-			FtpServerConfig config = new FtpServerConfig();
-			return super.makePersistent(config);
+    @Transactional(propagation = Propagation.REQUIRED)
+    public FtpServerConfig load() throws DAOException {
+        List<FtpServerConfig> list = super.findAll();
+        switch (list.size()) {
+        case 0:
+            LOGGER.info("No FTP server config found. Storing a brand new one.");
+            FtpServerConfig config = new FtpServerConfig();
+            return super.makePersistent(config);
 
-		case 1:
-			return list.get(0);
+        case 1:
+            return list.get(0);
 
-		default:
-			LOGGER.severe("Too many FTP server configs found(" + list.size()
-					+ ").");
-			return list.get(0);
-		}
+        default:
+            LOGGER.severe("Too many FTP server configs found(" + list.size() + ").");
+            return list.get(0);
+        }
 
-	}
+    }
 }

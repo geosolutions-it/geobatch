@@ -35,25 +35,25 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLStyleColorRamps extends OLBaseClass {
 
-	private String defaultRamp = "red";
+    private String defaultRamp = "red";
 
-	public OLStyleColorRamps(String content) {
-		super(content);
-	}
+    public OLStyleColorRamps(String content) {
+        super(content);
+    }
 
-	/**
-	 * @param defaultRamp
-	 *            the defaultRamp to set
-	 */
-	public void setDefaultRamp(String defaultRamp) {
-		this.defaultRamp = defaultRamp;
-	}
+    /**
+     * @param defaultRamp
+     *            the defaultRamp to set
+     */
+    public void setDefaultRamp(String defaultRamp) {
+        this.defaultRamp = defaultRamp;
+    }
 
-	/**
-	 * @return the defaultRamp
-	 */
-	public String getDefaultRamp() {
-		return defaultRamp;
-	}
+    /**
+     * @return the defaultRamp
+     */
+    public String getDefaultRamp() {
+        return defaultRamp;
+    }
 
 }

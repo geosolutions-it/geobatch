@@ -9,17 +9,16 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
  * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class LoggingProgressListenerConfiguration extends
-		ProgressListenerConfiguration {
+public class LoggingProgressListenerConfiguration extends ProgressListenerConfiguration {
 
-	protected String loggerName;
+    protected String loggerName;
 
-	public String getLoggerName() {
-		return loggerName;
-	}
+    public String getLoggerName() {
+        return loggerName;
+    }
 
-	public void setLoggerName(String loggerName) {
-		this.loggerName = loggerName;
-	}
+    public void setLoggerName(String loggerName) {
+        this.loggerName = loggerName;
+    }
 
 }

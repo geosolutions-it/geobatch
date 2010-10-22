@@ -7,18 +7,18 @@ package it.geosolutions.filesystemmonitor.osnative;
  */
 final class NativeLibsUtils {
 
-	public final static boolean available;
+    public final static boolean available;
 
-	static {
-		boolean av = false;
-		try {
-			System.loadLibrary("jnotify");
-			av = true;
-		} catch (Throwable e) {
-			av = false;
-		}
-		available = av;
+    static {
+        boolean av = false;
+        try {
+            System.loadLibrary("jnotify");
+            av = true;
+        } catch (Throwable e) {
+            av = false;
+        }
+        available = av;
 
-	}
+    }
 
 }

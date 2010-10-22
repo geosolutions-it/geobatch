@@ -33,35 +33,33 @@ import java.util.logging.Logger;
  * Public class to generate JGSFLoDeSS Services
  * 
  */
-public class JGSFLoDeSSCOAMPSGeneratorService
-		extends
-		GeoServerConfiguratorService<FileSystemMonitorEvent, MetocActionConfiguration> {
+public class JGSFLoDeSSCOAMPSGeneratorService extends
+        GeoServerConfiguratorService<FileSystemMonitorEvent, MetocActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(JGSFLoDeSSCOAMPSGeneratorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(JGSFLoDeSSCOAMPSGeneratorService.class
+            .toString());
 
-	/**
-	 * Action creator
-	 * 
-	 * @param configuration
-	 *            The data base action configuration
-	 * @return new JGSFLoDeSSCOAMPSFileConfigurator()
-	 */
-	public JGSFLoDeSSCOAMPSFileConfigurator createAction(
-			MetocActionConfiguration configuration) {
-		try {
-			return new JGSFLoDeSSCOAMPSFileConfigurator(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Action creator
+     * 
+     * @param configuration
+     *            The data base action configuration
+     * @return new JGSFLoDeSSCOAMPSFileConfigurator()
+     */
+    public JGSFLoDeSSCOAMPSFileConfigurator createAction(MetocActionConfiguration configuration) {
+        try {
+            return new JGSFLoDeSSCOAMPSFileConfigurator(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	@Override
-	public boolean canCreateAction(MetocActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    @Override
+    public boolean canCreateAction(MetocActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

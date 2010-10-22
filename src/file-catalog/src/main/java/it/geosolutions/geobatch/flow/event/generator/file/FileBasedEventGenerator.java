@@ -53,442 +53,424 @@ import javax.swing.event.EventListenerList;
  * 
  * @author AlFa (Alessio Fabiani)
  */
-public class FileBasedEventGenerator<T extends EventObject> extends
-		BaseEventGenerator<T> implements EventGenerator<T> {
-	// ----------------------------------------------- PRIVATE ATTRIBUTES
+public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGenerator<T> implements
+        EventGenerator<T> {
+    // ----------------------------------------------- PRIVATE ATTRIBUTES
 
-	/**
-	 * Private Logger
-	 */
-	private static Logger LOGGER = Logger
-			.getLogger(FileBasedEventGenerator.class.toString());
+    /**
+     * Private Logger
+     */
+    private static Logger LOGGER = Logger.getLogger(FileBasedEventGenerator.class.toString());
 
-	/**
-	 * Helper class implementing an event listener for the FileSystem Monitor.
-	 */
-	private final class EventListener implements FileSystemMonitorListener {
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener
-		 * #fileMonitorEventDelivered
-		 * (it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent)
-		 */
-		public void fileMonitorEventDelivered(final FileSystemMonitorEvent fe) {
-			if (fe != null && fe.getSource() != null) {
+    /**
+     * Helper class implementing an event listener for the FileSystem Monitor.
+     */
+    private final class EventListener implements FileSystemMonitorListener {
+        /*
+         * (non-Javadoc)
+         * 
+         * @see it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener
+         * #fileMonitorEventDelivered
+         * (it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent)
+         */
+        public void fileMonitorEventDelivered(final FileSystemMonitorEvent fe) {
+            if (fe != null && fe.getSource() != null) {
 
-				final FileSystemMonitorNotifications acceptedNotification = FileBasedEventGenerator.this
-						.getEventType();
-				final FileSystemMonitorNotifications notification = fe
-						.getNotification();
+                final FileSystemMonitorNotifications acceptedNotification = FileBasedEventGenerator.this
+                        .getEventType();
+                final FileSystemMonitorNotifications notification = fe.getNotification();
 
-				if (LOGGER.isLoggable(Level.INFO)) {
-					LOGGER.info(new StringBuilder("Event: ").append(
-							notification.toString()).append(" ").append(
-							fe.getSource()).toString());
-				}
+                if (LOGGER.isLoggable(Level.INFO)) {
+                    LOGGER.info(new StringBuilder("Event: ").append(notification.toString())
+                            .append(" ").append(fe.getSource()).toString());
+                }
 
-				if (acceptedNotification != null
-						&& notification.equals(acceptedNotification)) {
-					FileBasedEventGenerator.this.sendEvent(fe);
-				} else if (acceptedNotification == null) {
-					FileBasedEventGenerator.this.sendEvent(fe);
-				}
-			} else {
-				if (fe == null) {
-					if (LOGGER.isLoggable(Level.INFO)) {
-						LOGGER.info("Null Event delivered ");
-					}
-				} else {
-					if (LOGGER.isLoggable(Level.INFO)) {
-						LOGGER.info("Null Event's source ");
-					}
-				}
-			}
-		}
-	}
+                if (acceptedNotification != null && notification.equals(acceptedNotification)) {
+                    FileBasedEventGenerator.this.sendEvent(fe);
+                } else if (acceptedNotification == null) {
+                    FileBasedEventGenerator.this.sendEvent(fe);
+                }
+            } else {
+                if (fe == null) {
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.info("Null Event delivered ");
+                    }
+                } else {
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.info("Null Event's source ");
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * The File-System Monitor thread.
-	 * 
-	 * @uml.property name="fsMonitor"
-	 */
-	private FileSystemMonitor fsMonitor;
-	/**
-	 * The directory to watch.
-	 * 
-	 * @uml.property name="watchDirectory"
-	 */
-	private File watchDirectory;
-	/**
-	 * 
-	 * A flag used to keep files in watchDirectory when flow is started.
-	 * 
-	 * @uml.property name="keepFiles"
-	 */
-	private boolean keepFiles;
-	/**
+    /**
+     * The File-System Monitor thread.
+     * 
+     * @uml.property name="fsMonitor"
+     */
+    private FileSystemMonitor fsMonitor;
+
+    /**
+     * The directory to watch.
+     * 
+     * @uml.property name="watchDirectory"
+     */
+    private File watchDirectory;
+
+    /**
+     * 
+     * A flag used to keep files in watchDirectory when flow is started.
+     * 
+     * @uml.property name="keepFiles"
+     */
+    private boolean keepFiles;
+
+    /**
      * 
      */
-	private FileSystemMonitorNotifications eventType;
-	/**
-	 * The file extension wildcard.
-	 * 
-	 * @uml.property name="wildCard"
-	 */
-	private String wildCard;
-	private EventListenerList listeners = new EventListenerList();
-	private EventListener fsListener;
+    private FileSystemMonitorNotifications eventType;
 
-	// ----------------------------------------------- PUBLIC CONSTRUCTORS
-	/**
-	 * Constructor which gets OS Type and watched dir as parameters.
-	 * 
-	 * @param osType
-	 *            int OSType (0 - Undefined; 1 - Windows; 2 - Linux)
-	 * @param dir
-	 *            File directory to watch
-	 * @throws NotSupportedException
-	 */
-	public FileBasedEventGenerator(final OsType osType,
-			final FileSystemMonitorNotifications eventType, final File dir) {
-		this(osType, eventType, dir, null, false);
-	}
+    /**
+     * The file extension wildcard.
+     * 
+     * @uml.property name="wildCard"
+     */
+    private String wildCard;
 
-	/**
-	 * Constructor which gets OS Type, watched dir and extension wildcard as
-	 * parameters.
-	 * 
-	 * @param osType
-	 *            int OSType (0 - Undefined; 1 - Windows; 2 - Linux)
-	 * @param dir
-	 *            File directory to watch
-	 * @param wildcard
-	 *            String file extension wildcard
-	 * @throws NotSupportedException
-	 */
-	public FileBasedEventGenerator(final OsType osType,
-			final FileSystemMonitorNotifications eventType, final File dir,
-			final String wildcard) {
-		this(osType, eventType, dir, wildcard, false);
-	}
+    private EventListenerList listeners = new EventListenerList();
 
-	/**
-	 * Constructor which gets OS Type, watched dir and keep files in watched dir
-	 * flag as parameters.
-	 * 
-	 * @param osType
-	 *            int OSType (0 - Undefined; 1 - Windows; 2 - Linux)
-	 * @param sensedDir
-	 *            File directory to watch
-	 * @param keepFiles
-	 *            Flag used to keep file in watched directory when flow is
-	 *            started
-	 * @throws NotSupportedException
-	 */
-	FileBasedEventGenerator(OsType osType,
-			FileSystemMonitorNotifications eventType, File sensedDir,
-			boolean keepFiles) {
-		this(osType, eventType, sensedDir, null, keepFiles);
-	}
+    private EventListener fsListener;
 
-	/**
-	 * Constructor which gets OS Type, watched dir, extension wildcard and keep
-	 * files in watched dir flag as parameters.
-	 * 
-	 * @param osType
-	 *            int OSType (0 - Undefined; 1 - Windows; 2 - Linux)
-	 * @param dir
-	 *            File directory to watch
-	 * @param wildcard
-	 *            String file extension wildcard
-	 * @param keepFiles
-	 *            Flag used to keep file in watched directory when flow is
-	 *            started
-	 * @throws NotSupportedException
-	 */
-	public FileBasedEventGenerator(final OsType osType,
-			final FileSystemMonitorNotifications eventType, final File dir,
-			final String wildcard, final boolean keepFiles) {
+    // ----------------------------------------------- PUBLIC CONSTRUCTORS
+    /**
+     * Constructor which gets OS Type and watched dir as parameters.
+     * 
+     * @param osType
+     *            int OSType (0 - Undefined; 1 - Windows; 2 - Linux)
+     * @param dir
+     *            File directory to watch
+     * @throws NotSupportedException
+     */
+    public FileBasedEventGenerator(final OsType osType,
+            final FileSystemMonitorNotifications eventType, final File dir) {
+        this(osType, eventType, dir, null, false);
+    }
 
-		initialize(osType, eventType, dir, wildcard, keepFiles);
-	}
+    /**
+     * Constructor which gets OS Type, watched dir and extension wildcard as parameters.
+     * 
+     * @param osType
+     *            int OSType (0 - Undefined; 1 - Windows; 2 - Linux)
+     * @param dir
+     *            File directory to watch
+     * @param wildcard
+     *            String file extension wildcard
+     * @throws NotSupportedException
+     */
+    public FileBasedEventGenerator(final OsType osType,
+            final FileSystemMonitorNotifications eventType, final File dir, final String wildcard) {
+        this(osType, eventType, dir, wildcard, false);
+    }
 
-	/**
-	 * @param osType
-	 * @param eventType
-	 * @param dir
-	 * @param wildcard
-	 * @param keepFiles
-	 * @throws NotSupportedException
-	 */
-	private void initialize(final OsType osType,
-			final FileSystemMonitorNotifications eventType, final File dir,
-			final String wildcard, final boolean keepFiles) {
-		// add myself as listener
-		fsListener = new EventListener();
+    /**
+     * Constructor which gets OS Type, watched dir and keep files in watched dir flag as parameters.
+     * 
+     * @param osType
+     *            int OSType (0 - Undefined; 1 - Windows; 2 - Linux)
+     * @param sensedDir
+     *            File directory to watch
+     * @param keepFiles
+     *            Flag used to keep file in watched directory when flow is started
+     * @throws NotSupportedException
+     */
+    FileBasedEventGenerator(OsType osType, FileSystemMonitorNotifications eventType,
+            File sensedDir, boolean keepFiles) {
+        this(osType, eventType, sensedDir, null, keepFiles);
+    }
 
-		this.watchDirectory = dir;
-		this.wildCard = wildcard;
-		this.eventType = eventType;
-		this.keepFiles = keepFiles;
+    /**
+     * Constructor which gets OS Type, watched dir, extension wildcard and keep files in watched dir
+     * flag as parameters.
+     * 
+     * @param osType
+     *            int OSType (0 - Undefined; 1 - Windows; 2 - Linux)
+     * @param dir
+     *            File directory to watch
+     * @param wildcard
+     *            String file extension wildcard
+     * @param keepFiles
+     *            Flag used to keep file in watched directory when flow is started
+     * @throws NotSupportedException
+     */
+    public FileBasedEventGenerator(final OsType osType,
+            final FileSystemMonitorNotifications eventType, final File dir, final String wildcard,
+            final boolean keepFiles) {
 
-		if ((this.watchDirectory != null) && this.watchDirectory.isDirectory()
-				&& this.watchDirectory.exists()) {
+        initialize(osType, eventType, dir, wildcard, keepFiles);
+    }
 
-			final Map<String, Object> params = new HashMap<String, Object>();
-			params.put(FileSystemMonitorSPI.SOURCE, dir);
-			if (this.wildCard != null)
-				params.put(FileSystemMonitorSPI.WILDCARD, wildCard);
-			this.fsMonitor = (BaseFileSystemMonitor) FSMSPIFinder.getMonitor(
-					params, osType);
-			this.fsMonitor.addListener(fsListener);
-		} else
-			throw new IllegalArgumentException(
-					"Unable to start the FileSystemMonitor for directory:"
-							+ dir);
-	}
+    /**
+     * @param osType
+     * @param eventType
+     * @param dir
+     * @param wildcard
+     * @param keepFiles
+     * @throws NotSupportedException
+     */
+    private void initialize(final OsType osType, final FileSystemMonitorNotifications eventType,
+            final File dir, final String wildcard, final boolean keepFiles) {
+        // add myself as listener
+        fsListener = new EventListener();
 
-	// ----------------------------------------------- PUBLIC ACCESS METHODS
-	public FileBasedEventGenerator(
-			FileBasedEventGeneratorConfiguration configuration)
-			throws IOException {
-		OsType osType = configuration.getOsType();
-		FileSystemMonitorNotifications eventType = configuration.getEventType();
-		final File notifyDir = IOUtils.findLocation(configuration
-				.getWorkingDirectory(), new File(
-				((FileBaseCatalog) CatalogHolder.getCatalog())
-						.getBaseDirectory()));
-		if (notifyDir == null
-				|| !(notifyDir.exists() && notifyDir.isDirectory()
-						& notifyDir.canRead())) {
-			throw new IOException("Invalid notify directory");
-		}
-		boolean keepFiles = configuration.getKeepFiles();
-		String wildCard = configuration.getWildCard();
-		initialize(osType, eventType, notifyDir, wildCard, keepFiles);
-	}
+        this.watchDirectory = dir;
+        this.wildCard = wildcard;
+        this.eventType = eventType;
+        this.keepFiles = keepFiles;
 
-	/**
-	 * @return the watchDirectory
-	 * @uml.property name="watchDirectory"
-	 */
-	public File getWatchDirectory() {
-		return watchDirectory;
-	}
+        if ((this.watchDirectory != null) && this.watchDirectory.isDirectory()
+                && this.watchDirectory.exists()) {
 
-	/**
-	 * @return the wildCard
-	 * @uml.property name="wildCard"
-	 */
-	public String getWildCard() {
-		return wildCard;
-	}
+            final Map<String, Object> params = new HashMap<String, Object>();
+            params.put(FileSystemMonitorSPI.SOURCE, dir);
+            if (this.wildCard != null)
+                params.put(FileSystemMonitorSPI.WILDCARD, wildCard);
+            this.fsMonitor = (BaseFileSystemMonitor) FSMSPIFinder.getMonitor(params, osType);
+            this.fsMonitor.addListener(fsListener);
+        } else
+            throw new IllegalArgumentException(
+                    "Unable to start the FileSystemMonitor for directory:" + dir);
+    }
 
-	// ----------------------------------------------- OVERRIDE METHODS
+    // ----------------------------------------------- PUBLIC ACCESS METHODS
+    public FileBasedEventGenerator(FileBasedEventGeneratorConfiguration configuration)
+            throws IOException {
+        OsType osType = configuration.getOsType();
+        FileSystemMonitorNotifications eventType = configuration.getEventType();
+        final File notifyDir = IOUtils.findLocation(configuration.getWorkingDirectory(), new File(
+                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+        if (notifyDir == null
+                || !(notifyDir.exists() && notifyDir.isDirectory() & notifyDir.canRead())) {
+            throw new IOException("Invalid notify directory");
+        }
+        boolean keepFiles = configuration.getKeepFiles();
+        String wildCard = configuration.getWildCard();
+        initialize(osType, eventType, notifyDir, wildCard, keepFiles);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
+    /**
+     * @return the watchDirectory
+     * @uml.property name="watchDirectory"
+     */
+    public File getWatchDirectory() {
+        return watchDirectory;
+    }
 
-		if (!super.equals(obj)) {
-			return false;
-		}
+    /**
+     * @return the wildCard
+     * @uml.property name="wildCard"
+     */
+    public String getWildCard() {
+        return wildCard;
+    }
 
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
+    // ----------------------------------------------- OVERRIDE METHODS
 
-		final FileBasedEventGenerator other = (FileBasedEventGenerator) obj;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
 
-		if (fsMonitor == null) {
-			if (other.fsMonitor != null) {
-				return false;
-			}
-		} else if (!fsMonitor.equals(other.fsMonitor)) {
-			return false;
-		}
+        if (!super.equals(obj)) {
+            return false;
+        }
 
-		if (watchDirectory == null) {
-			if (other.watchDirectory != null) {
-				return false;
-			}
-		} else if (!watchDirectory.equals(other.watchDirectory)) {
-			return false;
-		}
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
 
-		if (wildCard == null) {
-			if (other.wildCard != null) {
-				return false;
-			}
-		} else if (!wildCard.equals(other.wildCard)) {
-			return false;
-		}
+        final FileBasedEventGenerator other = (FileBasedEventGenerator) obj;
 
-		return true;
-	}
+        if (fsMonitor == null) {
+            if (other.fsMonitor != null) {
+                return false;
+            }
+        } else if (!fsMonitor.equals(other.fsMonitor)) {
+            return false;
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int PRIME = 31;
-		int result = super.hashCode();
-		result = (PRIME * result)
-				+ ((fsMonitor == null) ? 0 : fsMonitor.hashCode());
-		result = (PRIME * result)
-				+ ((watchDirectory == null) ? 0 : watchDirectory.hashCode());
-		result = (PRIME * result)
-				+ ((wildCard == null) ? 0 : wildCard.hashCode());
+        if (watchDirectory == null) {
+            if (other.watchDirectory != null) {
+                return false;
+            }
+        } else if (!watchDirectory.equals(other.watchDirectory)) {
+            return false;
+        }
 
-		return result;
-	}
+        if (wildCard == null) {
+            if (other.wildCard != null) {
+                return false;
+            }
+        } else if (!wildCard.equals(other.wildCard)) {
+            return false;
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder("FileBasedEventGenerator {");
+        return true;
+    }
 
-		sb.append(this.fsMonitor.toString()).append("; ");
-		sb.append(this.watchDirectory.getAbsolutePath()).append("; ");
-		sb.append(this.wildCard.toString()).append("; ");
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = super.hashCode();
+        result = (PRIME * result) + ((fsMonitor == null) ? 0 : fsMonitor.hashCode());
+        result = (PRIME * result) + ((watchDirectory == null) ? 0 : watchDirectory.hashCode());
+        result = (PRIME * result) + ((wildCard == null) ? 0 : wildCard.hashCode());
 
-		sb.append("}");
+        return result;
+    }
 
-		return sb.toString();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("FileBasedEventGenerator {");
 
-	// ----------------------------------------------- DELEGATE METHODS
-	/**
-	 * 
-	 * @see it.geosolutions.filesystemmonitor.monitor.Monitor#destroy()
-	 */
-	public synchronized void dispose() {
-		fsMonitor.removeListener(fsListener);
-		fsMonitor.dispose();
-	}
+        sb.append(this.fsMonitor.toString()).append("; ");
+        sb.append(this.watchDirectory.getAbsolutePath()).append("; ");
+        sb.append(this.wildCard.toString()).append("; ");
 
-	/**
-	 * @return
-	 * @see it.geosolutions.filesystemmonitor.monitor.Monitor#isRunning()
-	 */
-	public synchronized boolean isRunning() {
-		return fsMonitor.isRunning();
-	}
+        sb.append("}");
 
-	/**
-	 * 
-	 * @see it.geosolutions.filesystemmonitor.monitor.Monitor#resume()
-	 */
-	public synchronized void start() {
-		if (!keepFiles) {
-			if (LOGGER.isLoggable(Level.INFO)) {
-				LOGGER.info("Cleaning up "
-						+ watchDirectory.getAbsolutePath().toString());
-			}
-			IOUtils.emptyDirectory(watchDirectory, true, false);
-		} else if (LOGGER.isLoggable(Level.INFO)) {
-			LOGGER.info("Keep existing files in "
-					+ watchDirectory.getAbsolutePath().toString());
-		}
+        return sb.toString();
+    }
 
-		fsMonitor.start();
-	}
+    // ----------------------------------------------- DELEGATE METHODS
+    /**
+     * 
+     * @see it.geosolutions.filesystemmonitor.monitor.Monitor#destroy()
+     */
+    public synchronized void dispose() {
+        fsMonitor.removeListener(fsListener);
+        fsMonitor.dispose();
+    }
 
-	/**
-	 * 
-	 * @see it.geosolutions.filesystemmonitor.monitor.Monitor#pause()
-	 */
-	public synchronized void stop() {
-		fsMonitor.stop();
-	}
+    /**
+     * @return
+     * @see it.geosolutions.filesystemmonitor.monitor.Monitor#isRunning()
+     */
+    public synchronized boolean isRunning() {
+        return fsMonitor.isRunning();
+    }
 
-	/**
-	 * Add listener to this file monitor.
-	 * 
-	 * @param fileListener
-	 *            Listener to add.
-	 */
-	public synchronized void addListener(FlowEventListener<T> fileListener) {
-		// Don't add if its already there
+    /**
+     * 
+     * @see it.geosolutions.filesystemmonitor.monitor.Monitor#resume()
+     */
+    public synchronized void start() {
+        if (!keepFiles) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info("Cleaning up " + watchDirectory.getAbsolutePath().toString());
+            }
+            IOUtils.emptyDirectory(watchDirectory, true, false);
+        } else if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Keep existing files in " + watchDirectory.getAbsolutePath().toString());
+        }
 
-		// Guaranteed to return a non-null array
-		final Object[] listenerArray = listeners.getListenerList();
-		// Process the listeners last to first, notifying
-		// those that are interested in this event
-		final int length = listenerArray.length;
-		for (int i = length - 2; i >= 0; i -= 2) {
-			if (listenerArray[i].equals(fileListener)) {
-				return;
+        fsMonitor.start();
+    }
 
-			}
-		}
+    /**
+     * 
+     * @see it.geosolutions.filesystemmonitor.monitor.Monitor#pause()
+     */
+    public synchronized void stop() {
+        fsMonitor.stop();
+    }
 
-		listeners.add(FlowEventListener.class, fileListener);
-	}
+    /**
+     * Add listener to this file monitor.
+     * 
+     * @param fileListener
+     *            Listener to add.
+     */
+    public synchronized void addListener(FlowEventListener<T> fileListener) {
+        // Don't add if its already there
 
-	/**
-	 * Remove listener from this file monitor.
-	 * 
-	 * @param fileListener
-	 *            Listener to remove.
-	 */
-	public synchronized void removeListener(FlowEventListener<T> fileListener) {
-		listeners.remove(FlowEventListener.class, fileListener);
+        // Guaranteed to return a non-null array
+        final Object[] listenerArray = listeners.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        final int length = listenerArray.length;
+        for (int i = length - 2; i >= 0; i -= 2) {
+            if (listenerArray[i].equals(fileListener)) {
+                return;
 
-	}
+            }
+        }
 
-	/**
-	 * Sending an event by putting it inside the Swing dispatching thred. This
-	 * might be useless in command line app but it is important in GUi apps. I
-	 * might change this though.
-	 * 
-	 * @param file
-	 */
-	private void sendEvent(final FileSystemMonitorEvent fe) {
-		// Guaranteed to return a non-null array
-		final Object[] listenersArray = listeners.getListenerList();
-		// Process the listeners last to first, notifying
-		// those that are interested in this event
-		final int length = listenersArray.length;
-		for (int i = length - 2; i >= 0; i -= 2) {
-			final int index = i + 1;
-			if (listenersArray[i] == FlowEventListener.class) {
-				// Lazily create the event inside the dispatching thread in
-				// order to avoid problems if we run this inside a GUI app.
-				SwingUtilities.invokeLater(new Runnable() {
+        listeners.add(FlowEventListener.class, fileListener);
+    }
 
-					@SuppressWarnings("unchecked")
-					public void run() {
-						((FlowEventListener<FileSystemMonitorEvent>) listenersArray[index])
-								.eventGenerated(fe);
-					}
-				});
+    /**
+     * Remove listener from this file monitor.
+     * 
+     * @param fileListener
+     *            Listener to remove.
+     */
+    public synchronized void removeListener(FlowEventListener<T> fileListener) {
+        listeners.remove(FlowEventListener.class, fileListener);
 
-			}
-		}
+    }
 
-	}
+    /**
+     * Sending an event by putting it inside the Swing dispatching thred. This might be useless in
+     * command line app but it is important in GUi apps. I might change this though.
+     * 
+     * @param file
+     */
+    private void sendEvent(final FileSystemMonitorEvent fe) {
+        // Guaranteed to return a non-null array
+        final Object[] listenersArray = listeners.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        final int length = listenersArray.length;
+        for (int i = length - 2; i >= 0; i -= 2) {
+            final int index = i + 1;
+            if (listenersArray[i] == FlowEventListener.class) {
+                // Lazily create the event inside the dispatching thread in
+                // order to avoid problems if we run this inside a GUI app.
+                SwingUtilities.invokeLater(new Runnable() {
 
-	/**
-	 * @return the eventType
-	 */
-	public FileSystemMonitorNotifications getEventType() {
-		return eventType;
-	}
+                    @SuppressWarnings("unchecked")
+                    public void run() {
+                        ((FlowEventListener<FileSystemMonitorEvent>) listenersArray[index])
+                                .eventGenerated(fe);
+                    }
+                });
+
+            }
+        }
+
+    }
+
+    /**
+     * @return the eventType
+     */
+    public FileSystemMonitorNotifications getEventType() {
+        return eventType;
+    }
 }

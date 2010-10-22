@@ -20,36 +20,34 @@ import org.springframework.web.servlet.mvc.AbstractController;
  */
 public class UpdateFtpUserController extends AbstractController {
 
-	private GeoBatchServer server;
+    private GeoBatchServer server;
 
-	/**
-	 * @param server
-	 *            the server to set
-	 */
-	public void setServer(GeoBatchServer server) {
-		this.server = server;
-	}
+    /**
+     * @param server
+     *            the server to set
+     */
+    public void setServer(GeoBatchServer server) {
+        this.server = server;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
-	 * (javax.servlet.http.HttpServletRequest,
-	 * javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		String userId = request.getParameter("userId");
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
+     * (javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected ModelAndView handleRequestInternal(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        String userId = request.getParameter("userId");
 
-		server.getUserManager().delete(userId);
+        server.getUserManager().delete(userId);
 
-		List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
+        List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
 
-		ModelAndView mav = new ModelAndView("ftpUsers");
-		mav.addObject("ftpUsers", ftpUsers);
+        ModelAndView mav = new ModelAndView("ftpUsers");
+        mav.addObject("ftpUsers", ftpUsers);
 
-		return mav;
-	}
+        return mav;
+    }
 }

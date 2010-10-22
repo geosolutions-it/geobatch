@@ -31,24 +31,21 @@ import java.util.logging.Logger;
  * 
  * @author AlFa
  * 
- * @version $ GeoServerRESTConfiguratorService.java $ Revision: 0.1 $ 12/feb/07
- *          12:07:32
+ * @version $ GeoServerRESTConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
  */
-public class GeoServerRESTConfiguratorService
-		extends
-		GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerRESTActionConfiguration> {
-	private final static Logger LOGGER = Logger
-			.getLogger(GeoServerRESTConfiguratorService.class.toString());
+public class GeoServerRESTConfiguratorService extends
+        GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerRESTActionConfiguration> {
+    private final static Logger LOGGER = Logger.getLogger(GeoServerRESTConfiguratorService.class
+            .toString());
 
-	public GeoServerRESTConfiguratorAction createAction(
-			GeoServerRESTActionConfiguration configuration) {
-		return new GeoServerRESTConfiguratorAction(configuration);
-	}
+    public GeoServerRESTConfiguratorAction createAction(
+            GeoServerRESTActionConfiguration configuration) {
+        return new GeoServerRESTConfiguratorAction(configuration);
+    }
 
-	public boolean canCreateAction(
-			GeoServerRESTActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    public boolean canCreateAction(GeoServerRESTActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

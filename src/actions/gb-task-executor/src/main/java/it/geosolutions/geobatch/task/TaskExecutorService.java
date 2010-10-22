@@ -36,28 +36,26 @@ import java.util.logging.Logger;
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
 public class TaskExecutorService extends BaseService implements
-		ActionService<FileSystemMonitorEvent, TaskExecutorConfiguration> {
+        ActionService<FileSystemMonitorEvent, TaskExecutorConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(TaskExecutorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(TaskExecutorService.class.toString());
 
-	private TaskExecutorService() {
-		super(true);
-	}
+    private TaskExecutorService() {
+        super(true);
+    }
 
-	public boolean canCreateAction(TaskExecutorConfiguration configuration) {
-		return true;
-	}
+    public boolean canCreateAction(TaskExecutorConfiguration configuration) {
+        return true;
+    }
 
-	public TaskExecutor createAction(
-			final TaskExecutorConfiguration configuration) {
-		try {
-			return new TaskExecutor(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    public TaskExecutor createAction(final TaskExecutorConfiguration configuration) {
+        try {
+            return new TaskExecutor(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
 }

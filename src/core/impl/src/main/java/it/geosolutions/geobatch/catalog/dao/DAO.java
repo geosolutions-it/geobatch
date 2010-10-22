@@ -27,14 +27,14 @@ import java.io.IOException;
 import java.io.Serializable;
 
 public interface DAO<T extends Configuration, ID extends Serializable> {
-	T find(ID id, boolean lock) throws IOException;
+    T find(ID id, boolean lock) throws IOException;
 
-	T find(T exampleInstance, boolean lock) throws IOException;
+    T find(T exampleInstance, boolean lock) throws IOException;
 
-	T persist(T entity) throws IOException;
+    T persist(T entity) throws IOException;
 
-	boolean remove(T entity) throws IOException;
+    boolean remove(T entity) throws IOException;
 
-	T refresh(T entity) throws IOException;
+    T refresh(T entity) throws IOException;
 
 }

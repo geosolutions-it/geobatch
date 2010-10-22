@@ -38,18 +38,18 @@ import java.util.List;
  */
 public interface FtpUserDAO { // extends GenericDAO<FtpUser, Long> {
 
-	public FtpUser findByUserName(String userName) throws DAOException;
+    public FtpUser findByUserName(String userName) throws DAOException;
 
-	public FtpUser findByUserId(Long userId) throws DAOException;
+    public FtpUser findByUserId(Long userId) throws DAOException;
 
-	public List<FtpUser> findAll() throws DAOException;
+    public List<FtpUser> findAll() throws DAOException;
 
-	public FtpUser save(FtpUser props) throws DAOException;
+    public FtpUser save(FtpUser props) throws DAOException;
 
-	public void delete(Long id) throws DAOException;
+    public void delete(Long id) throws DAOException;
 
-	public boolean existsUser(Long id) throws DAOException;
+    public boolean existsUser(Long id) throws DAOException;
 
-	public boolean existsUser(String name) throws DAOException;
+    public boolean existsUser(String name) throws DAOException;
 
 }

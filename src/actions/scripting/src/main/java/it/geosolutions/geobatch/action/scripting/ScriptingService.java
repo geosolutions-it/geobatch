@@ -38,37 +38,33 @@ import javax.script.ScriptEngineManager;
  * @author etj
  */
 public class ScriptingService extends BaseService implements
-		ActionService<FileSystemMonitorEvent, ScriptingConfiguration> {
+        ActionService<FileSystemMonitorEvent, ScriptingConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(ScriptingService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(ScriptingService.class.toString());
 
-	public ScriptingAction createAction(ScriptingConfiguration configuration) {
-		try {
-			return new GAction(configuration);
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE,
-					"Error occurred creating scripting Action... "
-							+ e.getLocalizedMessage(), e);
-		}
+    public ScriptingAction createAction(ScriptingConfiguration configuration) {
+        try {
+            return new GAction(configuration);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error occurred creating scripting Action... "
+                    + e.getLocalizedMessage(), e);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
+    /**
 	 * 
 	 */
-	public boolean canCreateAction(ScriptingConfiguration configuration) {
-		ScriptEngineManager factory = new ScriptEngineManager();
-		ScriptEngine engine = factory.getEngineByName(configuration
-				.getLanguage());
+    public boolean canCreateAction(ScriptingConfiguration configuration) {
+        ScriptEngineManager factory = new ScriptEngineManager();
+        ScriptEngine engine = factory.getEngineByName(configuration.getLanguage());
 
-		if (engine != null)
-			return true;
+        if (engine != null)
+            return true;
 
-		LOGGER.warning("Requested unhandled language '"
-				+ configuration.getLanguage() + "'");
-		return false;
-	}
+        LOGGER.warning("Requested unhandled language '" + configuration.getLanguage() + "'");
+        return false;
+    }
 
 }

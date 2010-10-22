@@ -34,46 +34,47 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  * 
  */
 public class WMCFormat {
-	private String current = "1";
-	private String content;
+    private String current = "1";
 
-	/**
-	 * @param current
-	 * @param content
-	 */
-	public WMCFormat(String current, String content) {
-		this.setCurrent(current);
-		this.content = content;
-	}
+    private String content;
 
-	/**
-	 * @param current
-	 *            the current to set
-	 */
-	public void setCurrent(String current) {
-		this.current = current;
-	}
+    /**
+     * @param current
+     * @param content
+     */
+    public WMCFormat(String current, String content) {
+        this.setCurrent(current);
+        this.content = content;
+    }
 
-	/**
-	 * @return the current
-	 */
-	public String getCurrent() {
-		return current;
-	}
+    /**
+     * @param current
+     *            the current to set
+     */
+    public void setCurrent(String current) {
+        this.current = current;
+    }
 
-	/**
-	 * @param content
-	 *            the content to set
-	 */
-	public void setContent(String content) {
-		this.content = content;
-	}
+    /**
+     * @return the current
+     */
+    public String getCurrent() {
+        return current;
+    }
 
-	/**
-	 * @return the content
-	 */
-	public String getContent() {
-		return content;
-	}
+    /**
+     * @param content
+     *            the content to set
+     */
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    /**
+     * @return the content
+     */
+    public String getContent() {
+        return content;
+    }
 
 }

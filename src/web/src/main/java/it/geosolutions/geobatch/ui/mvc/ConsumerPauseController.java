@@ -35,12 +35,11 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class ConsumerPauseController extends ConsumerAbstractController {
 
-	@Override
-	protected void runStuff(ModelAndView mav, FileBasedFlowManager fm,
-			BaseEventConsumer consumer) {
-		if (fm != null && consumer != null)
-			consumer.pause(true);
+    @Override
+    protected void runStuff(ModelAndView mav, FileBasedFlowManager fm, BaseEventConsumer consumer) {
+        if (fm != null && consumer != null)
+            consumer.pause(true);
 
-		mav.addObject("consumer", consumer);
-	}
+        mav.addObject("consumer", consumer);
+    }
 }

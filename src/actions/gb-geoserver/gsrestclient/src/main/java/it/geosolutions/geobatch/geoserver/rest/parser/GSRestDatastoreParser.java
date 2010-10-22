@@ -31,57 +31,56 @@ import org.jdom.Element;
  * @author etj
  */
 public class GSRestDatastoreParser {
-	private final Element dsElem;
+    private final Element dsElem;
 
-	public enum DBType {
-		POSTGIS("postgis"), SHP("shp"), UNKNOWN(null);
+    public enum DBType {
+        POSTGIS("postgis"), SHP("shp"), UNKNOWN(null);
 
-		private final String restName;
+        private final String restName;
 
-		private DBType(String restName) {
-			this.restName = restName;
-		}
+        private DBType(String restName) {
+            this.restName = restName;
+        }
 
-		public static DBType get(String restName) {
-			for (DBType type : values()) {
-				if (type == UNKNOWN)
-					continue;
-				if (type.restName.equals(restName))
-					return type;
-			}
-			return UNKNOWN;
-		}
-	};
+        public static DBType get(String restName) {
+            for (DBType type : values()) {
+                if (type == UNKNOWN)
+                    continue;
+                if (type.restName.equals(restName))
+                    return type;
+            }
+            return UNKNOWN;
+        }
+    };
 
-	public GSRestDatastoreParser(Element dsElem) {
-		this.dsElem = dsElem;
-	}
+    public GSRestDatastoreParser(Element dsElem) {
+        this.dsElem = dsElem;
+    }
 
-	public String getName() {
-		return dsElem.getChildText("name");
-	}
+    public String getName() {
+        return dsElem.getChildText("name");
+    }
 
-	public String getWorkSpace() {
-		Element resource = dsElem.getChild("resource");
-		return resource.getChild("workspace").getChildText("name");
-	}
+    public String getWorkSpace() {
+        Element resource = dsElem.getChild("resource");
+        return resource.getChild("workspace").getChildText("name");
+    }
 
-	protected String getConnectionParameter(String paramName) {
-		Element elConnparm = dsElem.getChild("connectionParameters");
-		if (elConnparm != null) {
-			for (Element entry : (List<Element>) elConnparm
-					.getChildren("entry")) {
-				String key = entry.getAttributeValue("key");
-				if (paramName.equals(key)) {
-					return entry.getTextTrim();
-				}
-			}
-		}
+    protected String getConnectionParameter(String paramName) {
+        Element elConnparm = dsElem.getChild("connectionParameters");
+        if (elConnparm != null) {
+            for (Element entry : (List<Element>) elConnparm.getChildren("entry")) {
+                String key = entry.getAttributeValue("key");
+                if (paramName.equals(key)) {
+                    return entry.getTextTrim();
+                }
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public DBType getType() {
-		return DBType.get(getConnectionParameter("dbtype"));
-	}
+    public DBType getType() {
+        return DBType.get(getConnectionParameter("dbtype"));
+    }
 }
