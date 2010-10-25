@@ -28,11 +28,10 @@ import it.geosolutions.geobatch.catalog.event.CatalogAddEvent;
  * @author Alessio
  * 
  */
-public class CatalogAddEventImpl<T> extends CatalogEventImpl<T> implements
-		CatalogAddEvent<T> {
+public class CatalogAddEventImpl<T> extends CatalogEventImpl<T> implements CatalogAddEvent<T> {
 
-	public CatalogAddEventImpl(T source) {
-		super(source);
-	}
+    public CatalogAddEventImpl(T source) {
+        super(source);
+    }
 
 }

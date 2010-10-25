@@ -32,7 +32,7 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  */
 public class NURCTDAActionsAliasRegistrar extends AliasRegistrar {
 
-	public NURCTDAActionsAliasRegistrar(AliasRegistry registry) {
-		LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-	}
+    public NURCTDAActionsAliasRegistrar(AliasRegistry registry) {
+        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+    }
 }

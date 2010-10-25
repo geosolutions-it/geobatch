@@ -31,16 +31,16 @@ import java.util.EventObject;
  */
 public interface EventGenerator<EO extends EventObject> {
 
-	public void start();
+    public void start();
 
-	public void stop();
+    public void stop();
 
-	public boolean isRunning();
+    public boolean isRunning();
 
-	public void dispose();
+    public void dispose();
 
-	public void addListener(FlowEventListener<EO> listener);
+    public void addListener(FlowEventListener<EO> listener);
 
-	public void removeListener(FlowEventListener<EO> listener);
+    public void removeListener(FlowEventListener<EO> listener);
 
 }

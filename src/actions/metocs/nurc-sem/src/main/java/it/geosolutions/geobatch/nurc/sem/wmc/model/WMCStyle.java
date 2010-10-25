@@ -34,46 +34,47 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  * 
  */
 public class WMCStyle {
-	private String current = "1";
-	private WMCSLD sld;
+    private String current = "1";
 
-	/**
-	 * @param current
-	 * @param sld
-	 */
-	public WMCStyle(String current, WMCSLD sld) {
-		this.setCurrent(current);
-		this.setSld(sld);
-	}
+    private WMCSLD sld;
 
-	/**
-	 * @param current
-	 *            the current to set
-	 */
-	public void setCurrent(String current) {
-		this.current = current;
-	}
+    /**
+     * @param current
+     * @param sld
+     */
+    public WMCStyle(String current, WMCSLD sld) {
+        this.setCurrent(current);
+        this.setSld(sld);
+    }
 
-	/**
-	 * @return the current
-	 */
-	public String getCurrent() {
-		return current;
-	}
+    /**
+     * @param current
+     *            the current to set
+     */
+    public void setCurrent(String current) {
+        this.current = current;
+    }
 
-	/**
-	 * @param sld
-	 *            the sld to set
-	 */
-	public void setSld(WMCSLD sld) {
-		this.sld = sld;
-	}
+    /**
+     * @return the current
+     */
+    public String getCurrent() {
+        return current;
+    }
 
-	/**
-	 * @return the sld
-	 */
-	public WMCSLD getSld() {
-		return sld;
-	}
+    /**
+     * @param sld
+     *            the sld to set
+     */
+    public void setSld(WMCSLD sld) {
+        this.sld = sld;
+    }
+
+    /**
+     * @return the sld
+     */
+    public WMCSLD getSld() {
+        return sld;
+    }
 
 }

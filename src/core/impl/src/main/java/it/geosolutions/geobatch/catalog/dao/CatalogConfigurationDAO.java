@@ -23,7 +23,6 @@ package it.geosolutions.geobatch.catalog.dao;
 
 import it.geosolutions.geobatch.configuration.CatalogConfiguration;
 
-public interface CatalogConfigurationDAO extends
-		DAO<CatalogConfiguration, String> {
+public interface CatalogConfigurationDAO extends DAO<CatalogConfiguration, String> {
 
 }

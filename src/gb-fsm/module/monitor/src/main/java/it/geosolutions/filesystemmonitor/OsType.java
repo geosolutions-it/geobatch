@@ -6,5 +6,5 @@ package it.geosolutions.filesystemmonitor;
  * 
  */
 public enum OsType {
-	OS_UNDEFINED, OS_WINDOWS, OS_LINUX;
+    OS_UNDEFINED, OS_WINDOWS, OS_LINUX;
 }

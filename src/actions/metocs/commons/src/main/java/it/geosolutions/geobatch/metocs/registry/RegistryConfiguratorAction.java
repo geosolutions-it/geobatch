@@ -35,69 +35,64 @@ import java.util.logging.Logger;
  * 
  * @author AlFa
  * 
- * @version $ GeoServerConfiguratorAction.java $ Revision: 0.1 $ 12/feb/07
- *          12:07:06
+ * @version $ GeoServerConfiguratorAction.java $ Revision: 0.1 $ 12/feb/07 12:07:06
  */
 
-public abstract class RegistryConfiguratorAction extends
-		BaseAction<FileSystemMonitorEvent> implements
-		Action<FileSystemMonitorEvent> {
-	/**
-	 * Default logger
-	 */
-	protected final static Logger LOGGER = Logger
-			.getLogger(RegistryConfiguratorAction.class.toString());
+public abstract class RegistryConfiguratorAction extends BaseAction<FileSystemMonitorEvent>
+        implements Action<FileSystemMonitorEvent> {
+    /**
+     * Default logger
+     */
+    protected final static Logger LOGGER = Logger.getLogger(RegistryConfiguratorAction.class
+            .toString());
 
-	protected final RegistryActionConfiguration configuration;
+    protected final RegistryActionConfiguration configuration;
 
-	/**
-	 * Constructs a producer. The operation name will be the same than the
-	 * parameter descriptor name.
-	 * 
-	 * @throws IOException
-	 */
-	public RegistryConfiguratorAction(RegistryActionConfiguration configuration) {
-		super(configuration);
-		this.configuration = configuration;
-		// //
-		//
-		// get required parameters
-		//
-		// //
+    /**
+     * Constructs a producer. The operation name will be the same than the parameter descriptor
+     * name.
+     * 
+     * @throws IOException
+     */
+    public RegistryConfiguratorAction(RegistryActionConfiguration configuration) {
+        super(configuration);
+        this.configuration = configuration;
+        // //
+        //
+        // get required parameters
+        //
+        // //
 
-		if ((configuration.getGeoserverURL() == null)
-				|| "".equals(configuration.getGeoserverURL())) {
-			throw new IllegalStateException("GeoServerURL is null.");
-		}
+        if ((configuration.getGeoserverURL() == null) || "".equals(configuration.getGeoserverURL())) {
+            throw new IllegalStateException("GeoServerURL is null.");
+        }
 
-	}
+    }
 
-	/**
-	 * @param queryParams
-	 * @return
-	 */
-	protected static String getQueryString(Map<String, String> queryParams) {
-		StringBuilder queryString = new StringBuilder();
+    /**
+     * @param queryParams
+     * @return
+     */
+    protected static String getQueryString(Map<String, String> queryParams) {
+        StringBuilder queryString = new StringBuilder();
 
-		if (queryParams != null)
-			for (Map.Entry<String, String> entry : queryParams.entrySet()) {
-				if (queryString.length() > 0)
-					queryString.append("&");
-				queryString.append(entry.getKey()).append("=").append(
-						entry.getValue());
-			}
+        if (queryParams != null)
+            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+                if (queryString.length() > 0)
+                    queryString.append("&");
+                queryString.append(entry.getKey()).append("=").append(entry.getValue());
+            }
 
-		return queryString.toString();
-	}
+        return queryString.toString();
+    }
 
-	public RegistryActionConfiguration getConfiguration() {
-		return configuration;
-	}
+    public RegistryActionConfiguration getConfiguration() {
+        return configuration;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + "cfg:" + getConfiguration()
-				+ "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + "cfg:" + getConfiguration() + "]";
+    }
 
 }

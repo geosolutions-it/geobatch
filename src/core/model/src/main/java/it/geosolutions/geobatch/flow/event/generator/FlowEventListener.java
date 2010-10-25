@@ -30,15 +30,14 @@ import java.util.EventObject;
  * @author Simone Giannecchini, GeoSolutions
  * 
  */
-public interface FlowEventListener<EO extends EventObject> extends
-		EventListener {
+public interface FlowEventListener<EO extends EventObject> extends EventListener {
 
-	/**
-	 * Called when one of the monitored files are created, deleted or modified.
-	 * 
-	 * @param file
-	 *            File which has been changed.
-	 */
-	void eventGenerated(EO event);
+    /**
+     * Called when one of the monitored files are created, deleted or modified.
+     * 
+     * @param file
+     *            File which has been changed.
+     */
+    void eventGenerated(EO event);
 
 }

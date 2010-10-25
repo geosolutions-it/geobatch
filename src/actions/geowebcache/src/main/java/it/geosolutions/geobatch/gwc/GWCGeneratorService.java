@@ -32,35 +32,32 @@ import java.util.logging.Logger;
  * Public class to generate NetCDF Service
  * 
  */
-public class GWCGeneratorService
-		extends
-		GeoWebCacheConfiguratorService<FileSystemMonitorEvent, GeoWebCacheActionConfiguration> {
+public class GWCGeneratorService extends
+        GeoWebCacheConfiguratorService<FileSystemMonitorEvent, GeoWebCacheActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(GWCGeneratorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(GWCGeneratorService.class.toString());
 
-	/**
-	 * Action creator
-	 * 
-	 * @param configuration
-	 *            The data base action configuration
-	 * @return new NetCDFFileConfigurator()
-	 */
-	public GWCConfigurator createAction(
-			GeoWebCacheActionConfiguration configuration) {
-		try {
-			return new GWCConfigurator(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Action creator
+     * 
+     * @param configuration
+     *            The data base action configuration
+     * @return new NetCDFFileConfigurator()
+     */
+    public GWCConfigurator createAction(GeoWebCacheActionConfiguration configuration) {
+        try {
+            return new GWCConfigurator(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	@Override
-	public boolean canCreateAction(GeoWebCacheActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    @Override
+    public boolean canCreateAction(GeoWebCacheActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

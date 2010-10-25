@@ -33,35 +33,32 @@ import java.util.logging.Logger;
  * Public class to generate lscv08::NRL_NCOM Model Services
  * 
  */
-public class NRLNCOMGeneratorService
-		extends
-		GeoServerConfiguratorService<FileSystemMonitorEvent, MetocActionConfiguration> {
+public class NRLNCOMGeneratorService extends
+        GeoServerConfiguratorService<FileSystemMonitorEvent, MetocActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(NRLNCOMGeneratorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(NRLNCOMGeneratorService.class.toString());
 
-	/**
-	 * Action creator
-	 * 
-	 * @param configuration
-	 *            The data base action configuration
-	 * @return new NRLNCOMFileConfiguratorAction()
-	 */
-	public NRLNCOMFileConfiguratorAction createAction(
-			MetocActionConfiguration configuration) {
-		try {
-			return new NRLNCOMFileConfiguratorAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Action creator
+     * 
+     * @param configuration
+     *            The data base action configuration
+     * @return new NRLNCOMFileConfiguratorAction()
+     */
+    public NRLNCOMFileConfiguratorAction createAction(MetocActionConfiguration configuration) {
+        try {
+            return new NRLNCOMFileConfiguratorAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	@Override
-	public boolean canCreateAction(MetocActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    @Override
+    public boolean canCreateAction(MetocActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

@@ -68,273 +68,249 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  */
 public class WMCStream {
 
-	private XStream xstream = new XStream(new DomDriver("UTF-8"));
+    private XStream xstream = new XStream(new DomDriver("UTF-8"));
 
-	/**
+    /**
 	 * 
 	 */
-	public WMCStream() {
-		// WMC ViewContext
-		xstream.alias("ViewContext", ViewContext.class);
-		xstream.useAttributeFor(ViewContext.class, "xmlns");
-		xstream.useAttributeFor(ViewContext.class, "xlink");
-		xstream.useAttributeFor(ViewContext.class, "id");
-		xstream.useAttributeFor(ViewContext.class, "version");
-		xstream.aliasField("xmlns:xlink", ViewContext.class, "xlink");
-		xstream.aliasField("General", ViewContext.class, "general");
-		xstream.aliasField("LayerList", ViewContext.class, "layerList");
+    public WMCStream() {
+        // WMC ViewContext
+        xstream.alias("ViewContext", ViewContext.class);
+        xstream.useAttributeFor(ViewContext.class, "xmlns");
+        xstream.useAttributeFor(ViewContext.class, "xlink");
+        xstream.useAttributeFor(ViewContext.class, "id");
+        xstream.useAttributeFor(ViewContext.class, "version");
+        xstream.aliasField("xmlns:xlink", ViewContext.class, "xlink");
+        xstream.aliasField("General", ViewContext.class, "general");
+        xstream.aliasField("LayerList", ViewContext.class, "layerList");
 
-		// WMC ViewContext::General
-		xstream.aliasField("Window", GeneralWMCConfiguration.class, "window");
-		xstream.aliasField("Title", GeneralWMCConfiguration.class, "title");
-		xstream.aliasField("Abstract", GeneralWMCConfiguration.class,
-				"_abstract");
+        // WMC ViewContext::General
+        xstream.aliasField("Window", GeneralWMCConfiguration.class, "window");
+        xstream.aliasField("Title", GeneralWMCConfiguration.class, "title");
+        xstream.aliasField("Abstract", GeneralWMCConfiguration.class, "_abstract");
 
-		// WMC ViewContext::General::Window
-		xstream.useAttributeFor(WMCWindow.class, "height");
-		xstream.useAttributeFor(WMCWindow.class, "width");
-		xstream.aliasField("BoundingBox", WMCWindow.class, "bbox");
+        // WMC ViewContext::General::Window
+        xstream.useAttributeFor(WMCWindow.class, "height");
+        xstream.useAttributeFor(WMCWindow.class, "width");
+        xstream.aliasField("BoundingBox", WMCWindow.class, "bbox");
 
-		// WMC ViewContext::General::Window::BoundingBox
-		xstream.useAttributeFor(WMCBoundingBox.class, "srs");
-		xstream.useAttributeFor(WMCBoundingBox.class, "maxx");
-		xstream.useAttributeFor(WMCBoundingBox.class, "maxy");
-		xstream.useAttributeFor(WMCBoundingBox.class, "minx");
-		xstream.useAttributeFor(WMCBoundingBox.class, "miny");
-		xstream.aliasField("SRS", WMCBoundingBox.class, "srs");
+        // WMC ViewContext::General::Window::BoundingBox
+        xstream.useAttributeFor(WMCBoundingBox.class, "srs");
+        xstream.useAttributeFor(WMCBoundingBox.class, "maxx");
+        xstream.useAttributeFor(WMCBoundingBox.class, "maxy");
+        xstream.useAttributeFor(WMCBoundingBox.class, "minx");
+        xstream.useAttributeFor(WMCBoundingBox.class, "miny");
+        xstream.aliasField("SRS", WMCBoundingBox.class, "srs");
 
-		// WMC ViewContext::LayerList::Layer
-		xstream.alias("Layer", WMCLayer.class);
-		xstream.useAttributeFor(WMCLayer.class, "queryable");
-		xstream.useAttributeFor(WMCLayer.class, "hidden");
-		xstream.aliasField("SRS", WMCLayer.class, "srs");
-		xstream.aliasField("Name", WMCLayer.class, "name");
-		xstream.aliasField("Title", WMCLayer.class, "title");
-		xstream.aliasField("Server", WMCLayer.class, "server");
-		xstream.aliasField("FormatList", WMCLayer.class, "formatList");
-		xstream.aliasField("StyleList", WMCLayer.class, "styleList");
-		xstream.aliasField("Extension", WMCLayer.class, "extension");
+        // WMC ViewContext::LayerList::Layer
+        xstream.alias("Layer", WMCLayer.class);
+        xstream.useAttributeFor(WMCLayer.class, "queryable");
+        xstream.useAttributeFor(WMCLayer.class, "hidden");
+        xstream.aliasField("SRS", WMCLayer.class, "srs");
+        xstream.aliasField("Name", WMCLayer.class, "name");
+        xstream.aliasField("Title", WMCLayer.class, "title");
+        xstream.aliasField("Server", WMCLayer.class, "server");
+        xstream.aliasField("FormatList", WMCLayer.class, "formatList");
+        xstream.aliasField("StyleList", WMCLayer.class, "styleList");
+        xstream.aliasField("Extension", WMCLayer.class, "extension");
 
-		// WMC ViewContext::LayerList::Layer::Server
-		xstream.useAttributeFor(WMCServer.class, "service");
-		xstream.useAttributeFor(WMCServer.class, "version");
-		xstream.useAttributeFor(WMCServer.class, "title");
-		xstream.aliasField("OnlineResource", WMCServer.class, "onlineResource");
+        // WMC ViewContext::LayerList::Layer::Server
+        xstream.useAttributeFor(WMCServer.class, "service");
+        xstream.useAttributeFor(WMCServer.class, "version");
+        xstream.useAttributeFor(WMCServer.class, "title");
+        xstream.aliasField("OnlineResource", WMCServer.class, "onlineResource");
 
-		// WMC ViewContext::LayerList::Layer::Server::OnlineResource
-		xstream.useAttributeFor(WMCOnlineResource.class, "xlink_type");
-		xstream.useAttributeFor(WMCOnlineResource.class, "xlink_href");
-		xstream.aliasField("xlink:type", WMCOnlineResource.class, "xlink_type");
-		xstream.aliasField("xlink:href", WMCOnlineResource.class, "xlink_href");
+        // WMC ViewContext::LayerList::Layer::Server::OnlineResource
+        xstream.useAttributeFor(WMCOnlineResource.class, "xlink_type");
+        xstream.useAttributeFor(WMCOnlineResource.class, "xlink_href");
+        xstream.aliasField("xlink:type", WMCOnlineResource.class, "xlink_type");
+        xstream.aliasField("xlink:href", WMCOnlineResource.class, "xlink_href");
 
-		// WMC ViewContext::LayerList::Layer::FormatList::Format
-		xstream.alias("Format", WMCFormat.class);
-		xstream.registerConverter(new Converter() {
+        // WMC ViewContext::LayerList::Layer::FormatList::Format
+        xstream.alias("Format", WMCFormat.class);
+        xstream.registerConverter(new Converter() {
 
-			public boolean canConvert(Class clazz) {
-				return WMCFormat.class.isAssignableFrom(clazz);
-			}
+            public boolean canConvert(Class clazz) {
+                return WMCFormat.class.isAssignableFrom(clazz);
+            }
 
-			public void marshal(Object value, HierarchicalStreamWriter writer,
-					MarshallingContext context) {
-				WMCFormat format = (WMCFormat) value;
+            public void marshal(Object value, HierarchicalStreamWriter writer,
+                    MarshallingContext context) {
+                WMCFormat format = (WMCFormat) value;
 
-				writer.addAttribute("current", format.getCurrent());
-				if (format.getContent() != null)
-					writer.setValue(format.getContent());
-			}
+                writer.addAttribute("current", format.getCurrent());
+                if (format.getContent() != null)
+                    writer.setValue(format.getContent());
+            }
 
-			public Object unmarshal(HierarchicalStreamReader reader,
-					UnmarshallingContext context) {
-				WMCFormat format = new WMCFormat("1", reader.getValue());
+            public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+                WMCFormat format = new WMCFormat("1", reader.getValue());
 
-				return format;
-			}
+                return format;
+            }
 
-		});
+        });
 
-		// WMC ViewContext::LayerList::Layer::FormatList::Style
-		xstream.alias("Style", WMCStyle.class);
-		xstream.useAttributeFor(WMCStyle.class, "current");
-		xstream.aliasField("SLD", WMCStyle.class, "sld");
-		xstream.aliasField("OnlineResource", WMCSLD.class, "onlineResource");
+        // WMC ViewContext::LayerList::Layer::FormatList::Style
+        xstream.alias("Style", WMCStyle.class);
+        xstream.useAttributeFor(WMCStyle.class, "current");
+        xstream.aliasField("SLD", WMCStyle.class, "sld");
+        xstream.aliasField("OnlineResource", WMCSLD.class, "onlineResource");
 
-		// WMC ViewContext::LayerList::Layer::Extension
-		xstream.alias("Extension", WMCExtension.class);
+        // WMC ViewContext::LayerList::Layer::Extension
+        xstream.alias("Extension", WMCExtension.class);
 
-		// WMC ViewContext::LayerList::Layer::Extension::OL
-		xstream.aliasField("ol:id", WMCExtension.class, "id");
-		xstream.aliasField("ol:transparent", WMCExtension.class, "transparent");
-		xstream.aliasField("ol:isBaseLayer", WMCExtension.class, "isBaseLayer");
-		xstream.aliasField("ol:opacity", WMCExtension.class, "opacity");
-		xstream.aliasField("ol:displayInLayerSwitcher", WMCExtension.class,
-				"displayInLayerSwitcher");
-		xstream.aliasField("ol:singleTile", WMCExtension.class, "singleTile");
-		xstream.aliasField("ol:numZoomLevels", WMCExtension.class,
-				"numZoomLevels");
-		xstream.aliasField("ol:units", WMCExtension.class, "units");
-		xstream.aliasField("ol:maxExtent", WMCExtension.class, "maxExtent");
-		xstream.aliasField("ol:dimension", WMCExtension.class, "time");
-		xstream.aliasField("ol:dimension", WMCExtension.class, "elevation");
+        // WMC ViewContext::LayerList::Layer::Extension::OL
+        xstream.aliasField("ol:id", WMCExtension.class, "id");
+        xstream.aliasField("ol:transparent", WMCExtension.class, "transparent");
+        xstream.aliasField("ol:isBaseLayer", WMCExtension.class, "isBaseLayer");
+        xstream.aliasField("ol:opacity", WMCExtension.class, "opacity");
+        xstream.aliasField("ol:displayInLayerSwitcher", WMCExtension.class,
+                "displayInLayerSwitcher");
+        xstream.aliasField("ol:singleTile", WMCExtension.class, "singleTile");
+        xstream.aliasField("ol:numZoomLevels", WMCExtension.class, "numZoomLevels");
+        xstream.aliasField("ol:units", WMCExtension.class, "units");
+        xstream.aliasField("ol:maxExtent", WMCExtension.class, "maxExtent");
+        xstream.aliasField("ol:dimension", WMCExtension.class, "time");
+        xstream.aliasField("ol:dimension", WMCExtension.class, "elevation");
 
-		xstream.aliasField("ol:styleClassNumber", WMCExtension.class,
-				"styleClassNumber");
-		xstream.aliasField("ol:styleColorRamps", WMCExtension.class,
-				"styleColorRamps");
-		xstream.aliasField("ol:styleMaxValue", WMCExtension.class,
-				"styleMaxValue");
-		xstream.aliasField("ol:styleMinValue", WMCExtension.class,
-				"styleMinValue");
-		xstream.aliasField("ol:styleRestService", WMCExtension.class,
-				"styleRestService");
+        xstream.aliasField("ol:styleClassNumber", WMCExtension.class, "styleClassNumber");
+        xstream.aliasField("ol:styleColorRamps", WMCExtension.class, "styleColorRamps");
+        xstream.aliasField("ol:styleMaxValue", WMCExtension.class, "styleMaxValue");
+        xstream.aliasField("ol:styleMinValue", WMCExtension.class, "styleMinValue");
+        xstream.aliasField("ol:styleRestService", WMCExtension.class, "styleRestService");
 
-		xstream.useAttributeFor(OLStyleColorRamps.class, "defaultRamp");
-		xstream.aliasField("default", OLStyleColorRamps.class, "defaultRamp");
+        xstream.useAttributeFor(OLStyleColorRamps.class, "defaultRamp");
+        xstream.aliasField("default", OLStyleColorRamps.class, "defaultRamp");
 
-		xstream.registerConverter(new Converter() {
+        xstream.registerConverter(new Converter() {
 
-			public boolean canConvert(Class clazz) {
-				return OLBaseClass.class.isAssignableFrom(clazz);
-			}
+            public boolean canConvert(Class clazz) {
+                return OLBaseClass.class.isAssignableFrom(clazz);
+            }
 
-			public void marshal(Object value, HierarchicalStreamWriter writer,
-					MarshallingContext context) {
-				OLBaseClass ol = (OLBaseClass) value;
+            public void marshal(Object value, HierarchicalStreamWriter writer,
+                    MarshallingContext context) {
+                OLBaseClass ol = (OLBaseClass) value;
 
-				writer.addAttribute("xmlns:ol", ol.getXmlns_ol());
+                writer.addAttribute("xmlns:ol", ol.getXmlns_ol());
 
-				if (value instanceof OLMaxExtent) {
-					OLMaxExtent maxExtent = (OLMaxExtent) value;
-					writer.addAttribute("minx", String.valueOf(maxExtent
-							.getMinx()));
-					writer.addAttribute("miny", String.valueOf(maxExtent
-							.getMiny()));
-					writer.addAttribute("maxx", String.valueOf(maxExtent
-							.getMaxx()));
-					writer.addAttribute("maxy", String.valueOf(maxExtent
-							.getMaxy()));
-				}
+                if (value instanceof OLMaxExtent) {
+                    OLMaxExtent maxExtent = (OLMaxExtent) value;
+                    writer.addAttribute("minx", String.valueOf(maxExtent.getMinx()));
+                    writer.addAttribute("miny", String.valueOf(maxExtent.getMiny()));
+                    writer.addAttribute("maxx", String.valueOf(maxExtent.getMaxx()));
+                    writer.addAttribute("maxy", String.valueOf(maxExtent.getMaxy()));
+                }
 
-				if (value instanceof OLDimension) {
-					OLDimension dimension = (OLDimension) value;
-					writer.addAttribute("name", dimension.getName());
-					writer.addAttribute("default", dimension.getDefaultValue());
-				}
+                if (value instanceof OLDimension) {
+                    OLDimension dimension = (OLDimension) value;
+                    writer.addAttribute("name", dimension.getName());
+                    writer.addAttribute("default", dimension.getDefaultValue());
+                }
 
-				if (value instanceof OLStyleMaxValue) {
-					OLStyleMaxValue styleValue = (OLStyleMaxValue) value;
-					writer
-							.addAttribute("default", styleValue
-									.getDefaultValue());
-				}
+                if (value instanceof OLStyleMaxValue) {
+                    OLStyleMaxValue styleValue = (OLStyleMaxValue) value;
+                    writer.addAttribute("default", styleValue.getDefaultValue());
+                }
 
-				if (value instanceof OLStyleMinValue) {
-					OLStyleMinValue styleValue = (OLStyleMinValue) value;
-					writer
-							.addAttribute("default", styleValue
-									.getDefaultValue());
-				}
+                if (value instanceof OLStyleMinValue) {
+                    OLStyleMinValue styleValue = (OLStyleMinValue) value;
+                    writer.addAttribute("default", styleValue.getDefaultValue());
+                }
 
-				if (value instanceof OLStyleColorRamps) {
-					OLStyleColorRamps styleValue = (OLStyleColorRamps) value;
-					writer.addAttribute("default", styleValue.getDefaultRamp());
-				}
+                if (value instanceof OLStyleColorRamps) {
+                    OLStyleColorRamps styleValue = (OLStyleColorRamps) value;
+                    writer.addAttribute("default", styleValue.getDefaultRamp());
+                }
 
-				if (ol.getContent() != null)
-					writer.setValue(ol.getContent());
-			}
+                if (ol.getContent() != null)
+                    writer.setValue(ol.getContent());
+            }
 
-			public Object unmarshal(HierarchicalStreamReader reader,
-					UnmarshallingContext context) {
-				OLBaseClass ol = null;
+            public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+                OLBaseClass ol = null;
 
-				if (reader.getAttribute("minx") != null
-						&& reader.getAttribute("miny") != null
-						&& reader.getAttribute("maxx") != null
-						&& reader.getAttribute("maxy") != null) {
-					ol = new OLMaxExtent(reader.getValue());
-					((OLMaxExtent) ol).setMinx(Double.parseDouble(reader
-							.getAttribute("minx")));
-					((OLMaxExtent) ol).setMaxx(Double.parseDouble(reader
-							.getAttribute("maxx")));
-					((OLMaxExtent) ol).setMiny(Double.parseDouble(reader
-							.getAttribute("miny")));
-					((OLMaxExtent) ol).setMaxy(Double.parseDouble(reader
-							.getAttribute("maxy")));
-				} else if (reader.getAttribute("name") != null
-						&& reader.getAttribute("default") != null) {
-					ol = new OLDimension(reader.getValue(), reader
-							.getAttribute("name"), reader
-							.getAttribute("default"));
-				} else {
-					ol = new OLBaseClass(reader.getValue());
-				}
+                if (reader.getAttribute("minx") != null && reader.getAttribute("miny") != null
+                        && reader.getAttribute("maxx") != null
+                        && reader.getAttribute("maxy") != null) {
+                    ol = new OLMaxExtent(reader.getValue());
+                    ((OLMaxExtent) ol).setMinx(Double.parseDouble(reader.getAttribute("minx")));
+                    ((OLMaxExtent) ol).setMaxx(Double.parseDouble(reader.getAttribute("maxx")));
+                    ((OLMaxExtent) ol).setMiny(Double.parseDouble(reader.getAttribute("miny")));
+                    ((OLMaxExtent) ol).setMaxy(Double.parseDouble(reader.getAttribute("maxy")));
+                } else if (reader.getAttribute("name") != null
+                        && reader.getAttribute("default") != null) {
+                    ol = new OLDimension(reader.getValue(), reader.getAttribute("name"), reader
+                            .getAttribute("default"));
+                } else {
+                    ol = new OLBaseClass(reader.getValue());
+                }
 
-				return ol;
-			}
+                return ol;
+            }
 
-		});
+        });
 
-	}
+    }
 
-	/**
-	 * 
-	 * @param viewContext
-	 * @return
-	 */
-	public String toXML(ViewContext viewContext) {
-		return xstream.toXML(viewContext);
-	}
+    /**
+     * 
+     * @param viewContext
+     * @return
+     */
+    public String toXML(ViewContext viewContext) {
+        return xstream.toXML(viewContext);
+    }
 
-	/**
-	 * 
-	 * @param viewContext
-	 * @param out
-	 * @throws IOException
-	 */
-	public void toXML(ViewContext viewContext, OutputStream out)
-			throws IOException {
-		Writer writer = new OutputStreamWriter(out, "UTF-8");
-		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-		xstream.toXML(viewContext, writer);
-	}
+    /**
+     * 
+     * @param viewContext
+     * @param out
+     * @throws IOException
+     */
+    public void toXML(ViewContext viewContext, OutputStream out) throws IOException {
+        Writer writer = new OutputStreamWriter(out, "UTF-8");
+        writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+        xstream.toXML(viewContext, writer);
+    }
 
-	/**
-	 * 
-	 * @param viewContext
-	 * @param out
-	 * @throws IOException
-	 */
-	public void toXML(ViewContext viewContext, Writer out) throws IOException {
-		out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-		xstream.toXML(viewContext, out);
-	}
+    /**
+     * 
+     * @param viewContext
+     * @param out
+     * @throws IOException
+     */
+    public void toXML(ViewContext viewContext, Writer out) throws IOException {
+        out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+        xstream.toXML(viewContext, out);
+    }
 
-	/**
-	 * 
-	 * @param input
-	 * @return
-	 */
-	public ViewContext fromXML(InputStream input) {
-		return (ViewContext) xstream.fromXML(input);
-	}
+    /**
+     * 
+     * @param input
+     * @return
+     */
+    public ViewContext fromXML(InputStream input) {
+        return (ViewContext) xstream.fromXML(input);
+    }
 
-	/**
-	 * 
-	 * @param xml
-	 * @return
-	 */
-	public ViewContext fromXML(Reader xml) {
-		return (ViewContext) xstream.fromXML(xml);
-	}
+    /**
+     * 
+     * @param xml
+     * @return
+     */
+    public ViewContext fromXML(Reader xml) {
+        return (ViewContext) xstream.fromXML(xml);
+    }
 
-	/**
-	 * 
-	 * @param xml
-	 * @return
-	 */
-	public ViewContext fromXML(String xml) {
-		return (ViewContext) xstream.fromXML(xml);
-	}
+    /**
+     * 
+     * @param xml
+     * @return
+     */
+    public ViewContext fromXML(String xml) {
+        return (ViewContext) xstream.fromXML(xml);
+    }
 
 }

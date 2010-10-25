@@ -34,295 +34,278 @@ import org.jdom.Element;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * Testcase for publishing layers on geoserver. We need a running GeoServer to
- * properly run the tests. Login credentials are hardcoded at the moment
- * (localhost:8080 admin/geoserver). If such geoserver instance cannot be
- * contacted, tests will be skipped.
+ * Testcase for publishing layers on geoserver. We need a running GeoServer to properly run the
+ * tests. Login credentials are hardcoded at the moment (localhost:8080 admin/geoserver). If such
+ * geoserver instance cannot be contacted, tests will be skipped.
  * 
  * 
  * @author etj
  */
 public class GeoserverRESTPublisherTest extends TestCase {
-	private final static Logger LOGGER = Logger
-			.getLogger(GeoserverRESTPublisherTest.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(GeoserverRESTPublisherTest.class
+            .getName());
 
-	public static final String RESTURL = "http://localhost:8080/geoserver";
-	public static final String RESTUSER = "admin";
-	public static final String RESTPW = "geoserver";
+    public static final String RESTURL = "http://localhost:8080/geoserver";
 
-	public static final GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
-			RESTURL, RESTUSER, RESTPW);
+    public static final String RESTUSER = "admin";
 
-	public static final URL URL;
-	public static final GeoServerRESTReader reader;
+    public static final String RESTPW = "geoserver";
 
-	public static boolean enabled = true;
+    public static final GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(RESTURL,
+            RESTUSER, RESTPW);
 
-	static {
-		URL lurl = null;
-		try {
-			lurl = new URL(RESTURL);
-		} catch (MalformedURLException ex) {
-		}
+    public static final URL URL;
 
-		URL = lurl;
-		reader = new GeoServerRESTReader(lurl, RESTUSER, RESTPW);
-	}
+    public static final GeoServerRESTReader reader;
 
-	public GeoserverRESTPublisherTest(String testName) {
-		super(testName);
+    public static boolean enabled = true;
 
-	}
+    static {
+        URL lurl = null;
+        try {
+            lurl = new URL(RESTURL);
+        } catch (MalformedURLException ex) {
+        }
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+        URL = lurl;
+        reader = new GeoServerRESTReader(lurl, RESTUSER, RESTPW);
+    }
 
-		if (enabled()) {
-			if (!reader.existGeoserver()) {
-				System.out
-						.println(getClass().getSimpleName()
-								+ ": TESTS WILL BE SKIPPED SINCE NO GEOSERVER WAS FOUND AT "
-								+ RESTURL);
-				enabled = false;
-			}
-		}
+    public GeoserverRESTPublisherTest(String testName) {
+        super(testName);
 
-		if (enabled)
-			System.out.println("-------------------> RUNNING TEST "
-					+ this.getName());
-		else
-			System.out.println("Skipping test "
-					+ this.getClass().getSimpleName() + "::" + this.getName());
-	}
+    }
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
 
-	protected boolean enabled() {
-		if (!enabled) {
-			// System.out.println("Skipping test in " +
-			// getClass().getSimpleName());
-		}
-		return enabled;
-	}
+        if (enabled()) {
+            if (!reader.existGeoserver()) {
+                System.out.println(getClass().getSimpleName()
+                        + ": TESTS WILL BE SKIPPED SINCE NO GEOSERVER WAS FOUND AT " + RESTURL);
+                enabled = false;
+            }
+        }
 
-	public void testPublishDeleteExternalGeotiff()
-			throws FileNotFoundException, IOException {
-		if (!enabled())
-			return;
-		// Assume.assumeTrue(enabled);
+        if (enabled)
+            System.out.println("-------------------> RUNNING TEST " + this.getName());
+        else
+            System.out.println("Skipping test " + this.getClass().getSimpleName() + "::"
+                    + this.getName());
+    }
 
-		String wsName = "it.geosolutions";
-		String storeName = "testRESTStoreGeotiff";
-		String layerName = "resttestdem";
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-		File geotiff = new ClassPathResource("testdata/resttestdem.tif")
-				.getFile();
+    protected boolean enabled() {
+        if (!enabled) {
+            // System.out.println("Skipping test in " +
+            // getClass().getSimpleName());
+        }
+        return enabled;
+    }
 
-		// dry run delete to work in a known state
-		Element testLayer = reader.getLayer(layerName);
-		if (testLayer != null) {
-			LOGGER.info("Clearing stale test layer " + layerName);
-			boolean ok = publisher.unpublishCoverage(wsName, storeName,
-					layerName);
-			if (!ok) {
-				fail("Could not unpublish layer " + layerName);
-			}
-		}
+    public void testPublishDeleteExternalGeotiff() throws FileNotFoundException, IOException {
+        if (!enabled())
+            return;
+        // Assume.assumeTrue(enabled);
 
-		// known state?
-		assertFalse("Cleanup failed", existsLayer(layerName));
+        String wsName = "it.geosolutions";
+        String storeName = "testRESTStoreGeotiff";
+        String layerName = "resttestdem";
 
-		// test insert
-		boolean published = publisher.publishExternalGeoTIFF(wsName, storeName,
-				geotiff);
-		assertTrue("publish() failed", published);
-		assertTrue(existsLayer(layerName));
+        File geotiff = new ClassPathResource("testdata/resttestdem.tif").getFile();
 
-		// test delete
-		boolean ok = publisher.unpublishCoverage(wsName, storeName, layerName);
-		assertTrue("Unpublish() failed", ok);
-		assertFalse(existsLayer(layerName));
+        // dry run delete to work in a known state
+        Element testLayer = reader.getLayer(layerName);
+        if (testLayer != null) {
+            LOGGER.info("Clearing stale test layer " + layerName);
+            boolean ok = publisher.unpublishCoverage(wsName, storeName, layerName);
+            if (!ok) {
+                fail("Could not unpublish layer " + layerName);
+            }
+        }
 
-	}
+        // known state?
+        assertFalse("Cleanup failed", existsLayer(layerName));
 
-	public void testPublishDeleteShapeZip() throws FileNotFoundException,
-			IOException {
-		if (!enabled())
-			return;
-		// Assume.assumeTrue(enabled);
+        // test insert
+        boolean published = publisher.publishExternalGeoTIFF(wsName, storeName, geotiff);
+        assertTrue("publish() failed", published);
+        assertTrue(existsLayer(layerName));
 
-		String ns = "it.geosolutions";
-		String storeName = "resttestshp";
-		String layerName = "cities";
+        // test delete
+        boolean ok = publisher.unpublishCoverage(wsName, storeName, layerName);
+        assertTrue("Unpublish() failed", ok);
+        assertFalse(existsLayer(layerName));
 
-		File zipFile = new ClassPathResource("testdata/resttestshp.zip")
-				.getFile();
+    }
 
-		// dry run delete to work in a known state
-		Element testLayer = reader.getLayer(layerName);
-		if (testLayer != null) {
-			LOGGER.info("Clearing stale test layer " + layerName);
-			boolean ok = publisher.unpublishFeatureType(ns, storeName,
-					layerName);
-			if (!ok) {
-				fail("Could not unpublish layer " + layerName);
-			}
-		}
-		// the test ds may exist
-		if (publisher.removeDatastore(ns, storeName)) {
-			LOGGER.info("Cleared stale datastore " + storeName);
-		}
+    public void testPublishDeleteShapeZip() throws FileNotFoundException, IOException {
+        if (!enabled())
+            return;
+        // Assume.assumeTrue(enabled);
 
-		// known state?
-		assertFalse("Cleanup failed", existsLayer(layerName));
+        String ns = "it.geosolutions";
+        String storeName = "resttestshp";
+        String layerName = "cities";
 
-		// test insert
-		boolean published = publisher.publishShp(ns, storeName, layerName,
-				zipFile);
-		assertTrue("publish() failed", published);
-		assertTrue(existsLayer(layerName));
+        File zipFile = new ClassPathResource("testdata/resttestshp.zip").getFile();
 
-		// test delete
-		boolean ok = publisher.unpublishFeatureType(ns, storeName, layerName);
-		assertTrue("Unpublish() failed", ok);
-		assertFalse(existsLayer(layerName));
+        // dry run delete to work in a known state
+        Element testLayer = reader.getLayer(layerName);
+        if (testLayer != null) {
+            LOGGER.info("Clearing stale test layer " + layerName);
+            boolean ok = publisher.unpublishFeatureType(ns, storeName, layerName);
+            if (!ok) {
+                fail("Could not unpublish layer " + layerName);
+            }
+        }
+        // the test ds may exist
+        if (publisher.removeDatastore(ns, storeName)) {
+            LOGGER.info("Cleared stale datastore " + storeName);
+        }
 
-		// remove also datastore
-		boolean dsRemoved = publisher.removeDatastore(ns, storeName);
-		assertTrue("removeDatastore() failed", dsRemoved);
+        // known state?
+        assertFalse("Cleanup failed", existsLayer(layerName));
 
-	}
+        // test insert
+        boolean published = publisher.publishShp(ns, storeName, layerName, zipFile);
+        assertTrue("publish() failed", published);
+        assertTrue(existsLayer(layerName));
 
-	public void testPublishDeleteStyleFile() throws FileNotFoundException,
-			IOException {
-		if (!enabled())
-			return;
-		// Assume.assumeTrue(enabled);
-		final String styleName = "restteststyle";
+        // test delete
+        boolean ok = publisher.unpublishFeatureType(ns, storeName, layerName);
+        assertTrue("Unpublish() failed", ok);
+        assertFalse(existsLayer(layerName));
 
-		File sldFile = new ClassPathResource("testdata/restteststyle.sld")
-				.getFile();
+        // remove also datastore
+        boolean dsRemoved = publisher.removeDatastore(ns, storeName);
+        assertTrue("removeDatastore() failed", dsRemoved);
 
-		// dry run delete to work in a known state
-		if (reader.existsStyle(styleName)) {
-			LOGGER.info("Clearing stale test style " + styleName);
-			boolean ok = publisher.removeStyle(styleName);
-			if (!ok) {
-				fail("Could not unpublish style " + styleName);
-			}
-		}
+    }
 
-		// known state?
-		assertFalse("Cleanup failed", reader.existsStyle(styleName));
+    public void testPublishDeleteStyleFile() throws FileNotFoundException, IOException {
+        if (!enabled())
+            return;
+        // Assume.assumeTrue(enabled);
+        final String styleName = "restteststyle";
 
-		// test insert
-		boolean published = publisher.publishStyle(sldFile); // Will take the
-																// name from sld
-																// contents
-		assertTrue("publish() failed", published);
-		assertTrue(reader.existsStyle(styleName));
+        File sldFile = new ClassPathResource("testdata/restteststyle.sld").getFile();
 
-		// test delete
-		boolean ok = publisher.removeStyle(styleName);
-		assertTrue("Unpublish() failed", ok);
-		assertFalse(reader.existsStyle(styleName));
-	}
+        // dry run delete to work in a known state
+        if (reader.existsStyle(styleName)) {
+            LOGGER.info("Clearing stale test style " + styleName);
+            boolean ok = publisher.removeStyle(styleName);
+            if (!ok) {
+                fail("Could not unpublish style " + styleName);
+            }
+        }
 
-	public void testPublishDeleteStyleString() throws FileNotFoundException,
-			IOException {
-		if (!enabled())
-			return;
-		// Assume.assumeTrue(enabled);
-		final String styleName = "restteststyle";
+        // known state?
+        assertFalse("Cleanup failed", reader.existsStyle(styleName));
 
-		File sldFile = new ClassPathResource("testdata/restteststyle.sld")
-				.getFile();
+        // test insert
+        boolean published = publisher.publishStyle(sldFile); // Will take the
+        // name from sld
+        // contents
+        assertTrue("publish() failed", published);
+        assertTrue(reader.existsStyle(styleName));
 
-		// dry run delete to work in a known state
-		if (reader.existsStyle(styleName)) {
-			LOGGER.info("Clearing stale test style " + styleName);
-			boolean ok = publisher.removeStyle(styleName);
-			if (!ok) {
-				fail("Could not unpublish style " + styleName);
-			}
-		}
+        // test delete
+        boolean ok = publisher.removeStyle(styleName);
+        assertTrue("Unpublish() failed", ok);
+        assertFalse(reader.existsStyle(styleName));
+    }
 
-		// known state?
-		assertFalse("Cleanup failed", reader.existsStyle(styleName));
+    public void testPublishDeleteStyleString() throws FileNotFoundException, IOException {
+        if (!enabled())
+            return;
+        // Assume.assumeTrue(enabled);
+        final String styleName = "restteststyle";
 
-		// test insert
-		String sldContent = IOUtils.toString(new FileInputStream(sldFile));
+        File sldFile = new ClassPathResource("testdata/restteststyle.sld").getFile();
 
-		boolean published = publisher.publishStyle(sldContent); // Will take the
-																// name from sld
-																// contents
-		assertTrue("publish() failed", published);
-		assertTrue(reader.existsStyle(styleName));
+        // dry run delete to work in a known state
+        if (reader.existsStyle(styleName)) {
+            LOGGER.info("Clearing stale test style " + styleName);
+            boolean ok = publisher.removeStyle(styleName);
+            if (!ok) {
+                fail("Could not unpublish style " + styleName);
+            }
+        }
 
-		// test delete
-		boolean ok = publisher.removeStyle(styleName);
-		assertTrue("Unpublish() failed", ok);
-		assertFalse(reader.existsStyle(styleName));
-	}
+        // known state?
+        assertFalse("Cleanup failed", reader.existsStyle(styleName));
 
-	public void testDeleteUnexistingCoverage() throws FileNotFoundException,
-			IOException {
-		if (!enabled())
-			return;
-		// Assume.assumeTrue(enabled);
+        // test insert
+        String sldContent = IOUtils.toString(new FileInputStream(sldFile));
 
-		String wsName = "this_ws_does_not_exist";
-		String storeName = "this_store_does_not_exist";
-		String layerName = "this_layer_does_not_exist";
+        boolean published = publisher.publishStyle(sldContent); // Will take the
+        // name from sld
+        // contents
+        assertTrue("publish() failed", published);
+        assertTrue(reader.existsStyle(styleName));
 
-		boolean ok = publisher.unpublishCoverage(wsName, storeName, layerName);
-		assertFalse("unpublished not existing layer", ok);
-	}
+        // test delete
+        boolean ok = publisher.removeStyle(styleName);
+        assertTrue("Unpublish() failed", ok);
+        assertFalse(reader.existsStyle(styleName));
+    }
 
-	public void testDeleteUnexistingFeatureType() throws FileNotFoundException,
-			IOException {
-		if (!enabled())
-			return;
-		// Assume.assumeTrue(enabled);
+    public void testDeleteUnexistingCoverage() throws FileNotFoundException, IOException {
+        if (!enabled())
+            return;
+        // Assume.assumeTrue(enabled);
 
-		String wsName = "this_ws_does_not_exist";
-		String storeName = "this_store_does_not_exist";
-		String layerName = "this_layer_does_not_exist";
+        String wsName = "this_ws_does_not_exist";
+        String storeName = "this_store_does_not_exist";
+        String layerName = "this_layer_does_not_exist";
 
-		boolean ok = publisher.unpublishFeatureType(wsName, storeName,
-				layerName);
-		assertFalse("unpublished not existing layer", ok);
-	}
+        boolean ok = publisher.unpublishCoverage(wsName, storeName, layerName);
+        assertFalse("unpublished not existing layer", ok);
+    }
 
-	public void testDeleteUnexistingDatastore() throws FileNotFoundException,
-			IOException {
-		if (!enabled())
-			return;
-		// Assume.assumeTrue(enabled);
+    public void testDeleteUnexistingFeatureType() throws FileNotFoundException, IOException {
+        if (!enabled())
+            return;
+        // Assume.assumeTrue(enabled);
 
-		String wsName = "this_ws_does_not_exist";
-		String storeName = "this_store_does_not_exist";
+        String wsName = "this_ws_does_not_exist";
+        String storeName = "this_store_does_not_exist";
+        String layerName = "this_layer_does_not_exist";
 
-		boolean ok = publisher.removeDatastore(wsName, storeName);
-		assertFalse("removed not existing datastore", ok);
-	}
+        boolean ok = publisher.unpublishFeatureType(wsName, storeName, layerName);
+        assertFalse("unpublished not existing layer", ok);
+    }
 
-	// public void testDeleteUnexistingFT() throws FileNotFoundException,
-	// IOException {
-	// String wsName = "this_ws_does_not_exist";
-	// String storeName = "this_store_does_not_exist";
-	// String layerName = "this_layer_does_not_exist";
-	//
-	// boolean ok = publisher.unpublishFT(wsName, storeName, layerName);
-	// assertFalse("unpublished not existing layer", ok);
-	// }
+    public void testDeleteUnexistingDatastore() throws FileNotFoundException, IOException {
+        if (!enabled())
+            return;
+        // Assume.assumeTrue(enabled);
 
-	private boolean existsLayer(String layername) {
-		return reader.getLayer(layername) != null;
-	}
+        String wsName = "this_ws_does_not_exist";
+        String storeName = "this_store_does_not_exist";
+
+        boolean ok = publisher.removeDatastore(wsName, storeName);
+        assertFalse("removed not existing datastore", ok);
+    }
+
+    // public void testDeleteUnexistingFT() throws FileNotFoundException,
+    // IOException {
+    // String wsName = "this_ws_does_not_exist";
+    // String storeName = "this_store_does_not_exist";
+    // String layerName = "this_layer_does_not_exist";
+    //
+    // boolean ok = publisher.unpublishFT(wsName, storeName, layerName);
+    // assertFalse("unpublished not existing layer", ok);
+    // }
+
+    private boolean existsLayer(String layername) {
+        return reader.getLayer(layername) != null;
+    }
 
 }

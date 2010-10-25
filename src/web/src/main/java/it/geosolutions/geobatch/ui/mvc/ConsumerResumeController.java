@@ -35,13 +35,12 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class ConsumerResumeController extends ConsumerAbstractController {
 
-	@Override
-	protected void runStuff(ModelAndView mav, FileBasedFlowManager fm,
-			BaseEventConsumer consumer) {
-		if (fm != null && consumer != null)
-			consumer.resume();
+    @Override
+    protected void runStuff(ModelAndView mav, FileBasedFlowManager fm, BaseEventConsumer consumer) {
+        if (fm != null && consumer != null)
+            consumer.resume();
 
-		mav.addObject("consumer", consumer);
-	}
+        mav.addObject("consumer", consumer);
+    }
 
 }

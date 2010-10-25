@@ -35,8 +35,8 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLIsBaseLayer extends OLBaseClass {
 
-	public OLIsBaseLayer(String content) {
-		super(content);
-	}
+    public OLIsBaseLayer(String content) {
+        super(content);
+    }
 
 }

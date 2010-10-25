@@ -38,44 +38,44 @@ import java.util.logging.Logger;
  * 
  */
 public class FTPDownloadActionService extends BaseService implements
-		ActionService<FileSystemMonitorEvent, FTPActionConfiguration> {
+        ActionService<FileSystemMonitorEvent, FTPActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(FTPDownloadActionService.class.toString());
+    private final static Logger LOGGER = Logger
+            .getLogger(FTPDownloadActionService.class.toString());
 
-	/**
-	 * The FTPDownloadActionService default constructor.
-	 */
-	public FTPDownloadActionService() {
-		super(true);
-	}
+    /**
+     * The FTPDownloadActionService default constructor.
+     */
+    public FTPDownloadActionService() {
+        super(true);
+    }
 
-	/**
-	 * Method to verify if the action creation is available.
-	 * 
-	 * @param configuration
-	 *            The FTP action configuration.
-	 * @return boolean
-	 */
-	public boolean canCreateAction(FTPActionConfiguration configuration) {
-		return true;
-	}
+    /**
+     * Method to verify if the action creation is available.
+     * 
+     * @param configuration
+     *            The FTP action configuration.
+     * @return boolean
+     */
+    public boolean canCreateAction(FTPActionConfiguration configuration) {
+        return true;
+    }
 
-	/**
-	 * Method to create a download action using the FTP action configuration.
-	 * 
-	 * @param configuration
-	 *            The FTP action configuration.
-	 * @return The FTPDownloadAction
-	 */
-	public FTPDownloadAction createAction(FTPActionConfiguration configuration) {
-		try {
-			return new FTPDownloadAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.SEVERE))
-				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
+    /**
+     * Method to create a download action using the FTP action configuration.
+     * 
+     * @param configuration
+     *            The FTP action configuration.
+     * @return The FTPDownloadAction
+     */
+    public FTPDownloadAction createAction(FTPActionConfiguration configuration) {
+        try {
+            return new FTPDownloadAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

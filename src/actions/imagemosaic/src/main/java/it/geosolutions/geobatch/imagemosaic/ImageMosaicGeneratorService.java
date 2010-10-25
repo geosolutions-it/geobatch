@@ -31,35 +31,33 @@ import java.util.logging.Logger;
  * Public class to generate JGSFLoDeSS Services
  * 
  */
-public class ImageMosaicGeneratorService
-		extends
-		ImageMosaicConfiguratorService<FileSystemMonitorEvent, ImageMosaicActionConfiguration> {
+public class ImageMosaicGeneratorService extends
+        ImageMosaicConfiguratorService<FileSystemMonitorEvent, ImageMosaicActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(ImageMosaicGeneratorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(ImageMosaicGeneratorService.class
+            .toString());
 
-	/**
-	 * Action creator
-	 * 
-	 * @param configuration
-	 *            The data base action configuration
-	 * @return new JGSFLoDeSSSWANFileConfigurator()
-	 */
-	public ImageMosaicConfigurator createAction(
-			ImageMosaicActionConfiguration configuration) {
-		try {
-			return new ImageMosaicConfigurator(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Action creator
+     * 
+     * @param configuration
+     *            The data base action configuration
+     * @return new JGSFLoDeSSSWANFileConfigurator()
+     */
+    public ImageMosaicConfigurator createAction(ImageMosaicActionConfiguration configuration) {
+        try {
+            return new ImageMosaicConfigurator(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	@Override
-	public boolean canCreateAction(ImageMosaicActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    @Override
+    public boolean canCreateAction(ImageMosaicActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

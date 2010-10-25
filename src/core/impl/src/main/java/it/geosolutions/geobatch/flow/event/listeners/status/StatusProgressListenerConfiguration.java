@@ -9,7 +9,6 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
  * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class StatusProgressListenerConfiguration extends
-		ProgressListenerConfiguration {
+public class StatusProgressListenerConfiguration extends ProgressListenerConfiguration {
 
 }

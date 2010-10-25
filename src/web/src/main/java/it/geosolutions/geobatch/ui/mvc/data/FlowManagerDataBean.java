@@ -27,88 +27,88 @@ package it.geosolutions.geobatch.ui.mvc.data;
  * 
  */
 public class FlowManagerDataBean {
-	private String descriptorId;
+    private String descriptorId;
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	private String inputDir;
+    private String inputDir;
 
-	private String outputDir;
+    private String outputDir;
 
-	/**
-	 * @return the descriptorId
-	 */
-	public String getDescriptorId() {
-		return descriptorId;
-	}
+    /**
+     * @return the descriptorId
+     */
+    public String getDescriptorId() {
+        return descriptorId;
+    }
 
-	/**
-	 * @param descriptorId
-	 *            the descriptorId to set
-	 */
-	public void setDescriptorId(String descriptorId) {
-		this.descriptorId = descriptorId;
-	}
+    /**
+     * @param descriptorId
+     *            the descriptorId to set
+     */
+    public void setDescriptorId(String descriptorId) {
+        this.descriptorId = descriptorId;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @return the inputDir
-	 */
-	public String getInputDir() {
-		return inputDir;
-	}
+    /**
+     * @return the inputDir
+     */
+    public String getInputDir() {
+        return inputDir;
+    }
 
-	/**
-	 * @param inputDir
-	 *            the inputDir to set
-	 */
-	public void setInputDir(String inputDir) {
-		this.inputDir = inputDir;
-	}
+    /**
+     * @param inputDir
+     *            the inputDir to set
+     */
+    public void setInputDir(String inputDir) {
+        this.inputDir = inputDir;
+    }
 
-	/**
-	 * @return the workingDirectory
-	 */
-	public String getOutputDir() {
-		return outputDir;
-	}
+    /**
+     * @return the workingDirectory
+     */
+    public String getOutputDir() {
+        return outputDir;
+    }
 
-	/**
-	 * @param workingDirectory
-	 *            the workingDirectory to set
-	 */
-	public void setOutputDir(String outputDir) {
-		this.outputDir = outputDir;
-	}
+    /**
+     * @param workingDirectory
+     *            the workingDirectory to set
+     */
+    public void setOutputDir(String outputDir) {
+        this.outputDir = outputDir;
+    }
 }

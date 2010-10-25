@@ -37,45 +37,45 @@ import org.hibernate.annotations.NaturalId;
 @Table
 public class UserFlowAccess implements Serializable {
 
-	@Id
-	private String id;
+    @Id
+    private String id;
 
-	@NaturalId(mutable = false)
-	private Long userId;
+    @NaturalId(mutable = false)
+    private Long userId;
 
-	@NaturalId(mutable = false)
-	private String flowId;
+    @NaturalId(mutable = false)
+    private String flowId;
 
-	protected UserFlowAccess() {
-	}
+    protected UserFlowAccess() {
+    }
 
-	public UserFlowAccess(Long userId, String flowId) {
-		this.userId = userId;
-		this.flowId = flowId;
-		this.id = userId + "_" + flowId;
-	}
+    public UserFlowAccess(Long userId, String flowId) {
+        this.userId = userId;
+        this.flowId = flowId;
+        this.id = userId + "_" + flowId;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	protected void setId(String id) {
-		this.id = id;
-	}
+    protected void setId(String id) {
+        this.id = id;
+    }
 
-	public String getFlowId() {
-		return flowId;
-	}
+    public String getFlowId() {
+        return flowId;
+    }
 
-	protected void setFlowId(String flowId) {
-		this.flowId = flowId;
-	}
+    protected void setFlowId(String flowId) {
+        this.flowId = flowId;
+    }
 
-	public Long getUserId() {
-		return userId;
-	}
+    public Long getUserId() {
+        return userId;
+    }
 
-	protected void setUserId(Long userId) {
-		this.userId = userId;
-	}
+    protected void setUserId(Long userId) {
+        this.userId = userId;
+    }
 }

@@ -34,101 +34,104 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  * 
  */
 public class WMCBoundingBox {
-	private String srs;
-	private Double maxx = 180.0;
-	private Double maxy = 90.0;
-	private Double minx = -180.0;
-	private Double miny = -90.0;
+    private String srs;
 
-	/**
-	 * @param srs
-	 * @param maxx
-	 * @param maxy
-	 * @param minx
-	 * @param miny
-	 */
-	public WMCBoundingBox(String srs, Double maxx, Double maxy, Double minx,
-			Double miny) {
-		this.srs = srs;
-		this.maxx = maxx;
-		this.maxy = maxy;
-		this.minx = minx;
-		this.miny = miny;
-	}
+    private Double maxx = 180.0;
 
-	/**
-	 * @return the srs
-	 */
-	public String getSrs() {
-		return srs;
-	}
+    private Double maxy = 90.0;
 
-	/**
-	 * @param srs
-	 *            the srs to set
-	 */
-	public void setSrs(String srs) {
-		this.srs = srs;
-	}
+    private Double minx = -180.0;
 
-	/**
-	 * @return the maxx
-	 */
-	public Double getMaxx() {
-		return maxx;
-	}
+    private Double miny = -90.0;
 
-	/**
-	 * @param maxx
-	 *            the maxx to set
-	 */
-	public void setMaxx(Double maxx) {
-		this.maxx = maxx;
-	}
+    /**
+     * @param srs
+     * @param maxx
+     * @param maxy
+     * @param minx
+     * @param miny
+     */
+    public WMCBoundingBox(String srs, Double maxx, Double maxy, Double minx, Double miny) {
+        this.srs = srs;
+        this.maxx = maxx;
+        this.maxy = maxy;
+        this.minx = minx;
+        this.miny = miny;
+    }
 
-	/**
-	 * @return the maxy
-	 */
-	public Double getMaxy() {
-		return maxy;
-	}
+    /**
+     * @return the srs
+     */
+    public String getSrs() {
+        return srs;
+    }
 
-	/**
-	 * @param maxy
-	 *            the maxy to set
-	 */
-	public void setMaxy(Double maxy) {
-		this.maxy = maxy;
-	}
+    /**
+     * @param srs
+     *            the srs to set
+     */
+    public void setSrs(String srs) {
+        this.srs = srs;
+    }
 
-	/**
-	 * @return the minx
-	 */
-	public Double getMinx() {
-		return minx;
-	}
+    /**
+     * @return the maxx
+     */
+    public Double getMaxx() {
+        return maxx;
+    }
 
-	/**
-	 * @param minx
-	 *            the minx to set
-	 */
-	public void setMinx(Double minx) {
-		this.minx = minx;
-	}
+    /**
+     * @param maxx
+     *            the maxx to set
+     */
+    public void setMaxx(Double maxx) {
+        this.maxx = maxx;
+    }
 
-	/**
-	 * @return the miny
-	 */
-	public Double getMiny() {
-		return miny;
-	}
+    /**
+     * @return the maxy
+     */
+    public Double getMaxy() {
+        return maxy;
+    }
 
-	/**
-	 * @param miny
-	 *            the miny to set
-	 */
-	public void setMiny(Double miny) {
-		this.miny = miny;
-	}
+    /**
+     * @param maxy
+     *            the maxy to set
+     */
+    public void setMaxy(Double maxy) {
+        this.maxy = maxy;
+    }
+
+    /**
+     * @return the minx
+     */
+    public Double getMinx() {
+        return minx;
+    }
+
+    /**
+     * @param minx
+     *            the minx to set
+     */
+    public void setMinx(Double minx) {
+        this.minx = minx;
+    }
+
+    /**
+     * @return the miny
+     */
+    public Double getMiny() {
+        return miny;
+    }
+
+    /**
+     * @param miny
+     *            the miny to set
+     */
+    public void setMiny(Double miny) {
+        this.miny = miny;
+    }
 
 }

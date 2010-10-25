@@ -32,46 +32,45 @@ import it.geosolutions.geobatch.configuration.CatalogConfiguration;
  * @author Alessio Fabiani, GeoSolutions
  */
 public class FileBasedCatalogConfiguration extends BaseConfiguration implements
-		CatalogConfiguration {
+        CatalogConfiguration {
 
-	// private List<FlowConfiguration> flowConfigurations;
+    // private List<FlowConfiguration> flowConfigurations;
 
-	/**
-	 * workingDirectory: this attribute represents the configuring directory for
-	 * this flow. It can be relative to the catalog.xml directory or absolute.
-	 * 
-	 * Attention: the configuring directory should be different from the one
-	 * containing the configuration files.
-	 */
-	private String workingDirectory;
+    /**
+     * workingDirectory: this attribute represents the configuring directory for this flow. It can
+     * be relative to the catalog.xml directory or absolute.
+     * 
+     * Attention: the configuring directory should be different from the one containing the
+     * configuration files.
+     */
+    private String workingDirectory;
 
-	/**
-	 * Default Constructor.
-	 */
-	public FileBasedCatalogConfiguration() {
-		super();
-	}
+    /**
+     * Default Constructor.
+     */
+    public FileBasedCatalogConfiguration() {
+        super();
+    }
 
-	/**
-	 * Getter for the workingDirectory
-	 */
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
+    /**
+     * Getter for the workingDirectory
+     */
+    public String getWorkingDirectory() {
+        return workingDirectory;
+    }
 
-	/**
-	 * Setter for the workingDirectory.
-	 * 
-	 * @param workingDirectory
-	 */
-	public void setWorkingDirectory(String workingDirectory) {
-		this.workingDirectory = workingDirectory;
-	}
+    /**
+     * Setter for the workingDirectory.
+     * 
+     * @param workingDirectory
+     */
+    public void setWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + "id:" + getId()
-				+ ", workingDirectory:" + getWorkingDirectory() + ", name:"
-				+ getName() + "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + "id:" + getId() + ", workingDirectory:"
+                + getWorkingDirectory() + ", name:" + getName() + "]";
+    }
 }

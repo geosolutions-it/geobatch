@@ -34,43 +34,44 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  * 
  */
 public class OLBaseClass {
-	private String xmlns_ol = "http://openlayers.org/context";
-	private String content;
+    private String xmlns_ol = "http://openlayers.org/context";
 
-	/**
-	 * @param content
-	 */
-	public OLBaseClass(String content) {
-		this.setContent(content);
-	}
+    private String content;
 
-	/**
-	 * @param xmlns_ol
-	 *            the xmlns_ol to set
-	 */
-	public void setXmlns_ol(String xmlns_ol) {
-		this.xmlns_ol = xmlns_ol;
-	}
+    /**
+     * @param content
+     */
+    public OLBaseClass(String content) {
+        this.setContent(content);
+    }
 
-	/**
-	 * @return the xmlns_ol
-	 */
-	public String getXmlns_ol() {
-		return xmlns_ol;
-	}
+    /**
+     * @param xmlns_ol
+     *            the xmlns_ol to set
+     */
+    public void setXmlns_ol(String xmlns_ol) {
+        this.xmlns_ol = xmlns_ol;
+    }
 
-	/**
-	 * @param content
-	 *            the content to set
-	 */
-	public void setContent(String content) {
-		this.content = content;
-	}
+    /**
+     * @return the xmlns_ol
+     */
+    public String getXmlns_ol() {
+        return xmlns_ol;
+    }
 
-	/**
-	 * @return the content
-	 */
-	public String getContent() {
-		return content;
-	}
+    /**
+     * @param content
+     *            the content to set
+     */
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    /**
+     * @return the content
+     */
+    public String getContent() {
+        return content;
+    }
 }

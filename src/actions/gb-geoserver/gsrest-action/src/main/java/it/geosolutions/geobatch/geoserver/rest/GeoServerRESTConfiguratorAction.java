@@ -44,172 +44,155 @@ import org.apache.commons.io.FilenameUtils;
  * 
  * @author AlFa
  * 
- * @version $ GeoServerRESTConfiguratorAction.java $ Revision: 0.1 $ 12/feb/07
- *          12:07:06
+ * @version $ GeoServerRESTConfiguratorAction.java $ Revision: 0.1 $ 12/feb/07 12:07:06
  */
 
 public class GeoServerRESTConfiguratorAction extends
-		GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+        GeoServerConfiguratorAction<FileSystemMonitorEvent> {
 
-	/**
-	 * Default logger
-	 */
-	protected final static Logger LOGGER = Logger
-			.getLogger(GeoServerRESTConfiguratorAction.class.toString());
+    /**
+     * Default logger
+     */
+    protected final static Logger LOGGER = Logger.getLogger(GeoServerRESTConfiguratorAction.class
+            .toString());
 
-	protected final GeoServerRESTActionConfiguration configuration;
+    protected final GeoServerRESTActionConfiguration configuration;
 
-	/**
-	 * 
-	 * @param configuration
-	 */
-	public GeoServerRESTConfiguratorAction(
-			GeoServerRESTActionConfiguration configuration) {
-		super(configuration);
+    /**
+     * 
+     * @param configuration
+     */
+    public GeoServerRESTConfiguratorAction(GeoServerRESTActionConfiguration configuration) {
+        super(configuration);
 
-		this.configuration = new GeoServerRESTActionConfiguration(configuration);
-	}
+        this.configuration = new GeoServerRESTActionConfiguration(configuration);
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public GeoServerRESTActionConfiguration getConfiguration() {
-		return configuration;
-	}
+    /**
+     * 
+     * @return
+     */
+    public GeoServerRESTActionConfiguration getConfiguration() {
+        return configuration;
+    }
 
-	/**
-	 * 
-	 * @param events
-	 * @return
-	 * @throws ActionException
-	 */
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+    /**
+     * 
+     * @param events
+     * @return
+     * @throws ActionException
+     */
+    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+            throws ActionException {
 
-		listenerForwarder.setTask("config");
-		listenerForwarder.started();
+        listenerForwarder.setTask("config");
+        listenerForwarder.started();
 
-		try {
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Initializing input variables
-			//
-			// ////////////////////////////////////////////////////////////////////
-			if (configuration == null) {
-				// LOGGER.log(Level.SEVERE, "ActionConfig is null."); // we're
-				// rethrowing it, so don't log
-				throw new IllegalStateException("ActionConfig is null.");
-			}
+        try {
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Initializing input variables
+            //
+            // ////////////////////////////////////////////////////////////////////
+            if (configuration == null) {
+                // LOGGER.log(Level.SEVERE, "ActionConfig is null."); // we're
+                // rethrowing it, so don't log
+                throw new IllegalStateException("ActionConfig is null.");
+            }
 
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Initializing input variables
-			//
-			// ////////////////////////////////////////////////////////////////////
-			final File workingDir = IOUtils.findLocation(configuration
-					.getWorkingDirectory(), new File(
-					((FileBaseCatalog) CatalogHolder.getCatalog())
-							.getBaseDirectory()));
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Initializing input variables
+            //
+            // ////////////////////////////////////////////////////////////////////
+            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Checking input files.
-			//
-			// ////////////////////////////////////////////////////////////////////
-			if (workingDir == null) {
-				// LOGGER.log(Level.SEVERE, "Working directory is null."); //
-				// we're rethrowing it, so don't log
-				throw new IllegalStateException("Working directory is null.");
-			}
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Checking input files.
+            //
+            // ////////////////////////////////////////////////////////////////////
+            if (workingDir == null) {
+                // LOGGER.log(Level.SEVERE, "Working directory is null."); //
+                // we're rethrowing it, so don't log
+                throw new IllegalStateException("Working directory is null.");
+            }
 
-			if (!workingDir.exists() || !workingDir.isDirectory()) {
-				// LOGGER.log(Level.SEVERE,
-				// "Working directory does not exist ("+workingDir.getAbsolutePath()+").");
-				// // we're rethrowing it, so don't log
-				throw new IllegalStateException(
-						"Working directory does not exist ("
-								+ workingDir.getAbsolutePath() + ").");
-			}
+            if (!workingDir.exists() || !workingDir.isDirectory()) {
+                // LOGGER.log(Level.SEVERE,
+                // "Working directory does not exist ("+workingDir.getAbsolutePath()+").");
+                // // we're rethrowing it, so don't log
+                throw new IllegalStateException("Working directory does not exist ("
+                        + workingDir.getAbsolutePath() + ").");
+            }
 
-			// Fetch the first event in the queue.
-			listenerForwarder.progressing(10, "In progress");
-			Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
+            // Fetch the first event in the queue.
+            listenerForwarder.progressing(10, "In progress");
+            Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
 
-			while (events.size() > 0) {
-				FileSystemMonitorEvent event = events.remove();
-				final File fileToSend = event.getSource();
-				final String fileBaseName = FilenameUtils
-						.getBaseName(fileToSend.getName());
+            while (events.size() > 0) {
+                FileSystemMonitorEvent event = events.remove();
+                final File fileToSend = event.getSource();
+                final String fileBaseName = FilenameUtils.getBaseName(fileToSend.getName());
 
-				// TODO: check if a layer with the same name already exists in
-				// GS
+                // TODO: check if a layer with the same name already exists in
+                // GS
 
-				// ////////////////////////////////////////////////////////////////////
-				//
-				// SENDING data to GeoServer via REST protocol.
-				//
-				// ////////////////////////////////////////////////////////////////////
-				// http://localhost:8080/geoserver/rest/coveragestores/test_cv_store/test/file.tiff
+                // ////////////////////////////////////////////////////////////////////
+                //
+                // SENDING data to GeoServer via REST protocol.
+                //
+                // ////////////////////////////////////////////////////////////////////
+                // http://localhost:8080/geoserver/rest/coveragestores/test_cv_store/test/file.tiff
 
-				listenerForwarder.progressing(
-						10 + (30 / (events.size() == 0 ? 1 : events.size())),
-						"Preparing file");
+                listenerForwarder.progressing(10 + (30 / (events.size() == 0 ? 1 : events.size())),
+                        "Preparing file");
 
-				LOGGER.info("Sending ShapeFile to GeoServer ... "
-						+ getConfiguration().getGeoserverURL());
-				Map<String, String> queryParams = new HashMap<String, String>();
-				queryParams.put("namespace", getConfiguration()
-						.getDefaultNamespace());
-				queryParams.put("wmspath", getConfiguration().getWmsPath());
+                LOGGER.info("Sending ShapeFile to GeoServer ... "
+                        + getConfiguration().getGeoserverURL());
+                Map<String, String> queryParams = new HashMap<String, String>();
+                queryParams.put("namespace", getConfiguration().getDefaultNamespace());
+                queryParams.put("wmspath", getConfiguration().getWmsPath());
 
-				listenerForwarder.progressing(
-						10 + (50 / (events.size() == 0 ? 1 : events.size())),
-						"Sending");
-				final String[] returnedLayer = GeoServerRESTHelper.send(
-						fileToSend, fileToSend, configuration
-								.isVectorialLayer(), configuration
-								.getGeoserverURL(), configuration
-								.getGeoserverUID(), configuration
-								.getGeoserverPWD(),
-						configuration.getStoreId() != null ? configuration
-								.getStoreId() : fileBaseName, configuration
-								.getStoreFilePrefix() != null ? configuration
-								.getStoreFilePrefix() : fileBaseName,
-						queryParams,
-						configuration.getQueryString() != null ? configuration
-								.getQueryString() : "", configuration
-								.getDataTransferMethod(), configuration
-								.getStoreType(), configuration
-								.getGeoserverVersion(), configuration
-								.getStyles(), configuration.getDefaultStyle());
+                listenerForwarder.progressing(10 + (50 / (events.size() == 0 ? 1 : events.size())),
+                        "Sending");
+                final String[] returnedLayer = GeoServerRESTHelper.send(fileToSend, fileToSend,
+                        configuration.isVectorialLayer(), configuration.getGeoserverURL(),
+                        configuration.getGeoserverUID(), configuration.getGeoserverPWD(),
+                        configuration.getStoreId() != null ? configuration.getStoreId()
+                                : fileBaseName,
+                        configuration.getStoreFilePrefix() != null ? configuration
+                                .getStoreFilePrefix() : fileBaseName, queryParams, configuration
+                                .getQueryString() != null ? configuration.getQueryString() : "",
+                        configuration.getDataTransferMethod(), configuration.getStoreType(),
+                        configuration.getGeoserverVersion(), configuration.getStyles(),
+                        configuration.getDefaultStyle());
 
-				if (returnedLayer != null) {
-					outEvents.add(new FileSystemMonitorEvent(fileToSend,
-							FileSystemMonitorNotifications.FILE_ADDED));
-				} else {
-					throw new RuntimeException(
-							"Error configuring the layer on GeoServer");
-				}
-			}
+                if (returnedLayer != null) {
+                    outEvents.add(new FileSystemMonitorEvent(fileToSend,
+                            FileSystemMonitorNotifications.FILE_ADDED));
+                } else {
+                    throw new RuntimeException("Error configuring the layer on GeoServer");
+                }
+            }
 
-			listenerForwarder.setProgress(100);
-			listenerForwarder.completed();
+            listenerForwarder.setProgress(100);
+            listenerForwarder.completed();
 
-			return outEvents;
-		} catch (Throwable t) {
-			// LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // we're
-			// rethrowing it, so don't log
-			listenerForwarder.failed(t); // fails the Action
-			throw new ActionException(this, t.getMessage(), t);
-		} finally {
-		}
-	}
+            return outEvents;
+        } catch (Throwable t) {
+            // LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // we're
+            // rethrowing it, so don't log
+            listenerForwarder.failed(t); // fails the Action
+            throw new ActionException(this, t.getMessage(), t);
+        } finally {
+        }
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + "cfg:" + getConfiguration()
-				+ "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + "cfg:" + getConfiguration() + "]";
+    }
 
 }

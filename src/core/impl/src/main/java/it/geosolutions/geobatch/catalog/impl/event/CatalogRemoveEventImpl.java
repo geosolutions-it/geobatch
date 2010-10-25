@@ -28,10 +28,9 @@ import it.geosolutions.geobatch.catalog.event.CatalogRemoveEvent;
  * @author Alessio
  * 
  */
-public class CatalogRemoveEventImpl<T> extends CatalogEventImpl<T> implements
-		CatalogRemoveEvent<T> {
+public class CatalogRemoveEventImpl<T> extends CatalogEventImpl<T> implements CatalogRemoveEvent<T> {
 
-	public CatalogRemoveEventImpl(T source) {
-		super(source);
-	}
+    public CatalogRemoveEventImpl(T source) {
+        super(source);
+    }
 }

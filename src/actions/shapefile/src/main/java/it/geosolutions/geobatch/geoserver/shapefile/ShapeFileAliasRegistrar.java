@@ -32,9 +32,8 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  */
 public class ShapeFileAliasRegistrar extends AliasRegistrar {
 
-	public ShapeFileAliasRegistrar(AliasRegistry registry) {
-		LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-		registry.putAlias("ShapeFileConfiguration",
-				ShapeFileConfiguration.class);
-	}
+    public ShapeFileAliasRegistrar(AliasRegistry registry) {
+        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+        registry.putAlias("ShapeFileConfiguration", ShapeFileConfiguration.class);
+    }
 }

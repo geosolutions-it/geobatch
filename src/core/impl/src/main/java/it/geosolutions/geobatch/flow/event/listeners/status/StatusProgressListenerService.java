@@ -12,19 +12,18 @@ import java.util.logging.Logger;
  * @author ETj <etj at geo-solutions.it>
  */
 public class StatusProgressListenerService extends BaseService implements
-		ProgressListenerService<StatusProgressListenerConfiguration> {
-	// implements Service<FileSystemMonitorEvent,
-	// GeoTiffOverviewsEmbedderConfiguration> {
+        ProgressListenerService<StatusProgressListenerConfiguration> {
+    // implements Service<FileSystemMonitorEvent,
+    // GeoTiffOverviewsEmbedderConfiguration> {
 
-	private StatusProgressListenerService() {
-	}
+    private StatusProgressListenerService() {
+    }
 
-	private final static Logger LOGGER = Logger
-			.getLogger(StatusProgressListenerService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(StatusProgressListenerService.class
+            .toString());
 
-	public ProgressListener createProgressListener(
-			StatusProgressListenerConfiguration configuration) {
-		StatusProgressListener ret = new StatusProgressListener(configuration);
-		return ret;
-	}
+    public ProgressListener createProgressListener(StatusProgressListenerConfiguration configuration) {
+        StatusProgressListener ret = new StatusProgressListener(configuration);
+        return ret;
+    }
 }

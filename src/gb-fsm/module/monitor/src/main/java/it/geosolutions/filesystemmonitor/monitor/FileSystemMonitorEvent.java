@@ -8,37 +8,38 @@ import java.util.EventObject;
  */
 public class FileSystemMonitorEvent extends EventObject {
 
-	/**
+    /**
      * 
      */
-	private static final long serialVersionUID = 7915893220009824087L;
-	/**
-	 * @uml.property name="notification"
-	 */
-	private final FileSystemMonitorNotifications notification;
-	private final long timestamp;
+    private static final long serialVersionUID = 7915893220009824087L;
 
-	public FileSystemMonitorEvent(File source,
-			FileSystemMonitorNotifications notification) {
-		super(source);
-		this.timestamp = System.currentTimeMillis();
-		this.notification = notification;
-	}
+    /**
+     * @uml.property name="notification"
+     */
+    private final FileSystemMonitorNotifications notification;
 
-	/**
-	 * @return Returns the notification.
-	 * @uml.property name="notification"
-	 */
-	public FileSystemMonitorNotifications getNotification() {
-		return notification;
-	}
+    private final long timestamp;
 
-	@Override
-	public File getSource() {
-		return (File) super.getSource();
-	}
+    public FileSystemMonitorEvent(File source, FileSystemMonitorNotifications notification) {
+        super(source);
+        this.timestamp = System.currentTimeMillis();
+        this.notification = notification;
+    }
 
-	public long getTimestamp() {
-		return timestamp;
-	}
+    /**
+     * @return Returns the notification.
+     * @uml.property name="notification"
+     */
+    public FileSystemMonitorNotifications getNotification() {
+        return notification;
+    }
+
+    @Override
+    public File getSource() {
+        return (File) super.getSource();
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
 }

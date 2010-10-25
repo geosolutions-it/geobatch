@@ -12,16 +12,16 @@ import org.restlet.Router;
  * 
  */
 public class RESTDispatcher {
-	private Map<String, Restlet> resourceMappings = new HashMap<String, Restlet>();
+    private Map<String, Restlet> resourceMappings = new HashMap<String, Restlet>();
 
-	public void init(Router router) {
-		for (String key : resourceMappings.keySet()) {
-			router.attach(key, resourceMappings.get(key));
-		}
-	}
+    public void init(Router router) {
+        for (String key : resourceMappings.keySet()) {
+            router.attach(key, resourceMappings.get(key));
+        }
+    }
 
-	public void setResourceMappings(HashMap<String, Restlet> resourceMappings) {
-		this.resourceMappings = resourceMappings;
-	}
+    public void setResourceMappings(HashMap<String, Restlet> resourceMappings) {
+        this.resourceMappings = resourceMappings;
+    }
 
 }

@@ -34,11 +34,9 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  */
 public class METOCSActionsAliasRegistrar extends AliasRegistrar {
 
-	public METOCSActionsAliasRegistrar(AliasRegistry registry) {
-		LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-		registry.putAlias("MetocActionConfiguration",
-				MetocActionConfiguration.class);
-		registry.putAlias("RegistryActionConfiguration",
-				RegistryActionConfiguration.class);
-	}
+    public METOCSActionsAliasRegistrar(AliasRegistry registry) {
+        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+        registry.putAlias("MetocActionConfiguration", MetocActionConfiguration.class);
+        registry.putAlias("RegistryActionConfiguration", RegistryActionConfiguration.class);
+    }
 }

@@ -18,8 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  * Java class for metocElementType complex type.
  * 
  * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="metocElementType">
@@ -50,97 +49,100 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "metocElementType", propOrder = { "name", "brief" })
 public class MetocElementType {
 
-	@XmlElement(required = true)
-	protected String name;
-	@XmlElement(required = true)
-	protected String brief;
-	@XmlAttribute(required = true)
-	protected String defaultUom;
-	@XmlAttribute(required = true)
-	protected String type;
+    @XmlElement(required = true)
+    protected String name;
 
-	/**
-	 * Gets the value of the name property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getName() {
-		return name;
-	}
+    @XmlElement(required = true)
+    protected String brief;
 
-	/**
-	 * Sets the value of the name property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setName(String value) {
-		this.name = value;
-	}
+    @XmlAttribute(required = true)
+    protected String defaultUom;
 
-	/**
-	 * Gets the value of the brief property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getBrief() {
-		return brief;
-	}
+    @XmlAttribute(required = true)
+    protected String type;
 
-	/**
-	 * Sets the value of the brief property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setBrief(String value) {
-		this.brief = value;
-	}
+    /**
+     * Gets the value of the name property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Gets the value of the defaultUom property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getDefaultUom() {
-		return defaultUom;
-	}
+    /**
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *            allowed object is {@link String }
+     * 
+     */
+    public void setName(String value) {
+        this.name = value;
+    }
 
-	/**
-	 * Sets the value of the defaultUom property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setDefaultUom(String value) {
-		this.defaultUom = value;
-	}
+    /**
+     * Gets the value of the brief property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getBrief() {
+        return brief;
+    }
 
-	/**
-	 * Gets the value of the type property.
-	 * 
-	 * @return possible object is {@link String }
-	 * 
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Sets the value of the brief property.
+     * 
+     * @param value
+     *            allowed object is {@link String }
+     * 
+     */
+    public void setBrief(String value) {
+        this.brief = value;
+    }
 
-	/**
-	 * Sets the value of the type property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
-	 */
-	public void setType(String value) {
-		this.type = value;
-	}
+    /**
+     * Gets the value of the defaultUom property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getDefaultUom() {
+        return defaultUom;
+    }
+
+    /**
+     * Sets the value of the defaultUom property.
+     * 
+     * @param value
+     *            allowed object is {@link String }
+     * 
+     */
+    public void setDefaultUom(String value) {
+        this.defaultUom = value;
+    }
+
+    /**
+     * Gets the value of the type property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets the value of the type property.
+     * 
+     * @param value
+     *            allowed object is {@link String }
+     * 
+     */
+    public void setType(String value) {
+        this.type = value;
+    }
 
 }

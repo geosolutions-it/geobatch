@@ -26,63 +26,66 @@ import java.util.Map;
 
 public class WMCEntry {
 
-	private String layerTitle;
-	private String layerName;
-	private String nameSpace;
-	private Map<String, Map<String, String>> dimensions;
+    private String layerTitle;
 
-	public String getLayerName() {
-		return layerName;
-	}
+    private String layerName;
 
-	public void setLayerName(String layerName) {
-		this.layerName = layerName;
-	}
+    private String nameSpace;
 
-	public String getNameSpace() {
-		return nameSpace;
-	}
+    private Map<String, Map<String, String>> dimensions;
 
-	public void setNameSpace(String nameSpace) {
-		this.nameSpace = nameSpace;
-	}
+    public String getLayerName() {
+        return layerName;
+    }
 
-	public WMCEntry(final String nameSpace, final String layerName) {
-		this.layerName = layerName;
-		this.nameSpace = nameSpace;
-	}
+    public void setLayerName(String layerName) {
+        this.layerName = layerName;
+    }
 
-	/**
-	 * @param dimensions
-	 *            the dimensions to set
-	 */
-	public void setDimensions(Map<String, Map<String, String>> dimensions) {
-		this.dimensions = dimensions;
-	}
+    public String getNameSpace() {
+        return nameSpace;
+    }
 
-	/**
-	 * @return the dimensions
-	 */
-	public Map<String, Map<String, String>> getDimensions() {
-		if (dimensions == null)
-			dimensions = new HashMap<String, Map<String, String>>();
+    public void setNameSpace(String nameSpace) {
+        this.nameSpace = nameSpace;
+    }
 
-		return dimensions;
-	}
+    public WMCEntry(final String nameSpace, final String layerName) {
+        this.layerName = layerName;
+        this.nameSpace = nameSpace;
+    }
 
-	/**
-	 * @param layerTitle
-	 *            the layerTitle to set
-	 */
-	public void setLayerTitle(String layerTitle) {
-		this.layerTitle = layerTitle;
-	}
+    /**
+     * @param dimensions
+     *            the dimensions to set
+     */
+    public void setDimensions(Map<String, Map<String, String>> dimensions) {
+        this.dimensions = dimensions;
+    }
 
-	/**
-	 * @return the layerTitle
-	 */
-	public String getLayerTitle() {
-		return layerTitle;
-	}
+    /**
+     * @return the dimensions
+     */
+    public Map<String, Map<String, String>> getDimensions() {
+        if (dimensions == null)
+            dimensions = new HashMap<String, Map<String, String>>();
+
+        return dimensions;
+    }
+
+    /**
+     * @param layerTitle
+     *            the layerTitle to set
+     */
+    public void setLayerTitle(String layerTitle) {
+        this.layerTitle = layerTitle;
+    }
+
+    /**
+     * @return the layerTitle
+     */
+    public String getLayerTitle() {
+        return layerTitle;
+    }
 
 }

@@ -35,8 +35,8 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLTransparent extends OLBaseClass {
 
-	public OLTransparent(String content) {
-		super(content);
-	}
+    public OLTransparent(String content) {
+        super(content);
+    }
 
 }

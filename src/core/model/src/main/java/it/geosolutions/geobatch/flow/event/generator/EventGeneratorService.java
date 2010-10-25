@@ -28,8 +28,8 @@ import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConf
 import java.util.EventObject;
 
 public interface EventGeneratorService<EO extends EventObject, EGC extends EventGeneratorConfiguration>
-		extends Service {
-	public EventGenerator<EO> createEventGenerator(final EGC configuration);
+        extends Service {
+    public EventGenerator<EO> createEventGenerator(final EGC configuration);
 
-	public boolean canCreateEventGenerator(final EGC configuration);
+    public boolean canCreateEventGenerator(final EGC configuration);
 }

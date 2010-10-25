@@ -36,165 +36,172 @@ import java.util.List;
  * 
  */
 public class WMCLayer {
-	private String queryable = "0";
-	private String hidden = "0";
-	private WMCServer server;
-	private String name;
-	private String title;
-	private String srs;
-	private List<WMCFormat> formatList;
-	private List<WMCStyle> styleList;
-	private WMCExtension extension;
+    private String queryable = "0";
 
-	/**
-	 * @param queryable
-	 * @param hidden
-	 * @param name
-	 * @param title
-	 * @param srs
-	 */
-	public WMCLayer(String queryable, String hidden, String name, String title,
-			String srs) {
-		this.queryable = queryable;
-		this.hidden = hidden;
-		this.name = name;
-		this.title = title;
-		this.srs = srs;
-	}
+    private String hidden = "0";
 
-	/**
-	 * @return the queryable
-	 */
-	public String getQueryable() {
-		return queryable;
-	}
+    private WMCServer server;
 
-	/**
-	 * @param queryable
-	 *            the queryable to set
-	 */
-	public void setQueryable(String queryable) {
-		this.queryable = queryable;
-	}
+    private String name;
 
-	/**
-	 * @return the hidden
-	 */
-	public String getHidden() {
-		return hidden;
-	}
+    private String title;
 
-	/**
-	 * @param hidden
-	 *            the hidden to set
-	 */
-	public void setHidden(String hidden) {
-		this.hidden = hidden;
-	}
+    private String srs;
 
-	/**
-	 * @return the server
-	 */
-	public WMCServer getServer() {
-		return server;
-	}
+    private List<WMCFormat> formatList;
 
-	/**
-	 * @param server
-	 *            the server to set
-	 */
-	public void setServer(WMCServer server) {
-		this.server = server;
-	}
+    private List<WMCStyle> styleList;
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    private WMCExtension extension;
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @param queryable
+     * @param hidden
+     * @param name
+     * @param title
+     * @param srs
+     */
+    public WMCLayer(String queryable, String hidden, String name, String title, String srs) {
+        this.queryable = queryable;
+        this.hidden = hidden;
+        this.name = name;
+        this.title = title;
+        this.srs = srs;
+    }
 
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
+    /**
+     * @return the queryable
+     */
+    public String getQueryable() {
+        return queryable;
+    }
 
-	/**
-	 * @param title
-	 *            the title to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    /**
+     * @param queryable
+     *            the queryable to set
+     */
+    public void setQueryable(String queryable) {
+        this.queryable = queryable;
+    }
 
-	/**
-	 * @return the srs
-	 */
-	public String getSrs() {
-		return srs;
-	}
+    /**
+     * @return the hidden
+     */
+    public String getHidden() {
+        return hidden;
+    }
 
-	/**
-	 * @param srs
-	 *            the srs to set
-	 */
-	public void setSrs(String srs) {
-		this.srs = srs;
-	}
+    /**
+     * @param hidden
+     *            the hidden to set
+     */
+    public void setHidden(String hidden) {
+        this.hidden = hidden;
+    }
 
-	/**
-	 * @return the formatList
-	 */
-	public List<WMCFormat> getFormatList() {
-		return formatList;
-	}
+    /**
+     * @return the server
+     */
+    public WMCServer getServer() {
+        return server;
+    }
 
-	/**
-	 * @param formatList
-	 *            the formatList to set
-	 */
-	public void setFormatList(List<WMCFormat> formatList) {
-		this.formatList = formatList;
-	}
+    /**
+     * @param server
+     *            the server to set
+     */
+    public void setServer(WMCServer server) {
+        this.server = server;
+    }
 
-	/**
-	 * @return the styleList
-	 */
-	public List<WMCStyle> getStyleList() {
-		return styleList;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param styleList
-	 *            the styleList to set
-	 */
-	public void setStyleList(List<WMCStyle> styleList) {
-		this.styleList = styleList;
-	}
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @return the extension
-	 */
-	public WMCExtension getExtension() {
-		return extension;
-	}
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
 
-	/**
-	 * @param extension
-	 *            the extension to set
-	 */
-	public void setExtension(WMCExtension extension) {
-		this.extension = extension;
-	}
+    /**
+     * @param title
+     *            the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * @return the srs
+     */
+    public String getSrs() {
+        return srs;
+    }
+
+    /**
+     * @param srs
+     *            the srs to set
+     */
+    public void setSrs(String srs) {
+        this.srs = srs;
+    }
+
+    /**
+     * @return the formatList
+     */
+    public List<WMCFormat> getFormatList() {
+        return formatList;
+    }
+
+    /**
+     * @param formatList
+     *            the formatList to set
+     */
+    public void setFormatList(List<WMCFormat> formatList) {
+        this.formatList = formatList;
+    }
+
+    /**
+     * @return the styleList
+     */
+    public List<WMCStyle> getStyleList() {
+        return styleList;
+    }
+
+    /**
+     * @param styleList
+     *            the styleList to set
+     */
+    public void setStyleList(List<WMCStyle> styleList) {
+        this.styleList = styleList;
+    }
+
+    /**
+     * @return the extension
+     */
+    public WMCExtension getExtension() {
+        return extension;
+    }
+
+    /**
+     * @param extension
+     *            the extension to set
+     */
+    public void setExtension(WMCExtension extension) {
+        this.extension = extension;
+    }
 
 }

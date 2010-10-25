@@ -38,44 +38,43 @@ import java.util.logging.Logger;
  * 
  */
 public class FTPDeleteActionService extends BaseService implements
-		ActionService<FileSystemMonitorEvent, FTPActionConfiguration> {
+        ActionService<FileSystemMonitorEvent, FTPActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(FTPDeleteActionService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(FTPDeleteActionService.class.toString());
 
-	/**
-	 * The FTPDeleteActionServiceb default constructor.
-	 */
-	public FTPDeleteActionService() {
-		super(true);
-	}
+    /**
+     * The FTPDeleteActionServiceb default constructor.
+     */
+    public FTPDeleteActionService() {
+        super(true);
+    }
 
-	/**
-	 * Method to verify if the action creation is available.
-	 * 
-	 * @param configuration
-	 *            The FTP action configuration.
-	 * @return boolean
-	 */
-	public boolean canCreateAction(FTPActionConfiguration configuration) {
-		return true;
-	}
+    /**
+     * Method to verify if the action creation is available.
+     * 
+     * @param configuration
+     *            The FTP action configuration.
+     * @return boolean
+     */
+    public boolean canCreateAction(FTPActionConfiguration configuration) {
+        return true;
+    }
 
-	/**
-	 * Method to create a delete action using the FTP action configuration.
-	 * 
-	 * @param configuration
-	 *            The FTP action configuration.
-	 * @return The FTPDeleteAction
-	 */
-	public FTPDeleteAction createAction(FTPActionConfiguration configuration) {
-		try {
-			return new FTPDeleteAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.SEVERE))
-				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
+    /**
+     * Method to create a delete action using the FTP action configuration.
+     * 
+     * @param configuration
+     *            The FTP action configuration.
+     * @return The FTPDeleteAction
+     */
+    public FTPDeleteAction createAction(FTPActionConfiguration configuration) {
+        try {
+            return new FTPDeleteAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

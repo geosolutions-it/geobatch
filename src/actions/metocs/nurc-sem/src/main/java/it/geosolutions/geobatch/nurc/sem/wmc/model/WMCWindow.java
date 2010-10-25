@@ -34,62 +34,64 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  * 
  */
 public class WMCWindow {
-	private Integer height;
-	private Integer width;
-	private WMCBoundingBox bbox;
+    private Integer height;
 
-	/**
-	 * @param height
-	 * @param width
-	 */
-	public WMCWindow(Integer height, Integer width) {
-		this.height = height;
-		this.width = width;
-	}
+    private Integer width;
 
-	/**
-	 * @param height
-	 *            the height to set
-	 */
-	public void setHeight(Integer height) {
-		this.height = height;
-	}
+    private WMCBoundingBox bbox;
 
-	/**
-	 * @return the height
-	 */
-	public Integer getHeight() {
-		return height;
-	}
+    /**
+     * @param height
+     * @param width
+     */
+    public WMCWindow(Integer height, Integer width) {
+        this.height = height;
+        this.width = width;
+    }
 
-	/**
-	 * @param width
-	 *            the width to set
-	 */
-	public void setWidth(Integer width) {
-		this.width = width;
-	}
+    /**
+     * @param height
+     *            the height to set
+     */
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
 
-	/**
-	 * @return the width
-	 */
-	public Integer getWidth() {
-		return width;
-	}
+    /**
+     * @return the height
+     */
+    public Integer getHeight() {
+        return height;
+    }
 
-	/**
-	 * @param bbox
-	 *            the bbox to set
-	 */
-	public void setBbox(WMCBoundingBox bbox) {
-		this.bbox = bbox;
-	}
+    /**
+     * @param width
+     *            the width to set
+     */
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
 
-	/**
-	 * @return the bbox
-	 */
-	public WMCBoundingBox getBbox() {
-		return bbox;
-	}
+    /**
+     * @return the width
+     */
+    public Integer getWidth() {
+        return width;
+    }
+
+    /**
+     * @param bbox
+     *            the bbox to set
+     */
+    public void setBbox(WMCBoundingBox bbox) {
+        this.bbox = bbox;
+    }
+
+    /**
+     * @return the bbox
+     */
+    public WMCBoundingBox getBbox() {
+        return bbox;
+    }
 
 }

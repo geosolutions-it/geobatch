@@ -31,58 +31,53 @@ import java.util.List;
  * @author Simone Giannecchini, GeoSolutions
  * 
  */
-public class CatalogModifyEventImpl<T> extends CatalogEventImpl<T> implements
-		CatalogModifyEvent<T> {
-	public CatalogModifyEventImpl(final T source) {
-		super(source);
-	}
+public class CatalogModifyEventImpl<T> extends CatalogEventImpl<T> implements CatalogModifyEvent<T> {
+    public CatalogModifyEventImpl(final T source) {
+        super(source);
+    }
 
-	private List<String> propertyNames = new ArrayList<String>();
+    private List<String> propertyNames = new ArrayList<String>();
 
-	private List<T> oldValues = new ArrayList<T>();
+    private List<T> oldValues = new ArrayList<T>();
 
-	private List<T> newValues = new ArrayList<T>();
+    private List<T> newValues = new ArrayList<T>();
 
-	public void setPropertyNames(final List<String> propertyNames) {
-		this.propertyNames = propertyNames;
-	}
+    public void setPropertyNames(final List<String> propertyNames) {
+        this.propertyNames = propertyNames;
+    }
 
-	public void setNewValues(final List<T> newValues) {
-		this.newValues = newValues;
-	}
+    public void setNewValues(final List<T> newValues) {
+        this.newValues = newValues;
+    }
 
-	public void setOldValues(final List<T> oldValues) {
-		this.oldValues = oldValues;
-	}
+    public void setOldValues(final List<T> oldValues) {
+        this.oldValues = oldValues;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.event.CatalogModifyEvent#getNewValues()
-	 */
-	public List<T> getNewValues() {
-		return newValues;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.event.CatalogModifyEvent#getNewValues()
+     */
+    public List<T> getNewValues() {
+        return newValues;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.event.CatalogModifyEvent#getOldValues()
-	 */
-	public List<T> getOldValues() {
-		return oldValues;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.event.CatalogModifyEvent#getOldValues()
+     */
+    public List<T> getOldValues() {
+        return oldValues;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.catalog.event.CatalogModifyEvent#getPropertyNames
-	 * ()
-	 */
-	public List<String> getPropertyNames() {
-		return propertyNames;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see it.geosolutions.geobatch.catalog.event.CatalogModifyEvent#getPropertyNames ()
+     */
+    public List<String> getPropertyNames() {
+        return propertyNames;
+    }
 }

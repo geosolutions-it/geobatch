@@ -34,263 +34,276 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  * 
  */
 public class WMCExtension {
-	private OLLayerID id;
-	private OLTransparent transparent;
-	private OLIsBaseLayer isBaseLayer;
-	private OLOpacity opacity;
-	private OLDisplayInLayerSwitcher displayInLayerSwitcher;
-	private OLSingleTile singleTile;
-	private OLNumZoomLevels numZoomLevels;
-	private OLUnits units;
-	private OLMaxExtent maxExtent;
-	private OLDimension time;
-	private OLDimension elevation;
+    private OLLayerID id;
 
-	private OLStyleClassNumber styleClassNumber;
-	private OLStyleColorRamps styleColorRamps;
-	private OLStyleMinValue styleMinValue;
-	private OLStyleMaxValue styleMaxValue;
-	private OLStyleRestService styleRestService;
+    private OLTransparent transparent;
 
-	/**
-	 * @return the id
-	 */
-	public OLLayerID getId() {
-		return id;
-	}
+    private OLIsBaseLayer isBaseLayer;
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(OLLayerID id) {
-		this.id = id;
-	}
+    private OLOpacity opacity;
 
-	/**
-	 * @return the transparent
-	 */
-	public OLTransparent getTransparent() {
-		return transparent;
-	}
+    private OLDisplayInLayerSwitcher displayInLayerSwitcher;
 
-	/**
-	 * @param transparent
-	 *            the transparent to set
-	 */
-	public void setTransparent(OLTransparent transparent) {
-		this.transparent = transparent;
-	}
+    private OLSingleTile singleTile;
 
-	/**
-	 * @return the isBaseLayer
-	 */
-	public OLIsBaseLayer getIsBaseLayer() {
-		return isBaseLayer;
-	}
+    private OLNumZoomLevels numZoomLevels;
 
-	/**
-	 * @param isBaseLayer
-	 *            the isBaseLayer to set
-	 */
-	public void setIsBaseLayer(OLIsBaseLayer isBaseLayer) {
-		this.isBaseLayer = isBaseLayer;
-	}
+    private OLUnits units;
 
-	/**
-	 * @return the opacity
-	 */
-	public OLOpacity getOpacity() {
-		return opacity;
-	}
+    private OLMaxExtent maxExtent;
 
-	/**
-	 * @param opacity
-	 *            the opacity to set
-	 */
-	public void setOpacity(OLOpacity opacity) {
-		this.opacity = opacity;
-	}
+    private OLDimension time;
 
-	/**
-	 * @return the displayInLayerSwitcher
-	 */
-	public OLDisplayInLayerSwitcher getDisplayInLayerSwitcher() {
-		return displayInLayerSwitcher;
-	}
+    private OLDimension elevation;
 
-	/**
-	 * @param displayInLayerSwitcher
-	 *            the displayInLayerSwitcher to set
-	 */
-	public void setDisplayInLayerSwitcher(
-			OLDisplayInLayerSwitcher displayInLayerSwitcher) {
-		this.displayInLayerSwitcher = displayInLayerSwitcher;
-	}
+    private OLStyleClassNumber styleClassNumber;
 
-	/**
-	 * @return the singleTile
-	 */
-	public OLSingleTile getSingleTile() {
-		return singleTile;
-	}
+    private OLStyleColorRamps styleColorRamps;
 
-	/**
-	 * @param singleTile
-	 *            the singleTile to set
-	 */
-	public void setSingleTile(OLSingleTile singleTile) {
-		this.singleTile = singleTile;
-	}
+    private OLStyleMinValue styleMinValue;
 
-	/**
-	 * @return the numZoomLevels
-	 */
-	public OLNumZoomLevels getNumZoomLevels() {
-		return numZoomLevels;
-	}
+    private OLStyleMaxValue styleMaxValue;
 
-	/**
-	 * @param numZoomLevels
-	 *            the numZoomLevels to set
-	 */
-	public void setNumZoomLevels(OLNumZoomLevels numZoomLevels) {
-		this.numZoomLevels = numZoomLevels;
-	}
+    private OLStyleRestService styleRestService;
 
-	/**
-	 * @return the units
-	 */
-	public OLUnits getUnits() {
-		return units;
-	}
+    /**
+     * @return the id
+     */
+    public OLLayerID getId() {
+        return id;
+    }
 
-	/**
-	 * @param units
-	 *            the units to set
-	 */
-	public void setUnits(OLUnits units) {
-		this.units = units;
-	}
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(OLLayerID id) {
+        this.id = id;
+    }
 
-	/**
-	 * @return the maxExtent
-	 */
-	public OLMaxExtent getMaxExtent() {
-		return maxExtent;
-	}
+    /**
+     * @return the transparent
+     */
+    public OLTransparent getTransparent() {
+        return transparent;
+    }
 
-	/**
-	 * @param maxExtent
-	 *            the maxExtent to set
-	 */
-	public void setMaxExtent(OLMaxExtent maxExtent) {
-		this.maxExtent = maxExtent;
-	}
+    /**
+     * @param transparent
+     *            the transparent to set
+     */
+    public void setTransparent(OLTransparent transparent) {
+        this.transparent = transparent;
+    }
 
-	/**
-	 * @param time
-	 *            the time to set
-	 */
-	public void setTime(OLDimension time) {
-		this.time = time;
-	}
+    /**
+     * @return the isBaseLayer
+     */
+    public OLIsBaseLayer getIsBaseLayer() {
+        return isBaseLayer;
+    }
 
-	/**
-	 * @return the time
-	 */
-	public OLDimension getTime() {
-		return time;
-	}
+    /**
+     * @param isBaseLayer
+     *            the isBaseLayer to set
+     */
+    public void setIsBaseLayer(OLIsBaseLayer isBaseLayer) {
+        this.isBaseLayer = isBaseLayer;
+    }
 
-	/**
-	 * @param elevation
-	 *            the elevation to set
-	 */
-	public void setElevation(OLDimension elevation) {
-		this.elevation = elevation;
-	}
+    /**
+     * @return the opacity
+     */
+    public OLOpacity getOpacity() {
+        return opacity;
+    }
 
-	/**
-	 * @return the elevation
-	 */
-	public OLDimension getElevation() {
-		return elevation;
-	}
+    /**
+     * @param opacity
+     *            the opacity to set
+     */
+    public void setOpacity(OLOpacity opacity) {
+        this.opacity = opacity;
+    }
 
-	/**
-	 * @param styleClassNumber
-	 *            the styleClassNumber to set
-	 */
-	public void setStyleClassNumber(OLStyleClassNumber styleClassNumber) {
-		this.styleClassNumber = styleClassNumber;
-	}
+    /**
+     * @return the displayInLayerSwitcher
+     */
+    public OLDisplayInLayerSwitcher getDisplayInLayerSwitcher() {
+        return displayInLayerSwitcher;
+    }
 
-	/**
-	 * @return the styleClassNumber
-	 */
-	public OLStyleClassNumber getStyleClassNumber() {
-		return styleClassNumber;
-	}
+    /**
+     * @param displayInLayerSwitcher
+     *            the displayInLayerSwitcher to set
+     */
+    public void setDisplayInLayerSwitcher(OLDisplayInLayerSwitcher displayInLayerSwitcher) {
+        this.displayInLayerSwitcher = displayInLayerSwitcher;
+    }
 
-	/**
-	 * @param styleColorRamps
-	 *            the styleColorRamps to set
-	 */
-	public void setStyleColorRamps(OLStyleColorRamps styleColorRamps) {
-		this.styleColorRamps = styleColorRamps;
-	}
+    /**
+     * @return the singleTile
+     */
+    public OLSingleTile getSingleTile() {
+        return singleTile;
+    }
 
-	/**
-	 * @return the styleColorRamps
-	 */
-	public OLStyleColorRamps getStyleColorRamps() {
-		return styleColorRamps;
-	}
+    /**
+     * @param singleTile
+     *            the singleTile to set
+     */
+    public void setSingleTile(OLSingleTile singleTile) {
+        this.singleTile = singleTile;
+    }
 
-	/**
-	 * @param styleMinValue
-	 *            the styleMinValue to set
-	 */
-	public void setStyleMinValue(OLStyleMinValue styleMinValue) {
-		this.styleMinValue = styleMinValue;
-	}
+    /**
+     * @return the numZoomLevels
+     */
+    public OLNumZoomLevels getNumZoomLevels() {
+        return numZoomLevels;
+    }
 
-	/**
-	 * @return the styleMinValue
-	 */
-	public OLStyleMinValue getStyleMinValue() {
-		return styleMinValue;
-	}
+    /**
+     * @param numZoomLevels
+     *            the numZoomLevels to set
+     */
+    public void setNumZoomLevels(OLNumZoomLevels numZoomLevels) {
+        this.numZoomLevels = numZoomLevels;
+    }
 
-	/**
-	 * @param styleMaxValue
-	 *            the styleMaxValue to set
-	 */
-	public void setStyleMaxValue(OLStyleMaxValue styleMaxValue) {
-		this.styleMaxValue = styleMaxValue;
-	}
+    /**
+     * @return the units
+     */
+    public OLUnits getUnits() {
+        return units;
+    }
 
-	/**
-	 * @return the styleMaxValue
-	 */
-	public OLStyleMaxValue getStyleMaxValue() {
-		return styleMaxValue;
-	}
+    /**
+     * @param units
+     *            the units to set
+     */
+    public void setUnits(OLUnits units) {
+        this.units = units;
+    }
 
-	/**
-	 * @param styleRestService
-	 *            the styleRestService to set
-	 */
-	public void setStyleRestService(OLStyleRestService styleRestService) {
-		this.styleRestService = styleRestService;
-	}
+    /**
+     * @return the maxExtent
+     */
+    public OLMaxExtent getMaxExtent() {
+        return maxExtent;
+    }
 
-	/**
-	 * @return the styleRestService
-	 */
-	public OLStyleRestService getStyleRestService() {
-		return styleRestService;
-	}
+    /**
+     * @param maxExtent
+     *            the maxExtent to set
+     */
+    public void setMaxExtent(OLMaxExtent maxExtent) {
+        this.maxExtent = maxExtent;
+    }
+
+    /**
+     * @param time
+     *            the time to set
+     */
+    public void setTime(OLDimension time) {
+        this.time = time;
+    }
+
+    /**
+     * @return the time
+     */
+    public OLDimension getTime() {
+        return time;
+    }
+
+    /**
+     * @param elevation
+     *            the elevation to set
+     */
+    public void setElevation(OLDimension elevation) {
+        this.elevation = elevation;
+    }
+
+    /**
+     * @return the elevation
+     */
+    public OLDimension getElevation() {
+        return elevation;
+    }
+
+    /**
+     * @param styleClassNumber
+     *            the styleClassNumber to set
+     */
+    public void setStyleClassNumber(OLStyleClassNumber styleClassNumber) {
+        this.styleClassNumber = styleClassNumber;
+    }
+
+    /**
+     * @return the styleClassNumber
+     */
+    public OLStyleClassNumber getStyleClassNumber() {
+        return styleClassNumber;
+    }
+
+    /**
+     * @param styleColorRamps
+     *            the styleColorRamps to set
+     */
+    public void setStyleColorRamps(OLStyleColorRamps styleColorRamps) {
+        this.styleColorRamps = styleColorRamps;
+    }
+
+    /**
+     * @return the styleColorRamps
+     */
+    public OLStyleColorRamps getStyleColorRamps() {
+        return styleColorRamps;
+    }
+
+    /**
+     * @param styleMinValue
+     *            the styleMinValue to set
+     */
+    public void setStyleMinValue(OLStyleMinValue styleMinValue) {
+        this.styleMinValue = styleMinValue;
+    }
+
+    /**
+     * @return the styleMinValue
+     */
+    public OLStyleMinValue getStyleMinValue() {
+        return styleMinValue;
+    }
+
+    /**
+     * @param styleMaxValue
+     *            the styleMaxValue to set
+     */
+    public void setStyleMaxValue(OLStyleMaxValue styleMaxValue) {
+        this.styleMaxValue = styleMaxValue;
+    }
+
+    /**
+     * @return the styleMaxValue
+     */
+    public OLStyleMaxValue getStyleMaxValue() {
+        return styleMaxValue;
+    }
+
+    /**
+     * @param styleRestService
+     *            the styleRestService to set
+     */
+    public void setStyleRestService(OLStyleRestService styleRestService) {
+        this.styleRestService = styleRestService;
+    }
+
+    /**
+     * @return the styleRestService
+     */
+    public OLStyleRestService getStyleRestService() {
+        return styleRestService;
+    }
 
 }

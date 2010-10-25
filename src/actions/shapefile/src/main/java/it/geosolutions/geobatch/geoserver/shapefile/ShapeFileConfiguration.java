@@ -33,71 +33,70 @@ import org.apache.commons.beanutils.BeanUtils;
  * 
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
-public class ShapeFileConfiguration extends ActionConfiguration implements
-		Configuration {
+public class ShapeFileConfiguration extends ActionConfiguration implements Configuration {
 
-	private String workingDirectory;
+    private String workingDirectory;
 
-	private String namespace;
+    private String namespace;
 
-	public ShapeFileConfiguration() {
-		super();
-	}
+    public ShapeFileConfiguration() {
+        super();
+    }
 
-	/**
-	 * @param namespace
-	 *            the namespace to set
-	 */
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
+    /**
+     * @param namespace
+     *            the namespace to set
+     */
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
 
-	/**
-	 * @return the namespace
-	 */
-	public String getNamespace() {
-		return namespace;
-	}
+    /**
+     * @return the namespace
+     */
+    public String getNamespace() {
+        return namespace;
+    }
 
-	/**
-	 * @param workingDirectory
-	 *            the workingDirectory to set
-	 */
-	public void setWorkingDirectory(String workingDirectory) {
-		this.workingDirectory = workingDirectory;
-	}
+    /**
+     * @param workingDirectory
+     *            the workingDirectory to set
+     */
+    public void setWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
 
-	/**
-	 * @return the workingDirectory
-	 */
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
+    /**
+     * @return the workingDirectory
+     */
+    public String getWorkingDirectory() {
+        return workingDirectory;
+    }
 
-	/**
+    /**
 	 * 
 	 */
-	public ShapeFileConfiguration clone() { // throws CloneNotSupportedException
-											// {
-		try {
-			return (ShapeFileConfiguration) BeanUtils.cloneBean(this);
-		} catch (IllegalAccessException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (InstantiationException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (InvocationTargetException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (NoSuchMethodException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		}
-	}
+    public ShapeFileConfiguration clone() { // throws CloneNotSupportedException
+        // {
+        try {
+            return (ShapeFileConfiguration) BeanUtils.cloneBean(this);
+        } catch (IllegalAccessException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (InstantiationException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (InvocationTargetException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (NoSuchMethodException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        }
+    }
 
 }

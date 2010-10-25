@@ -27,21 +27,21 @@ import java.io.IOException;
 
 public interface PersistentResource<C extends Configuration> extends Resource {
 
-	/**
-	 * The Flow BaseEventConsumer Type.
-	 */
-	public C getConfiguration();
+    /**
+     * The Flow BaseEventConsumer Type.
+     */
+    public C getConfiguration();
 
-	public void setConfiguration(C coonfiguration);
+    public void setConfiguration(C coonfiguration);
 
-	public void persist() throws IOException;
+    public void persist() throws IOException;
 
-	public void load() throws IOException;
+    public void load() throws IOException;
 
-	public boolean remove() throws IOException;
+    public boolean remove() throws IOException;
 
-	// public void setDAO(DAO<C, ?> dao);
-	//
-	// public DAO<C, ?> getDAO();
+    // public void setDAO(DAO<C, ?> dao);
+    //
+    // public DAO<C, ?> getDAO();
 
 }

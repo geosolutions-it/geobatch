@@ -35,8 +35,8 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLStyleClassNumber extends OLBaseClass {
 
-	public OLStyleClassNumber(String content) {
-		super(content);
-	}
+    public OLStyleClassNumber(String content) {
+        super(content);
+    }
 
 }

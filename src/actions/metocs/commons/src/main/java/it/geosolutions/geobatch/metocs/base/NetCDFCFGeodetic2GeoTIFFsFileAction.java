@@ -62,11 +62,11 @@ import ucar.nc2.Variable;
 
 /**
  * 
- * Public class to split NetCDF_CF Geodetic to GeoTIFFs and consequently send
- * them to GeoServer along with their basic metadata.
+ * Public class to split NetCDF_CF Geodetic to GeoTIFFs and consequently send them to GeoServer
+ * along with their basic metadata.
  * 
- * For the NetCDF_CF Geodetic file we assume that it contains georectified
- * geodetic grids and therefore has a maximum set of dimensions as follows:
+ * For the NetCDF_CF Geodetic file we assume that it contains georectified geodetic grids and
+ * therefore has a maximum set of dimensions as follows:
  * 
  * lat { lat:long_name = "Latitude" lat:units = "degrees_north" }
  * 
@@ -74,411 +74,353 @@ import ucar.nc2.Variable;
  * 
  * time { time:long_name = "time" time:units = "seconds since 1980-1-1 0:0:0" }
  * 
- * depth { depth:long_name = "depth"; depth:units = "m"; depth:positive =
- * "down"; }
+ * depth { depth:long_name = "depth"; depth:units = "m"; depth:positive = "down"; }
  * 
- * height { height:long_name = "height"; height:units = "m"; height:positive =
- * "up"; }
+ * height { height:long_name = "height"; height:units = "m"; height:positive = "up"; }
  * 
  */
-public class NetCDFCFGeodetic2GeoTIFFsFileAction extends
-		MetocConfigurationAction {
+public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationAction {
 
-	/**
-	 * GeoTIFF Writer Default Params
-	 */
-	public final static String GEOSERVER_VERSION = "2.x";
+    /**
+     * GeoTIFF Writer Default Params
+     */
+    public final static String GEOSERVER_VERSION = "2.x";
 
-	private static final int DEFAULT_TILE_SIZE = 256;
+    private static final int DEFAULT_TILE_SIZE = 256;
 
-	private static final double DEFAULT_COMPRESSION_RATIO = 0.75;
+    private static final double DEFAULT_COMPRESSION_RATIO = 0.75;
 
-	private static final String DEFAULT_COMPRESSION_TYPE = "LZW";
+    private static final String DEFAULT_COMPRESSION_TYPE = "LZW";
 
-	/**
-	 * Static DateFormat Converter
-	 */
-	private final SimpleDateFormat sdf = new SimpleDateFormat(
-			"yyyyMMdd'T'HHmmsss'Z'");
+    /**
+     * Static DateFormat Converter
+     */
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmsss'Z'");
 
-	protected NetCDFCFGeodetic2GeoTIFFsFileAction(
-			MetocActionConfiguration configuration) throws IOException {
-		super(configuration);
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-	}
+    protected NetCDFCFGeodetic2GeoTIFFsFileAction(MetocActionConfiguration configuration)
+            throws IOException {
+        super(configuration);
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+    }
 
-	/**
-	 * EXECUTE METHOD
-	 */
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+    /**
+     * EXECUTE METHOD
+     */
+    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+            throws ActionException {
 
-		if (LOGGER.isLoggable(Level.INFO))
-			LOGGER.info("Starting with processing...");
-		NetcdfFile ncFileIn = null;
-		File inputFile = null;
-		try {
-			// looking for file
-			if (events.size() != 1)
-				throw new IllegalArgumentException(
-						"Wrong number of elements for this action: "
-								+ events.size());
-			FileSystemMonitorEvent event = events.remove();
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("Starting with processing...");
+        NetcdfFile ncFileIn = null;
+        File inputFile = null;
+        try {
+            // looking for file
+            if (events.size() != 1)
+                throw new IllegalArgumentException("Wrong number of elements for this action: "
+                        + events.size());
+            FileSystemMonitorEvent event = events.remove();
 
-			// //
-			// data flow configuration and dataStore name must not be null.
-			// //
-			if (configuration == null) {
-				LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
-				throw new IllegalStateException("DataFlowConfig is null.");
-			}
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Initializing input variables
-			//
-			// ////////////////////////////////////////////////////////////////////
-			final File workingDir = IOUtils.findLocation(configuration
-					.getWorkingDirectory(), new File(
-					((FileBaseCatalog) CatalogHolder.getCatalog())
-							.getBaseDirectory()));
+            // //
+            // data flow configuration and dataStore name must not be null.
+            // //
+            if (configuration == null) {
+                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+                throw new IllegalStateException("DataFlowConfig is null.");
+            }
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Initializing input variables
+            //
+            // ////////////////////////////////////////////////////////////////////
+            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Checking input files.
-			//
-			// ////////////////////////////////////////////////////////////////////
-			if ((workingDir == null) || !workingDir.exists()
-					|| !workingDir.isDirectory()) {
-				LOGGER.log(Level.SEVERE,
-						"WorkingDirectory is null or does not exist.");
-				throw new IllegalStateException(
-						"WorkingDirectory is null or does not exist.");
-			}
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Checking input files.
+            //
+            // ////////////////////////////////////////////////////////////////////
+            if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
+                LOGGER.log(Level.SEVERE, "WorkingDirectory is null or does not exist.");
+                throw new IllegalStateException("WorkingDirectory is null or does not exist.");
+            }
 
-			// ... BUSINESS LOGIC ... //
-			String inputFileName = event.getSource().getAbsolutePath();
-			final String filePrefix = FilenameUtils.getBaseName(inputFileName);
-			final String fileSuffix = FilenameUtils.getExtension(inputFileName);
-			final String fileNameFilter = getConfiguration()
-					.getStoreFilePrefix();
+            // ... BUSINESS LOGIC ... //
+            String inputFileName = event.getSource().getAbsolutePath();
+            final String filePrefix = FilenameUtils.getBaseName(inputFileName);
+            final String fileSuffix = FilenameUtils.getExtension(inputFileName);
+            final String fileNameFilter = getConfiguration().getStoreFilePrefix();
 
-			String baseFileName = null;
+            String baseFileName = null;
 
-			if (fileNameFilter != null) {
-				if ((filePrefix.equals(fileNameFilter) || filePrefix
-						.matches(fileNameFilter))
-						&& ("nc".equalsIgnoreCase(fileSuffix) || "netcdf"
-								.equalsIgnoreCase(fileSuffix))) {
-					// etj: are we missing something here?
-					baseFileName = filePrefix;
-				}
-			} else if ("nc".equalsIgnoreCase(fileSuffix)
-					|| "netcdf".equalsIgnoreCase(fileSuffix)) {
-				baseFileName = filePrefix;
-			}
+            if (fileNameFilter != null) {
+                if ((filePrefix.equals(fileNameFilter) || filePrefix.matches(fileNameFilter))
+                        && ("nc".equalsIgnoreCase(fileSuffix) || "netcdf"
+                                .equalsIgnoreCase(fileSuffix))) {
+                    // etj: are we missing something here?
+                    baseFileName = filePrefix;
+                }
+            } else if ("nc".equalsIgnoreCase(fileSuffix) || "netcdf".equalsIgnoreCase(fileSuffix)) {
+                baseFileName = filePrefix;
+            }
 
-			if (baseFileName == null) {
-				LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName
-						+ "'");
-				throw new IllegalStateException("Unexpected file '"
-						+ inputFileName + "'");
-			}
+            if (baseFileName == null) {
+                LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
+                throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
+            }
 
-			inputFileName = FilenameUtils.getBaseName(inputFileName);
-			inputFileName = (inputFileName.lastIndexOf("-") > 0 ? inputFileName
-					.substring(0, inputFileName.lastIndexOf("-"))
-					: inputFileName);
-			inputFile = new File(event.getSource().getAbsolutePath());
-			ncFileIn = NetcdfFile.open(inputFile.getAbsolutePath());
-			final File outDir = (!configuration.isTimeUnStampedOutputDir() ? Utilities
-					.createTodayDirectory(workingDir, inputFileName)
-					: Utilities.createDirectory(workingDir, inputFileName));
+            inputFileName = FilenameUtils.getBaseName(inputFileName);
+            inputFileName = (inputFileName.lastIndexOf("-") > 0 ? inputFileName.substring(0,
+                    inputFileName.lastIndexOf("-")) : inputFileName);
+            inputFile = new File(event.getSource().getAbsolutePath());
+            ncFileIn = NetcdfFile.open(inputFile.getAbsolutePath());
+            final File outDir = (!configuration.isTimeUnStampedOutputDir() ? Utilities
+                    .createTodayDirectory(workingDir, inputFileName) : Utilities.createDirectory(
+                    workingDir, inputFileName));
 
-			// input DIMENSIONS
-			final Dimension timeDim = ncFileIn
-					.findDimension(METOCSActionsIOUtils.TIME_DIM);
-			final boolean timeDimExists = timeDim != null;
+            // input DIMENSIONS
+            final Dimension timeDim = ncFileIn.findDimension(METOCSActionsIOUtils.TIME_DIM);
+            final boolean timeDimExists = timeDim != null;
 
-			final String baseTime = ncFileIn.findGlobalAttribute("base_time")
-					.getStringValue();
-			final String TAU = String.valueOf(ncFileIn.findGlobalAttribute(
-					"tau").getNumericValue().intValue());
-			final double noData = ncFileIn.findGlobalAttribute("nodata")
-					.getNumericValue().doubleValue();
+            final String baseTime = ncFileIn.findGlobalAttribute("base_time").getStringValue();
+            final String TAU = String.valueOf(ncFileIn.findGlobalAttribute("tau").getNumericValue()
+                    .intValue());
+            final double noData = ncFileIn.findGlobalAttribute("nodata").getNumericValue()
+                    .doubleValue();
 
-			final Dimension depthDim = ncFileIn
-					.findDimension(METOCSActionsIOUtils.DEPTH_DIM);
-			final boolean depthDimExists = depthDim != null;
+            final Dimension depthDim = ncFileIn.findDimension(METOCSActionsIOUtils.DEPTH_DIM);
+            final boolean depthDimExists = depthDim != null;
 
-			final Dimension heightDim = ncFileIn
-					.findDimension(METOCSActionsIOUtils.HEIGHT_DIM);
-			final boolean heightDimExists = heightDim != null;
+            final Dimension heightDim = ncFileIn.findDimension(METOCSActionsIOUtils.HEIGHT_DIM);
+            final boolean heightDimExists = heightDim != null;
 
-			final Dimension latDim = ncFileIn
-					.findDimension(METOCSActionsIOUtils.LAT_DIM);
-			final boolean latDimExists = latDim != null;
+            final Dimension latDim = ncFileIn.findDimension(METOCSActionsIOUtils.LAT_DIM);
+            final boolean latDimExists = latDim != null;
 
-			final Dimension lonDim = ncFileIn
-					.findDimension(METOCSActionsIOUtils.LON_DIM);
-			final boolean lonDimExists = lonDim != null;
+            final Dimension lonDim = ncFileIn.findDimension(METOCSActionsIOUtils.LON_DIM);
+            final boolean lonDimExists = lonDim != null;
 
-			// dimensions' checks
-			final boolean hasZeta = depthDimExists || heightDimExists;
+            // dimensions' checks
+            final boolean hasZeta = depthDimExists || heightDimExists;
 
-			if (!latDimExists || !lonDimExists) {
-				if (LOGGER.isLoggable(Level.SEVERE))
-					LOGGER
-							.severe("Invalid input NetCDF-CF Geodetic file: longitude and/or latitude dimensions could not be found!");
-				throw new IllegalStateException(
-						"Invalid input NetCDF-CF Geodetic file: longitude and/or latitude dimensions could not be found!");
-			}
+            if (!latDimExists || !lonDimExists) {
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER
+                            .severe("Invalid input NetCDF-CF Geodetic file: longitude and/or latitude dimensions could not be found!");
+                throw new IllegalStateException(
+                        "Invalid input NetCDF-CF Geodetic file: longitude and/or latitude dimensions could not be found!");
+            }
 
-			int nTime = timeDimExists ? timeDim.getLength() : 0;
-			int nZeta = 0;
-			int nLat = latDim.getLength();
-			int nLon = lonDim.getLength();
+            int nTime = timeDimExists ? timeDim.getLength() : 0;
+            int nZeta = 0;
+            int nLat = latDim.getLength();
+            int nLon = lonDim.getLength();
 
-			// input VARIABLES
-			final Variable timeOriginalVar = ncFileIn
-					.findVariable(METOCSActionsIOUtils.TIME_DIM);
-			final Array timeOriginalData = timeOriginalVar.read();
-			final Index timeOriginalIndex = timeOriginalData.getIndex();
+            // input VARIABLES
+            final Variable timeOriginalVar = ncFileIn.findVariable(METOCSActionsIOUtils.TIME_DIM);
+            final Array timeOriginalData = timeOriginalVar.read();
+            final Index timeOriginalIndex = timeOriginalData.getIndex();
 
-			final Variable lonOriginalVar = ncFileIn
-					.findVariable(METOCSActionsIOUtils.LON_DIM);
+            final Variable lonOriginalVar = ncFileIn.findVariable(METOCSActionsIOUtils.LON_DIM);
 
-			final Variable latOriginalVar = ncFileIn
-					.findVariable(METOCSActionsIOUtils.LAT_DIM);
+            final Variable latOriginalVar = ncFileIn.findVariable(METOCSActionsIOUtils.LAT_DIM);
 
-			final Array latOriginalData = latOriginalVar.read();
-			final Array lonOriginalData = lonOriginalVar.read();
+            final Array latOriginalData = latOriginalVar.read();
+            final Array lonOriginalData = lonOriginalVar.read();
 
-			// //
-			//
-			// Depth related variables
-			//
-			// //
-			Variable zetaOriginalVar = null;
-			Array zetaOriginalData = null;
+            // //
+            //
+            // Depth related variables
+            //
+            // //
+            Variable zetaOriginalVar = null;
+            Array zetaOriginalData = null;
 
-			if (hasZeta) {
-				zetaOriginalVar = ncFileIn
-						.findVariable(depthDimExists ? METOCSActionsIOUtils.DEPTH_DIM
-								: METOCSActionsIOUtils.HEIGHT_DIM);
-				if (zetaOriginalVar != null) {
-					nZeta = depthDimExists ? depthDim.getLength() : heightDim
-							.getLength();
-					zetaOriginalData = zetaOriginalVar.read();
-				}
-			}
+            if (hasZeta) {
+                zetaOriginalVar = ncFileIn
+                        .findVariable(depthDimExists ? METOCSActionsIOUtils.DEPTH_DIM
+                                : METOCSActionsIOUtils.HEIGHT_DIM);
+                if (zetaOriginalVar != null) {
+                    nZeta = depthDimExists ? depthDim.getLength() : heightDim.getLength();
+                    zetaOriginalData = zetaOriginalVar.read();
+                }
+            }
 
-			double[] bbox = METOCSActionsIOUtils.computeExtrema(latOriginalData,
-					lonOriginalData, latDim, lonDim);
+            double[] bbox = METOCSActionsIOUtils.computeExtrema(latOriginalData, lonOriginalData,
+                    latDim, lonDim);
 
-			// building Envelope
-			final GeneralEnvelope envelope = new GeneralEnvelope(
-					METOCSActionsIOUtils.WGS_84);
-			envelope.setRange(0, bbox[0], bbox[2]);
-			envelope.setRange(1, bbox[1], bbox[3]);
+            // building Envelope
+            final GeneralEnvelope envelope = new GeneralEnvelope(METOCSActionsIOUtils.WGS_84);
+            envelope.setRange(0, bbox[0], bbox[2]);
+            envelope.setRange(1, bbox[1], bbox[3]);
 
-			// Storing variables Variables as GeoTIFFs
-			final List<Variable> foundVariables = ncFileIn.getVariables();
-			final ArrayList<String> variables = new ArrayList<String>();
-			int numVars = 0;
+            // Storing variables Variables as GeoTIFFs
+            final List<Variable> foundVariables = ncFileIn.getVariables();
+            final ArrayList<String> variables = new ArrayList<String>();
+            int numVars = 0;
 
-			for (Variable var : foundVariables) {
-				if (var != null) {
-					String varName = var.getName();
-					if (varName.equalsIgnoreCase(METOCSActionsIOUtils.LAT_DIM)
-							|| varName
-									.equalsIgnoreCase(METOCSActionsIOUtils.LON_DIM)
-							|| varName
-									.equalsIgnoreCase(METOCSActionsIOUtils.TIME_DIM)
-							|| varName
-									.equalsIgnoreCase(METOCSActionsIOUtils.HEIGHT_DIM)
-							|| varName
-									.equalsIgnoreCase(METOCSActionsIOUtils.DEPTH_DIM))
-						continue;
-					variables.add(varName);
+            for (Variable var : foundVariables) {
+                if (var != null) {
+                    String varName = var.getName();
+                    if (varName.equalsIgnoreCase(METOCSActionsIOUtils.LAT_DIM)
+                            || varName.equalsIgnoreCase(METOCSActionsIOUtils.LON_DIM)
+                            || varName.equalsIgnoreCase(METOCSActionsIOUtils.TIME_DIM)
+                            || varName.equalsIgnoreCase(METOCSActionsIOUtils.HEIGHT_DIM)
+                            || varName.equalsIgnoreCase(METOCSActionsIOUtils.DEPTH_DIM))
+                        continue;
+                    variables.add(varName);
 
-					boolean canProceed = false;
+                    boolean canProceed = false;
 
-					final File gtiffOutputDir = new File(outDir
-							.getAbsolutePath()
-							+ File.separator
-							+ inputFileName
-							+ "_"
-							+ varName.replaceAll("_", "")
-							+ (!configuration.isTimeUnStampedOutputDir() ? "_T"+new Date().getTime() : "")
-					);
+                    final File gtiffOutputDir = new File(outDir.getAbsolutePath()
+                            + File.separator
+                            + inputFileName
+                            + "_"
+                            + varName.replaceAll("_", "")
+                            + (!configuration.isTimeUnStampedOutputDir() ? "_T"
+                                    + new Date().getTime() : ""));
 
-					if (!gtiffOutputDir.exists())
-						canProceed = gtiffOutputDir.mkdirs();
+                    if (!gtiffOutputDir.exists())
+                        canProceed = gtiffOutputDir.mkdirs();
 
-					canProceed = gtiffOutputDir.isDirectory();
+                    canProceed = gtiffOutputDir.isDirectory();
 
-					if (canProceed) {
-						// //
-						// defining the SampleModel data type
-						// //
-						final SampleModel outSampleModel = Utilities
-								.getSampleModel(var.getDataType(), nLon, nLat,
-										1);
+                    if (canProceed) {
+                        // //
+                        // defining the SampleModel data type
+                        // //
+                        final SampleModel outSampleModel = Utilities.getSampleModel(var
+                                .getDataType(), nLon, nLat, 1);
 
-						Array originalVarArray = var.read();
-						Attribute missingValue = var
-								.findAttribute("missing_value");
-						double localNoData = noData;
-						if (missingValue != null) {
-							localNoData = missingValue.getNumericValue()
-									.doubleValue();
-						}
-						final boolean hasLocalZLevel = NetCDFConverterUtilities
-								.hasThisDimension(var,
-										METOCSActionsIOUtils.DEPTH_DIM)
-								|| NetCDFConverterUtilities.hasThisDimension(
-										var, METOCSActionsIOUtils.HEIGHT_DIM);
+                        Array originalVarArray = var.read();
+                        Attribute missingValue = var.findAttribute("missing_value");
+                        double localNoData = noData;
+                        if (missingValue != null) {
+                            localNoData = missingValue.getNumericValue().doubleValue();
+                        }
+                        final boolean hasLocalZLevel = NetCDFConverterUtilities.hasThisDimension(
+                                var, METOCSActionsIOUtils.DEPTH_DIM)
+                                || NetCDFConverterUtilities.hasThisDimension(var,
+                                        METOCSActionsIOUtils.HEIGHT_DIM);
 
-						for (int z = 0; z < (hasLocalZLevel ? nZeta : 1); z++) {
-							for (int t = 0; t < (timeDimExists ? nTime : 1); t++) {
-								WritableRaster userRaster = Raster
-										.createWritableRaster(outSampleModel,
-												null);
+                        for (int z = 0; z < (hasLocalZLevel ? nZeta : 1); z++) {
+                            for (int t = 0; t < (timeDimExists ? nTime : 1); t++) {
+                                WritableRaster userRaster = Raster.createWritableRaster(
+                                        outSampleModel, null);
 
-								METOCSActionsIOUtils.write2DData(userRaster, var,
-										originalVarArray, false, false,
-										(hasLocalZLevel ? new int[] { t, z,
-												nLat, nLon } : new int[] { t,
-												nLat, nLon }), true);
+                                METOCSActionsIOUtils.write2DData(userRaster, var, originalVarArray,
+                                        false, false, (hasLocalZLevel ? new int[] { t, z, nLat,
+                                                nLon } : new int[] { t, nLat, nLon }), true);
 
-								// ////
-								// producing the Coverage here...
-								// ////
-								final StringBuilder coverageName = new StringBuilder(
-										inputFileName)
-										.append("_")
-										.append(varName.replaceAll("_", ""))
-										.append("_")
-										.append(
-												hasLocalZLevel ? elevLevelFormat(zetaOriginalData
-														.getDouble(zetaOriginalData
-																.getIndex()
-																.set(z)))
-														: "0000.000")
-										.append("_")
-										.append(
-												hasLocalZLevel ? elevLevelFormat(zetaOriginalData
-														.getDouble(zetaOriginalData
-																.getIndex()
-																.set(z)))
-														: "0000.000")
-										.append("_")
-										.append(baseTime)
-										.append("_")
-										.append(
-												Integer.parseInt(TAU) == 0 ? baseTime : 
-												timeDimExists ? sdf
-														.format(getTimeInstant(
-																timeOriginalData,
-																timeOriginalIndex,
-																t))
-														: "00000000T0000000Z")
-										.append("_").append(TAU).append("_")
-										.append(localNoData);
+                                // ////
+                                // producing the Coverage here...
+                                // ////
+                                final StringBuilder coverageName = new StringBuilder(inputFileName)
+                                        .append("_").append(varName.replaceAll("_", ""))
+                                        .append("_").append(
+                                                hasLocalZLevel ? elevLevelFormat(zetaOriginalData
+                                                        .getDouble(zetaOriginalData.getIndex().set(
+                                                                z))) : "0000.000").append("_")
+                                        .append(
+                                                hasLocalZLevel ? elevLevelFormat(zetaOriginalData
+                                                        .getDouble(zetaOriginalData.getIndex().set(
+                                                                z))) : "0000.000").append("_")
+                                        .append(baseTime).append("_").append(
+                                                Integer.parseInt(TAU) == 0 ? baseTime
+                                                        : timeDimExists ? sdf
+                                                                .format(getTimeInstant(
+                                                                        timeOriginalData,
+                                                                        timeOriginalIndex, t))
+                                                                : "00000000T0000000Z").append("_")
+                                        .append(TAU).append("_").append(localNoData);
 
-								File gtiffFile = Utilities
-										.storeCoverageAsGeoTIFF(gtiffOutputDir,
-												coverageName.toString(),
-												varName, userRaster, noData,
-												envelope,
-												DEFAULT_COMPRESSION_TYPE,
-												DEFAULT_COMPRESSION_RATIO,
-												DEFAULT_TILE_SIZE);
-							}
-						}
+                                File gtiffFile = Utilities.storeCoverageAsGeoTIFF(gtiffOutputDir,
+                                        coverageName.toString(), varName, userRaster, noData,
+                                        envelope, DEFAULT_COMPRESSION_TYPE,
+                                        DEFAULT_COMPRESSION_RATIO, DEFAULT_TILE_SIZE);
+                            }
+                        }
 
-						// ... setting up the appropriate event for the next
-						// action
-						events.add(new FileSystemMonitorEvent(gtiffOutputDir,
-								FileSystemMonitorNotifications.FILE_ADDED));
-					}
+                        // ... setting up the appropriate event for the next
+                        // action
+                        events.add(new FileSystemMonitorEvent(gtiffOutputDir,
+                                FileSystemMonitorNotifications.FILE_ADDED));
+                    }
 
-					numVars++;
-				}
-			}
+                    numVars++;
+                }
+            }
 
-			return events;
-		} catch (Throwable t) {
-			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-			JAI.getDefaultInstance().getTileCache().flush();
-			return null;
-		} finally {
-			try {
-				if (ncFileIn != null) {
-					ncFileIn.close();
-				}
+            return events;
+        } catch (Throwable t) {
+            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            JAI.getDefaultInstance().getTileCache().flush();
+            return null;
+        } finally {
+            try {
+                if (ncFileIn != null) {
+                    ncFileIn.close();
+                }
 
-				if (inputFile != null && inputFile.exists()) {
-					inputFile.delete();
-				}
-			} catch (IOException e) {
-				if (LOGGER.isLoggable(Level.WARNING))
-					LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
-			} finally {
-				JAI.getDefaultInstance().getTileCache().flush();
-			}
-		}
-	}
+                if (inputFile != null && inputFile.exists()) {
+                    inputFile.delete();
+                }
+            } catch (IOException e) {
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+            } finally {
+                JAI.getDefaultInstance().getTileCache().flush();
+            }
+        }
+    }
 
-	/**
-	 * @param timeOriginalData
-	 * @param timeOriginalIndex
-	 * @param t
-	 * @return
-	 */
-	private static long getTimeInstant(final Array timeOriginalData,
-			final Index timeOriginalIndex, int t) {
-		long timeValue = timeOriginalData.getLong(timeOriginalIndex.set(t));
-		timeValue = METOCSActionsIOUtils.startTime + timeValue * 1000;
+    /**
+     * @param timeOriginalData
+     * @param timeOriginalIndex
+     * @param t
+     * @return
+     */
+    private static long getTimeInstant(final Array timeOriginalData, final Index timeOriginalIndex,
+            int t) {
+        long timeValue = timeOriginalData.getLong(timeOriginalIndex.set(t));
+        timeValue = METOCSActionsIOUtils.startTime + timeValue * 1000;
 
-		final Calendar roundedTimeInstant = new GregorianCalendar(TimeZone
-				.getTimeZone("GMT+0"));
-		roundedTimeInstant.setTimeInMillis(timeValue);
+        final Calendar roundedTimeInstant = new GregorianCalendar(TimeZone.getTimeZone("GMT+0"));
+        roundedTimeInstant.setTimeInMillis(timeValue);
 
-		int minutes = roundedTimeInstant.get(Calendar.MINUTE);
-		int hours = roundedTimeInstant.get(Calendar.HOUR);
+        int minutes = roundedTimeInstant.get(Calendar.MINUTE);
+        int hours = roundedTimeInstant.get(Calendar.HOUR);
 
-		if (minutes > 50)
-			hours++;
+        if (minutes > 50)
+            hours++;
 
-		roundedTimeInstant.set(Calendar.SECOND, 0);
-		roundedTimeInstant.set(Calendar.MINUTE, 0);
-		roundedTimeInstant.set(Calendar.HOUR, hours);
+        roundedTimeInstant.set(Calendar.SECOND, 0);
+        roundedTimeInstant.set(Calendar.MINUTE, 0);
+        roundedTimeInstant.set(Calendar.HOUR, hours);
 
-		return roundedTimeInstant.getTimeInMillis();
-	}
+        return roundedTimeInstant.getTimeInMillis();
+    }
 
-	/**
-	 * 
-	 * @param d
-	 * @return
-	 */
-	private static String elevLevelFormat(double d) {
-		String[] parts = String.valueOf(d).split("\\.");
+    /**
+     * 
+     * @param d
+     * @return
+     */
+    private static String elevLevelFormat(double d) {
+        String[] parts = String.valueOf(d).split("\\.");
 
-		String integerPart = parts[0];
-		String decimalPart = parts[1];
+        String integerPart = parts[0];
+        String decimalPart = parts[1];
 
-		while (integerPart.length() % 4 != 0)
-			integerPart = "0" + integerPart;
+        while (integerPart.length() % 4 != 0)
+            integerPart = "0" + integerPart;
 
-		decimalPart = decimalPart.length() > 3 ? decimalPart.substring(0, 3)
-				: decimalPart;
+        decimalPart = decimalPart.length() > 3 ? decimalPart.substring(0, 3) : decimalPart;
 
-		while (decimalPart.length() % 3 != 0)
-			decimalPart = decimalPart + "0";
+        while (decimalPart.length() % 3 != 0)
+            decimalPart = decimalPart + "0";
 
-		return integerPart + "." + decimalPart;
-	}
+        return integerPart + "." + decimalPart;
+    }
 
 }

@@ -6,18 +6,17 @@ import java.util.Map;
 
 public final class FSMSPIFinder {
 
-	static FSSPIRegistry registry;
+    static FSSPIRegistry registry;
 
-	/**
-	 * Do not allows any instantiation of this class.
-	 */
-	private FSMSPIFinder() {
-	}
+    /**
+     * Do not allows any instantiation of this class.
+     */
+    private FSMSPIFinder() {
+    }
 
-	public static FileSystemMonitor getMonitor(final Map<String, ?> config,
-			final OsType osType) {
-		return registry.getMonitor(config, osType);
+    public static FileSystemMonitor getMonitor(final Map<String, ?> config, final OsType osType) {
+        return registry.getMonitor(config, osType);
 
-	}
+    }
 
 }

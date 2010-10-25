@@ -24,161 +24,156 @@ package it.geosolutions.geobatch.metocs;
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
-public class MetocActionConfiguration extends ActionConfiguration implements
-		Configuration {
+public class MetocActionConfiguration extends ActionConfiguration implements Configuration {
 
-	protected MetocActionConfiguration(String id, String name,
-			String description, boolean dirty) {
-		super(id, name, description, dirty);
-		// TODO Auto-generated constructor stub
-	}
+    protected MetocActionConfiguration(String id, String name, String description, boolean dirty) {
+        super(id, name, description, dirty);
+        // TODO Auto-generated constructor stub
+    }
 
-	private boolean packComponents;
-	
-	private boolean timeUnStampedOutputDir;
+    private boolean packComponents;
 
-	private String workingDirectory;
+    private boolean timeUnStampedOutputDir;
 
-	private String crs;
+    private String workingDirectory;
 
-	private String envelope;
+    private String crs;
 
-	private String storeFilePrefix;
+    private String envelope;
 
-	private String configId;
+    private String storeFilePrefix;
 
-	private String metocDictionaryPath;
+    private String configId;
 
-	private String metocHarvesterXMLTemplatePath;
+    private String metocDictionaryPath;
 
-	/**
-	 * @return the metocDictionaryPath
-	 */
-	public String getMetocDictionaryPath() {
-		return metocDictionaryPath;
-	}
+    private String metocHarvesterXMLTemplatePath;
 
-	/**
-	 * @param metocDictionaryPath
-	 *            the metocDictionaryPath to set
-	 */
-	public void setMetocDictionaryPath(String metocDictionaryPath) {
-		this.metocDictionaryPath = metocDictionaryPath;
-	}
+    /**
+     * @return the metocDictionaryPath
+     */
+    public String getMetocDictionaryPath() {
+        return metocDictionaryPath;
+    }
 
-	/**
-	 * @return the metocHarvesterXMLTemplatePath
-	 */
-	public String getMetocHarvesterXMLTemplatePath() {
-		return metocHarvesterXMLTemplatePath;
-	}
+    /**
+     * @param metocDictionaryPath
+     *            the metocDictionaryPath to set
+     */
+    public void setMetocDictionaryPath(String metocDictionaryPath) {
+        this.metocDictionaryPath = metocDictionaryPath;
+    }
 
-	/**
-	 * @param metocHarvesterXMLTemplatePath
-	 *            the metocHarvesterXMLTemplatePath to set
-	 */
-	public void setMetocHarvesterXMLTemplatePath(
-			String metocHarvesterXMLTemplatePath) {
-		this.metocHarvesterXMLTemplatePath = metocHarvesterXMLTemplatePath;
-	}
+    /**
+     * @return the metocHarvesterXMLTemplatePath
+     */
+    public String getMetocHarvesterXMLTemplatePath() {
+        return metocHarvesterXMLTemplatePath;
+    }
 
-	public MetocActionConfiguration() {
-		super();
-	}
+    /**
+     * @param metocHarvesterXMLTemplatePath
+     *            the metocHarvesterXMLTemplatePath to set
+     */
+    public void setMetocHarvesterXMLTemplatePath(String metocHarvesterXMLTemplatePath) {
+        this.metocHarvesterXMLTemplatePath = metocHarvesterXMLTemplatePath;
+    }
 
-	/**
-	 * @return the workingDirectory
-	 */
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
+    public MetocActionConfiguration() {
+        super();
+    }
 
-	/**
-	 * @param workingDirectory
-	 *            the workingDirectory to set
-	 */
-	public void setWorkingDirectory(String workingDirectory) {
-		this.workingDirectory = workingDirectory;
-	}
+    /**
+     * @return the workingDirectory
+     */
+    public String getWorkingDirectory() {
+        return workingDirectory;
+    }
 
-	public boolean isPackComponents() {
-		return packComponents;
-	}
+    /**
+     * @param workingDirectory
+     *            the workingDirectory to set
+     */
+    public void setWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
 
-	public void setPackComponents(boolean packComponents) {
-		this.packComponents = packComponents;
-	}
+    public boolean isPackComponents() {
+        return packComponents;
+    }
 
-	public String getCrs() {
-		return crs;
-	}
+    public void setPackComponents(boolean packComponents) {
+        this.packComponents = packComponents;
+    }
 
-	public void setCrs(String crs) {
-		this.crs = crs;
-	}
+    public String getCrs() {
+        return crs;
+    }
 
-	public String getEnvelope() {
-		return envelope;
-	}
+    public void setCrs(String crs) {
+        this.crs = crs;
+    }
 
-	public void setEnvelope(String envelope) {
-		this.envelope = envelope;
-	}
+    public String getEnvelope() {
+        return envelope;
+    }
 
-	public String getStoreFilePrefix() {
-		return storeFilePrefix;
-	}
+    public void setEnvelope(String envelope) {
+        this.envelope = envelope;
+    }
 
-	public void setStoreFilePrefix(String storeFilePrefix) {
-		this.storeFilePrefix = storeFilePrefix;
-	}
+    public String getStoreFilePrefix() {
+        return storeFilePrefix;
+    }
 
-	public String getConfigId() {
-		return configId;
-	}
+    public void setStoreFilePrefix(String storeFilePrefix) {
+        this.storeFilePrefix = storeFilePrefix;
+    }
 
-	public void setConfigId(String configId) {
-		this.configId = configId;
-	}
+    public String getConfigId() {
+        return configId;
+    }
 
-	/**
-	 * @param timeUnStampedOutputDir the timeUnStampedOutputDir to set
-	 */
-	public void setTimeUnStampedOutputDir(boolean timeUnStampedOutputDir) {
-		this.timeUnStampedOutputDir = timeUnStampedOutputDir;
-	}
+    public void setConfigId(String configId) {
+        this.configId = configId;
+    }
 
-	/**
-	 * @return the timeUnStampedOutputDir
-	 */
-	public boolean isTimeUnStampedOutputDir() {
-		return timeUnStampedOutputDir;
-	}
+    /**
+     * @param timeUnStampedOutputDir
+     *            the timeUnStampedOutputDir to set
+     */
+    public void setTimeUnStampedOutputDir(boolean timeUnStampedOutputDir) {
+        this.timeUnStampedOutputDir = timeUnStampedOutputDir;
+    }
 
-	@Override
-	public MetocActionConfiguration clone() {
-		final MetocActionConfiguration configuration = new MetocActionConfiguration(
-				super.getId(), super.getName(), super.getDescription(), super
-						.isDirty());
-		configuration.setCrs(crs);
-		configuration.setEnvelope(envelope);
-		configuration.setServiceID(getServiceID());
-		configuration.setStoreFilePrefix(storeFilePrefix);
-		configuration.setWorkingDirectory(workingDirectory);
-		configuration.setMetocDictionaryPath(metocDictionaryPath);
-		configuration
-				.setMetocHarvesterXMLTemplatePath(metocHarvesterXMLTemplatePath);
-		configuration.setPackComponents(packComponents);
-		configuration.setTimeUnStampedOutputDir(timeUnStampedOutputDir);
+    /**
+     * @return the timeUnStampedOutputDir
+     */
+    public boolean isTimeUnStampedOutputDir() {
+        return timeUnStampedOutputDir;
+    }
 
-		return configuration;
-	}
+    @Override
+    public MetocActionConfiguration clone() {
+        final MetocActionConfiguration configuration = new MetocActionConfiguration(super.getId(),
+                super.getName(), super.getDescription(), super.isDirty());
+        configuration.setCrs(crs);
+        configuration.setEnvelope(envelope);
+        configuration.setServiceID(getServiceID());
+        configuration.setStoreFilePrefix(storeFilePrefix);
+        configuration.setWorkingDirectory(workingDirectory);
+        configuration.setMetocDictionaryPath(metocDictionaryPath);
+        configuration.setMetocHarvesterXMLTemplatePath(metocHarvesterXMLTemplatePath);
+        configuration.setPackComponents(packComponents);
+        configuration.setTimeUnStampedOutputDir(timeUnStampedOutputDir);
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + "id:" + getId() + " name:"
-				+ getName() + " srvId:" + getServiceID() + " wkdir:"
-				+ getWorkingDirectory() + "]";
-	}
+        return configuration;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + "id:" + getId() + " name:" + getName()
+                + " srvId:" + getServiceID() + " wkdir:" + getWorkingDirectory() + "]";
+    }
 
 }

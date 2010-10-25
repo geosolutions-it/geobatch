@@ -32,11 +32,9 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  */
 public class ScriptingAliasRegistrar extends AliasRegistrar {
 
-	public ScriptingAliasRegistrar(AliasRegistry registry) {
-		LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-		registry
-				.putAlias(
-						"ScriptingConfiguration",
-						it.geosolutions.geobatch.action.scripting.ScriptingConfiguration.class);
-	}
+    public ScriptingAliasRegistrar(AliasRegistry registry) {
+        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+        registry.putAlias("ScriptingConfiguration",
+                it.geosolutions.geobatch.action.scripting.ScriptingConfiguration.class);
+    }
 }

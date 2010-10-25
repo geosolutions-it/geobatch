@@ -23,29 +23,29 @@
 package it.geosolutions.geobatch.flow.event.consumer;
 
 public enum EventConsumerStatus {
-	/**
-	 * Idle EventConsumerStatus CODE
-	 */
-	IDLE,
+    /**
+     * Idle EventConsumerStatus CODE
+     */
+    IDLE,
 
-	/**
-	 * Waiting EventConsumerStatus CODE
-	 */
-	WAITING,
+    /**
+     * Waiting EventConsumerStatus CODE
+     */
+    WAITING,
 
-	/**
-	 * Processing EventConsumerStatus CODE
-	 */
-	EXECUTING,
+    /**
+     * Processing EventConsumerStatus CODE
+     */
+    EXECUTING,
 
-	/**
-	 * Finished OK EventConsumerStatus CODE
-	 */
-	COMPLETED,
+    /**
+     * Finished OK EventConsumerStatus CODE
+     */
+    COMPLETED,
 
-	/**
-	 * Finished KO EventConsumerStatus CODE
-	 */
-	FAILED;
+    /**
+     * Finished KO EventConsumerStatus CODE
+     */
+    FAILED;
 
 }

@@ -35,8 +35,8 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLLayerID extends OLBaseClass {
 
-	public OLLayerID(String content) {
-		super(content);
-	}
+    public OLLayerID(String content) {
+        super(content);
+    }
 
 }

@@ -27,111 +27,107 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import org.geotools.utils.CoverageToolsConstants;
 
-public class GeoTiffRetilerConfiguration extends ActionConfiguration implements
-		Configuration {
+public class GeoTiffRetilerConfiguration extends ActionConfiguration implements Configuration {
 
-	protected GeoTiffRetilerConfiguration(String id, String name,
-			String description, boolean dirty) {
-		super(id, name, description, dirty);
-		// TODO Auto-generated constructor stub
-	}
+    protected GeoTiffRetilerConfiguration(String id, String name, String description, boolean dirty) {
+        super(id, name, description, dirty);
+        // TODO Auto-generated constructor stub
+    }
 
-	private long JAICapacity;
+    private long JAICapacity;
 
-	public long getJAICapacity() {
-		return JAICapacity;
-	}
+    public long getJAICapacity() {
+        return JAICapacity;
+    }
 
-	public void setJAICapacity(long JAICapacity) {
-		this.JAICapacity = JAICapacity;
-	}
+    public void setJAICapacity(long JAICapacity) {
+        this.JAICapacity = JAICapacity;
+    }
 
-	private String workingDirectory;
+    private String workingDirectory;
 
-	private double compressionRatio = Double.NaN;
+    private double compressionRatio = Double.NaN;
 
-	private String compressionScheme = CoverageToolsConstants.DEFAULT_COMPRESSION_SCHEME;
+    private String compressionScheme = CoverageToolsConstants.DEFAULT_COMPRESSION_SCHEME;
 
-	/** Tile height. */
-	private int tileH = 256;
+    /** Tile height. */
+    private int tileH = 256;
 
-	/** Tile width. */
-	private int tileW = 256;
+    /** Tile width. */
+    private int tileW = 256;
 
-	private String serviceID;
+    private String serviceID;
 
-	public GeoTiffRetilerConfiguration() {
-		super();
-	}
+    public GeoTiffRetilerConfiguration() {
+        super();
+    }
 
-	/**
-	 * @return the workingDirectory
-	 */
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
+    /**
+     * @return the workingDirectory
+     */
+    public String getWorkingDirectory() {
+        return workingDirectory;
+    }
 
-	/**
-	 * @param workingDirectory
-	 *            the workingDirectory to set
-	 */
-	public void setWorkingDirectory(String workingDirectory) {
-		this.workingDirectory = workingDirectory;
-	}
+    /**
+     * @param workingDirectory
+     *            the workingDirectory to set
+     */
+    public void setWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
 
-	public final double getCompressionRatio() {
-		return compressionRatio;
-	}
+    public final double getCompressionRatio() {
+        return compressionRatio;
+    }
 
-	public final String getCompressionScheme() {
-		return compressionScheme;
-	}
+    public final String getCompressionScheme() {
+        return compressionScheme;
+    }
 
-	public int getTileH() {
-		return tileH;
-	}
+    public int getTileH() {
+        return tileH;
+    }
 
-	public int getTileW() {
-		return tileW;
-	}
+    public int getTileW() {
+        return tileW;
+    }
 
-	public void setCompressionRatio(double compressionRatio) {
-		this.compressionRatio = compressionRatio;
-	}
+    public void setCompressionRatio(double compressionRatio) {
+        this.compressionRatio = compressionRatio;
+    }
 
-	public void setCompressionScheme(String compressionScheme) {
-		this.compressionScheme = compressionScheme;
-	}
+    public void setCompressionScheme(String compressionScheme) {
+        this.compressionScheme = compressionScheme;
+    }
 
-	public void setTileH(int tileH) {
-		this.tileH = tileH;
-	}
+    public void setTileH(int tileH) {
+        this.tileH = tileH;
+    }
 
-	public void setTileW(int tileW) {
-		this.tileW = tileW;
-	}
+    public void setTileW(int tileW) {
+        this.tileW = tileW;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + "id:" + getId() + " srvId:"
-				+ serviceID + " name:" + getName() + " wxh:" + getTileW() + "x"
-				+ getTileH() + "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + "id:" + getId() + " srvId:" + serviceID
+                + " name:" + getName() + " wxh:" + getTileW() + "x" + getTileH() + "]";
+    }
 
-	@Override
-	public GeoTiffRetilerConfiguration clone() {
-		GeoTiffRetilerConfiguration configuration = (GeoTiffRetilerConfiguration) super
-				.clone();
-		// final GeoTiffRetilerConfiguration configuration=
-		// new
-		// GeoTiffRetilerConfiguration(getId(),getName(),getDescription(),isDirty());
-		configuration.setCompressionRatio(compressionRatio);
-		configuration.setCompressionScheme(compressionScheme);
-		configuration.setJAICapacity(JAICapacity);
-		// configuration.setServiceID(serviceID);
-		configuration.setTileH(tileH);
-		configuration.setTileW(tileW);
-		configuration.setWorkingDirectory(workingDirectory);
-		return null;
-	}
+    @Override
+    public GeoTiffRetilerConfiguration clone() {
+        GeoTiffRetilerConfiguration configuration = (GeoTiffRetilerConfiguration) super.clone();
+        // final GeoTiffRetilerConfiguration configuration=
+        // new
+        // GeoTiffRetilerConfiguration(getId(),getName(),getDescription(),isDirty());
+        configuration.setCompressionRatio(compressionRatio);
+        configuration.setCompressionScheme(compressionScheme);
+        configuration.setJAICapacity(JAICapacity);
+        // configuration.setServiceID(serviceID);
+        configuration.setTileH(tileH);
+        configuration.setTileW(tileW);
+        configuration.setWorkingDirectory(workingDirectory);
+        return null;
+    }
 }

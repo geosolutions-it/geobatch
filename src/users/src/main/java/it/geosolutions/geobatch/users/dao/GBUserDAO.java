@@ -37,14 +37,14 @@ import it.geosolutions.geobatch.users.model.GBUser;
  */
 public interface GBUserDAO extends GenericDAO<GBUser, Long> {
 
-	public GBUser findByUserId(Long userId) throws DAOException;
+    public GBUser findByUserId(Long userId) throws DAOException;
 
-	public GBUser findByUserName(String userName) throws DAOException;
+    public GBUser findByUserName(String userName) throws DAOException;
 
-	public GBUser save(GBUser user) throws DAOException;
+    public GBUser save(GBUser user) throws DAOException;
 
-	public void delete(Long userId) throws DAOException;
+    public void delete(Long userId) throws DAOException;
 
-	public void delete(GBUser user) throws DAOException;
+    public void delete(GBUser user) throws DAOException;
 
 }

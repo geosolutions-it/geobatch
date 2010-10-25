@@ -12,11 +12,9 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  */
 public class GWCAliasRegistrar extends AliasRegistrar {
 
-	public GWCAliasRegistrar(AliasRegistry registry) {
-		LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-		registry
-				.putAlias(
-						"GeoWebCacheActionConfiguration",
-						it.geosolutions.geobatch.gwc.GeoWebCacheActionConfiguration.class);
-	}
+    public GWCAliasRegistrar(AliasRegistry registry) {
+        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+        registry.putAlias("GeoWebCacheActionConfiguration",
+                it.geosolutions.geobatch.gwc.GeoWebCacheActionConfiguration.class);
+    }
 }

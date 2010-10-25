@@ -32,21 +32,18 @@ import java.util.logging.Logger;
  * 
  * @author etj
  */
-public abstract class ScriptingAction extends
-		BaseAction<FileSystemMonitorEvent> {
-	private static final Logger LOGGER = Logger.getLogger(ScriptingAction.class
-			.getName());
+public abstract class ScriptingAction extends BaseAction<FileSystemMonitorEvent> {
+    private static final Logger LOGGER = Logger.getLogger(ScriptingAction.class.getName());
 
-	private ScriptingConfiguration configuration;
+    private ScriptingConfiguration configuration;
 
-	public ScriptingAction(ScriptingConfiguration configuration)
-			throws IOException {
-		super(configuration);
-		this.configuration = configuration;
-	}
+    public ScriptingAction(ScriptingConfiguration configuration) throws IOException {
+        super(configuration);
+        this.configuration = configuration;
+    }
 
-	protected ScriptingConfiguration getConfiguration() {
-		return configuration;
-	}
+    protected ScriptingConfiguration getConfiguration() {
+        return configuration;
+    }
 
 }

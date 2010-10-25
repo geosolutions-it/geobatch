@@ -31,9 +31,9 @@ import java.util.EventObject;
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public interface FlowManagerService<EO extends EventObject, FC extends FlowConfiguration>
-		extends Service {
-	public FlowManager<EO, FC> createFlowManager(FC type);
+public interface FlowManagerService<EO extends EventObject, FC extends FlowConfiguration> extends
+        Service {
+    public FlowManager<EO, FC> createFlowManager(FC type);
 
-	public boolean canCreateFlowManager(FC type);
+    public boolean canCreateFlowManager(FC type);
 }

@@ -35,8 +35,8 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLUnits extends OLBaseClass {
 
-	public OLUnits(String content) {
-		super(content);
-	}
+    public OLUnits(String content) {
+        super(content);
+    }
 
 }

@@ -27,41 +27,37 @@ import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import java.util.EventObject;
 import java.util.logging.Logger;
 
-public abstract class GeoWebCacheConfiguratorAction<T extends EventObject>
-		extends BaseAction<T> {
+public abstract class GeoWebCacheConfiguratorAction<T extends EventObject> extends BaseAction<T> {
 
-	/**
-	 * Default logger
-	 */
-	protected final static Logger LOGGER = Logger
-			.getLogger(GeoWebCacheConfiguratorAction.class.toString());
+    /**
+     * Default logger
+     */
+    protected final static Logger LOGGER = Logger.getLogger(GeoWebCacheConfiguratorAction.class
+            .toString());
 
-	protected final GeoWebCacheActionConfiguration configuration;
+    protected final GeoWebCacheActionConfiguration configuration;
 
-	/**
-	 * Constructs a producer. The operation name will be the same than the
-	 * parameter descriptor name.
-	 * 
-	 */
-	public GeoWebCacheConfiguratorAction(
-			GeoWebCacheActionConfiguration configuration) {
-		super(configuration);
-		this.configuration = configuration;
+    /**
+     * Constructs a producer. The operation name will be the same than the parameter descriptor
+     * name.
+     * 
+     */
+    public GeoWebCacheConfiguratorAction(GeoWebCacheActionConfiguration configuration) {
+        super(configuration);
+        this.configuration = configuration;
 
-		// //////////////////////////
-		// get required parameters
-		// //////////////////////////
+        // //////////////////////////
+        // get required parameters
+        // //////////////////////////
 
-		if ((configuration.getGeoserverUrl() == null)
-				|| configuration.getGwcUrl() == null
-				|| (configuration.getWorkingDirectory() == null)) {
-			throw new IllegalStateException(
-					"Some configuration parameters is null!");
-		}
+        if ((configuration.getGeoserverUrl() == null) || configuration.getGwcUrl() == null
+                || (configuration.getWorkingDirectory() == null)) {
+            throw new IllegalStateException("Some configuration parameters is null!");
+        }
 
-	}
+    }
 
-	public GeoWebCacheActionConfiguration getConfiguration() {
-		return configuration;
-	}
+    public GeoWebCacheActionConfiguration getConfiguration() {
+        return configuration;
+    }
 }

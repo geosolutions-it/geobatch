@@ -29,78 +29,77 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ActionConfiguration extends BaseConfiguration implements
-		Configuration, Cloneable {
+public abstract class ActionConfiguration extends BaseConfiguration implements Configuration,
+        Cloneable {
 
-	private List<String> listenerIds = null;
-	private List<ProgressListenerConfiguration> listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
-	private boolean failIgnored = false;
+    private List<String> listenerIds = null;
 
-	public ActionConfiguration() {
-		super();
-	}
+    private List<ProgressListenerConfiguration> listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
 
-	public ActionConfiguration(String id, String name, String description,
-			boolean dirty) {
-		super(id, name, description, dirty);
-	}
+    private boolean failIgnored = false;
 
-	/**
-	 * Tells if an exception in this Actions should break the entire flow. <BR>
-	 * Defaults to false.
-	 * <P>
-	 * Some somehow "minor" actions would not break the logical flow, for
-	 * instance a remote file deletion via FTP.
-	 * 
-	 * @return true if an error in this Actions should not stop the whole flow.
-	 */
-	public boolean isFailIgnored() {
-		return failIgnored;
-	}
+    public ActionConfiguration() {
+        super();
+    }
 
-	public void setFailIgnored(boolean failIgnored) {
-		this.failIgnored = failIgnored;
-	}
+    public ActionConfiguration(String id, String name, String description, boolean dirty) {
+        super(id, name, description, dirty);
+    }
 
-	public List<String> getListenerIds() {
-		return listenerIds;
-	}
+    /**
+     * Tells if an exception in this Actions should break the entire flow. <BR>
+     * Defaults to false.
+     * <P>
+     * Some somehow "minor" actions would not break the logical flow, for instance a remote file
+     * deletion via FTP.
+     * 
+     * @return true if an error in this Actions should not stop the whole flow.
+     */
+    public boolean isFailIgnored() {
+        return failIgnored;
+    }
 
-	protected void setListenerId(List<String> listenerIds) {
-		this.listenerIds = listenerIds;
-	}
+    public void setFailIgnored(boolean failIgnored) {
+        this.failIgnored = failIgnored;
+    }
 
-	public void addListenerConfiguration(ProgressListenerConfiguration plc) {
-		listenerConfigurations.add(plc);
-	}
+    public List<String> getListenerIds() {
+        return listenerIds;
+    }
 
-	public List<ProgressListenerConfiguration> getListenerConfigurations() {
-		return listenerConfigurations;
-	}
+    protected void setListenerId(List<String> listenerIds) {
+        this.listenerIds = listenerIds;
+    }
 
-	public void setListenerConfigurations(
-			List<ProgressListenerConfiguration> listenerConfigurations) {
-		if (listenerConfigurations == null)
-			throw new NullPointerException(
-					"Can't set listenerConfig list to null");
-		this.listenerConfigurations = listenerConfigurations;
-	}
+    public void addListenerConfiguration(ProgressListenerConfiguration plc) {
+        listenerConfigurations.add(plc);
+    }
 
-	@Override
-	public ActionConfiguration clone() {
-		ActionConfiguration bc = (ActionConfiguration) super.clone();
+    public List<ProgressListenerConfiguration> getListenerConfigurations() {
+        return listenerConfigurations;
+    }
 
-		bc.listenerIds = listenerIds == null ? new ArrayList<String>()
-				: new ArrayList<String>(listenerIds);
+    public void setListenerConfigurations(List<ProgressListenerConfiguration> listenerConfigurations) {
+        if (listenerConfigurations == null)
+            throw new NullPointerException("Can't set listenerConfig list to null");
+        this.listenerConfigurations = listenerConfigurations;
+    }
 
-		bc.listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
-		if (listenerConfigurations != null) {
-			for (ProgressListenerConfiguration plc : listenerConfigurations) {
-				bc.listenerConfigurations.add(plc); // CHECKME: shall we clone
-				// the configs?
-			}
-		}
-		return bc;
-	}
+    @Override
+    public ActionConfiguration clone() {
+        ActionConfiguration bc = (ActionConfiguration) super.clone();
+
+        bc.listenerIds = listenerIds == null ? new ArrayList<String>() : new ArrayList<String>(
+                listenerIds);
+
+        bc.listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
+        if (listenerConfigurations != null) {
+            for (ProgressListenerConfiguration plc : listenerConfigurations) {
+                bc.listenerConfigurations.add(plc); // CHECKME: shall we clone
+                // the configs?
+            }
+        }
+        return bc;
+    }
 
 }

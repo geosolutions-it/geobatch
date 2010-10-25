@@ -21,143 +21,139 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class GeoBatchServer implements InitializingBean {
 
-	private final static Logger LOGGER = Logger.getLogger(GeoBatchServer.class
-			.getName());
+    private final static Logger LOGGER = Logger.getLogger(GeoBatchServer.class.getName());
 
-	private FtpServer ftpServer;
-	private FtpServerConfig lastConfig;
-	private FtpServerConfigDAO serverConfigDAO;
-	private GeoBatchUserManager userManager;
+    private FtpServer ftpServer;
 
-	public void afterPropertiesSet() throws Exception {
-		setLastConfig(serverConfigDAO.load());
-		userManager.setServerConfig(getLastConfig());
-		ftpServer = create(getLastConfig(), userManager);
+    private FtpServerConfig lastConfig;
 
-		if (getLastConfig().isAutoStart())
-			ftpServer.start();
-	}
+    private FtpServerConfigDAO serverConfigDAO;
 
-	public static FtpServer create(FtpServerConfig config,
-			UserManager userManager) {
-		// base configuration
-		final FtpServerFactory serverFactory = new FtpServerFactory();
+    private GeoBatchUserManager userManager;
 
-		final ConnectionConfigFactory configFactory = new ConnectionConfigFactory();
-		configFactory.setAnonymousLoginEnabled(config.isAnonEnabled());
-		configFactory.setLoginFailureDelay(config.getLoginFailureDelay());
-		configFactory.setMaxAnonymousLogins(config.getMaxAnonLogins());
-		configFactory.setMaxLoginFailures(config.getMaxLoginFailures());
-		configFactory.setMaxLogins(config.getMaxLogins());
-		serverFactory.setConnectionConfig(configFactory
-				.createConnectionConfig());
+    public void afterPropertiesSet() throws Exception {
+        setLastConfig(serverConfigDAO.load());
+        userManager.setServerConfig(getLastConfig());
+        ftpServer = create(getLastConfig(), userManager);
 
-		// change port
-		final ListenerFactory factory = new ListenerFactory();
-		factory.setPort(config.getPort());
-		factory.setImplicitSsl(config.isSsl());
-		serverFactory.addListener("default", factory.createListener());
+        if (getLastConfig().isAutoStart())
+            ftpServer.start();
+    }
 
-		// user management
-		serverFactory.setUserManager(userManager);
+    public static FtpServer create(FtpServerConfig config, UserManager userManager) {
+        // base configuration
+        final FtpServerFactory serverFactory = new FtpServerFactory();
 
-		// callback
-		final Map<String, Ftplet> map = new HashMap<String, Ftplet>();
-		map.put("GB-Ftplet", new GeoBatchFtplet());
-		serverFactory.setFtplets(map);
+        final ConnectionConfigFactory configFactory = new ConnectionConfigFactory();
+        configFactory.setAnonymousLoginEnabled(config.isAnonEnabled());
+        configFactory.setLoginFailureDelay(config.getLoginFailureDelay());
+        configFactory.setMaxAnonymousLogins(config.getMaxAnonLogins());
+        configFactory.setMaxLoginFailures(config.getMaxLoginFailures());
+        configFactory.setMaxLogins(config.getMaxLogins());
+        serverFactory.setConnectionConfig(configFactory.createConnectionConfig());
 
-		return serverFactory.createServer();
-	}
+        // change port
+        final ListenerFactory factory = new ListenerFactory();
+        factory.setPort(config.getPort());
+        factory.setImplicitSsl(config.isSsl());
+        serverFactory.addListener("default", factory.createListener());
 
-	public void suspend() {
-		ftpServer.suspend();
-	}
+        // user management
+        serverFactory.setUserManager(userManager);
 
-	public void stop() {
-		ftpServer.stop();
-	}
+        // callback
+        final Map<String, Ftplet> map = new HashMap<String, Ftplet>();
+        map.put("GB-Ftplet", new GeoBatchFtplet());
+        serverFactory.setFtplets(map);
 
-	public synchronized void start() throws FtpException {
-		if (!ftpServer.isStopped()) {
-			LOGGER
-					.log(Level.WARNING,
-							"FTP server is already running and will not be started again.");
-			return;
-		}
+        return serverFactory.createServer();
+    }
 
-		try {
-			FtpServerConfig config = serverConfigDAO.load();
-			if (true) { // !config.equals(lastConfig)) {
-				// config has changed: recreate server with new config
-				setLastConfig(config);
-				userManager.setServerConfig(getLastConfig());
-				ftpServer = create(getLastConfig(), userManager);
-			}
-		} catch (DAOException ex) {
-			LOGGER
-					.log(
-							Level.WARNING,
-							"Could not retrieve server config. Using old server instance",
-							ex);
-		}
+    public void suspend() {
+        ftpServer.suspend();
+    }
 
-		ftpServer.start();
-	}
+    public void stop() {
+        ftpServer.stop();
+    }
 
-	public void resume() {
-		ftpServer.resume();
-	}
+    public synchronized void start() throws FtpException {
+        if (!ftpServer.isStopped()) {
+            LOGGER.log(Level.WARNING,
+                    "FTP server is already running and will not be started again.");
+            return;
+        }
 
-	public boolean isSuspended() {
-		return ftpServer.isSuspended();
-	}
+        try {
+            FtpServerConfig config = serverConfigDAO.load();
+            if (true) { // !config.equals(lastConfig)) {
+                // config has changed: recreate server with new config
+                setLastConfig(config);
+                userManager.setServerConfig(getLastConfig());
+                ftpServer = create(getLastConfig(), userManager);
+            }
+        } catch (DAOException ex) {
+            LOGGER.log(Level.WARNING,
+                    "Could not retrieve server config. Using old server instance", ex);
+        }
 
-	public boolean isStopped() {
-		return ftpServer.isStopped();
-	}
+        ftpServer.start();
+    }
 
-	public FtpServerConfig getLastConfig() {
-		return lastConfig.clone();
-	}
+    public void resume() {
+        ftpServer.resume();
+    }
 
-	/**
-	 * @param lastConfig
-	 *            the lastConfig to set
-	 * @throws DAOException
-	 */
-	public void setLastConfig(FtpServerConfig lastConfig) throws DAOException {
-		this.lastConfig = serverConfigDAO.load();
-	}
+    public boolean isSuspended() {
+        return ftpServer.isSuspended();
+    }
 
-	/**
-	 * @param ftpServer
-	 *            the ftpServer to set
-	 */
-	public void setFtpServer(FtpServer ftpServer) {
-		this.ftpServer = ftpServer;
-	}
+    public boolean isStopped() {
+        return ftpServer.isStopped();
+    }
 
-	/**
-	 * @return the ftpServer
-	 */
-	public synchronized FtpServer getFtpServer() {
-		return ftpServer;
-	}
+    public FtpServerConfig getLastConfig() {
+        return lastConfig.clone();
+    }
 
-	public FtpServerConfigDAO getServerConfigDAO() {
-		return serverConfigDAO;
-	}
+    /**
+     * @param lastConfig
+     *            the lastConfig to set
+     * @throws DAOException
+     */
+    public void setLastConfig(FtpServerConfig lastConfig) throws DAOException {
+        this.lastConfig = serverConfigDAO.load();
+    }
 
-	public void setServerConfigDAO(FtpServerConfigDAO serverConfigDAO) {
-		this.serverConfigDAO = serverConfigDAO;
-	}
+    /**
+     * @param ftpServer
+     *            the ftpServer to set
+     */
+    public void setFtpServer(FtpServer ftpServer) {
+        this.ftpServer = ftpServer;
+    }
 
-	public void setUserManager(GeoBatchUserManager userManager) {
-		this.userManager = userManager;
-	}
+    /**
+     * @return the ftpServer
+     */
+    public synchronized FtpServer getFtpServer() {
+        return ftpServer;
+    }
 
-	public GeoBatchUserManager getUserManager() {
-		return userManager;
-	}
+    public FtpServerConfigDAO getServerConfigDAO() {
+        return serverConfigDAO;
+    }
+
+    public void setServerConfigDAO(FtpServerConfigDAO serverConfigDAO) {
+        this.serverConfigDAO = serverConfigDAO;
+    }
+
+    public void setUserManager(GeoBatchUserManager userManager) {
+        this.userManager = userManager;
+    }
+
+    public GeoBatchUserManager getUserManager() {
+        return userManager;
+    }
 
 }

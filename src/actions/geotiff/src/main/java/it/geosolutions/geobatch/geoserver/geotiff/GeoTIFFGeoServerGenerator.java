@@ -53,249 +53,215 @@ import org.geotools.gce.geotiff.GeoTiffReader;
  * 
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
-public class GeoTIFFGeoServerGenerator extends
-		GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+public class GeoTIFFGeoServerGenerator extends GeoServerConfiguratorAction<FileSystemMonitorEvent> {
 
-	public final static String GEOSERVER_VERSION = "1.7.X";
+    public final static String GEOSERVER_VERSION = "1.7.X";
 
-	protected GeoTIFFGeoServerGenerator(
-			GeoServerActionConfiguration configuration) throws IOException {
-		super(configuration);
-	}
+    protected GeoTIFFGeoServerGenerator(GeoServerActionConfiguration configuration)
+            throws IOException {
+        super(configuration);
+    }
 
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
-		try {
-			listenerForwarder.started();
+    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+            throws ActionException {
+        try {
+            listenerForwarder.started();
 
-			// looking for file
-			if (events.size() != 1) {
-				throw new IllegalArgumentException(
-						"Wrong number of elements for this action: "
-								+ events.size());
-			}
-			FileSystemMonitorEvent event = events.remove();
-			final String configId = configuration.getName();
+            // looking for file
+            if (events.size() != 1) {
+                throw new IllegalArgumentException("Wrong number of elements for this action: "
+                        + events.size());
+            }
+            FileSystemMonitorEvent event = events.remove();
+            final String configId = configuration.getName();
 
-			// //
-			// data flow configuration and dataStore name must not be null.
-			// //
-			if (configuration == null) {
-				LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
-				throw new IllegalStateException("DataFlowConfig is null.");
-			}
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Initializing input variables
-			//
-			// ////////////////////////////////////////////////////////////////////
-			final File workingDir = IOUtils.findLocation(configuration
-					.getWorkingDirectory(), new File(
-					((FileBaseCatalog) CatalogHolder.getCatalog())
-							.getBaseDirectory()));
+            // //
+            // data flow configuration and dataStore name must not be null.
+            // //
+            if (configuration == null) {
+                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+                throw new IllegalStateException("DataFlowConfig is null.");
+            }
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Initializing input variables
+            //
+            // ////////////////////////////////////////////////////////////////////
+            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Checking input files.
-			//
-			// ////////////////////////////////////////////////////////////////////
-			if ((workingDir == null) || !workingDir.exists()
-					|| !workingDir.isDirectory()) {
-				LOGGER.log(Level.SEVERE,
-						"GeoServerDataDirectory is null or does not exist.");
-				throw new IllegalStateException(
-						"GeoServerDataDirectory is null or does not exist.");
-			}
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Checking input files.
+            //
+            // ////////////////////////////////////////////////////////////////////
+            if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
+                LOGGER.log(Level.SEVERE, "GeoServerDataDirectory is null or does not exist.");
+                throw new IllegalStateException("GeoServerDataDirectory is null or does not exist.");
+            }
 
-			// checked by superclass
-			// if ((geoserverURL == null) || "".equals(geoserverURL)) {
-			// LOGGER.log(Level.SEVERE, "GeoServerCatalogServiceURL is null.");
-			// throw new
-			// IllegalStateException("GeoServerCatalogServiceURL is null.");
-			// }
+            // checked by superclass
+            // if ((geoserverURL == null) || "".equals(geoserverURL)) {
+            // LOGGER.log(Level.SEVERE, "GeoServerCatalogServiceURL is null.");
+            // throw new
+            // IllegalStateException("GeoServerCatalogServiceURL is null.");
+            // }
 
-			String inputFileName = event.getSource().getAbsolutePath();
-			final String filePrefix = FilenameUtils.getBaseName(inputFileName);
-			final String fileSuffix = FilenameUtils.getExtension(inputFileName);
-			final String fileNameFilter = getConfiguration()
-					.getStoreFilePrefix();
+            String inputFileName = event.getSource().getAbsolutePath();
+            final String filePrefix = FilenameUtils.getBaseName(inputFileName);
+            final String fileSuffix = FilenameUtils.getExtension(inputFileName);
+            final String fileNameFilter = getConfiguration().getStoreFilePrefix();
 
-			String baseFileName = null;
+            String baseFileName = null;
 
-			if (fileNameFilter != null) {
-				if ((filePrefix.equals(fileNameFilter) || filePrefix
-						.matches(fileNameFilter))
-						&& ("tif".equalsIgnoreCase(fileSuffix) || "tiff"
-								.equalsIgnoreCase(fileSuffix))) {
-					// etj: are we missing something here?
-					baseFileName = filePrefix;
-				}
-			} else if ("tif".equalsIgnoreCase(fileSuffix)
-					|| "tiff".equalsIgnoreCase(fileSuffix)) {
-				baseFileName = filePrefix;
-			}
+            if (fileNameFilter != null) {
+                if ((filePrefix.equals(fileNameFilter) || filePrefix.matches(fileNameFilter))
+                        && ("tif".equalsIgnoreCase(fileSuffix) || "tiff"
+                                .equalsIgnoreCase(fileSuffix))) {
+                    // etj: are we missing something here?
+                    baseFileName = filePrefix;
+                }
+            } else if ("tif".equalsIgnoreCase(fileSuffix) || "tiff".equalsIgnoreCase(fileSuffix)) {
+                baseFileName = filePrefix;
+            }
 
-			if (baseFileName == null) {
-				LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName
-						+ "'");
-				throw new IllegalStateException("Unexpected file '"
-						+ inputFileName + "'");
-			}
+            if (baseFileName == null) {
+                LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
+                throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
+            }
 
-			inputFileName = FilenameUtils.getName(inputFileName);
-			final String coverageStoreId = FilenameUtils
-					.getBaseName(inputFileName);
+            inputFileName = FilenameUtils.getName(inputFileName);
+            final String coverageStoreId = FilenameUtils.getBaseName(inputFileName);
 
-			// //
-			// creating coverageStore
-			// //
-			final GeoTiffFormat format = new GeoTiffFormat();
-			GeoTiffReader coverageReader = null;
+            // //
+            // creating coverageStore
+            // //
+            final GeoTiffFormat format = new GeoTiffFormat();
+            GeoTiffReader coverageReader = null;
 
-			// //
-			// Trying to read the GeoTIFF
-			// //
-			/**
-			 * GeoServer url: "file:data/" + coverageStoreId + "/" +
-			 * geoTIFFFileName
-			 */
-			try {
-				coverageReader = (GeoTiffReader) format.getReader(event
-						.getSource());
+            // //
+            // Trying to read the GeoTIFF
+            // //
+            /**
+             * GeoServer url: "file:data/" + coverageStoreId + "/" + geoTIFFFileName
+             */
+            try {
+                coverageReader = (GeoTiffReader) format.getReader(event.getSource());
 
-				if (coverageReader == null) {
-					LOGGER.log(Level.SEVERE,
-							"No valid GeoTIFF File found for this Data Flow!");
-					throw new IllegalStateException(
-							"No valid GeoTIFF File found for this Data Flow!");
-				}
-			} finally {
-				if (coverageReader != null) {
-					try {
-						coverageReader.dispose();
-					} catch (Throwable e) {
-						if (LOGGER.isLoggable(Level.FINEST)) {
-							LOGGER
-									.log(Level.FINEST, e.getLocalizedMessage(),
-											e);
-						}
-					}
-				}
-			}
+                if (coverageReader == null) {
+                    LOGGER.log(Level.SEVERE, "No valid GeoTIFF File found for this Data Flow!");
+                    throw new IllegalStateException(
+                            "No valid GeoTIFF File found for this Data Flow!");
+                }
+            } finally {
+                if (coverageReader != null) {
+                    try {
+                        coverageReader.dispose();
+                    } catch (Throwable e) {
+                        if (LOGGER.isLoggable(Level.FINEST)) {
+                            LOGGER.log(Level.FINEST, e.getLocalizedMessage(), e);
+                        }
+                    }
+                }
+            }
 
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// SENDING data to GeoServer via REST protocol.
-			//
-			// ////////////////////////////////////////////////////////////////////
-			Map<String, String> queryParams = new HashMap<String, String>();
-			queryParams.put("namespace", getConfiguration()
-					.getDefaultNamespace());
-			queryParams.put("wmspath", getConfiguration().getWmsPath());
-			send(workingDir, event.getSource(), getConfiguration()
-					.getGeoserverURL(), new Long(event.getTimestamp())
-					.toString(), coverageStoreId, baseFileName,
-					getConfiguration().getStyles(), configId,
-					getConfiguration().getDefaultStyle(), queryParams);
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // SENDING data to GeoServer via REST protocol.
+            //
+            // ////////////////////////////////////////////////////////////////////
+            Map<String, String> queryParams = new HashMap<String, String>();
+            queryParams.put("namespace", getConfiguration().getDefaultNamespace());
+            queryParams.put("wmspath", getConfiguration().getWmsPath());
+            send(workingDir, event.getSource(), getConfiguration().getGeoserverURL(), new Long(
+                    event.getTimestamp()).toString(), coverageStoreId, baseFileName,
+                    getConfiguration().getStyles(), configId, getConfiguration().getDefaultStyle(),
+                    queryParams);
 
-			listenerForwarder.completed();
-			return events;
-		} catch (Exception t) {
-			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to
-																	// log,
-																	// we're
-																	// rethrowing
-																	// it
-			listenerForwarder.failed(t);
-			throw new ActionException(this, t.getMessage(), t);
-		}
-	}
+            listenerForwarder.completed();
+            return events;
+        } catch (Exception t) {
+            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to
+            // log,
+            // we're
+            // rethrowing
+            // it
+            listenerForwarder.failed(t);
+            throw new ActionException(this, t.getMessage(), t);
+        }
+    }
 
-	/**
-	 * <B>TODO: REST calls here: restruct to use GS2 </B>
-	 */
-	public void send(final File inputDataDir, final File data,
-			final String geoserverBaseURL, final String timeStamp,
-			final String coverageStoreId, final String storeFilePrefix,
-			final List<String> dataStyles, final String configId,
-			final String defaultStyle, final Map<String, String> queryParams)
-			throws MalformedURLException, FileNotFoundException {
-		URL geoserverREST_URL = null;
-		boolean sent = false;
+    /**
+     * <B>TODO: REST calls here: restruct to use GS2 </B>
+     */
+    public void send(final File inputDataDir, final File data, final String geoserverBaseURL,
+            final String timeStamp, final String coverageStoreId, final String storeFilePrefix,
+            final List<String> dataStyles, final String configId, final String defaultStyle,
+            final Map<String, String> queryParams) throws MalformedURLException,
+            FileNotFoundException {
+        URL geoserverREST_URL = null;
+        boolean sent = false;
 
-		String layerName = storeFilePrefix != null ? storeFilePrefix
-				: coverageStoreId;
+        String layerName = storeFilePrefix != null ? storeFilePrefix : coverageStoreId;
 
-		if (GEOSERVER_VERSION.equalsIgnoreCase("1.7.2")) {
-			if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
-				geoserverREST_URL = new URL(geoserverBaseURL + "/rest/folders/"
-						+ coverageStoreId + "/layers/" + layerName
-						+ "/file.geotiff" + getQueryString(queryParams));
-				sent = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL,
-						new FileInputStream(data), getConfiguration()
-								.getGeoserverUID(), getConfiguration()
-								.getGeoserverPWD());
-			} else if ("URL".equals(getConfiguration().getDataTransferMethod())) {
-				geoserverREST_URL = new URL(geoserverBaseURL + "/rest/folders/"
-						+ coverageStoreId + "/layers/" + layerName
-						+ "/url.geotiff" + getQueryString(queryParams));
-				sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data
-						.toURL().toExternalForm(), getConfiguration()
-						.getGeoserverUID(), getConfiguration()
-						.getGeoserverPWD());
-			} else if ("EXTERNAL".equals(getConfiguration()
-					.getDataTransferMethod())) {
-				geoserverREST_URL = new URL(geoserverBaseURL + "/rest/folders/"
-						+ coverageStoreId + "/layers/" + layerName
-						+ "/external.geotiff" + getQueryString(queryParams));
-				sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data
-						.toURL().toExternalForm(), getConfiguration()
-						.getGeoserverUID(), getConfiguration()
-						.getGeoserverPWD());
-			}
-		} else {
-			if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
-				geoserverREST_URL = new URL(geoserverBaseURL
-						+ "/rest/workspaces/" + queryParams.get("namespace")
-						+ "/coveragestores/" + coverageStoreId
-						+ "/file.geotiff");
-				sent = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL,
-						new FileInputStream(data), getConfiguration()
-								.getGeoserverUID(), getConfiguration()
-								.getGeoserverPWD());
-			} else if ("URL".equals(getConfiguration().getDataTransferMethod())) {
-				geoserverREST_URL = new URL(geoserverBaseURL
-						+ "/rest/workspaces/" + queryParams.get("namespace")
-						+ "/coveragestores/" + coverageStoreId + "/url.geotiff");
-				sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data
-						.toURL().toExternalForm(), getConfiguration()
-						.getGeoserverUID(), getConfiguration()
-						.getGeoserverPWD());
-			} else if ("EXTERNAL".equals(getConfiguration()
-					.getDataTransferMethod())) {
-				geoserverREST_URL = new URL(geoserverBaseURL
-						+ "/rest/workspaces/" + queryParams.get("namespace")
-						+ "/coveragestores/" + coverageStoreId
-						+ "/external.geotiff");
-				sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data
-						.toURL().toExternalForm(), getConfiguration()
-						.getGeoserverUID(), getConfiguration()
-						.getGeoserverPWD());
-			}
+        if (GEOSERVER_VERSION.equalsIgnoreCase("1.7.2")) {
+            if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
+                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/folders/" + coverageStoreId
+                        + "/layers/" + layerName + "/file.geotiff" + getQueryString(queryParams));
+                sent = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, new FileInputStream(
+                        data), getConfiguration().getGeoserverUID(), getConfiguration()
+                        .getGeoserverPWD());
+            } else if ("URL".equals(getConfiguration().getDataTransferMethod())) {
+                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/folders/" + coverageStoreId
+                        + "/layers/" + layerName + "/url.geotiff" + getQueryString(queryParams));
+                sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
+                        .toExternalForm(), getConfiguration().getGeoserverUID(), getConfiguration()
+                        .getGeoserverPWD());
+            } else if ("EXTERNAL".equals(getConfiguration().getDataTransferMethod())) {
+                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/folders/" + coverageStoreId
+                        + "/layers/" + layerName + "/external.geotiff"
+                        + getQueryString(queryParams));
+                sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
+                        .toExternalForm(), getConfiguration().getGeoserverUID(), getConfiguration()
+                        .getGeoserverPWD());
+            }
+        } else {
+            if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
+                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/workspaces/"
+                        + queryParams.get("namespace") + "/coveragestores/" + coverageStoreId
+                        + "/file.geotiff");
+                sent = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, new FileInputStream(
+                        data), getConfiguration().getGeoserverUID(), getConfiguration()
+                        .getGeoserverPWD());
+            } else if ("URL".equals(getConfiguration().getDataTransferMethod())) {
+                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/workspaces/"
+                        + queryParams.get("namespace") + "/coveragestores/" + coverageStoreId
+                        + "/url.geotiff");
+                sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
+                        .toExternalForm(), getConfiguration().getGeoserverUID(), getConfiguration()
+                        .getGeoserverPWD());
+            } else if ("EXTERNAL".equals(getConfiguration().getDataTransferMethod())) {
+                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/workspaces/"
+                        + queryParams.get("namespace") + "/coveragestores/" + coverageStoreId
+                        + "/external.geotiff");
+                sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
+                        .toExternalForm(), getConfiguration().getGeoserverUID(), getConfiguration()
+                        .getGeoserverPWD());
+            }
 
-		}
+        }
 
-		if (sent) {
-			if (LOGGER.isLoggable(Level.INFO)) {
-				LOGGER
-						.info("GeoTIFF GeoServerConfiguratorAction: coverage SUCCESSFULLY sent to GeoServer!");
-			}
-			boolean sldSent = configureStyles(layerName);
-		} else {
-			if (LOGGER.isLoggable(Level.INFO)) {
-				LOGGER
-						.info("GeoTIFF GeoServerConfiguratorAction: coverage was NOT sent to GeoServer due to connection errors!");
-			}
-		}
-	}
+        if (sent) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER
+                        .info("GeoTIFF GeoServerConfiguratorAction: coverage SUCCESSFULLY sent to GeoServer!");
+            }
+            boolean sldSent = configureStyles(layerName);
+        } else {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER
+                        .info("GeoTIFF GeoServerConfiguratorAction: coverage was NOT sent to GeoServer due to connection errors!");
+            }
+        }
+    }
 }

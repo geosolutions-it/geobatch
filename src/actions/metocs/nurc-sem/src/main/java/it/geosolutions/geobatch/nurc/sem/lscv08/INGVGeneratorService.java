@@ -35,31 +35,29 @@ import java.util.logging.Logger;
  * 
  */
 public class INGVGeneratorService extends BaseService implements
-		ActionService<FileSystemMonitorEvent, MetocActionConfiguration> {
+        ActionService<FileSystemMonitorEvent, MetocActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(INGVGeneratorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(INGVGeneratorService.class.toString());
 
-	public boolean canCreateAction(MetocActionConfiguration configuration) {
-		return true;
-	}
+    public boolean canCreateAction(MetocActionConfiguration configuration) {
+        return true;
+    }
 
-	/**
-	 * Action creator
-	 * 
-	 * @param configuration
-	 *            The data base action configuration
-	 * @return new INGVFileConfiguratorAction()
-	 */
-	public INGVFileConfiguratorAction createAction(
-			MetocActionConfiguration configuration) {
-		try {
-			return new INGVFileConfiguratorAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Action creator
+     * 
+     * @param configuration
+     *            The data base action configuration
+     * @return new INGVFileConfiguratorAction()
+     */
+    public INGVFileConfiguratorAction createAction(MetocActionConfiguration configuration) {
+        try {
+            return new INGVFileConfiguratorAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
 }

@@ -20,104 +20,103 @@ import java.util.List;
  * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class StatusProgressListener extends
-		ProgressListener<StatusProgressListenerConfiguration> {
+public class StatusProgressListener extends ProgressListener<StatusProgressListenerConfiguration> {
 
-	private Object source;
+    private Object source;
 
-	protected boolean started = false;
-	protected boolean paused = false;
-	protected boolean failed = false;
-	protected boolean completed = false;
-	protected boolean terminated = false;
+    protected boolean started = false;
 
-	protected Throwable failException = null;
+    protected boolean paused = false;
 
-	public StatusProgressListener(
-			StatusProgressListenerConfiguration configuration) {
-		super(configuration);
-	}
+    protected boolean failed = false;
 
-	public void setSource(Object source) {
-		this.source = source;
-	}
+    protected boolean completed = false;
 
-	public void started() {
-		started = true;
-	}
+    protected boolean terminated = false;
 
-	public boolean isStarted() {
-		return started;
-	}
+    protected Throwable failException = null;
 
-	/**
-	 * This event should trigger some refresh on interactive displays, but we
-	 * don't need it
-	 */
-	public void progressing() {
-	}
+    public StatusProgressListener(StatusProgressListenerConfiguration configuration) {
+        super(configuration);
+    }
 
-	public void paused() {
-		paused = true;
-	}
+    public void setSource(Object source) {
+        this.source = source;
+    }
 
-	public boolean isPaused() {
-		return paused;
-	}
+    public void started() {
+        started = true;
+    }
 
-	public void resumed() {
-		paused = false;
-	}
+    public boolean isStarted() {
+        return started;
+    }
 
-	public void completed() {
-		completed = true;
-	}
+    /**
+     * This event should trigger some refresh on interactive displays, but we don't need it
+     */
+    public void progressing() {
+    }
 
-	public boolean isCompleted() {
-		return completed;
-	}
+    public void paused() {
+        paused = true;
+    }
 
-	public void failed(Throwable exception) {
-		failed = true;
-		failException = exception;
-	}
+    public boolean isPaused() {
+        return paused;
+    }
 
-	public boolean isFailed() {
-		return failed;
-	}
+    public void resumed() {
+        paused = false;
+    }
 
-	public Throwable getFailException() {
-		return failException;
-	}
+    public void completed() {
+        completed = true;
+    }
 
-	public void terminated() {
-		terminated = true;
-	}
+    public boolean isCompleted() {
+        return completed;
+    }
 
-	public boolean isTerminated() {
-		return terminated;
-	}
+    public void failed(Throwable exception) {
+        failed = true;
+        failException = exception;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder().append("Status of ").append(
-				source).append('[');
+    public boolean isFailed() {
+        return failed;
+    }
 
-		sb.append("Last task: '").append(getTask()).append("' ");
-		sb.append(" at ").append(getProgress()).append("% ");
-		if (started)
-			sb.append("started ");
-		if (paused)
-			sb.append("paused ");
-		if (completed)
-			sb.append("completed");
-		if (failed)
-			sb.append("failed (").append(failException.getMessage())
-					.append(")");
-		if (terminated)
-			sb.append("terminated");
-		sb.append(']');
+    public Throwable getFailException() {
+        return failException;
+    }
 
-		return sb.toString();
-	}
+    public void terminated() {
+        terminated = true;
+    }
+
+    public boolean isTerminated() {
+        return terminated;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder().append("Status of ").append(source).append('[');
+
+        sb.append("Last task: '").append(getTask()).append("' ");
+        sb.append(" at ").append(getProgress()).append("% ");
+        if (started)
+            sb.append("started ");
+        if (paused)
+            sb.append("paused ");
+        if (completed)
+            sb.append("completed");
+        if (failed)
+            sb.append("failed (").append(failException.getMessage()).append(")");
+        if (terminated)
+            sb.append("terminated");
+        sb.append(']');
+
+        return sb.toString();
+    }
 }

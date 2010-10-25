@@ -47,135 +47,129 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 @SuppressWarnings("deprecation")
 public class FTPConfigFormController extends SimpleFormController {
 
-	private GeoBatchServer server;
+    private GeoBatchServer server;
 
-	/**
-	 * @param server
-	 *            the server to set
-	 */
-	public void setServer(GeoBatchServer server) {
-		this.server = server;
-	}
+    /**
+     * @param server
+     *            the server to set
+     */
+    public void setServer(GeoBatchServer server) {
+        this.server = server;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.servlet.mvc.AbstractFormController#formBackingObject
-	 * (javax.servlet .http.HttpServletRequest)
-	 */
-	@Override
-	protected Object formBackingObject(HttpServletRequest request)
-			throws Exception {
-		FtpConfigDataBean backingObject = new FtpConfigDataBean();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.web.servlet.mvc.AbstractFormController#formBackingObject
+     * (javax.servlet .http.HttpServletRequest)
+     */
+    @Override
+    protected Object formBackingObject(HttpServletRequest request) throws Exception {
+        FtpConfigDataBean backingObject = new FtpConfigDataBean();
 
-		FtpServerConfig config = server.getLastConfig();
-		if (config != null) {
-			backingObject.setId(config.getId());
+        FtpServerConfig config = server.getLastConfig();
+        if (config != null) {
+            backingObject.setId(config.getId());
 
-			backingObject.setAnonEnabled(config.isAnonEnabled());
-			backingObject.setAutoStart(config.isAutoStart());
-			backingObject.setFtpBaseDir(config.getFtpBaseDir());
-			backingObject.setLoginFailureDelay(config.getLoginFailureDelay());
-			backingObject.setMaxAnonLogins(config.getMaxAnonLogins());
-			backingObject.setMaxLoginFailures(config.getMaxLoginFailures());
-			backingObject.setMaxLogins(config.getMaxLogins());
-			backingObject.setPort(config.getPort());
-			backingObject.setSsl(config.isSsl());
-		}
+            backingObject.setAnonEnabled(config.isAnonEnabled());
+            backingObject.setAutoStart(config.isAutoStart());
+            backingObject.setFtpBaseDir(config.getFtpBaseDir());
+            backingObject.setLoginFailureDelay(config.getLoginFailureDelay());
+            backingObject.setMaxAnonLogins(config.getMaxAnonLogins());
+            backingObject.setMaxLoginFailures(config.getMaxLoginFailures());
+            backingObject.setMaxLogins(config.getMaxLogins());
+            backingObject.setPort(config.getPort());
+            backingObject.setSsl(config.isSsl());
+        }
 
-		return backingObject;
-	}
+        return backingObject;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.servlet.mvc.SimpleFormController#onSubmit(java
-	 * .lang.Object, org.springframework.validation.BindException)
-	 */
-	@Override
-	protected ModelAndView onSubmit(HttpServletRequest request,
-			HttpServletResponse response, Object command, BindException errors)
-			throws Exception {
-		FtpConfigDataBean givenData = (FtpConfigDataBean) command;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.web.servlet.mvc.SimpleFormController#onSubmit(java .lang.Object,
+     * org.springframework.validation.BindException)
+     */
+    @Override
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response,
+            Object command, BindException errors) throws Exception {
+        FtpConfigDataBean givenData = (FtpConfigDataBean) command;
 
-		logger.debug(givenData.toString());
+        logger.debug(givenData.toString());
 
-		FtpServerConfig config = new FtpServerConfig();
-		config.setAnonEnabled(givenData.isAnonEnabled());
-		config.setAutoStart(givenData.isAutoStart());
-		config.setFtpBaseDir(givenData.getFtpBaseDir());
-		config.setLoginFailureDelay(givenData.getLoginFailureDelay());
-		config.setMaxAnonLogins(givenData.getMaxAnonLogins());
-		config.setMaxLoginFailures(givenData.getMaxLoginFailures());
-		config.setMaxLogins(givenData.getMaxLogins());
-		config.setPort(givenData.getPort());
-		config.setSsl(givenData.isSsl());
+        FtpServerConfig config = new FtpServerConfig();
+        config.setAnonEnabled(givenData.isAnonEnabled());
+        config.setAutoStart(givenData.isAutoStart());
+        config.setFtpBaseDir(givenData.getFtpBaseDir());
+        config.setLoginFailureDelay(givenData.getLoginFailureDelay());
+        config.setMaxAnonLogins(givenData.getMaxAnonLogins());
+        config.setMaxLoginFailures(givenData.getMaxLoginFailures());
+        config.setMaxLogins(givenData.getMaxLogins());
+        config.setPort(givenData.getPort());
+        config.setSsl(givenData.isSsl());
 
-		server.getServerConfigDAO().save(config);
-		server.setLastConfig(config);
+        server.getServerConfigDAO().save(config);
+        server.setLastConfig(config);
 
-		ModelAndView mav = new ModelAndView(getSuccessView());
-		mav.addObject("ftpServer", server);
-		mav.addObject("ftpConfig", server.getLastConfig());
+        ModelAndView mav = new ModelAndView(getSuccessView());
+        mav.addObject("ftpServer", server);
+        mav.addObject("ftpConfig", server.getLastConfig());
 
-		// add statistics
-		FtpStatistics stats = null;
-		final FtpServer ftp = server.getFtpServer();
-		if (ftp instanceof DefaultFtpServer) {
-			// get the context and check if the context is of the right type
-			final FtpServerContext context = ((DefaultFtpServer) ftp)
-					.getServerContext();
-			if (context instanceof DefaultFtpServerContext)
-				stats = ((DefaultFtpServerContext) context).getFtpStatistics();
-		}
-		mav.addObject("ftpStats", stats);
-		logger.debug("Form data successfully submitted");
-		return mav;
-	}
+        // add statistics
+        FtpStatistics stats = null;
+        final FtpServer ftp = server.getFtpServer();
+        if (ftp instanceof DefaultFtpServer) {
+            // get the context and check if the context is of the right type
+            final FtpServerContext context = ((DefaultFtpServer) ftp).getServerContext();
+            if (context instanceof DefaultFtpServerContext)
+                stats = ((DefaultFtpServerContext) context).getFtpStatistics();
+        }
+        mav.addObject("ftpStats", stats);
+        logger.debug("Form data successfully submitted");
+        return mav;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.servlet.mvc.BaseCommandController#onBindAndValidate
-	 * (javax.servlet.http.HttpServletRequest, java.lang.Object,
-	 * org.springframework.validation.BindException)
-	 */
-	@Override
-	protected void onBindAndValidate(HttpServletRequest request,
-			Object command, BindException errors) throws Exception {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.springframework.web.servlet.mvc.BaseCommandController#onBindAndValidate
+     * (javax.servlet.http.HttpServletRequest, java.lang.Object,
+     * org.springframework.validation.BindException)
+     */
+    @Override
+    protected void onBindAndValidate(HttpServletRequest request, Object command,
+            BindException errors) throws Exception {
 
-		FtpConfigDataBean givenData = (FtpConfigDataBean) command;
-		if (givenData == null) {
-			errors.reject("error.nullpointer", "Null data received");
-		} else {
-			/* VALIDATE ALL FIELDS */
-			if (request.getParameter("ssl") == null)
-				givenData.setSsl(false);
+        FtpConfigDataBean givenData = (FtpConfigDataBean) command;
+        if (givenData == null) {
+            errors.reject("error.nullpointer", "Null data received");
+        } else {
+            /* VALIDATE ALL FIELDS */
+            if (request.getParameter("ssl") == null)
+                givenData.setSsl(false);
 
-			if (request.getParameter("autoStart") == null)
-				givenData.setAutoStart(false);
+            if (request.getParameter("autoStart") == null)
+                givenData.setAutoStart(false);
 
-			if (request.getParameter("anonEnabled") == null)
-				givenData.setAnonEnabled(false);
+            if (request.getParameter("anonEnabled") == null)
+                givenData.setAnonEnabled(false);
 
-			if (givenData.getMaxLogins() < 0) {
-				errors.rejectValue("maxLogins", "error.code",
-						"Ftp Max Logins must be greater than 0.");
-			}
+            if (givenData.getMaxLogins() < 0) {
+                errors.rejectValue("maxLogins", "error.code",
+                        "Ftp Max Logins must be greater than 0.");
+            }
 
-			if (givenData.getMaxLoginFailures() < 0) {
-				errors.rejectValue("maxLoginFailures", "error.code",
-						"Ftp Max Logins Failuers must be greater than 0.");
-			}
+            if (givenData.getMaxLoginFailures() < 0) {
+                errors.rejectValue("maxLoginFailures", "error.code",
+                        "Ftp Max Logins Failuers must be greater than 0.");
+            }
 
-			if (givenData.getLoginFailureDelay() < 0) {
-				errors.rejectValue("loginFailureDelay", "error.code",
-						"Ftp Login Failuers Delay must be greater than 0.");
-			}
+            if (givenData.getLoginFailureDelay() < 0) {
+                errors.rejectValue("loginFailureDelay", "error.code",
+                        "Ftp Login Failuers Delay must be greater than 0.");
+            }
 
-		}
-	}
+        }
+    }
 }

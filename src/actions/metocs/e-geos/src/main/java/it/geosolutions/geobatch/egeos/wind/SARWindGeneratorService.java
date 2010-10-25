@@ -33,35 +33,32 @@ import java.util.logging.Logger;
  * Public class to generate E-GEOS::SAR Wind Derived Products Services
  * 
  */
-public class SARWindGeneratorService
-		extends
-		GeoServerConfiguratorService<FileSystemMonitorEvent, MetocActionConfiguration> {
+public class SARWindGeneratorService extends
+        GeoServerConfiguratorService<FileSystemMonitorEvent, MetocActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(SARWindGeneratorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(SARWindGeneratorService.class.toString());
 
-	/**
-	 * Action creator
-	 * 
-	 * @param configuration
-	 *            The data base action configuration
-	 * @return new SARWindFileConfiguratorAction()
-	 */
-	public SARWindFileConfiguratorAction createAction(
-			MetocActionConfiguration configuration) {
-		try {
-			return new SARWindFileConfiguratorAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Action creator
+     * 
+     * @param configuration
+     *            The data base action configuration
+     * @return new SARWindFileConfiguratorAction()
+     */
+    public SARWindFileConfiguratorAction createAction(MetocActionConfiguration configuration) {
+        try {
+            return new SARWindFileConfiguratorAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	@Override
-	public boolean canCreateAction(MetocActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    @Override
+    public boolean canCreateAction(MetocActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

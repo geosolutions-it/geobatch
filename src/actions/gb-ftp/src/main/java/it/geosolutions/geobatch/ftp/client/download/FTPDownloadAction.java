@@ -44,283 +44,265 @@ import com.enterprisedt.net.ftp.WriteMode;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 
 /**
- * This class represent an extended FTP action to download remote files or
- * directory.
+ * This class represent an extended FTP action to download remote files or directory.
  * 
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  * 
  */
 public class FTPDownloadAction extends FTPBaseAction<FileSystemMonitorEvent> {
 
-	/**
-	 * The constructor of the download action.
-	 * 
-	 * @param configuration
-	 *            The action configuration.
-	 * @throws IOException
-	 */
-	protected FTPDownloadAction(FTPActionConfiguration configuration)
-			throws IOException {
-		super(configuration);
-	}
+    /**
+     * The constructor of the download action.
+     * 
+     * @param configuration
+     *            The action configuration.
+     * @throws IOException
+     */
+    protected FTPDownloadAction(FTPActionConfiguration configuration) throws IOException {
+        super(configuration);
+    }
 
-	/**
-	 * Method to launch the action operations when a file system monitor event
-	 * occurred.
-	 * 
-	 * @param events
-	 *            The events queue.
-	 * @throws IOException
-	 */
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+    /**
+     * Method to launch the action operations when a file system monitor event occurred.
+     * 
+     * @param events
+     *            The events queue.
+     * @throws IOException
+     */
+    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+            throws ActionException {
 
-		try {
-			listenerForwarder.started();
+        try {
+            listenerForwarder.started();
 
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Initializing input variables
-			//
-			// ////////////////////////////////////////////////////////////////////
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Initializing input variables
+            //
+            // ////////////////////////////////////////////////////////////////////
 
-			if (configuration == null) {
-				throw new IllegalStateException("DataFlowConfig is null.");
-			}
+            if (configuration == null) {
+                throw new IllegalStateException("DataFlowConfig is null.");
+            }
 
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Initializing input variables
-			//
-			// ////////////////////////////////////////////////////////////////////
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Initializing input variables
+            //
+            // ////////////////////////////////////////////////////////////////////
 
-			final File workingDir = IOUtils.findLocation(configuration
-					.getWorkingDirectory(), new File(
-					((FileBaseCatalog) CatalogHolder.getCatalog())
-							.getBaseDirectory()));
+            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Checking input files.
-			//
-			// ////////////////////////////////////////////////////////////////////
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Checking input files.
+            //
+            // ////////////////////////////////////////////////////////////////////
 
-			if ((workingDir == null) || !workingDir.exists()
-					|| !workingDir.isDirectory()) {
-				throw new IllegalStateException(
-						"FTP client data directory is null or does not exist.");
-			}
+            if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
+                throw new IllegalStateException(
+                        "FTP client data directory is null or does not exist.");
+            }
 
-			String ftpserverHost = configuration.getFtpserverHost();
-			String ftpserverUSR = configuration.getFtpserverUSR();
-			String ftpserverPWD = configuration.getFtpserverPWD();
-			int ftpserverPort = configuration.getFtpserverPort();
+            String ftpserverHost = configuration.getFtpserverHost();
+            String ftpserverUSR = configuration.getFtpserverUSR();
+            String ftpserverPWD = configuration.getFtpserverPWD();
+            int ftpserverPort = configuration.getFtpserverPort();
 
-			if ((ftpserverHost == null) || "".equals(ftpserverHost)) {
-				throw new IllegalStateException("FtpServerHost is null.");
-			}
+            if ((ftpserverHost == null) || "".equals(ftpserverHost)) {
+                throw new IllegalStateException("FtpServerHost is null.");
+            }
 
-			// //////////////////////////////////////////////
-			// Retrive the added files from flow working dir
-			// //////////////////////////////////////////////
+            // //////////////////////////////////////////////
+            // Retrive the added files from flow working dir
+            // //////////////////////////////////////////////
 
-			final List<File> filesToGet = new ArrayList<File>();
-			for (FileSystemMonitorEvent event : events) {
-				final File input = event.getSource();
-				if (input.exists() && input.isFile() && input.canRead())
-					filesToGet.add(input);
-				else {
-					throw new IllegalStateException(
-							"No valid input file found for this data flow!");
-				}
-			}
+            final List<File> filesToGet = new ArrayList<File>();
+            for (FileSystemMonitorEvent event : events) {
+                final File input = event.getSource();
+                if (input.exists() && input.isFile() && input.canRead())
+                    filesToGet.add(input);
+                else {
+                    throw new IllegalStateException("No valid input file found for this data flow!");
+                }
+            }
 
-			if (filesToGet.size() <= 0)
-				throw new IllegalStateException(
-						"No valid file found for this Data Flow!");
+            if (filesToGet.size() <= 0)
+                throw new IllegalStateException("No valid file found for this Data Flow!");
 
-			// /////////////////////////////////////////
-			//
-			// Downloading files from remote FTP Server
-			//
-			// /////////////////////////////////////////
+            // /////////////////////////////////////////
+            //
+            // Downloading files from remote FTP Server
+            //
+            // /////////////////////////////////////////
 
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.info("Downloading file from FtpServer ... "
-						+ ftpserverHost);
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("Downloading file from FtpServer ... " + ftpserverHost);
 
-			boolean sent = false;
-			final FTPConnectMode connectMode = configuration.getConnectMode()
-					.toString().equalsIgnoreCase(
-							FTPConnectMode.ACTIVE.toString()) ? FTPConnectMode.ACTIVE
-					: FTPConnectMode.PASV;
-			final int timeout = configuration.getTimeout();
+            boolean sent = false;
+            final FTPConnectMode connectMode = configuration.getConnectMode().toString()
+                    .equalsIgnoreCase(FTPConnectMode.ACTIVE.toString()) ? FTPConnectMode.ACTIVE
+                    : FTPConnectMode.PASV;
+            final int timeout = configuration.getTimeout();
 
-			boolean zipOutput = configuration.isZipInput();
-			String zipFileName = configuration.getZipFileName();
+            boolean zipOutput = configuration.isZipInput();
+            String zipFileName = configuration.getZipFileName();
 
-			String path = "path";
-			String localTempDir = configuration.getLocalTempDir();
+            String path = "path";
+            String localTempDir = configuration.getLocalTempDir();
 
-			// //////////////////////////////////////////////////////////////////
-			// Build in the local temp directory to download
-			// //////////////////////////////////////////////////////////////////
+            // //////////////////////////////////////////////////////////////////
+            // Build in the local temp directory to download
+            // //////////////////////////////////////////////////////////////////
 
-			File dir = new File(localTempDir);
-			if (!dir.exists()) {
-				dir.mkdir();
-			}
+            File dir = new File(localTempDir);
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
 
-			if (zipOutput) {
+            if (zipOutput) {
 
-				// ////////////////////////////////////////////////////////////////////////
-				// Build the real name of the remote zipped file before
-				// downloading this
-				// ////////////////////////////////////////////////////////////////////////
+                // ////////////////////////////////////////////////////////////////////////
+                // Build the real name of the remote zipped file before
+                // downloading this
+                // ////////////////////////////////////////////////////////////////////////
 
-				String remoteZipFile = zipFileName.concat(".zip");
+                String remoteZipFile = zipFileName.concat(".zip");
 
-				// ///////////////////////////////////
-				// Downloading the remote zipped file
-				// ///////////////////////////////////
+                // ///////////////////////////////////
+                // Downloading the remote zipped file
+                // ///////////////////////////////////
 
-				sent = FTPHelper.downloadFile(ftpserverHost, localTempDir,
-						path, remoteZipFile, ftpserverUSR, ftpserverPWD,
-						ftpserverPort, FTPTransferType.BINARY,
-						WriteMode.OVERWRITE, connectMode, timeout);
-			} else {
+                sent = FTPHelper.downloadFile(ftpserverHost, localTempDir, path, remoteZipFile,
+                        ftpserverUSR, ftpserverPWD, ftpserverPort, FTPTransferType.BINARY,
+                        WriteMode.OVERWRITE, connectMode, timeout);
+            } else {
 
-				// /////////////////////////////////////////////////////////////////////////
-				// Scanning the files to get array to distinguish files and
-				// directories
-				// /////////////////////////////////////////////////////////////////////////
+                // /////////////////////////////////////////////////////////////////////////
+                // Scanning the files to get array to distinguish files and
+                // directories
+                // /////////////////////////////////////////////////////////////////////////
 
-				for (File file : filesToGet) {
-					if (file.isFile()) {
-						sent = FTPHelper.downloadFile(ftpserverHost,
-								localTempDir, path, file.getName(),
-								ftpserverUSR, ftpserverPWD, ftpserverPort,
-								FTPTransferType.BINARY, WriteMode.OVERWRITE,
-								connectMode, timeout);
+                for (File file : filesToGet) {
+                    if (file.isFile()) {
+                        sent = FTPHelper.downloadFile(ftpserverHost, localTempDir, path, file
+                                .getName(), ftpserverUSR, ftpserverPWD, ftpserverPort,
+                                FTPTransferType.BINARY, WriteMode.OVERWRITE, connectMode, timeout);
 
-						if (!sent)
-							break;
-					} else {
-						// sent = getDirectory("test", path, localTempDir);
-						sent = getDirectory(file.getName(), path, localTempDir);
+                        if (!sent)
+                            break;
+                    } else {
+                        // sent = getDirectory("test", path, localTempDir);
+                        sent = getDirectory(file.getName(), path, localTempDir);
 
-						if (!sent)
-							break;
-					}
-				}
-			}
+                        if (!sent)
+                            break;
+                    }
+                }
+            }
 
-			// TODO: remove the "sent" var and trap errors via try/catch
+            // TODO: remove the "sent" var and trap errors via try/catch
 
-			if (sent) {
-				if (LOGGER.isLoggable(Level.INFO))
-					LOGGER
-							.info("FTPDownloadAction: file SUCCESSFULLY downloaded from FtpServer!");
+            if (sent) {
+                if (LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("FTPDownloadAction: file SUCCESSFULLY downloaded from FtpServer!");
 
-				listenerForwarder.completed();
-			} else {
-				if (LOGGER.isLoggable(Level.INFO))
-					LOGGER
-							.info("FTPDownloadAction: file was NOT downloaded from FtpServer due to connection errors!");
+                listenerForwarder.completed();
+            } else {
+                if (LOGGER.isLoggable(Level.INFO))
+                    LOGGER
+                            .info("FTPDownloadAction: file was NOT downloaded from FtpServer due to connection errors!");
 
-				listenerForwarder.failed(null);
-			}
+                listenerForwarder.failed(null);
+            }
 
-			return events;
+            return events;
 
-		} catch (Exception ex) {
-			// if (LOGGER.isLoggable(Level.SEVERE))
-			// LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex); // not
-			// logging rethrown exception
-			listenerForwarder.failed(ex);
-			throw new ActionException(this, ex.getMessage(), ex); // wrap
-																	// exception
-		}
+        } catch (Exception ex) {
+            // if (LOGGER.isLoggable(Level.SEVERE))
+            // LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex); // not
+            // logging rethrown exception
+            listenerForwarder.failed(ex);
+            throw new ActionException(this, ex.getMessage(), ex); // wrap
+            // exception
+        }
 
-	}
+    }
 
-	/**
-	 * This function perform the download of the remote directory recursively.
-	 * 
-	 * @param dirName
-	 *            The name of the remote directory to download
-	 * @param remotePath
-	 *            The remore path of the directory to download
-	 * @param localPath
-	 *            The local path where copying the downloaded directory
-	 * @return boolean If true the download operation has been successful
-	 */
+    /**
+     * This function perform the download of the remote directory recursively.
+     * 
+     * @param dirName
+     *            The name of the remote directory to download
+     * @param remotePath
+     *            The remore path of the directory to download
+     * @param localPath
+     *            The local path where copying the downloaded directory
+     * @return boolean If true the download operation has been successful
+     */
 
-	private boolean getDirectory(final String dirName, final String remotePath,
-			final String localPath) {
+    private boolean getDirectory(final String dirName, final String remotePath,
+            final String localPath) {
 
-		boolean sent = false;
+        boolean sent = false;
 
-		final FTPConnectMode connectMode = configuration.getConnectMode()
-				.toString().equalsIgnoreCase(FTPConnectMode.ACTIVE.toString()) ? FTPConnectMode.ACTIVE
-				: FTPConnectMode.PASV;
-		final int timeout = configuration.getTimeout();
-		String ftpserverHost = configuration.getFtpserverHost();
-		String ftpserverUSR = configuration.getFtpserverUSR();
-		String ftpserverPWD = configuration.getFtpserverPWD();
-		int ftpserverPort = configuration.getFtpserverPort();
+        final FTPConnectMode connectMode = configuration.getConnectMode().toString()
+                .equalsIgnoreCase(FTPConnectMode.ACTIVE.toString()) ? FTPConnectMode.ACTIVE
+                : FTPConnectMode.PASV;
+        final int timeout = configuration.getTimeout();
+        String ftpserverHost = configuration.getFtpserverHost();
+        String ftpserverUSR = configuration.getFtpserverUSR();
+        String ftpserverPWD = configuration.getFtpserverPWD();
+        int ftpserverPort = configuration.getFtpserverPort();
 
-		// //////////////////////////////////////////////////////////////////
-		// Build in the local sub directory to download
-		// //////////////////////////////////////////////////////////////////
+        // //////////////////////////////////////////////////////////////////
+        // Build in the local sub directory to download
+        // //////////////////////////////////////////////////////////////////
 
-		File dir = new File(localPath.concat("\\").concat(dirName));
-		if (!dir.exists()) {
-			dir.mkdir();
-		}
+        File dir = new File(localPath.concat("\\").concat(dirName));
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
 
-		// ////////////////////////////////////////////////////////
-		// Get the remote directory details to download this content
-		// ////////////////////////////////////////////////////////
+        // ////////////////////////////////////////////////////////
+        // Get the remote directory details to download this content
+        // ////////////////////////////////////////////////////////
 
-		FTPFile[] ftpFiles = FTPHelper.dirDetails(ftpserverHost, dir.getName(),
-				remotePath, ftpserverUSR, ftpserverPWD, ftpserverPort,
-				FTPTransferType.BINARY, WriteMode.OVERWRITE, connectMode,
-				timeout);
+        FTPFile[] ftpFiles = FTPHelper.dirDetails(ftpserverHost, dir.getName(), remotePath,
+                ftpserverUSR, ftpserverPWD, ftpserverPort, FTPTransferType.BINARY,
+                WriteMode.OVERWRITE, connectMode, timeout);
 
-		// /////////////////////////////////////////
-		// Downloading the remote directory content
-		// /////////////////////////////////////////
+        // /////////////////////////////////////////
+        // Downloading the remote directory content
+        // /////////////////////////////////////////
 
-		if (ftpFiles != null && ftpFiles.length >= 1) {
-			String dirPath = remotePath.concat("/" + dirName);
+        if (ftpFiles != null && ftpFiles.length >= 1) {
+            String dirPath = remotePath.concat("/" + dirName);
 
-			for (int i = 0, n = ftpFiles.length; i < n; i++) {
-				if (ftpFiles[i].getName().indexOf(".") != -1) {
-					sent = FTPHelper.downloadFile(ftpserverHost, dir
-							.getAbsolutePath(), dirPath, ftpFiles[i].getName(),
-							ftpserverUSR, ftpserverPWD, ftpserverPort,
-							FTPTransferType.BINARY, WriteMode.OVERWRITE,
-							connectMode, timeout);
+            for (int i = 0, n = ftpFiles.length; i < n; i++) {
+                if (ftpFiles[i].getName().indexOf(".") != -1) {
+                    sent = FTPHelper.downloadFile(ftpserverHost, dir.getAbsolutePath(), dirPath,
+                            ftpFiles[i].getName(), ftpserverUSR, ftpserverPWD, ftpserverPort,
+                            FTPTransferType.BINARY, WriteMode.OVERWRITE, connectMode, timeout);
 
-					if (!sent)
-						break;
-				} else {
-					sent = getDirectory(ftpFiles[i].getName(), dirPath, dir
-							.getAbsolutePath());
-					if (!sent)
-						break;
-				}
-			}
+                    if (!sent)
+                        break;
+                } else {
+                    sent = getDirectory(ftpFiles[i].getName(), dirPath, dir.getAbsolutePath());
+                    if (!sent)
+                        break;
+                }
+            }
 
-			if (sent)
-				return true;
-			else
-				return false;
+            if (sent)
+                return true;
+            else
+                return false;
 
-		} else if (ftpFiles != null && ftpFiles.length < 1) {
-			return true;
-		} else
-			return false;
-	}
+        } else if (ftpFiles != null && ftpFiles.length < 1) {
+            return true;
+        } else
+            return false;
+    }
 }

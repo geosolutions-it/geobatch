@@ -33,35 +33,33 @@ import java.util.logging.Logger;
  * Public class to generate WMCs
  * 
  */
-public class NURCWPSOutput2WMCGeneratorService
-		extends
-		GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
+public class NURCWPSOutput2WMCGeneratorService extends
+        GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(NURCWPSOutput2WMCGeneratorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(NURCWPSOutput2WMCGeneratorService.class
+            .toString());
 
-	/**
-	 * Action creator
-	 * 
-	 * @param configuration
-	 *            The data base action configuration
-	 * @return new JGSFLoDeSSSWANFileConfigurator()
-	 */
-	public NURCWPSOutput2WMCFileAction createAction(
-			GeoServerActionConfiguration configuration) {
-		try {
-			return new NURCWPSOutput2WMCFileAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Action creator
+     * 
+     * @param configuration
+     *            The data base action configuration
+     * @return new JGSFLoDeSSSWANFileConfigurator()
+     */
+    public NURCWPSOutput2WMCFileAction createAction(GeoServerActionConfiguration configuration) {
+        try {
+            return new NURCWPSOutput2WMCFileAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	@Override
-	public boolean canCreateAction(GeoServerActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    @Override
+    public boolean canCreateAction(GeoServerActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

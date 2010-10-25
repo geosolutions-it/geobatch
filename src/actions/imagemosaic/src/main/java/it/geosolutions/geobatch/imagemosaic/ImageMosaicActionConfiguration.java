@@ -24,135 +24,134 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
-public class ImageMosaicActionConfiguration extends
-		GeoServerActionConfiguration {
+public class ImageMosaicActionConfiguration extends GeoServerActionConfiguration {
 
-	protected ImageMosaicActionConfiguration(String id, String name,
-			String description, boolean dirty) {
-		super(id, name, description, dirty);
-	}
+    protected ImageMosaicActionConfiguration(String id, String name, String description,
+            boolean dirty) {
+        super(id, name, description, dirty);
+    }
 
-	private String datastorePropertiesPath;
+    private String datastorePropertiesPath;
 
-	private String timeRegex;
+    private String timeRegex;
 
-	private String elevationRegex;
+    private String elevationRegex;
 
-	private String runtimeRegex;
+    private String runtimeRegex;
 
-	private double backgroundValue;
+    private double backgroundValue;
 
-	public double getBackgroundValue() {
-		return backgroundValue;
-	}
+    public double getBackgroundValue() {
+        return backgroundValue;
+    }
 
-	public void setBackgroundValue(double backgroundValue) {
-		this.backgroundValue = backgroundValue;
-	}
+    public void setBackgroundValue(double backgroundValue) {
+        this.backgroundValue = backgroundValue;
+    }
 
-	public ImageMosaicActionConfiguration() {
-		super();
-	}
+    public ImageMosaicActionConfiguration() {
+        super();
+    }
 
-	/**
-	 * @param datastorePropertiesPath
-	 *            the datastorePropertiesPath to set
-	 */
-	public void setDatastorePropertiesPath(String datastorePropertiesPath) {
-		this.datastorePropertiesPath = datastorePropertiesPath;
-	}
+    /**
+     * @param datastorePropertiesPath
+     *            the datastorePropertiesPath to set
+     */
+    public void setDatastorePropertiesPath(String datastorePropertiesPath) {
+        this.datastorePropertiesPath = datastorePropertiesPath;
+    }
 
-	/**
-	 * @return the datastorePropertiesPath
-	 */
-	public String getDatastorePropertiesPath() {
-		return datastorePropertiesPath;
-	}
+    /**
+     * @return the datastorePropertiesPath
+     */
+    public String getDatastorePropertiesPath() {
+        return datastorePropertiesPath;
+    }
 
-	/**
-	 * @param timeRegex
-	 *            the timeRegex to set
-	 */
-	public void setTimeRegex(String timeRegex) {
-		this.timeRegex = timeRegex;
-	}
+    /**
+     * @param timeRegex
+     *            the timeRegex to set
+     */
+    public void setTimeRegex(String timeRegex) {
+        this.timeRegex = timeRegex;
+    }
 
-	/**
-	 * @return the timeRegex
-	 */
-	public String getTimeRegex() {
-		return timeRegex;
-	}
+    /**
+     * @return the timeRegex
+     */
+    public String getTimeRegex() {
+        return timeRegex;
+    }
 
-	/**
-	 * @param elevationRegex
-	 *            the elevationRegex to set
-	 */
-	public void setElevationRegex(String elevationRegex) {
-		this.elevationRegex = elevationRegex;
-	}
+    /**
+     * @param elevationRegex
+     *            the elevationRegex to set
+     */
+    public void setElevationRegex(String elevationRegex) {
+        this.elevationRegex = elevationRegex;
+    }
 
-	/**
-	 * @return the elevationRegex
-	 */
-	public String getElevationRegex() {
-		return elevationRegex;
-	}
+    /**
+     * @return the elevationRegex
+     */
+    public String getElevationRegex() {
+        return elevationRegex;
+    }
 
-	/**
-	 * @param runtimeRegex
-	 *            the runtimeRegex to set
-	 */
-	public void setRuntimeRegex(String runtimeRegex) {
-		this.runtimeRegex = runtimeRegex;
-	}
+    /**
+     * @param runtimeRegex
+     *            the runtimeRegex to set
+     */
+    public void setRuntimeRegex(String runtimeRegex) {
+        this.runtimeRegex = runtimeRegex;
+    }
 
-	/**
-	 * @return the runtimeRegex
-	 */
-	public String getRuntimeRegex() {
-		return runtimeRegex;
-	}
+    /**
+     * @return the runtimeRegex
+     */
+    public String getRuntimeRegex() {
+        return runtimeRegex;
+    }
 
-	@Override
-	public ImageMosaicActionConfiguration clone() { // throws
-													// CloneNotSupportedException
-													// {
-	// final ImageMosaicActionConfiguration configuration =
-	// new
-	// ImageMosaicActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
-		final ImageMosaicActionConfiguration configuration = (ImageMosaicActionConfiguration) super
-				.clone();
+    @Override
+    public ImageMosaicActionConfiguration clone() { // throws
+        // CloneNotSupportedException
+        // {
+        // final ImageMosaicActionConfiguration configuration =
+        // new
+        // ImageMosaicActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+        final ImageMosaicActionConfiguration configuration = (ImageMosaicActionConfiguration) super
+                .clone();
 
-		// configuration.setCrs(getCrs());
-		// configuration.setDataTransferMethod(getDataTransferMethod());
-		// configuration.setDatatype(getDatatype());
-		// configuration.setDefaultNamespace(getDefaultNamespace());
-		// configuration.setDefaultNamespaceUri(getDefaultNamespaceUri());
-		// configuration.setDefaultStyle(getDefaultStyle());
-		// configuration.setEnvelope(getEnvelope());
-		// configuration.setGeoserverPWD(getGeoserverPWD());
-		// configuration.setGeoserverUID(getGeoserverUID());
-		// configuration.setGeoserverURL(getGeoserverURL());
-		// // configuration.setServiceID(getServiceID());
-		// configuration.setStoreFilePrefix(getStoreFilePrefix());
-		// configuration.setStyles(getStyles());
-		// configuration.setWmsPath(getWmsPath());
-		// configuration.setWorkingDirectory(getWorkingDirectory());
-		configuration.setBackgroundValue(getBackgroundValue());
-		configuration.setDatastorePropertiesPath(getDatastorePropertiesPath());
-		configuration.setTimeRegex(getTimeRegex());
-		configuration.setElevationRegex(getElevationRegex());
-		configuration.setRuntimeRegex(getRuntimeRegex());
+        // configuration.setCrs(getCrs());
+        // configuration.setDataTransferMethod(getDataTransferMethod());
+        // configuration.setDatatype(getDatatype());
+        // configuration.setDefaultNamespace(getDefaultNamespace());
+        // configuration.setDefaultNamespaceUri(getDefaultNamespaceUri());
+        // configuration.setDefaultStyle(getDefaultStyle());
+        // configuration.setEnvelope(getEnvelope());
+        // configuration.setGeoserverPWD(getGeoserverPWD());
+        // configuration.setGeoserverUID(getGeoserverUID());
+        // configuration.setGeoserverURL(getGeoserverURL());
+        // // configuration.setServiceID(getServiceID());
+        // configuration.setStoreFilePrefix(getStoreFilePrefix());
+        // configuration.setStyles(getStyles());
+        // configuration.setWmsPath(getWmsPath());
+        // configuration.setWorkingDirectory(getWorkingDirectory());
+        configuration.setBackgroundValue(getBackgroundValue());
+        configuration.setDatastorePropertiesPath(getDatastorePropertiesPath());
+        configuration.setTimeRegex(getTimeRegex());
+        configuration.setElevationRegex(getElevationRegex());
+        configuration.setRuntimeRegex(getRuntimeRegex());
 
-		return configuration;
-	}
+        return configuration;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + "id:" + getId() + " name:"
-				+ getName() + " srvId:" + getServiceID() + " wkdir:"
-				+ getWorkingDirectory() + " GSurl:" + getGeoserverURL() + "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + "id:" + getId() + " name:" + getName()
+                + " srvId:" + getServiceID() + " wkdir:" + getWorkingDirectory() + " GSurl:"
+                + getGeoserverURL() + "]";
+    }
 
 }

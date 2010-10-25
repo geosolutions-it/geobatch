@@ -45,90 +45,88 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * 
  */
 public class FTPManagerController extends AbstractController {
-	private final static Logger LOGGER = Logger
-			.getLogger(FlowManagerController.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(FlowManagerController.class.getName());
 
-	private GeoBatchServer server;
+    private GeoBatchServer server;
 
-	/**
-	 * @param server
-	 *            the server to set
+    /**
+     * @param server
+     *            the server to set
+     */
+    public void setServer(GeoBatchServer server) {
+        this.server = server;
+    }
+
+    /*
 	 */
-	public void setServer(GeoBatchServer server) {
-		this.server = server;
-	}
+    @Override
+    protected ModelAndView handleRequestInternal(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
 
-	/*
-	 */
-	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+        // Selecting output page
+        String viewName;
+        String view = request.getParameter("view");
+        if ("users".equalsIgnoreCase(view))
+            viewName = "ftpUsers";
+        else if ("status".equalsIgnoreCase(view))
+            viewName = "ftp";
+        else
+            viewName = "ftp"; // default view
 
-		// Selecting output page
-		String viewName;
-		String view = request.getParameter("view");
-		if ("users".equalsIgnoreCase(view))
-			viewName = "ftpUsers";
-		else if ("status".equalsIgnoreCase(view))
-			viewName = "ftp";
-		else
-			viewName = "ftp"; // default view
+        ModelAndView mav = new ModelAndView(viewName);
 
-		ModelAndView mav = new ModelAndView(viewName);
+        String errMsg = null;
 
-		String errMsg = null;
+        // Selecting action, if any
+        String action = request.getParameter("action");
+        if ("stop".equalsIgnoreCase(action)) {
+            LOGGER.info("Requested STOP for ftp server.");
+            if (server.isStopped()) {
+                errMsg = "Server is not running";
+            } else {
+                server.stop();
+            }
+        } else if ("start".equalsIgnoreCase(action)) {
+            LOGGER.info("Requested START for ftp server.");
+            if (server.isStopped()) {
+                server.start();
+            } else if (server.isSuspended()) {
+                server.resume();
+            } else {
+                errMsg = "Server is already running";
+            }
+        } else if ("pause".equalsIgnoreCase(action)) {
+            LOGGER.info("Requested PAUSE for ftp server.");
+            if (server.isSuspended()) {
+                errMsg = "Server is already suspended";
+            } else if (server.isStopped()) {
+                errMsg = "Server is not running";
+            } else {
+                server.suspend();
+            }
+        }
 
-		// Selecting action, if any
-		String action = request.getParameter("action");
-		if ("stop".equalsIgnoreCase(action)) {
-			LOGGER.info("Requested STOP for ftp server.");
-			if (server.isStopped()) {
-				errMsg = "Server is not running";
-			} else {
-				server.stop();
-			}
-		} else if ("start".equalsIgnoreCase(action)) {
-			LOGGER.info("Requested START for ftp server.");
-			if (server.isStopped()) {
-				server.start();
-			} else if (server.isSuspended()) {
-				server.resume();
-			} else {
-				errMsg = "Server is already running";
-			}
-		} else if ("pause".equalsIgnoreCase(action)) {
-			LOGGER.info("Requested PAUSE for ftp server.");
-			if (server.isSuspended()) {
-				errMsg = "Server is already suspended";
-			} else if (server.isStopped()) {
-				errMsg = "Server is not running";
-			} else {
-				server.suspend();
-			}
-		}
+        List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
+        mav.addObject("ftpUsers", ftpUsers);
+        mav.addObject("ftpServer", server);
+        mav.addObject("ftpConfig", server.getLastConfig());
 
-		List<FtpUser> ftpUsers = server.getUserManager().getAllUsers();
-		mav.addObject("ftpUsers", ftpUsers);
-		mav.addObject("ftpServer", server);
-		mav.addObject("ftpConfig", server.getLastConfig());
+        // add statistics
+        FtpStatistics stats = null;
+        final FtpServer ftp = server.getFtpServer();
+        if (ftp instanceof DefaultFtpServer) {
+            // get the context and check if the context is of the right type
+            final FtpServerContext context = ((DefaultFtpServer) ftp).getServerContext();
+            if (context instanceof DefaultFtpServerContext)
+                stats = ((DefaultFtpServerContext) context).getFtpStatistics();
+        }
+        mav.addObject("ftpStats", stats);
 
-		// add statistics
-		FtpStatistics stats = null;
-		final FtpServer ftp = server.getFtpServer();
-		if (ftp instanceof DefaultFtpServer) {
-			// get the context and check if the context is of the right type
-			final FtpServerContext context = ((DefaultFtpServer) ftp)
-					.getServerContext();
-			if (context instanceof DefaultFtpServerContext)
-				stats = ((DefaultFtpServerContext) context).getFtpStatistics();
-		}
-		mav.addObject("ftpStats", stats);
+        if (errMsg != null) {
+            mav.addObject("errMsg", errMsg);
+            LOGGER.info(errMsg);
+        }
 
-		if (errMsg != null) {
-			mav.addObject("errMsg", errMsg);
-			LOGGER.info(errMsg);
-		}
-
-		return mav;
-	}
+        return mav;
+    }
 }

@@ -77,318 +77,278 @@ import org.opengis.temporal.TemporalGeometricPrimitive;
 
 /**
  * 
- * Public class to split HDF4 files to GeoTIFFs and consequently send them to
- * GeoServer along with their basic metadata.
+ * Public class to split HDF4 files to GeoTIFFs and consequently send them to GeoServer along with
+ * their basic metadata.
  */
 public class HDF42GeoTIFFsFileConfiguratorAction extends
-		GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+        GeoServerConfiguratorAction<FileSystemMonitorEvent> {
 
-	/**
-	 * GeoTIFF Writer Default Params
-	 */
-	public final static String GEOSERVER_VERSION = "2.x";
+    /**
+     * GeoTIFF Writer Default Params
+     */
+    public final static String GEOSERVER_VERSION = "2.x";
 
-	private final CoordinateReferenceSystem WGS84;
+    private final CoordinateReferenceSystem WGS84;
 
-	private final static Operations OPERATIONS = new Operations(new Hints(
-			Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+    private final static Operations OPERATIONS = new Operations(new Hints(
+            Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
 
-	private static final int DEFAULT_TILE_SIZE = 256;
+    private static final int DEFAULT_TILE_SIZE = 256;
 
-	private static final double DEFAULT_COMPRESSION_RATIO = 0.75;
+    private static final double DEFAULT_COMPRESSION_RATIO = 0.75;
 
-	private static final String DEFAULT_COMPRESSION_TYPE = "LZW";
+    private static final String DEFAULT_COMPRESSION_TYPE = "LZW";
 
-	protected HDF42GeoTIFFsFileConfiguratorAction(
-			final GeoServerActionConfiguration configuration)
-			throws IOException, NoSuchAuthorityCodeException, FactoryException {
-		super(configuration);
-		WGS84 = CRS.decode("EPSG:4326");
-	}
+    protected HDF42GeoTIFFsFileConfiguratorAction(final GeoServerActionConfiguration configuration)
+            throws IOException, NoSuchAuthorityCodeException, FactoryException {
+        super(configuration);
+        WGS84 = CRS.decode("EPSG:4326");
+    }
 
-	/**
-	 * EXECUTE METHOD
-	 */
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+    /**
+     * EXECUTE METHOD
+     */
+    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+            throws ActionException {
 
-		if (LOGGER.isLoggable(Level.INFO))
-			LOGGER.info("Starting with processing...");
-		try {
-			// looking for file
-			if (events.size() != 1)
-				throw new IllegalArgumentException(
-						"Wrong number of elements for this action: "
-								+ events.size());
-			FileSystemMonitorEvent event = events.remove();
-			final String configId = configuration.getName();
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("Starting with processing...");
+        try {
+            // looking for file
+            if (events.size() != 1)
+                throw new IllegalArgumentException("Wrong number of elements for this action: "
+                        + events.size());
+            FileSystemMonitorEvent event = events.remove();
+            final String configId = configuration.getName();
 
-			// //
-			// data flow configuration and dataStore name must not be null.
-			// //
-			if (configuration == null) {
-				LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
-				throw new IllegalStateException("DataFlowConfig is null.");
-			}
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Initializing input variables
-			//
-			// ////////////////////////////////////////////////////////////////////
-			final File workingDir = IOUtils.findLocation(configuration
-					.getWorkingDirectory(), new File(
-					((FileBaseCatalog) CatalogHolder.getCatalog())
-							.getBaseDirectory()));
+            // //
+            // data flow configuration and dataStore name must not be null.
+            // //
+            if (configuration == null) {
+                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+                throw new IllegalStateException("DataFlowConfig is null.");
+            }
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Initializing input variables
+            //
+            // ////////////////////////////////////////////////////////////////////
+            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
-			// ////////////////////////////////////////////////////////////////////
-			//
-			// Checking input files.
-			//
-			// ////////////////////////////////////////////////////////////////////
-			if ((workingDir == null) || !workingDir.exists()
-					|| !workingDir.isDirectory()) {
-				LOGGER.log(Level.SEVERE,
-						"WorkingDirectory is null or does not exist.");
-				throw new IllegalStateException(
-						"WorkingDirectory is null or does not exist.");
-			}
+            // ////////////////////////////////////////////////////////////////////
+            //
+            // Checking input files.
+            //
+            // ////////////////////////////////////////////////////////////////////
+            if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
+                LOGGER.log(Level.SEVERE, "WorkingDirectory is null or does not exist.");
+                throw new IllegalStateException("WorkingDirectory is null or does not exist.");
+            }
 
-			// ... BUSINESS LOGIC ... //
-			String inputFileName = event.getSource().getAbsolutePath();
-			final String filePrefix = FilenameUtils.getBaseName(inputFileName);
-			final String fileSuffix = FilenameUtils.getExtension(inputFileName);
-			final String fileNameFilter = getConfiguration()
-					.getStoreFilePrefix();
+            // ... BUSINESS LOGIC ... //
+            String inputFileName = event.getSource().getAbsolutePath();
+            final String filePrefix = FilenameUtils.getBaseName(inputFileName);
+            final String fileSuffix = FilenameUtils.getExtension(inputFileName);
+            final String fileNameFilter = getConfiguration().getStoreFilePrefix();
 
-			String baseFileName = null;
+            String baseFileName = null;
 
-			if (fileNameFilter != null) {
-				if ((filePrefix.equals(fileNameFilter) || filePrefix
-						.matches(fileNameFilter))
-						&& ("hdf4".equalsIgnoreCase(fileSuffix) || "hdf"
-								.equalsIgnoreCase(fileSuffix))) {
-					// etj: are we missing something here?
-					baseFileName = filePrefix;
-				}
-			} else if ("hdf4".equalsIgnoreCase(fileSuffix)
-					|| "hdf".equalsIgnoreCase(fileSuffix)) {
-				baseFileName = filePrefix;
-			}
+            if (fileNameFilter != null) {
+                if ((filePrefix.equals(fileNameFilter) || filePrefix.matches(fileNameFilter))
+                        && ("hdf4".equalsIgnoreCase(fileSuffix) || "hdf"
+                                .equalsIgnoreCase(fileSuffix))) {
+                    // etj: are we missing something here?
+                    baseFileName = filePrefix;
+                }
+            } else if ("hdf4".equalsIgnoreCase(fileSuffix) || "hdf".equalsIgnoreCase(fileSuffix)) {
+                baseFileName = filePrefix;
+            }
 
-			if (baseFileName == null) {
-				LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName
-						+ "'");
-				throw new IllegalStateException("Unexpected file '"
-						+ inputFileName + "'");
-			}
+            if (baseFileName == null) {
+                LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
+                throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
+            }
 
-			String baseName = FilenameUtils.getBaseName(inputFileName);
-			String baseTime = null;
-			String endTime = null;
+            String baseName = FilenameUtils.getBaseName(inputFileName);
+            String baseTime = null;
+            String endTime = null;
 
-			final BaseFileDriver driver = new HDF4Driver();
-			final File file = new File(inputFileName);
-			final URL source = file.toURI().toURL();
-			if (driver.canProcess(DriverOperation.CONNECT, source, null)) {
+            final BaseFileDriver driver = new HDF4Driver();
+            final File file = new File(inputFileName);
+            final URL source = file.toURI().toURL();
+            if (driver.canProcess(DriverOperation.CONNECT, source, null)) {
 
-				// getting access to the file
-				final CoverageAccess access = driver.process(
-						DriverOperation.CONNECT, source, null, null, null);
-				if (access == null)
-					throw new IOException("Unable to connect");
+                // getting access to the file
+                final CoverageAccess access = driver.process(DriverOperation.CONNECT, source, null,
+                        null, null);
+                if (access == null)
+                    throw new IOException("Unable to connect");
 
-				// get the names
-				final List<Name> names = access.getNames(null);
-				for (Name name : names) {
-					// get a source
-					final CoverageSource gridSource = access.access(name, null,
-							AccessType.READ_ONLY, null, null);
-					if (gridSource == null)
-						throw new IOException("Unable to access");
+                // get the names
+                final List<Name> names = access.getNames(null);
+                for (Name name : names) {
+                    // get a source
+                    final CoverageSource gridSource = access.access(name, null,
+                            AccessType.READ_ONLY, null, null);
+                    if (gridSource == null)
+                        throw new IOException("Unable to access");
 
-					// TEMPORAL DOMAIN
-					final TemporalDomain temporalDomain = gridSource
-							.getDomainManager(null).getTemporalDomain();
-					if (temporalDomain == null)
-						throw new IllegalStateException(
-								"Temporal domain is null");
+                    // TEMPORAL DOMAIN
+                    final TemporalDomain temporalDomain = gridSource.getDomainManager(null)
+                            .getTemporalDomain();
+                    if (temporalDomain == null)
+                        throw new IllegalStateException("Temporal domain is null");
 
-					final SimpleDateFormat sdf = new SimpleDateFormat(
-							"yyyyMMdd'T'HHmmsss'Z'");
-					sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmsss'Z'");
+                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-					// get the temporal domain elements
-					for (TemporalGeometricPrimitive tg : temporalDomain
-							.getTemporalElements(null)) {
-						baseTime = sdf.format(((Period) tg).getBeginning()
-								.getPosition().getDate());
-						endTime = sdf.format(((Period) tg).getEnding()
-								.getPosition().getDate());
-					}
+                    // get the temporal domain elements
+                    for (TemporalGeometricPrimitive tg : temporalDomain.getTemporalElements(null)) {
+                        baseTime = sdf.format(((Period) tg).getBeginning().getPosition().getDate());
+                        endTime = sdf.format(((Period) tg).getEnding().getPosition().getDate());
+                    }
 
-					// HORIZONTAL DOMAIN
-					final HorizontalDomain horizontalDomain = gridSource
-							.getDomainManager(null).getHorizontalDomain();
-					if (horizontalDomain == null)
-						throw new IllegalStateException(
-								"Horizontal domain is null");
+                    // HORIZONTAL DOMAIN
+                    final HorizontalDomain horizontalDomain = gridSource.getDomainManager(null)
+                            .getHorizontalDomain();
+                    if (horizontalDomain == null)
+                        throw new IllegalStateException("Horizontal domain is null");
 
-					// RANGE TYPE
-					final RangeType range = gridSource.getRangeType(null);
+                    // RANGE TYPE
+                    final RangeType range = gridSource.getRangeType(null);
 
-					final CoverageReadRequest readRequest = new DefaultCoverageReadRequest();
-					// //
-					//
-					// Setting up a limited range for the request.
-					//
-					// //
-					Iterator<FieldType> ftIterator = range.getFieldTypes()
-							.iterator();
+                    final CoverageReadRequest readRequest = new DefaultCoverageReadRequest();
+                    // //
+                    //
+                    // Setting up a limited range for the request.
+                    //
+                    // //
+                    Iterator<FieldType> ftIterator = range.getFieldTypes().iterator();
 
-					while (ftIterator.hasNext()) {
-						HashSet<FieldType> fieldSet = new HashSet<FieldType>();
-						FieldType ft = null;
+                    while (ftIterator.hasNext()) {
+                        HashSet<FieldType> fieldSet = new HashSet<FieldType>();
+                        FieldType ft = null;
 
-						ft = ftIterator.next();
-						if (ft != null) {
-							fieldSet.add(ft);
-						}
-						RangeType rangeSubset = new DefaultRangeType(range
-								.getName(), range.getDescription(), fieldSet);
-						readRequest.setRangeSubset(rangeSubset);
-						CoverageResponse response = gridSource.read(
-								readRequest, null);
-						if (response == null
-								|| response.getStatus() != Status.SUCCESS
-								|| !response.getExceptions().isEmpty())
-							throw new IOException("Unable to read");
+                        ft = ftIterator.next();
+                        if (ft != null) {
+                            fieldSet.add(ft);
+                        }
+                        RangeType rangeSubset = new DefaultRangeType(range.getName(), range
+                                .getDescription(), fieldSet);
+                        readRequest.setRangeSubset(rangeSubset);
+                        CoverageResponse response = gridSource.read(readRequest, null);
+                        if (response == null || response.getStatus() != Status.SUCCESS
+                                || !response.getExceptions().isEmpty())
+                            throw new IOException("Unable to read");
 
-						final Collection<? extends Coverage> results = response
-								.getResults(null);
-						for (Coverage c : results) {
-							GridCoverage2D coverage = (GridCoverage2D) c;
-							final File outDir = Utilities.createTodayDirectory(
-									workingDir, FilenameUtils
-											.getBaseName(inputFileName));
+                        final Collection<? extends Coverage> results = response.getResults(null);
+                        for (Coverage c : results) {
+                            GridCoverage2D coverage = (GridCoverage2D) c;
+                            final File outDir = Utilities.createTodayDirectory(workingDir,
+                                    FilenameUtils.getBaseName(inputFileName));
 
-							// Storing fields as GeoTIFFs
+                            // Storing fields as GeoTIFFs
 
-							final List<Category> categories = coverage
-									.getSampleDimension(0).getCategories();
-							double noData = Double.NaN;
-							for (Category cat : categories) {
-								if (cat.getName().toString().equalsIgnoreCase(
-										"no data")) {
-									noData = cat.getRange().getMinimum();
-									break;
-								}
-							}
+                            final List<Category> categories = coverage.getSampleDimension(0)
+                                    .getCategories();
+                            double noData = Double.NaN;
+                            for (Category cat : categories) {
+                                if (cat.getName().toString().equalsIgnoreCase("no data")) {
+                                    noData = cat.getRange().getMinimum();
+                                    break;
+                                }
+                            }
 
-							final String uom = getUom(ft);
-							final String varLongName = ft.getDescription()
-									.toString();
-							final String varBrief = getBrief(ft.getName()
-									.getLocalPart().toString());
-							final String coverageName = buildCoverageName(
-									baseName, ft, endTime, noData);
-							final String coverageStoreId = coverageName
-									.toString();
-							final GridCoverage2D resampledCoverage = (GridCoverage2D) OPERATIONS
-									.resample(coverage, WGS84);
+                            final String uom = getUom(ft);
+                            final String varLongName = ft.getDescription().toString();
+                            final String varBrief = getBrief(ft.getName().getLocalPart().toString());
+                            final String coverageName = buildCoverageName(baseName, ft, endTime,
+                                    noData);
+                            final String coverageStoreId = coverageName.toString();
+                            final GridCoverage2D resampledCoverage = (GridCoverage2D) OPERATIONS
+                                    .resample(coverage, WGS84);
 
-							final File gtiffOutputDir = new File(outDir
-									.getAbsolutePath()
-									+ File.separator
-									+ FilenameUtils.getBaseName(inputFileName)
-									+ "_"
-									+ varBrief.replaceAll("_", "")
-									+ "_T"
-									+ new Date().getTime());
+                            final File gtiffOutputDir = new File(outDir.getAbsolutePath()
+                                    + File.separator + FilenameUtils.getBaseName(inputFileName)
+                                    + "_" + varBrief.replaceAll("_", "") + "_T"
+                                    + new Date().getTime());
 
-							LOGGER.info(gtiffOutputDir.getAbsolutePath());
-							boolean canProceed = false;
-							if (!gtiffOutputDir.exists())
-								canProceed = gtiffOutputDir.mkdirs();
+                            LOGGER.info(gtiffOutputDir.getAbsolutePath());
+                            boolean canProceed = false;
+                            if (!gtiffOutputDir.exists())
+                                canProceed = gtiffOutputDir.mkdirs();
 
-							canProceed = gtiffOutputDir.isDirectory();
+                            canProceed = gtiffOutputDir.isDirectory();
 
-							if (canProceed) {
-								final File gtiffFile = Utilities
-										.storeCoverageAsGeoTIFF(gtiffOutputDir,
-												coverageName.toString(),
-												resampledCoverage,
-												DEFAULT_COMPRESSION_TYPE,
-												DEFAULT_COMPRESSION_RATIO,
-												DEFAULT_TILE_SIZE);
+                            if (canProceed) {
+                                final File gtiffFile = Utilities.storeCoverageAsGeoTIFF(
+                                        gtiffOutputDir, coverageName.toString(), resampledCoverage,
+                                        DEFAULT_COMPRESSION_TYPE, DEFAULT_COMPRESSION_RATIO,
+                                        DEFAULT_TILE_SIZE);
 
-								// ... setting up the appropriate event for the
-								// next action
-								events
-										.add(new FileSystemMonitorEvent(
-												gtiffOutputDir,
-												FileSystemMonitorNotifications.FILE_ADDED));
-							}
-						}
-					}
-				}
-			} else
-				LOGGER.info("NOT ACCEPTED");
+                                // ... setting up the appropriate event for the
+                                // next action
+                                events.add(new FileSystemMonitorEvent(gtiffOutputDir,
+                                        FileSystemMonitorNotifications.FILE_ADDED));
+                            }
+                        }
+                    }
+                }
+            } else
+                LOGGER.info("NOT ACCEPTED");
 
-			return events;
-		} catch (Throwable t) {
-			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-			return null;
-		} finally {
-			JAI.getDefaultInstance().getTileCache().flush();
-		}
-	}
+            return events;
+        } catch (Throwable t) {
+            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            return null;
+        } finally {
+            JAI.getDefaultInstance().getTileCache().flush();
+        }
+    }
 
-	private final static String getUom(final FieldType ft) {
-		final String uom = ft.getUnitOfMeasure().toString();
-		if (ft != null)
-			if (ft.getName().getLocalPart().toString().contains("sst"))
-				return "cel";
-			else if (ft.getName().getLocalPart().toString()
-					.contains("lowcloud"))
-				return "dimensionless";
-		return uom;
-	}
+    private final static String getUom(final FieldType ft) {
+        final String uom = ft.getUnitOfMeasure().toString();
+        if (ft != null)
+            if (ft.getName().getLocalPart().toString().contains("sst"))
+                return "cel";
+            else if (ft.getName().getLocalPart().toString().contains("lowcloud"))
+                return "dimensionless";
+        return uom;
+    }
 
-	private final static String getBrief(final String string) {
-		if (string != null && string.trim().length() > 0) {
-			if (string.equalsIgnoreCase("mcsst"))
-				return "sst";
-		}
-		return string;
-	}
+    private final static String getBrief(final String string) {
+        if (string != null && string.trim().length() > 0) {
+            if (string.equalsIgnoreCase("mcsst"))
+                return "sst";
+        }
+        return string;
+    }
 
-	private String buildCoverageName(final String baseName, final FieldType ft,
-			final String referenceTime, double noData) {
-		final String varName = ft.getName().getLocalPart().toString();
-		String description = ft.getDescription().toString();
+    private String buildCoverageName(final String baseName, final FieldType ft,
+            final String referenceTime, double noData) {
+        final String varName = ft.getName().getLocalPart().toString();
+        String description = ft.getDescription().toString();
 
-		String source = "";
-		String system = "";
+        String source = "";
+        String system = "";
 
-		if (varName.equalsIgnoreCase("mcsst")
-				|| varName.equalsIgnoreCase("lowcloud")) {
-			if (varName.equalsIgnoreCase("mcsst"))
-				description = getBrief("mcsst");
-			source = "terascan";
-			system = "NOAA-AVHRR";
-		}
-		// ////
-		// producing the Coverage name ...
-		// ////
-		final StringBuilder coverageName = new StringBuilder(source)
-				.append("_").append(system).append("_").append(
-						description.replaceAll(" ", "")).append("_").append(
-						"0000.000").append("_").append("0000.000").append("_")
-				.append(referenceTime).append("_").append(referenceTime)
-				.append("_").append(0).append("_").append(noData);
+        if (varName.equalsIgnoreCase("mcsst") || varName.equalsIgnoreCase("lowcloud")) {
+            if (varName.equalsIgnoreCase("mcsst"))
+                description = getBrief("mcsst");
+            source = "terascan";
+            system = "NOAA-AVHRR";
+        }
+        // ////
+        // producing the Coverage name ...
+        // ////
+        final StringBuilder coverageName = new StringBuilder(source).append("_").append(system)
+                .append("_").append(description.replaceAll(" ", "")).append("_").append("0000.000")
+                .append("_").append("0000.000").append("_").append(referenceTime).append("_")
+                .append(referenceTime).append("_").append(0).append("_").append(noData);
 
-		return coverageName.toString();
+        return coverageName.toString();
 
-	}
+    }
 
 }

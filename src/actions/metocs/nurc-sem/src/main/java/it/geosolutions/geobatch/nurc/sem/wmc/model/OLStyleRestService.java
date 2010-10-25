@@ -35,8 +35,8 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLStyleRestService extends OLBaseClass {
 
-	public OLStyleRestService(String content) {
-		super(content);
-	}
+    public OLStyleRestService(String content) {
+        super(content);
+    }
 
 }

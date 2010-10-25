@@ -33,36 +33,33 @@ import java.util.logging.Logger;
  * Public class to generate NetCDF_CF-2-GeoTIFFs Services
  * 
  */
-public class NetCDFCFGeodetic2GeoTIFFsGeneratorService
-		extends
-		GeoServerConfiguratorService<FileSystemMonitorEvent, MetocActionConfiguration> {
+public class NetCDFCFGeodetic2GeoTIFFsGeneratorService extends
+        GeoServerConfiguratorService<FileSystemMonitorEvent, MetocActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(NetCDFCFGeodetic2GeoTIFFsGeneratorService.class
-					.toString());
+    private final static Logger LOGGER = Logger
+            .getLogger(NetCDFCFGeodetic2GeoTIFFsGeneratorService.class.toString());
 
-	/**
-	 * Action creator
-	 * 
-	 * @param configuration
-	 *            The data base action configuration
-	 * @return new JGSFLoDeSSSWANFileConfigurator()
-	 */
-	public NetCDFCFGeodetic2GeoTIFFsFileAction createAction(
-			MetocActionConfiguration configuration) {
-		try {
-			return new NetCDFCFGeodetic2GeoTIFFsFileAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Action creator
+     * 
+     * @param configuration
+     *            The data base action configuration
+     * @return new JGSFLoDeSSSWANFileConfigurator()
+     */
+    public NetCDFCFGeodetic2GeoTIFFsFileAction createAction(MetocActionConfiguration configuration) {
+        try {
+            return new NetCDFCFGeodetic2GeoTIFFsFileAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	@Override
-	public boolean canCreateAction(MetocActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    @Override
+    public boolean canCreateAction(MetocActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

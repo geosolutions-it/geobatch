@@ -37,165 +37,166 @@ import org.jdom.Element;
  */
 public class GeoserverRESTReaderTest extends TestCase {
 
-	public static final String RESTURL = "http://localhost:8080/geoserver";
-	public static final String USERNAME = "admin";
-	public static final String PASSWORD = "geoserver";
-	public static final URL URL;
-	public static final GeoServerRESTReader reader;
+    public static final String RESTURL = "http://localhost:8080/geoserver";
 
-	public static boolean enabled = true;
+    public static final String USERNAME = "admin";
 
-	static {
-		URL lurl = null;
-		try {
-			lurl = new URL("http://localhost:8080/geoserver");
-		} catch (MalformedURLException ex) {
-		}
+    public static final String PASSWORD = "geoserver";
 
-		URL = lurl;
-		reader = new GeoServerRESTReader(lurl, USERNAME, PASSWORD);
-	}
+    public static final URL URL;
 
-	public GeoserverRESTReaderTest(String testName) {
-		super(testName);
-	}
+    public static final GeoServerRESTReader reader;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+    public static boolean enabled = true;
 
-		if (enabled()) {
-			if (!reader.existGeoserver()) {
-				System.out
-						.println(getClass().getSimpleName()
-								+ ": TESTS WILL BE SKIPPED SINCE NO GEOSERVER WAS FOUND AT "
-								+ RESTURL);
-				enabled = false;
-			}
-		}
+    static {
+        URL lurl = null;
+        try {
+            lurl = new URL("http://localhost:8080/geoserver");
+        } catch (MalformedURLException ex) {
+        }
 
-		if (enabled)
-			System.out.println("-------------------> RUNNING TEST "
-					+ this.getName());
-		else
-			System.out.println("Skipping test "
-					+ this.getClass().getSimpleName() + "::" + this.getName());
-	}
+        URL = lurl;
+        reader = new GeoServerRESTReader(lurl, USERNAME, PASSWORD);
+    }
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+    public GeoserverRESTReaderTest(String testName) {
+        super(testName);
+    }
 
-	protected boolean enabled() {
-		if (!enabled) {
-			// System.out.println("Skipping test in " +
-			// getClass().getSimpleName());
-		}
-		return enabled;
-	}
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
 
-	/**
-	 * Test of getLayers method, of class GeoServerRESTReader.
-	 */
-	public void testGetLayers() {
-		if (!enabled())
-			return;
+        if (enabled()) {
+            if (!reader.existGeoserver()) {
+                System.out.println(getClass().getSimpleName()
+                        + ": TESTS WILL BE SKIPPED SINCE NO GEOSERVER WAS FOUND AT " + RESTURL);
+                enabled = false;
+            }
+        }
 
-		Element result = reader.getLayers();
-		assertNotNull(result);
-		assertEquals(/* CHANGEME */19, result.getChildren("layer").size()); // value
-																			// in
-																			// default
-																			// gs
-																			// installation
+        if (enabled)
+            System.out.println("-------------------> RUNNING TEST " + this.getName());
+        else
+            System.out.println("Skipping test " + this.getClass().getSimpleName() + "::"
+                    + this.getName());
+    }
 
-		System.out.println("Layers:" + result.getChildren("layer").size());
-		System.out.print("Layers:");
-		for (Element layer : (List<Element>) result.getChildren("layer")) {
-			System.out.print(layer.getChildText("name") + " ");
-		}
-		System.out.println();
-	}
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-	/**
-	 * Test of getDatastores method, of class GeoServerRESTReader.
-	 */
-	public void testGetDatastores() {
-		if (!enabled())
-			return;
+    protected boolean enabled() {
+        if (!enabled) {
+            // System.out.println("Skipping test in " +
+            // getClass().getSimpleName());
+        }
+        return enabled;
+    }
 
-		List<String> wslist = reader.getWorkspaceNames();
-		assertNotNull(wslist);
-		assertEquals(7, wslist.size()); // value in default gs installation
+    /**
+     * Test of getLayers method, of class GeoServerRESTReader.
+     */
+    public void testGetLayers() {
+        if (!enabled())
+            return;
 
-		System.out.println("Workspaces:" + wslist.size());
-		int dsnum = 0;
-		for (String wsname : wslist) {
-			System.out.print("Workspace " + wsname + " : ");
-			List<String> result = reader.getDatastoresNames(wsname);
-			assertNotNull(result);
-			dsnum += result.size();
-			for (String dsname : result) {
-				System.out.print(dsname + " ");
-			}
-			System.out.println();
-		}
-		System.out.println();
-		System.out.println("Datastores:" + dsnum); // value in default gs
-													// installation
-		assertEquals(4, dsnum); // value in default gs installation
+        Element result = reader.getLayers();
+        assertNotNull(result);
+        assertEquals(/* CHANGEME */19, result.getChildren("layer").size()); // value
+        // in
+        // default
+        // gs
+        // installation
 
-	}
+        System.out.println("Layers:" + result.getChildren("layer").size());
+        System.out.print("Layers:");
+        for (Element layer : (List<Element>) result.getChildren("layer")) {
+            System.out.print(layer.getChildText("name") + " ");
+        }
+        System.out.println();
+    }
 
-	/**
-	 * Test of getDatastore method, of class GeoServerRESTReader.
-	 */
-	public void testGetDatastore() {
-	}
+    /**
+     * Test of getDatastores method, of class GeoServerRESTReader.
+     */
+    public void testGetDatastores() {
+        if (!enabled())
+            return;
 
-	/**
-	 * Test of getLayer method, of class GeoServerRESTReader.
-	 */
-	public void testGetLayer() {
-	}
+        List<String> wslist = reader.getWorkspaceNames();
+        assertNotNull(wslist);
+        assertEquals(7, wslist.size()); // value in default gs installation
 
-	/**
-	 * Test of getNamespaceNames method, of class GeoServerRESTReader.
-	 */
-	public void testGetNamespaceNames() {
-		if (!enabled())
-			return;
+        System.out.println("Workspaces:" + wslist.size());
+        int dsnum = 0;
+        for (String wsname : wslist) {
+            System.out.print("Workspace " + wsname + " : ");
+            List<String> result = reader.getDatastoresNames(wsname);
+            assertNotNull(result);
+            dsnum += result.size();
+            for (String dsname : result) {
+                System.out.print(dsname + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        System.out.println("Datastores:" + dsnum); // value in default gs
+        // installation
+        assertEquals(4, dsnum); // value in default gs installation
 
-		List<String> result = reader.getNamespaceNames();
-		assertNotNull(result);
-		assertEquals(7, result.size()); // value in default gs installation
+    }
 
-		System.out.println("Namespaces:" + result.size());
-		System.out.print("Namespaces:");
-		for (String name : result) {
-			System.out.print(name + " ");
-		}
-		System.out.println();
-	}
+    /**
+     * Test of getDatastore method, of class GeoServerRESTReader.
+     */
+    public void testGetDatastore() {
+    }
 
-	/**
-	 * Test of getWorkspaceNames method, of class GeoServerRESTReader.
-	 */
-	public void testGetWorkspaceNames() {
-		if (!enabled())
-			return;
+    /**
+     * Test of getLayer method, of class GeoServerRESTReader.
+     */
+    public void testGetLayer() {
+    }
 
-		List<String> result = reader.getWorkspaceNames();
-		assertNotNull(result);
-		assertEquals(7, result.size()); // value in default gs installation
+    /**
+     * Test of getNamespaceNames method, of class GeoServerRESTReader.
+     */
+    public void testGetNamespaceNames() {
+        if (!enabled())
+            return;
 
-		System.out.println("Workspaces:" + result.size());
-		System.out.print("Workspaces:");
-		for (String name : result) {
-			System.out.print(name + " ");
-		}
-		System.out.println();
-	}
+        List<String> result = reader.getNamespaceNames();
+        assertNotNull(result);
+        assertEquals(7, result.size()); // value in default gs installation
+
+        System.out.println("Namespaces:" + result.size());
+        System.out.print("Namespaces:");
+        for (String name : result) {
+            System.out.print(name + " ");
+        }
+        System.out.println();
+    }
+
+    /**
+     * Test of getWorkspaceNames method, of class GeoServerRESTReader.
+     */
+    public void testGetWorkspaceNames() {
+        if (!enabled())
+            return;
+
+        List<String> result = reader.getWorkspaceNames();
+        assertNotNull(result);
+        assertEquals(7, result.size()); // value in default gs installation
+
+        System.out.println("Workspaces:" + result.size());
+        System.out.print("Workspaces:");
+        for (String name : result) {
+            System.out.print(name + " ");
+        }
+        System.out.println();
+    }
 
 }

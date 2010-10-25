@@ -41,90 +41,84 @@ import java.util.logging.Logger;
  * @version $ MetocConfigurationAction.java $ Revision: 0.1 $ 23/oct/09 17:14:23
  */
 
-public abstract class MetocConfigurationAction extends
-		BaseAction<FileSystemMonitorEvent> implements
-		Action<FileSystemMonitorEvent> {
+public abstract class MetocConfigurationAction extends BaseAction<FileSystemMonitorEvent> implements
+        Action<FileSystemMonitorEvent> {
 
-	/**
-	 * Default logger
-	 */
-	protected final static Logger LOGGER = Logger
-			.getLogger(MetocConfigurationAction.class.toString());
+    /**
+     * Default logger
+     */
+    protected final static Logger LOGGER = Logger.getLogger(MetocConfigurationAction.class
+            .toString());
 
-	protected final MetocActionConfiguration configuration;
+    protected final MetocActionConfiguration configuration;
 
-	protected final SimpleDateFormat sdf = new SimpleDateFormat(
-			"yyyyMMddmm_HHH");
+    protected final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddmm_HHH");
 
-	public static final long startTime;
+    public static final long startTime;
 
-	static {
-		GregorianCalendar calendar = new GregorianCalendar(1980, 00, 01, 00,
-				00, 00);
-		calendar.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-		startTime = calendar.getTimeInMillis();
-	}
+    static {
+        GregorianCalendar calendar = new GregorianCalendar(1980, 00, 01, 00, 00, 00);
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+        startTime = calendar.getTimeInMillis();
+    }
 
-	/**
-	 * Constructs a producer. The operation name will be the same than the
-	 * parameter descriptor name.
-	 * 
-	 * @throws IOException
-	 */
-	public MetocConfigurationAction(MetocActionConfiguration configuration) {
-		super(configuration);
-		this.configuration = configuration;
-		// //
-		// initialize params...
-		// //
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+    /**
+     * Constructs a producer. The operation name will be the same than the parameter descriptor
+     * name.
+     * 
+     * @throws IOException
+     */
+    public MetocConfigurationAction(MetocActionConfiguration configuration) {
+        super(configuration);
+        this.configuration = configuration;
+        // //
+        // initialize params...
+        // //
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 
-		// //
-		//
-		// get required parameters
-		//
-		// //
-		if ((configuration.getMetocDictionaryPath() == null)
-				|| "".equals(configuration.getMetocHarvesterXMLTemplatePath())) {
-			LOGGER
-					.log(Level.SEVERE,
-							"MetcoDictionaryPath || MetocHarvesterXMLTemplatePath is null.");
-			throw new IllegalStateException(
-					"MetcoDictionaryPath || MetocHarvesterXMLTemplatePath is null.");
-		}
+        // //
+        //
+        // get required parameters
+        //
+        // //
+        if ((configuration.getMetocDictionaryPath() == null)
+                || "".equals(configuration.getMetocHarvesterXMLTemplatePath())) {
+            LOGGER.log(Level.SEVERE,
+                    "MetcoDictionaryPath || MetocHarvesterXMLTemplatePath is null.");
+            throw new IllegalStateException(
+                    "MetcoDictionaryPath || MetocHarvesterXMLTemplatePath is null.");
+        }
 
-	}
+    }
 
-	/**
-	 * @param queryParams
-	 * @return
-	 */
-	protected static String getQueryString(Map<String, String> queryParams) {
-		StringBuilder queryString = new StringBuilder();
+    /**
+     * @param queryParams
+     * @return
+     */
+    protected static String getQueryString(Map<String, String> queryParams) {
+        StringBuilder queryString = new StringBuilder();
 
-		if (queryParams != null)
-			for (Map.Entry<String, String> entry : queryParams.entrySet()) {
-				if (queryString.length() > 0)
-					queryString.append("&");
-				queryString.append(entry.getKey()).append("=").append(
-						entry.getValue());
-			}
+        if (queryParams != null)
+            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+                if (queryString.length() > 0)
+                    queryString.append("&");
+                queryString.append(entry.getKey()).append("=").append(entry.getValue());
+            }
 
-		return queryString.toString();
-	}
+        return queryString.toString();
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public MetocActionConfiguration getConfiguration() {
-		return configuration;
-	}
+    /**
+     * 
+     * @return
+     */
+    public MetocActionConfiguration getConfiguration() {
+        return configuration;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + "cfg:" + getConfiguration()
-				+ "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + "cfg:" + getConfiguration() + "]";
+    }
 
 }

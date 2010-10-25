@@ -30,99 +30,99 @@ import org.jdom.Element;
  * @author etj
  */
 public class GSRestLayerParser {
-	private final Element layerElem;
+    private final Element layerElem;
 
-	public enum TYPE {
-		VECTOR("VECTOR"), RASTER("RASTER"), UNKNOWN(null);
+    public enum TYPE {
+        VECTOR("VECTOR"), RASTER("RASTER"), UNKNOWN(null);
 
-		private final String restName;
+        private final String restName;
 
-		private TYPE(String restName) {
-			this.restName = restName;
-		}
+        private TYPE(String restName) {
+            this.restName = restName;
+        }
 
-		public static TYPE get(String restName) {
-			for (TYPE type : values()) {
-				if (type == UNKNOWN)
-					continue;
-				if (type.restName.equals(restName))
-					return type;
-			}
-			return UNKNOWN;
-		}
-	};
+        public static TYPE get(String restName) {
+            for (TYPE type : values()) {
+                if (type == UNKNOWN)
+                    continue;
+                if (type.restName.equals(restName))
+                    return type;
+            }
+            return UNKNOWN;
+        }
+    };
 
-	public GSRestLayerParser(Element layerElem) {
-		this.layerElem = layerElem;
-	}
+    public GSRestLayerParser(Element layerElem) {
+        this.layerElem = layerElem;
+    }
 
-	public String getName() {
-		return layerElem.getChildText("name");
-	}
+    public String getName() {
+        return layerElem.getChildText("name");
+    }
 
-	public String getTypeString() {
-		return layerElem.getChildText("type");
-	}
+    public String getTypeString() {
+        return layerElem.getChildText("type");
+    }
 
-	public TYPE getType() {
-		return TYPE.get(getTypeString());
-	}
+    public TYPE getType() {
+        return TYPE.get(getTypeString());
+    }
 
-	public String getDefaultStyle() {
-		Element defaultStyle = layerElem.getChild("defaultStyle");
-		return defaultStyle == null ? null : defaultStyle.getChildText("name");
-	}
+    public String getDefaultStyle() {
+        Element defaultStyle = layerElem.getChild("defaultStyle");
+        return defaultStyle == null ? null : defaultStyle.getChildText("name");
+    }
 
-	public String getTitle() {
-		Element resource = layerElem.getChild("resource");
-		return resource.getChildText("title");
-	}
+    public String getTitle() {
+        Element resource = layerElem.getChild("resource");
+        return resource.getChildText("title");
+    }
 
-	public String getAbstract() {
-		Element resource = layerElem.getChild("resource");
-		return resource.getChildText("abstract");
-	}
+    public String getAbstract() {
+        Element resource = layerElem.getChild("resource");
+        return resource.getChildText("abstract");
+    }
 
-	public String getNameSpace() {
-		Element resource = layerElem.getChild("resource");
-		return resource.getChild("namespace").getChildText("name");
-	}
+    public String getNameSpace() {
+        Element resource = layerElem.getChild("resource");
+        return resource.getChild("namespace").getChildText("name");
+    }
 
-	public String getStoreName() {
-		Element resource = layerElem.getChild("resource");
-		return resource.getChild("store").getChildText("name");
-	}
+    public String getStoreName() {
+        Element resource = layerElem.getChild("resource");
+        return resource.getChild("store").getChildText("name");
+    }
 
-	public String getStoreType() {
-		Element resource = layerElem.getChild("resource");
-		return resource.getChild("store").getAttributeValue("class");
-	}
+    public String getStoreType() {
+        Element resource = layerElem.getChild("resource");
+        return resource.getChild("store").getAttributeValue("class");
+    }
 
-	public String getCRS() {
-		Element resource = layerElem.getChild("resource");
-		Element elBBox = resource.getChild("latLonBoundingBox");
-		return elBBox.getChildText("crs");
-	}
+    public String getCRS() {
+        Element resource = layerElem.getChild("resource");
+        Element elBBox = resource.getChild("latLonBoundingBox");
+        return elBBox.getChildText("crs");
+    }
 
-	protected double getLatLonEdge(String edge) {
-		Element resource = layerElem.getChild("resource");
-		Element elBBox = resource.getChild("latLonBoundingBox");
-		return Double.parseDouble(elBBox.getChildText(edge));
-	}
+    protected double getLatLonEdge(String edge) {
+        Element resource = layerElem.getChild("resource");
+        Element elBBox = resource.getChild("latLonBoundingBox");
+        return Double.parseDouble(elBBox.getChildText(edge));
+    }
 
-	public double getMinX() {
-		return getLatLonEdge("minx");
-	}
+    public double getMinX() {
+        return getLatLonEdge("minx");
+    }
 
-	public double getMaxX() {
-		return getLatLonEdge("maxx");
-	}
+    public double getMaxX() {
+        return getLatLonEdge("maxx");
+    }
 
-	public double getMinY() {
-		return getLatLonEdge("miny");
-	}
+    public double getMinY() {
+        return getLatLonEdge("miny");
+    }
 
-	public double getMaxY() {
-		return getLatLonEdge("maxy");
-	}
+    public double getMaxY() {
+        return getLatLonEdge("maxy");
+    }
 }

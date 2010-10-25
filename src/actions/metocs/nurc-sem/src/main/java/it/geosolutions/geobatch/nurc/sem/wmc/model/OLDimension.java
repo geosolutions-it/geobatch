@@ -35,27 +35,28 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  */
 public class OLDimension extends OLBaseClass {
 
-	private String name;
-	private String defaultValue;
+    private String name;
 
-	public OLDimension(String values, String name, String defaultValue) {
-		super(values);
-		this.name = name;
-		this.defaultValue = defaultValue;
-	}
+    private String defaultValue;
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    public OLDimension(String values, String name, String defaultValue) {
+        super(values);
+        this.name = name;
+        this.defaultValue = defaultValue;
+    }
 
-	/**
-	 * @return the defaultValue
-	 */
-	public String getDefaultValue() {
-		return defaultValue;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return the defaultValue
+     */
+    public String getDefaultValue() {
+        return defaultValue;
+    }
 
 }

@@ -8,11 +8,11 @@ import java.util.EventListener;
  * 
  */
 public interface FileSystemMonitorListener extends EventListener {
-	/**
-	 * Called when one of the monitored files are created, deleted or modified.
-	 * 
-	 * @param file
-	 *            File which has been changed.
-	 */
-	void fileMonitorEventDelivered(FileSystemMonitorEvent fe);
+    /**
+     * Called when one of the monitored files are created, deleted or modified.
+     * 
+     * @param file
+     *            File which has been changed.
+     */
+    void fileMonitorEventDelivered(FileSystemMonitorEvent fe);
 }

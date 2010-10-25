@@ -32,21 +32,21 @@ import java.util.List;
  */
 public interface UserFlowAccessDAO extends GenericDAO<UserFlowAccess, String> {
 
-	public void add(Long userId, String flowId) throws DAOException;
+    public void add(Long userId, String flowId) throws DAOException;
 
-	public void remove(Long userId, String flowName) throws DAOException;
+    public void remove(Long userId, String flowName) throws DAOException;
 
-	public void remove(Long userId) throws DAOException;
+    public void remove(Long userId) throws DAOException;
 
-	public void remove(String flowId) throws DAOException;
+    public void remove(String flowId) throws DAOException;
 
-	/**
-	 * @returns all the flownames associated with the user <TT>userId</TT>
-	 */
-	public List<String> findFlows(Long userId) throws DAOException;
+    /**
+     * @returns all the flownames associated with the user <TT>userId</TT>
+     */
+    public List<String> findFlows(Long userId) throws DAOException;
 
-	/**
-	 * @returns all the userIds associated with the flow <TT>flowId</TT>
-	 */
-	public List<Long> findUsersId(String flowId) throws DAOException;
+    /**
+     * @returns all the userIds associated with the flow <TT>flowId</TT>
+     */
+    public List<Long> findUsersId(String flowId) throws DAOException;
 }

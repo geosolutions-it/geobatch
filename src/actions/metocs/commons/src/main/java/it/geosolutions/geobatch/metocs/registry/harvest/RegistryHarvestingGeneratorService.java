@@ -34,34 +34,33 @@ import java.util.logging.Logger;
  * TODO: DOCUMENT ME!!
  * 
  */
-public class RegistryHarvestingGeneratorService
-		extends
-		RegistryConfiguratorService<FileSystemMonitorEvent, RegistryActionConfiguration> {
+public class RegistryHarvestingGeneratorService extends
+        RegistryConfiguratorService<FileSystemMonitorEvent, RegistryActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(RegistryHarvestingGeneratorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(RegistryHarvestingGeneratorService.class
+            .toString());
 
-	/**
-	 * Action creator
-	 * 
-	 * @param configuration
-	 *            The data base action configuration
-	 * @return new JGSFLoDeSSSWANFileConfigurator()
-	 */
-	public RegistryHarvestingConfiguratorAction createAction(
-			RegistryActionConfiguration configuration) {
-		try {
-			return new RegistryHarvestingConfiguratorAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    /**
+     * Action creator
+     * 
+     * @param configuration
+     *            The data base action configuration
+     * @return new JGSFLoDeSSSWANFileConfigurator()
+     */
+    public RegistryHarvestingConfiguratorAction createAction(
+            RegistryActionConfiguration configuration) {
+        try {
+            return new RegistryHarvestingConfiguratorAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	public boolean canCreateAction(RegistryActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    public boolean canCreateAction(RegistryActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

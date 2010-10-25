@@ -34,46 +34,47 @@ package it.geosolutions.geobatch.nurc.sem.wmc.model;
  * 
  */
 public class WMCOnlineResource {
-	private String xlink_type = "simple";
-	private String xlink_href;
+    private String xlink_type = "simple";
 
-	/**
-	 * @param xlink_type
-	 * @param xlink_href
-	 */
-	public WMCOnlineResource(String xlink_type, String xlink_href) {
-		this.xlink_type = xlink_type;
-		this.xlink_href = xlink_href;
-	}
+    private String xlink_href;
 
-	/**
-	 * @return the xlink_type
-	 */
-	public String getXlink_type() {
-		return xlink_type;
-	}
+    /**
+     * @param xlink_type
+     * @param xlink_href
+     */
+    public WMCOnlineResource(String xlink_type, String xlink_href) {
+        this.xlink_type = xlink_type;
+        this.xlink_href = xlink_href;
+    }
 
-	/**
-	 * @param xlink_type
-	 *            the xlink_type to set
-	 */
-	public void setXlink_type(String xlink_type) {
-		this.xlink_type = xlink_type;
-	}
+    /**
+     * @return the xlink_type
+     */
+    public String getXlink_type() {
+        return xlink_type;
+    }
 
-	/**
-	 * @return the xlink_href
-	 */
-	public String getXlink_href() {
-		return xlink_href;
-	}
+    /**
+     * @param xlink_type
+     *            the xlink_type to set
+     */
+    public void setXlink_type(String xlink_type) {
+        this.xlink_type = xlink_type;
+    }
 
-	/**
-	 * @param xlink_href
-	 *            the xlink_href to set
-	 */
-	public void setXlink_href(String xlink_href) {
-		this.xlink_href = xlink_href;
-	}
+    /**
+     * @return the xlink_href
+     */
+    public String getXlink_href() {
+        return xlink_href;
+    }
+
+    /**
+     * @param xlink_href
+     *            the xlink_href to set
+     */
+    public void setXlink_href(String xlink_href) {
+        this.xlink_href = xlink_href;
+    }
 
 }

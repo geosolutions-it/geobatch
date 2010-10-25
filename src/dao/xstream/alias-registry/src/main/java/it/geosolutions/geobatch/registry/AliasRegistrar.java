@@ -29,7 +29,6 @@ import java.util.logging.Logger;
  * @author ETj <etj at geo-solutions.it>
  */
 public abstract class AliasRegistrar {
-	protected final static Logger LOGGER = Logger
-			.getLogger(AliasRegistrar.class.getName());
+    protected final static Logger LOGGER = Logger.getLogger(AliasRegistrar.class.getName());
 
 }

@@ -34,34 +34,32 @@ import java.util.List;
  * 
  */
 public interface FlowConfiguration extends Configuration {
-	/**
-	 * The Rule-Set Configuration
-	 */
-	public EventGeneratorConfiguration getEventGeneratorConfiguration();
+    /**
+     * The Rule-Set Configuration
+     */
+    public EventGeneratorConfiguration getEventGeneratorConfiguration();
 
-	/**
-	 * @param ruleSet
-	 *            the ruleSet to set
-	 */
-	public void setEventGeneratorConfiguration(
-			EventGeneratorConfiguration ruleSet);
+    /**
+     * @param ruleSet
+     *            the ruleSet to set
+     */
+    public void setEventGeneratorConfiguration(EventGeneratorConfiguration ruleSet);
 
-	/**
-	 * The Rule-Set Configuration
-	 */
-	public EventConsumerConfiguration getEventConsumerConfiguration();
+    /**
+     * The Rule-Set Configuration
+     */
+    public EventConsumerConfiguration getEventConsumerConfiguration();
 
-	/**
-	 * The Rule-Set Configuration
-	 */
-	public void setEventConsumerConfiguration(
-			EventConsumerConfiguration eventConsumerConfiguration);
+    /**
+     * The Rule-Set Configuration
+     */
+    public void setEventConsumerConfiguration(EventConsumerConfiguration eventConsumerConfiguration);
 
-	List<ProgressListenerConfiguration> getProgressListenerConfigurations();
+    List<ProgressListenerConfiguration> getProgressListenerConfigurations();
 
-	void setProgressListenerConfigurations(
-			List<ProgressListenerConfiguration> progressListenerConfigurations);
+    void setProgressListenerConfigurations(
+            List<ProgressListenerConfiguration> progressListenerConfigurations);
 
-	ProgressListenerConfiguration getProgressListenerConfiguration(String id);
+    ProgressListenerConfiguration getProgressListenerConfiguration(String id);
 
 }

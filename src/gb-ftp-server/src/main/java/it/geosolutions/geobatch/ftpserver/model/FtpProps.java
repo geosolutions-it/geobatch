@@ -44,212 +44,211 @@ import javax.persistence.Table;
 @Table(name = "FTP_USER_PROP")
 public class FtpProps implements Serializable {
 
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -1959960226594655854L;
+    private static final long serialVersionUID = -1959960226594655854L;
 
-	@Id
-	@Column(name = "ID")
-	private Long id = null;
+    @Id
+    @Column(name = "ID")
+    private Long id = null;
 
-	// @Column(name = "USER_ID", nullable = false, unique = true, length = 64)
-	// private String userId;
-	//
-	// @Column(name = "USER_PASSWORD", nullable = false, length = 64)
-	// private String userPassword;
-	//
-	// @Column(name = "HOME_DIRECTORY", length = 128)
-	// private String homeDirectory;
-	//
-	// @Column(name = "ENABLE_FLAG", columnDefinition = "boolean default true")
-	// private boolean enableFlag;
+    // @Column(name = "USER_ID", nullable = false, unique = true, length = 64)
+    // private String userId;
+    //
+    // @Column(name = "USER_PASSWORD", nullable = false, length = 64)
+    // private String userPassword;
+    //
+    // @Column(name = "HOME_DIRECTORY", length = 128)
+    // private String homeDirectory;
+    //
+    // @Column(name = "ENABLE_FLAG", columnDefinition = "boolean default true")
+    // private boolean enableFlag;
 
-	@Column(name = "WRITE_PERMISSION")
-	private boolean writePermission = false;
+    @Column(name = "WRITE_PERMISSION")
+    private boolean writePermission = false;
 
-	@Column(name = "IDLE_TIME")
-	private int idleTime = 0;
+    @Column(name = "IDLE_TIME")
+    private int idleTime = 0;
 
-	@Column(name = "UPLOAD_RATE")
-	private int uploadRate = 10;
+    @Column(name = "UPLOAD_RATE")
+    private int uploadRate = 10;
 
-	@Column(name = "DOWNLOAD_RATE")
-	private int downloadRate = 10;
+    @Column(name = "DOWNLOAD_RATE")
+    private int downloadRate = 10;
 
-	@Column(name = "MAX_LOGIN_NUMBER")
-	private int maxLoginNumber = 4;
+    @Column(name = "MAX_LOGIN_NUMBER")
+    private int maxLoginNumber = 4;
 
-	@Column(name = "MAX_LOGIN_PER_IP")
-	private int maxLoginPerIp = 4;
+    @Column(name = "MAX_LOGIN_PER_IP")
+    private int maxLoginPerIp = 4;
 
-	public FtpProps() {
+    public FtpProps() {
 
-	}
+    }
 
-	public FtpProps(Long id) {
-		this.id = id;
-	}
+    public FtpProps(Long id) {
+        this.id = id;
+    }
 
-	/**
-	 * @return the id
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * @return true if the user has write permissions
+     */
+    public boolean isWritePermission() {
+        return writePermission;
+    }
+
+    /**
 	 */
-	public Long getId() {
-		return id;
-	}
+    public void setWritePermission(boolean writePermission) {
+        this.writePermission = writePermission;
+    }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
+    /**
+     * @return the idleTime in seconds. 0 means idletime is not considered
+     */
+    public int getMaxIdleTime() {
+        return idleTime;
+    }
 
-	/**
-	 * @return true if the user has write permissions
-	 */
-	public boolean isWritePermission() {
-		return writePermission;
-	}
+    /**
+     * @param idleTime
+     *            the idleTime to set
+     */
+    public void setMaxIdleTime(int idleTime) {
+        this.idleTime = idleTime;
+    }
 
-	/**
-	 */
-	public void setWritePermission(boolean writePermission) {
-		this.writePermission = writePermission;
-	}
+    /**
+     * @return the uploadRate
+     */
+    public int getUploadRate() {
+        return uploadRate;
+    }
 
-	/**
-	 * @return the idleTime in seconds. 0 means idletime is not considered
-	 */
-	public int getMaxIdleTime() {
-		return idleTime;
-	}
+    /**
+     * @param uploadRate
+     *            the uploadRate to set
+     */
+    public void setUploadRate(int uploadRate) {
+        this.uploadRate = uploadRate;
+    }
 
-	/**
-	 * @param idleTime
-	 *            the idleTime to set
-	 */
-	public void setMaxIdleTime(int idleTime) {
-		this.idleTime = idleTime;
-	}
+    /**
+     * @return the downloadRate
+     */
+    public int getDownloadRate() {
+        return downloadRate;
+    }
 
-	/**
-	 * @return the uploadRate
-	 */
-	public int getUploadRate() {
-		return uploadRate;
-	}
+    /**
+     * @param downloadRate
+     *            the downloadRate to set
+     */
+    public void setDownloadRate(int downloadRate) {
+        this.downloadRate = downloadRate;
+    }
 
-	/**
-	 * @param uploadRate
-	 *            the uploadRate to set
-	 */
-	public void setUploadRate(int uploadRate) {
-		this.uploadRate = uploadRate;
-	}
+    /**
+     * @return the maxLoginNumber the user can perform at the same time
+     * 
+     * @see org.apache.ftpserver.ConnectionConfigFactory#getMaxLogins()
+     */
+    public int getMaxLoginNumber() {
+        return maxLoginNumber;
+    }
 
-	/**
-	 * @return the downloadRate
-	 */
-	public int getDownloadRate() {
-		return downloadRate;
-	}
+    /**
+     * @param maxLoginNumber
+     *            the maxLoginNumber to set
+     */
+    public void setMaxLoginNumber(int maxLoginNumber) {
+        this.maxLoginNumber = maxLoginNumber;
+    }
 
-	/**
-	 * @param downloadRate
-	 *            the downloadRate to set
-	 */
-	public void setDownloadRate(int downloadRate) {
-		this.downloadRate = downloadRate;
-	}
+    /**
+     * @return the maxLoginPerIp
+     * 
+     */
+    public int getMaxLoginPerIp() {
+        return maxLoginPerIp;
+    }
 
-	/**
-	 * @return the maxLoginNumber the user can perform at the same time
-	 * 
-	 * @see org.apache.ftpserver.ConnectionConfigFactory#getMaxLogins()
-	 */
-	public int getMaxLoginNumber() {
-		return maxLoginNumber;
-	}
+    /**
+     * @param maxLoginPerIp
+     *            the maxLoginPerIp to set
+     */
+    public void setMaxLoginPerIp(int maxLoginPerIp) {
+        this.maxLoginPerIp = maxLoginPerIp;
+    }
 
-	/**
-	 * @param maxLoginNumber
-	 *            the maxLoginNumber to set
-	 */
-	public void setMaxLoginNumber(int maxLoginNumber) {
-		this.maxLoginNumber = maxLoginNumber;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 
-	/**
-	 * @return the maxLoginPerIp
-	 * 
-	 */
-	public int getMaxLoginPerIp() {
-		return maxLoginPerIp;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        FtpProps other = (FtpProps) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
 
-	/**
-	 * @param maxLoginPerIp
-	 *            the maxLoginPerIp to set
-	 */
-	public void setMaxLoginPerIp(int maxLoginPerIp) {
-		this.maxLoginPerIp = maxLoginPerIp;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		FtpProps other = (FtpProps) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "[ ID : "
-				+ getId()
-				// + " - USER_ID : " + getUserId()
-				// + " - USER_PASSWORD : " + getUserPassword()
-				// + "  - HOME_DIRECTORY : " + getHomeDirectory()
-				// + " - ENABLE_FLAG : " + isEnableFlag()
-				+ " - WRITE_PERMISSION " + isWritePermission()
-				+ " - IDLE_TIME " + getMaxIdleTime() + " - UPLOAD_RATE "
-				+ getUploadRate() + " - DOWNLOAD_RATE " + getDownloadRate()
-				+ " - MAX_LOGIN_NUMBER " + getMaxLoginNumber()
-				+ " - MAX_LOGIN_PER_IP " + getMaxLoginPerIp() + "]";
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "[ ID : "
+                + getId()
+                // + " - USER_ID : " + getUserId()
+                // + " - USER_PASSWORD : " + getUserPassword()
+                // + "  - HOME_DIRECTORY : " + getHomeDirectory()
+                // + " - ENABLE_FLAG : " + isEnableFlag()
+                + " - WRITE_PERMISSION " + isWritePermission() + " - IDLE_TIME " + getMaxIdleTime()
+                + " - UPLOAD_RATE " + getUploadRate() + " - DOWNLOAD_RATE " + getDownloadRate()
+                + " - MAX_LOGIN_NUMBER " + getMaxLoginNumber() + " - MAX_LOGIN_PER_IP "
+                + getMaxLoginPerIp() + "]";
+    }
 
 }

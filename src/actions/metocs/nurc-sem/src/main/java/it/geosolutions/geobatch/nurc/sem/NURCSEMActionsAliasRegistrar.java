@@ -33,9 +33,8 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  */
 public class NURCSEMActionsAliasRegistrar extends AliasRegistrar {
 
-	public NURCSEMActionsAliasRegistrar(AliasRegistry registry) {
-		LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-		registry.putAlias("WMCActionConfiguration",
-				WMCActionConfiguration.class);
-	}
+    public NURCSEMActionsAliasRegistrar(AliasRegistry registry) {
+        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+        registry.putAlias("WMCActionConfiguration", WMCActionConfiguration.class);
+    }
 }

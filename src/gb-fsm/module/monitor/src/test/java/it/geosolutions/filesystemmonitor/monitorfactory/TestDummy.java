@@ -19,20 +19,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners( {})
-@ContextConfiguration(locations = { "/applicationContext.xml",
-		"/TestDummy-context.xml" })
+@ContextConfiguration(locations = { "/applicationContext.xml", "/TestDummy-context.xml" })
 public class TestDummy extends AbstractJUnit4SpringContextTests {
 
-	@Test
-	public void testDummy() {
-		// get the registered services
-		FSMSPIFinder finder = (FSMSPIFinder) applicationContext
-				.getBean("fsmSPIFinder");
-		Assert.assertTrue(finder != null);
-		FileSystemMonitor abstractMonitor = FSMSPIFinder.getMonitor(null,
-				OsType.OS_UNDEFINED);
-		Assert.assertTrue(abstractMonitor != null);
-		Assert.assertTrue(abstractMonitor instanceof DummyMonitor);
-	}
+    @Test
+    public void testDummy() {
+        // get the registered services
+        FSMSPIFinder finder = (FSMSPIFinder) applicationContext.getBean("fsmSPIFinder");
+        Assert.assertTrue(finder != null);
+        FileSystemMonitor abstractMonitor = FSMSPIFinder.getMonitor(null, OsType.OS_UNDEFINED);
+        Assert.assertTrue(abstractMonitor != null);
+        Assert.assertTrue(abstractMonitor instanceof DummyMonitor);
+    }
 
 }

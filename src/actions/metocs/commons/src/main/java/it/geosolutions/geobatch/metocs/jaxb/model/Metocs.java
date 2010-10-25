@@ -21,8 +21,7 @@ import javax.xml.bind.annotation.XmlType;
  * Java class for anonymous complex type.
  * 
  * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -43,37 +42,35 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "metocs")
 public class Metocs {
 
-	@XmlElement(required = true)
-	protected List<MetocElementType> metoc;
+    @XmlElement(required = true)
+    protected List<MetocElementType> metoc;
 
-	/**
-	 * Gets the value of the metoc property.
-	 * 
-	 * <p>
-	 * This accessor method returns a reference to the live list, not a
-	 * snapshot. Therefore any modification you make to the returned list will
-	 * be present inside the JAXB object. This is why there is not a
-	 * <CODE>set</CODE> method for the metoc property.
-	 * 
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * 
-	 * <pre>
-	 * getMetoc().add(newItem);
-	 * </pre>
-	 * 
-	 * 
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * {@link MetocElementType }
-	 * 
-	 * 
-	 */
-	public List<MetocElementType> getMetoc() {
-		if (metoc == null) {
-			metoc = new ArrayList<MetocElementType>();
-		}
-		return this.metoc;
-	}
+    /**
+     * Gets the value of the metoc property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any
+     * modification you make to the returned list will be present inside the JAXB object. This is
+     * why there is not a <CODE>set</CODE> method for the metoc property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
+     * getMetoc().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list {@link MetocElementType }
+     * 
+     * 
+     */
+    public List<MetocElementType> getMetoc() {
+        if (metoc == null) {
+            metoc = new ArrayList<MetocElementType>();
+        }
+        return this.metoc;
+    }
 
 }
