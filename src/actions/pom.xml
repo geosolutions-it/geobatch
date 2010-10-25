@@ -293,6 +293,13 @@
         </profile>
 
         <profile>
+            <id>egeos</id>
+            <modules>
+                <module>egeos</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>lamma</id>
             <modules>
                 <module>geotiff</module>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="schematron_result_for_eop.xsl"?>
+<eop:EarthObservation
+ xmlns:gml="http://www.opengis.net/gml"
+ xmlns:eop="http://earth.esa.int/eop"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://earth.esa.int/eop ../XSD/GMLProduct/eop/1.1/eop.xsd">
+  <gml:metaDataProperty>
+    <eop:EarthObservationMetaData>
+      <eop:identifier>7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000</eop:identifier>
+      <eop:acquisitionType>NOMINAL</eop:acquisitionType>
+      <eop:productType>SGF</eop:productType>
+      <eop:status>ACQUIRED</eop:status>
+      <eop:downlinkedTo>
+        <eop:DownlinkInformation>
+          <eop:acquisitionStation codeSpace="urn:eop:PHR:stationCode">ITMA</eop:acquisitionStation>
+       </eop:DownlinkInformation>
+      </eop:downlinkedTo>
+    </eop:EarthObservationMetaData>
+  </gml:metaDataProperty>
+  <gml:validTime>
+    <gml:TimePeriod>
+      <gml:beginPosition>2010-05-27T05:56:13.907648Z</gml:beginPosition>
+      <gml:endPosition>2010-05-27T05:56:58.797971Z</gml:endPosition>
+    </gml:TimePeriod>
+  </gml:validTime>
+  <gml:using>
+    <eop:EarthObservationEquipment>
+      <eop:platform>
+        <eop:Platform>
+          <eop:shortName>Radarsat-2</eop:shortName>
+        </eop:Platform>
+      </eop:platform>
+      <eop:instrument>
+        <eop:Instrument>
+          <eop:shortName>SAR-R2</eop:shortName>
+        </eop:Instrument>
+      </eop:instrument>
+      <eop:sensor>
+        <eop:Sensor>
+          <eop:sensorType>RADAR</eop:sensorType>
+          <eop:operationalMode codeSpace="urn:eop:PHR:sensorMode">ScanSARNarrow</eop:operationalMode>
+          <eop:resolution uom="m">2.50000000e+01</eop:resolution>
+        </eop:Sensor>
+      </eop:sensor>
+      <eop:acquisitionParameters>
+        <eop:Acquisition>
+          <eop:orbitNumber>12786</eop:orbitNumber>
+          <eop:lastOrbitNumber>12786</eop:lastOrbitNumber>
+          <eop:orbitDirection>DESCENDING</eop:orbitDirection>
+          <eop:acrossTrackIncidenceAngle uom="deg">0.0</eop:acrossTrackIncidenceAngle>
+        </eop:Acquisition>
+      </eop:acquisitionParameters>
+    </eop:EarthObservationEquipment>
+  </gml:using>
+  <gml:target>
+    <eop:Footprint>
+      <gml:multiExtentOf>
+        <gml:MultiSurface srsName="EPSG:4326">
+          <gml:surfaceMembers>
+            <gml:Polygon>
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>56.257572 4.918175 55.666489 9.846133 53.059227 8.720576 53.635002 4.093939 56.257572 4.918175</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </gml:surfaceMembers>
+        </gml:MultiSurface>
+      </gml:multiExtentOf>
+      <gml:centerOf>
+        <gml:Point srsName="EPSG:4326">
+          <gml:pos>54.6787 6.90093</gml:pos>
+        </gml:Point>
+      </gml:centerOf>
+    </eop:Footprint>
+  </gml:target>
+  <gml:resultOf>
+    <eop:EarthObservationResult>
+      <eop:product>
+        <eop:ProductInformation>
+          <eop:referenceSystemIdentifier codeSpace="EPSG">epsg:4326</eop:referenceSystemIdentifier>
+          <eop:fileName>12786_SGF_001.zip</eop:fileName>
+          <eop:version>0001</eop:version>
+        </eop:ProductInformation>
+      </eop:product>
+    </eop:EarthObservationResult>
+  </gml:resultOf>
+</eop:EarthObservation>
