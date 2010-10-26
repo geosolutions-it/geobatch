@@ -54,7 +54,19 @@
     		<value>NURCWPSOutput2WMCGeneratorService</value>
     	</property>	
 	</bean>
-	
+
+	<bean id="WMCGeneratorService" class="it.geosolutions.geobatch.nurc.sem.wmc.WMCGeneratorService">
+		<property  name="id">
+    		<value>WMCGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>WMCGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>WMCGeneratorService</value>
+    	</property>	
+	</bean>
+		
 	<bean id="NURCSEMActionsAliasRegistrar" class="it.geosolutions.geobatch.nurc.sem.NURCSEMActionsAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>

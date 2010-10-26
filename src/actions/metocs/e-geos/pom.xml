@@ -21,7 +21,7 @@
     <!--     Module Description                                      -->
     <!-- =========================================================== -->
 		<groupId>it.geosolutions</groupId>
-		<artifactId>gb-action-e-geos</artifactId>
+		<artifactId>gb-action-e-geos-metocs</artifactId>
 		<packaging>jar</packaging>
 		<name>GeoBatch action: E-GEOS SAR Metocs</name>
 		<url>http://mvn.geo-solutions.it/maven_reports/ie/flowmanagers/</url>

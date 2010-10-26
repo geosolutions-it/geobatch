@@ -23,7 +23,7 @@
 			<dataTransferMethod>DIRECT</dataTransferMethod>
 			<geoserverPWD>geoserver</geoserverPWD>
 			<geoserverUID>admin</geoserverUID>
-			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<geoserverURL>http://demo.geo-solutions.it/geoserver-nd</geoserverURL>
 			<wmsPath>/</wmsPath>
 			<defaultNamespace>nurc</defaultNamespace>
 			<defaultStyle>raster</defaultStyle>
@@ -41,7 +41,7 @@
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
 			<geoserverPWD>geoserver</geoserverPWD>
 			<geoserverUID>admin</geoserverUID>
-			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<geoserverURL>http://demo.geo-solutions.it/geoserver-nd</geoserverURL>
 			<wmsPath>/</wmsPath>
 			<defaultNamespace>nurc</defaultNamespace>
 			<defaultStyle>raster</defaultStyle>
@@ -57,10 +57,10 @@
 		
 		<WMCActionConfiguration>
 			<workingDirectory>wmcflowworkingdir</workingDirectory>
-			<!-- outputDirectory>[OPTIONAL]requires the full path</outputDirectory -->
+			<outputDirectory>/home/tomcat/tomcat-nd/work/wmc</outputDirectory>
 			<crs>EPSG:4326</crs>
 			<boundingBox>-180.0,-90.0,180.0,90.0</boundingBox>
-			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<geoserverURL>http://demo.geo-solutions.it/geoserver-nd</geoserverURL>
 			<width>800</width>
 			<height>600</height>
 			<!-- baseLayerId>bluemarble</baseLayerId>

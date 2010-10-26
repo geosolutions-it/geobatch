@@ -30,12 +30,12 @@ import javax.script.SimpleScriptContext;
 /**
  * ScriptingAction Class definition ...
  **/
-class GAction extends ScriptingAction implements Action<FileSystemMonitorEvent> {
+class GroovyAction extends ScriptingAction implements Action<FileSystemMonitorEvent> {
 
     /**
      * Default Logger
      */
-    private final static Logger LOGGER = Logger.getLogger(GAction.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(GroovyAction.class.toString());
 
     private ScriptEngineManager factory = null;
 
@@ -47,7 +47,7 @@ class GAction extends ScriptingAction implements Action<FileSystemMonitorEvent> 
      * @param configuration
      * @throws IOException
      */
-    public GAction(ScriptingConfiguration configuration) throws IOException {
+    public GroovyAction(ScriptingConfiguration configuration) throws IOException {
         super(configuration);
         factory = new ScriptEngineManager();
         engine = factory.getEngineByName(configuration.getLanguage());

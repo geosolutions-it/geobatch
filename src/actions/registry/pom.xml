@@ -23,12 +23,12 @@
     <!--     Module Description                                      -->
     <!-- =========================================================== -->
     <groupId>it.geosolutions</groupId>
-    <artifactId>gb-action-egeos-parent</artifactId>
+    <artifactId>gb-action-registry-parent</artifactId>
     <packaging>pom</packaging>
 
-    <name>GeoBatch action: E-GEOS parent</name>
+    <name>GeoBatch action: Registry parent</name>
     <description>
-        GeoSolutions GeoBatch base module for actions that configure E-GEOS in Buddata
+        GeoSolutions GeoBatch base module for actions that configure Buddata Registry
     </description>
 
     <licenses>

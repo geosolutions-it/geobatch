@@ -487,14 +487,18 @@
             </build>
         </profile>
         
-        <!-- E-GEOS ============================================================-->
+        <!-- E-GEOS::EMSA ============================================================-->
         <profile>
-            <id>e-geos</id>
+            <id>emsa</id>
 
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-action-e-geos</artifactId>
+                    <artifactId>gb-action-e-geos-metocs</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>it.geosolutions</groupId>
+                    <artifactId>gb-action-emsa-actions</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -504,14 +508,24 @@
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>unpack_e-geos</id>
+                                <id>unpack_emsa</id>
                                 <phase>package</phase>
                                 <goals><goal>unpack</goal></goals>
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-action-e-geos</artifactId>
+                                            <artifactId>gb-action-e-geos-metocs</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>flowdata</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-action-emsa-actions</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>

@@ -293,9 +293,11 @@
         </profile>
 
         <profile>
-            <id>egeos</id>
+            <id>emsa</id>
             <modules>
-                <module>egeos</module>
+                <module>metocs</module>
+                <module>scripting</module>
+                <module>emsa</module>
             </modules>
         </profile>
 

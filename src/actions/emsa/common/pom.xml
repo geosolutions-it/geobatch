@@ -1,19 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =======================================================================    
+        Maven Project Configuration File
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+        GeoSolutions GeoBach Project
+            http://www.geo-solutions.it/trac/IngestionEngine
+
+        Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $
+======================================================================= -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>it.geosolutions</groupId>
-        <artifactId>gb-action-egeos-parent</artifactId>
+        <artifactId>gb-action-emsa-parent</artifactId>
         <version>0.9-SNAPSHOT</version>
     </parent>
 
     <groupId>it.geosolutions</groupId>
-    <artifactId>gb-action-egeos-common</artifactId>
+    <artifactId>gb-action-emsa-common</artifactId>
     <packaging>jar</packaging>
 
-    <name>GeoBatch action: E-GEOS Common</name>
+    <name>GeoBatch action: EMSA :: Common Library</name>
 
     <url>http://maven.apache.org</url>
 
@@ -85,16 +95,6 @@
             <groupId>org.geotools.jdbc</groupId>
             <artifactId>gt-jdbc-postgis</artifactId>
             <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>be.kzen.ergorr</groupId>
-            <artifactId>ErgoRR-jaxb</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>be.kzen.ergorr</groupId>
-            <artifactId>ErgoRR-client</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

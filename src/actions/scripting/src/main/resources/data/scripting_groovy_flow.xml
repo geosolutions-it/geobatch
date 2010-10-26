@@ -32,7 +32,7 @@
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.tif.*</regex>
+			<regex>.*\.nc.*</regex>
 			<id>r1</id>
 			<description>description</description>
 			<name>test</name>
@@ -49,7 +49,7 @@
 			<serviceID>scriptingService</serviceID>
 
             <language>groovy</language>
-            <scriptFile>/tmp/test.groovy</scriptFile>
+            <scriptFile>G:/tmp/TestAction.groovy</scriptFile>
 
 		    <properties>
 				 <entry>
