@@ -34,6 +34,18 @@
             <artifactId>gb-action-emsa-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-scripting</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-splitting</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         
         <dependency>
             <groupId>log4j</groupId>

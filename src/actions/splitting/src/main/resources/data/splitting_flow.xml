@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>splitting_flow</id>
+	<name>Test splitting flow</name>
+	<description>A test flow for splitting actions</description>
+
+	<workingDirectory>splitting_working_dir</workingDirectory>
+	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>splitting_working_dir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+
+    <EventConsumerConfiguration>
+		<id>splitting_test</id>
+		<name>TestSplittingScript</name>
+		<description>Test splitting script</description>
+
+		<listenerId>SplitConsumerLogger0</listenerId>
+        <listenerId>SplitCumulator0</listenerId>
+        
+		<workingDirectory>splitting_working_dir</workingDirectory>
+		<performBackup>false</performBackup>
+
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\..*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+
+		<SplittingConfiguration>
+			<id>splitGroovyTest</id>
+			<description>Split test action</description>
+			<name>Split test action</name>
+			
+			<listenerId>SplitActionLogger0</listenerId>
+			<listenerId>SplitActionStatus0</listenerId>
+						
+			<serviceID>splittingService</serviceID>
+
+		    <serviceIDs>
+				 <entry>
+				    <string>key0</string>
+				  </entry>
+				  <entry>
+				    <string>key1</string>
+				  </entry>
+			</serviceIDs>
+			
+		</SplittingConfiguration>
+		
+	</EventConsumerConfiguration>
+
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>SplitActionStatus0</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>SplitActionLogger0</id>
+
+            <loggerName>SplitActionLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>SplitConsumerLogger0</id>
+
+            <loggerName>SplitConsumerLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>SplitCumulator0</id>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+    
+</FlowConfiguration>

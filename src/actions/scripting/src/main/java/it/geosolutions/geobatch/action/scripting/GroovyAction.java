@@ -30,16 +30,16 @@ import javax.script.SimpleScriptContext;
 /**
  * ScriptingAction Class definition ...
  **/
-class GroovyAction extends ScriptingAction implements Action<FileSystemMonitorEvent> {
+public class GroovyAction extends ScriptingAction implements Action<FileSystemMonitorEvent> {
 
     /**
      * Default Logger
      */
     private final static Logger LOGGER = Logger.getLogger(GroovyAction.class.toString());
 
-    private ScriptEngineManager factory = null;
+    protected ScriptEngineManager factory = null;
 
-    private ScriptEngine engine = null;
+    protected ScriptEngine engine = null;
 
     /**
      * Constructor.

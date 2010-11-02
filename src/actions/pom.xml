@@ -288,6 +288,7 @@
                 <module>shapefile</module>
                 <module>gb-task-executor</module>
                 <module>scripting</module>
+                <module>splitting</module>
                 <module>metocs</module>
             </modules>
         </profile>
@@ -297,6 +298,7 @@
             <modules>
                 <module>metocs</module>
                 <module>scripting</module>
+                <module>splitting</module>
                 <module>emsa</module>
             </modules>
         </profile>
@@ -339,6 +341,18 @@
             </activation>
             <modules>
                 <module>scripting</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>splitting</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>splitting</module>
             </modules>
         </profile>
 
