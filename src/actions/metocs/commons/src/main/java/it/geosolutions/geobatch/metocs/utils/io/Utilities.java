@@ -157,10 +157,10 @@ public class Utilities {
         } else {
             nan = new Category(Vocabulary.formatInternational(VocabularyKeys.NODATA),
                     new Color[] { new Color(0, 0, 0, 0) }, NumberRange.create(0, 0), NumberRange
-                            .create(inNoData, inNoData));
+                            .create(inNoData == 0 ? -0.000001 : inNoData, inNoData == 0 ? -0.000001 : inNoData));
             values = new Category("values", new Color[] { new Color(255, 0, 0, 0) }, NumberRange
-                    .create(1, 255), NumberRange.create(inNoData + Math.abs(inNoData) * 0.1,
-                    inNoData + Math.abs(inNoData) * 10));
+                    .create(1, 255), NumberRange.create(inNoData + Math.abs(inNoData == 0 ? -0.000001 : inNoData) * 0.1,
+                    inNoData + Math.abs(inNoData == 0 ? -0.000001 : inNoData) * 10));
 
         }
 

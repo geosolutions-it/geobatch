@@ -22,35 +22,30 @@
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
-import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.base.METOCSBaseConfiguratorAction;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
-import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
-import it.geosolutions.geobatch.utils.IOUtils;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
-import org.geotools.geometry.GeneralEnvelope;
 
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
@@ -73,6 +68,18 @@ public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction {
     public final String NAV_LON = "nav_lon";
 
     public final String NAV_LAT = "nav_lat";
+
+    private String depthName;
+
+    private Array timeData;
+
+    private DataType timeDataType;
+
+    private DataType depthDataType;
+
+    private Variable depthOriginalVar;
+
+    private int nDepths;
 
     protected INGVFileConfiguratorAction(MetocActionConfiguration configuration) throws IOException {
         super(configuration);
@@ -103,7 +110,7 @@ public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction {
         // input VARIABLES
         final Variable timeOriginalVar = ncGridFile.findVariable(timeName);
         final Array timeOriginalData = timeOriginalVar.read();
-        final DataType timeDataType = timeOriginalVar.getDataType();
+        timeDataType = timeOriginalVar.getDataType();
 
         final Variable navLat = ncGridFile.findVariable(NAV_LAT);
         final DataType navLatDataType = navLat.getDataType();
@@ -125,14 +132,12 @@ public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction {
         //
         // //
         Array depthOriginalData = null;
-        DataType depthDataType = null;
-        int nDepths = 0;
-        Array depthDestData = null;
-        @SuppressWarnings("unused")
+        depthDataType = null;
+        nDepths = 0;
         Dimension depthDim = null;
-        String depthName = "depth";
+        depthName = "depth";
 
-        Variable depthOriginalVar = null;
+        depthOriginalVar = null;
         int dName = 0;
         while (depthOriginalVar == null) {
             if (dName == depthNames.length)
@@ -147,32 +152,172 @@ public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction {
             hasDepth = true;
         }
 
-        double[] bbox = METOCSActionsIOUtils.computeExtrema(latOriginalData, lonOriginalData, yDim,
-                xDim);
+        // ////////////////////////////////////////////////////////////////////
+        //
+        // Composing output NetCDF-CF file...
+        //
+        // ////////////////////////////////////////////////////////////////////
 
         // building Envelope
-        final GeneralEnvelope envelope = new GeneralEnvelope(METOCSActionsIOUtils.WGS_84);
-        envelope.setRange(0, bbox[0], bbox[2]);
-        envelope.setRange(1, bbox[1], bbox[3]);
+        buildEnvelope(xDim, yDim, lonOriginalData, latOriginalData);
 
         // ////
         // ... create the output file data structure
         // ////
+        createOutputFile(outDir, inputFileName);
+
+        // copying NetCDF input file global attributes
+        // copyNCGlobalAttrs();
+
+        // Grabbing the Variables Dictionary
+        getMetocsDictionary();
+
+        // finding specific model variables
+        fillVariablesMaps();
+
+        // defining the file header and structure
+        double noData = definingOutputVariables(hasDepth, nLat, nLon, nTimes, nDepths, depthName);
+
+        // time Variable data
+        final String timeOrigin = timeOriginalVar.findAttribute("time_origin").getStringValue()
+                .trim().toLowerCase();
+
+        final SimpleDateFormat toSdf = findTimeOriginPattern(timeOrigin);
+        toSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+
+        final Date timeOriginDate = toSdf.parse(timeOrigin);
+        int TAU = normalizingTimes(timeOriginalData, timeOriginalDim, timeOriginDate);
+
+        // Setting up global Attributes ...
+        settingNCGlobalAttributes(noData, timeOriginDate, TAU);
+
+        // writing bin data ...
+        writingDataSets(xDim, yDim, depthDim, timeOriginalDim, hasDepth, lonOriginalData,
+                latOriginalData, depthOriginalData, noData, timeData, navLatDataType,
+                navLonDataType);
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Utility and conversion specific methods implementations...
+    //
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected int normalizingTimes(Array timeOriginalData, Dimension timeDim, Date timeOriginDate)
+            throws ParseException, NumberFormatException {
+        final Calendar cal = new GregorianCalendar(1970, 00, 01);
+        cal.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+
+        int nTimes = timeDim.getLength();
+        timeData = NetCDFConverterUtilities.getArray(nTimes, timeDataType);
+        int TAU = 0;
+        for (int t = 0; t < nTimes; t++) {
+            double seconds = 0;
+            if (timeDataType == DataType.FLOAT || timeDataType == DataType.DOUBLE) {
+                double originalSecs = timeOriginalData
+                        .getDouble(timeOriginalData.getIndex().set(t));
+                seconds = originalSecs + (timeOriginDate.getTime() / 1000) - (startTime / 1000);
+                if (t == 0) {
+                    TAU = (int) (originalSecs / 3600);
+                }
+            } else {
+                long originalSecs = timeOriginalData.getLong(timeOriginalData.getIndex().set(t));
+                seconds = originalSecs + (timeOriginDate.getTime() / 1000) - (startTime / 1000);
+                if (t == 0) {
+                    TAU = (int) (originalSecs / 3600);
+                }
+            }
+            timeData.setDouble(timeData.getIndex().set(t), seconds);
+        }
+
+        return TAU;
+    }
+
+    /**
+     * @param hasDepth
+     * @param nLat
+     * @param nLon
+     * @param nTimes
+     * @param nDepths
+     * @param depthName
+     * @return
+     */
+    protected double definingOutputVariables(boolean hasDepth, final int nLat, final int nLon,
+            final int nTimes, int nDepths, String depthName) {
+        final List<Dimension> outDimensions = METOCSActionsIOUtils
+                .createNetCDFCFGeodeticDimensions(ncFileOut, true, nTimes, hasDepth, nDepths,
+                        METOCSActionsIOUtils.DOWN, true, nLat, true, nLon);
+
+        double noData = Double.NaN;
+
+        // defining output variables
+        for (String varName : foundVariables.keySet()) {
+            boolean hasLocalDepth = NetCDFConverterUtilities.hasThisDimension(foundVariables
+                    .get(varName), depthName);
+            List<Dimension> localOutDimensions = new ArrayList<Dimension>();
+            if (hasLocalDepth)
+                localOutDimensions = outDimensions;
+            else if (hasDepth) {
+                for (Dimension dim : outDimensions) {
+                    if (!dim.getName().equals(METOCSActionsIOUtils.DEPTH_DIM))
+                        localOutDimensions.add(dim);
+                }
+            }
+
+            ncFileOut.addVariable(foundVariableBriefNames.get(varName), foundVariables.get(varName)
+                    .getDataType(), localOutDimensions);
+            // NetCDFConverterUtilities.setVariableAttributes(foundVariables.get(varName),
+            // ncFileOut, foundVariableBriefNames.get(varName), new String[]
+            // { "positions" });
+            ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "long_name",
+                    foundVariableLongNames.get(varName));
+            ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "units",
+                    foundVariableUoM.get(varName));
+
+            if (Double.isNaN(noData)) {
+                Attribute missingValue = foundVariables.get(varName).findAttribute("missing_value");
+                if (missingValue != null) {
+                    noData = missingValue.getNumericValue().doubleValue();
+                    ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName),
+                            "missing_value", noData);
+                }
+            }
+        }
+        return noData;
+    }
+
+    private static SimpleDateFormat findTimeOriginPattern(final String timeOrigin) {
+        final String[] patterns = new String[] { "yyyy-MM-dd HH:mm:ss", "yyyy-MMM-dd HH:mm:ss" };
+
+        SimpleDateFormat testSdf = null;
+        for (String pattern : patterns) {
+            try {
+                testSdf = new SimpleDateFormat(pattern, Locale.ENGLISH);
+                testSdf.parse(timeOrigin);
+
+                return testSdf;
+            } catch (Exception e) {
+                testSdf = null;
+            }
+        }
+
+        return testSdf;
+    }
+
+    /**
+     * @param outDir
+     * @param inputFileName
+     * @throws IOException
+     */
+    protected void createOutputFile(File outDir, String inputFileName) throws IOException {
         outputFile = new File(outDir, "lscv08_INGVMFS-Forecast-T" + new Date().getTime()
                 + FilenameUtils.getBaseName(inputFileName).replaceAll("-", "") + ".nc");
         ncFileOut = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath());
+    }
 
-        // NetCDFConverterUtilities.copyGlobalAttributes(ncFileOut,
-        // ncFileIn.getGlobalAttributes());
-
-        // Grabbing the Variables Dictionary
-        JAXBContext context = JAXBContext.newInstance(Metocs.class);
-        Unmarshaller um = context.createUnmarshaller();
-
-        File metocDictionaryFile = IOUtils.findLocation(configuration.getMetocDictionaryPath(),
-                new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-        Metocs metocDictionary = (Metocs) um.unmarshal(new FileReader(metocDictionaryFile));
-
+    @Override
+    protected void fillVariablesMaps() throws UnsupportedEncodingException {
         for (Object obj : ncGridFile.getVariables()) {
             final Variable var = (Variable) obj;
             final String varName = var.getName();
@@ -231,93 +376,32 @@ public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction {
                 }
             }
         }
+    }
 
-        // defining the file header and structure
-        final List<Dimension> outDimensions = METOCSActionsIOUtils
-                .createNetCDFCFGeodeticDimensions(ncFileOut, true, nTimes, hasDepth, nDepths,
-                        METOCSActionsIOUtils.DOWN, true, nLat, true, nLon);
-
-        double noData = Double.NaN;
-
-        // defining output variables
-        for (String varName : foundVariables.keySet()) {
-            boolean hasLocalDepth = NetCDFConverterUtilities.hasThisDimension(foundVariables
-                    .get(varName), depthName);
-            List<Dimension> localOutDimensions = new ArrayList<Dimension>();
-            if (hasLocalDepth)
-                localOutDimensions = outDimensions;
-            else if (hasDepth) {
-                for (Dimension dim : outDimensions) {
-                    if (!dim.getName().equals(METOCSActionsIOUtils.DEPTH_DIM))
-                        localOutDimensions.add(dim);
-                }
-            }
-
-            ncFileOut.addVariable(foundVariableBriefNames.get(varName), foundVariables.get(varName)
-                    .getDataType(), localOutDimensions);
-            // NetCDFConverterUtilities.setVariableAttributes(foundVariables.get(varName),
-            // ncFileOut, foundVariableBriefNames.get(varName), new String[]
-            // { "positions" });
-            ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "long_name",
-                    foundVariableLongNames.get(varName));
-            ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "units",
-                    foundVariableUoM.get(varName));
-
-            if (Double.isNaN(noData)) {
-                Attribute missingValue = foundVariables.get(varName).findAttribute("missing_value");
-                if (missingValue != null) {
-                    noData = missingValue.getNumericValue().doubleValue();
-                    ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName),
-                            "missing_value", noData);
-                }
-            }
-        }
-
-        // time Variable data
-        final SimpleDateFormat toSdf = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss", Locale.ENGLISH);
-        toSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-
-        final Date timeOriginDate = toSdf.parse(timeOriginalVar.findAttribute("time_origin")
-                .getStringValue().trim().toLowerCase());
-        int TAU = 0;
-
-        Array timeData = NetCDFConverterUtilities.getArray(nTimes, timeDataType);
-        for (int t = 0; t < nTimes; t++) {
-            double seconds = 0;
-            if (timeDataType == DataType.FLOAT || timeDataType == DataType.DOUBLE) {
-                double originalSecs = timeOriginalData
-                        .getDouble(timeOriginalData.getIndex().set(t));
-                seconds = originalSecs + (timeOriginDate.getTime() / 1000) - (startTime / 1000);
-                if (t == 0) {
-                    TAU = (int) (originalSecs / 3600);
-                }
-            } else {
-                long originalSecs = timeOriginalData.getLong(timeOriginalData.getIndex().set(t));
-                seconds = originalSecs + (timeOriginDate.getTime() / 1000) - (startTime / 1000);
-                if (t == 0) {
-                    TAU = (int) (originalSecs / 3600);
-                }
-            }
-            timeData.setDouble(timeData.getIndex().set(t), seconds);
-        }
-
-        // Setting up global Attributes ...
-        settingNCGlobalAttributes(noData, timeOriginDate, TAU);
-
-        // writing bin data ...
+    @Override
+    protected void writingDataSets(Dimension lonDim, Dimension latDim, Dimension depthDim,
+            Dimension timeDim, boolean hasDepth, Array lonOriginalData, Array latOriginalData,
+            Array depthOriginalData, double noData, Array timeOriginalData,
+            DataType navLatDataType, DataType navLonDataType) throws IOException,
+            InvalidRangeException {
         ncFileOut.create();
-
-        // writing time Variable data
-        ncFileOut.write(METOCSActionsIOUtils.TIME_DIM, timeData);
 
         // writing depth Variable data
         if (hasDepth) {
             depthDataType = depthOriginalVar.getDataType();
+            Array depthDestData = null;
             depthDestData = NetCDFConverterUtilities.getArray(nDepths, depthDataType);
             NetCDFConverterUtilities.setData1D(depthOriginalData, depthDestData, depthDataType,
                     nDepths, false);
             ncFileOut.write(METOCSActionsIOUtils.DEPTH_DIM, depthDestData);
         }
+
+        // writing time Variable data
+        ncFileOut.write(METOCSActionsIOUtils.TIME_DIM, timeOriginalData);
+
+        int nLon = lonDim.getLength();
+        int nLat = latDim.getLength();
+        int nTimes = timeDim.getLength();
 
         // writing lat Variable data
         Array lat1Data = NetCDFConverterUtilities.getArray(nLat, navLatDataType);
@@ -359,4 +443,5 @@ public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction {
             originalVarArray = null;
         }
     }
+
 }

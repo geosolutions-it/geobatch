@@ -18,6 +18,17 @@
     		<value>MERCATORGeneratorService</value>
     	</property>	
 	</bean>
+	<bean id="MERCATOR_INGVLike_GeneratorService" class="it.geosolutions.geobatch.nurc.sem.lscv08.MERCATOR_INGVLike_GeneratorService">
+		<property  name="id">
+    		<value>MERCATOR_INGVLike_GeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>MERCATOR_INGVLike_GeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>MERCATOR_INGVLike_GeneratorService</value>
+    	</property>	
+	</bean>
 
 	<bean id="NRLNCOMGeneratorService" class="it.geosolutions.geobatch.nurc.sem.lscv08.NRLNCOMGeneratorService">
 		<property  name="id">

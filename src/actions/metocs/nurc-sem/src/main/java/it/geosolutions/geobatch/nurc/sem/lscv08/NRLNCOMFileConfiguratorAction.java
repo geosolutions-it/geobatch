@@ -22,34 +22,28 @@
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
-import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.base.METOCSBaseConfiguratorAction;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
-import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
-import it.geosolutions.geobatch.utils.IOUtils;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
-import org.geotools.geometry.GeneralEnvelope;
 
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
@@ -73,6 +67,8 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
         NCOMcalendar.setTimeZone(TimeZone.getTimeZone("GMT+0"));
         NCOMstartTime = NCOMcalendar.getTimeInMillis();
     }
+
+    private Array time1Data;
 
     protected NRLNCOMFileConfiguratorAction(MetocActionConfiguration configuration)
             throws IOException {
@@ -99,6 +95,11 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
 
         final Dimension time_dim = ncGridFile.findDimension("time");
 
+        int nLat = lat_dim.getLength();
+        int nLon = lon_dim.getLength();
+        int nTimes = (time_dim != null ? time_dim.getLength() : 0);
+        int nDepths = (depth_dim != null ? depth_dim.getLength() : 0);
+
         // input VARIABLES
         final Variable lonOriginalVar = ncGridFile.findVariable("lon");
         @SuppressWarnings("unused")
@@ -116,6 +117,7 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
             hasDepth = true;
             depthOriginalVar = ncGridFile.findVariable("depth");
             depthDataType = depthOriginalVar.getDataType();
+            nDepths = depth_dim.getLength();
         }
 
         final Variable timeOriginalVar = ncGridFile.findVariable("time");
@@ -127,17 +129,148 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
         final Array depthOriginalData = hasDepth ? depthOriginalVar.read() : null;
         final Array timeOriginalData = timeOriginalVar.read();
 
-        double[] bbox = METOCSActionsIOUtils.computeExtrema(latOriginalData, lonOriginalData,
-                lat_dim, lon_dim);
-
-        // building Envelope
-        final GeneralEnvelope envelope = new GeneralEnvelope(METOCSActionsIOUtils.WGS_84);
-        envelope.setRange(0, bbox[0], bbox[2]);
-        envelope.setRange(1, bbox[1], bbox[3]);
+        // building envelope
+        buildEnvelope(lon_dim, lat_dim, lonOriginalData, latOriginalData);
 
         // ////
         // ... create the output file data structure
         // ////
+        createOutputFile(outDir, inputFileName);
+
+        // copying NetCDF input file global attributes
+        // copyNCGlobalAttrs();
+
+        // Grabbing the Variables Dictionary
+        getMetocsDictionary();
+
+        // finding specific model variables
+        fillVariablesMaps();
+
+        // defining the file header and structure
+        double noData = definingOutputVariables(hasDepth, nLat, nLon, nTimes, nDepths,
+                METOCSActionsIOUtils.DOWN);
+
+        // time Variable data
+        final SimpleDateFormat toSdf = new SimpleDateFormat("yyyyMMdd");
+        toSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+        final Date timeOriginDate = toSdf.parse(inputFileName.substring(inputFileName
+                .lastIndexOf("_") + 1));
+
+        int TAU = normalizingTimes(timeOriginalData, time_dim, timeOriginDate);
+
+        // Setting up global Attributes ...
+        settingNCGlobalAttributes(noData, timeOriginDate, TAU);
+
+        // writing bin data ...
+        writingDataSets(lon_dim, lat_dim, depth_dim, time_dim, hasDepth, lonOriginalData,
+                latOriginalData, depthOriginalData, noData, time1Data, latDataType, lonDataType);
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Utility and conversion specific methods implementations...
+    //
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    protected int normalizingTimes(final Array timeOriginalData, final Dimension timeDim,
+            final Date timeOriginDate) throws ParseException, NumberFormatException {
+        time1Data = NetCDFConverterUtilities.getArray(timeDim.getLength(), DataType.DOUBLE);
+        int TAU = 0;
+        for (int t = 0; t < timeDim.getLength(); t++) {
+            // hours since 2000-01-01 00:00 UTC
+            long timeValue = timeOriginalData.getLong(timeOriginalData.getIndex().set(t));
+            if (t == 0 && timeDim.getLength() > 1) {
+                TAU = (int) (timeOriginalData.getLong(timeOriginalData.getIndex().set(t + 1)) - timeValue);
+            } else if (t == 0) {
+                TAU = (int) ((timeValue * 3600 * 1000) + NCOMstartTime - timeOriginDate.getTime());
+            }
+            // adding time offset
+            timeValue = (NCOMstartTime - startTime) + (timeValue * 3600000);
+            // converting back to seconds and storing to data
+            time1Data.setLong(time1Data.getIndex().set(t), timeValue / 1000);
+        }
+
+        return TAU;
+    }
+
+    /**
+     * @param lon_dim
+     * @param lat_dim
+     * @param depth_dim
+     * @param time_dim
+     * @param hasDepth
+     * @param lonOriginalData
+     * @param latOriginalData
+     * @param depthOriginalData
+     * @param noData
+     * @param timeOriginalData
+     * @throws IOException
+     * @throws InvalidRangeException
+     */
+    protected void writingDataSets(Dimension lonDim, Dimension latDim, Dimension depthDim,
+            Dimension timeDim, boolean hasDepth, Array lonOriginalData, Array latOriginalData,
+            Array depthOriginalData, double noData, Array timeOriginalData, DataType latDataType,
+            DataType lonDataType) throws IOException, InvalidRangeException {
+        ncFileOut.create();
+
+        // writing time Variable data
+        ncFileOut.write(METOCSActionsIOUtils.TIME_DIM, timeOriginalData);
+
+        // writing depth Variable data
+        if (hasDepth)
+            ncFileOut.write(METOCSActionsIOUtils.DEPTH_DIM, depthOriginalData);
+
+        // writing lat Variable data
+        ncFileOut.write(METOCSActionsIOUtils.LAT_DIM, latOriginalData);
+
+        // writing lon Variable data
+        ncFileOut.write(METOCSActionsIOUtils.LON_DIM, lonOriginalData);
+
+        for (String varName : foundVariables.keySet()) {
+            Variable var = foundVariables.get(varName);
+            double offset = 0.0;
+            double scale = 1.0;
+
+            Attribute offsetAtt = var.findAttribute("add_offset");
+            Attribute scaleAtt = var.findAttribute("scale_factor");
+
+            offset = (offsetAtt != null ? offsetAtt.getNumericValue().doubleValue() : offset);
+            scale = (scaleAtt != null ? scaleAtt.getNumericValue().doubleValue() : scale);
+
+            Array originalVarArray = var.read();
+            Array destArray = NetCDFConverterUtilities.getArray(originalVarArray.getShape(),
+                    DataType.DOUBLE);
+
+            for (int t = 0; t < timeDim.getLength(); t++)
+                for (int z = 0; z < (hasDepth
+                        && NetCDFConverterUtilities.hasThisDimension(var,
+                                METOCSActionsIOUtils.DEPTH_DIM) ? depthDim.getLength() : 1); z++)
+                    for (int y = 0; y < latDim.getLength(); y++)
+                        for (int x = 0; x < lonDim.getLength(); x++) {
+                            if (!hasDepth
+                                    || !NetCDFConverterUtilities.hasThisDimension(var,
+                                            METOCSActionsIOUtils.DEPTH_DIM)) {
+                                double originalValue = originalVarArray.getDouble(originalVarArray
+                                        .getIndex().set(t, y, x));
+                                destArray.setDouble(destArray.getIndex().set(t, y, x),
+                                        (originalValue != noData ? (originalValue * scale) + offset
+                                                : noData));
+                            } else {
+                                double originalValue = originalVarArray.getDouble(originalVarArray
+                                        .getIndex().set(t, z, y, x));
+                                destArray.setDouble(destArray.getIndex().set(t, z, y, x),
+                                        (originalValue != noData ? (originalValue * scale) + offset
+                                                : noData));
+                            }
+                        }
+
+            ncFileOut.write(foundVariableBriefNames.get(varName), destArray);
+        }
+    }
+
+    @Override
+    protected void createOutputFile(File outDir, String inputFileName) throws IOException {
         outputFile = new File(outDir, "lscv08_NCOM"
                 + (inputFileName.contains("nest") ? "nest"
                         + inputFileName.substring(inputFileName.indexOf("nest") + "nest".length(),
@@ -145,18 +278,10 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
                 + "-Forecast-T" + new Date().getTime()
                 + FilenameUtils.getBaseName(inputFileName).replaceAll("-", "") + ".nc");
         ncFileOut = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath());
+    }
 
-        // NetCDFConverterUtilities.copyGlobalAttributes(ncFileOut,
-        // ncFileIn.getGlobalAttributes());
-
-        // Grabbing the Variables Dictionary
-        JAXBContext context = JAXBContext.newInstance(Metocs.class);
-        Unmarshaller um = context.createUnmarshaller();
-
-        File metocDictionaryFile = IOUtils.findLocation(configuration.getMetocDictionaryPath(),
-                new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-        Metocs metocDictionary = (Metocs) um.unmarshal(new FileReader(metocDictionaryFile));
-
+    @Override
+    protected void fillVariablesMaps() throws UnsupportedEncodingException {
         for (Object obj : ncGridFile.getVariables()) {
             final Variable var = (Variable) obj;
             final String varName = var.getName();
@@ -198,21 +323,36 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
                 }
             }
         }
+    }
 
-        // defining the file header and structure
+    @Override
+    protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon, int nTimes,
+            int nDepths, String depthName) {
         final List<Dimension> outDimensions = METOCSActionsIOUtils
-                .createNetCDFCFGeodeticDimensions(ncFileOut, true, time_dim.getLength(), hasDepth,
-                        hasDepth ? depth_dim.getLength() : 0, METOCSActionsIOUtils.DOWN, true,
-                        lat_dim.getLength(), true, lon_dim.getLength());
+                .createNetCDFCFGeodeticDimensions(ncFileOut, true, nTimes, hasDepth,
+                        hasDepth ? nDepths : 0, depthName, true, nLat, true, nLon);
 
         double noData = Double.NaN;
 
         // defining output variable
         for (String varName : foundVariables.keySet()) {
+            boolean hasLocalDepth = hasDepth
+                    && NetCDFConverterUtilities.hasThisDimension(foundVariables.get(varName),
+                            METOCSActionsIOUtils.DEPTH_DIM);
+
+            List<Dimension> localDimensions = new ArrayList<Dimension>(outDimensions);
+            if (hasDepth && !hasLocalDepth) {
+                for (Dimension dim : localDimensions) {
+                    if (dim.getName().equals(METOCSActionsIOUtils.DEPTH_DIM)) {
+                        localDimensions.remove(dim);
+                        break;
+                    }
+                }
+            }
             // SIMONE: replaced foundVariables.get(varName).getDataType()
             // with DataType.DOUBLE
             ncFileOut.addVariable(foundVariableBriefNames.get(varName), DataType.DOUBLE,
-                    outDimensions);
+                    localDimensions);
             // NetCDFConverterUtilities.setVariableAttributes(foundVariables.get(varName),
             // ncFileOut, foundVariableBriefNames.get(varName), new String[]
             // { "positions" });
@@ -231,83 +371,7 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
             }
         }
 
-        // time Variable data
-        final SimpleDateFormat toSdf = new SimpleDateFormat("yyyyMMdd");
-        toSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-
-        final Date timeOriginDate = toSdf.parse(inputFileName.substring(inputFileName
-                .lastIndexOf("_") + 1));
-        int TAU = 0;
-
-        Array time1Data = NetCDFConverterUtilities.getArray(time_dim.getLength(), DataType.DOUBLE);
-        for (int t = 0; t < time_dim.getLength(); t++) {
-            // hours since 2000-01-01 00:00 UTC
-            long timeValue = timeOriginalData.getLong(timeOriginalData.getIndex().set(t));
-            if (t == 0 && time_dim.getLength() > 1) {
-                TAU = (int) (timeOriginalData.getLong(timeOriginalData.getIndex().set(t + 1)) - timeValue);
-            } else if (t == 0) {
-                TAU = (int) ((timeValue * 3600 * 1000) + NCOMstartTime - timeOriginDate.getTime());
-            }
-            // adding time offset
-            timeValue = (NCOMstartTime - startTime) + (timeValue * 3600000);
-            // converting back to seconds and storing to data
-            time1Data.setLong(time1Data.getIndex().set(t), timeValue / 1000);
-        }
-
-        // Setting up global Attributes ...
-        settingNCGlobalAttributes(noData, timeOriginDate, TAU);
-
-        // writing bin data ...
-        ncFileOut.create();
-
-        // writing time Variable data
-        ncFileOut.write(METOCSActionsIOUtils.TIME_DIM, time1Data);
-
-        // writing depth Variable data
-        if (hasDepth)
-            ncFileOut.write(METOCSActionsIOUtils.DEPTH_DIM, depthOriginalData);
-
-        // writing lat Variable data
-        ncFileOut.write(METOCSActionsIOUtils.LAT_DIM, latOriginalData);
-
-        // writing lon Variable data
-        ncFileOut.write(METOCSActionsIOUtils.LON_DIM, lonOriginalData);
-
-        for (String varName : foundVariables.keySet()) {
-            Variable var = foundVariables.get(varName);
-            double offset = 0.0;
-            double scale = 1.0;
-
-            Attribute offsetAtt = var.findAttribute("add_offset");
-            Attribute scaleAtt = var.findAttribute("scale_factor");
-
-            offset = (offsetAtt != null ? offsetAtt.getNumericValue().doubleValue() : offset);
-            scale = (scaleAtt != null ? scaleAtt.getNumericValue().doubleValue() : scale);
-
-            Array originalVarArray = var.read();
-            Array destArray = NetCDFConverterUtilities.getArray(originalVarArray.getShape(),
-                    DataType.DOUBLE);
-
-            for (int t = 0; t < time_dim.getLength(); t++)
-                for (int z = 0; z < (hasDepth ? depth_dim.getLength() : 1); z++)
-                    for (int y = 0; y < lat_dim.getLength(); y++)
-                        for (int x = 0; x < lon_dim.getLength(); x++) {
-                            if (!hasDepth) {
-                                double originalValue = originalVarArray.getDouble(originalVarArray
-                                        .getIndex().set(t, y, x));
-                                destArray.setDouble(destArray.getIndex().set(t, y, x),
-                                        (originalValue != noData ? (originalValue * scale) + offset
-                                                : noData));
-                            } else {
-                                double originalValue = originalVarArray.getDouble(originalVarArray
-                                        .getIndex().set(t, z, y, x));
-                                destArray.setDouble(destArray.getIndex().set(t, z, y, x),
-                                        (originalValue != noData ? (originalValue * scale) + offset
-                                                : noData));
-                            }
-                        }
-
-            ncFileOut.write(foundVariableBriefNames.get(varName), destArray);
-        }
+        return noData;
     }
+
 }

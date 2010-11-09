@@ -28,12 +28,18 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.MetocConfigurationAction;
+import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
+import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
 import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,11 +50,17 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 
 import javax.media.jai.JAI;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
+import org.geotools.geometry.GeneralEnvelope;
 
+import ucar.ma2.Array;
+import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
+import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
@@ -69,6 +81,8 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
 
     protected NetcdfFileWriteable ncFileOut = null;
 
+    protected NetcdfFile ncFileIn = null;
+
     protected File outputFile = null;
 
     protected Map<String, Variable> foundVariables = new HashMap<String, Variable>();
@@ -78,6 +92,10 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
     protected Map<String, String> foundVariableBriefNames = new HashMap<String, String>();
 
     protected Map<String, String> foundVariableUoM = new HashMap<String, String>();
+
+    protected GeneralEnvelope envelope = null;
+
+    protected Metocs metocDictionary;
 
     /**
 	 * 
@@ -217,6 +235,12 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
         }
     }
 
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Utility and conversion specific methods implementations...
+    //
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * @param noData
      * @param fromSdf
@@ -230,6 +254,47 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
         ncFileOut.addGlobalAttribute("base_time", fromSdf.format(timeOriginDate));
         ncFileOut.addGlobalAttribute("tau", TAU);
         ncFileOut.addGlobalAttribute("nodata", noData);
+    }
+
+    /**
+     * @param lon_dim
+     * @param lat_dim
+     * @param lonOriginalData
+     * @param latOriginalData
+     * @throws IndexOutOfBoundsException
+     */
+    protected void buildEnvelope(final Dimension lon_dim, final Dimension lat_dim,
+            final Array lonOriginalData, final Array latOriginalData)
+            throws IndexOutOfBoundsException {
+        double[] bbox = METOCSActionsIOUtils.computeExtrema(latOriginalData, lonOriginalData,
+                lat_dim, lon_dim);
+
+        // building Envelope
+        envelope = new GeneralEnvelope(METOCSActionsIOUtils.WGS_84);
+        envelope.setRange(0, bbox[0], bbox[2]);
+        envelope.setRange(1, bbox[1], bbox[3]);
+    }
+
+    /**
+     * @return
+     * @throws JAXBException
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    protected void getMetocsDictionary() throws JAXBException, IOException, FileNotFoundException {
+        JAXBContext context = JAXBContext.newInstance(Metocs.class);
+        Unmarshaller um = context.createUnmarshaller();
+
+        File metocDictionaryFile = IOUtils.findLocation(configuration.getMetocDictionaryPath(),
+                new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+        metocDictionary = (Metocs) um.unmarshal(new FileReader(metocDictionaryFile));
+    }
+
+    /**
+     * 
+     */
+    protected void copyNCGlobalAttrs() {
+        NetCDFConverterUtilities.copyGlobalAttributes(ncFileOut, ncFileIn.getGlobalAttributes());
     }
 
     /**
@@ -252,4 +317,61 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
      */
     protected abstract File unzipMetocArchive(FileSystemMonitorEvent event,
             final String fileSuffix, final File outDir, final File tempFile) throws IOException;
+
+    /**
+     * 
+     * @param outDir
+     * @param inputFileName
+     * @throws IOException
+     */
+    protected abstract void createOutputFile(File outDir, String inputFileName) throws IOException;
+
+    /**
+     * 
+     * @throws UnsupportedEncodingException
+     */
+    protected abstract void fillVariablesMaps() throws UnsupportedEncodingException;
+
+    /**
+     * 
+     * @param hasDepth
+     * @param nLat
+     * @param nLon
+     * @param nTimes
+     * @param nDepths
+     * @param depthName
+     * @return
+     */
+    protected abstract double definingOutputVariables(boolean hasDepth, final int nLat,
+            final int nLon, final int nTimes, int nDepths, String depthName);
+
+    /**
+     * 
+     * @param TAU
+     * @return
+     * @throws ParseException
+     * @throws NumberFormatException
+     */
+    protected abstract int normalizingTimes(final Array timeOriginalData, final Dimension timeDim,
+            final Date timeOriginDate) throws ParseException, NumberFormatException;
+
+    /**
+     * @param lon_dim
+     * @param lat_dim
+     * @param depth_dim
+     * @param time_dim
+     * @param hasDepth
+     * @param lonOriginalData
+     * @param latOriginalData
+     * @param depthOriginalData
+     * @param noData
+     * @param timeOriginalData
+     * @throws IOException
+     * @throws InvalidRangeException
+     */
+    protected abstract void writingDataSets(final Dimension lon_dim, final Dimension lat_dim,
+            final Dimension depth_dim, final Dimension time_dim, boolean hasDepth,
+            final Array lonOriginalData, final Array latOriginalData,
+            final Array depthOriginalData, double noData, Array timeOriginalData,
+            DataType latDataType, DataType lonDataType) throws IOException, InvalidRangeException;
 }
