@@ -22,13 +22,13 @@
 package it.geosolutions.geobatch.action.splitting;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.geobatch.catalog.Service;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.global.CatalogHolder;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,39 +62,44 @@ public class SplittingAction extends BaseAction<FileSystemMonitorEvent> {
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
             }
-            FileSystemMonitorEvent event = events.remove();
 
-            // //
-            // data flow configuration and dataStore name must not be null.
-            // //
-            if (getConfiguration() == null) {
-                LOGGER.log(Level.SEVERE, "Configuration is null.");
-                throw new IllegalStateException("Configuration is null.");
-            }
+            Queue<FileSystemMonitorEvent> forwardingEvents = new LinkedList<FileSystemMonitorEvent>();
 
-            final String configId = getConfiguration().getName();
+            for (int i = 0; i < events.size(); i++) {
+                FileSystemMonitorEvent event = events.remove();
 
-            listenerForwarder.setTask("Processing event " + event);
-
-            // FORWARDING EVENTS
-            for (String flowId : configuration.getServiceIDs()) {
-                Service flow = CatalogHolder.getCatalog().getResource(flowId,
-                        Service.class);
-                if (flow != null) {
-                    //flow.postEvent(event);
-                } else {
-                    LOGGER.warning("Trying to forward event to flow " + flowId
-                            + " but it was unavailable!");
+                // //
+                // data flow configuration and dataStore name must not be null.
+                // //
+                if (getConfiguration() == null) {
+                    LOGGER.log(Level.SEVERE, "Configuration is null.");
+                    throw new IllegalStateException("Configuration is null.");
                 }
-            }
 
-            events.add(event);
+                // final String configId = getConfiguration().getName();
+
+                listenerForwarder.setTask("Processing event " + event);
+
+                // FORWARDING EVENTS
+                for (String flowId : configuration.getServiceIDs()) {
+                    FileBasedFlowManager flow = CatalogHolder.getCatalog().getResource(flowId,
+                            FileBasedFlowManager.class);
+                    if (flow != null) {
+                        flow.postEvent(event);
+                    } else {
+                        LOGGER.warning("Trying to forward event to flow " + flowId
+                                + " but it was unavailable!");
+                    }
+                }
+
+                forwardingEvents.add(event);
+            }
 
             listenerForwarder.completed();
-            return events;
+            return forwardingEvents;
         } catch (Exception t) {
             LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to log, we're
-                                                                  // rethrowing it
+            // rethrowing it
             listenerForwarder.failed(t);
             throw new ActionException(this, t.getMessage(), t);
         }

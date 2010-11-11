@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.global;
 
 import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.catalog.Service;
+import it.geosolutions.geobatch.catalog.dao.DAO;
 import it.geosolutions.geobatch.catalog.dao.file.xstream.XStreamCatalogDAO;
 import it.geosolutions.geobatch.catalog.dao.file.xstream.XStreamFlowConfigurationDAO;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
@@ -209,12 +210,13 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
                 // try to load the flow and add it to the catalog
                 final FileBasedFlowManager flow = new FileBasedFlowManager();
                 flow.setId(FilenameUtils.getBaseName(o.getName()));
-                flow.setDAO(new XStreamFlowConfigurationDAO(dataDir.getAbsolutePath(), alias));
+                DAO catalogLoader = new XStreamFlowConfigurationDAO(dataDir.getAbsolutePath(), alias);
+                flow.setDAO(catalogLoader);
                 flow.load();
 
                 // add to the catalog
                 catalog.add(flow);
-
+                
                 // loaded
                 if (LOGGER.isLoggable(Level.INFO))
                     LOGGER.info(new StringBuilder("Loaded flow from file ").append(

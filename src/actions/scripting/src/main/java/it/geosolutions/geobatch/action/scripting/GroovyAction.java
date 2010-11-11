@@ -76,7 +76,7 @@ public class GroovyAction extends ScriptingAction implements Action<FileSystemMo
                 throw new IllegalStateException("Configuration is null.");
             }
 
-            final String configId = getConfiguration().getName();
+            //final String configId = getConfiguration().getName();
 
             listenerForwarder.setTask("Processing event " + event);
 
@@ -91,6 +91,12 @@ public class GroovyAction extends ScriptingAction implements Action<FileSystemMo
             }
 
             File moduleDirectory = new File(moduleFolder);
+            try {
+                addFile(moduleDirectory);
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE,
+                        "Error, could not add URL to system classloader", e);
+            }
             String classpath = System.getProperty("java.class.path");
             File[] moduleFiles = moduleDirectory.listFiles();
             for (int i = 0; i < moduleFiles.length; i++) {

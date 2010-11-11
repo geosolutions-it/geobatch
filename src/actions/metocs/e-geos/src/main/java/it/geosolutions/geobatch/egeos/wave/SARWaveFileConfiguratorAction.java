@@ -22,15 +22,11 @@
 package it.geosolutions.geobatch.egeos.wave;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
-import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.base.METOCSBaseConfiguratorAction;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
-import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
-import it.geosolutions.geobatch.utils.IOUtils;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFUtilities;
 
@@ -38,8 +34,8 @@ import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,12 +44,9 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Level;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
-import org.geotools.geometry.GeneralEnvelope;
 
 import ucar.ma2.Array;
 import ucar.ma2.ArrayFloat;
@@ -71,6 +64,8 @@ import ucar.nc2.Variable;
  * 
  */
 public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction {
+
+    private Attribute referenceTime;
 
     protected SARWaveFileConfiguratorAction(MetocActionConfiguration configuration)
             throws IOException {
@@ -102,40 +97,144 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
         final Variable latOriginalVar = ncGridFile.findVariable("latitude");
         final DataType latDataType = latOriginalVar.getDataType();
 
-        final Variable maskOriginalVar = ncGridFile.findVariable("valid");
-        @SuppressWarnings("unused")
-        final DataType maskDataType = maskOriginalVar.getDataType();
-
         final Array lonOriginalData = lonOriginalVar.read();
         final Array latOriginalData = latOriginalVar.read();
-        final Array maskOriginalData = maskOriginalVar.read();
 
-        double[] bbox = METOCSActionsIOUtils.computeExtrema(latOriginalData, lonOriginalData,
-                az_size, ra_size);
-
-        // building Envelope
-        final GeneralEnvelope envelope = new GeneralEnvelope(METOCSActionsIOUtils.WGS_84);
-        envelope.setRange(0, bbox[0], bbox[2]);
-        envelope.setRange(1, bbox[1], bbox[3]);
+        // building envelope
+        buildEnvelope(ra_size, az_size, lonOriginalData, latOriginalData);
 
         // ////
         // ... create the output file data structure
         // ////
+        createOutputFile(outDir, inputFileName);
+
+        // copying NetCDF input file global attributes
+        // copyNCGlobalAttrs();
+
+        // Grabbing the Variables Dictionary
+        getMetocsDictionary();
+
+        // finding specific model variables
+        fillVariablesMaps();
+
+        // defining the file header and structure
+        double noData = definingOutputVariables(false, az_size.getLength(), ra_size.getLength(), 1,
+                0, METOCSActionsIOUtils.UP);
+
+        // normalizingTimes
+        // MERCATOR OCEAN MODEL Global Attributes
+        referenceTime = ncGridFile.findGlobalAttributeIgnoreCase("SOURCE_ACQUISITION_UTC_TIME");
+        // e.g. 20100902211637.870628
+        final SimpleDateFormat toSdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        toSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        final Date timeOriginDate = toSdf
+                .parse(referenceTime.getStringValue().trim().toLowerCase());
+
+        final int TAU = normalizingTimes(null, null, timeOriginDate);
+
+        // Setting up global Attributes ...
+        settingNCGlobalAttributes(noData, timeOriginDate, TAU);
+
+        // writing bin data ...
+        writingDataSets(ra_size, az_size, null, null, false, lonOriginalData, latOriginalData,
+                null, noData, null, latDataType, lonDataType);
+
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Utility and conversion specific methods implementations...
+    //
+    // ////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * 
+     * @param ncFileOut
+     * @param referenceTime
+     * @return
+     */
+    private static void setTime(NetcdfFileWriteable ncFileOut, final Attribute referenceTime) {
+        // e.g. 20100902211637.870628
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        long millisFromStartDate = 0;
+        if (referenceTime != null) {
+            Date startDate = null;
+            try {
+                startDate = sdf.parse(referenceTime.getStringValue().trim().toLowerCase());
+                long timeInMillis = startDate.getTime();
+
+                long ncMillis = Long.parseLong(referenceTime.getStringValue().substring(
+                        referenceTime.getStringValue().indexOf(".") + 1)) / 1000;
+
+                millisFromStartDate = (timeInMillis + ncMillis) - startTime;
+            } catch (ParseException e) {
+                throw new IllegalArgumentException("Unable to parse time origin");
+            }
+        }
+
+        // writing time variable data
+        ArrayFloat timeData = new ArrayFloat(new int[] { 1 });
+        Index timeIndex = timeData.getIndex();
+        timeData.setFloat(timeIndex.set(0), millisFromStartDate / 1000.0f);
+        try {
+            ncFileOut.write(METOCSActionsIOUtils.TIME_DIM, timeData);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvalidRangeException e) {
+            throw new IllegalArgumentException(
+                    "Unable to store time data to the output NetCDF file.");
+        }
+    }
+
+    @Override
+    protected void createOutputFile(File outDir, String inputFileName) throws IOException {
         outputFile = new File(outDir, "EGEOS-SARWave-T" + new Date().getTime()
                 + FilenameUtils.getBaseName(inputFileName).replaceAll("-", "") + ".nc");
         ncFileOut = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath());
+    }
 
-        // NetCDFConverterUtilities.copyGlobalAttributes(ncFileOut,
-        // ncFileIn.getGlobalAttributes());
+    @Override
+    protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon, int nTimes,
+            int nDepths, String depthName) {
+        /**
+         * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean
+         * hasTimeDim, final int tDimLength, final boolean hasZetaDim, final int zDimLength, final
+         * String zOrder, final boolean hasLatDim, final int latDimLength, final boolean hasLonDim,
+         * final int lonDimLength)
+         */
+        final List<Dimension> outDimensions = METOCSActionsIOUtils
+                .createNetCDFCFGeodeticDimensions(ncFileOut, true, 1, false, 0,
+                        METOCSActionsIOUtils.UP, true, nLat, true, nLon);
 
-        // Grabbing the Variables Dictionary
-        JAXBContext context = JAXBContext.newInstance(Metocs.class);
-        Unmarshaller um = context.createUnmarshaller();
+        // Adding Wave Partitions dimension
+        // outDimensions.add(1, ncFileOut.addDimension(n_partitions.getName(),
+        // n_partitions.getLength()));
 
-        File metocDictionaryFile = IOUtils.findLocation(configuration.getMetocDictionaryPath(),
-                new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-        Metocs metocDictionary = (Metocs) um.unmarshal(new FileReader(metocDictionaryFile));
+        double noData = Double.NaN;
 
+        // defining output variable
+        for (String varName : foundVariables.keySet()) {
+            // SIMONE: replaced foundVariables.get(varName).getDataType()
+            // with DataType.DOUBLE
+            ncFileOut.addVariable(foundVariableBriefNames.get(varName), foundVariables.get(varName)
+                    .getDataType(), outDimensions);
+            ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "long_name",
+                    foundVariableLongNames.get(varName));
+            ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "units",
+                    foundVariableUoM.get(varName));
+            ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName),
+                    NetCDFUtilities.DatasetAttribs.MISSING_VALUE, noData);
+        }
+
+        return noData;
+    }
+
+    @Override
+    protected void fillVariablesMaps() throws UnsupportedEncodingException {
         for (Object obj : ncGridFile.getVariables()) {
             final Variable var = (Variable) obj;
             final String varName = var.getName();
@@ -172,61 +271,37 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
                 }
             }
         }
+    }
 
-        // defining the file header and structure
-        /**
-         * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean
-         * hasTimeDim, final int tDimLength, final boolean hasZetaDim, final int zDimLength, final
-         * String zOrder, final boolean hasLatDim, final int latDimLength, final boolean hasLonDim,
-         * final int lonDimLength)
-         */
-        final List<Dimension> outDimensions = METOCSActionsIOUtils
-                .createNetCDFCFGeodeticDimensions(ncFileOut, true, 1, false, 0,
-                        METOCSActionsIOUtils.UP, true, az_size.getLength(), true, ra_size
-                                .getLength());
-
-        // Adding Wave Partitions dimension
-        // outDimensions.add(1, ncFileOut.addDimension(n_partitions.getName(),
-        // n_partitions.getLength()));
-
-        double noData = Double.NaN;
-
-        // defining output variable
-        for (String varName : foundVariables.keySet()) {
-            // SIMONE: replaced foundVariables.get(varName).getDataType()
-            // with DataType.DOUBLE
-            ncFileOut.addVariable(foundVariableBriefNames.get(varName), foundVariables.get(varName)
-                    .getDataType(), outDimensions);
-            ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "long_name",
-                    foundVariableLongNames.get(varName));
-            ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "units",
-                    foundVariableUoM.get(varName));
-            ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName),
-                    NetCDFUtilities.DatasetAttribs.MISSING_VALUE, noData);
-        }
-
-        // MERCATOR OCEAN MODEL Global Attributes
-        Attribute referenceTime = ncGridFile
-                .findGlobalAttributeIgnoreCase("SOURCE_ACQUISITION_UTC_TIME");
-
-        // e.g. 20100902211637.870628
-        final SimpleDateFormat toSdf = new SimpleDateFormat("yyyyMMddHHmmss");
-
-        toSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        final Date timeOriginDate = toSdf
-                .parse(referenceTime.getStringValue().trim().toLowerCase());
+    @Override
+    protected int normalizingTimes(Array timeOriginalData, Dimension timeDim, Date timeOriginDate)
+            throws ParseException, NumberFormatException {
         long timeInMillis = timeOriginDate.getTime();
-
         long ncMillis = Long.parseLong(referenceTime.getStringValue().substring(
                 referenceTime.getStringValue().indexOf(".") + 1)) / 1000;
-
         timeOriginDate.setTime(timeInMillis + ncMillis);
-
         final int TAU = 0;
 
-        // Setting up global Attributes ...
-        settingNCGlobalAttributes(noData, timeOriginDate, TAU);
+        return TAU;
+    }
+
+    @Override
+    protected void writingDataSets(Dimension ra_size, Dimension az_size, Dimension depthDim,
+            Dimension timeDim, boolean hasDepth, Array lonOriginalData, Array latOriginalData,
+            Array depthOriginalData, double noData, Array timeOriginalData, DataType latDataType,
+            DataType lonDataType) throws IOException, InvalidRangeException {
+
+        double[] bbox = new double[] { 
+                envelope.getLowerCorner().getOrdinate(0),
+                envelope.getLowerCorner().getOrdinate(1), 
+                envelope.getUpperCorner().getOrdinate(0),
+                envelope.getUpperCorner().getOrdinate(1) 
+        };
+
+        final Variable maskOriginalVar = ncGridFile.findVariable("valid");
+        @SuppressWarnings("unused")
+        final DataType maskDataType = maskOriginalVar.getDataType();
+        final Array maskOriginalData = maskOriginalVar.read();
 
         // writing bin data ...
         ncFileOut.create();
@@ -309,49 +384,6 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
 
                 ncFileOut.write(foundVariableBriefNames.get(varName), outVarData);
             }
-        }
-    }
-
-    /**
-     * 
-     * @param ncFileOut
-     * @param referenceTime
-     * @return
-     */
-    private static void setTime(NetcdfFileWriteable ncFileOut, final Attribute referenceTime) {
-        // e.g. 20100902211637.870628
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        long millisFromStartDate = 0;
-        if (referenceTime != null) {
-            Date startDate = null;
-            try {
-                startDate = sdf.parse(referenceTime.getStringValue().trim().toLowerCase());
-                long timeInMillis = startDate.getTime();
-
-                long ncMillis = Long.parseLong(referenceTime.getStringValue().substring(
-                        referenceTime.getStringValue().indexOf(".") + 1)) / 1000;
-
-                millisFromStartDate = (timeInMillis + ncMillis) - startTime;
-            } catch (ParseException e) {
-                throw new IllegalArgumentException("Unable to parse time origin");
-            }
-        }
-
-        // writing time variable data
-        ArrayFloat timeData = new ArrayFloat(new int[] { 1 });
-        Index timeIndex = timeData.getIndex();
-        timeData.setFloat(timeIndex.set(0), millisFromStartDate / 1000.0f);
-        try {
-            ncFileOut.write(METOCSActionsIOUtils.TIME_DIM, timeData);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InvalidRangeException e) {
-            throw new IllegalArgumentException(
-                    "Unable to store time data to the output NetCDF file.");
         }
     }
 }
