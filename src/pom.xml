@@ -97,7 +97,7 @@
       <repository>
        <uniqueVersion>false</uniqueVersion>
        <id>geosolutions</id>
-       <url>ftp://maven.geo-solutions.it/home/maven</url>
+       <url>ftp://maven.geo-solutions.it/</url>
       </repository>
     </distributionManagement>
     
@@ -951,10 +951,17 @@
 
 						<!-- Buddata RR -->
             <dependency>
-								<groupId>it.geosolutions</groupId>
+							<groupId>it.geosolutions</groupId>
 								<artifactId>gb-action-registry-commons</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+            
+						<!-- Java Octave -->
+            <dependency>
+				<groupId>dk.ange.octave</groupId>
+				<artifactId>javaoctave</artifactId>
+				<version>0.6.1</version>
+			</dependency>
 
 						<!-- METOCS -->
             <dependency>
@@ -1340,7 +1347,7 @@
         <repository>
             <id>geosolutions</id>
             <name>GeoSolutions Repository</name>
-            <url>http://mvn.geo-solutions.it</url>
+            <url>http://maven.geo-solutions.it/</url>
         </repository>
 
         <repository>

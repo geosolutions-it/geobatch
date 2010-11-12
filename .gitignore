@@ -4,6 +4,8 @@
 ##
 ## - ETj
 
+*.log
+*.db
 nb*.xml
 src/web/ftp*db
 .classpath

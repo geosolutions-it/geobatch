@@ -59,8 +59,11 @@
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-alias-registry</artifactId>
-        </dependency> 
-	
+        </dependency>
+        <dependency>
+            <groupId>dk.ange.octave</groupId>
+            <artifactId>javaoctave</artifactId>
+        </dependency>
 	<!-- TODO: Add dependencies here  -->
 
   </dependencies>
