@@ -1017,6 +1017,11 @@
                 <artifactId>gb-action-taskexecutor</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+	    <dependency>
+		<groupId>it.geosolutions</groupId>
+		<artifactId>gb-action-octave</artifactId>
+                <version>${gb.version}</version>
+	    </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-shapefile</artifactId>

@@ -280,6 +280,18 @@
         </profile>
 
         <profile>
+            <id>octave</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-octave</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>metocs</id>
             <modules>
                 <module>geotiff</module>
@@ -287,6 +299,7 @@
                 <module>imagemosaic</module>
                 <module>shapefile</module>
                 <module>gb-task-executor</module>
+                <module>gb-octave</module>
                 <module>scripting</module>
                 <module>splitting</module>
                 <module>metocs</module>

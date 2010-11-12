@@ -835,6 +835,55 @@
             </build>
         </profile>
 
+        <!-- octave ==================================================-->
+        <profile>
+            <id>octave</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
+            <dependencies>
+                <dependency>
+                    <groupId>it.geosolutions</groupId>
+                    <artifactId>gb-action-octave</artifactId>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_taskexec</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-action-octave</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>flowdata</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <!-- GWC ============================================================-->
         <profile>
             <id>geowebcache</id>

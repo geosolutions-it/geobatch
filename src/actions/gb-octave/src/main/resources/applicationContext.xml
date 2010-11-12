@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+	<!-- Environment Initialization -->
+
+	<bean id="OctaveGeneratorService" class="it.geosolutions.geobatch.octave.OctaveGeneratorService">
+		<property  name="id">
+    		<value>OctaveGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>OctaveGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>OctaveGeneratorService</value>
+    	</property>	
+	</bean>
+	
+
+	<bean id="actionOctaveRegistrar" class="it.geosolutions.geobatch.octave.OctaveAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+</beans>
