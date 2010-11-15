@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<id>OctaveFlow</id>
+	<description>OctaveFlow</description>
+	<name>OctaveFlow</name>
+	
+	<workingDirectory>octave</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>octave/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>OctaveFlow</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		<id>octave</id>
+		<description>octave</description>
+		<name>octave</name>
+		
+		<workingDirectory>octave</workingDirectory>
+		<performBackup>false</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+		
+		<OctaveActionConfiguration>
+			<serviceID>OctaveGeneratorService</serviceID>
+		  
+			<id>OctaveActionConfiguration</id>
+			<description>OctaveActionConfiguration</description>
+			<name>OctaveActionConfiguration</name>
+			<workingDirectory>/home/carlo/data/octave</workingDirectory>
+			<-- OCTAVE ENV -->
+			<octave>
+			  <sheets>
+			  	<-- OCTAVE SHEET -->
+			    <sheet>
+			      <commands>
+			      <!--
+            /**
+             * > I'm trying to use octave from java and I need to run netCDF functions
+             * > installed by octcdf system package.
+             * > Running octave manually all netcdf commands are available but doing
+             * > something like:
+             * >  octave.eval("nc=netcdf('/home/carlo/test2.nc','c');ncclose(nc);");
+             * > I get:
+             * > SEVERE: Unable to run octave script:
+             * > `netcdf' undefined near line 11 column 8
+             * > can you help me?
+             * > May I have to set some ENV variables?
+             * > thank you, carlo cancellieri
+             * 
+             * I can see that it is because I start the octave process with the
+             * option --no-site-file, I think I need to remove that option in the
+             * next release.
+             * Until I create a new octave.jar you can source the site file manually
+             * doing something like this:
+             * octave.eval("source /usr/share/octave/3.2.4/m/startup/octaverc");
+             * after that netcdf() should work. You might have to adjust the path to
+             * octaverc to fit your local octave installation.
+             * Regards,
+             * Kim Hansen
+             * Vadgårdsvej 3, 2.tv
+             * 2860 Søborg
+             * Phone: +45 3091 2437
+             */
+             -->
+			        <string>source "/usr/share/octave/3.0.5/m/startup/octaverc";</string>
+			        
+			        <string>cd "/home/carlo/data/octave/";</string>
+
+<!--			        <string>addPath('');</string> 	-->
+
+			      </commands>
+			      <definitions>
+			        <OctaveFile name="variable_name2" value="VALUE" output="false" input="true"/>
+			        <OctaveFile name="returning_var_name2" value="VALUE" output="false" input="true"/>
+			      </definitions>
+			      <functions>
+			        <function name="mars3d">
+			          <returns/>
+			          <arguments>
+			            <OctaveFile name="file_in" value="" output="false" input="true"/>
+			            <OctaveFile name="file_out" value="" output="false" input="true"/>
+			          </arguments>
+			        </function>
+			      </functions>
+			      <returns/>
+			    </sheet>
+			  </sheets>
+			</octave>
+
+		</OctaveActionConfiguration>
+		
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>

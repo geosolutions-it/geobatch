@@ -39,7 +39,7 @@
 	
 	<!-- context-param>
 		<param-name>GEOBATCH_DATA_DIR</param-name>
-		<param-value>/home/simone/data</param-value>
+		<param-value>/opt/geobatch/data</param-value>
 	</context-param-->
 	<servlet-mapping>
 		<servlet-name>geobatch</servlet-name>

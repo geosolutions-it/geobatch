@@ -110,8 +110,7 @@ public class Alias {
         // adding registered alias
         if (aliasRegistry != null) {
             for (Entry<String, Class<?>> entry : aliasRegistry) {
-// todo
-                xstream.processAnnotations(entry.getValue());
+                xstream.processAnnotations(entry.getValue());   // added to process annotations in loaded classes
                 xstream.alias(entry.getKey(), entry.getValue());
             }
         }

@@ -25,7 +25,7 @@ public abstract class SerializableOctaveObject<T extends OctaveObject>{
     //< contains the name of this variable
     @XStreamAlias("name")
     @XStreamAsAttribute
-    final private String _name;
+    private String _name;
     
     public SerializableOctaveObject(String name, T obj){
         _obj=obj;
@@ -34,6 +34,10 @@ public abstract class SerializableOctaveObject<T extends OctaveObject>{
     
     public final String getName(){
         return _name;
+    }
+    
+    public void setName(String name){
+        _name=name;
     }
     
     protected final T getOctObj(){

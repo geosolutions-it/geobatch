@@ -1,7 +1,4 @@
-package it.geosolutions.geobatch.octave.test;
-
-import it.geosolutions.geobatch.octave.OctaveEnv;
-import it.geosolutions.geobatch.octave.OctaveFunctionFile;
+package it.geosolutions.geobatch.octave;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -15,17 +12,23 @@ public class SerializeConfiguration {
         stream.processAnnotations(OctaveEnv.class);
         OctaveEnv oac=new OctaveEnv();
 
-        OctaveFunctionFile off=new OctaveFunctionFile("funzione");
+        OctaveFunctionFile<DefaultFunctionBuilder> off=
+            new OctaveFunctionFile<DefaultFunctionBuilder>("funzione");
+        
+//        off.setBuilder(new OctaveFunctionFile("funzione2"));
+        off.addArg(new SerializableOctaveFile("file_in",""));
+        off.addArg(new SerializableOctaveFile("file_out",""));
+        
         //soo.setName("variable_name");
+        OctaveFunctionSheet os=new OctaveFunctionSheet();
+        os.pushDefinition(new SerializableOctaveFile("variable_name2","VALUE"));
+        os.pushDefinition(new SerializableOctaveFile("returning_var_name2","VALUE"));
+        os.pushCommand("COMMAND");
+        os.pushFunction(off);
         System.out.println("-------------------------------------");
-        /*
-        oac.setFunction(off);
-        oac.addPath("path");
-        oac.addPath("path2");
-        oac.getFunction().addArg(new SerializableOctaveString("variable_name2","VALUE"));
-        oac.getFunction().addRet(new SerializableOctaveFile("returning_var_name","VALUE"));
-        oac.getFunction().addRet(new SerializableOctaveFile("returning_var_name2","VALUE"));
-        */
+        oac.push(os);
+        
+
         System.out.println(stream.toXML(oac));
         System.out.println("-------------------------------------");
         

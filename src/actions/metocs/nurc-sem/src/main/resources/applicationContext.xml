@@ -81,5 +81,23 @@
 	<bean id="NURCSEMActionsAliasRegistrar" class="it.geosolutions.geobatch.nurc.sem.NURCSEMActionsAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
+    
+    <!-- REP10 -->
+    	<!-- MARS3D -->
+    	<bean id="MARS3DGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.mars3d.MARS3DGeneratorService">
+			<property  name="id">
+	    		<value>MARS3DGeneratorService</value>
+	    	</property>
+	    	<property name="description">
+	    		<value>MARS3DGeneratorService</value>
+	    	</property>
+	    	<property name="name">
+	    		<value>MARS3DGeneratorService</value>
+	    	</property>	
+		</bean>
+    
+    <bean id="OctaveAliasRegistrar" class="it.geosolutions.geobatch.nurc.sem.rep10.OctaveAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
 
 </beans>
