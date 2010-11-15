@@ -18,10 +18,10 @@
 <!--		<property name="connection.username">postgres</property>-->
 <!--		<property name="connection.password">fucktheworld</property>-->
 
-	<!--	<property name="connection.driver_class">org.postgresql.Driver</property>
-		<property name="connection.url">jdbc:postgresql://whale.nurc.nato.int:5432/sem_geobatch</property>
-		<property name="connection.username">postgres</property>
-		<property name="connection.password">fucktheworld</property>-->
+	<!--<property name="connection.driver_class">org.postgresql.Driver</property>-->
+	<!--<property name="connection.url">jdbc:postgresql://whale.nurc.nato.int:5432/sem_geobatch</property>-->
+	<!--<property name="connection.username">postgres</property>-->
+	<!--<property name="connection.password">fucktheworld</property>-->
 
 		<!-- SQL dialect -->
 		<property name="dialect">org.hibernate.dialect.H2Dialect</property>

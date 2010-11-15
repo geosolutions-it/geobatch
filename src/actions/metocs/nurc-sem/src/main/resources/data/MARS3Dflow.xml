@@ -5,12 +5,12 @@
 	<description>OctaveFlow</description>
 	<name>OctaveFlow</name>
 	
-	<workingDirectory>octave</workingDirectory>
+	<workingDirectory>/home/carlo/work/data/octave/</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>octave/in</watchDirectory>
+		<watchDirectory>/home/carlo/work/data/octave/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>OctaveFlow</id>
@@ -24,7 +24,7 @@
 		<description>octave</description>
 		<name>octave</name>
 		
-		<workingDirectory>octave</workingDirectory>
+		<workingDirectory>/home/carlo/work/data/octave/</workingDirectory>
 		<performBackup>false</performBackup>
 		
 		<FileEventRule>
@@ -42,27 +42,15 @@
 			<id>OctaveActionConfiguration</id>
 			<description>OctaveActionConfiguration</description>
 			<name>OctaveActionConfiguration</name>
-			<workingDirectory>/home/carlo/data/octave</workingDirectory>
-			<-- OCTAVE ENV -->
+			<workingDirectory>/home/carlo/work/data/octave</workingDirectory>
+			<!-- OCTAVE ENV -->
 			<octave>
 			  <sheets>
-			  	<-- OCTAVE SHEET -->
+			  	<!-- OCTAVE SHEET -->
 			    <sheet>
 			      <commands>
 			      <!--
             /**
-             * > I'm trying to use octave from java and I need to run netCDF functions
-             * > installed by octcdf system package.
-             * > Running octave manually all netcdf commands are available but doing
-             * > something like:
-             * >  octave.eval("nc=netcdf('/home/carlo/test2.nc','c');ncclose(nc);");
-             * > I get:
-             * > SEVERE: Unable to run octave script:
-             * > `netcdf' undefined near line 11 column 8
-             * > can you help me?
-             * > May I have to set some ENV variables?
-             * > thank you, carlo cancellieri
-             * 
              * I can see that it is because I start the octave process with the
              * option --no-site-file, I think I need to remove that option in the
              * next release.
@@ -80,7 +68,7 @@
              -->
 			        <string>source "/usr/share/octave/3.0.5/m/startup/octaverc";</string>
 			        
-			        <string>cd "/home/carlo/data/octave/";</string>
+			        <string>cd "/home/carlo/work/data/octave/";</string>
 
 <!--			        <string>addPath('');</string> 	-->
 

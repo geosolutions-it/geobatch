@@ -37,7 +37,7 @@ public class MARS3DAction extends BaseAction<FileSystemMonitorEvent> implements 
     // TODO: FIX ME!!!
     private String buildFileName(){
         // TODO add ABSOLUTE PATH+/workingdir/out/
-        return "lscv08_NCOM-Forecast-T" + new Date().getTime()+".nc";
+        return "rep10_MARS3D-Forecast-T" + new Date().getTime()+".nc";
     }
     
     /**
