@@ -12,12 +12,12 @@ public class SerializeConfiguration {
         stream.processAnnotations(OctaveEnv.class);
         OctaveEnv oac=new OctaveEnv();
 
-        OctaveFunctionFile<DefaultFunctionBuilder> off=
-            new OctaveFunctionFile<DefaultFunctionBuilder>("funzione");
+        OctaveFunctionFile off=
+            new OctaveFunctionFile("funzione");
         
 //        off.setBuilder(new OctaveFunctionFile("funzione2"));
-        off.addArg(new SerializableOctaveFile("file_in",""));
-        off.addArg(new SerializableOctaveFile("file_out",""));
+        off.pushArgument(new SerializableOctaveFile("file_in",""));
+        off.pushArgument(new SerializableOctaveFile("file_out",""));
         
         //soo.setName("variable_name");
         OctaveFunctionSheet os=new OctaveFunctionSheet();

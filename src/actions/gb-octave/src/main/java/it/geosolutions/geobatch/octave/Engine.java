@@ -66,7 +66,7 @@ public class Engine{
      * @param def
      */
     protected void clear(SerializableOctaveObject<?> def){
-        engine.eval("clear "+def.getName()+";");
+        engine.eval("clear \'"+def.getName()+"\';");
     }
     
     /**
@@ -78,8 +78,6 @@ public class Engine{
             // fill in serialized values into octave (variable definition)
             for (SerializableOctaveObject<?> soo : list){
                 soo.setVal();
-//TODO
-    System.out.println("VAL:"+((OctaveString)soo.getOctObj()).getString());
                 engine.put(soo.getName(),soo.getOctObj());
             }   
         }

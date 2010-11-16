@@ -51,7 +51,7 @@ public abstract class SerializableOctaveObject<T extends OctaveObject>{
         _obj=obj;
     }
     
-    protected abstract void setVal();
+    public abstract void setVal();
     
 
 }

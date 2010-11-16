@@ -43,7 +43,7 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
     SerializableOctaveFile.class,
     SerializableOctaveString.class,
     SerializableOctaveObject.class})
-public class OctaveFunctionFile<T extends DefaultFunctionBuilder>{
+public class OctaveFunctionFile{
     
     
     //< function name
@@ -94,10 +94,10 @@ public class OctaveFunctionFile<T extends DefaultFunctionBuilder>{
         return function;
     }
     
-    public void addArg(SerializableOctaveObject<?> soo){
+    public void pushArgument(SerializableOctaveObject<?> soo){
         arguments.add(soo);
     }
-    public void addRet(SerializableOctaveObject<?> soo){
+    public void pushReturn(SerializableOctaveObject<?> soo){
         returns.add(soo);
     }
 

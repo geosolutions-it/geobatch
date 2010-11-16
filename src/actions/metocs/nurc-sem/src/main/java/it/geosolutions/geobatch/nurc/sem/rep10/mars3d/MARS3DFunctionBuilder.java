@@ -1,46 +1,67 @@
 package it.geosolutions.geobatch.nurc.sem.rep10.mars3d;
 
-import java.util.Iterator;
+import it.geosolutions.geobatch.octave.DefaultFunctionBuilder;
+import it.geosolutions.geobatch.octave.OctaveFunctionFile;
+import it.geosolutions.geobatch.octave.SerializableOctaveFile;
+import it.geosolutions.geobatch.octave.SerializableOctaveObject;
+
 import java.util.Vector;
 
-import it.geosolutions.geobatch.octave.*;
-
 public class MARS3DFunctionBuilder extends DefaultFunctionBuilder {
+    private final String filein,fileout;
+    
+    /**
+     * 
+     * @param file_in value of the input file (absolute path)
+     * @param file_out value of the output file (absolute path)
+     */
+    public MARS3DFunctionBuilder(String file_in,String file_out){
+        super();
+        filein=file_in;
+        fileout=file_out;
+    }
     
     /**
      * The prototype of the mars3d function is:
      * mars3d(file_in,file_out);
      */
     @Override
-    public String buildFunction(OctaveFunctionFile<?> off) throws Exception{
+    protected String buildFunction(OctaveFunctionFile off) throws Exception{
         // name should be -> mars3d
         String function=off.getName();
-// no returns value
-//        Vector<SerializableOctaveObject<?>> returns=off.getReturns();
-        Vector<SerializableOctaveObject<?>> arguments=off.getArguments();
-        /**
-        String script="";
         
-         * COMMENTED OUT SINCE NO RETURN IS NEEDED
-         * if function returns more than a value
-         * it is in the form:
-         * [ret1,ret2,...,retN]=function(...);
-         
-        if (returns!=null){
-            if (returns.size()>1) {
-                Iterator<SerializableOctaveObject<?>> i=returns.iterator();
-                script="["+i.next();
-                while (i.hasNext()){
-                    script+=","+i.next().getName();
-                }
-                script+="]=";
-            }
-            else if (returns.size()==1){
-                Iterator<SerializableOctaveObject<?>> i=returns.iterator();
-                script=i.next().getName()+"=";
-            }
-        }
+        /**
+         * Transforming function arguments to sheet 
+         * variable definitions
          */
+        Vector<SerializableOctaveObject<?>> arguments=off.getArguments();
+        
+        if(off.getArguments().size()==2){
+            // setting value of arguments
+            /**
+             * get the first variable definition which is supposed
+             * to be the first argument of the function
+             * mars3d(file_in,file_out)
+             * and set its VALUE to the incoming file
+             * This will be transformed by the DefaultFunctionBuilder.preprocess
+             * into a sheet variable definition
+             */
+            ((SerializableOctaveFile) off.getArguments().get(0)).reSetVal(filein);
+
+            /**
+             * get the second variable definition which is supposed
+             * to be the second argument of the function
+             * mars3d(file_in,file_out)
+             * set its VALUE to the conventional string obtained by 
+             * buildFileName() method
+             * This will be transformed by the DefaultFunctionBuilder.preprocess
+             * into a sheet variable definition
+             */
+            ((SerializableOctaveFile) off.getArguments().get(1)).reSetVal(fileout);
+        }
+        else
+            throw new Exception("Bad argument list in function: "+off.getName());
+        
         String script=function;
         
         if (arguments!=null){

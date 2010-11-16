@@ -52,7 +52,7 @@ public class SerializableOctaveString  extends SerializableOctaveObject<OctaveSt
      * is never called by XStream so, to synchronize
      * variables we need to call it manually.
      */
-    protected void setVal() {
+    public void setVal() {
         reSetVal(_val);
     }
     

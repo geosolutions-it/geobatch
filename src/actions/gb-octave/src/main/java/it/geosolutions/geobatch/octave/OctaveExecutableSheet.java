@@ -1,6 +1,7 @@
 package it.geosolutions.geobatch.octave;
 
 import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
@@ -12,7 +13,8 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
     SerializableOctaveString.class,
     SerializableOctaveObject.class})
 public class OctaveExecutableSheet {
-
+    public CountDownLatch gate= null;
+    
     @XStreamAlias("commands")
     private final Vector<String> commands;
     
@@ -45,8 +47,18 @@ public class OctaveExecutableSheet {
         returns=new Vector<SerializableOctaveObject<?>>();
     }
     
-    public String getCommand(String command){
-        return command;
+    public OctaveExecutableSheet(OctaveExecutableSheet es){
+        commands=es.getCommands();
+        definitions=es.getDefinitions();
+        returns=es.getReturns();
+    }
+    
+    public String getCommand(int i){
+        return commands.get(i);
+    }
+    
+    public Vector<String> getCommands(){
+        return commands;
     }
     
     public Vector<SerializableOctaveObject<?>> getDefinitions(){

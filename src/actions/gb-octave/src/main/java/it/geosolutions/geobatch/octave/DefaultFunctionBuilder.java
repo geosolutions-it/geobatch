@@ -14,7 +14,7 @@ public abstract class DefaultFunctionBuilder {
      */
     public final void preprocess(OctaveFunctionSheet sheet) throws Exception {
         // pre-process all functions in the sheet
-        for (OctaveFunctionFile<?> f:sheet.getFunctions()){
+        for (OctaveFunctionFile f:sheet.getFunctions()){
             // build the function string
             String comm=this.buildFunction(f);
             /**
@@ -57,7 +57,7 @@ public abstract class DefaultFunctionBuilder {
      * @return a string as above
      * @note this can be overrided
      */
-    public String buildFunction(OctaveFunctionFile<?> off) throws Exception{
+    protected String buildFunction(OctaveFunctionFile off) throws Exception{
         String function=off.getName();
         Vector<SerializableOctaveObject<?>> returns=off.getReturns();
         Vector<SerializableOctaveObject<?>> arguments=off.getArguments();
@@ -129,6 +129,4 @@ public abstract class DefaultFunctionBuilder {
         
         return script;
     }
-    
-    public String buildReturns(){return new String("");};
 }

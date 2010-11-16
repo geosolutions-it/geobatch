@@ -1,43 +1,57 @@
 package it.geosolutions.geobatch.nurc.sem.rep10.mars3d;
 
-import java.io.File;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import dk.ange.octave.exception.OctaveEvalException;
-import dk.ange.octave.type.OctaveObject;
-
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.octave.*;
+import it.geosolutions.geobatch.octave.DefaultFunctionBuilder;
+import it.geosolutions.geobatch.octave.OctaveEnv;
+import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
+import it.geosolutions.geobatch.octave.OctaveFunctionSheet;
+import it.geosolutions.geobatch.octave.OctaveThread;
+
+import java.io.File;
+import java.util.Date;
+import java.util.Queue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import dk.ange.octave.exception.OctaveEvalException;
 
 
 public class MARS3DAction extends BaseAction<FileSystemMonitorEvent> implements Action<FileSystemMonitorEvent> {
-    
+       
     private final static Logger LOGGER = Logger.getLogger(MARS3DAction.class.toString());
+    
+//todo: remove me (this env should be owned by the OctaveThread and
+// objects are pushed in it:
+    private final static OctaveEnv<OctaveExecutableSheet>  bus=new OctaveEnv<OctaveExecutableSheet>();
+    private final static Thread oct=new Thread(new OctaveThread(bus));
+    
     // 
     // TODO: check... should we add this member to the BaseAction?
     private final MARS3DActionConfiguration config;
     
     public MARS3DAction(MARS3DActionConfiguration actionConfiguration) {
         super(actionConfiguration);
-        
         config=actionConfiguration;
+        
+     // TODO implement a M.D.POJO
+        //run thread manually
+        if (!oct.isAlive())
+            oct.start();
     }
     
-    // TODO: FIX ME!!!
+    /**
+     * @return a string representing the output file name of the script
+     */
     private String buildFileName(){
-        // TODO add ABSOLUTE PATH+/workingdir/out/
-        return "rep10_MARS3D-Forecast-T" + new Date().getTime()+".nc";
+        return "REP10_MARS3D-Forecast-T" + new Date().getTime()+".nc";
     }
     
     /**
@@ -53,128 +67,84 @@ public class MARS3DAction extends BaseAction<FileSystemMonitorEvent> implements 
             if(LOGGER.isLoggable(Level.INFO))
                 LOGGER.info("Executing Octave script...");
             
-
-// TODO set as ENVIRONMENT VAR
+            FileSystemMonitorEvent ev=events.remove();
             
-            Iterator<FileSystemMonitorEvent> e=events.iterator();
-            
-            while (e.hasNext()){
-                FileSystemMonitorEvent ev=e.next();
-//TODO check if this condition is needed
-                if ((ev)==null && LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning(
-                        "Executing Octave script on empty event queue");
-                
+            if ((ev)!=null){
                 /**
                  * getting reference to the first executable sheet
                  * this is supposed to be to only executed sheet
                  * in the configuration.
                  */
-                OctaveExecutableSheet es = config.getEnv().getEnv(0);
+                OctaveFunctionSheet fs =(OctaveFunctionSheet) config.getEnv().getSheet(0);
+                
                 /**
-                 * get the first variable definition which is supposed
-                 * to be the first argument of the function
-                 * mars3d(file_in,file_out)
+                 * Obtaining the Absolute path
+ * @TODO open a ticket to get getBaseDirectory() into Catalog interface
                  */
-                SerializableOctaveObject<?> soo=es.getDefinitions().get(0);
+                FileBaseCatalog c=(FileBaseCatalog) CatalogHolder.getCatalog();
+                String base_dir=c.getBaseDirectory()+"/"+config.getWorkingDirectory();
+                
                 /**
-                 * set its name to the incoming event referring file
-                 * This will be used by the MARS3DFunctionBuilder to
-                 * build the command string to execute
+                 * Build output file name
                  */
-                soo.setName(ev.getSource().getAbsolutePath());
+                String out_name=base_dir+"/nc/"+buildFileName();
+                
                 /**
-                 * get the second variable definition which is supposed
-                 * to be the second argument of the function
-                 * mars3d(file_in,file_out)
+                 * Build the MARS3DFunctionBuilder
                  */
-                soo=es.getDefinitions().get(1);
+                DefaultFunctionBuilder fb=new MARS3DFunctionBuilder(ev.getSource().getAbsolutePath(),out_name);
+                
+                if(LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("Preprocessing functions...");
+                // try to preprocess the OctaveFunctionSheet
+                try {
+                    fb.preprocess(fs);
+                }catch (Exception e){
+                    LOGGER.warning("Exception during buildFunction:"+e.getMessage());
+                }
+                
+                if(LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("Passing Octave sheet to Octave process... ");
                 /**
-                 * set its name to the conventional string obtained by 
-                 * buildFileName() method
-                 * This will be used by the MARS3DFunctionBuilder to
-                 * build the command string to execute
+                 * Push the executable sheet on the thread executing queue
                  */
-                String out_name=buildFileName();
-                soo.setName(out_name);
+                synchronized (bus) {
 
+                    fs.gate=new CountDownLatch(1);
+                    bus.push(fs);
+                    bus.notify();
+                    bus.wait();
+                 //   fs.gate.await();//30*60, TimeUnit.SECONDS);
+                    
+                }
+                
+//                synchronized (fs) {
+//                    fs.wait();
+//                    System.out.println("DONE");
+//                }
+                /**
+                 * add output file to the event queue
+                 */
                 events.add(new FileSystemMonitorEvent(
-                new File(out_name),FileSystemMonitorNotifications.FILE_ADDED));
+                        new File(out_name),FileSystemMonitorNotifications.FILE_ADDED));
 
-            }
-            // script
-            String script;
-            
-            /**
- *TODO: change this cast in the FileBaseCatalog!
-             *
-             * following is substituted by Catalog.getBaseDirectory();
-             * 
-             * String data = System.getProperty("GEOBATCH_DATA_DIR");
-             * if (data!=null){
-             * script="cd \""+data+File.separator+getConfig().getWorkingDirectory()+"\";";
-             * }
-             * else if ((data = System.getenv("GEOBATCH_DATA_DIR"))!=null){
-             * script="cd \""+data+File.separator+getConfig().getWorkingDirectory()+"\";";
-             * }
-             * else
-             * throw new ActionException(this,"GEOBATCH_DATA_DIR not defined");
-             * 
-TODO             
-FileBaseCatalog c=(FileBaseCatalog) CatalogHolder.getCatalog();
-c.getBaseDirectory();
-            
-            // setting script
-            script="cd \""+
-                    c.getBaseDirectory()+
-                    File.separator+
-                    getConfig().getWorkingDirectory()+"\";";
-            
-            
-            if(LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("Entering working dir using command: "+script);
-            */
-            // Going to local working dir:
-            // `cd /local/working/dir`
-//            getConfig().getFunction().eval(script);
-            
-            if(LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("Evaluating...");
-            // executing script
-            // replacing input file placeholder with filename
-            
-//TODO: @note this should be run as thread
-//            getConfig().getFunction().run();
+            } // ev==null
+            else if (LOGGER.isLoggable(Level.WARNING))
+                LOGGER.warning(
+                    "Executing Octave script on empty event queue");
             
             if(LOGGER.isLoggable(Level.INFO))
                 LOGGER.info("Evaluating: DONE");
             
-            // closing octave script engine
-//            getConfig().getFunction().close();
-            
-// TODO change this.... how we get output file name?
-//            String _of=ev.getSource().getAbsolutePath();
-//            if (!ev.getSource().renameTo(new File(_of)))
-//                throw new ActionException(this,"Unable to create file "+_of);
-            
+        }
+        catch (InterruptedException e) {
+            throw new ActionException(this,"Problem running MARS3D action:\n"
+                    +e.getLocalizedMessage());
         }
         catch (OctaveEvalException oee){
-            /*
-            if(LOGGER.isLoggable(Level.SEVERE)){
-                LOGGER.severe("Error executing octave script:\n"
-                        +oee.getLocalizedMessage());
-            }
-            */
             throw new ActionException(this,"Unable to run octave script:\n"
                         +oee.getLocalizedMessage());
-        }/*
-        catch (Exception e){
-// 1 - queue is empty... do what???
-// TODO
-throw new ActionException(this,e.getLocalizedMessage());
-        }*/
+        }
         return events;
     }
-
-    
 }

@@ -1,14 +1,19 @@
 package it.geosolutions.geobatch.octave;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("octave")
-public class OctaveEnv<T extends OctaveExecutableSheet> {
+public class OctaveEnv<T extends OctaveExecutableSheet>{
     @XStreamAlias("sheets")
-    private final Vector<T> env;
+    private final ArrayList<T> env;
+    
+    public final int size(){
+        return env.size();
+    }
     
 /**
  * @TODO change to simple variable environment container 
@@ -21,13 +26,13 @@ public class OctaveEnv<T extends OctaveExecutableSheet> {
         if (env.isEmpty())
             return null;
         else {
-            OctaveExecutableSheet os=env.firstElement();
-            env.remove(0);
+            OctaveExecutableSheet os=getSheet(0);
+            env.remove(os);
             return os;
         }
     }
     
-    public T getEnv(int index) throws IndexOutOfBoundsException{
+    public T getSheet(int index) throws IndexOutOfBoundsException{
         if (env.size()>index)
             return env.get(index);
         else
@@ -48,12 +53,12 @@ public class OctaveEnv<T extends OctaveExecutableSheet> {
     }
     
     public OctaveEnv(){
-        env=new Vector<T>();
+        env=new ArrayList<T>();
         global=new OctaveExecutableSheet();
     }
     
-    public OctaveEnv(Vector<T> e){
-        env=new Vector<T>(e);
+    public OctaveEnv(List<T> e){
+        env=new ArrayList<T>(e);
         global=new OctaveExecutableSheet();
     }
 }
