@@ -64,7 +64,16 @@
             <groupId>dk.ange.octave</groupId>
             <artifactId>javaoctave</artifactId>
         </dependency>
-	<!-- TODO: Add dependencies here  -->
+    
+    <!-- TODO: Add dependencies here  -->
+        
+        <!-- EXPERIMENTAL MDP -->
+        <dependency>
+		  <groupId>org.apache.activemq</groupId>
+		  <artifactId>activemq-core</artifactId>
+		  <version>5.4.1</version>
+		</dependency>
+	
 
   </dependencies>
 </project>

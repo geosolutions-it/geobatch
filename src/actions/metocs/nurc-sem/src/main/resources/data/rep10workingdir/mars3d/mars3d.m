@@ -137,7 +137,11 @@ time = nc{'time'}(:);
 % 42,075,360 minutes
 % 701,256 hours
 % 4174 weeks (rounded down)
-time=time-2524521600;
+
+%UNUSED!
+%time_origin=time-2524521600;
+
+
 
 nc_out('time') = length(time);
 nc_out{'time'} = ncdouble('time');
@@ -145,25 +149,28 @@ nc_out{'time'}(:) = time;
 nc_out{'time'}.long_name='time';
 nc_out{'time'}.units = 'seconds since 1980-1-1 0:0:0';
 nc_out{'time'}.FillValue_ = ncdouble(-9999);
-nc_out{'time'}.time_origin = ncdouble(time(1));
+nc_out{'time'}.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % writing global attributes
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-nc_out.base_time=ncfloat(time(1));
-
+%base time attribute
+%"yyyyMMddTHHmmssSSSZ"
+nc_out.base_time=datestr(datenum(1900,1,1)+datenum(0,0,0,0,0,time),"yyyymmddTHHMMSS");
+% tau attribute
 if (length(time)>1)
   nc_out.tau=ncint(int8(time(2)-time(1)));
 else
   nc_out.tau=ncint(0);
 end
-
+% nodata
 nc_out.nodata=ncdouble(-9999);
+% fillvalue
 nc_out._FillValue= ncdouble(-9999);
-
 % time origin
-%nc_out.time_origin="yyyyMMdd'T'HHmmssSSS'Z'";
+nc_out.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
+
 %"GMT+0"
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
