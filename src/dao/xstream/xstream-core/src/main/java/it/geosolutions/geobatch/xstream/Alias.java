@@ -22,6 +22,7 @@
 package it.geosolutions.geobatch.xstream;
 
 import com.thoughtworks.xstream.XStream;
+
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -109,6 +110,7 @@ public class Alias {
         // adding registered alias
         if (aliasRegistry != null) {
             for (Entry<String, Class<?>> entry : aliasRegistry) {
+                xstream.processAnnotations(entry.getValue());   // added to process annotations in loaded classes
                 xstream.alias(entry.getKey(), entry.getValue());
             }
         }
