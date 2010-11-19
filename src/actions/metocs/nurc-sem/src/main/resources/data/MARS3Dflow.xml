@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 	
-	<id>OctaveFlow</id>
-	<description>OctaveFlow</description>
-	<name>OctaveFlow</name>
+	<id>MARS3DFlow</id>
+	<description>MARS3DFlow</description>
+	<name>MARS3DFlow</name>
 	
-	<workingDirectory>octave</workingDirectory>
+	<workingDirectory>mars3d</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>octave/in</watchDirectory>
+		<watchDirectory>mars3d/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>OctaveFlow</id>
+		<id>Mars3dFlow</id>
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
 	</EventGeneratorConfiguration>
 	
 	<EventConsumerConfiguration>
-		<id>octave</id>
-		<description>octave</description>
-		<name>octave</name>
+		<id>mars3d</id>
+		<description>mars3d</description>
+		<name>mars3d</name>
 		
-		<workingDirectory>octave</workingDirectory>
+		<workingDirectory>mars3d</workingDirectory>
 		<performBackup>false</performBackup>
 		
 		<FileEventRule>
@@ -41,7 +41,7 @@
 			<id>MARS3DGeneratorService</id>
 			<description>MARS3DGeneratorService</description>
 			<name>MARS3DActionConfiguration</name>
-			<workingDirectory>octave</workingDirectory>
+			<workingDirectory>mars3d</workingDirectory>
 			<!-- OCTAVE ENV -->
 			<octave>
 			  <sheets>
@@ -67,7 +67,7 @@
 					 -->
 			        <string>source "/usr/share/octave/3.0.5/m/startup/octaverc";</string>
 			        <!-- todo: variables! -->
-			        <string>cd "/home/carlo/work/data/octave/";</string>
+			        <string>cd "/home/carlo/work/data/mars3d/";</string>
 			      </commands>
 			      <definitions/>
 			      <functions>
@@ -87,7 +87,7 @@
 		</MARS3DActionConfiguration>
 		
 		<MetocActionConfiguration>
-			<workingDirectory>octave/nc/</workingDirectory>
+			<workingDirectory>mars3d/nc/</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
@@ -99,7 +99,7 @@
 		</MetocActionConfiguration>
 		
 		<ImageMosaicActionConfiguration>
-			<workingDirectory>octave/nc</workingDirectory>
+			<workingDirectory>mars3d/nc</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
@@ -120,7 +120,7 @@
 		</ImageMosaicActionConfiguration>
 		
 		<RegistryActionConfiguration>
-			<workingDirectory>octave/nc</workingDirectory>
+			<workingDirectory>mars3d/nc</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>DIRECT</dataTransferMethod>

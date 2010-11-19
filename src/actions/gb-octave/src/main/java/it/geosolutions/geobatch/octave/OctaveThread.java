@@ -3,7 +3,6 @@ package it.geosolutions.geobatch.octave;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 public class OctaveThread implements Runnable {
     
     private final static Logger LOGGER = Logger.getLogger(OctaveThread.class.toString());
@@ -96,9 +95,8 @@ public class OctaveThread implements Runnable {
                 
                     if (LOGGER.isLoggable(Level.FINE))
                         LOGGER.fine("Octave extracting a new OctaveExecutableSheet");
-                  
-//TODO
 
+//TODO
 //                sheet.gate.countDown();
 //                    
 //              synchronized (sheet.gate) {
