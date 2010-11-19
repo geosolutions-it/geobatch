@@ -200,7 +200,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
                     if (temporalDomain == null)
                         throw new IllegalStateException("Temporal domain is null");
 
-                    final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmsss'Z'");
+                    final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
                     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
                     // get the temporal domain elements

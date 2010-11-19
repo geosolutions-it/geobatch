@@ -32,21 +32,22 @@ import java.util.logging.Logger;
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  * 
  */
-public abstract class CTDConfiguratorAction<EO extends EventObject>
-        extends BaseAction<EO> {
+public abstract class CTDConfiguratorAction<EO extends EventObject> extends BaseAction<EO> {
 
     /**
      * Default logger
      */
     protected final static Logger LOGGER = Logger.getLogger(CTDConfiguratorAction.class.toString());
+
     protected final CTDActionConfiguration configuration;
 
     /**
-     * Constructs a producer.
-     * The operation name will be the same than the parameter descriptor name.
-     *
+     * Constructs a producer. The operation name will be the same than the parameter descriptor
+     * name.
+     * 
      */
     public CTDConfiguratorAction(CTDActionConfiguration configuration) {
+        super(configuration);
         this.configuration = configuration;
 
         // //////////////////////////

@@ -385,7 +385,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
             final SimpleDateFormat sdfMetadata = new SimpleDateFormat(
                     "yyyy-MM-dd'T'HH:mm:ss.sss'Z'");
             sdfMetadata.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-            final SimpleDateFormat sdfMetoc = new SimpleDateFormat("yyyyMMdd'T'HHmmsss'Z'");
+            final SimpleDateFormat sdfMetoc = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
             sdfMetoc.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 
             while ((inLine = inputStream.readLine()) != null) {

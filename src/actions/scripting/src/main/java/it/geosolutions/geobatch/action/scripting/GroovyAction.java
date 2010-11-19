@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,6 +57,7 @@ public class GroovyAction extends ScriptingAction implements Action<FileSystemMo
     /**
      * Default execute method...
      */
+    @SuppressWarnings("unchecked")
     public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
             throws ActionException {
         try {
@@ -76,7 +78,7 @@ public class GroovyAction extends ScriptingAction implements Action<FileSystemMo
                 throw new IllegalStateException("Configuration is null.");
             }
 
-            //final String configId = getConfiguration().getName();
+            // final String configId = getConfiguration().getName();
 
             listenerForwarder.setTask("Processing event " + event);
 
@@ -92,22 +94,24 @@ public class GroovyAction extends ScriptingAction implements Action<FileSystemMo
 
             File moduleDirectory = new File(moduleFolder);
             try {
+                addFile(moduleDirectory.getParentFile());
                 addFile(moduleDirectory);
             } catch (IOException e) {
-                LOGGER.log(Level.SEVERE,
-                        "Error, could not add URL to system classloader", e);
+                LOGGER.log(Level.SEVERE, "Error, could not add URL to system classloader", e);
             }
             String classpath = System.getProperty("java.class.path");
             File[] moduleFiles = moduleDirectory.listFiles();
-            for (int i = 0; i < moduleFiles.length; i++) {
-                File moduleFile = moduleFiles[i];
-                if (moduleFile.getName().endsWith(".jar")) {
-                    if (classpath.indexOf(moduleFiles[i].getName()) == -1) {
-                        try {
-                            addFile(moduleFiles[i]);
-                        } catch (IOException e) {
-                            LOGGER.log(Level.SEVERE,
-                                    "Error, could not add URL to system classloader", e);
+            if (moduleFiles != null) {
+                for (int i = 0; i < moduleFiles.length; i++) {
+                    File moduleFile = moduleFiles[i];
+                    if (moduleFile.getName().endsWith(".jar")) {
+                        if (classpath.indexOf(moduleFiles[i].getName()) == -1) {
+                            try {
+                                addFile(moduleFiles[i]);
+                            } catch (IOException e) {
+                                LOGGER.log(Level.SEVERE,
+                                        "Error, could not add URL to system classloader", e);
+                            }
                         }
                     }
                 }
@@ -128,12 +132,14 @@ public class GroovyAction extends ScriptingAction implements Action<FileSystemMo
                 engine.eval(new FileReader(script), engineScope);
 
                 Invocable inv = (Invocable) engine;
-                String outputFile = (String) inv.invokeFunction("execute", getConfiguration(),
-                        event.getSource().getAbsolutePath(), listenerForwarder);
+                List<String> outputFiles = (List<String>) inv.invokeFunction("execute",
+                        getConfiguration(), event.getSource().getAbsolutePath(), listenerForwarder);
 
                 // FORWARDING EVENTS
-                events.add(new FileSystemMonitorEvent(new File(outputFile),
-                        FileSystemMonitorNotifications.FILE_ADDED));
+                for (String outputFile : outputFiles) {
+                    events.add(new FileSystemMonitorEvent(new File(outputFile),
+                            FileSystemMonitorNotifications.FILE_ADDED));
+                }
             } catch (FileNotFoundException e) {
                 LOGGER.log(Level.SEVERE, "Can't create an Action for " + getConfiguration(), e);
             } catch (ScriptException e) {
@@ -158,6 +164,7 @@ public class GroovyAction extends ScriptingAction implements Action<FileSystemMo
      * @param moduleFile
      * @throws IOException
      */
+    @SuppressWarnings("unchecked")
     private static void addFile(File moduleFile) throws IOException {
         URL moduleURL = moduleFile.toURI().toURL();
         final Class[] parameters = new Class[] { URL.class };

@@ -58,6 +58,7 @@
 		extends="it.geosolutions.geobatch.catalog.impl.BaseIdentifiable">
 		<value name="workingDirectory" field="workingDirectory" />
 		<value name="performBackup" field="performBackup" usage="optional" />
+		<value name="preserveInput" field="preserveInput" usage="optional" />
 		<collection field="rules"
 			item-type="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule" />
 		<collection field="actions"

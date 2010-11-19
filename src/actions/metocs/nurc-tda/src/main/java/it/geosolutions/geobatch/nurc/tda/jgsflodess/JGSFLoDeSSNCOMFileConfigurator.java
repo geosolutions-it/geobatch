@@ -305,7 +305,7 @@ public class JGSFLoDeSSNCOMFileConfigurator extends MetocConfigurationAction {
 
             // time Variable data
             final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddmm_HHH");
-            final SimpleDateFormat fromSdf = new SimpleDateFormat("yyyyMMdd'T'HHmmsss'Z'");
+            final SimpleDateFormat fromSdf = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
             sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
             fromSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 

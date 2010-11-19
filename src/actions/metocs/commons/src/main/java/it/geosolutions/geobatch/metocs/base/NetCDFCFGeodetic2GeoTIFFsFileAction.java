@@ -95,7 +95,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
     /**
      * Static DateFormat Converter
      */
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmsss'Z'");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
 
     protected NetCDFCFGeodetic2GeoTIFFsFileAction(MetocActionConfiguration configuration)
             throws IOException {

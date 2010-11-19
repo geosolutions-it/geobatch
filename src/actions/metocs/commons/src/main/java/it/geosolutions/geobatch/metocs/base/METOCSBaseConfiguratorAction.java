@@ -248,7 +248,7 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
      * @param TAU
      */
     protected void settingNCGlobalAttributes(double noData, final Date timeOriginDate, int TAU) {
-        final SimpleDateFormat fromSdf = new SimpleDateFormat("yyyyMMdd'T'HHmmsss'Z'");
+        final SimpleDateFormat fromSdf = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
         fromSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 
         ncFileOut.addGlobalAttribute("base_time", fromSdf.format(timeOriginDate));

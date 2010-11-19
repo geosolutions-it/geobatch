@@ -43,7 +43,7 @@ public class SplittingService extends BaseService implements
         try {
             return new SplittingAction(configuration);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error occurred creating scripting Action... "
+            LOGGER.log(Level.SEVERE, "Error occurred creating splitting Action... "
                     + e.getLocalizedMessage(), e);
         }
 

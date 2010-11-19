@@ -9,6 +9,7 @@ package it.geosolutions.geobatch.action.egeos.emsa;
  */
 public enum PackageType {
     EOP,
+    PRO,
     DER,
     OSW,
     OSN

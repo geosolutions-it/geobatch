@@ -231,15 +231,15 @@
             </modules>
         </profile>
         <!--
-    <profile>
-        <id>jgsflodess</id>
-        <modules>
-             <module>gb-geoserver</module>
-             <module>imagemosaic</module>
-             <module>jgsflodess</module>
-        </modules>
-    </profile>
-    -->
+		    <profile>
+		        <id>jgsflodess</id>
+		        <modules>
+		             <module>gb-geoserver</module>
+		             <module>imagemosaic</module>
+		             <module>jgsflodess</module>
+		        </modules>
+		    </profile>
+		    -->
         <profile>
             <id>ascii-grids</id>
             <activation>
@@ -296,6 +296,7 @@
         <profile>
             <id>emsa</id>
             <modules>
+                <module>registry</module>
                 <module>metocs</module>
                 <module>scripting</module>
                 <module>splitting</module>
@@ -329,6 +330,18 @@
                 <module>sas</module>
                 <module>sasgs</module>
                 <module>gb-task-executor</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>registry</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                </property>
+            </activation>
+            <modules>
+                <module>registry</module>
             </modules>
         </profile>
 

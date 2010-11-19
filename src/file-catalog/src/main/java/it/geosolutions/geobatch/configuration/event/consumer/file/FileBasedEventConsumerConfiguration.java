@@ -65,6 +65,11 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     private boolean performBackup;
 
     /**
+     * 
+     */
+    private boolean preserveInput;
+
+    /**
      * The id of the Listener Configuration. <BR>
      * They are needed for a post-load binding; loader logic will put the proper listener
      * configurations into {@link #listenerConfigurations}.
@@ -164,6 +169,14 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
         this.performBackup = performBackup;
     }
 
+    public boolean isPreserveInput() {
+        return this.preserveInput;
+    }
+    
+    public void setPreserveInput(boolean preserveInput) {
+        this.preserveInput = preserveInput;
+    }
+    
     public List<String> getListenerIds() {
         // synchronized(this) {
         // if(listenerIds == null) { // this may happen when loading via XStream
@@ -211,6 +224,7 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
         final FileBasedEventConsumerConfiguration object = new FileBasedEventConsumerConfiguration(
                 super.getId(), super.getName(), super.getDescription(), super.isDirty());
         object.setPerformBackup(performBackup);
+        object.setPreserveInput(preserveInput);
         object.setWorkingDirectory(workingDirectory);
 
         // clone its elements

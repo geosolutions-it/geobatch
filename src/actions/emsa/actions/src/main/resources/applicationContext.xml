@@ -10,4 +10,30 @@
     	<property name="name" value="EMSAScriptingService"/>
     </bean>	      
 
+
+
+	<!-- Environment Initialization -->
+	<bean id="EGEOSWebDeployerService" class="it.geosolutions.geobatch.egeos.deployers.services.EGEOSWebDeployerService">
+		<property name="id" value="EGEOSWebDeployerService"/>
+    	<property name="description" value="EGEOSWebDeployerService"/>
+    	<property name="name" value="EGEOSWebDeployerService"/>
+    </bean>
+
+	<bean id="EGEOSRegistryDeployerService" class="it.geosolutions.geobatch.egeos.deployers.services.EGEOSRegistryDeployerService">
+		<property name="id" value="EGEOSRegistryDeployerService"/>
+    	<property name="description" value="EGEOSRegistryDeployerService"/>
+    	<property name="name" value="EGEOSRegistryDeployerService"/>
+    </bean>
+
+	<bean id="EGEOSGeoServerDeployerService" class="it.geosolutions.geobatch.egeos.deployers.services.EGEOSGeoServerDeployerService">
+		<property name="id" value="EGEOSGeoServerDeployerService"/>
+    	<property name="description" value="EGEOSGeoServerDeployerService"/>
+    	<property name="name" value="EGEOSGeoServerDeployerService"/>
+    </bean>
+
+
+	<bean id="EGEOSAliasRegistrar" class="it.geosolutions.geobatch.egeos.deployers.actions.EGEOSAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+    
 </beans>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>EGEOSRegistryDeployerFlow</id>
+	<name>E-GEOS Registry-Deployer Flow</name>
+	<description>E-GEOS Registry-Deployer Flow</description>
+
+	<workingDirectory>EGEOSWorkingDir/RegistryDeployer</workingDirectory>
+	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>EGEOSWorkingDir/RegistryDeployer/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+
+    <EventConsumerConfiguration>
+		<id>EGEOSRegistryDeployer_config</id>
+		<name>EGEOSRegistryDeployer_config</name>
+		<description>EGEOS Registry-Deployer Configuration</description>
+
+		<listenerId>EGEOSConsumerLoggerListener</listenerId>
+        <listenerId>EGEOSCumulatorListener</listenerId>
+        
+		<workingDirectory>EGEOSWorkingDir/RegistryDeployer</workingDirectory>
+		<performBackup>false</performBackup>
+
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.xml.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+
+		<EGEOSRegistryDeployerConfiguration>
+			<id>EGEOSRegistryDeployerConfiguration</id>
+			<description>EGEOS Registry-Deployer Configuration</description>
+			<name>EGEOSRegistryDeployerConfiguration</name>
+			
+			<listenerId>EGEOSActionLoggerListener</listenerId>
+			<listenerId>EGEOSActionStatusListener</listenerId>
+						
+			<serviceID>EGEOSRegistryDeployerService</serviceID>
+
+            <language>groovy</language>
+            <scriptFile>G:/work/E-GEOS/EMSA/EGEOSRegistryDeployer.groovy</scriptFile>
+            
+		</EGEOSRegistryDeployerConfiguration>
+		
+	</EventConsumerConfiguration>
+
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>EGEOSActionStatusListener</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>EGEOSActionLoggerListener</id>
+
+            <loggerName>EGEOSActionLoggerListener</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>EGEOSConsumerLoggerListener</id>
+
+            <loggerName>EGEOSConsumerLoggerListener</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>EGEOSCumulatorListener</id>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+    
+</FlowConfiguration>

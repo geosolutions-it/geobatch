@@ -32,7 +32,7 @@
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.tgz.*</regex>
+			<regex>.*\.tar.*</regex>
 			<id>r1</id>
 			<description>description</description>
 			<name>test</name>
@@ -49,7 +49,7 @@
 			<serviceID>EMSAScriptingService</serviceID>
 
             <language>groovy</language>
-            <scriptFile>G:/tmp/EMSA.groovy</scriptFile>
+            <scriptFile>G:/work/E-GEOS/EMSA/EMSA.groovy</scriptFile>
 
 		    <properties>
 				 <entry>
@@ -62,6 +62,24 @@
 				  </entry>
 			</properties>
 		</ScriptingConfiguration>
+		
+		<SplittingConfiguration>
+			<id>EMSA_split</id>
+			<description>EMSA Splitting Action</description>
+			<name>EMSASplit</name>
+			
+			<listenerId>EMSAActionLoggerListener</listenerId>
+			<listenerId>EMSAActionStatusListener</listenerId>
+						
+			<serviceID>splittingService</serviceID>
+
+			<serviceIDs>
+				<string>EGEOSWebDeployerFlow</string>
+				<string>EGEOSRegistryDeployerFlow</string>
+				<string>EGEOSGeoServerDeployerFlow</string>
+			</serviceIDs>
+			
+		</SplittingConfiguration>
 		
 	</EventConsumerConfiguration>
 

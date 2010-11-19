@@ -453,17 +453,22 @@ public class FileBasedEventConsumer extends
                 }
 
                 //
-                fileEventList.offer(new FileSystemMonitorEvent(destDataFile,
-                        FileSystemMonitorNotifications.FILE_ADDED));
+                if (!this.configuration.isPreserveInput()) {
+                    fileEventList.offer(new FileSystemMonitorEvent(destDataFile,
+                            FileSystemMonitorNotifications.FILE_ADDED));
 
-                // Backing up files and delete sources.
-                if (this.configuration.isPerformBackup()) {
-                    getListenerForwarder().progressing(
-                            30 + (10f / this.eventsQueue.size() * numProcessedFiles++),
-                            "Creating backup files");
-                    performBackup(sourceDataFile, backup, fileBareName);
-                } else { // schedule for removal
-                    IOUtils.deleteFile(sourceDataFile);
+                    // Backing up files and delete sources.
+                    if (this.configuration.isPerformBackup()) {
+                        getListenerForwarder().progressing(
+                                30 + (10f / this.eventsQueue.size() * numProcessedFiles++),
+                                "Creating backup files");
+                        performBackup(sourceDataFile, backup, fileBareName);
+                    } else { // schedule for removal
+                        IOUtils.deleteFile(sourceDataFile);
+                    }
+                } else {
+                    fileEventList.offer(new FileSystemMonitorEvent(sourceDataFile,
+                            FileSystemMonitorNotifications.FILE_ADDED));
                 }
             }
 
