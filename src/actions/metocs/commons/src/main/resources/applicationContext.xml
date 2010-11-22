@@ -42,6 +42,18 @@
     	</property>
 	</bean>
 	
+	<bean id="OSTIA2GeoTIFFsGeneratorService" class="it.geosolutions.geobatch.metocs.remsens.OSTIA2GeoTIFFsGeneratorService">
+		<property  name="id">
+    		<value>OSTIA2GeoTIFFsGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>OSTIA2GeoTIFFsGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>OSTIA2GeoTIFFsGeneratorService</value>
+    	</property>	
+	</bean>
+	
 	<bean id="NURCActionsAliasRegistrar" class="it.geosolutions.geobatch.metocs.commons.METOCSActionsAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
