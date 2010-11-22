@@ -18,9 +18,13 @@
 		<name>relative humidity</name>
 		<brief>relhum</brief>
 	</metoc>
-	<metoc defaultUom="urn:ogc:def:uom:UCUM::K" type="meteo">
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::cel" type="meteo">
 		<name>sea surface temperature</name>
 		<brief>sst</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::cel" type="meteo">
+		<name>estimated error standard deviation of sst</name>
+		<brief>sst-error</brief>
 	</metoc>
 	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
 		<name>latent heat flux</name>
@@ -62,6 +66,16 @@
 		<name>wind stress direction</name>
 		<brief>windstress-dir</brief>
 	</metoc>
+
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::deg" type="meteo">
+		<name>wind direction</name>
+		<brief>wind-direction</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m/s" type="meteo">
+		<name>wind speed</name>
+		<brief>wind-speed</brief>
+	</metoc>
+
 	<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="meteo">
 		<name>terrain height</name>
 		<brief>terheight</brief>
@@ -80,12 +94,26 @@
 	</metoc>
 	
 	<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="wave">
+		<name>sea surface swell wave significant height</name>
+		<brief>hs</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="wave">
+		<name>dominant wave length</name>
+		<brief>wl</brief>
+	</metoc>
+
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="wave">
 		<name>significant wave height</name>
 		<brief>sigwavheight</brief>
 	</metoc>
 	<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="wave">
 		<name>maximun wave height</name>
 		<brief>maxwavheight</brief>
+	</metoc>
+
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::deg" type="wave">
+		<name>sea surface swell wave to direction</name>
+		<brief>dirmet</brief>
 	</metoc>
 	<metoc defaultUom="urn:ogc:def:uom:UCUM::deg" type="wave">
 		<name>mean wave direction</name>
