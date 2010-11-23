@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.nurc.sem.rep10;
 
 import it.geosolutions.geobatch.nurc.sem.rep10.mars3d.MARS3DActionConfiguration;
+import it.geosolutions.geobatch.octave.OctaveCommand;
 import it.geosolutions.geobatch.octave.OctaveEnv;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveFunctionFile;
@@ -50,6 +51,8 @@ public class OctaveAliasRegistrar extends AliasRegistrar {
                 "sheet",OctaveExecutableSheet.class);
         registry.putAlias(
                 "sheet",OctaveFunctionSheet.class);
+        registry.putAlias(
+                "OctaveCommand",OctaveCommand.class);
         registry.putAlias(
                 "OctaveFunction",OctaveFunctionFile.class);
         registry.putAlias(

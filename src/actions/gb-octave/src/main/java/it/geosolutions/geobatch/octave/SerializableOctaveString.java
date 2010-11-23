@@ -67,6 +67,11 @@ public class SerializableOctaveString  extends SerializableOctaveObject<OctaveSt
         _sync=true;
     }
     
+    @Override
+    public Object clone(){
+        return new SerializableOctaveString(new String(this.getName()), new String(this._val));
+    }
+
     /**
      * This is executed by getValue()
      * 
@@ -74,9 +79,26 @@ public class SerializableOctaveString  extends SerializableOctaveObject<OctaveSt
      * is never called by XStream so, to synchronize
      * variables we need to call it manually.
      */
+    @Override
     public void setVal() {
         reSetVal(_val);
     }
     
+    @Override
+    protected final OctaveString getOctObj(){
+        if (super._obj!=null)
+            return super._obj;
+        else {
+            setOctObj(new OctaveString(getName()));
+        }
+        return super._obj;
+    }
+
+    @Override
+    protected void setOctObj(OctaveString obj) {
+        // TODO check if obj!=null throwing error
+        super._obj=obj;
+        
+    }
     
 }

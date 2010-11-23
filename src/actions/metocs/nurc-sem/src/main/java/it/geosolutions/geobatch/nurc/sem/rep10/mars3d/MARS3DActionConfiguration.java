@@ -46,9 +46,9 @@ public class MARS3DActionConfiguration extends ActionConfiguration implements Co
     private String workingDirectory;
     
     @XStreamAlias("octave")
-    private OctaveEnv env;
+    private OctaveEnv<OctaveExecutableSheet> env;
     
-    public final OctaveEnv getEnv(){
+    public final OctaveEnv<OctaveExecutableSheet> getEnv(){
         return env;
     }
 

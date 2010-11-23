@@ -37,6 +37,8 @@ public class OctaveAliasRegistrar extends AliasRegistrar {
         registry.putAlias(
                 "OctaveActionConfiguration",OctaveConfiguration.class);
         registry.putAlias(
+                "OctaveCommand",OctaveCommand.class);
+        registry.putAlias(
                 "OctaveFunction",OctaveFunctionFile.class);
         registry.putAlias(
                 "OctaveFile",SerializableOctaveFile.class);

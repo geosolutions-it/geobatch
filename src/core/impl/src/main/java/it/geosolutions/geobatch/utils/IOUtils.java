@@ -1268,11 +1268,13 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see it.geosolutions.geobatch.FileBaseCatalogHelper#findLocation(java.lang .String,
-     * java.io.File)
+
+    /**
+     * @note can return null
+     * @param location
+     * @param directory 
+     * @return
+     * @throws IOException
      */
     public static File findLocation(String location, File directory) throws IOException {
 

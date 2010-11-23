@@ -22,17 +22,49 @@
 
 package it.geosolutions.geobatch.nurc.sem.rep10.mars3d;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
+import it.geosolutions.geobatch.global.CatalogHolder;
+import it.geosolutions.geobatch.utils.IOUtils;
 
 public class MARS3DGeneratorService
     extends BaseService 
     implements ActionService<FileSystemMonitorEvent, MARS3DActionConfiguration> {
 
-    public boolean canCreateAction(final MARS3DActionConfiguration configuration) {
-// TODO test if this action can run given the configuration this means:
-// 1 check if the m file is present and is readable
+    public boolean canCreateAction(final MARS3DActionConfiguration configuration)  {
+        
+        /**
+         * Obtaining the Absolute path of the working dir
+         * 
+* @TODO open a ticket to get getBaseDirectory() into Catalog interface
+         */
+        FileBaseCatalog c=(FileBaseCatalog) CatalogHolder.getCatalog();
+        File fo=null;
+        try {
+            fo=IOUtils.findLocation(configuration.getWorkingDirectory(),new File(c.getBaseDirectory()));
+        }catch (IOException ioe){
+            return false;
+        }
+        String base_dir;
+        
+        if (fo!=null)
+            base_dir=fo.toString();
+        else {
+// TODO LOG            throw new FileNotFoundException("Unable to locate the working dir");
+            return false;
+        }
+        
+        // NOW THE WORKING DIR IS AN ABSOLUTE PATH
+        configuration.setWorkingDirectory(base_dir);
+        
+//TODO check if the m file is present and is readable
+        
         return true;
     }
 
