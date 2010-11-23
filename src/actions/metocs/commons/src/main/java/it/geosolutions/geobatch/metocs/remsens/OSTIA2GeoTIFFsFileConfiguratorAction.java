@@ -19,31 +19,32 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.metocs.base;
+package it.geosolutions.geobatch.metocs.remsens;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
+import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
-import it.geosolutions.geobatch.metocs.MetocConfigurationAction;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
 import it.geosolutions.geobatch.utils.IOUtils;
-import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Queue;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -52,9 +53,11 @@ import javax.media.jai.JAI;
 
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.geometry.GeneralEnvelope;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 
 import ucar.ma2.Array;
-import ucar.ma2.Index;
+import ucar.ma2.DataType;
 import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
@@ -62,25 +65,20 @@ import ucar.nc2.Variable;
 
 /**
  * 
- * Public class to split NetCDF_CF Geodetic to GeoTIFFs and consequently send them to GeoServer
- * along with their basic metadata.
- * 
- * For the NetCDF_CF Geodetic file we assume that it contains georectified geodetic grids and
- * therefore has a maximum set of dimensions as follows:
- * 
- * lat { lat:long_name = "Latitude" lat:units = "degrees_north" }
- * 
- * lon { lon:long_name = "Longitude" lon:units = "degrees_east" }
- * 
- * time { time:long_name = "time" time:units = "seconds since 1980-1-1 0:0:0" }
- * 
- * depth { depth:long_name = "depth"; depth:units = "m"; depth:positive = "down"; }
- * 
- * height { height:long_name = "height"; height:units = "m"; height:positive = "up"; }
- * 
+ * Public class to split OSTIA files to GeoTIFFs and consequently send them to GeoServer along with
+ * their basic metadata.
  */
-public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationAction {
+public class OSTIA2GeoTIFFsFileConfiguratorAction extends
+        GeoServerConfiguratorAction<FileSystemMonitorEvent> {
 
+    public static final long OSTIA_START_TIME;
+
+    static {
+        GregorianCalendar ostiaCalendar = new GregorianCalendar(1981, 00, 01, 00, 00, 00);
+        ostiaCalendar.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+        OSTIA_START_TIME = ostiaCalendar.getTimeInMillis();
+    }
+    
     /**
      * GeoTIFF Writer Default Params
      */
@@ -92,15 +90,9 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
 
     private static final String DEFAULT_COMPRESSION_TYPE = "LZW";
 
-    /**
-     * Static DateFormat Converter
-     */
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
-
-    protected NetCDFCFGeodetic2GeoTIFFsFileAction(MetocActionConfiguration configuration)
-            throws IOException {
+    protected OSTIA2GeoTIFFsFileConfiguratorAction(final GeoServerActionConfiguration configuration)
+            throws IOException, NoSuchAuthorityCodeException, FactoryException {
         super(configuration);
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
     }
 
     /**
@@ -109,6 +101,13 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
     public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
             throws ActionException {
 
+        /**
+         * Static DateFormat Converter
+         */
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+
+        
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("Starting with processing...");
         NetcdfFile ncFileIn = null;
@@ -116,8 +115,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
         try {
             // looking for file
             if (events.size() != 1)
-                throw new IllegalArgumentException("Wrong number of elements for this action: "
-                        + events.size());
+                throw new IllegalArgumentException("Wrong number of elements for this action: " + events.size());
             FileSystemMonitorEvent event = events.remove();
 
             // //
@@ -155,8 +153,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
 
             if (fileNameFilter != null) {
                 if ((filePrefix.equals(fileNameFilter) || filePrefix.matches(fileNameFilter))
-                        && ("nc".equalsIgnoreCase(fileSuffix) || "netcdf"
-                                .equalsIgnoreCase(fileSuffix))) {
+                        && ("nc".equalsIgnoreCase(fileSuffix) || "netcdf".equalsIgnoreCase(fileSuffix))) {
                     // etj: are we missing something here?
                     baseFileName = filePrefix;
                 }
@@ -169,39 +166,36 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
                 throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
             }
 
+            final String ostiaDir = "rep10_OSTIA";
             inputFileName = FilenameUtils.getBaseName(inputFileName);
             inputFileName = (inputFileName.lastIndexOf("-") > 0 ? inputFileName.substring(0,
                     inputFileName.lastIndexOf("-")) : inputFileName);
             inputFile = new File(event.getSource().getAbsolutePath());
             ncFileIn = NetcdfFile.open(inputFile.getAbsolutePath());
-            final File outDir = (!configuration.isTimeUnStampedOutputDir() ? Utilities
-                    .createTodayDirectory(workingDir, inputFileName) : Utilities.createDirectory(
-                    workingDir, inputFileName));
+            final File outDir = Utilities.createTodayDirectory(workingDir, inputFileName);
 
-            // input DIMENSIONS
-            final Dimension timeDim = ncFileIn.findDimension(METOCSActionsIOUtils.TIME_DIM);
-            final boolean timeDimExists = timeDim != null;
+            final String TAU = "0";
+            final double noData = -32768;
 
-            final String baseTime = ncFileIn.findGlobalAttribute("base_time").getStringValue();
-            final String TAU = String.valueOf(ncFileIn.findGlobalAttribute("tau").getNumericValue()
-                    .intValue());
-            final double noData = ncFileIn.findGlobalAttribute("nodata").getNumericValue()
-                    .doubleValue();
+            final Variable timeOriginalVar = ncFileIn.findVariable("time");
+            final Array timeOriginalData = timeOriginalVar.read();
+            
+            long timeValue = timeOriginalData.getLong(timeOriginalData.getIndex().set(0));
+            timeValue = OSTIA_START_TIME + timeValue * 1000;
 
-            final Dimension depthDim = ncFileIn.findDimension(METOCSActionsIOUtils.DEPTH_DIM);
-            final boolean depthDimExists = depthDim != null;
+            final Calendar timeInstant = new GregorianCalendar(TimeZone.getTimeZone("GMT+0"));
+            timeInstant.setTimeInMillis(timeValue);
+            
+            final SimpleDateFormat fromSdf = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
+            fromSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 
-            final Dimension heightDim = ncFileIn.findDimension(METOCSActionsIOUtils.HEIGHT_DIM);
-            final boolean heightDimExists = heightDim != null;
+            final String time = fromSdf.format(timeInstant.getTimeInMillis());
 
             final Dimension latDim = ncFileIn.findDimension(METOCSActionsIOUtils.LAT_DIM);
             final boolean latDimExists = latDim != null;
 
             final Dimension lonDim = ncFileIn.findDimension(METOCSActionsIOUtils.LON_DIM);
             final boolean lonDimExists = lonDim != null;
-
-            // dimensions' checks
-            final boolean hasZeta = depthDimExists || heightDimExists;
 
             if (!latDimExists || !lonDimExists) {
                 if (LOGGER.isLoggable(Level.SEVERE))
@@ -211,48 +205,23 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
                         "Invalid input NetCDF-CF Geodetic file: longitude and/or latitude dimensions could not be found!");
             }
 
-            int nTime = timeDimExists ? timeDim.getLength() : 0;
-            int nZeta = 0;
             int nLat = latDim.getLength();
             int nLon = lonDim.getLength();
 
-            // input VARIABLES
-            final Variable timeOriginalVar = ncFileIn.findVariable(METOCSActionsIOUtils.TIME_DIM);
-            final Array timeOriginalData = timeOriginalVar.read();
-            final Index timeOriginalIndex = timeOriginalData.getIndex();
-
             final Variable lonOriginalVar = ncFileIn.findVariable(METOCSActionsIOUtils.LON_DIM);
-
             final Variable latOriginalVar = ncFileIn.findVariable(METOCSActionsIOUtils.LAT_DIM);
 
             final Array latOriginalData = latOriginalVar.read();
             final Array lonOriginalData = lonOriginalVar.read();
 
-            // //
-            //
-            // Depth related variables
-            //
-            // //
-            Variable zetaOriginalVar = null;
-            Array zetaOriginalData = null;
-
-            if (hasZeta) {
-                zetaOriginalVar = ncFileIn
-                        .findVariable(depthDimExists ? METOCSActionsIOUtils.DEPTH_DIM
-                                : METOCSActionsIOUtils.HEIGHT_DIM);
-                if (zetaOriginalVar != null) {
-                    nZeta = depthDimExists ? depthDim.getLength() : heightDim.getLength();
-                    zetaOriginalData = zetaOriginalVar.read();
-                }
-            }
-
-            double[] bbox = METOCSActionsIOUtils.computeExtrema(latOriginalData, lonOriginalData,
-                    latDim, lonDim);
+            float[] bbox = METOCSActionsIOUtils.computeExtremaAsFloat(latOriginalData, lonOriginalData, latDim, lonDim);
 
             // building Envelope
             final GeneralEnvelope envelope = new GeneralEnvelope(METOCSActionsIOUtils.WGS_84);
-            envelope.setRange(0, bbox[0], bbox[2]);
-            envelope.setRange(1, bbox[1], bbox[3]);
+                        
+            //Using String format to avoid loss of precision from Float to Double
+            envelope.setRange(0, Double.parseDouble(Float.toString(bbox[0])), Double.parseDouble(Float.toString(bbox[2])));
+            envelope.setRange(1, Double.parseDouble(Float.toString(bbox[1])), Double.parseDouble(Float.toString(bbox[3])));
 
             // Storing variables Variables as GeoTIFFs
             final List<Variable> foundVariables = ncFileIn.getVariables();
@@ -271,14 +240,33 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
                     variables.add(varName);
 
                     boolean canProceed = false;
+                    
+                    if (varName.equalsIgnoreCase("analysed_sst")){
+                        varName = "sst";
+                    } else if (varName.equalsIgnoreCase("analysis_error")){
+                        varName = "sst-error";
+                    } else {
+                        continue;
+                    }
+                    double offset = 0.0;
+                    double scale = 1.0;
+                    double [] scaleFactors = null;
+//                    Attribute offsetAtt = var.findAttribute("add_offset");
+                    Attribute scaleAtt = var.findAttribute("scale_factor");
 
+//                    offset = (offsetAtt != null ? Double.parseDouble(Float.toString(offsetAtt.getNumericValue().floatValue())) : offset);
+                    scale = (scaleAtt != null ? Double.parseDouble(Float.toString(scaleAtt.getNumericValue().floatValue())) : scale);
+                    
+                    //Converting to celsisu degrees. Offset isn't taken into account.
+                    if (offset != 0.0 || scale != 1.0){
+                        scaleFactors = new double[]{offset, scale};
+                    }
                     final File gtiffOutputDir = new File(outDir.getAbsolutePath()
                             + File.separator
-                            + inputFileName
+                            + ostiaDir
                             + "_"
                             + varName.replaceAll("_", "")
-                            + (!configuration.isTimeUnStampedOutputDir() ? "_T"
-                                    + new Date().getTime() : ""));
+                            +  "_T" + new Date().getTime());
 
                     if (!gtiffOutputDir.exists())
                         canProceed = gtiffOutputDir.mkdirs();
@@ -289,57 +277,35 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
                         // //
                         // defining the SampleModel data type
                         // //
-                        final SampleModel outSampleModel = Utilities.getSampleModel(var
-                                .getDataType(), nLon, nLat, 1);
+                        final SampleModel outSampleModel = Utilities.getSampleModel(DataType.DOUBLE, nLon, nLat, 1);
 
                         Array originalVarArray = var.read();
-                        Attribute missingValue = var.findAttribute("missing_value");
+                        Attribute missingValue = var.findAttribute("_FillValue");
                         double localNoData = noData;
                         if (missingValue != null) {
                             localNoData = missingValue.getNumericValue().doubleValue();
                         }
-                        final boolean hasLocalZLevel = NetCDFConverterUtilities.hasThisDimension(
-                                var, METOCSActionsIOUtils.DEPTH_DIM)
-                                || NetCDFConverterUtilities.hasThisDimension(var,
-                                        METOCSActionsIOUtils.HEIGHT_DIM);
 
-                        for (int z = 0; z < (hasLocalZLevel ? nZeta : 1); z++) {
-                            for (int t = 0; t < (timeDimExists ? nTime : 1); t++) {
-                                WritableRaster userRaster = Raster.createWritableRaster(
-                                        outSampleModel, null);
+                        WritableRaster userRaster = Raster.createWritableRaster(outSampleModel, null);
+                       
 
-                                METOCSActionsIOUtils.write2DData(userRaster, var, originalVarArray,
-                                        false, false, (hasLocalZLevel ? new int[] { t, z, nLat,
-                                                nLon } : new int[] { t, nLat, nLon }), true);
+                        METOCSActionsIOUtils.write2DData(userRaster, var, originalVarArray,
+                                false, false, new int[] {0, nLat, nLon }, true, null, false, scaleFactors);
 
-                                // ////
-                                // producing the Coverage here...
-                                // ////
-                                final StringBuilder coverageName = new StringBuilder(inputFileName)
-                                        .append("_").append(varName.replaceAll("_", ""))
-                                        .append("_").append(
-                                                hasLocalZLevel ? elevLevelFormat(zetaOriginalData
-                                                        .getDouble(zetaOriginalData.getIndex().set(
-                                                                z))) : "0000.000").append("_")
-                                        .append(
-                                                hasLocalZLevel ? elevLevelFormat(zetaOriginalData
-                                                        .getDouble(zetaOriginalData.getIndex().set(
-                                                                z))) : "0000.000").append("_")
-                                        .append(baseTime).append("_").append(
-                                                Integer.parseInt(TAU) == 0 ? baseTime
-                                                        : timeDimExists ? sdf
-                                                                .format(getTimeInstant(
-                                                                        timeOriginalData,
-                                                                        timeOriginalIndex, t))
-                                                                : "00000000T000000000Z").append("_")
-                                        .append(TAU).append("_").append(localNoData);
+                        // ////
+                        // producing the Coverage here...
+                        // ////
+                        final StringBuilder coverageName = new StringBuilder("Ostia_MULTI-OSTIA")
+                                .append("_").append(varName.replaceAll("_", ""))
+                                .append("_").append("0000.000").append("_")
+                                .append("0000.000").append("_")
+                                .append(time).append("_").append(time).append("_")
+                                .append(TAU).append("_").append(localNoData);
 
-                                File gtiffFile = Utilities.storeCoverageAsGeoTIFF(gtiffOutputDir,
-                                        coverageName.toString(), varName, userRaster, noData,
-                                        envelope, DEFAULT_COMPRESSION_TYPE,
-                                        DEFAULT_COMPRESSION_RATIO, DEFAULT_TILE_SIZE);
-                            }
-                        }
+                        File gtiffFile = Utilities.storeCoverageAsGeoTIFF(gtiffOutputDir,
+                                coverageName.toString(), varName, userRaster, noData,
+                                envelope, DEFAULT_COMPRESSION_TYPE,
+                                DEFAULT_COMPRESSION_RATIO, DEFAULT_TILE_SIZE);
 
                         // ... setting up the appropriate event for the next
                         // action
@@ -373,54 +339,4 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
             }
         }
     }
-
-    /**
-     * @param timeOriginalData
-     * @param timeOriginalIndex
-     * @param t
-     * @return
-     */
-    private static long getTimeInstant(final Array timeOriginalData, final Index timeOriginalIndex,
-            int t) {
-        long timeValue = timeOriginalData.getLong(timeOriginalIndex.set(t));
-        timeValue = METOCSActionsIOUtils.startTime + timeValue * 1000;
-
-        final Calendar roundedTimeInstant = new GregorianCalendar(TimeZone.getTimeZone("GMT+0"));
-        roundedTimeInstant.setTimeInMillis(timeValue);
-
-        int minutes = roundedTimeInstant.get(Calendar.MINUTE);
-        int hours = roundedTimeInstant.get(Calendar.HOUR);
-
-        if (minutes > 50)
-            hours++;
-
-        roundedTimeInstant.set(Calendar.SECOND, 0);
-        roundedTimeInstant.set(Calendar.MINUTE, 0);
-        roundedTimeInstant.set(Calendar.HOUR, hours);
-
-        return roundedTimeInstant.getTimeInMillis();
-    }
-
-    /**
-     * 
-     * @param d
-     * @return
-     */
-    private static String elevLevelFormat(double d) {
-        String[] parts = String.valueOf(d).split("\\.");
-
-        String integerPart = parts[0];
-        String decimalPart = parts[1];
-
-        while (integerPart.length() % 4 != 0)
-            integerPart = "0" + integerPart;
-
-        decimalPart = decimalPart.length() > 3 ? decimalPart.substring(0, 3) : decimalPart;
-
-        while (decimalPart.length() % 3 != 0)
-            decimalPart = decimalPart + "0";
-
-        return integerPart + "." + decimalPart;
-    }
-
 }

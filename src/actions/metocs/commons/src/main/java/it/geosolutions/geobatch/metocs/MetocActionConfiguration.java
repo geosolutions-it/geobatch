@@ -48,6 +48,8 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     private String metocDictionaryPath;
 
     private String metocHarvesterXMLTemplatePath;
+    
+    private String cruiseName;
 
     /**
      * @return the metocDictionaryPath
@@ -130,6 +132,14 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
         this.storeFilePrefix = storeFilePrefix;
     }
 
+    public String getCruiseName() {
+        return cruiseName;
+    }
+
+    public void setCruiseName(String cruiseName) {
+        this.cruiseName = cruiseName;
+    }
+
     public String getConfigId() {
         return configId;
     }
@@ -166,7 +176,7 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
         configuration.setMetocHarvesterXMLTemplatePath(metocHarvesterXMLTemplatePath);
         configuration.setPackComponents(packComponents);
         configuration.setTimeUnStampedOutputDir(timeUnStampedOutputDir);
-
+        configuration.setCruiseName(cruiseName);
         return configuration;
     }
 
