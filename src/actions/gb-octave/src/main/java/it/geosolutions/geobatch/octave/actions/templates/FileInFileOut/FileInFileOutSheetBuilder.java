@@ -20,16 +20,19 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.nurc.sem.rep10.mars3d;
+package it.geosolutions.geobatch.octave.actions.templates.FileInFileOut;
 
-import it.geosolutions.geobatch.octave.DefaultFunctionBuilder;
+import it.geosolutions.geobatch.octave.DefaultSheetBuilder;
+import it.geosolutions.geobatch.octave.OctaveCommand;
+import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveFunctionFile;
 import it.geosolutions.geobatch.octave.SerializableOctaveFile;
 import it.geosolutions.geobatch.octave.SerializableOctaveObject;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MARS3DFunctionBuilder extends DefaultFunctionBuilder {
+public class FileInFileOutSheetBuilder extends DefaultSheetBuilder {
     private final String filein,fileout;
     
     /**
@@ -37,7 +40,7 @@ public class MARS3DFunctionBuilder extends DefaultFunctionBuilder {
      * @param file_in value of the input file (absolute path)
      * @param file_out value of the output file (absolute path)
      */
-    public MARS3DFunctionBuilder(String file_in,String file_out){
+    public FileInFileOutSheetBuilder(String file_in,String file_out){
         super();
         filein=file_in;
         fileout=file_out;
@@ -48,17 +51,20 @@ public class MARS3DFunctionBuilder extends DefaultFunctionBuilder {
      * mars3d(file_in,file_out);
      */
     @Override
-    protected String buildFunction(OctaveFunctionFile off) throws Exception{
-        // name should be -> mars3d
-        String function=off.getName();
-        
+    protected OctaveExecutableSheet buildSheet(OctaveFunctionFile off) throws Exception{
+        // returns should be an empty list
+// TODO try to set this to null
+        List<SerializableOctaveObject<?>> returns=off.getReturns();
+        // to keep the builded function string (should be 1 element)
+        List<OctaveCommand> commands=new ArrayList<OctaveCommand>();
+
         /**
          * Transforming function arguments to sheet 
          * variable definitions
          */
-        Vector<SerializableOctaveObject<?>> arguments=off.getArguments();
+        List<SerializableOctaveObject<?>> arguments=off.getDefinitions();
         
-        if(off.getArguments().size()==2){
+        if(off.getDefinitions().size()==2){
             // setting value of arguments
             /**
              * get the first variable definition which is supposed
@@ -68,7 +74,7 @@ public class MARS3DFunctionBuilder extends DefaultFunctionBuilder {
              * This will be transformed by the DefaultFunctionBuilder.preprocess
              * into a sheet variable definition
              */
-            ((SerializableOctaveFile) off.getArguments().get(0)).reSetVal(filein);
+            ((SerializableOctaveFile) arguments.get(0)).reSetVal(filein);
 
             /**
              * get the second variable definition which is supposed
@@ -79,12 +85,12 @@ public class MARS3DFunctionBuilder extends DefaultFunctionBuilder {
              * This will be transformed by the DefaultFunctionBuilder.preprocess
              * into a sheet variable definition
              */
-            ((SerializableOctaveFile) off.getArguments().get(1)).reSetVal(fileout);
+            ((SerializableOctaveFile) arguments.get(1)).reSetVal(fileout);
         }
         else
             throw new Exception("Bad argument list in function: "+off.getName());
-        
-        String script=function;
+        // name should be -> mars3d
+        String script=off.getName();//Command(0).getCommand();
         
         if (arguments!=null){
             /**
@@ -112,12 +118,16 @@ public class MARS3DFunctionBuilder extends DefaultFunctionBuilder {
              * ... function(arg1);
              */
             else
-                throw new Exception("Argument list of "+function+
+                throw new Exception("Argument list of "+off.getName()+
                         " should contain at least 2 arguments!");
         } //endif arguments!=null
         else
-            throw new Exception("Argument list of "+function+" is empty!");
+            throw new Exception("Argument list of "+off.getName()+" is empty!");
         
-        return script;
+        commands.add(new OctaveCommand(script));
+        
+        // function arguments becomes sheet definitions
+        // function returns becomes sheet returns
+        return new OctaveExecutableSheet("MARS3D_FUNCTION_SHEET"+this.fileout,commands,arguments,returns);
     }
 }

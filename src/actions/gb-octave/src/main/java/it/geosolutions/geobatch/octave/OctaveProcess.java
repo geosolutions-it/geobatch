@@ -22,7 +22,6 @@
 
 package it.geosolutions.geobatch.octave;
 
-import java.util.Queue;
 import java.util.logging.Logger;
 
 import javax.jms.ConnectionFactory;

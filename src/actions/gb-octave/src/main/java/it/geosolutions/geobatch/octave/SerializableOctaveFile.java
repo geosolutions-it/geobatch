@@ -42,6 +42,12 @@ public class SerializableOctaveFile extends SerializableOctaveString{
         super(name,val);
     }
     
+    public SerializableOctaveFile(String name,String val, boolean in, boolean out){
+        super(name,val);
+        _output=out;
+        _input=in;
+    }
+    
     /**
      * is it an input file?
      * @return
@@ -50,11 +56,30 @@ public class SerializableOctaveFile extends SerializableOctaveString{
         return _input;
     }
     
+    public void setInput(){
+        _input=true;
+    }
+    
     /**
      * is it an output file?
      * @return
      */
     public boolean isOutput(){
         return _output;
+    }
+    
+    public void setOutput(){
+        _output=true;
+    }
+    
+    @Override
+    public Object clone(){
+        SerializableOctaveFile sof=
+            new SerializableOctaveFile(
+                    new String(this.getName()),
+                    new String(this.getValue()),
+                    isInput(),
+                    isOutput());
+        return sof;
     }
 }

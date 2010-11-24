@@ -22,11 +22,11 @@
 
 package it.geosolutions.geobatch.octave;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Function File
@@ -65,9 +65,15 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
     SerializableOctaveFile.class,
     SerializableOctaveString.class,
     SerializableOctaveObject.class})
-public class OctaveFunctionFile{
+public class OctaveFunctionFile extends OctaveExecutableSheet{
+/**
+ * TODO this is essentially an OctaveExecutableSheet !!!
+ * add only an 'executable' flag
+ */
+    @XStreamOmitField
+    protected boolean executable=false;
     
-    
+    /*
     //< function name
     @XStreamAlias("name")
     @XStreamAsAttribute
@@ -75,15 +81,18 @@ public class OctaveFunctionFile{
     
     //< returning name variable list to set
     //@XStreamImplicit(itemFieldName="ret")
-    private Vector<SerializableOctaveObject<?>> returns;
+    private List<SerializableOctaveObject<?>> returns;
     
     //< arguments values
     //@XStreamImplicit(itemFieldName="arg")
-    private Vector<SerializableOctaveObject<?>> arguments;
-    
+    private List<SerializableOctaveObject<?>> arguments;
+*/    
     public OctaveFunctionFile(){
-        arguments=new Vector<SerializableOctaveObject<?>>();
-        returns=new Vector<SerializableOctaveObject<?>>();
+        super("EMPTY_NAME_FUNCTION",
+                new OctaveCommand(""),
+                new ArrayList<SerializableOctaveObject<?>>(),
+                new ArrayList<SerializableOctaveObject<?>>());
+        executable=false;
     }
     
     /**
@@ -95,16 +104,35 @@ public class OctaveFunctionFile{
      * @param n the function name to call
      */
     public OctaveFunctionFile(String n){
-        function=n;
-        arguments=new Vector<SerializableOctaveObject<?>>();
-        returns=new Vector<SerializableOctaveObject<?>>();
+        super("EMPTY_NAME_FUNCTION",
+                new OctaveCommand(n),
+                new ArrayList<SerializableOctaveObject<?>>(),
+                new ArrayList<SerializableOctaveObject<?>>());
+        executable=false;
     }
     
-    public Vector<SerializableOctaveObject<?>> getReturns(){
+    /**
+     * @note: this is NOT a copy constructor, use clone instead
+     * @param es an OctaveFunctionFile
+     */
+    public OctaveFunctionFile(OctaveExecutableSheet es){
+        super(es.getName(),
+                es.getCommands(),
+                es.getDefinitions(),
+                es.getReturns());
+        executable=false;
+    }
+    
+    @Override
+    public Object clone(){
+        return new OctaveFunctionFile((OctaveExecutableSheet)super.clone());
+    }
+/*    
+    public List<SerializableOctaveObject<?>> getReturns(){
         return returns;
     }
     
-    public Vector<SerializableOctaveObject<?>> getArguments(){
+    public List<SerializableOctaveObject<?>> getArguments(){
         return arguments;
     }
     
@@ -122,5 +150,5 @@ public class OctaveFunctionFile{
     public void pushReturn(SerializableOctaveObject<?> soo){
         returns.add(soo);
     }
-
+*/
 }

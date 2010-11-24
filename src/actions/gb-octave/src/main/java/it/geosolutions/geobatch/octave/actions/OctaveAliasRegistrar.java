@@ -20,8 +20,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.octave;
+package it.geosolutions.geobatch.octave.actions;
 
+import it.geosolutions.geobatch.octave.OctaveCommand;
+import it.geosolutions.geobatch.octave.OctaveEnv;
+import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
+import it.geosolutions.geobatch.octave.OctaveFunctionFile;
+import it.geosolutions.geobatch.octave.OctaveFunctionSheet;
+import it.geosolutions.geobatch.octave.SerializableOctaveFile;
+import it.geosolutions.geobatch.octave.SerializableOctaveObject;
+import it.geosolutions.geobatch.octave.SerializableOctaveString;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 
@@ -35,7 +43,13 @@ public class OctaveAliasRegistrar extends AliasRegistrar {
     public OctaveAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
         registry.putAlias(
-                "OctaveActionConfiguration",OctaveConfiguration.class);
+                "octave",OctaveEnv.class);
+        registry.putAlias(
+                "sheet",OctaveExecutableSheet.class);
+        registry.putAlias(
+                "sheet",OctaveFunctionSheet.class);
+        registry.putAlias(
+                "OctaveCommand",OctaveCommand.class);
         registry.putAlias(
                 "OctaveFunction",OctaveFunctionFile.class);
         registry.putAlias(
@@ -44,6 +58,5 @@ public class OctaveAliasRegistrar extends AliasRegistrar {
                 "OctaveString",SerializableOctaveString.class);
         registry.putAlias(
                 "var",SerializableOctaveObject.class);
-        
     }
 }

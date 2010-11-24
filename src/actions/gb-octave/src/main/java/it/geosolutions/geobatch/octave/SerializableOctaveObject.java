@@ -33,16 +33,16 @@ public abstract class SerializableOctaveObject<T extends OctaveObject>{
     
     /*
      * Can be IN or OUT variable value
-     * if OUT:
+     * if OUT (out from octave):
      *  will be filled using javaOctave
-     * if IN:
+     * if IN (in from octave):
      *  will be filled using setVal and
      *  its value will be transferred to
      *  octave using javaOctave before
      *  its usage.
      */
     @XStreamOmitField
-    private T _obj; // todo <T extends Number> or <T extends ...>
+    protected T _obj; // todo <T extends Number> or <T extends ...>
     
     //< contains the name of this variable
     @XStreamAlias("name")
@@ -62,16 +62,12 @@ public abstract class SerializableOctaveObject<T extends OctaveObject>{
         _name=name;
     }
     
-    protected final T getOctObj(){
-        return _obj;
-    }
+    @Override
+    public abstract Object clone();
     
-    protected void setOctObj(T obj){
-        // TODO: we may want to 
-        //check if _obj is already !null
-        // throwing exception
-        _obj=obj;
-    }
+    protected abstract T getOctObj();
+    
+    protected abstract void setOctObj(T obj);
     
     public abstract void setVal();
     

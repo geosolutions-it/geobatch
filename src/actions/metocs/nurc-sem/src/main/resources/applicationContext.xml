@@ -95,8 +95,13 @@
 	    		<value>MARS3DGeneratorService</value>
 	    	</property>	
 		</bean>
-    
-    <bean id="OctaveAliasRegistrar" class="it.geosolutions.geobatch.nurc.sem.rep10.OctaveAliasRegistrar" lazy-init="false">
+		
+		<bean id="FileInFileOutAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.templates.FileInFileOut.FileInFileOutAliasRegistrar" lazy-init="false">
+        	<constructor-arg ref="aliasRegistry" />
+    	</bean>
+     
+    <!-- OCTAVE -->
+    <bean id="OctaveAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.OctaveAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
 

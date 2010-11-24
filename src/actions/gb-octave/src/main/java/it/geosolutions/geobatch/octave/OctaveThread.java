@@ -71,9 +71,17 @@ public class OctaveThread implements Runnable {
                     }
                 }
             }
+  
             // extract next ExecutableSheet
             OctaveExecutableSheet sheet=env.pop();
             if (sheet!=null){
+                try {
+                    engine.exec(sheet, true);
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, e.getMessage(), e);
+                }
+            }
+/*          
                 while (sheet.hasCommands()){
                     // extract
                     comm=sheet.popCommand();
@@ -114,7 +122,7 @@ public class OctaveThread implements Runnable {
                     // clear sheet environment
                     if (sheet.hasDefinitions())
                         engine.clear(sheet.getDefinitions());
-                
+ 
                     if (LOGGER.isLoggable(Level.FINE))
                         LOGGER.fine("Octave extracting a new OctaveExecutableSheet");
 
@@ -127,6 +135,7 @@ public class OctaveThread implements Runnable {
 //                
                 }
             }
+*/               
             synchronized (env) {
                 env.notifyAll();
             }

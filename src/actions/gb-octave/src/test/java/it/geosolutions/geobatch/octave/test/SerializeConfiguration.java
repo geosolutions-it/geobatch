@@ -43,8 +43,8 @@ public class SerializeConfiguration {
             new OctaveFunctionFile("funzione");
         
 //        off.setBuilder(new OctaveFunctionFile("funzione2"));
-        off.pushArgument(new SerializableOctaveFile("file_in",""));
-        off.pushArgument(new SerializableOctaveFile("file_out",""));
+        off.pushDefinition(new SerializableOctaveFile("file_in",""));
+        off.pushDefinition(new SerializableOctaveFile("file_out",""));
         
         //soo.setName("variable_name");
         OctaveFunctionSheet os=new OctaveFunctionSheet();
