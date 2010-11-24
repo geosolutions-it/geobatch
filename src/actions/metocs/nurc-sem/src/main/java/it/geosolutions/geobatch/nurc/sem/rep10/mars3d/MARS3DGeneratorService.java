@@ -22,55 +22,67 @@
 
 package it.geosolutions.geobatch.nurc.sem.rep10.mars3d;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.global.CatalogHolder;
+import it.geosolutions.geobatch.octave.actions.templates.FileInFileOut.FileInFileOutActionConfiguration;
 import it.geosolutions.geobatch.utils.IOUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 public class MARS3DGeneratorService
     extends BaseService 
-    implements ActionService<FileSystemMonitorEvent, MARS3DActionConfiguration> {
+    implements ActionService<FileSystemMonitorEvent, FileInFileOutActionConfiguration> {
 
-    public boolean canCreateAction(final MARS3DActionConfiguration configuration)  {
+    public boolean canCreateAction(final FileInFileOutActionConfiguration configuration)  {
         
-        /**
-         * Obtaining the Absolute path of the working dir
-         * 
-* @TODO open a ticket to get getBaseDirectory() into Catalog interface
-         */
-        FileBaseCatalog c=(FileBaseCatalog) CatalogHolder.getCatalog();
-        File fo=null;
-        try {
-            fo=IOUtils.findLocation(configuration.getWorkingDirectory(),new File(c.getBaseDirectory()));
-        }catch (IOException ioe){
-            return false;
+        String base_dir=configuration.getWorkingDirectory();
+        base_dir=absolutize(base_dir);
+        if (base_dir!=null){
+            configuration.setWorkingDirectory(base_dir);
+            // NOW THE WORKING DIR IS AN ABSOLUTE PATH
         }
-        String base_dir;
-        
-        if (fo!=null)
-            base_dir=fo.toString();
-        else {
-// TODO LOG            throw new FileNotFoundException("Unable to locate the working dir");
+        else
             return false;
-        }
-        
-        // NOW THE WORKING DIR IS AN ABSOLUTE PATH
-        configuration.setWorkingDirectory(base_dir);
         
 //TODO check if the m file is present and is readable
         
         return true;
     }
+    
+    /**
+     * Obtaining the Absolute path of the working dir
+     * @param working_dir the relative (or absolute) path to absolutize
+     * @note it should be a sub-dir of ...
+* @TODO open a ticket to get getBaseDirectory() into Catalog interface
+     */
+    String absolutize(String working_dir) /*throws FileNotFoundException */{ 
+        FileBaseCatalog c=(FileBaseCatalog) CatalogHolder.getCatalog();
+        File fo=null;
+        try {
+            fo=IOUtils.findLocation(working_dir,new File(c.getBaseDirectory()));
+        }catch (IOException ioe){
+            return null;
+        }
+        
+        if (fo!=null){
+            return fo.toString();
+        }
+        else {
+//TODO LOG            throw new FileNotFoundException("Unable to locate the working dir");
+//            throw new FileNotFoundException();
+            return null;
+        }
+        
+    }
 
-    public MARS3DAction createAction(final MARS3DActionConfiguration configuration) {
-        if(canCreateAction(configuration))
+    public MARS3DAction createAction(final FileInFileOutActionConfiguration configuration) {
+        if(canCreateAction(configuration)){
             return new MARS3DAction(configuration);
+        }
         return null;
     }
 

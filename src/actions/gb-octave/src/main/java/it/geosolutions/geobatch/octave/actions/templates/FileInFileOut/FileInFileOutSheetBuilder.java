@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.nurc.sem.rep10.mars3d;
+package it.geosolutions.geobatch.octave.actions.templates.FileInFileOut;
 
 import it.geosolutions.geobatch.octave.DefaultSheetBuilder;
 import it.geosolutions.geobatch.octave.OctaveCommand;
@@ -32,7 +32,7 @@ import it.geosolutions.geobatch.octave.SerializableOctaveObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MARS3DSheetBuilder extends DefaultSheetBuilder {
+public class FileInFileOutSheetBuilder extends DefaultSheetBuilder {
     private final String filein,fileout;
     
     /**
@@ -40,7 +40,7 @@ public class MARS3DSheetBuilder extends DefaultSheetBuilder {
      * @param file_in value of the input file (absolute path)
      * @param file_out value of the output file (absolute path)
      */
-    public MARS3DSheetBuilder(String file_in,String file_out){
+    public FileInFileOutSheetBuilder(String file_in,String file_out){
         super();
         filein=file_in;
         fileout=file_out;

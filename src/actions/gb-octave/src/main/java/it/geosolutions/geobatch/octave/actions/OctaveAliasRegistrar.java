@@ -20,9 +20,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.nurc.sem.rep10;
+package it.geosolutions.geobatch.octave.actions;
 
-import it.geosolutions.geobatch.nurc.sem.rep10.mars3d.MARS3DActionConfiguration;
 import it.geosolutions.geobatch.octave.OctaveCommand;
 import it.geosolutions.geobatch.octave.OctaveEnv;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
@@ -44,8 +43,6 @@ public class OctaveAliasRegistrar extends AliasRegistrar {
     public OctaveAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
         registry.putAlias(
-                "MARS3DActionConfiguration",MARS3DActionConfiguration.class);
-        registry.putAlias(
                 "octave",OctaveEnv.class);
         registry.putAlias(
                 "sheet",OctaveExecutableSheet.class);
@@ -61,6 +58,5 @@ public class OctaveAliasRegistrar extends AliasRegistrar {
                 "OctaveString",SerializableOctaveString.class);
         registry.putAlias(
                 "var",SerializableOctaveObject.class);
-        
     }
 }

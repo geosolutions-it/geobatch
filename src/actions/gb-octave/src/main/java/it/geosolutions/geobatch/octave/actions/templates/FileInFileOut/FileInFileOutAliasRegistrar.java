@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.octave;
+package it.geosolutions.geobatch.octave.actions.templates.FileInFileOut;
 
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
@@ -30,22 +30,11 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  * 
  * @author Carlo Cancellieri <carlo.cancellieri@geo-solutions.it>
  */
-public class OctaveAliasRegistrar extends AliasRegistrar {
+public class FileInFileOutAliasRegistrar extends AliasRegistrar {
 
-    public OctaveAliasRegistrar(AliasRegistry registry) {
+    public FileInFileOutAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
         registry.putAlias(
-                "OctaveActionConfiguration",OctaveConfiguration.class);
-        registry.putAlias(
-                "OctaveCommand",OctaveCommand.class);
-        registry.putAlias(
-                "OctaveFunction",OctaveFunctionFile.class);
-        registry.putAlias(
-                "OctaveFile",SerializableOctaveFile.class);
-        registry.putAlias(
-                "OctaveString",SerializableOctaveString.class);
-        registry.putAlias(
-                "var",SerializableOctaveObject.class);
-        
+                "FileInFileOutActionConfiguration",FileInFileOutActionConfiguration.class);
     }
 }
