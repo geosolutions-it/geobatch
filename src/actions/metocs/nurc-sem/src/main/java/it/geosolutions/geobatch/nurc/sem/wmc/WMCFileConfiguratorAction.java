@@ -32,10 +32,12 @@ import it.geosolutions.geobatch.nurc.sem.wmc.model.OLDimension;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLDisplayInLayerSwitcher;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLIsBaseLayer;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLLayerID;
+import it.geosolutions.geobatch.nurc.sem.wmc.model.OLMainLayer;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLMaxExtent;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLSingleTile;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLStyleClassNumber;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLStyleColorRamps;
+import it.geosolutions.geobatch.nurc.sem.wmc.model.OLStyleLegendService;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLStyleMaxValue;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLStyleMinValue;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLStyleRestService;
@@ -70,7 +72,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.GridFormatFinder;
+import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.Format;
+import org.opengis.geometry.DirectPosition;
 
 public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent> implements
         Action<FileSystemMonitorEvent> {
@@ -86,6 +90,8 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
 
     public final static String INFO_EXTENSION = ".info";
 
+    private static final String AOI_SEPARATOR_CHAR = "|";
+    
     protected WMCFileConfiguratorAction(WMCActionConfiguration configuration) throws IOException {
         super(configuration);
         this.configuration = configuration;
@@ -185,6 +191,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
                 entry.setLayerTitle(getVariableName(metocFields));
 
                 final String[] metadataNames = reader.getMetadataNames();
+                final GeneralEnvelope envelope = reader.getOriginalEnvelope();
 
                 String timeMetadata = null;
                 String elevationMetadata = null;
@@ -212,6 +219,8 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
                     entry.getDimensions().put("ELEVATION", elevation);
                 }
 
+                final String layerAOI = buildLayerAOI(envelope);
+                entry.setLayerAOI(layerAOI);
                 entryList.add(entry);
                 infoFileMap.put(layerid, infoFile);
             }
@@ -240,8 +249,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
             // //
             ViewContext viewContext = new ViewContext("WMC", "2Beta");
             WMCWindow window = new WMCWindow(height, width);
-            GeneralWMCConfiguration generalConfig = new GeneralWMCConfiguration(window, "WMC",
-                    "WMC");
+            GeneralWMCConfiguration generalConfig = new GeneralWMCConfiguration(window, "WMC", "WMC");
             String[] cfgbbox = boundingBox.split(",");
             WMCBoundingBox bbox = new WMCBoundingBox(crs, Double.valueOf(cfgbbox[0]), Double
                     .valueOf(cfgbbox[1]), Double.valueOf(cfgbbox[2]), Double.valueOf(cfgbbox[3]));
@@ -285,29 +293,29 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
                 final String nameSpace = entry.getNameSpace();
                 final String layerName = entry.getLayerName();
                 final String layerTitle = entry.getLayerTitle();
+                final String layerAOI = entry.getLayerAOI();
                 final String infoFile = infoFileMap.get(layerName);
 
-                WMCLayer newLayer = new WMCLayer("0", "1", nameSpace + ":" + layerName, layerTitle,
-                        crs);
+                WMCLayer newLayer = new WMCLayer("0", "1", nameSpace + ":" + layerName, layerTitle, crs);
                 WMCServer server = new WMCServer("wms", "1.1.1", "wms");
                 List<WMCFormat> formatList = new ArrayList<WMCFormat>();
                 // List<WMCStyle> styleList = new ArrayList<WMCStyle>();
                 WMCExtension extension = new WMCExtension();
                 extension.setId(new OLLayerID(layerName));
-                extension.setMaxExtent(new OLMaxExtent(null));
                 extension.setIsBaseLayer(new OLIsBaseLayer("false"));
                 extension.setSingleTile(new OLSingleTile("false"));
                 extension.setTransparent(new OLTransparent("true"));
                 extension.setDisplayInLayerSwitcher(new OLDisplayInLayerSwitcher("false"));
-                OLStyleColorRamps ramp = new OLStyleColorRamps("jet,red,blue,gray");
+                OLStyleColorRamps ramp = new OLStyleColorRamps("jet, red, blue, gray");
                 ramp.setDefaultRamp("jet");
                 extension.setStyleColorRamps(ramp);
-                setAdditionalInfo(infoFile, extension, newLayer);
-                extension.setStyleClassNumber(new OLStyleClassNumber("100"));
-                extension.setStyleRestService(new OLStyleRestService(configuration
-                        .getGeoserverURL()
-                        + "/rest/sldservice/" + nameSpace + ":" + layerName + "/rasterize.sld"));
-
+                setAdditionalInfo(infoFile,extension,newLayer);
+                extension.setStyleClassNumber(new OLStyleClassNumber("25"));
+                extension.setStyleRestService(new OLStyleRestService(configuration.getGeoserverURL() 
+                    + "/rest/sldservice/"+ nameSpace + ":" + layerName + "/rasterize.sld"));
+                extension.setStyleLegendService(new OLStyleLegendService(configuration.getGeoserverURL()
+                    + "/wms?REQUEST=GetLegendGraphic"));
+                setExtent(extension,layerAOI);
                 if (entry.getDimensions() != null) {
                     for (String dim : entry.getDimensions().keySet()) {
                         final String values = entry.getDimensions().get(dim).get("values");
@@ -375,12 +383,40 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
         }
     }
 
+	private void setExtent(WMCExtension extension, String layerAOI) {
+		if (layerAOI != null && layerAOI.trim().length() > 0) {
+			final String extent[] = layerAOI.split("\\|");
+			if (extent.length == 4) {
+				final OLMaxExtent aoi = new OLMaxExtent(null);
+				aoi.setMinx(Double.valueOf(extent[0]));
+				aoi.setMiny(Double.valueOf(extent[1]));
+				aoi.setMaxx(Double.valueOf(extent[2]));
+				aoi.setMaxy(Double.valueOf(extent[3]));
+				extension.setMaxExtent(aoi);
+			}
+		}
+	}
+
+	private String buildLayerAOI(GeneralEnvelope envelope) {
+		if (envelope != null) {
+			final DirectPosition lc = envelope.getLowerCorner();
+			final DirectPosition uc = envelope.getUpperCorner();
+			return new StringBuilder(Double.toString(lc.getOrdinate(0)))
+					.append(AOI_SEPARATOR_CHAR).append(lc.getOrdinate(1))
+					.append(AOI_SEPARATOR_CHAR).append(uc.getOrdinate(0))
+					.append(AOI_SEPARATOR_CHAR).append(uc.getOrdinate(1))
+					.toString();
+		}
+		return null;
+	}
+
     private void setAdditionalInfo(final String statisticFile, final WMCExtension extension,
             final WMCLayer newLayer) throws IOException {
         final File file = new File(statisticFile);
         final StringBuilder mins = new StringBuilder();
         final StringBuilder maxs = new StringBuilder();
         boolean minMaxSet = false;
+        boolean mainLayer = true;
         if (file.exists()) {
             BufferedReader reader = null;
             try {
@@ -392,8 +428,16 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
                 while ((line = reader.readLine()) != null) {
                     String entries[] = line.split(",");
                     final int nEntries = entries.length;
-                    if (nEntries < 2) {
-                        newLayer.setTitle(entries[0]);
+					if (nEntries < 4){
+						String title="";
+						String[] elements = entries[0].split("\\|");
+						title = elements[0];
+						if (elements.length>1){
+							if (elements[1].equalsIgnoreCase("false"))
+								mainLayer = false;
+						} 
+						newLayer.setTitle(title);
+						
                     } else {
                         String min = entries[nEntries - 2];
                         String max = entries[nEntries - 1];
@@ -430,7 +474,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
             extension.setStyleMinValue(new OLStyleMinValue("0.0", "0.0"));
             extension.setStyleMaxValue(new OLStyleMaxValue("100.0", "100.0"));
         }
-
+        extension.setMainLayer(new OLMainLayer(mainLayer?"true":"false"));
     }
 
     /**

@@ -104,7 +104,11 @@ public class NURCWPSOutput2WMCFileAction extends
 
     private final SimpleDateFormat wpssdf = new SimpleDateFormat("yyyyMMdd'T'HHmmss.SSS'Z'");
 
-    public static final long matLabStartTime;
+	public static final long matLabStartTime;
+
+	private final static String SHOW_ATTRIBUTE = "show_variable";
+
+	private static final String UNITS_ATTRIBUTE = "units";
 
     static {
         GregorianCalendar calendar = new GregorianCalendar(0000, 00, 01, 00, 00, 00);
@@ -269,23 +273,29 @@ public class NURCWPSOutput2WMCFileAction extends
                                     if (!varName.equalsIgnoreCase("lat")
                                             && !varName.equalsIgnoreCase("lon")) {
                                         variablesName.add(varName);
-                                        final String shortName = varName.replace(" ", "")
-                                                .toLowerCase();
-                                        ncFileOut.addVariable(shortName, DataType.DOUBLE,
-                                                outDimensions);
-                                        ncFileOut.addVariableAttribute(shortName, "long_name",
-                                                varName);
-                                        ncFileOut.addVariableAttribute(shortName, "units",
-                                                "dimensionless");
-                                        ncFileOut.addVariableAttribute(shortName, "missing_value",
-                                                -9999.0);
-                                    }
+                                        final String longName = var.getDescription();
+                                        final String shortName = varName.replace(" ", "").toLowerCase();
+                                        ncFileOut.addVariable(shortName, DataType.DOUBLE, outDimensions);
+                                        ncFileOut.addVariableAttribute(shortName, "long_name", longName);
+					            		ncFileOut.addVariableAttribute(shortName, "missing_value", -9999.0);
+					            		final Attribute showAtt = var.findAttribute(SHOW_ATTRIBUTE);
+				                        if (showAtt != null) {
+				                                final String show  = showAtt.getStringValue();
+				                                ncFileOut.addVariableAttribute(shortName, SHOW_ATTRIBUTE, show);
+				                        }
+				                        final Attribute unit = var.findAttribute(UNITS_ATTRIBUTE);
+				                        if (unit != null) {
+				                                final String units  = unit.getStringValue();
+				                                ncFileOut.addVariableAttribute(shortName, UNITS_ATTRIBUTE, units);
+				                        } else {
+				                        	final String units  = var.getUnitsString();
+					                        ncFileOut.addVariableAttribute(shortName, UNITS_ATTRIBUTE, units);
+				                        }
 
+                                    }
                                 }
-                                final Variable lonOriginalVar = ncVarFile
-                                        .findVariable(NetCDFUtilities.LON);
-                                final Variable latOriginalVar = ncVarFile
-                                        .findVariable(NetCDFUtilities.LAT);
+                                final Variable lonOriginalVar = ncVarFile.findVariable(NetCDFUtilities.LON);
+                                final Variable latOriginalVar = ncVarFile.findVariable(NetCDFUtilities.LAT);
 
                                 final Array latOriginalData = latOriginalVar.read();
                                 final Array lonOriginalData = lonOriginalVar.read();
@@ -476,7 +486,13 @@ public class NURCWPSOutput2WMCFileAction extends
             final List<Variable> foundVariables = ncFileIn.getVariables();
             final ArrayList<String> variables = new ArrayList<String>();
             int numVars = 0;
-
+			double globalNoData = Double.NaN;
+			if (!isTDA){
+			    Attribute globMissingValue = ncFileIn.findGlobalAttribute("missing_value");
+			    if (globMissingValue != null) {
+			        globalNoData = globMissingValue.getNumericValue().doubleValue();
+                            }
+			}
             for (Variable var : foundVariables) {
                 if (var != null) {
                     String varName = var.getName();
@@ -521,6 +537,22 @@ public class NURCWPSOutput2WMCFileAction extends
                         Attribute missingValue = var.findAttribute("missing_value");
                         if (missingValue != null) {
                             noData = missingValue.getNumericValue().doubleValue();
+                        } else {
+                            noData = globalNoData;
+                        }
+                        
+                        Attribute showAtt = var.findAttribute(SHOW_ATTRIBUTE);
+                        String isMainLayer = "true";
+                        if (showAtt != null) {
+                        	final String show = showAtt.getStringValue();
+                        	if (show != null && show.trim().length()>0){
+                        		isMainLayer = show.equalsIgnoreCase("false")?"false":"true";
+                        	} else{
+                        		final float d = showAtt.getNumericValue().floatValue();
+                        		if (d<1.0){
+                        			isMainLayer = "false";
+                        		}
+                        	}
                         }
 
                         final String variableName = varName.replace("_", "").replace(" ", "");
@@ -543,16 +575,20 @@ public class NURCWPSOutput2WMCFileAction extends
                                     dimArray = new int[] { nLat, nLon };
 
                                 // Writing data and looking for min max
-                                final Array minMaxArray = METOCSActionsIOUtils.write2DData(
-                                        userRaster, var, originalVarArray, true, true, dimArray,
-                                        true);
-
+								final Array minMaxArray;
+								if (isTDA)
+								    minMaxArray = METOCSActionsIOUtils.write2DData(userRaster, var, originalVarArray, true, true, dimArray, true);
+								else {
+								    if (!variableName.equalsIgnoreCase("mask"))
+								        minMaxArray = METOCSActionsIOUtils.write2DData(userRaster, var, originalVarArray, true, true, dimArray, true, globalNoData, false);
+								    else
+								        minMaxArray = METOCSActionsIOUtils.write2DData(userRaster, var, originalVarArray, true, true, dimArray, true, -1, true);
+								}
                                 // ////
                                 // producing the Coverage here...
                                 // ////
                                 String refZeta = hasLocalZLevel ? elevLevelFormat(zetaOriginalData
-                                        .getDouble(zetaOriginalData.getIndex().set(z)))
-                                        : "0000.000";
+                                        .getDouble(zetaOriginalData.getIndex().set(z))) : "0000.000";
                                 final StringBuilder coverageName = new StringBuilder(inputBaseName)
                                         .append("_").append(variableName).append("_").append(
                                                 refZeta).append("_").append(refZeta).append("_");
@@ -563,10 +599,8 @@ public class NURCWPSOutput2WMCFileAction extends
                                 } else {
                                     if (isTDA) {
                                         // Seconds since 01-01-1980
-                                        refTime = timeDimExists ? sdf
-                                                .format(METOCSActionsIOUtils.startTime
-                                                        + timeOriginalData
-                                                                .getLong(timeOriginalIndex.set(t))
+                                        refTime = timeDimExists ? sdf.format(METOCSActionsIOUtils.startTime
+                                                        + timeOriginalData.getLong(timeOriginalIndex.set(t))
                                                         * 1000) : "00000000T000000Z";
                                         coverageName.append(refTime);
                                     } else {
@@ -587,8 +621,11 @@ public class NURCWPSOutput2WMCFileAction extends
                                         .append(",").append(minMaxArray.getDouble(0)).append(",")
                                         .append(minMaxArray.getDouble(1)).append("\n").toString());
                                 coverageName.append("-T").append(System.currentTimeMillis());
-                                final String nd = Double.isNaN(noData) ? "-9999.0" : Double
-                                        .toString(noData);
+								final String nd;
+								if (!varName.equalsIgnoreCase("mask"))
+								    nd = Double.isNaN(noData)?"-9999.0":Double.toString(noData);
+								else 
+								    nd = "-1";
                                 coverageName.append("_").append(nd);
 
                                 File gtiffFile = Utilities.storeCoverageAsGeoTIFF(gtiffOutputDir,
@@ -607,9 +644,18 @@ public class NURCWPSOutput2WMCFileAction extends
                             BufferedWriter writer = new BufferedWriter(new FileWriter(outInfoFile));
                             for (String rangeEntry : ranges)
                                 writer.write(rangeEntry);
-                            if (!isTDA) {
-                                writer.write(var.getDescription());
-                            }
+//                          if (!isTDA) {
+                        		final StringBuilder title = new StringBuilder(var.getDescription());
+                    	        final Attribute units = var.findAttribute("units");
+                    	        if (units != null){
+                    	            final String uom = units.getStringValue();
+                    	            if (uom != null && uom.trim().length()>0){
+                    	                title.append(" [").append(uom).append("]");
+                    	            }
+                    	        }
+//                        	}
+                        	title.append("|").append(isMainLayer);
+                        	writer.write(title.toString());
                             writer.flush();
                             writer.close();
                         } finally {
