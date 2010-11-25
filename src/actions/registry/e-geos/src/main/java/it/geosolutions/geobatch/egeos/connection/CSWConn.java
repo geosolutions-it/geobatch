@@ -37,6 +37,8 @@ import be.kzen.ergorr.model.ogc.LiteralType;
 import be.kzen.ergorr.model.ogc.PropertyNameType;
 import be.kzen.ergorr.model.util.JAXBUtil;
 import be.kzen.ergorr.model.util.OFactory;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
@@ -50,16 +52,47 @@ import org.apache.log4j.Logger;
 public class CSWConn {
     private final static Logger LOGGER = Logger.getLogger(CSWConn.class);
 
-    private URL serviceURL;
+    private static final RemoteFileCache FILE_CACHE = new RemoteFileCache();
+
+    private URL serviceUrl;
+    private URL wsdlFile;
 
     public CSWConn(URL serviceURL) {
-        this.serviceURL = serviceURL;
+        this.serviceUrl = serviceURL;
+
+        File file = FILE_CACHE.get(serviceUrl);
+        if(file == null) {
+            LOGGER.warn("URL " + serviceURL + " has not yet been init'ted");
+            file = FILE_CACHE.add(serviceURL);
+            if(file == null) {
+                LOGGER.warn("Could not init URL " + serviceURL);
+                return;
+            }
+        }
+
+        try {
+            wsdlFile = file.toURI().toURL();
+        } catch (MalformedURLException ex) {
+            LOGGER.error(ex); // should not happen
+        }
+    }
+
+    public static File getWSDL(URL serviceURL) {
+        File file = FILE_CACHE.get(serviceURL);
+        if(file == null) {
+            LOGGER.warn("WSDL at " + serviceURL + " not cached");
+        }
+        return file;
+    }
+
+    private CswClient createClient() {
+        return new CswSoapClient(wsdlFile != null ? wsdlFile : serviceUrl);
     }
 
     public JAXBElement getById(String urn) throws ServiceExceptionReport {
         LOGGER.info("Querying record by ID " + urn);
 
-        CswClient client = new CswSoapClient(serviceURL);
+        CswClient client = createClient();
         GetRecordByIdType request = new GetRecordByIdType();
         request.getId().add(urn);
 
@@ -84,7 +117,7 @@ public class CSWConn {
             +"	xmlns:gml=\"http://www.opengis.net/gml\">";
 
     public TransactionResponseType insert(String ...xml) {
-        CswClient client = new CswSoapClient(serviceURL);
+        CswClient client = createClient();
 
         TransactionType request = new TransactionType();
         InsertType insert = new InsertType();
@@ -156,7 +189,7 @@ public class CSWConn {
         request.getInsertOrUpdateOrDelete().add(operation);
         request.setVerboseResponse(true);
 
-        CswClient client = new CswSoapClient(serviceURL);
+        CswClient client = createClient();
 
         TransactionResponseType response = null;
         try {
