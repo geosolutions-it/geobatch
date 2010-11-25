@@ -23,15 +23,6 @@
 package it.geosolutions.geobatch.octave;
 
 import java.util.logging.Logger;
-
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.Session;
-
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
 /**
  * @TODO this class should implement a MessageDrivenPOJO's interface
  * to add messages ('OctaveSheet' to the octaveEnv environment which is
@@ -69,7 +60,7 @@ public class OctaveProcess{
     
     /*****************************
      * 
-     */
+     
     private JmsTemplate jmsTemplate;
     private Destination dest;
 
@@ -88,6 +79,7 @@ public class OctaveProcess{
             }
         });
     }
+    */
     
     /**
      * @note: commented out since this is no more needed

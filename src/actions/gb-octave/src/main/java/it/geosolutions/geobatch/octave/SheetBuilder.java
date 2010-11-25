@@ -26,39 +26,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class DefaultSheetBuilder {
+public abstract class SheetBuilder {
     
-    /**
-     * Transform a OctaveFunctionSheet in a OctaveExecutableSheet
-     * 
-     * @param sheet input output variable:
-     * input is a OctaveFunctionSheet to be preprocessed
-     * output can be used as a OctaveExecutableSheet
-     */
-    public final void preprocess(OctaveEnv<OctaveExecutableSheet> env) throws Exception {
-        int size=env.size();
-        int i=0;
-        while (i<size){
-            // for each Sheet into the env
-            OctaveExecutableSheet es=env.getSheet(i++);
-            // if it is a FunctionSheet
-            if (es instanceof OctaveFunctionSheet){
-                /**
-                 * this is a sheet that contains a function
-                 * which will produce a new OctaveExecutableSheet
-                 */
-                OctaveFunctionSheet sheet=(OctaveFunctionSheet) es;
-                // pre-process all functions in the sheet
-                while (sheet.hasFunctions()){
-                    OctaveFunctionFile f=sheet.popFunction();
-                   
-                    // build the executable sheet
-                    env.push(this.buildSheet(f));
-                   
-                }
-            }
-        }
-    }
+   
     
     /**
      * Generate a string functions serializing informations extracted
@@ -73,6 +43,7 @@ public abstract class DefaultSheetBuilder {
         List<SerializableOctaveObject<?>> returns=off.getReturns();
         List<SerializableOctaveObject<?>> arguments=off.getDefinitions();
         List<OctaveCommand> commands=new ArrayList<OctaveCommand>();
+        
         int size=commands.size();
         int index=0;
         while (index<size){
@@ -107,7 +78,10 @@ public abstract class DefaultSheetBuilder {
                  */
             }
             
-            script+=off.getCommand(index++).getCommand();
+            /**
+             * The SheetFunctionFile name represents the function name
+             */
+            script+=off.getName();
             
             if (arguments!=null){
                 /**

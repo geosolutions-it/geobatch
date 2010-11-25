@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.nurc.sem.rep10.mars3d;
+package it.geosolutions.geobatch.nurc.sem.rep10.roms;
 
 import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;
 import it.geosolutions.geobatch.octave.actions.templates.FileInFileOut.FileInFileOutAction;
@@ -28,9 +28,9 @@ import it.geosolutions.geobatch.octave.actions.templates.FileInFileOut.FileInFil
 import java.util.Date;
 
 
-public class MARS3DAction extends FileInFileOutAction {
+public class ROMSAction extends FileInFileOutAction {
 
-    public MARS3DAction(OctaveActionConfiguration actionConfiguration) {
+    public ROMSAction(OctaveActionConfiguration actionConfiguration) {
         super(actionConfiguration);
     }
     
@@ -39,7 +39,7 @@ public class MARS3DAction extends FileInFileOutAction {
      */
     @Override
     protected String buildFileName(){
-        return "REP10_MARS3D-Forecast-T" + new Date().getTime()+".nc";
+        return "REP10_ROMS-Forecast-T" + new Date().getTime()+".nc";
     }
     
     /**
@@ -54,6 +54,6 @@ public class MARS3DAction extends FileInFileOutAction {
 
     @Override
     protected String getFunction() {
-        return "mars3d";
+        return "roms_f";
     }
 }

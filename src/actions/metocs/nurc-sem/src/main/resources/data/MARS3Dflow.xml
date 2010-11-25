@@ -5,12 +5,12 @@
 	<description>MARS3DFlow</description>
 	<name>MARS3DFlow</name>
 	
-	<workingDirectory>mars3d</workingDirectory>
+	<workingDirectory>rep10workingdir/mars3d</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>mars3d/in</watchDirectory>
+		<watchDirectory>rep10workingdir/mars3d/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>Mars3dFlow</id>
@@ -24,7 +24,7 @@
 		<description>mars3d</description>
 		<name>mars3d</name>
 		
-		<workingDirectory>mars3d</workingDirectory>
+		<workingDirectory>rep10workingdir/mars3d</workingDirectory>
 		<performBackup>false</performBackup>
 		
 		<FileEventRule>
@@ -36,12 +36,12 @@
 			<name>test</name>
 		</FileEventRule>
 		
-		<MARS3DActionConfiguration>
+		<OctaveConfiguration>
 			<serviceID>MARS3DGeneratorService</serviceID>
 			<id>MARS3DGeneratorService</id>
 			<description>MARS3DGeneratorService</description>
 			<name>MARS3DActionConfiguration</name>
-			<workingDirectory>mars3d</workingDirectory>
+			<workingDirectory>rep10workingdir/mars3d</workingDirectory>
 			<!-- OCTAVE ENV -->
 			<octave>
 			  <sheets>
@@ -89,10 +89,10 @@
 			  </sheets>
 			</octave>
 
-		</MARS3DActionConfiguration>
+		</OctaveConfiguration>
 		
 		<MetocActionConfiguration>
-			<workingDirectory>mars3d/nc/</workingDirectory>
+			<workingDirectory>rep10workingdir/mars3d/nc/</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
@@ -104,7 +104,7 @@
 		</MetocActionConfiguration>
 		
 		<ImageMosaicActionConfiguration>
-			<workingDirectory>mars3d/nc</workingDirectory>
+			<workingDirectory>rep10workingdir/mars3d/nc</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
@@ -125,7 +125,7 @@
 		</ImageMosaicActionConfiguration>
 		
 		<RegistryActionConfiguration>
-			<workingDirectory>mars3d/nc</workingDirectory>
+			<workingDirectory>rep10workingdir/mars3d/nc</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>DIRECT</dataTransferMethod>
