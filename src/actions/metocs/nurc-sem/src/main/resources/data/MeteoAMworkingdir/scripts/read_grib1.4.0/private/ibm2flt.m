@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ibm2flt2                                          %
+% ibm2flt                                         %
 %                                                   %
 % 30 Aug, 2005.                                     %
 % this is a matlab version of the mex code          %
@@ -7,7 +7,7 @@
 % code essentially from  wesley ebisuzaki, NCEP,    %
 % wgrib, http://wesley.wwb.noaa.gov                 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function retval=ibm2flt2(ibm)
+function retval=ibm2flt(ibm)
 
 mant = bitshift(ibm(2),16) + bitshift(ibm(3),8) + ibm(4);
 if (mant == 0), retval=0.0;return;end

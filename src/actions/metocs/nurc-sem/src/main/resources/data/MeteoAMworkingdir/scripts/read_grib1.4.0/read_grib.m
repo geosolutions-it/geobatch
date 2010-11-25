@@ -159,6 +159,8 @@ if ~is_grib_file(fid,ScreenDiag)
    disp([gribname ' is not a GRiB file.'])
    disp(['No GRiB marker "GRIB" found in file.'])
    grib_struct=-1;
+   % close grib stream
+   fclose(fid);
    return
 else
    mark1=ftell(fid);
@@ -224,6 +226,8 @@ while ~isempty(first4octets)
 	    str=sprintf('\n%s\n',['End of file reached.']);
             disp(str)
 	 end
+	 % close grib stream
+	 fclose(fid);
          return
       end
    end      
@@ -245,6 +249,8 @@ while ~isempty(first4octets)
       str=[str sprintf('%s\n',['Edition ' int2str(edition) ' detected at record ' int2str(grec) ' in ' fname]);];
       disp(str)
       grib_struct=[];
+      % close grib stream
+      fclose(fid);
       return
    end
    
@@ -359,6 +365,8 @@ while ~isempty(first4octets)
       disp(['at GRiB record number ' int2str(grec)])
       disp(['Should be at the end of GRiB record, and we''re  not.'])
       disp(['Returning from READ_GRIB with GRiB up to this point.'])
+      % close grib stream
+      fclose(fid);
       return
 %BOB      error('read_grid alignment problem a')   
    end
