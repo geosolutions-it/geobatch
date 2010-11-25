@@ -253,7 +253,7 @@ public class METOCSActionsIOUtils {
         // //
         if (varDataType == DataType.FLOAT) {
             float min = Float.MAX_VALUE;
-            float max = Float.MIN_VALUE;
+            float max = -Float.MAX_VALUE;
             float fillValue = Float.NaN;
             if (fv != null) {
                 fillValue = (fv.getNumericValue()).floatValue();
@@ -293,6 +293,12 @@ public class METOCSActionsIOUtils {
             }
             if (findNewRange) {
                 ArrayFloat retArray = new ArrayFloat(new int[] { 2 });
+                if (min == Float.MAX_VALUE){
+				    min = Float.NaN;
+				}
+				if (max == - Float.MAX_VALUE){
+				    max = Float.NaN;
+				}
                 retArray.setFloat(0, min);
                 retArray.setFloat(1, max);
                 return retArray;
@@ -307,7 +313,7 @@ public class METOCSActionsIOUtils {
         // //
         else if (varDataType == DataType.DOUBLE) {
             double min = Double.MAX_VALUE;
-            double max = Double.MIN_VALUE;
+            double max = -Double.MAX_VALUE;
             double fillValue = Double.NaN;
             if (fv != null) {
                 fillValue = (fv.getNumericValue()).doubleValue();
@@ -347,6 +353,12 @@ public class METOCSActionsIOUtils {
             }
             if (findNewRange) {
                 ArrayDouble retArray = new ArrayDouble(new int[] { 2 });
+                if (min == Double.MAX_VALUE){
+				    min = Double.NaN;
+				}
+				if (max == - Double.MAX_VALUE){
+				    max = Double.NaN;
+				}
                 retArray.setDouble(0, min);
                 retArray.setDouble(1, max);
                 return retArray;

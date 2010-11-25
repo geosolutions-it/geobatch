@@ -24,13 +24,21 @@ package it.geosolutions.geobatch.nurc.sem.lscv08;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
+import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import org.apache.commons.io.FilenameUtils;
 
+import ucar.ma2.Array;
+import ucar.ma2.DataType;
+import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFileWriteable;
 
 /**
@@ -59,6 +67,34 @@ public class MERCATOR_INGVLike_FileConfiguratorAction extends INGVFileConfigurat
 //        outputFile = new File(outDir, "lscv08_MERCATOR-Forecast-T" + new Date().getTime()
                 + FilenameUtils.getBaseName(inputFileName).replaceAll("-", "") + ".nc");
         ncFileOut = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath());
+    }
+    
+    @Override
+    protected int normalizingTimes(Array timeOriginalData, Dimension timeDim, Date timeOriginDate)
+            throws ParseException, NumberFormatException {
+        final Calendar cal = new GregorianCalendar(1970, 00, 01);
+        cal.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+
+        int nTimes = timeDim.getLength();
+        timeData = NetCDFConverterUtilities.getArray(nTimes, timeDataType);
+        for (int t = 0; t < nTimes; t++) {
+        	double seconds = 0;
+        	double timeOrigin = 0;
+            if (timeDataType == DataType.FLOAT || timeDataType == DataType.DOUBLE) {
+                double originalSecs = timeOriginalData
+                        .getDouble(timeOriginalData.getIndex().set(t));
+                timeOrigin = originalSecs + (timeOriginDate.getTime() / 1000); 
+                seconds =  timeOrigin - (startTime / 1000);
+            } else {
+                long originalSecs = timeOriginalData.getLong(timeOriginalData.getIndex().set(t));
+                timeOrigin = originalSecs + (timeOriginDate.getTime() / 1000); 
+                seconds =  timeOrigin - (startTime / 1000);
+            }
+            timeData.setDouble(timeData.getIndex().set(t), seconds);
+            timeOriginDate.setTime((long)(timeOrigin * 1000));
+        }
+
+        return 0;
     }
 
 }

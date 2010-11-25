@@ -287,6 +287,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
         String[] elevationLevels = null;
         if (timeMetadata != null) {
             timePositions = timeMetadata.split(",");
+            reverse(timePositions);
             // LOGGER.info("timeMetadata -----------> " + timePositions);
         }
 
@@ -338,7 +339,20 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
         return res;
     }
 
-    /**
+    private static void reverse(String[] elements) {
+    	if (elements != null){
+        	final int length = elements.length;
+        	final int half = length/2;
+        	String temp = "";
+        	for (int i=0;i<half;i++){
+        		temp = elements[i];
+        		elements[i] = elements[length-1-i];
+        		elements[length-1-i] = temp;
+        	}
+        }
+	}
+
+	/**
      * @param outDir
      * @param metadataTemplate
      * @param timestamp

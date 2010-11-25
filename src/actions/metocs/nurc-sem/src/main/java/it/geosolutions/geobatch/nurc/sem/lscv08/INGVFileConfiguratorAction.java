@@ -71,9 +71,9 @@ public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction {
 
     private String depthName;
 
-    private Array timeData;
+    protected Array timeData;
 
-    private DataType timeDataType;
+    protected DataType timeDataType;
 
     private DataType depthDataType;
 
