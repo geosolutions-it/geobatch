@@ -50,17 +50,18 @@ public class GroovyAction extends ScriptingAction implements Action<FileSystemMo
      */
     public GroovyAction(ScriptingConfiguration configuration) throws IOException {
         super(configuration);
-        factory = new ScriptEngineManager();
-        engine = factory.getEngineByName(configuration.getLanguage());
     }
 
     /**
      * Default execute method...
      */
     @SuppressWarnings("unchecked")
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public synchronized Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
             throws ActionException {
         try {
+            factory = new ScriptEngineManager();
+            engine = factory.getEngineByName(getConfiguration().getLanguage());
+
             listenerForwarder.started();
 
             // looking for file
@@ -156,6 +157,9 @@ public class GroovyAction extends ScriptingAction implements Action<FileSystemMo
             // it
             listenerForwarder.failed(t);
             throw new ActionException(this, t.getMessage(), t);
+        } finally {
+            engine = null;
+            factory = null;
         }
     }
 

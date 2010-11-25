@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Ship
+ xmlns="http://www.emsa.europa.eu/csndc"
+ xmlns:gml="http://www.opengis.net/gml"
+ xmlns:ows="http://www.opengis.net/ows/1.1"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.emsa.europa.eu/csndc ../XSD/csndc_ds.xsd">
+  <id>7865_ASA_WSM_1PNACS20101014_191518_000000552093_00443_45086_0001.N1.00000_DS_22</id>
+  <includeInReport>false</includeInReport>
+  <gml:pos>41.945300 40.908900</gml:pos>
+  <timeStamp>2010-10-14T19:15:25</timeStamp>
+  <heading>999</heading>
+  <speed>-999.900000</speed>
+  <length>351.706000</length>
+  <lengthError>999.990000</lengthError>
+  <width>265.825000</width>
+  <widthError>999.990000</widthError>
+  <confidenceLevel>2.095000</confidenceLevel>
+  <imageIdentifier type="SAR">7865_ASA_WSM_1PNACS20101014_191518_000000552093_00443_45086_0001.N1.00000</imageIdentifier>
+</Ship>

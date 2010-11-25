@@ -63,6 +63,7 @@ public class ShipDetection {
     private final String timestamp;
     private final String imageIdentifier;
     private final double x0,x1;
+    private String gmlFileName;
 
     public ShipDetection(String id, String timestamp, String imageIdentifier, Double x0, Double x1) {
         this.id = id;
@@ -85,10 +86,12 @@ public class ShipDetection {
         String[] xy = gmlpos.split("\\s+");
         Double x0 = new Double(xy[0]);
         Double x1 = new Double(xy[1]);
-//        Point point = new GeometryFactory().createPoint(new Coordinate(
+        ShipDetection sd = new ShipDetection(id, ts, iid, x0, x1);
+        sd.setGmlFileName(srcFile.getName());
+        //        Point point = new GeometryFactory().createPoint(new Coordinate(
 //                Double.parseDouble(xy[0]),
 //                Double.parseDouble(xy[1])));
-        return new ShipDetection(id, ts, iid, x0, x1);
+        return sd;
     }
 
     public String getTimestamp() {
@@ -111,6 +114,19 @@ public class ShipDetection {
         return x1;
     }
 
+    /**
+     * @param gmlFileName the gmlFileName to set
+     */
+    public void setGmlFileName(String gmlFileName) {
+        this.gmlFileName = gmlFileName;
+    }
+
+    /**
+     * @return the gmlFileName
+     */
+    public String getGmlFileName() {
+        return gmlFileName;
+    }
     
     public String toString() {
         return getClass().getSimpleName()+"["+id+":"+imageIdentifier+"@"+timestamp+"("+x0+","+x1+")]";

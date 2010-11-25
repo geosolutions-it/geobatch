@@ -23,149 +23,186 @@
 
 function ecmwf_wave2nc(ddir,fdate,ncfile,base)
 
-elenco=dir([ddir,'/J4M',fdate,base,'*']);
+  elenco=dir([ddir,'/J4M',fdate,base,'*']);
 
-% processing grib file forecast by forecast
+  % processing grib file forecast by forecast
 
-deltantimes=3; maxntimes=72; 
+  deltantimes=3; maxntimes=72; 
 
-    nn=0;
-for ntimes=3:deltantimes:maxntimes;
+  nn=0;
+  for ntimes=3:deltantimes:maxntimes;
     nn=nn+1;
-    
+
     gfile  = [ddir '/' elenco(nn+1).name];
+
+    % grab data
+
+    uhdr=read_grib(gfile,{'SNOHF'},1,0,0);      % H sig
+    vhdr=read_grib(gfile,{'5WAVA'},1,0,0);      % Mean Wave Dir
+    ehdr=read_grib(gfile,{'DTRF'},1,0,0);       % Mean Wave Per
+
+    ut=read_grib(gfile,uhdr(1).record,0,1,0); 
+    vt=read_grib(gfile,vhdr(1).record,0,1,0); 
+    et=read_grib(gfile,ehdr(1).record,0,1,0); 
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % grab the dates (and check to make sure they match)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %yr=2000+ut.pds.year; 
+    %mo=ut.pds.month;
+    %da=ut.pds.day;       
+    %hr=ut.pds.hour+ut.pds.P1+ut.pds.P2;  
+    %jdu=julian([yr mo da hr 0 0]);
+    du=datenum(2000+ut.pds.year,ut.pds.month,ut.pds.day,ut.pds.hour+ut.pds.P1+ut.pds.P2);
+
+    %yr=2000+vt.pds.year; 
+    %mo=vt.pds.month;
+    %da=vt.pds.day;       
+    %hr=vt.pds.hour+vt.pds.P1+vt.pds.P2; 
+    %jdv=julian([yr mo da hr 0 0]);
+    dv=datenum(2000+vt.pds.year,vt.pds.month,vt.pds.day,vt.pds.hour+vt.pds.P1+vt.pds.P2);
+
+    %yr=2000+et.pds.year; 
+    %mo=et.pds.month;
+    %da=et.pds.day;       
+    %hr=et.pds.hour+et.pds.P1+et.pds.P2;  
+    %jde=julian([yr mo da hr 0 0]);
+    de=datenum(2000+et.pds.year,et.pds.month,et.pds.day,et.pds.hour+et.pds.P1+et.pds.P2);
+
+    if(max(abs(diff([du dv de ])))>eps)
+      disp('time mismatch');
+      return
+    else
+      %% we have to transform time from days (returned by datenum) in seconds
+      seconds=(du-datenum(1980,1,1))*3600*24;
+      _base_time=du;
+    end %if
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % FIRST CYCLE: do only once
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    if(nn==1);
+      
+      % acquire grid 
+
+      tt=read_grib(gfile,1,0,1,0);
+      rlon_min=tt.gds.Lo1;
+      rlon_max=tt.gds.Lo2;
+      rlat_min=tt.gds.La1;
+      rlat_max=tt.gds.La2;
+      im=tt.gds.Ni;
+      jm=tt.gds.Nj;
+
+      rlon=linspace(rlon_min,rlon_max,im);
+      rlat=linspace(rlat_min,rlat_max,jm);
     
-    if(nn==1); % do only once
-        
-% acquire grid 
+      %[alon,alat]=meshgrid(rlon,rlat); %UNUSED
 
-tt=read_grib(gfile,1,0,1,0);
-rlon_min=tt.gds.Lo1;
-rlon_max=tt.gds.Lo2;
-rlat_min=tt.gds.La1;
-rlat_max=tt.gds.La2;
-im=tt.gds.Ni;
-jm=tt.gds.Nj;
+      % NetCDF metadata
 
-rlon=linspace(rlon_min,rlon_max,im);
-rlat=linspace(rlat_min,rlat_max,jm);
-[alon,alat]=meshgrid(rlon,rlat);
+      f = netcdf(ncfile, 'clobber');
 
-% NetCDF metadata
+      % Preamble.
 
-f = netcdf(ncfile, 'clobber');
+      f.type ='ECMWF WAVE forecast';
+      f.title='ECMWF WAVE forecast';
+      f.author = 'Jacopo Chiggiato, chiggiato@nurc.nato.int - Carlo Cancellieri, carlo.cancellieri@geo-solutions.it';
+      f.date = datestr(now);
 
-% Preamble.
+      f('time') =0;   % unlimited dimension
+      f{'time'}=ncdouble('time');
+      f{'time'}.long_name=('time since initialization');
+      f{'time'}.units=('seconds since 1980-1-1 0:0:0');%'days since 1968-5-23 00:00:00 UTC');
+      f{'time'}.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
+      %f{'time'}.calendar='MJD';
 
-f.type ='ECMWF forecast';
-f.title='ECMWF forecast';
-f.author = 'Jacopo Chiggiato, chiggiato@nurc.nato.int';
-f.date = datestr(now);
+      f('lon') = im;
+      f{'lon'}=ncfloat('lon');%'lat',
+      f{'lon'}.long_name='Longitude';
+      f{'lon'}.units = 'degrees_east';
+      f{'lon'}(:)=rlon; %alon;
 
-f('time') =0;   % unlimited dimension
-f('im') = im;
-f('jm') = jm;
+      f('lat') = jm;
+      f{'lat'}=ncfloat('lat');%,'lon'
+      f{'lat'}.long_name='Latitude';
+      f{'lat'}.units = 'degrees_north';
+      f{'lat'}(:)=rlat; %alat;
 
-% Meteo Fields
+      % Meteo Fields
+      %f{'Hwave'}=ncfloat('time','lat','lon');
+      f{'hs'}=ncfloat('time','lat','lon');
+      f{'hs'}.units = 'm';
+      f{'hs'}.FillValue_=ncfloat(1.e35);
+      f{'hs'}.long_name='sea surface swell wave significant height';
+      %f{'Hwave'}.long_name='Significant Wave Heigth';
+      f{'hs'}.coordinates='lat lon';
 
-f{'time'}=ncdouble('time');
-f{'time'}.long_name=('time since initialization');
-f{'time'}.units=('days since 1968-5-23 00:00:00 UTC');
-f{'time'}.calendar='MJD';
+% UNUSED
+      %f{'Dwave'}=ncfloat('time','lat','lon');
+      f{'meanwavdir'}=ncfloat('time','lat','lon');
+      f{'meanwavdir'}.units = 'deg';
+      f{'meanwavdir'}.FillValue_=ncfloat(1.e35);
+      f{'meanwavdir'}.long_name='mean wave direction';
+      %f{'Dwave'}.long_name='Mean Wave Direction';
+      f{'meanwavdir'}.coordinates='lat lon';
 
-f{'lat'}=ncfloat('jm','im');
-f{'lat'}.long_name='Latitude';
-f{'lat'}.units = 'degrees_north';
+      %f{'Twave'}=ncfloat('time','lat','lon');
+      f{'meanwavperiod'}=ncfloat('time','lat','lon');
+      f{'meanwavperiod'}.units = 's';
+      f{'meanwavperiod'}.FillValue_=ncfloat(1.e35);
+      %f{'Twave'}.long_name = 'Mean Wave Period';
+      f{'meanwavperiod'}.long_name = 'mean wave period';
+      f{'meanwavperiod'}.coordinates='lat lon';
 
-f{'lon'}=ncfloat('jm','im');
-f{'lon'}.long_name='Longitude';
-f{'lon'}.units = 'degrees_east';
+      % nodata
+      f.nodata=ncdouble(1.e35);
+      % fillvalue
+      f._FillValue= ncdouble(1.e35);
+      %base time attribute
+      %"yyyyMMddTHHmmssSSSZ"
+      f.base_time=datestr(_base_time,"yyyymmddTHHMMSS");
+      % time origin
+      f.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
+      % save seconds to (eventually) calculate TAU
+      first_time=seconds;
+      % setting TAU
+      f.tau=ncint(0);
 
-f{'Hwave'}=ncfloat('time','jm','im');
-f{'Hwave'}.units = 'm';
-f{'Hwave'}.FillValue_=ncfloat(1.e35);
-f{'Hwave'}.long_name='Significant Wave Heigth';
-f{'Hwave'}.coordinates='lat lon';
+      close(f);
 
-f{'Dwave'}=ncfloat('time','jm','im');
-f{'Dwave'}.units = 'degrees';
-f{'Dwave'}.FillValue_=ncfloat(1.e35);
-f{'Dwave'}.long_name='Mean Wave Direction';
-f{'Dwave'}.coordinates='lat lon';
-
-f{'Twave'}=ncfloat('time','jm','im');
-f{'Twave'}.units = 's';
-f{'Twave'}.FillValue_=ncfloat(1.e35);
-f{'Twave'}.long_name = 'Mean Wave Period';
-f{'Twave'}.coordinates='lat lon';
-
-f{'lon'}(:)=alon;
-f{'lat'}(:)=alat;
-
-close(f);
-
-    end
+    end %if nn==1
 
 
-% grab data
+    % reshape the data
 
-  uhdr=read_grib(gfile,{'SNOHF'},1,0,0);      % H sig
-  vhdr=read_grib(gfile,{'5WAVA'},1,0,0);      % Mean Wave Dir
-  ehdr=read_grib(gfile,{'DTRF'},1,0,0);       % Mean Wave Per
-  
-  
-  ut=read_grib(gfile,uhdr(1).record,0,1,0); 
-  vt=read_grib(gfile,vhdr(1).record,0,1,0); 
-  et=read_grib(gfile,ehdr(1).record,0,1,0); 
-  
-% grab the dates (and check to make sure they match)
+    ru=reshape(ut.fltarray,ut.gds.Ni,ut.gds.Nj);
+    rv=reshape(vt.fltarray,vt.gds.Ni,vt.gds.Nj);
+    e=reshape(et.fltarray,et.gds.Ni,et.gds.Nj);
 
-  yr=2000+ut.pds.year; 
-  mo=ut.pds.month;
-  da=ut.pds.day;       
-  hr=ut.pds.hour+ut.pds.P1+ut.pds.P2;  
-  jdu=julian([yr mo da hr 0 0]);
-  
-  yr=2000+vt.pds.year; 
-  mo=vt.pds.month;
-  da=vt.pds.day;       
-  hr=vt.pds.hour+vt.pds.P1+vt.pds.P2; 
-  jdv=julian([yr mo da hr 0 0]);
+    ru(ru>10000)=1.e35;%NaN;
+    rv(rv>10000)=1.e35;%NaN;
+    e(e>10000)=1.e35;%NaN;
 
-  yr=2000+et.pds.year; 
-  mo=et.pds.month;
-  da=et.pds.day;       
-  hr=et.pds.hour+et.pds.P1+et.pds.P2;  
-  jde=julian([yr mo da hr 0 0]);
+    % writing
 
-  
-  if(max(abs(diff([jdu jdv jde ])))>eps), 
-      disp('time mismatch');return
-  else
-     jd=jdu;
-  end
+    f = netcdf(ncfile, 'write');
 
-% reshape the data
+    % update TAU
+    if (nn==2) % if there are more than 1 times
+      % tau attribute in hour
+      f.tau=ncint(int8((seconds/3600)-(first_time/3600)));
+      clear fist_time;
+    end %if
 
-  ru=reshape(ut.fltarray,ut.gds.Ni,ut.gds.Nj);
-  rv=reshape(vt.fltarray,vt.gds.Ni,vt.gds.Nj);
-  e=reshape(et.fltarray,et.gds.Ni,et.gds.Nj);
+    f{'hs'}(nn,:,:)=ru'; 
+    f{'meanwavdir'}(nn,:,:)=rv';
+    f{'meanwavperiod'}(nn,:,:)=e.';
+    f{'time'}(nn)=seconds;%jd-2440000;
 
-  ru(ru>10000)=NaN;
-  rv(rv>10000)=NaN;
-  e(e>10000)=NaN;
-  
-% writing
+    close(f);
 
-  f = netcdf(ncfile, 'write');
-  f{'Hwave'}(nn,:,:)=ru'; 
-  f{'Dwave'}(nn,:,:)=rv';
-  f{'Twave'}(nn,:,:)=e.';
-  f{'time'}(nn)=jd-2440000;
-  close(f);
+  end %for
 
-end
-  
 return
 
-% end
+end %function

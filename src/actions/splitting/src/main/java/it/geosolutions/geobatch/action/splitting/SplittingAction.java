@@ -57,15 +57,10 @@ public class SplittingAction extends BaseAction<FileSystemMonitorEvent> {
         try {
             listenerForwarder.started();
 
-            // looking for file
-            if (events.size() != 1) {
-                throw new IllegalArgumentException("Wrong number of elements for this action: "
-                        + events.size());
-            }
-
             Queue<FileSystemMonitorEvent> forwardingEvents = new LinkedList<FileSystemMonitorEvent>();
 
-            for (int i = 0; i < events.size(); i++) {
+            int numEvents = events.size();
+            for (int i = 0; i < numEvents; i++) {
                 FileSystemMonitorEvent event = events.remove();
 
                 // //
