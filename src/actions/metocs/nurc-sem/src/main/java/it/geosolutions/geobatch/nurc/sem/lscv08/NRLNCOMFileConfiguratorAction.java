@@ -151,7 +151,8 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
                 METOCSActionsIOUtils.DOWN);
 
         // time Variable data
-        final SimpleDateFormat toSdf = new SimpleDateFormat("yyyyMMdd");
+        final SimpleDateFormat toSdf = cruiseName.equalsIgnoreCase("rep10")?
+        		new SimpleDateFormat("yyyyMMddHH") : new SimpleDateFormat("yyyyMMdd");
         toSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
         final Date timeOriginDate = toSdf.parse(inputFileName.substring(inputFileName
                 .lastIndexOf("_") + 1));
@@ -271,7 +272,8 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
 
     @Override
     protected void createOutputFile(File outDir, String inputFileName) throws IOException {
-        outputFile = new File(outDir, "lscv08_NCOM"
+//      outputFile = new File(outDir, "lscv08_NCOM"
+        outputFile = new File(outDir, cruiseName + "_NCOM"
                 + (inputFileName.contains("nest") ? "nest"
                         + inputFileName.substring(inputFileName.indexOf("nest") + "nest".length(),
                                 inputFileName.indexOf("nest") + "nest".length() + 1) : "")

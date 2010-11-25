@@ -275,7 +275,8 @@ public class MERCATORFileConfiguratorAction extends METOCSBaseConfiguratorAction
 
     @Override
     protected void createOutputFile(File outDir, String inputFileName) throws IOException {
-        outputFile = new File(outDir, "lscv08_MERCATOR-Forecast-T" + new Date().getTime()
+//        outputFile = new File(outDir, "lscv08_MERCATOR-Forecast-T" + new Date().getTime()
+        outputFile = new File(outDir, cruiseName + "_MERCATOR-Forecast-T" + new Date().getTime()
                 + FilenameUtils.getBaseName(inputFileName).replaceAll("-", "") + ".nc");
         ncFileOut = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath());
     }

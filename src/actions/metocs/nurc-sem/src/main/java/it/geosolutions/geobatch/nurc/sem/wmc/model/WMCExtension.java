@@ -30,8 +30,8 @@
 package it.geosolutions.geobatch.nurc.sem.wmc.model;
 
 /**
- * @author Fabiani
- * 
+ * @author Alessio Fabiani, GeoSolutions SAS
+ * @author Daniele Romagnoli, GeoSolutions SAS
  */
 public class WMCExtension {
     private OLLayerID id;
@@ -65,6 +65,10 @@ public class WMCExtension {
     private OLStyleMaxValue styleMaxValue;
 
     private OLStyleRestService styleRestService;
+    
+    private OLStyleLegendService styleLegendService;
+
+	private OLMainLayer mainLayer;
 
     /**
      * @return the id
@@ -299,11 +303,34 @@ public class WMCExtension {
         this.styleRestService = styleRestService;
     }
 
-    /**
-     * @return the styleRestService
-     */
-    public OLStyleRestService getStyleRestService() {
-        return styleRestService;
-    }
+	/**
+	 * @return the styleRestService
+	 */
+	public OLStyleRestService getStyleRestService() {
+		return styleRestService;
+	}
+
+	/**
+	 * @return the styleLegendService
+	 */
+	public OLStyleLegendService getStyleLegendService() {
+		return styleLegendService;
+	}
+
+	/**
+	 * @param styleLegendService
+	 *            the styleLegendService to set
+	 */
+	public void setStyleLegendService(OLStyleLegendService styleLegendService) {
+		this.styleLegendService = styleLegendService;
+	}
+
+	public OLMainLayer getMainLayer() {
+		return mainLayer;
+	}
+
+	public void setMainLayer(OLMainLayer mainLayer) {
+		this.mainLayer = mainLayer;
+	}
 
 }
