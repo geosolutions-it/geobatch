@@ -306,7 +306,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
                 extension.setSingleTile(new OLSingleTile("false"));
                 extension.setTransparent(new OLTransparent("true"));
                 extension.setDisplayInLayerSwitcher(new OLDisplayInLayerSwitcher("false"));
-                OLStyleColorRamps ramp = new OLStyleColorRamps("jet, red, blue, gray");
+                OLStyleColorRamps ramp = new OLStyleColorRamps("jet,red,blue,gray");
                 ramp.setDefaultRamp("jet");
                 extension.setStyleColorRamps(ramp);
                 setAdditionalInfo(infoFile,extension,newLayer);
