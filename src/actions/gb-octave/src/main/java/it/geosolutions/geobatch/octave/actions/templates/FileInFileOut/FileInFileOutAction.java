@@ -33,12 +33,10 @@ import it.geosolutions.geobatch.octave.OctaveEnv;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 
 import java.io.File;
-import java.util.Date;
+import java.io.IOException;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sun.servicetag.UnauthorizedAccessException;
 
 import dk.ange.octave.exception.OctaveEvalException;
 
@@ -112,11 +110,11 @@ public abstract class FileInFileOutAction extends BaseAction<FileSystemMonitorEv
                 File out_dir=new File(config.getWorkingDirectory()+File.separator+getOutputDir()+File.separator);
                 if (!out_dir.exists()){
                     if (!out_dir.mkdir()){
-                        throw new UnauthorizedAccessException("Unable to create the output dir: "+out_dir);
+                        throw new IOException("Unable to create the output dir: "+out_dir);
                     }
                     else{
                         if (!out_dir.canWrite())
-                            throw new UnauthorizedAccessException("" +
+                            throw new IOException("" +
                                     "Can't write to the output dir: "+out_dir+" check permissions");
                     }
                 }
