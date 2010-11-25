@@ -1,26 +1,34 @@
 package it.geosolutions.geobatch.octave;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.CountDownLatch;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("sheet")
 @XStreamInclude({
     OctaveFunctionFile.class,
+    OctaveCommand.class,
     SerializableOctaveFile.class,
     SerializableOctaveString.class,
     SerializableOctaveObject.class})
 public class OctaveExecutableSheet {
-    public CountDownLatch gate= null;
+    
+    // the name of this sheet
+    @XStreamAsAttribute
+    @XStreamAlias("name")
+    private final String name;
     
     @XStreamAlias("commands")
-    private final Vector<String> commands;
+    private final List<OctaveCommand> commands;
     
     // variables defined by this sheet
     @XStreamAlias("definitions")
-    private final Vector<SerializableOctaveObject<?>> definitions;
+    private final List<SerializableOctaveObject<?>> definitions;
     
     /**
      * calculated variables:
@@ -31,54 +39,131 @@ public class OctaveExecutableSheet {
      * @param functs
      */
     @XStreamAlias("returns")
-    private final Vector<SerializableOctaveObject<?>> returns;
+    private final List<SerializableOctaveObject<?>> returns;
     
-    public OctaveExecutableSheet(Vector<String> com,
-            Vector<SerializableOctaveObject<?>> defs,
-            Vector<SerializableOctaveObject<?>> rets){
+    @XStreamOmitField
+    private boolean executed=false;
+    
+    @Override
+    public Object clone(){
+        List<OctaveCommand> comm=new ArrayList<OctaveCommand>();
+        if (commands!=null)
+            for (OctaveCommand oc:commands){
+                comm.add((OctaveCommand)oc.clone());
+            }
+        List<SerializableOctaveObject<?>> def=new ArrayList<SerializableOctaveObject<?>>();
+        if (definitions!=null)
+            for (SerializableOctaveObject<?> d:definitions){
+                def.add((SerializableOctaveObject<?>)d.clone());
+            }
+        List<SerializableOctaveObject<?>> ret=new ArrayList<SerializableOctaveObject<?>>();
+        if (returns!=null)
+            for (SerializableOctaveObject<?> r:returns){
+                ret.add((SerializableOctaveObject<?>)r.clone());
+            }
+        OctaveExecutableSheet oes=new OctaveExecutableSheet(this.getName(),comm,def,ret);
+        oes.setExecuted(this.isExecuted());
+        return oes;
+    }
+    
+    public OctaveExecutableSheet(
+            String sheet_name,
+            List<OctaveCommand> com,
+            List<SerializableOctaveObject<?>> defs,
+            List<SerializableOctaveObject<?>> rets){
+        name=sheet_name;
         commands=com;
         definitions=defs;
         returns=rets;
+        executed=false;
+    }
+    
+    public OctaveExecutableSheet(
+            String sheet_name,
+            OctaveCommand com,
+            List<SerializableOctaveObject<?>> defs,
+            List<SerializableOctaveObject<?>> rets){
+        commands=new ArrayList<OctaveCommand>();
+        if (sheet_name!=null)
+            name=sheet_name;
+        else {
+// TODO LOG
+            name="new_sheet";
+        }
+        if (com!=null)
+            commands.add(com);
+        //else
+// TODO LOG
+        definitions=defs;
+        returns=rets;
+        executed=false;
     }
     
     public OctaveExecutableSheet(){
-        commands=new Vector<String>();
-        definitions=new Vector<SerializableOctaveObject<?>>();
-        returns=new Vector<SerializableOctaveObject<?>>();
+        name="new_sheet";
+        commands=new ArrayList<OctaveCommand>();
+        definitions=new ArrayList<SerializableOctaveObject<?>>();
+        returns=new ArrayList<SerializableOctaveObject<?>>();
+        executed=false;
     }
     
     public OctaveExecutableSheet(OctaveExecutableSheet es){
-        commands=es.getCommands();
-        definitions=es.getDefinitions();
-        returns=es.getReturns();
+        if (es!=null){
+            name=es.getName();
+            commands=es.getCommands();
+            definitions=es.getDefinitions();
+            returns=es.getReturns();
+            executed=es.isExecuted();            
+        }
+        else {
+// TODO LOG
+            name="new_sheet";
+            commands=new ArrayList<OctaveCommand>();
+            definitions=new ArrayList<SerializableOctaveObject<?>>();
+            returns=new ArrayList<SerializableOctaveObject<?>>();
+            executed=false;
+        }
     }
     
-    public String getCommand(int i){
+    public String getName(){
+        return name;
+    }
+    
+    public OctaveCommand getCommand(int i){
         return commands.get(i);
     }
     
-    public Vector<String> getCommands(){
+    public List<OctaveCommand> getCommands(){
         return commands;
     }
     
-    public Vector<SerializableOctaveObject<?>> getDefinitions(){
+    public List<SerializableOctaveObject<?>> getDefinitions(){
         return definitions;
     }
     
-    public Vector<SerializableOctaveObject<?>> getReturns(){
+    public List<SerializableOctaveObject<?>> getReturns(){
         return returns;
     }
     
     // schedule command to be executed
-    public void pushCommand(String src){
+    public void pushCommand(OctaveCommand src){
         commands.add(src);
     }
     
-    public String popCommand(){
+    // schedule command to be executed
+    public void pushCommand(String src){
+        if (src!=null && src!="")
+            commands.add(new OctaveCommand(src));
+//        else
+// TODO LOG
+    }
+    
+    public OctaveCommand popCommand(){
         if (commands.isEmpty())
             return null;
+// TODO LOG
         else {
-            String c=commands.firstElement();
+            OctaveCommand c=commands.get(0);
             commands.remove(0);
             return c;
         }
@@ -91,6 +176,11 @@ public class OctaveExecutableSheet {
             return true;
     }
     
+    /**
+     * Check if sheet has SerializableOctaveObject which
+     * represents returning values.
+     * @return true if sheet has returning variables
+     */
     public boolean hasReturns(){
         if (returns.isEmpty())
             return false;
@@ -98,6 +188,11 @@ public class OctaveExecutableSheet {
             return true;
     }
     
+    /**
+     * check if this sheet has commands
+     * @note this do not check the executed flag
+     * @return true if sheet has commands in the list
+     */
     public boolean hasCommands(){
         if (commands.isEmpty())
             return false;
@@ -105,12 +200,55 @@ public class OctaveExecutableSheet {
             return true;
     }
     
+    /**
+     * Check the execution flag of this sheet
+     * @return true if all the OctaveFunctions of
+     * this sheet are already executed.
+     */
+    public boolean isExecuted(){
+        return executed;
+    }
     
+    /**
+     * set the executed status of this sheet to the
+     * input parameter 
+     * @param exec
+     */
+    protected void setExecuted(boolean exec){
+        executed=exec;
+    }
+    
+    /**
+     * re-check execution flag of this sheet 
+     * checking all the contained OctaveCommands
+     * execution flags.
+     * @note this method also set this.executed
+     * flag
+     * @return true if all the OctaveFunctions of
+     * this sheet are already executed.
+     */
+    protected boolean checkExecuted(){
+        executed=true;
+        for (OctaveCommand oc:commands){
+            if (!oc.isExecuted()){
+                executed=false;
+                break;
+            }
+        }   
+        return executed;
+    }
+    
+    /**
+     * extract a definition from the list
+     * @note this remove a definition
+     * @return the SerializableOctaveObject which represent
+     * the definition
+     */
     public SerializableOctaveObject<?> popDefinition(){
         if (definitions.isEmpty())
             return null;
         else {
-            SerializableOctaveObject<?> v=definitions.firstElement();
+            SerializableOctaveObject<?> v=definitions.get(0);
             definitions.remove(0);
             return v;
         }
@@ -119,8 +257,9 @@ public class OctaveExecutableSheet {
     public SerializableOctaveObject<?> popReturn(){
         if (returns.isEmpty())
             return null;
+// TODO LOG
         else {
-            SerializableOctaveObject<?> r=returns.firstElement();
+            SerializableOctaveObject<?> r=returns.get(0);
             returns.remove(0);
             return r;
         }

@@ -1,7 +1,31 @@
+/*
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  http://code.google.com/p/geobatch/
+ *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package it.geosolutions.geobatch.octave.test;
 
 import it.geosolutions.geobatch.octave.OctaveEnv;
 import it.geosolutions.geobatch.octave.OctaveFunctionFile;
+import it.geosolutions.geobatch.octave.OctaveFunctionSheet;
+import it.geosolutions.geobatch.octave.SerializableOctaveFile;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -15,17 +39,23 @@ public class SerializeConfiguration {
         stream.processAnnotations(OctaveEnv.class);
         OctaveEnv oac=new OctaveEnv();
 
-        OctaveFunctionFile off=new OctaveFunctionFile("funzione");
+        OctaveFunctionFile off=
+            new OctaveFunctionFile("funzione");
+        
+//        off.setBuilder(new OctaveFunctionFile("funzione2"));
+        off.pushDefinition(new SerializableOctaveFile("file_in",""));
+        off.pushDefinition(new SerializableOctaveFile("file_out",""));
+        
         //soo.setName("variable_name");
+        OctaveFunctionSheet os=new OctaveFunctionSheet();
+        os.pushDefinition(new SerializableOctaveFile("variable_name2","VALUE"));
+        os.pushDefinition(new SerializableOctaveFile("returning_var_name2","VALUE"));
+        os.pushCommand("COMMAND");
+        os.pushFunction(off);
         System.out.println("-------------------------------------");
-        /*
-        oac.setFunction(off);
-        oac.addPath("path");
-        oac.addPath("path2");
-        oac.getFunction().addArg(new SerializableOctaveString("variable_name2","VALUE"));
-        oac.getFunction().addRet(new SerializableOctaveFile("returning_var_name","VALUE"));
-        oac.getFunction().addRet(new SerializableOctaveFile("returning_var_name2","VALUE"));
-        */
+        oac.push(os);
+        
+
         System.out.println(stream.toXML(oac));
         System.out.println("-------------------------------------");
         

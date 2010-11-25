@@ -166,9 +166,31 @@ public class METOCSActionsIOUtils {
             final Array originalVarData, final boolean findNewRange, final boolean updateFillValue,
             final int[] loopLengths, final boolean flipY) throws IOException, InvalidRangeException {
         return write2DData(userRaster, var, originalVarData, findNewRange, updateFillValue,
-                loopLengths, flipY, null, false);
+                loopLengths, flipY, null, false, null);
     }
 
+    /**
+     * 
+     * @param userRaster
+     * @param var
+     * @param originalVarData
+     * @param findNewRange
+     * @param updateFillValue
+     * @param loopLengths
+     * @param flipY
+     * @param mask
+     * @param maskOneIsValid
+     * @return
+     * @throws IOException
+     * @throws InvalidRangeException
+     */
+    public static Array write2DData(WritableRaster userRaster, Variable var,
+            final Array originalVarData, final boolean findNewRange, final boolean updateFillValue,
+            final int[] loopLengths, final boolean flipY, final Array mask,
+            final boolean maskOneIsValid) throws IOException, InvalidRangeException {
+        return write2DData(userRaster, var, originalVarData, findNewRange, updateFillValue, loopLengths, flipY, mask, maskOneIsValid, null);
+    }
+    
     /**
      * 
      * @param userRaster
@@ -185,7 +207,7 @@ public class METOCSActionsIOUtils {
     public static Array write2DData(WritableRaster userRaster, Variable var,
             final Array originalVarData, final boolean findNewRange, final boolean updateFillValue,
             final int[] loopLengths, final boolean flipY, final Array mask,
-            final boolean maskOneIsValid) throws IOException, InvalidRangeException {
+            final boolean maskOneIsValid, final double[] rescaleFactors) throws IOException, InvalidRangeException {
 
         int tPos = -1;
         int zPos = -1;
@@ -207,6 +229,15 @@ public class METOCSActionsIOUtils {
         }
 
         final DataType varDataType = var.getDataType();
+        double offset = 0.0;
+        double scale = 1.0;
+        boolean rescale = false;
+        if (rescaleFactors != null){
+            offset = rescaleFactors[0];
+            scale = rescaleFactors[1];
+            rescale = true;
+        }
+        
         Attribute fv = null;
         if (updateFillValue)
             fv = var.findAttribute(NetCDFUtilities.DatasetAttribs.MISSING_VALUE);
@@ -252,10 +283,12 @@ public class METOCSActionsIOUtils {
                     if (flipY) {
                         newYpos = latPositions - yPos - 1;
                     }
-                    userRaster.setSample(xPos, newYpos, 0, sVal); // setSample(
-                    // x, y,
-                    // band,
-                    // value )
+                    if (!rescale) {
+                        userRaster.setSample(xPos, newYpos, 0, sVal); 
+                    } else {
+                        double rescaled = sVal != fillValue ? (sVal * scale) + offset : fillValue;
+                        userRaster.setSample(xPos, newYpos, 0, rescaled); 
+                    }
                 }
             }
             if (findNewRange) {
@@ -304,10 +337,12 @@ public class METOCSActionsIOUtils {
                     if (flipY) {
                         newYpos = latPositions - yPos - 1;
                     }
-                    userRaster.setSample(xPos, newYpos, 0, sVal); // setSample(
-                    // x, y,
-                    // band,
-                    // value )
+                    if (!rescale) {
+                        userRaster.setSample(xPos, newYpos, 0, sVal); 
+                    } else {
+                        double rescaled = sVal != fillValue ? (sVal * scale) + offset : fillValue;
+                        userRaster.setSample(xPos, newYpos, 0, rescaled); 
+                    }
                 }
             }
             if (findNewRange) {
@@ -356,10 +391,12 @@ public class METOCSActionsIOUtils {
                     if (flipY) {
                         newYpos = latPositions - yPos - 1;
                     }
-                    userRaster.setSample(xPos, newYpos, 0, sVal); // setSample(
-                    // x, y,
-                    // band,
-                    // value )
+                    if (!rescale) {
+                        userRaster.setSample(xPos, newYpos, 0, sVal); 
+                    } else {
+                        double rescaled = sVal != fillValue ? (sVal * scale) + offset : fillValue;
+                        userRaster.setSample(xPos, newYpos, 0, rescaled); 
+                    }
                 }
             }
             if (findNewRange) {
@@ -408,10 +445,12 @@ public class METOCSActionsIOUtils {
                     if (flipY) {
                         newYpos = latPositions - yPos - 1;
                     }
-                    userRaster.setSample(xPos, newYpos, 0, sVal); // setSample(
-                    // x, y,
-                    // band,
-                    // value )
+                    if (!rescale) {
+                        userRaster.setSample(xPos, newYpos, 0, sVal); 
+                    } else {
+                        double rescaled = sVal != fillValue ? (sVal * scale) + offset : fillValue;
+                        userRaster.setSample(xPos, newYpos, 0, rescaled); 
+                    }
                 }
             }
             if (findNewRange) {
@@ -460,10 +499,12 @@ public class METOCSActionsIOUtils {
                     if (flipY) {
                         newYpos = latPositions - yPos - 1;
                     }
-                    userRaster.setSample(xPos, newYpos, 0, sVal); // setSample(
-                    // x, y,
-                    // band,
-                    // value )
+                    if (!rescale) {
+                        userRaster.setSample(xPos, newYpos, 0, sVal); 
+                    } else {
+                        double rescaled = sVal != fillValue ? (sVal * scale) + offset : fillValue;
+                        userRaster.setSample(xPos, newYpos, 0, rescaled); 
+                    }
                 }
             }
             if (findNewRange) {
@@ -478,6 +519,340 @@ public class METOCSActionsIOUtils {
         else
             throw new IllegalArgumentException("Unsupported DataType");
     }
+    
+    /**
+	 * 
+	 * @param userRaster
+	 * @param var
+	 * @param originalVarData
+	 * @param findNewRange
+	 * @param updateFillValue
+	 * @param loopLengths
+	 * @param flipY
+	 * @throws IOException
+	 * @throws InvalidRangeException
+	 */
+	public static Array write2DData(
+			WritableRaster userRaster,
+			Variable var, final Array originalVarData, 
+	        final boolean findNewRange, final boolean updateFillValue, 
+	        final int[] loopLengths,
+	        final boolean flipY, final double globalMissingValue, final boolean isMaskCase) throws IOException, InvalidRangeException {
+		
+		int tPos 		 = -1;
+		int zPos 		 = -1;
+		int latPositions = -1;
+		int lonPositions = -1;
+		
+		if (loopLengths.length == 2) {
+			latPositions = loopLengths[0];
+			lonPositions = loopLengths[1];
+		} else if (loopLengths.length == 3) {
+			zPos         = loopLengths[0];
+			latPositions = loopLengths[1];
+			lonPositions = loopLengths[2];
+		} else if (loopLengths.length == 4) {
+			tPos         = loopLengths[0];
+			zPos         = loopLengths[1];
+			latPositions = loopLengths[2];
+			lonPositions = loopLengths[3];
+		}
+
+		final DataType varDataType = var.getDataType();
+		Attribute fv = null;
+		if (updateFillValue)
+			fv = var.findAttribute(NetCDFUtilities.DatasetAttribs.MISSING_VALUE);
+		else
+			fv = var.findAttribute(NetCDFUtilities.DatasetAttribs.FILL_VALUE);
+		Index varIndex = originalVarData.getIndex();
+
+		if (isMaskCase) {
+                    byte min = 0;
+                    byte max = 1;
+                    
+                    for (int yPos = 0; yPos < latPositions; yPos++) {
+                            for (int xPos = 0; xPos < lonPositions; xPos++) {
+                                    int sVal = originalVarData.getInt(
+                                                    tPos >= 0 ? 
+                                                                    (zPos >= 0 ? varIndex.set(tPos, zPos, yPos, xPos) : varIndex.set(tPos, yPos, xPos))
+                                                                    :
+                                                                    (zPos >= 0 ? varIndex.set(zPos, yPos, xPos) : varIndex.set(yPos, xPos))
+                                    );
+                                    
+                                    // Flipping y
+                                    int newYpos = yPos;
+                                    // Flipping y
+                                    if (flipY) {
+                                            newYpos = latPositions - yPos - 1;
+                                    }
+                                    userRaster.setSample(xPos , newYpos, 0, sVal); // setSample( x, y, band, value )
+                            }
+                    }
+                    if (findNewRange){
+                        ArrayByte retArray = new ArrayByte(new int[]{2});
+                            retArray.setByte(0, min);
+                            retArray.setByte(1, max);
+                            return retArray;
+                    }
+                    return null;
+            }
+		
+		
+		// //
+		//
+		// FLOAT
+		//
+		// //
+		else if (varDataType == DataType.FLOAT) {
+			float min = Float.MAX_VALUE;
+			float max = -Float.MAX_VALUE;
+			float fillValue = Float.MAX_VALUE;
+			if (fv != null) {
+				fillValue = (fv.getNumericValue()).floatValue();
+			} else if (!Double.isNaN(globalMissingValue)){
+			    fillValue = (float)globalMissingValue;
+			}
+
+			for (int yPos = 0; yPos < latPositions; yPos++) {
+				for (int xPos = 0; xPos < lonPositions; xPos++) {
+					float sVal = originalVarData.getFloat(
+							tPos >= 0 ? 
+									(zPos >= 0 ? varIndex.set(tPos, zPos, yPos, xPos) : varIndex.set(tPos, yPos, xPos))
+									:
+									(zPos >= 0 ? varIndex.set(zPos, yPos, xPos) : varIndex.set(yPos, xPos))
+					);
+					if (findNewRange) {
+						if (sVal >= max && sVal != fillValue)
+							max = sVal;
+						if (sVal <= min && sVal != fillValue)
+							min = sVal;
+					}
+					// Flipping y
+					int newYpos = yPos;
+					// Flipping y
+					if (flipY) {
+						newYpos = latPositions - yPos - 1;
+					}
+					userRaster.setSample(xPos , newYpos, 0, sVal); // setSample( x, y, band, value )
+				}
+			}
+			if (findNewRange){
+				ArrayFloat retArray = new ArrayFloat(new int[]{2});
+				if (min == Float.MAX_VALUE){
+				    min = Float.NaN;
+				}
+				if (max == - Float.MAX_VALUE){
+				    max = Float.NaN;
+				}
+				retArray.setFloat(0, min);
+				retArray.setFloat(1, max);
+				return retArray;
+			}
+			return null;
+		} 
+		
+		// //
+		//
+		// DOUBLE
+		//
+		// //
+		else if (varDataType == DataType.DOUBLE) {
+			double min = Double.MAX_VALUE;
+			double max = -Double.MAX_VALUE;
+			double fillValue = Double.MAX_VALUE;
+			if (fv != null) {
+				fillValue = (fv.getNumericValue()).doubleValue();
+			}
+
+			for (int yPos = 0; yPos < latPositions; yPos++) {
+				for (int xPos = 0; xPos < lonPositions; xPos++) {
+					double sVal = originalVarData.getDouble(
+							tPos >= 0 ? 
+									(zPos >= 0 ? varIndex.set(tPos, zPos, yPos, xPos) : varIndex.set(tPos, yPos, xPos))
+									:
+									(zPos >= 0 ? varIndex.set(zPos, yPos, xPos) : varIndex.set(yPos, xPos))
+					);
+					if (findNewRange) {
+						if (sVal >= max && sVal != fillValue)
+							max = sVal;
+						if (sVal <= min && sVal != fillValue)
+							min = sVal;
+					}
+					// Flipping y
+					int newYpos = yPos;
+					// Flipping y
+					if (flipY) {
+						newYpos = latPositions - yPos - 1;
+					}
+					userRaster.setSample(xPos , newYpos, 0, sVal); // setSample( x, y, band, value )
+				}
+			}
+			if (findNewRange){
+				ArrayDouble retArray = new ArrayDouble(new int[]{2});
+				if (min == Double.MAX_VALUE){
+                                    min = Double.NaN;
+                                }
+                                if (max == -Double.MAX_VALUE){
+                                    max = Double.NaN;
+                                }
+				retArray.setDouble(0, min);
+				retArray.setDouble(1, max);
+				return retArray;
+			}
+			return null;
+		}
+
+		
+		// //
+		//
+		// BYTE
+		//
+		// //
+		else if (varDataType == DataType.BYTE) {
+			byte min = Byte.MAX_VALUE;
+			byte max = Byte.MIN_VALUE;
+			byte fillValue = Byte.MAX_VALUE;
+			if (fv != null) {
+				fillValue = (fv.getNumericValue()).byteValue();
+			}
+
+			for (int yPos = 0; yPos < latPositions; yPos++) {
+				for (int xPos = 0; xPos < lonPositions; xPos++) {
+					byte sVal = originalVarData.getByte(
+							tPos >= 0 ? 
+									(zPos >= 0 ? varIndex.set(tPos, zPos, yPos, xPos) : varIndex.set(tPos, yPos, xPos))
+									:
+									(zPos >= 0 ? varIndex.set(zPos, yPos, xPos) : varIndex.set(yPos, xPos))
+					);
+					if (findNewRange) {
+						if (sVal >= max && sVal != fillValue)
+							max = sVal;
+						if (sVal <= min && sVal != fillValue)
+							min = sVal;
+					}
+					// Flipping y
+					int newYpos = yPos;
+					// Flipping y
+					if (flipY) {
+						newYpos = latPositions - yPos - 1;
+					}
+					userRaster.setSample(xPos , newYpos, 0, sVal); // setSample( x, y, band, value )
+				}
+			}
+			if (findNewRange){
+				ArrayByte retArray = new ArrayByte(new int[]{2});
+				retArray.setByte(0, min);
+				retArray.setByte(1, max);
+				return retArray;
+			}
+			return null;
+		}
+
+		// //
+		//
+		// SHORT
+		//
+		// //
+		else if (varDataType == DataType.SHORT) {
+			short min = Short.MAX_VALUE;
+			short max = Short.MIN_VALUE;
+			short fillValue = Short.MAX_VALUE;
+			if (fv != null) {
+				fillValue = (fv.getNumericValue()).shortValue();
+			}
+
+			for (int yPos = 0; yPos < latPositions; yPos++) {
+				for (int xPos = 0; xPos < lonPositions; xPos++) {
+					short sVal = originalVarData.getShort(
+							tPos >= 0 ? 
+									(zPos >= 0 ? varIndex.set(tPos, zPos, yPos, xPos) : varIndex.set(tPos, yPos, xPos))
+									:
+									(zPos >= 0 ? varIndex.set(zPos, yPos, xPos) : varIndex.set(yPos, xPos))
+					);
+					if (findNewRange) {
+						if (sVal >= max && sVal != fillValue)
+							max = sVal;
+						if (sVal <= min && sVal != fillValue)
+							min = sVal;
+					}
+					// Flipping y
+					int newYpos = yPos;
+					// Flipping y
+					if (flipY) {
+						newYpos = latPositions - yPos - 1;
+					}
+					userRaster.setSample(xPos , newYpos, 0, sVal); // setSample( x, y, band, value )
+				}
+			}
+			if (findNewRange){
+				ArrayShort retArray = new ArrayShort(new int[]{2});
+				if (min == Short.MAX_VALUE){
+                                    min = fillValue;
+                                }
+                                if (max == Short.MIN_VALUE){
+                                    max = fillValue;
+                                }
+				retArray.setShort(0, min);
+				retArray.setShort(1, max);
+				return retArray;
+			}
+			return null;
+		}
+
+		// //
+		//
+		// INTEGER
+		//
+		// //
+		else if (varDataType == DataType.INT) {
+			int min = Integer.MAX_VALUE;
+			int max = Integer.MIN_VALUE;
+			int fillValue = Integer.MAX_VALUE;
+			if (fv != null) {
+				fillValue = (fv.getNumericValue()).intValue();
+			}
+
+			for (int yPos = 0; yPos < latPositions; yPos++) {
+				for (int xPos = 0; xPos < lonPositions; xPos++) {
+					int sVal = originalVarData.getInt(
+							tPos >= 0 ? 
+									(zPos >= 0 ? varIndex.set(tPos, zPos, yPos, xPos) : varIndex.set(tPos, yPos, xPos))
+									:
+									(zPos >= 0 ? varIndex.set(zPos, yPos, xPos) : varIndex.set(yPos, xPos))
+					);
+					if (findNewRange) {
+						if (sVal >= max && sVal != fillValue)
+							max = sVal;
+						if (sVal <= min && sVal != fillValue)
+							min = sVal;
+					}
+					// Flipping y
+					int newYpos = yPos;
+					// Flipping y
+					if (flipY) {
+						newYpos = latPositions - yPos - 1;
+					}
+					userRaster.setSample(xPos , newYpos, 0, sVal); // setSample( x, y, band, value )
+				}
+			}
+			if (findNewRange){
+				ArrayInt retArray = new ArrayInt(new int[]{2});
+				if (min == Integer.MAX_VALUE){
+                                    min = fillValue;
+                                }
+                                if (max == Integer.MIN_VALUE){
+                                    max = fillValue;
+                                }
+				retArray.setInt(0, min);
+				retArray.setInt(1, max);
+				return retArray;
+			}
+			return null;
+		}
+
+		else
+			throw new IllegalArgumentException("Unsupported DataType");
+	}
 
     /**
      * 
@@ -551,6 +926,52 @@ public class METOCSActionsIOUtils {
                 for (int Y = 0; Y < Y_Index.getLength(); Y++) {
                     double lon = lonOriginalData.getDouble(lonOriginalData.getIndex().set(Y, X));
                     double lat = latOriginalData.getDouble(latOriginalData.getIndex().set(Y, X));
+
+                    extrema[0] = lon < extrema[0] ? lon : extrema[0];
+                    extrema[1] = lat < extrema[1] ? lat : extrema[1];
+                    extrema[2] = lon > extrema[2] ? lon : extrema[2];
+                    extrema[3] = lat > extrema[3] ? lat : extrema[3];
+                }
+        }
+
+        return extrema;
+    }
+    
+    /**
+     * 
+     * @param latOriginalData
+     * @param lonOriginalData
+     * @param index2
+     * @param index
+     * @return
+     */
+    public static float[] computeExtremaAsFloat(final Array latOriginalData, final Array lonOriginalData,
+            final Dimension Y_Index, final Dimension X_Index) {
+        float[] extrema = new float[4];
+        extrema[0] = Float.POSITIVE_INFINITY;
+        extrema[1] = Float.POSITIVE_INFINITY;
+        extrema[2] = Float.NEGATIVE_INFINITY;
+        extrema[3] = Float.NEGATIVE_INFINITY;
+
+        if (latOriginalData.getRank() == 1 && lonOriginalData.getRank() == 1) {
+            for (int Y = 0; Y < Y_Index.getLength(); Y++) {
+                float lat = latOriginalData.getFloat(latOriginalData.getIndex().set(Y));
+
+                extrema[1] = lat < extrema[1] ? lat : extrema[1];
+                extrema[3] = lat > extrema[3] ? lat : extrema[3];
+            }
+
+            for (int X = 0; X < X_Index.getLength(); X++) {
+                float lon = lonOriginalData.getFloat(lonOriginalData.getIndex().set(X));
+
+                extrema[0] = lon < extrema[0] ? lon : extrema[0];
+                extrema[2] = lon > extrema[2] ? lon : extrema[2];
+            }
+        } else if (latOriginalData.getRank() == 2 && lonOriginalData.getRank() == 2) {
+            for (int X = 0; X < X_Index.getLength(); X++)
+                for (int Y = 0; Y < Y_Index.getLength(); Y++) {
+                    float lon = lonOriginalData.getFloat(lonOriginalData.getIndex().set(Y, X));
+                    float lat = latOriginalData.getFloat(latOriginalData.getIndex().set(Y, X));
 
                     extrema[0] = lon < extrema[0] ? lon : extrema[0];
                     extrema[1] = lat < extrema[1] ? lat : extrema[1];

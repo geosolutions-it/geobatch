@@ -331,7 +331,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
                                                                 .format(getTimeInstant(
                                                                         timeOriginalData,
                                                                         timeOriginalIndex, t))
-                                                                : "00000000T0000000Z").append("_")
+                                                                : "00000000T000000000Z").append("_")
                                         .append(TAU).append("_").append(localNoData);
 
                                 File gtiffFile = Utilities.storeCoverageAsGeoTIFF(gtiffOutputDir,

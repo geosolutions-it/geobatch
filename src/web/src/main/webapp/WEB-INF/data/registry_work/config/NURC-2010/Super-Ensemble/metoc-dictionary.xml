@@ -18,9 +18,13 @@
 		<name>relative humidity</name>
 		<brief>relhum</brief>
 	</metoc>
-	<metoc defaultUom="urn:ogc:def:uom:UCUM::K" type="meteo">
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::cel" type="meteo">
 		<name>sea surface temperature</name>
 		<brief>sst</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::cel" type="meteo">
+		<name>estimated error standard deviation of sst</name>
+		<brief>sst-error</brief>
 	</metoc>
 	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
 		<name>latent heat flux</name>

@@ -311,7 +311,8 @@ public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction {
      * @throws IOException
      */
     protected void createOutputFile(File outDir, String inputFileName) throws IOException {
-        outputFile = new File(outDir, "lscv08_INGVMFS-Forecast-T" + new Date().getTime()
+//        outputFile = new File(outDir, "lscv08_INGVMFS-Forecast-T" + new Date().getTime()
+        outputFile = new File(outDir, cruiseName + "_INGVMFS-Forecast-T" + new Date().getTime()
                 + FilenameUtils.getBaseName(inputFileName).replaceAll("-", "") + ".nc");
         ncFileOut = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath());
     }

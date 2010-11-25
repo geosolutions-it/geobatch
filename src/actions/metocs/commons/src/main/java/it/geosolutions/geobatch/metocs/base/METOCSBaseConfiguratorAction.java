@@ -75,6 +75,10 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
 
     public METOCSBaseConfiguratorAction(MetocActionConfiguration configuration) {
         super(configuration);
+        final String cruise = configuration.getCruiseName();
+        if (cruise != null && cruise.trim().length() > 0){
+            cruiseName = cruise.trim();
+        }
     }
 
     protected NetcdfFile ncGridFile = null;
@@ -84,6 +88,8 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
     protected NetcdfFile ncFileIn = null;
 
     protected File outputFile = null;
+    
+    protected String cruiseName = "lscv08";
 
     protected Map<String, Variable> foundVariables = new HashMap<String, Variable>();
 

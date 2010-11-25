@@ -1,10 +1,32 @@
+/*
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  http://code.google.com/p/geobatch/
+ *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package it.geosolutions.geobatch.octave;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * Function File
@@ -43,9 +65,15 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
     SerializableOctaveFile.class,
     SerializableOctaveString.class,
     SerializableOctaveObject.class})
-public class OctaveFunctionFile{
+public class OctaveFunctionFile extends OctaveExecutableSheet{
+/**
+ * TODO this is essentially an OctaveExecutableSheet !!!
+ * add only an 'executable' flag
+ */
+    @XStreamOmitField
+    protected boolean executable=false;
     
-    
+    /*
     //< function name
     @XStreamAlias("name")
     @XStreamAsAttribute
@@ -53,15 +81,18 @@ public class OctaveFunctionFile{
     
     //< returning name variable list to set
     //@XStreamImplicit(itemFieldName="ret")
-    private Vector<SerializableOctaveObject<?>> returns;
+    private List<SerializableOctaveObject<?>> returns;
     
     //< arguments values
     //@XStreamImplicit(itemFieldName="arg")
-    private Vector<SerializableOctaveObject<?>> arguments;
-    
+    private List<SerializableOctaveObject<?>> arguments;
+*/    
     public OctaveFunctionFile(){
-        arguments=new Vector<SerializableOctaveObject<?>>();
-        returns=new Vector<SerializableOctaveObject<?>>();
+        super("EMPTY_NAME_FUNCTION",
+                new OctaveCommand(""),
+                new ArrayList<SerializableOctaveObject<?>>(),
+                new ArrayList<SerializableOctaveObject<?>>());
+        executable=false;
     }
     
     /**
@@ -73,16 +104,35 @@ public class OctaveFunctionFile{
      * @param n the function name to call
      */
     public OctaveFunctionFile(String n){
-        function=n;
-        arguments=new Vector<SerializableOctaveObject<?>>();
-        returns=new Vector<SerializableOctaveObject<?>>();
+        super("EMPTY_NAME_FUNCTION",
+                new OctaveCommand(n),
+                new ArrayList<SerializableOctaveObject<?>>(),
+                new ArrayList<SerializableOctaveObject<?>>());
+        executable=false;
     }
     
-    public Vector<SerializableOctaveObject<?>> getReturns(){
+    /**
+     * @note: this is NOT a copy constructor, use clone instead
+     * @param es an OctaveFunctionFile
+     */
+    public OctaveFunctionFile(OctaveExecutableSheet es){
+        super(es.getName(),
+                es.getCommands(),
+                es.getDefinitions(),
+                es.getReturns());
+        executable=false;
+    }
+    
+    @Override
+    public Object clone(){
+        return new OctaveFunctionFile((OctaveExecutableSheet)super.clone());
+    }
+/*    
+    public List<SerializableOctaveObject<?>> getReturns(){
         return returns;
     }
     
-    public Vector<SerializableOctaveObject<?>> getArguments(){
+    public List<SerializableOctaveObject<?>> getArguments(){
         return arguments;
     }
     
@@ -100,5 +150,5 @@ public class OctaveFunctionFile{
     public void pushReturn(SerializableOctaveObject<?> soo){
         returns.add(soo);
     }
-
+*/
 }
