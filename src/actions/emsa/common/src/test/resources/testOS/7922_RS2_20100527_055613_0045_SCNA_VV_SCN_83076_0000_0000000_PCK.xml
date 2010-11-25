@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csn:dataPackage
+ xmlns:csn="http://www.emsa.europa.eu/csndc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.emsa.europa.eu/csndc ../XSD/csndc_pkg.xsd">
+  <csn:packageInfo>
+     <csn:packageId>7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000_OSW</csn:packageId>
+     <csn:packageType>OS_WARNING</csn:packageType>
+     <csn:operationType>TEST</csn:operationType>
+     <csn:dataPackageDescription>OS Warning package</csn:dataPackageDescription>
+  </csn:packageInfo>
+     <csn:eoProduct>
+        <csn:identifier>7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000</csn:identifier>
+     </csn:eoProduct>
+  <csn:oilSpills total="4">
+     <csn:oilSpillReference>
+        <csn:identifier>7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000_OS_1_OSW</csn:identifier>
+        <csn:fileName>7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000_OS_1_OSW.xml</csn:fileName>
+     </csn:oilSpillReference>
+     <csn:oilSpillReference>
+        <csn:identifier>7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000_OS_2_OSW</csn:identifier>
+        <csn:fileName>7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000_OS_2_OSW.xml</csn:fileName>
+     </csn:oilSpillReference>
+     <csn:oilSpillReference>
+        <csn:identifier>7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000_OS_3_OSW</csn:identifier>
+        <csn:fileName>7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000_OS_3_OSW.xml</csn:fileName>
+     </csn:oilSpillReference>
+     <csn:oilSpillReference>
+        <csn:identifier>7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000_OS_4_OSW</csn:identifier>
+        <csn:fileName>7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000_OS_4_OSW.xml</csn:fileName>
+     </csn:oilSpillReference>
+  </csn:oilSpills>
+</csn:dataPackage>

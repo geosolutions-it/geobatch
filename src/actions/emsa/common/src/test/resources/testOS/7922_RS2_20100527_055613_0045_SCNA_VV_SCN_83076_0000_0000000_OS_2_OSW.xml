@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OilSpill
+ xmlns="http://www.emsa.europa.eu/csndc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.emsa.europa.eu/csndc ../XSD/csndc_os.xsd">
+  <eventid>2</eventid>
+  <origin>DETECTED</origin>
+  <center><gml:pos></gml:pos></center>
+  <geometry></geometry>
+  <timeStamp>2010-05-27T05:56:13</timeStamp>
+  <imageIdentifier type="SAR">7922_RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000</imageIdentifier>
+  <auxiliaryDataRef>
+    <auxiliaryData>
+      <dataKey>OSW_JPEG_2</dataKey>
+      <dataReference>C:/PMMT/PM/PF/WORK/TEMAS/AK_108.24.1/DATAOUT/TEMASRPT//CSN2_26/\RS2_20100527_055613_0045_SCNA_VV_SCN_83076_0000_0000000_2010-10-14_15-35-13_OSW_2.jpg</dataReference>
+   </auxiliaryData>
+</auxiliaryDataRef>
+</OilSpill>

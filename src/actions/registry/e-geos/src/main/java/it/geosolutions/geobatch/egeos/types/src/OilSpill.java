@@ -74,12 +74,13 @@ public class OilSpill {
     public final static Namespace NS_CSN = Namespace.getNamespace("csn", "http://www.emsa.europa.eu/csndc");
     public final static Namespace NS_GML = Namespace.getNamespace("gml", "http://www.opengis.net/gml");
 
-    private static final XPath XP_IMG_NAME = buildXPath("OilSpill/auxiliaryDataRef/auxiliaryData/dataReference");
+    private static final XPath XP_IMG_NAME = buildXPath("/csn:OilSpill/csn:auxiliaryDataRef/csn:auxiliaryData/csn:dataReference");
 
     private static XPath buildXPath(String xpath) {
         try {
             XPath ret = XPath.newInstance(xpath);
-            ret.addNamespace(NS);
+            ret.addNamespace(NS_CSN);
+            ret.addNamespace(NS_GML);
             return ret;
         } catch (JDOMException ex) {
             LOGGER.error("Error creating XPath", ex);
@@ -93,6 +94,8 @@ public class OilSpill {
     private boolean isEnvelopeSet = false;
     private double x0,y0,x1,y1;
     private String refImageFileName = null;
+
+    private String gmlFileName;
 
     private OilSpill(String id, String timestamp, String imageIdentifier) {
         this.id = id;
@@ -125,6 +128,7 @@ public class OilSpill {
         }
 
         ret.refImageFileName = JDOMUtils.getString(root, XP_IMG_NAME);
+        ret.gmlFileName = srcFile.getName();
         
         return ret;
     }
@@ -161,6 +165,20 @@ public class OilSpill {
         return y1;
     }
 
+    /**
+     * @param gmlFileName the gmlFileName to set
+     */
+    public void setGmlFileName(String gmlFileName) {
+        this.gmlFileName = gmlFileName;
+    }
+
+    /**
+     * @return the gmlFileName
+     */
+    public String getGmlFileName() {
+        return gmlFileName;
+    }
+    
     public String getRefImageFileName() {
         return refImageFileName;
     }

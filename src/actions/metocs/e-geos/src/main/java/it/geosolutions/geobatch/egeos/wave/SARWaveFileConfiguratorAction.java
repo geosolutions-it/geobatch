@@ -117,28 +117,38 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
         // finding specific model variables
         fillVariablesMaps();
 
-        // defining the file header and structure
-        double noData = definingOutputVariables(false, az_size.getLength(), ra_size.getLength(), 1,
-                0, METOCSActionsIOUtils.UP);
+        if (foundVariables != null && foundVariables.size() > 0) {
+            // defining the file header and structure
+            double noData = definingOutputVariables(false, az_size.getLength(), ra_size.getLength(), 1,
+                    0, METOCSActionsIOUtils.UP);
 
-        // normalizingTimes
-        // MERCATOR OCEAN MODEL Global Attributes
-        referenceTime = ncGridFile.findGlobalAttributeIgnoreCase("SOURCE_ACQUISITION_UTC_TIME");
-        // e.g. 20100902211637.870628
-        final SimpleDateFormat toSdf = new SimpleDateFormat("yyyyMMddHHmmss");
-        toSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        final Date timeOriginDate = toSdf
-                .parse(referenceTime.getStringValue().trim().toLowerCase());
+            // normalizingTimes
+            // MERCATOR OCEAN MODEL Global Attributes
+            referenceTime = ncGridFile.findGlobalAttributeIgnoreCase("SOURCE_ACQUISITION_UTC_TIME");
+            // e.g. 20100902211637.870628
+            final SimpleDateFormat toSdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            toSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            final Date timeOriginDate = toSdf
+                    .parse(referenceTime.getStringValue().trim().toLowerCase());
 
-        final int TAU = normalizingTimes(null, null, timeOriginDate);
+            final int TAU = normalizingTimes(null, null, timeOriginDate);
 
-        // Setting up global Attributes ...
-        settingNCGlobalAttributes(noData, timeOriginDate, TAU);
+            // Setting up global Attributes ...
+            settingNCGlobalAttributes(noData, timeOriginDate, TAU);
 
-        // writing bin data ...
-        writingDataSets(ra_size, az_size, null, null, false, lonOriginalData, latOriginalData,
-                null, noData, null, latDataType, lonDataType);
-
+            // writing bin data ...
+            writingDataSets(ra_size, az_size, null, null, false, lonOriginalData, latOriginalData,
+                    null, noData, null, latDataType, lonDataType);
+        } else {
+            if (ncFileIn != null)
+                ncFileIn.close();
+            
+            if (ncFileOut != null)
+                ncFileOut.close();
+            
+            if (outputFile != null)
+                outputFile.delete();
+        }
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////

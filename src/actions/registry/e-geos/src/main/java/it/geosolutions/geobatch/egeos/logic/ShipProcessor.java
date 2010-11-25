@@ -64,6 +64,7 @@ public class ShipProcessor extends PackageProcessor<ShipDetectionPackage, ShipDe
         ro.setTimeStamp(ship.getTimestamp());
         ro.setEnvelope(ship.getX0() - 0.00001d, ship.getX1() - 0.00001d, ship.getX0() + 0.00001d,
                 ship.getX1() + 0.00001d);
+        ro.setGmlFileName(ship.getGmlFileName());
         ro.setGmlBaseURI(gmlBaseURI);
         return ro;
     }

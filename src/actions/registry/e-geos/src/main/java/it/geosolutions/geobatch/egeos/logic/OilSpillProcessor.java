@@ -69,6 +69,7 @@ public class OilSpillProcessor extends PackageProcessor<OilSpillPackage, OilSpil
 
         ro.setImageFileName(osn.getRefImageFileName());
         ro.setImageBaseURI(baseGMLURL);
+        ro.setGmlFileName(osn.getGmlFileName());
         ro.setGmlBaseURI(baseGMLURL);
         return ro;
     }
