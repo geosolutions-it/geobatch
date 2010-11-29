@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.octave.actions.templates.FileInFileOut;
 
-import it.geosolutions.geobatch.octave.DefaultSheetBuilder;
+import it.geosolutions.geobatch.octave.SheetBuilder;
 import it.geosolutions.geobatch.octave.OctaveCommand;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveFunctionFile;
@@ -32,7 +32,7 @@ import it.geosolutions.geobatch.octave.SerializableOctaveObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileInFileOutSheetBuilder extends DefaultSheetBuilder {
+public class FileInFileOutSheetBuilder extends SheetBuilder {
     private final String filein,fileout;
     
     /**

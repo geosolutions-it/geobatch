@@ -84,7 +84,7 @@
     
     <!-- REP10 -->
     	<!-- MARS3D -->
-    	<!-- <bean id="MARS3DGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.mars3d.MARS3DGeneratorService">
+		<bean id="MARS3DGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.mars3d.MARS3DGeneratorService">
 			<property  name="id">
 	    		<value>MARS3DGeneratorService</value>
 	    	</property>
@@ -95,9 +95,22 @@
 	    		<value>MARS3DGeneratorService</value>
 	    	</property>	
 		</bean>
+		
+		<!-- ROMS -->
+		<bean id="ROMSGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.roms.ROMSGeneratorService">
+			<property  name="id">
+	    		<value>ROMSGeneratorService</value>
+	    	</property>
+	    	<property name="description">
+	    		<value>ROMSGeneratorService</value>
+	    	</property>
+	    	<property name="name">
+	    		<value>ROMSGeneratorService</value>
+	    	</property>	
+		</bean>
     
-    <bean id="OctaveAliasRegistrar" class="it.geosolutions.geobatch.nurc.sem.rep10.OctaveAliasRegistrar" lazy-init="false">
+    <bean id="OctaveAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.OctaveAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
- -->
+ 
 </beans>

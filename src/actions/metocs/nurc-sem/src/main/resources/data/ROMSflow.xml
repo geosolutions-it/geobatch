@@ -5,15 +5,15 @@
 	<description>ROMSFlow</description>
 	<name>ROMSFlow</name>
 	
-	<workingDirectory>roms</workingDirectory>
+	<workingDirectory>rep10workingdir/roms</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>roms/in</watchDirectory>
+		<watchDirectory>rep10workingdir/roms/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>RomsFlow</id>
+		<id>Mars3dFlow</id>
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
@@ -24,7 +24,7 @@
 		<description>roms</description>
 		<name>roms</name>
 		
-		<workingDirectory>roms</workingDirectory>
+		<workingDirectory>rep10workingdir/roms</workingDirectory>
 		<performBackup>false</performBackup>
 		
 		<FileEventRule>
@@ -36,17 +36,17 @@
 			<name>test</name>
 		</FileEventRule>
 		
-		<ROMSActionConfiguration>
+		<OctaveConfiguration>
 			<serviceID>ROMSGeneratorService</serviceID>
 			<id>ROMSGeneratorService</id>
 			<description>ROMSGeneratorService</description>
 			<name>ROMSActionConfiguration</name>
-			<workingDirectory>roms</workingDirectory>
+			<workingDirectory>rep10workingdir/roms</workingDirectory>
 			<!-- OCTAVE ENV -->
 			<octave>
 			  <sheets>
 			  	<!-- OCTAVE SHEET -->
-			    <sheet>
+			    <sheet name="ROMSFlow">
 			      <commands>
 			      <!--
 					/**
@@ -76,7 +76,7 @@
 			      <definitions/>
 			      <functions>
 			        <function name="roms_f">
-			          <commands/>
+				  <commands/>
 			          <returns/>
 			          <definitions>
 			            <OctaveFile name="file_in" value="" output="false" input="true"/>
@@ -89,10 +89,10 @@
 			  </sheets>
 			</octave>
 
-		</ROMSActionConfiguration>
+		</OctaveConfiguration>
 		
 		<MetocActionConfiguration>
-			<workingDirectory>roms/nc/</workingDirectory>
+			<workingDirectory>rep10workingdir/roms/nc/</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
@@ -104,7 +104,7 @@
 		</MetocActionConfiguration>
 		
 		<ImageMosaicActionConfiguration>
-			<workingDirectory>roms/nc</workingDirectory>
+			<workingDirectory>rep10workingdir/roms/nc</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
@@ -125,7 +125,7 @@
 		</ImageMosaicActionConfiguration>
 		
 		<RegistryActionConfiguration>
-			<workingDirectory>roms/nc</workingDirectory>
+			<workingDirectory>rep10workingdir/roms/nc</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>DIRECT</dataTransferMethod>

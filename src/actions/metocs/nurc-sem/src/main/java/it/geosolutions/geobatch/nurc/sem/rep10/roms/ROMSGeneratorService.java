@@ -20,14 +20,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.nurc.sem.rep10.mars3d;
+package it.geosolutions.geobatch.nurc.sem.rep10.roms;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;
 
-public class MARS3DGeneratorService
+public class ROMSGeneratorService
     extends BaseService 
     implements ActionService<FileSystemMonitorEvent, OctaveActionConfiguration> {
 
@@ -48,9 +48,9 @@ public class MARS3DGeneratorService
     }
 
 
-    public MARS3DAction createAction(final OctaveActionConfiguration configuration) {
+    public ROMSAction createAction(final OctaveActionConfiguration configuration) {
         if(canCreateAction(configuration)){
-            return new MARS3DAction(configuration);
+            return new ROMSAction(configuration);
         }
         return null;
     }

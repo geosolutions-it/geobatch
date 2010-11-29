@@ -24,13 +24,10 @@ package it.geosolutions.geobatch.octave.actions.templates.FileInFileOut;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
-import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.octave.DefaultSheetBuilder;
-import it.geosolutions.geobatch.octave.Engine;
-import it.geosolutions.geobatch.octave.OctaveEnv;
-import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
+import it.geosolutions.geobatch.octave.SheetBuilder;
+import it.geosolutions.geobatch.octave.actions.OctaveAction;
+import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,32 +38,12 @@ import java.util.logging.Logger;
 import dk.ange.octave.exception.OctaveEvalException;
 
 
-public abstract class FileInFileOutAction extends BaseAction<FileSystemMonitorEvent> implements Action<FileSystemMonitorEvent> {
+public abstract class FileInFileOutAction extends OctaveAction<FileSystemMonitorEvent> {
        
     private final static Logger LOGGER = Logger.getLogger(FileInFileOutAction.class.toString());
     
-    //private final static String OUTPUT_DIR="nc";
-    
-//todo: remove me (this env should be owned by the OctaveThread and
-// objects are pushed in it:
-    private volatile OctaveEnv<OctaveExecutableSheet>  env;
-    //private final static Thread oct=new Thread(new OctaveThread(bus));
-    private final static Engine engine=new Engine();
-    
-    // 
-    // TODO: check... should we add this member to the BaseAction?
-    private final FileInFileOutActionConfiguration config;
-    
-    @SuppressWarnings("unchecked")
-    public FileInFileOutAction(FileInFileOutActionConfiguration actionConfiguration) {
+    public FileInFileOutAction(OctaveActionConfiguration actionConfiguration) {
         super(actionConfiguration);
-        env=(OctaveEnv<OctaveExecutableSheet>)actionConfiguration.getEnv().clone();
-        config=actionConfiguration;
-        
-     // TODO implement a M.D.POJO
-        //run thread manually
-        //if (!oct.isAlive())
-        //    oct.start();
     }
     
     /**
@@ -82,17 +59,23 @@ public abstract class FileInFileOutAction extends BaseAction<FileSystemMonitorEv
     protected abstract String buildFileName();
     
     /**
+     * @return a string representing the function name to map with this
+     * preprocessor template
+     */
+    protected abstract String getFunction();
+    
+    /**
      * Action to execute on the FileSystemMonitorEvent event queue.
      * 
      * @param Queue<FileSystemMonitorEvent> queue of events to handle in this (and next)
      * action executions.
      * @return Queue<FileSystemMonitorEvent> the resulting list of events
      */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemMonitorEvent> load(Queue<FileSystemMonitorEvent> events)
             throws ActionException {
         try {
             if(LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("Executing Octave script...");
+                LOGGER.info("Running FileInFileOut script...");
             
             FileSystemMonitorEvent ev=events.remove();
             
@@ -124,11 +107,13 @@ public abstract class FileInFileOutAction extends BaseAction<FileSystemMonitorEv
                  */
                 String out_name=out_dir.toString()+buildFileName();
                 
-                
                 /**
-                 * Build the MARS3DFunctionBuilder
+                 * Build the SheetBuilder using a FileInFileOutSheetBuilder which get
+                 * two files:
+                 * in file (coming from events)
+                 * out file build into the extending class  
                  */
-                DefaultSheetBuilder fb=new FileInFileOutSheetBuilder(ev.getSource().getAbsolutePath(),out_name);
+                SheetBuilder fb=new FileInFileOutSheetBuilder(ev.getSource().getAbsolutePath(),out_name);
                 
                 if(LOGGER.isLoggable(Level.INFO)){
                     LOGGER.info(
@@ -137,35 +122,10 @@ public abstract class FileInFileOutAction extends BaseAction<FileSystemMonitorEv
                 }
                 
                 /**
-                 * try to preprocess the OctaveFunctionSheet
-                 * this operation should transform all the OctaveFunction stored into the env
-                 * into OctaveExecutableSheet which can be freely executed by the Octave Engine.class
-                 * @note each sheet is executed atomically so be careful with the 'cd' command
-                 * (which change context dir) or other commands like so.    
+                 * add the SheetBuilder to the preprocessor map
                  */
-                try {
-                    fb.preprocess(env);
-                }catch (Exception e){
-                    String message="Exception during buildFunction:"+e.getMessage();
-                    if (LOGGER.isLoggable(Level.WARNING))
-                        LOGGER.warning(message);
-                    throw new ActionException(this,message);
-                }
-                
-                if(LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("Passing Octave sheet to Octave process... ");
-                
-// TODO ACTUALLY we temporarily skip the THREAD OR JMPOJO interface.
-                int size=env.size();
-                int index=0;
-                while (index<size){
-                    /**
-                     * exec is synchronized and can be called
-                     * without warnings
-                     */
-                    engine.exec(env.getSheet(index++), true);
-                }
-                
+                preprocessor.addBuilder(getFunction(), fb);
+
                 /**
                  * add output file to the event queue
                  */
@@ -173,12 +133,9 @@ public abstract class FileInFileOutAction extends BaseAction<FileSystemMonitorEv
                         new File(out_name),FileSystemMonitorNotifications.FILE_ADDED));
 
             } // ev==null
-            else if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning(
-                    "Executing Octave script on empty event queue");
-            
-            if(LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("Evaluating: DONE");
+            else {
+                throw new ActionException(this, "Empty event recived");
+            }
             
         }
         catch (OctaveEvalException oee){
