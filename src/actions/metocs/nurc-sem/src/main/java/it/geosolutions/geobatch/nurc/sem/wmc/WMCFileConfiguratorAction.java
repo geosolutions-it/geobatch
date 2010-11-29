@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
+import it.geosolutions.geobatch.metocs.utils.io.Utilities;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.GeneralWMCConfiguration;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLDimension;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLDisplayInLayerSwitcher;
@@ -205,6 +206,8 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
 
                 if (timeMetadata != null) {
                     final String[] timePositions = timeMetadata.split(",");
+                    Utilities.reverse(timePositions);
+                    timeMetadata = Utilities.chainValues(timePositions);
                     Map<String, String> time = new HashMap<String, String>();
                     time.put("default", timePositions[0]);
                     time.put("values", timeMetadata);
@@ -316,10 +319,11 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
                 extension.setStyleLegendService(new OLStyleLegendService(configuration.getGeoserverURL()
                     + "/wms?REQUEST=GetLegendGraphic"));
                 setExtent(extension,layerAOI);
-                if (entry.getDimensions() != null) {
-                    for (String dim : entry.getDimensions().keySet()) {
-                        final String values = entry.getDimensions().get(dim).get("values");
-                        final String defaultValue = entry.getDimensions().get(dim).get("default");
+                Map<String, Map<String, String>> dimensions = entry.getDimensions();  
+                if (dimensions != null) {
+                    for (String dim : dimensions.keySet()) {
+                        final String values = dimensions.get(dim).get("values");
+                        final String defaultValue = dimensions.get(dim).get("default");
 
                         if ("TIME".equals(dim)) {
                             extension.setTime(new OLDimension(values, dim, defaultValue));
