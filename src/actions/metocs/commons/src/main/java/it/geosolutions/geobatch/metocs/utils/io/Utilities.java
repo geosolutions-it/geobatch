@@ -471,5 +471,36 @@ public class Utilities {
 
         return null;
     }
+    
+    /**
+     * Reverse the order of a String array.
+     * @param elements
+     */
+    public static void reverse(String[] elements) {
+    	if (elements != null){
+        	final int length = elements.length;
+        	final int half = length/2;
+        	String temp = "";
+        	for (int i=0;i<half;i++){
+        		temp = elements[i];
+        		elements[i] = elements[length-1-i];
+        		elements[length-1-i] = temp;
+        	}
+        }
+	}
+
+	public static String chainValues(String[] timePositions) {
+		if (timePositions != null){
+			final int size = timePositions.length;
+			StringBuilder sb = new StringBuilder();
+			int i = 0;
+			for (; i < size - 1; i++){
+				sb.append(timePositions[i]).append(",");
+			}
+			sb.append(timePositions[i]);
+			return sb.toString();
+		}
+		return null;
+	}
 
 }
