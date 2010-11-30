@@ -158,11 +158,39 @@ function ilm2nc(ddir,fdate,ncfile,base)
 
       rlon=linspace(rlon_min,rlon_max,im);
       rlat=linspace(rlat_min,rlat_max,jm);
-      [rlon,rlat]=meshgrid(rlon,rlat);
-      [alon,alat]=rtll(pole_lon,pole_lat,rlon,rlat);
+      [alon,alat]=meshgrid(rlon,rlat);
+      [alon,alat]=rtll(pole_lon,pole_lat,alon,alat);
+
+      % NOTE now alon and alat are not regular
+      % Building a new horizontal regular choordinate system
+
+      %Building lon
+      rlon=linspace(
+		min(alon(1,:)),		%start
+		max(alon(1,:)),		%stop
+		im); 	%size
+      f('lon') = im;
+      f{'lon'}=ncfloat('lon');%'lat',
+      f{'lon'}.long_name='Longitude';
+      f{'lon'}.units = 'degrees_east';
+      f{'lon'}(:)=rlon(:);
+
+      %Building lat
+      rlat=linspace(
+		min(alat(:,1)),	%start
+		max(alat(:,1)),	%stop
+		jm);	%size
+      f('lat') = jm;
+      f{'lat'}=ncfloat('lat');%,'lon'
+      f{'lat'}.long_name='Latitude';
+      f{'lat'}.units = 'degrees_north';
+      f{'lat'}(:)=rlat(:);
+      
+      % BUILD a regular grid to run interp2 on data
+      [alon,alat]=meshgrid(rlon,rlat);
+      
 
       % NetCDF metadata
-
       f = netcdf(ncfile, 'clobber');
 
       % Preamble.
@@ -172,28 +200,14 @@ function ilm2nc(ddir,fdate,ncfile,base)
       f.author = 'Jacopo Chiggiato, chiggiato@nurc.nato.int - Carlo Cancellieri, carlo.cancellieri@geo-solutions.it';
       f.date = datestr(now);
 
-      f('time') =0;   % unlimited dimension
-      f('lon') = im;
-      f('lat') = jm;
-
       % Meteo Fields
-
+      f('time')=0;   % unlimited dimension
       f{'time'}=ncdouble('time');
       f{'time'}.long_name=('time since initialization');
       %f{'time'}.units=('days since 1968-5-23 00:00:00 UTC');
       f{'time'}.units=('seconds since 1980-1-1 0:0:0');
       f{'time'}.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
       %f{'time'}.calendar='MJD';
-
-      f{'lat'}=ncfloat('lat');%,'lon'
-      f{'lat'}.long_name='Latitude';
-      f{'lat'}.units = 'degrees_north';
-      f{'lat'}(:)=alat(:,1);%alat;
-
-      f{'lon'}=ncfloat('lon');%'lat',
-      f{'lon'}.long_name='Longitude';
-      f{'lon'}.units = 'degrees_east';
-      f{'lon'}(:)=alon(1,:);%alon;
 
       f{'U10'}=ncfloat('time','lat','lon');
       f{'U10'}.units = 'm/s';
@@ -285,10 +299,12 @@ function ilm2nc(ddir,fdate,ncfile,base)
 
     ru=reshape(ut.fltarray,ut.gds.Ni,ut.gds.Nj);
     rv=reshape(vt.fltarray,vt.gds.Ni,vt.gds.Nj);
-    %e=reshape(et.fltarray-273.15,et.gds.Ni,et.gds.Nj); %CELSIUS
+    
+    ec=reshape(et.fltarray-273.15,et.gds.Ni,et.gds.Nj); %CELSIUS (used by qsat)
     e=reshape(et.fltarray,et.gds.Ni,et.gds.Nj); 
-    %d=reshape(dt.fltarray-273.15,dt.gds.Ni,dt.gds.Nj); %CELSIUS
-    d=reshape(dt.fltarray,dt.gds.Ni,dt.gds.Nj); 
+    
+    dc=reshape(dt.fltarray-273.15,dt.gds.Ni,dt.gds.Nj); %CELSIUS (used by qsat)
+    %d=reshape(dt.fltarray,dt.gds.Ni,dt.gds.Nj); 
 %      w=reshape(wt.fltarray/104.,wt.gds.Ni,wt.gds.Nj);   % Cloud Fraction range 0 to 1
 %      x=reshape(xt.fltarray/100.,xt.gds.Ni,xt.gds.Nj);   % Air pressure Pa => mb
 %      s=reshape(st.fltarray,st.gds.Ni,st.gds.Nj);  
@@ -316,7 +332,7 @@ function ilm2nc(ddir,fdate,ncfile,base)
     f{'U10'}(nn,:,:)=real(www);
     f{'V10'}(nn,:,:)=imag(www);
     f{'airtemp'}(nn,:,:)=e.';
-    f{'relhum'}(nn,:,:)=(qsat(d.')./qsat(e.'))*100;   % rel humidity calc
+    f{'relhum'}(nn,:,:)=(qsat(dc.')./qsat(ec.'))*100;   % rel humidity calc
     
     % this fix a problem of precision writing times into netCDF
     f{'time'}(nn)=int64(seconds);%jd-2440000;

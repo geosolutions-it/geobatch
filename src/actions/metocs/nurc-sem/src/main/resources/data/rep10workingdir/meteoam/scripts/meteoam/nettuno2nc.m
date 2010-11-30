@@ -19,11 +19,13 @@
 %  base   = forecast base time (only hours, format 'hh')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function nettuno2nc(ddir,fdate,ncfile,base)
+function nettuno2nc(ddir,ncfile)
 
   % processing grib file forecast by forecast
-  deltantimes=3; maxntimes=72; mystr=[base,'_'];
-      nn=0;
+  deltantimes=3;
+  maxntimes=72;
+  nn=0;
+  % for each forecast time
   for ntimes=0:deltantimes:maxntimes;
     nn=nn+1;
 

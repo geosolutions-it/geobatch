@@ -22,9 +22,12 @@
 %ncfile='out_meteo.nc';
 %base='00'; % forecast emission (either 00 or 12 for 00:00 UTC or 12:00 UTC)
 
-function ecmwf_meteo2nc(ddir,fdate,ncfile,base)
+%function ecmwf_meteo2nc(ddir,fdate,ncfile,base)
+function ecmwf_meteo2nc(ddir,ncfile)
 
-  elenco=dir([ddir,'/J4D',fdate,base,'*']);
+  % we get all the times for all the dates
+  %elenco=dir([ddir,'/J4D',fdate,base,'*']);
+  elenco=dir([ddir,'/J4D','*','*','*']);
 
   % processing grib file forecast by forecast
 
@@ -270,10 +273,12 @@ function ecmwf_meteo2nc(ddir,fdate,ncfile,base)
 
     ru=reshape(ut.fltarray,ut.gds.Ni,ut.gds.Nj);
     rv=reshape(vt.fltarray,vt.gds.Ni,vt.gds.Nj);
-    %e=reshape(et.fltarray-273.15,et.gds.Ni,et.gds.Nj); %from Kelvin to Celsius
-    e=reshape(et.fltarray,et.gds.Ni,et.gds.Nj); % we need temp in Celsius
-    %d=reshape(dt.fltarray-273.15,dt.gds.Ni,dt.gds.Nj); %from Kelvin to Celsius
-    d=reshape(dt.fltarray,dt.gds.Ni,dt.gds.Nj); % we need temp in Celsius
+    % qsat works with Celsius temperature
+    dc=reshape(dt.fltarray-273.15,dt.gds.Ni,dt.gds.Nj); %from Kelvin to Celsius
+    ec=reshape(et.fltarray-273.15,et.gds.Ni,et.gds.Nj); %from Kelvin to Celsius
+
+    e=reshape(et.fltarray,et.gds.Ni,et.gds.Nj); % we need temp in Kelvin
+    %d=reshape(dt.fltarray,dt.gds.Ni,dt.gds.Nj); % we do not need it
 
 % UNUSED
 %    w=reshape(wt.fltarray,wt.gds.Ni,wt.gds.Nj);       % Cloud Fraction range 0 to 1
@@ -292,11 +297,11 @@ function ecmwf_meteo2nc(ddir,fdate,ncfile,base)
       clear fist_time;
     end
 
-    f{'time'}(nn)=seconds;%jd-2440000;
+    f{'time'}(nn)=int64(seconds);%jd-2440000;
     f{'U10'}(nn,:,:)=ru';
     f{'V10'}(nn,:,:)=rv';
     f{'airtemp'}(nn,:,:)=e.';
-    f{'relhum'}(nn,:,:)=(qsat(d.')./qsat(e.'))*100;   % rel humidity calc
+    f{'relhum'}(nn,:,:)=(qsat(dc.')./qsat(ec.'))*100;   % rel humidity calc
 
     % UNUSED
     %f{'apress'}(nn,:,:)=x.';

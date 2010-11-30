@@ -90,7 +90,8 @@ public abstract class FileInFileOutAction extends OctaveAction<FileSystemMonitor
                  * - exists (if not try to create)
                  * - check write permissions
                  */
-                File out_dir=new File(config.getWorkingDirectory()+File.separator+getOutputDir()+File.separator);
+                String out_dir_name=config.getWorkingDirectory()+File.separator+getOutputDir()+File.separator;
+                File out_dir=new File(out_dir_name);
                 if (!out_dir.exists()){
                     if (!out_dir.mkdir()){
                         throw new IOException("Unable to create the output dir: "+out_dir);
@@ -111,7 +112,7 @@ public abstract class FileInFileOutAction extends OctaveAction<FileSystemMonitor
                 /**
                  * build absolute output file name
                  */
-                String out_name=out_dir.toString()+buildFileName();
+                String out_name=out_dir_name+buildFileName();
                 
                 /**
                  * Build the SheetBuilder using a FileInFileOutSheetBuilder which get

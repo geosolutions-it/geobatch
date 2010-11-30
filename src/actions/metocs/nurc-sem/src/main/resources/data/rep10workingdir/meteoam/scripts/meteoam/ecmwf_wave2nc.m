@@ -21,9 +21,12 @@
 %ncfile='out_wave.nc';
 %base='00'; % forecast emission (either 00 or 12 for 00:00 UTC or 12:00 UTC)
 
-function ecmwf_wave2nc(ddir,fdate,ncfile,base)
+%function ecmwf_wave2nc(ddir,fdate,ncfile,base)
+function ecmwf_wave2nc(ddir,ncfile)
 
-  elenco=dir([ddir,'/J4M',fdate,base,'*']);
+  % we get all the times for all the dates
+  %elenco=dir([ddir,'/J4M',fdate,base,'*']);
+  elenco=dir([ddir,'/J4M','*','*','*']);
 
   % processing grib file forecast by forecast
 
@@ -197,7 +200,7 @@ function ecmwf_wave2nc(ddir,fdate,ncfile,base)
     f{'hs'}(nn,:,:)=ru'; 
     f{'meanwavdir'}(nn,:,:)=rv';
     f{'meanwavperiod'}(nn,:,:)=e.';
-    f{'time'}(nn)=seconds;%jd-2440000;
+    f{'time'}(nn)=int64(seconds);%jd-2440000;
 
     close(f);
 

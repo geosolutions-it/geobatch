@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 	
-	<id>MARS3DFlow</id>
-	<description>MARS3DFlow</description>
-	<name>MARS3DFlow</name>
+	<id>ECMWFWaveFlow</id>
+	<description>ECMWFWaveFlow</description>
+	<name>ECMWFWaveFlow</name>
 	
-	<workingDirectory>rep10workingdir/mars3d</workingDirectory>
+	<workingDirectory>rep10workingdir/meteoam/ecmwf/wave</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
-		<wildCard>*.*</wildCard>
-		<watchDirectory>rep10workingdir/mars3d/in</watchDirectory>
+		<wildCard>*</wildCard>
+		<watchDirectory>rep10workingdir/meteoam/ecmwf/wave/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>Mars3dFlow</id>
+		<id>ECMWFWaveFlow</id>
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
 	</EventGeneratorConfiguration>
 	
 	<EventConsumerConfiguration>
-		<id>mars3d</id>
-		<description>mars3d</description>
-		<name>mars3d</name>
+		<id>ECMWFWave</id>
+		<description>ECMWFWave</description>
+		<name>ECMWFWave</name>
 		
-		<workingDirectory>rep10workingdir/mars3d</workingDirectory>
+		<workingDirectory>rep10workingdir/meteoam/ecmwf/wave/</workingDirectory>
 		<performBackup>false</performBackup>
 		
 		<FileEventRule>
@@ -37,16 +37,16 @@
 		</FileEventRule>
 		
 		<OctaveConfiguration>
-			<serviceID>MARS3DGeneratorService</serviceID>
-			<id>MARS3DGeneratorService</id>
-			<description>MARS3DGeneratorService</description>
-			<name>MARS3DActionConfiguration</name>
-			<workingDirectory>rep10workingdir/mars3d</workingDirectory>
+			<serviceID>ECMWFWaveGeneratorService</serviceID>
+			<id>ECMWFWaveGeneratorService</id>
+			<description>ECMWFWaveGeneratorService</description>
+			<name>ECMWFWaveActionConfiguration</name>
+			<workingDirectory>rep10workingdir/meteoam/ecmwf/wave/</workingDirectory>
 			<!-- OCTAVE ENV -->
 			<octave>
 			  <sheets>
 			  	<!-- OCTAVE SHEET -->
-			    <sheet name="MARS3DFlow">
+			    <sheet name="ECMWFWaveFlow">
 			      <commands>
 			      <!--
 					/**
@@ -70,12 +70,20 @@
 			        </OctaveCommand>
 			        <!-- todo: variables! -->
 			        <OctaveCommand executed="false">
-						<command>cd "/home/carlo/work/data/rep10workingdir/mars3d/"</command>
+						<command>cd "/home/carlo/work/data/rep10workingdir/meteoam/scripts"</command>
 			        </OctaveCommand>
+			        <OctaveCommand executed="false">
+						<command>env</command>
+			        </OctaveCommand>
+			        <!--
+			        <OctaveCommand executed="false">
+						<command>cd "/home/carlo/work/data/rep10workingdir/meteoam/ecmwf/wave"</command>
+			        </OctaveCommand>
+			        -->
 			      </commands>
 			      <definitions/>
 			      <functions>
-			        <function name="mars3d">
+			        <function name="ecmwf_wave2nc">
 				  <commands/>
 			          <returns/>
 			          <definitions>
@@ -92,7 +100,7 @@
 		</OctaveConfiguration>
 		
 		<MetocActionConfiguration>
-			<workingDirectory>rep10workingdir/mars3d/nc/</workingDirectory>
+			<workingDirectory>rep10workingdir/meteoam/ecmwf/wave/nc/</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
@@ -104,7 +112,7 @@
 		</MetocActionConfiguration>
 		
 		<ImageMosaicActionConfiguration>
-			<workingDirectory>rep10workingdir/mars3d/nc</workingDirectory>
+			<workingDirectory>rep10workingdir/meteoam/ecmwf/wave/nc</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
@@ -125,7 +133,7 @@
 		</ImageMosaicActionConfiguration>
 		
 		<RegistryActionConfiguration>
-			<workingDirectory>rep10workingdir/mars3d/nc</workingDirectory>
+			<workingDirectory>rep10workingdir/meteoam/ecmwf/wave/nc</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>DIRECT</dataTransferMethod>

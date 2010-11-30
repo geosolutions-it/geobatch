@@ -121,6 +121,31 @@
 	    		<value>NETTUNOGeneratorService</value>
 	    	</property>	
 		</bean>
+		<!-- ECMWFWave -->
+		<bean id="ECMWFWaveGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.ecmwf.wave.ECMWFWaveGeneratorService">
+			<property  name="id">
+	    		<value>ECMWFWaveGeneratorService</value>
+	    	</property>
+	    	<property name="description">
+	    		<value>ECMWFWaveGeneratorService</value>
+	    	</property>
+	    	<property name="name">
+	    		<value>ECMWFWaveGeneratorService</value>
+	    	</property>	
+		</bean>
+		<!-- ECMWFMeteo -->
+		<bean id="ECMWFMeteoGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.ecmwf.meteo.ECMWFMeteoGeneratorService">
+			<property  name="id">
+	    		<value>ECMWFMeteoGeneratorService</value>
+	    	</property>
+	    	<property name="description">
+	    		<value>ECMWFMeteoGeneratorService</value>
+	    	</property>
+	    	<property name="name">
+	    		<value>ECMWFMeteoGeneratorService</value>
+	    	</property>	
+		</bean>
+		
     
     <bean id="OctaveAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.OctaveAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
