@@ -852,7 +852,7 @@
             <dependencies>
                 <dependency>
                     <groupId>it.geosolutions</groupId>
-                    <artifactId>gb-action-octave</artifactId>
+                    <artifactId>gb-octave</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -861,7 +861,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
-                            <execution>
+                            <!--<execution>
                                 <id>unpack_taskexec</id>
                                 <phase>package</phase>
                                 <goals><goal>unpack</goal></goals>
@@ -869,7 +869,7 @@
                                     <artifactItems>
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
-                                            <artifactId>gb-action-octave</artifactId>
+                                            <artifactId>gb-octave</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
@@ -881,7 +881,7 @@
                                     <overWriteReleases>true</overWriteReleases>
                                     <overWriteSnapshots>true</overWriteSnapshots>
                                 </configuration>
-                            </execution>
+                            </execution>-->
                         </executions>
                     </plugin>
                 </plugins>

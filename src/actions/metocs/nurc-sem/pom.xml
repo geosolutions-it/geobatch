@@ -56,7 +56,7 @@
     	<!-- Octave -->
         <dependency>
             <groupId>it.geosolutions</groupId>
-						<artifactId>gb-action-octave</artifactId>
+						<artifactId>gb-octave</artifactId>
         </dependency>
 	</dependencies>
 

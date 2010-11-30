@@ -225,6 +225,19 @@
                 <dao.type>xstream</dao.type>
             </properties>-->
         </profile>
+        <!-- octave -->
+        <profile>
+            <id>octave</id>
+            <activation>
+                <property>
+                    <name>all_actions</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-octave</module>
+            </modules>
+        </profile>
 
         <!-- deploy libs -->
         <profile>
@@ -323,6 +336,16 @@
                 <role>Project Management Committee (PMC) Member</role>
             </roles>
         </developer>
+        <developer>
+            <name>Carlo Cancellieri</name>
+            <id>carlo</id>
+            <email>carlo.cancellieri@geo-solutions.it</email>
+            <organization>GeoSolutions</organization>
+            <roles>
+                <role>Java Developer</role>
+                <role>Project Member</role>
+            </roles>
+        </developer>
     </developers>
 
     <contributors>
@@ -350,20 +373,20 @@
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
-								<groupId>org.springframework</groupId>
-								<artifactId>spring-aop</artifactId>
-								<version>${spring.version}</version>
-						</dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aop</artifactId>
+				<version>${spring.version}</version>
+				</dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
-						  	<groupId>org.springframework</groupId>
-						  	<artifactId>spring-context-support</artifactId>
-						  	<version>${spring.version}</version>
-						</dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context-support</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
@@ -374,11 +397,11 @@
                 <artifactId>spring-webmvc-struts</artifactId>
                 <version>${spring.version}</version>
             </dependency>
-						<dependency>
-								<groupId>org.springframework</groupId>
-								<artifactId>spring-expression</artifactId>
-								<version>${spring.version}</version>
-						</dependency>            
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-expression</artifactId>
+				<version>${spring.version}</version>
+			</dependency>            
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
@@ -400,44 +423,44 @@
                 <version>${spring.version}</version>
             </dependency>
             <dependency>
-								<groupId>org.springframework</groupId>
-								<artifactId>spring-orm</artifactId>
-								<version>${spring.version}</version>
-						</dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
 						
             <!-- ============================== -->
-		        <!--     Spring Security            -->
-		        <!-- ============================== -->
-						<dependency>
-							<groupId>org.springframework.security</groupId>
-							<artifactId>spring-security-acl</artifactId>
-							<version>${spring.security.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.springframework.security</groupId>
-							<artifactId>spring-security-cas-client</artifactId>
-							<version>${spring.security.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.springframework.security</groupId>
-							<artifactId>spring-security-config</artifactId>
-							<version>${spring.security.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.springframework.security</groupId>
-							<artifactId>spring-security-core</artifactId>
-							<version>${spring.security.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.springframework.security</groupId>
-							<artifactId>spring-security-taglibs</artifactId>
-							<version>${spring.security.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.springframework.security</groupId>
-							<artifactId>spring-security-web</artifactId>
-							<version>${spring.security.version}</version>
-						</dependency>
+			<!--     Spring Security            -->
+			<!-- ============================== -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-acl</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-cas-client</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-taglibs</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
             <!-- SCOPE TEST -->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -515,13 +538,11 @@
                 <artifactId>servlet-api</artifactId>
                 <version>2.5</version>
             </dependency>
-
-						<dependency>
-							<groupId>aspectj</groupId>
-							<artifactId>aspectjrt</artifactId>
-							<version>1.5.4</version>
-						</dependency>
-
+			<dependency>
+				<groupId>aspectj</groupId>
+				<artifactId>aspectjrt</artifactId>
+				<version>1.5.4</version>
+			</dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
                 <artifactId>test-data</artifactId>
@@ -530,21 +551,21 @@
 
             <!-- GeoTools ===================================================-->
 
-						<dependency>
-					     <groupId>org.opengis</groupId>
-					     <artifactId>geoapi</artifactId>
-					     <version>${opengis.version}</version>
-					   </dependency>
-					   <dependency>
-					     <groupId>org.opengis</groupId>
-					     <artifactId>geoapi-dummy-pending</artifactId>
-					     <version>${opengis.version}</version>
-					   </dependency>
-					   <dependency>
-					     <groupId>org.opengis</groupId>
-					     <artifactId>geoapi-pending</artifactId>
-					     <version>${opengis.version}</version>
-					   </dependency>
+			<dependency>
+				<groupId>org.opengis</groupId>
+				<artifactId>geoapi</artifactId>
+				<version>${opengis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.opengis</groupId>
+				<artifactId>geoapi-dummy-pending</artifactId>
+				<version>${opengis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.opengis</groupId>
+				<artifactId>geoapi-pending</artifactId>
+				<version>${opengis.version}</version>
+			</dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-api</artifactId>
@@ -601,7 +622,6 @@
                 <artifactId>gt-shapefile</artifactId>
                 <version>${gt.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-arcgrid</artifactId>
@@ -623,7 +643,6 @@
                 <artifactId>gt-jdbc-postgis</artifactId>
                 <version>${gt.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-matfile5</artifactId>
@@ -634,8 +653,8 @@
             <!-- imageio-ext ================================================-->
 
             <dependency>
-								<groupId>it.geosolutions.imageio-ext</groupId>
-  							<artifactId>imageio-ext-tiff</artifactId>
+				<groupId>it.geosolutions.imageio-ext</groupId>
+				<artifactId>imageio-ext-tiff</artifactId>
                 <version>${imageio-ext.version}</version>
             </dependency>
             <dependency>
@@ -891,24 +910,24 @@
                 <version>1.0-SNAPSHOT</version>
             </dependency>
 
-						<!-- H2 DATABASE =======================================================-->
-						<dependency>
-							<groupId>com.h2database</groupId>
-							<artifactId>h2</artifactId>
-							<version>1.1.119</version>
-						</dependency>
+			<!-- H2 DATABASE =======================================================-->
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>1.1.119</version>
+			</dependency>
 
-						<!-- POSTGRES - POSTGIS =======================================================-->
-						<dependency>
-							<groupId>org.postgis</groupId>
-							<artifactId>postgis-jdbc</artifactId>
-							<version>1.1.6</version>
-						</dependency>		   
-						<dependency>
-							<groupId>postgresql</groupId>
-							<artifactId>postgresql</artifactId>
-							<version>8.4-701.jdbc3</version>
-						</dependency>   
+			<!-- POSTGRES - POSTGIS =======================================================-->
+			<dependency>
+				<groupId>org.postgis</groupId>
+				<artifactId>postgis-jdbc</artifactId>
+				<version>1.1.6</version>
+			</dependency>		   
+			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>8.4-701.jdbc3</version>
+			</dependency>   
 
             <!-- Geobatch ===================================================-->
 
@@ -951,22 +970,28 @@
 
 						<!-- Buddata RR -->
             <dependency>
-							<groupId>it.geosolutions</groupId>
-								<artifactId>gb-action-registry-egeos</artifactId>
+				<groupId>it.geosolutions</groupId>
+				<artifactId>gb-action-registry-egeos</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             
 						<!-- Java Octave -->
-			      <dependency>
-							<groupId>dk.ange.octave</groupId>
-							<artifactId>javaoctave</artifactId>
-							<version>0.6.1</version>
-						</dependency>
+		    <dependency>
+				<groupId>dk.ange.octave</groupId>
+				<artifactId>javaoctave</artifactId>
+				<version>0.6.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>it.geosolutions</groupId>
+				<artifactId>gb-octave</artifactId>
+				<version>${gb.version}</version>
+			</dependency>
 
 						<!-- METOCS -->
             <dependency>
-								<groupId>it.geosolutions</groupId>
-								<artifactId>gb-action-metocs-commons</artifactId>
+				<groupId>it.geosolutions</groupId>
+				<artifactId>gb-action-metocs-commons</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
@@ -1024,11 +1049,6 @@
                 <artifactId>gb-action-taskexecutor</artifactId>
                 <version>${gb.version}</version>
             </dependency>
-	    <dependency>
-		<groupId>it.geosolutions</groupId>
-		<artifactId>gb-action-octave</artifactId>
-                <version>${gb.version}</version>
-	    </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-shapefile</artifactId>

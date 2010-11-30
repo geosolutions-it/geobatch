@@ -108,6 +108,19 @@
 	    		<value>ROMSGeneratorService</value>
 	    	</property>	
 		</bean>
+		
+		<!-- NETTUNO -->
+		<bean id="NETTUNOGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.nettuno.NETTUNOGeneratorService">
+			<property  name="id">
+	    		<value>NETTUNOGeneratorService</value>
+	    	</property>
+	    	<property name="description">
+	    		<value>NETTUNOGeneratorService</value>
+	    	</property>
+	    	<property name="name">
+	    		<value>NETTUNOGeneratorService</value>
+	    	</property>	
+		</bean>
     
     <bean id="OctaveAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.OctaveAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
