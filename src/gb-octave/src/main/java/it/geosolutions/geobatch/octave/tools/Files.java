@@ -126,20 +126,13 @@ public final class Files {
      * @param in_name the name of the file to decompress, it could be:
      * a directory
      * a file
-     * a bz2, bzip2, tbzip2, tbz2
-     * a gz, gzip, tgzip, tgz
+     * a bz2, bzip2, tbz2
+     * a gz, gzip, tgz
      * a tar file
      * a zip file
      * @return the output dir where files are extracted
      * @note regex expression are tested using:
      * http://www.regexplanet.com/simple/index.html
-     * Pattern p=Pattern.compile("(.+)((\\.[Zz][Ii][Pp])|((\\.[Tt][Aa][Rr])((\\.[Gg][Zz]([Ii][Pp])?)|(\\.[Bb][Zz]([Ii][Pp])?2))?))");
-     * Test Target String   matches()                                     group(0)                             group(1)                  gr(2)   gr(3)   gr(4)      gr(5)   gr(6)
-     * 1    /NETTUNO_CNMCA_2010092000.tar.bz2    Yes      Yes     Yes     /NETTUNO_CNMCA_2010092000.tar.bz2    /NETTUNO_CNMCA_2010092000 .tar.bz2        .tar.bz2   .tar    .bz2
-     * 2    /NETTUNO_CNMCA_2010092000.tar        Yes      Yes     Yes     /NETTUNO_CNMCA_2010092000.tar        /NETTUNO_CNMCA_2010092000 .tar            .tar       .tar
-     * 3    /NETTUNO_CNMCA_2010092000.tar.gz     Yes      Yes     Yes     /NETTUNO_CNMCA_2010092000.tar.gz     /NETTUNO_CNMCA_2010092000 .tar.gz         .tar.gz    .tar    .gz
-     * 4    /NETTUNO_CNMCA_2010092000.zip        Yes      Yes     Yes     /NETTUNO_CNMCA_2010092000.zip        /NETTUNO_CNMCA_2010092000 .zip    .zip
-     * 5    /NETTUNO_CNMCA_2010092000.tar.bzip2  Yes      Yes     Yes     /NETTUNO_CNMCA_2010092000.tar.bzip2  /NETTUNO_CNMCA_2010092000 .tar.bzip2      .tar.bzip2 .tar    .bzip2
      */
     public static String uncompress(String in_name){
         File in_file=null;
@@ -160,8 +153,7 @@ public final class Files {
         
         Pattern p=
             Pattern.compile(
-                "(.+)((\\.[Zz][Ii][Pp])|((\\.[Tt][Aa][Rr])(((\\.[Gg][Zz]([Ii][Pp])?)|(\\.[Bb][Zz]([Ii][Pp])?2)))?)"+
-                "|(\\.[Tt][Gg][Zz])|(\\.[Tt]?[Gg][Zz]([Ii][Pp])?)|(\\.[Tt]?[Bb][Zz]([Ii][Pp])?2))");
+                "(.+)((\\.[Zz][Ii][Pp])|((\\.[Tt][Aa][Rr])((\\.[Gg][Zz]([Ii][Pp])?)|(\\.[Bb][Zz]([Ii][Pp])?2))?)|(\\.[Tt][Gg][Zz])|(\\.[Tt][Gg][Zz]([Ii][Pp])?)|(\\.[Tt][Bb][Zz]([Ii][Pp])?2))");
         Matcher m=p.matcher(in_name);
         
         if (m.matches()){
