@@ -18,26 +18,34 @@
 %  ncfile = NetCDF output filename
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function ilm2nc(ddir,fdate,ncfile,base)
+%function ilm2nc(ddir,fdate,ncfile,base)
+function ilm2nc(ddir,ncfile)
 
   % The location of the rotated pole is encoded here
 
   pole_lon=10.;
   pole_lat=43; 
 
-  % processing grib file forecast by forecast
-
-  deltantimes=1; maxntimes=24; mystr=[base,'_']; % mystr='12_';
+  % processing all grib file
+  filelist = dir([ddir,'ILM_','*','.grb']);
   nn=0;
-  for ntimes=0:deltantimes:maxntimes;
-    nn=nn+1;
+  maxntimes=length({filelist(:).name});
+  for ntimes=1:1:maxntimes;
+    %nn=nn+1;
+    gfile = [ddir,'/',filelist(ntimes).name]
 
-    if(ntimes<10)
-      hr=['0',num2str(ntimes)];
-    else 
-      hr=num2str(ntimes);
-    end
-    gfile  = [ddir,'ILM_',fdate,mystr,hr,'.grb'];
+%    deltantimes=1; maxntimes=24; % mystr=[base,'_']; % mystr='12_';
+%    nn=0;
+%    for ntimes=0:deltantimes:maxntimes;
+%      nn=nn+1;
+%  
+%      if(ntimes<10)
+%        hr=['0',num2str(ntimes)];
+%      else 
+%        hr=num2str(ntimes);
+%      end
+%      %gfile  = [ddir,'ILM_',fdate,mystr,hr,'.grb'];
+%      gfile = dir([ddir,'ILM_','*','*',hr,'.grb']);
 
     % grab data
     uhdr=read_grib(gfile,{'UGRD'},1,0,0);      % zonal wind
@@ -52,7 +60,7 @@ function ilm2nc(ddir,fdate,ncfile,base)
 %      hhdr=read_grib(gfile,{'LHTFL'},1,0,0);     % latent heat flux
 %      rhdr=read_grib(gfile,{'APCP'},1,0,0);      % total precipitation
 % grab the dates (and check to make sure they match)
-    ut=read_grib(gfile,uhdr(1).record,0,1,0); 
+    ut=read_grib(gfile,uhdr(1).record,0,1,0);
     vt=read_grib(gfile,vhdr(1).record,0,1,0); 
     et=read_grib(gfile,ehdr(1).record,0,1,0); 
     dt=read_grib(gfile,dhdr(1).record,0,1,0); 
@@ -144,7 +152,7 @@ function ilm2nc(ddir,fdate,ncfile,base)
       _base_time=du;
     end
 
-    if(nn==1); % do only once
+    if(ntimes==1); % do only once
 	
       % acquire grid 
 
@@ -168,30 +176,31 @@ function ilm2nc(ddir,fdate,ncfile,base)
       rlon=linspace(
 		min(alon(1,:)),		%start
 		max(alon(1,:)),		%stop
-		im); 	%size
+		im); 			%size
+
+      % NetCDF metadata
+      f = netcdf(ncfile, 'clobber');
+      
       f('lon') = im;
       f{'lon'}=ncfloat('lon');%'lat',
       f{'lon'}.long_name='Longitude';
       f{'lon'}.units = 'degrees_east';
-      f{'lon'}(:)=rlon(:);
+      f{'lon'}(:)=rlon;
 
       %Building lat
       rlat=linspace(
 		min(alat(:,1)),	%start
 		max(alat(:,1)),	%stop
 		jm);	%size
+      
       f('lat') = jm;
       f{'lat'}=ncfloat('lat');%,'lon'
       f{'lat'}.long_name='Latitude';
       f{'lat'}.units = 'degrees_north';
-      f{'lat'}(:)=rlat(:);
+      f{'lat'}(:)=rlat;
       
       % BUILD a regular grid to run interp2 on data
-      [alon,alat]=meshgrid(rlon,rlat);
-      
-
-      % NetCDF metadata
-      f = netcdf(ncfile, 'clobber');
+      [rlon,rlat]=meshgrid(rlon,rlat);
 
       % Preamble.
 
@@ -322,20 +331,21 @@ function ilm2nc(ddir,fdate,ncfile,base)
 
     f = netcdf(ncfile, 'write');
 
-    if (nn==2) % if there are more than 1 times
+    if (ntimes==2) % if there are more than 1 times
       % update TAU
       % tau attribute in hour
       f.tau=ncint(int8((seconds/3600)-(first_time/3600)));
       clear fist_time;
     end
-
-    f{'U10'}(nn,:,:)=real(www);
-    f{'V10'}(nn,:,:)=imag(www);
-    f{'airtemp'}(nn,:,:)=e.';
-    f{'relhum'}(nn,:,:)=(qsat(dc.')./qsat(ec.'))*100;   % rel humidity calc
+  
+  
+    f{'U10'}(ntimes,:,:)=interp2(alon,alat,real(www),rlon,rlat,'linear',1.e35);
+    f{'V10'}(ntimes,:,:)=interp2(alon,alat,imag(www),rlon,rlat,'linear',1.e35);
+    f{'airtemp'}(ntimes,:,:)=interp2(alon,alat,e.',rlon,rlat,'linear',1.e35);
+    f{'relhum'}(ntimes,:,:)=interp2(alon,alat,((qsat(dc.')./qsat(ec.'))*100),rlon,rlat,'linear',1.e35);   % rel humidity calc
     
     % this fix a problem of precision writing times into netCDF
-    f{'time'}(nn)=int64(seconds);%jd-2440000;
+    f{'time'}(ntimes)=int64(seconds);%jd-2440000;
 
 %      f{'cldfrac'}(nn,:,:)=w.';
 %      f{'apress'}(nn,:,:)=x.';
