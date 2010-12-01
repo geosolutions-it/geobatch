@@ -19,7 +19,7 @@
 
 function mars3d (in_file, out_file)
 nc=netcdf(in_file,'r');
-
+FILLDATA=1e37;
 lon = nc{'longitude'}(:);
 lat = nc{'latitude'}(:);
 
@@ -72,13 +72,9 @@ nc_out=netcdf(out_file,'c');
 % depth
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % defining depth:
-% levels interpace:
-% (max(dep3d(:,1,1)) - min(dep3d(:,1,1))) / length(SIG)  ~= 87.033
-% length:
-% length(SIG)
-%printf('dep3d: (%d)\n', dep3d(:,1,1));
-%depth=linspace(min(min(dep3d(:,:,1))),max(max(dep3d(:,:,1))),length(SIG));
-depth=[2 5 (10:10:200) 250 300 500 1500 2000 2500];
+%depth=[2 5 (10:10:200) 250 300 500 1500 2000 2500];
+depth=linspace(-max(max(dep3d(:,:,1))),-min(min(dep3d(:,:,1))),length(SIG));
+
 % clear no more used variables
 clear SIG;
 %write to output file
@@ -88,7 +84,7 @@ nc_out{'depth'}(:)=depth;
 nc_out{'depth'}.long_name='depth';
 nc_out{'depth'}.units='m';
 nc_out{'depth'}.positive='down';
-nc_out{'depth'}.FillValue_ = ncdouble(-9999);
+nc_out{'depth'}.FillValue_ = ncdouble(FILLDATA);
 %DEBUG
 %depth
 
@@ -100,8 +96,7 @@ nc_out{'lon'} = ncdouble('lon');
 nc_out{'lon'}(:) = lon;
 nc_out{'lon'}.long_name='Longitude';
 nc_out{'lon'}.units = 'degrees_east';
-nc_out{'lon'}.FillValue_ = ncdouble(-9999);
-
+nc_out{'lon'}.FillValue_ = ncdouble(FILLDATA);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % longitude
@@ -111,7 +106,7 @@ nc_out{'lat'} = ncdouble('lat');
 nc_out{'lat'}(:) = lat;
 nc_out{'lat'}.long_name='Latitude';
 nc_out{'lat'}.units = 'degrees_north';
-nc_out{'lat'}.FillValue_ = ncdouble(-9999);
+nc_out{'lat'}.FillValue_ = ncdouble(FILLDATA);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TIME
@@ -141,14 +136,12 @@ time = nc{'time'}(:);
 %UNUSED!
 %time_origin=time-2524521600;
 
-
-
 nc_out('time') = length(time);
 nc_out{'time'} = ncdouble('time');
-nc_out{'time'}(:) = time;
+nc_out{'time'}(:) = int64(time);
 nc_out{'time'}.long_name='time';
 nc_out{'time'}.units = 'seconds since 1980-1-1 0:0:0';
-nc_out{'time'}.FillValue_ = ncdouble(-9999);
+nc_out{'time'}.FillValue_ = ncdouble(FILLDATA);
 nc_out{'time'}.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -164,14 +157,21 @@ if (length(time)>1)
 else
   nc_out.tau=ncint(0);
 end
+
+% Preamble.
+nc_out.type = 'MARS3D';
+nc_out.title='MARS3D';
+nc_out.author = 'Carlo Cancellieri, carlo.cancellieri@geo-solutions.it';
+nc_out.date = datestr(now);
+
 % nodata
-nc_out.nodata=ncdouble(-9999);
+nc_out.nodata=ncdouble(FILLDATA);
 % fillvalue
-nc_out._FillValue= ncdouble(-9999);
+nc_out._FillValue= ncdouble(FILLDATA);
 % time origin
 nc_out.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
-
 %"GMT+0"
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SALT
@@ -186,7 +186,7 @@ nc_out{'salt'}=ncfloat('time','depth','lat','lon');
 nc_out{'salt'}(:)=SAL;
 nc_out{'salt'}.long_name='salinity';
 nc_out{'salt'}.units='psu';
-nc_out{'salt'}.FillValue_ = ncdouble(-9999);
+nc_out{'salt'}.FillValue_ = ncdouble(FILLDATA);
 %DEBUG
 %SAL_ret
 %delete var
@@ -197,7 +197,7 @@ clear SAL;
 % UWND
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %read
-UWND = nc{'UWND'}(:);
+UZ = nc{'UZ'}(:);
 
 % TODO: tests
 % missing value
@@ -206,33 +206,64 @@ UWND = nc{'UWND'}(:);
 %NO NEED INTERPOLATION
 %UWND_ret = mars3d_interp(UWND,depth,dep3d,lat,lon);
 
+% STARTING FILE
+%  float UZ(time=1, level=30, latitude=185, longitude=275);
+%  :long_name = "3d zonal velocity";
+%  :units = "m.s-1";
+%  :standard_name = "eastward_sea_water_velocity";
+% DICTIONARY
+%  <metoc defaultUom="urn:ogc:def:uom:UCUM::m/s" type="ocean">
+%  	<name>water velocity u-component</name>
+%  	<brief>watvel-u</brief>
+%  </metoc>
+
 %write to output file
-nc_out{'windstress-u'}=ncfloat('time','lat','lon');
-nc_out{'windstress-u'}(:)=UWND;
-nc_out{'windstress-u'}.long_name='wind stress u-component';
-nc_out{'windstress-u'}.units='N.m2';
-nc_out{'windstress-u'}.FillValue_ = ncdouble(-9999);
+nc_out{'watvel-u'}=ncfloat('time','depth','lat','lon');
+
+% INTERP
+UZ = mars3d_interp(UZ,depth,dep3d,lat,lon);
+
+nc_out{'watvel-u'}(:)=UZ;
+nc_out{'watvel-u'}.long_name='water velocity u-component';
+nc_out{'watvel-u'}.units='m/s';
+nc_out{'watvel-u'}.FillValue_ = ncdouble(FILLDATA);
 %DEBUG
 %UWND
 %delete var
-clear UWND;
+clear UZ;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % VWND
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-VWND = nc{'VWND'}(:);
+VZ = nc{'VZ'}(:);
 %NO NEED INTERPOLATION
 %VWND = mars3d_interp(VWND,depth,dep3d,lat,lon);
+
+% STARTING FILE
+%  float VZ(time=1, level=30, latitude=185, longitude=275);
+%  :long_name = "3d meridional velocity";
+%  :units = "m.s-1";
+%  :standard_name = "northward_sea_water_velocity";
+% DICTIONARY
+%  <metoc defaultUom="urn:ogc:def:uom:UCUM::m/s" type="ocean">
+%  	<name>water velocity v-component</name>
+%  	<brief>watvel-v</brief>
+%  </metoc>
+
 %write to output file
-nc_out{'windstress-v'}=ncfloat('time','lat','lon');
-nc_out{'windstress-v'}(:)=VWND;
-nc_out{'windstress-v'}.long_name='wind stress v-component';
-nc_out{'windstress-v'}.units='N.m2';
-nc_out{'windstress-v'}.FillValue_ = ncdouble(-9999);
+nc_out{'watvel-v'}=ncfloat('time','depth','lat','lon');
+
+% INTERP
+VZ = mars3d_interp(VZ,depth,dep3d,lat,lon);
+
+nc_out{'watvel-v'}(:)=VZ;
+nc_out{'watvel-v'}.long_name='water velocity v-component';
+nc_out{'watvel-v'}.units='m/s';
+nc_out{'watvel-v'}.FillValue_ = ncdouble(FILLDATA);
 %DEBUG
 %VWND
 %delete var
-clear VWND;
+clear VZ;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -246,7 +277,7 @@ nc_out{'wattemp'}=ncfloat('time','depth','lat','lon');
 nc_out{'wattemp'}(:)=TEMP;
 nc_out{'wattemp'}.long_name='water temperature';
 nc_out{'wattemp'}.units='cel';
-nc_out{'wattemp'}.FillValue_ = ncdouble(-9999);
+nc_out{'wattemp'}.FillValue_ = ncdouble(FILLDATA);
 %DEBUG
 %TEMP
 %delete var

@@ -37,10 +37,6 @@ nc=netcdf(in_file,'r');
 %strdepth='z_u';
 %%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% dept is a fixed vector
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-depth=[2 5 linspace(10,2500,30)];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % time shift
@@ -48,19 +44,14 @@ depth=[2 5 linspace(10,2500,30)];
 
 % From and including: gioved 23 maggio 1968
 % To, but not including : marted 1 gennaio 1980
-% 
-% It is 4240 days from the start date to the end date, but not including the end date
-% 
-% Or 11 years, 7 months, 9 days excluding the end date
-% Alternative time units
-% 4240 days can be converted to one of these units:
-% 
-%     * 366.336.000 seconds
-%     * 6.105.600 minutes
-%     * 101.760 hours
-%     * 605 weeks (rounded down)
 
-time=nc{'ocean_time'}(:)-366226000;
+% calculating difference (in days)
+diff=(datenum(1980,1,1)-datenum(1968,5,23));
+% calculate seconds
+diff=diff*3600*24;
+% getting time (shifted)
+time=nc{'ocean_time'}(:)-(diff);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % START WRITING: out_file
@@ -72,19 +63,42 @@ nc_out=netcdf(out_file,'c');
 % global attributes
 nc_out._FillValue= ncfloat(1.0e+37);
 nc_out.nodata= ncfloat(1.0e+37);
-nc_out.base_time=time(1);
+nc_out.base_time=int64(time(1));
+% Preamble.
+nc_out.type = 'ROMS';
+nc_out.title='ROMS';
+nc_out.author = 'Carlo Cancellieri, carlo.cancellieri@geo-solutions.it';
+nc_out.date = datestr(now);
+
+%write time
+write_time(nc_out, time);
 
 if (length(time)>1)
-  nc_out.tau=int8(time(2)-time(1));
+  % TAU is in hour(s)
+  nc_out.tau=int64((time(2)-time(1))/3600);
 else
   nc_out.tau=0;
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% We have 3 different coordinates matrices:
+% lon_rho, lat_rho, z_r (used for -> water-temperature and salinity)
+% lon_u, lat_u, z_u	(used for -> water u component)
+% lon_v, lat_v, z_v	(used for -> water v component)
+
+% lat and lon do not depend on time (using first time)
+grd=roms_get_grid(in_file,in_file,1,1); % activate ZETA
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% dept is a fixed vector
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%depth=[2 5 linspace(10,2500,30)];
+depth=linspace(
+		-(max(max(max(grd.z_r(:,1,1)),max(grd.z_u(:,1,1))),max(grd.z_v(:,1,1)))),		%stop
+		-(min(min(min(grd.z_r(:,1,1)),min(grd.z_u(:,1,1))),min(grd.z_v(:,1,1)))),		%start
+		max(max(length(grd.z_r(:,1,1)),length(grd.z_u(:,1,1))),length(grd.z_v(:,1,1)))) 	%size
 %write depth
 write_depth(nc_out, depth);
-
-%write time
-write_time(nc_out, time);
 
 %size(grd.lat_rho)
 %size(grd.lon_rho)
@@ -96,14 +110,7 @@ write_time(nc_out, time);
 %size(grd.lon_v)
 %size(grd.z_v)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% We have 3 different coordinates matrices:
-% lon_rho, lat_rho, z_r (used for -> water-temperature and salinity)
-% lon_u, lat_u, z_u	(used for -> water u component)
-% lon_v, lat_v, z_v	(used for -> water v component)
 
-% lat and lon do not depend on time (using first time)
-grd=roms_get_grid(in_file,in_file,1);%,1); % do not activate ZETA
 
 % Building a new horizontal regular choordinate system
 
@@ -160,7 +167,7 @@ for tk=1:length(time)
 %	T=squeeze(TEMP(tk,:,:,:));
 
 	
-	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,"linear",1.0e+37);
+	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,"linear",1.0E37);
 	% write to netcdf adding a time slice per cycle
 	nc_out{'wattemp'}(tk,:,:,:)=T;
 	
@@ -271,10 +278,10 @@ end
 function write_time(nc_out, time)
 nc_out('time') = length(time);
 nc_out{'time'} = ncdouble('time');
-nc_out{'time'}(:) = time;
+nc_out{'time'}(:) = int64(time);
 nc_out{'time'}.long_name='time';
 nc_out{'time'}.units = 'seconds since 1980-1-1 0:0:0';
-nc_out{'time'}.time_origin = time(1);
+nc_out{'time'}.time_origin = int64(time(1));
 end
 
 
