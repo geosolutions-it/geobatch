@@ -28,7 +28,7 @@ function ilm2nc(ddir,ncfile)
 
   % processing all grib file
   filelist = dir([ddir,'ILM_','*','.grb']);
-  nn=0;
+  %nn=0;
   maxntimes=length({filelist(:).name});
   for ntimes=1:1:maxntimes;
     %nn=nn+1;
@@ -178,20 +178,26 @@ function ilm2nc(ddir,ncfile)
 		max(alon(1,:)),		%stop
 		im); 			%size
 
+      %RE-Building lat
+      rlat=linspace(
+		min(alat(:,1)),	%start
+		max(alat(:,1)),	%stop
+		jm);	%size
+
       % NetCDF metadata
       f = netcdf(ncfile, 'clobber');
       
+      % Preamble.
+      f.type = 'COSMO-IT forecast';
+      f.title='COSMO-IT forecast';
+      f.author = 'Jacopo Chiggiato, chiggiato@nurc.nato.int - Carlo Cancellieri, carlo.cancellieri@geo-solutions.it';
+      f.date = datestr(now);
+
       f('lon') = im;
       f{'lon'}=ncfloat('lon');%'lat',
       f{'lon'}.long_name='Longitude';
       f{'lon'}.units = 'degrees_east';
       f{'lon'}(:)=rlon;
-
-      %Building lat
-      rlat=linspace(
-		min(alat(:,1)),	%start
-		max(alat(:,1)),	%stop
-		jm);	%size
       
       f('lat') = jm;
       f{'lat'}=ncfloat('lat');%,'lon'
@@ -199,15 +205,8 @@ function ilm2nc(ddir,ncfile)
       f{'lat'}.units = 'degrees_north';
       f{'lat'}(:)=rlat;
       
-      % BUILD a regular grid to run interp2 on data
+      % BUILD a regular grid to apply interp2 on data
       [rlon,rlat]=meshgrid(rlon,rlat);
-
-      % Preamble.
-
-      f.type = 'COSMO-IT forecast';
-      f.title='COSMO-IT forecast';
-      f.author = 'Jacopo Chiggiato, chiggiato@nurc.nato.int - Carlo Cancellieri, carlo.cancellieri@geo-solutions.it';
-      f.date = datestr(now);
 
       % Meteo Fields
       f('time')=0;   % unlimited dimension
