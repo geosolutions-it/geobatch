@@ -120,6 +120,19 @@ public final class Files {
         return type.getType();
     }
     
+    protected static Matcher match(String in_name){
+        final String regex=
+            "(.+)((\\.[Zz][Ii][Pp])|((\\.[Tt][Aa][Rr])((\\.[Gg][Zz]([Ii][Pp])?)|(\\.[Bb][Zz]([Ii][Pp])?2))?)|(\\.[Tt][Gg][Zz])|(\\.[Tt][Gg][Zz]([Ii][Pp])?)|(\\.[Tt][Bb][Zz]([Ii][Pp])?2))";
+        Pattern p=Pattern.compile(regex);
+                
+        Matcher m=p.matcher(in_name);
+        if (m.matches())
+            return m;
+        else
+            return null;
+        
+    }
+    
     /**
      * check if it is a compressed file, if so it will uncompress the file into the same
      * dir using the input file name as base for the output name
@@ -131,49 +144,41 @@ public final class Files {
      * a tar file
      * a zip file
      * @return the output dir where files are extracted
+     * @throws Exception 
      * @note regex expression are tested using:
      * http://www.regexplanet.com/simple/index.html
      */
-    public static String uncompress(String in_name){
+    public static String uncompress(String in_name) throws Exception{
         File in_file=null;
         if (in_name!=null){
             in_file=new File(in_name);
         }
         else {
-            if(LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("Uncompress cannot handle null file string");
-            return null;
+            throw new Exception("Uncompress cannot handle null file string");
         }
         // the new file-dir
         File end_file=null;
         // the new file-dir name
         String end_name=in_name;
         
-        
-        
-        Pattern p=
-            Pattern.compile(
-                "(.+)((\\.[Zz][Ii][Pp])|((\\.[Tt][Aa][Rr])((\\.[Gg][Zz]([Ii][Pp])?)|(\\.[Bb][Zz]([Ii][Pp])?2))?)|(\\.[Tt][Gg][Zz])|(\\.[Tt][Gg][Zz]([Ii][Pp])?)|(\\.[Tt][Bb][Zz]([Ii][Pp])?2))");
-        Matcher m=p.matcher(in_name);
-        
-        if (m.matches()){
-            // filename
-            String fileName=m.group(1);
 
-            /**
-             * Get type using mime
-             * application/x-tar
-             * application/x-gzip
-             * application/x-bzip2
-             * application/zip
-             */
-            MediaType mt=getType(in_file);
-            // subtype will be f.e.: 'tar'
-            String type=mt.getSubtype();
-            if(LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("Input file mime subtype is: "+type);
-            if (type.compareTo("x-tar")==0){
-
+        /**
+         * Get type using mime
+         * application/x-tar
+         * application/x-gzip
+         * application/x-bzip2
+         * application/zip
+         */
+        MediaType mt=getType(in_file);
+        // subtype will be f.e.: 'tar'
+        String type=mt.getSubtype();
+        if(LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("Input file mime subtype is: "+type);
+        if (type.compareTo("x-tar")==0){
+            Matcher m=match(in_name);
+            if (m!=null){
+                // filename
+                String fileName=m.group(1);
                 if(LOGGER.isLoggable(Level.INFO))
                     LOGGER.info("Input file is a tar file.");
                 
@@ -185,15 +190,22 @@ public final class Files {
                 
                 // read the tar file into the dir
                 readTar(in_file,end_file);
-            } // endif tar
-            else if (type.compareTo("x-bzip2")==0){
+            }
+            else
+                throw new Exception("File do not match regular expression");
+        } // endif tar
+        else if (type.compareTo("x-bzip2")==0){
+            Matcher m=match(in_name);
+            if (m!=null){
+                // filename
+                String fileName=m.group(1);
                 if(LOGGER.isLoggable(Level.INFO))
                     LOGGER.info("Input file is a BZ2 compressed file.");
                 // the de_compressor output file  
                 File tar_file=new File(fileName+".tar");
                 // uncompress BZ2 to the tar file
                 extractBz2(in_file,tar_file);
-
+    
                 // preparing path to extract to
                 end_name=fileName+File.separator;
                 end_file=new File(end_name);
@@ -207,8 +219,16 @@ public final class Files {
                 
                 // read the tar file into the dir
                 readTar(tar_file,end_file);
-            } // endif bzip2
-            else if (type.compareTo("x-gzip")==0 || type.compareTo("zip")==0){ // its a gzipped or zipped
+            }
+            else
+                throw new Exception("File do not match regular expression");
+        } // endif bzip2
+        else if (type.compareTo("x-gzip")==0 || type.compareTo("zip")==0){ // its a gzipped or zipped
+            Matcher m=match(in_name);
+            if (m!=null){
+                // filename
+                String fileName=m.group(1);
+                
                 if(LOGGER.isLoggable(Level.INFO))
                     LOGGER.info("Input file is a GZ compressed file. UnZipping...");
                 
@@ -220,21 +240,17 @@ public final class Files {
                 
                 //run the unzip method
                 IOUtils.unzipFlat(in_file,end_file);
-            } // endif gzip or zip
-            else {
-                if(LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("Working on a not compressed file.");
             }
-            /**
-             * returning output file name
-             */
-            return end_name;
-        } // if matches
+            else
+                throw new Exception("File do not match regular expression");
+        } // endif gzip or zip
         else {
-            if(LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("Uncompress cannot handle null file string");
-            return null;
+            if(LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("Working on a not compressed file.");
         }
-        
+        /**
+         * returning output file name
+         */
+        return end_name;
     }
 }
