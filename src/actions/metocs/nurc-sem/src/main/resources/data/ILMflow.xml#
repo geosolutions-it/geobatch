@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 	
-	<id>ROMSFlow</id>
-	<description>ROMSFlow</description>
-	<name>ROMSFlow</name>
+	<id>ILMFlow</id>
+	<description>ILMFlow</description>
+	<name>ILMFlow</name>
 	
-	<workingDirectory>rep10workingdir/roms</workingDirectory>
+	<workingDirectory>rep10workingdir/meteoam/ilm</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
-		<wildCard>*.*</wildCard>
-		<watchDirectory>rep10workingdir/roms/in</watchDirectory>
+		<wildCard>*</wildCard>
+		<watchDirectory>rep10workingdir/meteoam/ilm/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>Mars3dFlow</id>
+		<id>ILMFlow</id>
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
 	</EventGeneratorConfiguration>
 	
 	<EventConsumerConfiguration>
-		<id>roms</id>
-		<description>roms</description>
-		<name>roms</name>
+		<id>ilm</id>
+		<description>ilm</description>
+		<name>ilm</name>
 		
-		<workingDirectory>rep10workingdir/roms</workingDirectory>
+		<workingDirectory>rep10workingdir/meteoam/ilm/</workingDirectory>
 		<performBackup>false</performBackup>
 		
 		<FileEventRule>
@@ -37,16 +37,16 @@
 		</FileEventRule>
 		
 		<OctaveConfiguration>
-			<serviceID>ROMSGeneratorService</serviceID>
-			<id>ROMSGeneratorService</id>
-			<description>ROMSGeneratorService</description>
-			<name>ROMSActionConfiguration</name>
-			<workingDirectory>rep10workingdir/roms</workingDirectory>
+			<serviceID>ILMGeneratorService</serviceID>
+			<id>ILMGeneratorService</id>
+			<description>ILMGeneratorService</description>
+			<name>ILMActionConfiguration</name>
+			<workingDirectory>rep10workingdir/meteoam/ilm/</workingDirectory>
 			<!-- OCTAVE ENV -->
 			<octave>
 			  <sheets>
 			  	<!-- OCTAVE SHEET -->
-			    <sheet name="ROMSFlow">
+			    <sheet name="ILMFlow">
 			      <commands>
 			      <!--
 					/**
@@ -70,12 +70,18 @@
 			        </OctaveCommand>
 			        <!-- todo: variables! -->
 			        <OctaveCommand executed="false">
-						<command>cd "/home/carlo/work/data/roms/"</command>
+						<command>cd "/home/carlo/work/data/rep10workingdir/meteoam/scripts"</command>
+			        </OctaveCommand>
+			        <OctaveCommand executed="false">
+						<command>env</command>
+			        </OctaveCommand>
+			        <OctaveCommand executed="false">
+						<command>cd "/home/carlo/work/data/rep10workingdir/meteoam/ilm"</command>
 			        </OctaveCommand>
 			      </commands>
 			      <definitions/>
 			      <functions>
-			        <function name="roms_f">
+			        <function name="ilm2nc">
 				  <commands/>
 			          <returns/>
 			          <definitions>
@@ -92,7 +98,7 @@
 		</OctaveConfiguration>
 		
 		<MetocActionConfiguration>
-			<workingDirectory>rep10workingdir/roms/nc/</workingDirectory>
+			<workingDirectory>rep10workingdir/meteoam/ilm/nc/</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
@@ -104,7 +110,7 @@
 		</MetocActionConfiguration>
 		
 		<ImageMosaicActionConfiguration>
-			<workingDirectory>rep10workingdir/roms/nc</workingDirectory>
+			<workingDirectory>rep10workingdir/meteoam/ilm/nc</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
@@ -125,7 +131,7 @@
 		</ImageMosaicActionConfiguration>
 		
 		<RegistryActionConfiguration>
-			<workingDirectory>rep10workingdir/roms/nc</workingDirectory>
+			<workingDirectory>rep10workingdir/meteoam/ilm/nc</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>DIRECT</dataTransferMethod>
