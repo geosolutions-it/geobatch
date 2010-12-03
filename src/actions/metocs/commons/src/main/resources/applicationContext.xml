@@ -5,6 +5,7 @@
 
 		 
 	<!-- Environment Initialization -->
+	
 	<bean id="NetCDFCFGeodetic2GeoTIFFsGeneratorService" class="it.geosolutions.geobatch.metocs.base.NetCDFCFGeodetic2GeoTIFFsGeneratorService">
 		<property  name="id">
     		<value>NetCDFCFGeodetic2GeoTIFFsGeneratorService</value>

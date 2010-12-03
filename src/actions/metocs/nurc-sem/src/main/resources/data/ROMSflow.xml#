@@ -10,7 +10,7 @@
 	
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>roms/in</watchDirectory>
+		<watchDirectory>rep10workingdir/roms/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>RomsFlow</id>
@@ -36,7 +36,7 @@
 			<name>test</name>
 		</FileEventRule>
 		
-		<ROMSActionConfiguration>
+		<OctaveConfiguration>
 			<serviceID>ROMSGeneratorService</serviceID>
 			<id>ROMSGeneratorService</id>
 			<description>ROMSGeneratorService</description>
@@ -75,7 +75,7 @@
 			      </commands>
 			      <definitions/>
 			      <functions>
-			        <function name="roms">
+			        <function name="roms_f">
 					  	<commands/>
 						<returns/>
 						<definitions>
@@ -89,7 +89,7 @@
 			  </sheets>
 			</octave>
 
-		</ROMSActionConfiguration>
+		</OctaveConfiguration>
 		
 		<MetocActionConfiguration>
 			<workingDirectory>rep10workingdir/roms/nc/</workingDirectory>

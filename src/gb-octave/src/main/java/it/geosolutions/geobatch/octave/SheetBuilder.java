@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import dk.ange.octave.exception.OctaveException;
+
 public abstract class SheetBuilder {
     
    
@@ -39,7 +41,7 @@ public abstract class SheetBuilder {
      * @return a string as above
      * @note this can be overrided
      */
-    protected OctaveExecutableSheet buildSheet(OctaveFunctionFile off) throws Exception{
+    protected OctaveExecutableSheet buildSheet(OctaveFunctionFile off) throws OctaveException{
         List<SerializableOctaveObject<?>> returns=off.getReturns();
         List<SerializableOctaveObject<?>> arguments=off.getDefinitions();
         List<OctaveCommand> commands=new ArrayList<OctaveCommand>();

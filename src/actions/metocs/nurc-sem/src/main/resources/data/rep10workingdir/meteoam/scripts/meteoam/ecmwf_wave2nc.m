@@ -135,6 +135,7 @@ function ecmwf_wave2nc(ddir,ncfile)
       %f{'Hwave'}=ncfloat('time','lat','lon');
       f{'hs'}=ncfloat('time','lat','lon');
       f{'hs'}.units = 'm';
+      f{'hs'}.missing_value = ncfloat(1.e35);
       f{'hs'}.FillValue_=ncfloat(1.e35);
       f{'hs'}.long_name='sea surface swell wave significant height';
       %f{'Hwave'}.long_name='Significant Wave Heigth';
@@ -144,6 +145,7 @@ function ecmwf_wave2nc(ddir,ncfile)
       %f{'Dwave'}=ncfloat('time','lat','lon');
       f{'meanwavdir'}=ncfloat('time','lat','lon');
       f{'meanwavdir'}.units = 'deg';
+      f{'meanwavdir'}.missing_value = ncfloat(1.e35);
       f{'meanwavdir'}.FillValue_=ncfloat(1.e35);
       f{'meanwavdir'}.long_name='mean wave direction';
       %f{'Dwave'}.long_name='Mean Wave Direction';
@@ -152,20 +154,21 @@ function ecmwf_wave2nc(ddir,ncfile)
       %f{'Twave'}=ncfloat('time','lat','lon');
       f{'meanwavperiod'}=ncfloat('time','lat','lon');
       f{'meanwavperiod'}.units = 's';
+      f{'meanwavperiod'}.missing_value = ncfloat(1.e35);
       f{'meanwavperiod'}.FillValue_=ncfloat(1.e35);
       %f{'Twave'}.long_name = 'Mean Wave Period';
       f{'meanwavperiod'}.long_name = 'mean wave period';
       f{'meanwavperiod'}.coordinates='lat lon';
 
+
       % nodata
       f.nodata=ncdouble(1.e35);
       % fillvalue
       f._FillValue= ncdouble(1.e35);
-      %base time attribute
-      %"yyyyMMddTHHmmssSSSZ"
-      f.base_time=datestr(_base_time,"yyyymmddTHHMMSS");
+      %base time attribute "yyyyMMddTHHmmssSSSZ"
+      f.base_time=[datestr(datenum(1980,1,1)+datenum(0,0,0,0,0,t(1)),"yyyymmddTHHMMSS"),'000Z'];
       % time origin
-      f.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
+      f.time_origin = [datestr(datenum(1980,1,1),"yyyymmddTHHMMSS"),'000Z'];
       % save seconds to (eventually) calculate TAU
       first_time=seconds;
       % setting TAU

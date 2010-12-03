@@ -76,12 +76,12 @@
 			      <definitions/>
 			      <functions>
 			        <function name="mars3d">
-				  <commands/>
-			          <returns/>
-			          <definitions>
-			            <OctaveFile name="file_in" value="" output="false" input="true"/>
-			            <OctaveFile name="file_out" value="" output="false" input="true"/>
-			          </definitions>
+					  	<commands/>
+						<returns/>
+						<definitions>
+							<OctaveFile name="file_in" value="" output="false" input="true"/>
+							<OctaveFile name="file_out" value="" output="false" input="true"/>
+						</definitions>
 			        </function>
 			      </functions>
 			      <returns/>

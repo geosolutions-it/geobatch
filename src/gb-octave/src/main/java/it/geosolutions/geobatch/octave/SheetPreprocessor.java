@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import dk.ange.octave.exception.OctaveException;
+import dk.ange.octave.exception.OctaveParseException;
+
 public class SheetPreprocessor {
     private Map<String, SheetBuilder> preprocessors=new HashMap<String, SheetBuilder>();
     
@@ -25,7 +28,7 @@ public class SheetPreprocessor {
      * input is a OctaveFunctionSheet to be preprocessed
      * output can be used as a OctaveExecutableSheet
      */
-    public final void preprocess(OctaveEnv<OctaveExecutableSheet> env) throws Exception {
+    public final void preprocess(OctaveEnv<OctaveExecutableSheet> env) throws OctaveException {
         int size=env.size();
         int i=0;
         while (i<size){
@@ -46,9 +49,12 @@ public class SheetPreprocessor {
                         // build the executable sheet
                         env.push(sb.buildSheet(f));
                     }
-                    else
+                    else {
+                        String message="No preprocessor found for the OctaveFunctionSheet named "+f.getName();
                         if (LOGGER.isLoggable(Level.INFO))
-                            LOGGER.info("No preprocessor found for the OctaveFunctionSheet named "+f.getName());
+                            LOGGER.info(message);
+                        throw new OctaveParseException(message);
+                    }
                 }
             }
         }

@@ -32,6 +32,9 @@ import it.geosolutions.geobatch.octave.SerializableOctaveObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import dk.ange.octave.exception.OctaveEvalException;
+import dk.ange.octave.exception.OctaveException;
+
 public class FileInFileOutSheetBuilder extends SheetBuilder {
     private final String filein,fileout;
     
@@ -51,7 +54,7 @@ public class FileInFileOutSheetBuilder extends SheetBuilder {
      * mars3d(file_in,file_out);
      */
     @Override
-    protected OctaveExecutableSheet buildSheet(OctaveFunctionFile off) throws Exception{
+    protected OctaveExecutableSheet buildSheet(OctaveFunctionFile off) throws OctaveException{
         // returns should be an empty list
 // TODO try to set this to null
         List<SerializableOctaveObject<?>> returns=off.getReturns();
@@ -88,7 +91,7 @@ public class FileInFileOutSheetBuilder extends SheetBuilder {
             ((SerializableOctaveFile) arguments.get(1)).reSetVal(fileout);
         }
         else
-            throw new Exception("Bad argument list in function: "+off.getName());
+            throw new OctaveEvalException("Bad argument list in function: "+off.getName());
         // name should be -> mars3d
         String script=off.getName();//Command(0).getCommand();
         
@@ -118,16 +121,16 @@ public class FileInFileOutSheetBuilder extends SheetBuilder {
              * ... function(arg1);
              */
             else
-                throw new Exception("Argument list of "+off.getName()+
+                throw new OctaveEvalException("Argument list of "+off.getName()+
                         " should contain at least 2 arguments!");
         } //endif arguments!=null
         else
-            throw new Exception("Argument list of "+off.getName()+" is empty!");
+            throw new OctaveEvalException("Argument list of "+off.getName()+" is empty!");
         
         commands.add(new OctaveCommand(script));
         
         // function arguments becomes sheet definitions
         // function returns becomes sheet returns
-        return new OctaveExecutableSheet("MARS3D_FUNCTION_SHEET"+this.fileout,commands,arguments,returns);
+        return new OctaveExecutableSheet("FileIoFileOut_Sheet",commands,arguments,returns);
     }
 }

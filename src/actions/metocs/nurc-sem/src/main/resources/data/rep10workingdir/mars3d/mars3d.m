@@ -17,6 +17,7 @@
 % HX	float	mean water depth at u location	time,latitude,longitude	1,185,275	m
 % H0	float	bathymetry relative to the mean level	latitude,longitude	185,275	m
 
+
 function mars3d (in_file, out_file)
 nc=netcdf(in_file,'r');
 FILLDATA=1e37;
@@ -69,11 +70,16 @@ clear XE;
 nc_out=netcdf(out_file,'c');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% depth
+% depth (note depth are positives)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % defining depth:
 %depth=[2 5 (10:10:200) 250 300 500 1500 2000 2500];
-depth=linspace(-max(max(dep3d(:,:,1))),-min(min(dep3d(:,:,1))),length(SIG));
+min_depth=min(min(-dep3d(:,:,1)));
+% minimum depth is set to 1m
+if min_depth<1
+  min_depth=1;
+
+depth=linspace(min_depth,max(max(-dep3d(:,:,1))),length(SIG));
 
 % clear no more used variables
 clear SIG;
@@ -84,7 +90,7 @@ nc_out{'depth'}(:)=depth;
 nc_out{'depth'}.long_name='depth';
 nc_out{'depth'}.units='m';
 nc_out{'depth'}.positive='down';
-nc_out{'depth'}.FillValue_ = ncdouble(FILLDATA);
+nc_out{'depth'}.FillValue_ = ncfloat(FILLDATA);
 %DEBUG
 %depth
 
@@ -111,7 +117,7 @@ nc_out{'lat'}.FillValue_ = ncdouble(FILLDATA);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TIME
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-time = nc{'time'}(:);
+t = nc{'time'}(:);
 % http://www.timeanddate.com/
 %	date/durationresult.html?d1=01&m1=01&y1=1900&h1
 %	=00&i1=00&s1=00&d2=01&m2=01&y2=1980&h2=0&i2=0&s2=0
@@ -134,15 +140,15 @@ time = nc{'time'}(:);
 % 4174 weeks (rounded down)
 
 %UNUSED!
-%time_origin=time-2524521600;
+t=t-2524521600;
 
-nc_out('time') = length(time);
+nc_out('time') = length(t);
 nc_out{'time'} = ncdouble('time');
-nc_out{'time'}(:) = int64(time);
+nc_out{'time'}(:) = int64(t(:));
 nc_out{'time'}.long_name='time';
 nc_out{'time'}.units = 'seconds since 1980-1-1 0:0:0';
 nc_out{'time'}.FillValue_ = ncdouble(FILLDATA);
-nc_out{'time'}.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
+nc_out{'time'}.time_origin = [datestr(datenum(1980,1,1),"yyyymmddTHHMMSS"),'000Z'];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % writing global attributes
@@ -150,10 +156,10 @@ nc_out{'time'}.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
 
 %base time attribute
 %"yyyyMMddTHHmmssSSSZ"
-nc_out.base_time=datestr(datenum(1900,1,1)+datenum(0,0,0,0,0,time),"yyyymmddTHHMMSS");
+nc_out.base_time=[datestr(datenum(1980,1,1)+datenum(0,0,0,0,0,t(1)),"yyyymmddTHHMMSS"),'000Z'];
 % tau attribute
-if (length(time)>1)
-  nc_out.tau=ncint(int8(time(2)-time(1)));
+if (length(t)>1)
+  nc_out.tau=ncint(int8(t(2)-t(1)));
 else
   nc_out.tau=ncint(0);
 end
@@ -165,11 +171,11 @@ nc_out.author = 'Carlo Cancellieri, carlo.cancellieri@geo-solutions.it';
 nc_out.date = datestr(now);
 
 % nodata
-nc_out.nodata=ncdouble(FILLDATA);
+nc_out.nodata= ncfloat(FILLDATA);
 % fillvalue
 nc_out._FillValue= ncdouble(FILLDATA);
 % time origin
-nc_out.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
+nc_out.time_origin = [datestr(datenum(1980,1,1),"yyyymmddTHHMMSS"),'000Z'];
 %"GMT+0"
 
 
@@ -186,6 +192,7 @@ nc_out{'salt'}=ncfloat('time','depth','lat','lon');
 nc_out{'salt'}(:)=SAL;
 nc_out{'salt'}.long_name='salinity';
 nc_out{'salt'}.units='psu';
+nc_out{'salt'}.missing_value= ncfloat(FILLDATA);
 nc_out{'salt'}.FillValue_ = ncdouble(FILLDATA);
 %DEBUG
 %SAL_ret
@@ -226,6 +233,7 @@ UZ = mars3d_interp(UZ,depth,dep3d,lat,lon);
 nc_out{'watvel-u'}(:)=UZ;
 nc_out{'watvel-u'}.long_name='water velocity u-component';
 nc_out{'watvel-u'}.units='m/s';
+nc_out{'watvel-u'}.missing_value= ncfloat(FILLDATA);
 nc_out{'watvel-u'}.FillValue_ = ncdouble(FILLDATA);
 %DEBUG
 %UWND
@@ -259,6 +267,7 @@ VZ = mars3d_interp(VZ,depth,dep3d,lat,lon);
 nc_out{'watvel-v'}(:)=VZ;
 nc_out{'watvel-v'}.long_name='water velocity v-component';
 nc_out{'watvel-v'}.units='m/s';
+nc_out{'watvel-v'}.missing_value= ncfloat(FILLDATA);
 nc_out{'watvel-v'}.FillValue_ = ncdouble(FILLDATA);
 %DEBUG
 %VWND
@@ -277,6 +286,7 @@ nc_out{'wattemp'}=ncfloat('time','depth','lat','lon');
 nc_out{'wattemp'}(:)=TEMP;
 nc_out{'wattemp'}.long_name='water temperature';
 nc_out{'wattemp'}.units='cel';
+nc_out{'wattemp'}.missing_value= ncfloat(FILLDATA);
 nc_out{'wattemp'}.FillValue_ = ncdouble(FILLDATA);
 %DEBUG
 %TEMP
@@ -310,15 +320,13 @@ function VAL_vertinterp = mars3d_interp (VAR, depth, dep3d, lat, lon)
 	
     for kj=1:length(lat)
 		for ki=1:length(lon)
-%		printf('isempty(find(isnan(dep3d(:,kj,ki)))): (%d)\n',isempty(find(isnan(dep3d(:,kj,ki)))));
-%		printf('~isempty(find(~isnan(VAR(1,:,kj,ki)))): (%d)\n', ~isempty(find(~isnan(VAR(1,:,kj,ki)))));
 			if(isempty(find(isnan(dep3d(:,kj,ki)))) & isempty(find(dep3d(:,kj,ki)==99)) & ~isempty(find(~isnan(VAR(1,:,kj,ki)))))
-			
-				VAL_vertinterp(:,kj,ki)=interp1(-dep3d(:,kj,ki),VAR(1,:,kj,ki),depth);
-%	i++;
-%	printf('%d->VAL_vertinterp(:,kj,ki): (%d)\n', i,VAL_vertinterp(1,1,kj,ki));
+				VAL_vertinterp(:,kj,ki)=interp1(-dep3d(:,kj,ki),VAR(1,:,kj,ki),depth,'linear',1e37);
+%				if (isnan(VAL_vertinterp(:,kj,ki)));
+%				    VAL_vertinterp(:,kj,ki)=1e37;
+%				end
 			else
-				VAL_vertinterp(:,kj,ki)=NaN;
+				VAL_vertinterp(:,kj,ki)=1e37;
 			end
 		end
 	end

@@ -63,7 +63,7 @@ nc_out=netcdf(out_file,'c');
 % global attributes
 nc_out._FillValue= ncfloat(1.0e+37);
 nc_out.nodata= ncfloat(1.0e+37);
-nc_out.base_time=int64(time(1));
+nc_out.base_time=[datestr(datenum(1900,1,1)+datenum(0,0,0,0,0,time(1)),"yyyymmddTHHMMSS"),'000Z'];;
 % Preamble.
 nc_out.type = 'ROMS';
 nc_out.title='ROMS';
@@ -96,7 +96,7 @@ grd=roms_get_grid(in_file,in_file,1,1); % activate ZETA
 depth=linspace(
 		-(max(max(max(grd.z_r(:,1,1)),max(grd.z_u(:,1,1))),max(grd.z_v(:,1,1)))),		%stop
 		-(min(min(min(grd.z_r(:,1,1)),min(grd.z_u(:,1,1))),min(grd.z_v(:,1,1)))),		%start
-		max(max(length(grd.z_r(:,1,1)),length(grd.z_u(:,1,1))),length(grd.z_v(:,1,1)))) 	%size
+		max(max(length(grd.z_r(:,1,1)),length(grd.z_u(:,1,1))),length(grd.z_v(:,1,1)))); 	%size
 %write depth
 write_depth(nc_out, depth);
 
@@ -289,22 +289,22 @@ end
 % latitude
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function write_lat(nc_out, lat)
-nc_out('latitude') = length(lat);
-nc_out{'latitude'} = ncdouble('latitude');
-nc_out{'latitude'}(:) = lat;
-nc_out{'latitude'}.long_name='Latitude';
-nc_out{'latitude'}.units = 'degrees_north';
+nc_out('lat') = length(lat);
+nc_out{'lat'} = ncdouble('lat');
+nc_out{'lat'}(:) = lat;
+nc_out{'lat'}.long_name='Latitude';
+nc_out{'lat'}.units = 'degrees_north';
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % longitude
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function write_lon(nc_out, lon)
-nc_out('longitude') = length(lon);
-nc_out{'longitude'} = ncdouble('longitude');
-nc_out{'longitude'}(:) = lon;
-nc_out{'longitude'}.long_name='Longitude';
-nc_out{'longitude'}.units = 'degrees_east';
+nc_out('lon') = length(lon);
+nc_out{'lon'} = ncdouble('lon');
+nc_out{'lon'}(:) = lon;
+nc_out{'lon'}.long_name='Longitude';
+nc_out{'lon'}.units = 'degrees_east';
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

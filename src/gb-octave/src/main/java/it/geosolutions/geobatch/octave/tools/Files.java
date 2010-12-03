@@ -122,7 +122,7 @@ public final class Files {
     
     protected static Matcher match(String in_name){
         final String regex=
-            "(.+)((\\.[Zz][Ii][Pp])|((\\.[Tt][Aa][Rr])((\\.[Gg][Zz]([Ii][Pp])?)|(\\.[Bb][Zz]([Ii][Pp])?2))?)|(\\.[Tt][Gg][Zz])|(\\.[Tt][Gg][Zz]([Ii][Pp])?)|(\\.[Tt][Bb][Zz]([Ii][Pp])?2))";
+            "(.+)((\\.[Zz][Ii][Pp])|((\\.[Tt][Aa][Rr])((\\.[Gg][Zz]([Ii][Pp])?)|(\\.[Bb][Zz]([Ii][Pp])?2))?)|(\\.[Tt]?[Gg][Zz])|(\\.[Tt][Gg][Zz]([Ii][Pp])?)|(\\.[Tt][Bb][Zz]([Ii][Pp])?2))";
         Pattern p=Pattern.compile(regex);
                 
         Matcher m=p.matcher(in_name);
