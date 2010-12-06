@@ -28,7 +28,6 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
 
     protected MetocActionConfiguration(String id, String name, String description, boolean dirty) {
         super(id, name, description, dirty);
-        // TODO Auto-generated constructor stub
     }
 
     private boolean packComponents;
@@ -114,11 +113,11 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
      * Returns true if the image should be flip by Y 
      * @return boolean
      */
-    public boolean isFlip(){
+    public boolean isFlipY(){
         return flipY;
     }
     
-    public void setFlip(boolean f){
+    public void setFlipY(boolean f){
         this.flipY=f;
     }
 
@@ -182,7 +181,7 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
         final MetocActionConfiguration configuration = new MetocActionConfiguration(super.getId(),
                 super.getName(), super.getDescription(), super.isDirty());
         configuration.setCrs(crs);
-        configuration.setFlip(flipY);
+        configuration.setFlipY(flipY);
         configuration.setEnvelope(envelope);
         configuration.setServiceID(getServiceID());
         configuration.setStoreFilePrefix(storeFilePrefix);

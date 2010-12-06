@@ -77,6 +77,19 @@
     		<value>WMCGeneratorService</value>
     	</property>	
 	</bean>
+	
+	<!-- SHOM -->
+	<bean id="SHOMGeneratorService" class="it.geosolutions.geobatch.nurc.sem.shom.SHOMGeneratorService">
+		<property  name="id">
+    		<value>SHOMGeneratorService</value>
+    	</property>
+    	<property name="description">
+    		<value>SHOMGeneratorService</value>
+    	</property>
+    	<property name="name">
+    		<value>SHOMGeneratorService</value>
+    	</property>	
+	</bean>
 		
 	<bean id="NURCSEMActionsAliasRegistrar" class="it.geosolutions.geobatch.nurc.sem.NURCSEMActionsAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />

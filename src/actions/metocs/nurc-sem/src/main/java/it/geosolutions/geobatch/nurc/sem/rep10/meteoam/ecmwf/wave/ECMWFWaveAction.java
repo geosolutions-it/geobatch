@@ -39,7 +39,7 @@ public class ECMWFWaveAction extends FileInFileOutAction {
      */
     @Override
     protected String buildFileName(){
-        return "REP10_ECMWFWAVE-Forecast-T" + new Date().getTime()+".nc";
+        return "rep10_ECMWFWAVE-Forecast-T" + new Date().getTime()+".nc";
     }
     
     /**

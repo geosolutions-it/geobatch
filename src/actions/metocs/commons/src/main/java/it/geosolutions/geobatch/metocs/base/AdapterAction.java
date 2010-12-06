@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * TODO this class should be moved in a more general package
  * 
  * This class define an abstraction layer to handle and transform
  * the input EventObject to an output instance of a derived EventObject.

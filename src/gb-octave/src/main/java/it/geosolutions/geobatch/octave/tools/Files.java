@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MediaType;
@@ -49,6 +50,41 @@ public final class Files {
                 throw new BuildException("Invalid bz2 file: "+in_file.getAbsolutePath());
             }
             zIn = new CBZip2InputStream(bis);
+            byte[] buffer = new byte[8 * 1024];
+            int count = 0;
+            do {
+                out.write(buffer, 0, count);
+                count = zIn.read(buffer, 0, buffer.length);
+            } while (count != -1);
+        } catch (IOException ioe) {
+            String msg = "Problem expanding bzip2 " + ioe.getMessage();
+            throw new BuildException(msg+in_file.getAbsolutePath());
+        } finally {
+            FileUtils.close(bis);
+            FileUtils.close(fis);
+            FileUtils.close(out);
+            FileUtils.close(zIn);
+        }
+    }
+    
+    public static void extractGz(File in_file, File out_file) throws BuildException{
+        FileOutputStream out = null;
+        GZIPInputStream zIn = null;
+        FileInputStream fis = null;
+        BufferedInputStream bis = null;
+        try {
+            out = new FileOutputStream(out_file);
+            fis = new FileInputStream(in_file);
+            bis = new BufferedInputStream(fis);
+            int b = bis.read();
+            if (b != 'B') {
+                throw new BuildException("Invalid bz2 file: "+in_file.getAbsolutePath());
+            }
+            b = bis.read();
+            if (b != 'Z') {
+                throw new BuildException("Invalid bz2 file: "+in_file.getAbsolutePath());
+            }
+            zIn = new GZIPInputStream(bis);
             byte[] buffer = new byte[8 * 1024];
             int count = 0;
             do {
@@ -227,14 +263,43 @@ public final class Files {
             else
                 throw new Exception("File do not match regular expression");
         } // endif bzip2
-        else if (type.compareTo("x-gzip")==0 || type.compareTo("zip")==0){ // its a gzipped or zipped
+        else if (type.compareTo("x-gzip")==0){
+            Matcher m=match(in_name);
+            if (m!=null){
+                // filename
+                String fileName=m.group(1);
+                if(LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("Input file is a BZ2 compressed file.");
+                // the de_compressor output file  
+                File tar_file=new File(fileName+".tar");
+                // uncompress BZ2 to the tar file
+                extractGz(in_file,tar_file);
+    
+                // preparing path to extract to
+                end_name=fileName+File.separator;
+                end_file=new File(end_name);
+                // make the output dir
+                end_file.mkdir();
+                
+                if(LOGGER.isLoggable(Level.INFO)) {
+                    LOGGER.info("BZ2 uncompressed to "+tar_file.getAbsolutePath());
+                    LOGGER.info("Untarring...");
+                }
+                
+                // read the tar file into the dir
+                readTar(tar_file,end_file);
+            }
+            else
+                throw new Exception("File do not match regular expression");
+        }
+        else if (type.compareTo("zip")==0){ // its a gzipped or zipped
             Matcher m=match(in_name);
             if (m!=null){
                 // filename
                 String fileName=m.group(1);
                 
                 if(LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("Input file is a GZ compressed file. UnZipping...");
+                    LOGGER.info("Input file is a ZIP compressed file. UnZipping...");
                 
                 // preparing path to extract to
                 end_name=fileName+File.separator;

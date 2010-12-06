@@ -4,6 +4,11 @@ import java.util.EventObject;
 
 import ucar.nc2.dataset.NetcdfDataset;
 
+/**
+ * TODO this class should be moved to a more general package
+ * @author carlo cancellieri - carlo.cancellieri@geo-solutions.it
+ *
+ */
 public class NetcdfEvent extends EventObject{
      
     /**

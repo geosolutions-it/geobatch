@@ -6,9 +6,9 @@
 function iret=is_grib_file(fid,ScreenDiag)
 nope=1;
 iret=0;
-if ScreenDiag
-   disp('Searching for first GRIB marker...')
-end
+%  if ScreenDiag
+%     disp('Searching for first GRIB marker...')
+%  end
 
 iret=find_grib_marker(fid,ScreenDiag);
 if iret>0,iret=1;,end

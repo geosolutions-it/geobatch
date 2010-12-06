@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.metocs.base;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 

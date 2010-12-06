@@ -35,6 +35,7 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 @XStreamAlias("ShomConfiguration")
 @XStreamInclude({SHOMConfiguration.class})
 public class SHOMConfiguration extends ActionConfiguration implements Configuration {
+
     
     // Working directory
     private String workingDirectory;

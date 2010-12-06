@@ -4,6 +4,13 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 
 import java.util.EventObject;
 
+/**
+ * TODO this interface should be moved in a more general package
+ * 
+ * @author carlo cancellieri - carlo.cancellieri@geo-solutions.it
+ *
+ * @param <T>
+ */
 public interface EventAdapter <T extends EventObject> {
     
     /**

@@ -102,11 +102,11 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
 
         // input VARIABLES
         final Variable lonOriginalVar = ncGridFile.findVariable("lon");
-        @SuppressWarnings("unused")
+        
         final DataType lonDataType = lonOriginalVar.getDataType();
 
         final Variable latOriginalVar = ncGridFile.findVariable("lat");
-        @SuppressWarnings("unused")
+        
         final DataType latDataType = latOriginalVar.getDataType();
 
         boolean hasDepth = false;

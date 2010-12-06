@@ -355,7 +355,38 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction
                         Attribute missingValue = var.findAttribute("missing_value");
                         double localNoData = noData;
                         if (missingValue != null) {
-                            localNoData = missingValue.getNumericValue().doubleValue();
+                            /**
+                             * Transforming float to a double some data introduce errors
+                             *  
+                            System.out.println("FLOAT_1: "+missingValue.getNumericValue().floatValue());
+                            System.out.println("FLOAT_2: "+(float)missingValue.getNumericValue().floatValue());
+                            System.out.println("FLOAT_3: "+(double)missingValue.getNumericValue().floatValue());
+                            System.out.println("F3: "+missingValue.getNumericValue().toString());
+                            System.out.println("F4: "+Float.parseFloat(missingValue.getNumericValue().toString()));
+                            System.out.println("F5: "+Double.parseDouble(missingValue.getNumericValue().toString()));
+                            System.out.println("F6: "+(double)Double.parseDouble(missingValue.getNumericValue().toString()));
+                            
+                            DataType dt=missingValue.getDataType();
+                            if (dt==DataType.DOUBLE)
+                                localNoData = missingValue.getNumericValue().doubleValue();
+                            else if (dt==DataType.FLOAT)
+                                localNoData = Double.parseDouble(missingValue.getNumericValue().toString());
+                            else if (dt==DataType.INT){
+                                localNoData = missingValue.getNumericValue().intValue();
+                            }
+                            else if (dt==DataType.SHORT)
+                                localNoData = missingValue.getNumericValue().shortValue();
+                            else if (dt==DataType.LONG)
+                                localNoData = missingValue.getNumericValue().longValue();
+                            else if (dt==DataType.BYTE)
+                                localNoData = missingValue.getNumericValue().byteValue();
+                            else
+                                throw new NumberFormatException("Unable to enstablish missing_value data type");
+                                */
+                            
+                            // this will do the work
+                            localNoData =Double.parseDouble(missingValue.getNumericValue().toString());
+                            
                         }
                         final boolean hasLocalZLevel = NetCDFConverterUtilities.hasThisDimension(
                                 var, METOCSActionsIOUtils.DEPTH_DIM)
@@ -369,7 +400,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction
 
                                 METOCSActionsIOUtils.write2DData(userRaster, var, originalVarArray,
                                         false, false, (hasLocalZLevel ? new int[] { t, z, nLat,
-                                                nLon } : new int[] { t, nLat, nLon }), configuration.isFlip());
+                                                nLon } : new int[] { t, nLat, nLon }), configuration.isFlipY());
 
                                 // ////
                                 // producing the Coverage here...

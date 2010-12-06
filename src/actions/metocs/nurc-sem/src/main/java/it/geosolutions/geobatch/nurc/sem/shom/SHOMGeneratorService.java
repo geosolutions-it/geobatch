@@ -54,22 +54,4 @@ public class SHOMGeneratorService extends BaseService implements
         }
     }
 
-    /**
-     * Action creator
-     * 
-     * @param configuration
-     *            The data base action configuration
-     * @return new INGVFileConfiguratorAction()
-     */
-    // public SHOMWW3MED6MINFileConfiguratorAction createAction(MetocActionConfiguration
-    // configuration) {
-    // try {
-    // return new SHOMWW3MED6MINFileConfiguratorAction(configuration);
-    // } catch (IOException e) {
-    // if (LOGGER.isLoggable(Level.INFO))
-    // LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-    // return null;
-    // }
-    // }
-
 }

@@ -13,14 +13,14 @@ iret=0;
 while nope
    gribmarker=fread(fid,4);
    if ~isempty(gribmarker)&length(gribmarker)==4
-      if strcmp(char(gribmarker'),'GRIB')
+      if strcmp(char(gribmarker'),'GRIB');
 	 % GRIB marker found
 
-	 if ScreenDiag
-     	    str=sprintf('GRiB Record marker "GRIB" found at chars %d-%d',...
-     			ftell(fid)-3,ftell(fid));
-     	    disp(str);
-	 end
+%  	 if ScreenDiag
+%       	    str=sprintf('GRiB Record marker "GRIB" found at chars %d-%d',...
+%       			ftell(fid)-3,ftell(fid));
+%       	    disp(str);
+%  	 end
 	 iret=ftell(fid);
 	 break
       else

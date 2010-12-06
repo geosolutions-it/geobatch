@@ -93,14 +93,14 @@ elseif ischar(irec)
       dataskip=1;
       irec=-1;
    else
-      error('String value for irec MUST be "inventory"')
+      error('String value for irec MUST be "inventory"');
    end
 elseif irec==-1
    % This means get entire GRiB file
 else
   [m,n]=size(irec);
   if m~=1&n~=1
-     error('Size of irec must be 1xn or nx1')
+     error('Size of irec must be 1xn or nx1');
   end
    irect=irec(:);
    [sirect,irecsort]=sort(irect);
@@ -121,25 +121,25 @@ while k<length(varargin),
     case 'headerflag',
       HeaderFlag=varargin{k+1};
       if ~(HeaderFlag==1 | HeaderFlag==0)
-         error('Invalid HeaderFlag to READ_GRIB.')
+         error('Invalid HeaderFlag to READ_GRIB.');
       end
       varargin([k k+1])=[];
     case 'dataflag',
       DataFlag=varargin{k+1};
       if ~(DataFlag==1 | DataFlag==0)
-         error('Invalid DataFlag to READ_GRIB.')
+         error('Invalid DataFlag to READ_GRIB.');
       end
       varargin([k k+1])=[];
     case 'screendiag',
       ScreenDiag=varargin{k+1};
       if ~(ScreenDiag==1 | ScreenDiag==0)
-         error('Invalid ScreenDiag to READ_GRIB.')
+         error('Invalid ScreenDiag to READ_GRIB.');
       end
       varargin([k k+1])=[];
     case 'paramtable',
       ParamTable=varargin{k+1};
       if ~(any(strcmp(ParamTable,{'NCEPOPER','ECMWF160','NCEPREAN','ECMWF128'})))
-         error('Invalid Parameter Table to READ_GRIB.')
+         error('Invalid Parameter Table to READ_GRIB.');
       end
       varargin([k k+1])=[];
     otherwise
@@ -150,14 +150,14 @@ end
 % Open GRiB file and Find first 'GRIB' string
 fid=fopen(gribname,'r');
 if fid<0
-   error(['GRiB file named ' gribname ' not found.'])
+   error(['GRiB file named ' gribname ' not found.']);
 end
 
 if ~is_grib_file(fid,ScreenDiag)
    % No first GRiB marker found. Abort.
-   disp('ERROR: READ_GRIB:')
-   disp([gribname ' is not a GRiB file.'])
-   disp(['No GRiB marker "GRIB" found in file.'])
+%   disp('ERROR: READ_GRIB:')
+%   disp([gribname ' is not a GRiB file.'])
+%   disp(['No GRiB marker "GRIB" found in file.'])
    grib_struct=-1;
    % close grib stream
    fclose(fid);
@@ -172,30 +172,30 @@ else
       gribfileheader=[];      
    end
    % Report pre-firstmarker header if length <= 90
-   if(mark1<91)
-      if ScreenDiag,disp(['GRiB header = ' char(gribfileheader')]);,end
-   else
+%     if(mark1<91)
+%        if ScreenDiag,disp(['GRiB header = ' char(gribfileheader')]);,end
+%     else
       % Reposition fid to point just before "G" char
       fseek(fid,-4,0);
-   end
+%     end
 end
 
 first4octets=fread(fid,4);
 if ScreenDiag,
 disp(char(first4octets'));,end
 
-if inventory_flag
-   inventory_str=sprintf('###################################################\n');
-   inventory_str=[inventory_str sprintf('Inventory for GRiB file %s \n',fname)];
-   inventory_str=[inventory_str sprintf('###################################################\n')];
-   inventory_str=[inventory_str sprintf('\n')];
-   inventory_str=[inventory_str sprintf(...
-   '           Parameter\n')];
-   inventory_str=[inventory_str sprintf(...
-   '  Rec #  #    Name  Units              Date    Hr Mn   P1    P2  Quantity                Level           IC        Grid     Description\n')];
-   inventory_str=[inventory_str sprintf(...
-   '--------------------------------------------------------------------------------------------------------------------------\n')];
-end
+%  if inventory_flag
+%     inventory_str=sprintf('###################################################\n');
+%     inventory_str=[inventory_str sprintf('Inventory for GRiB file %s \n',fname)];
+%     inventory_str=[inventory_str sprintf('###################################################\n')];
+%     inventory_str=[inventory_str sprintf('\n')];
+%     inventory_str=[inventory_str sprintf(...
+%     '           Parameter\n')];
+%     inventory_str=[inventory_str sprintf(...
+%     '  Rec #  #    Name  Units              Date    Hr Mn   P1    P2  Quantity                Level           IC        Grid     Description\n')];
+%     inventory_str=[inventory_str sprintf(...
+%     '--------------------------------------------------------------------------------------------------------------------------\n')];
+%  end
 
 % initialization
 grec=0;crec=0;
@@ -222,10 +222,10 @@ while ~isempty(first4octets)
       % scanning for next grib marker
       iret=find_grib_marker(fid,ScreenDiag);
       if iret<1 & feof(fid)
-         if ScreenDiag
-	    str=sprintf('\n%s\n',['End of file reached.']);
-            disp(str)
-	 end
+%           if ScreenDiag
+%  	    str=sprintf('\n%s\n',['End of file reached.']);
+%              disp(str)
+%  	 end
 	 % close grib stream
 	 fclose(fid);
          return
@@ -235,7 +235,7 @@ while ~isempty(first4octets)
    grec=grec+1;
    this_one_extracted=0;
    
-   if ScreenDiag,fprintf(1,'GRec=%4d : FPos1=%8d',grec,fpos),end
+%     if ScreenDiag,fprintf(1,'GRec=%4d : FPos1=%8d',grec,fpos),end
    
    % read section 0, the IS (Indicator Section);
    % this is always extracted
@@ -245,9 +245,9 @@ while ~isempty(first4octets)
 
    % Edition check
    if edition~=1
-      str=sprintf('\n%s\n',['READ_GRIB cannot read edition ' int2str(edition) ' GRiB records.']);
-      str=[str sprintf('%s\n',['Edition ' int2str(edition) ' detected at record ' int2str(grec) ' in ' fname]);];
-      disp(str)
+%        str=sprintf('\n%s\n',['READ_GRIB cannot read edition ' int2str(edition) ' GRiB records.']);
+%        str=[str sprintf('%s\n',['Edition ' int2str(edition) ' detected at record ' int2str(grec) ' in ' fname]);];
+%        disp(str)
       grib_struct=[];
       % close grib stream
       fclose(fid);
@@ -316,33 +316,33 @@ while ~isempty(first4octets)
       grib_struct(crec).bds=bds_struct;
       grib_struct(crec).fltarray=dataarray;
       this_one_extracted=1;
-      if inventory_flag
-         clear grib_struct;
-         crec=0;  % Reset structure logging
-	 minute=['0' int2str(pds_struct.min)];
-	 if pds_struct.min>9,minute=int2str(pds_struct.minute);,end
-	 hour=['0' int2str(pds_struct.hour)];
-	 if pds_struct.hour>9,hour=int2str(pds_struct.hour);,end
-	 day=['0' int2str(pds_struct.day)];
-	 if pds_struct.day>9,day=int2str(pds_struct.day);,end
-	 month=['0' int2str(pds_struct.month)];
-	 if pds_struct.month>9,month=int2str(pds_struct.month);,end
-         level=levels(pds_struct.pdsvals(10),pds_struct.pdsvals(11),pds_struct.pdsvals(12));
-	 l=length(level);lm=floor(l/2);ll=1:lm;lr=lm+1:l;
-	 level_left=level(ll);level_right=level(lr);
-	 inventory_str=[inventory_str sprintf(...
-	            '%4d    %3d %6s  %-14s  %2d%2d/%2s/%2s %2s %2s %5.1f %5.1f %-16s %9s%-9s  %10s %10s %-s\n',...
-	            grec,...
-		    pds_struct.pdsvals(9),...
-		    pds_struct.parameter,...
-		    pds_struct.units,...
-	            pds_struct.century-1,...
-		    pds_struct.year,...
-		    month,day,hour,minute,...
-		    pds_struct.P1,pds_struct.P2,pds_struct.TRI,level_left,level_right,...
-		    pds_struct.IC,gds_struct.DRT(1:8),...
-		    pds_struct.description)];
-      end
+%        if inventory_flag
+%           clear grib_struct;
+%           crec=0;  % Reset structure logging
+%  	 minute=['0' int2str(pds_struct.min)];
+%  	 if pds_struct.min>9,minute=int2str(pds_struct.minute);,end
+%  	 hour=['0' int2str(pds_struct.hour)];
+%  	 if pds_struct.hour>9,hour=int2str(pds_struct.hour);,end
+%  	 day=['0' int2str(pds_struct.day)];
+%  	 if pds_struct.day>9,day=int2str(pds_struct.day);,end
+%  	 month=['0' int2str(pds_struct.month)];
+%  	 if pds_struct.month>9,month=int2str(pds_struct.month);,end
+%           level=levels(pds_struct.pdsvals(10),pds_struct.pdsvals(11),pds_struct.pdsvals(12));
+%  	 l=length(level);lm=floor(l/2);ll=1:lm;lr=lm+1:l;
+%  	 level_left=level(ll);level_right=level(lr);
+%  	 inventory_str=[inventory_str sprintf(...
+%  	            '%4d    %3d %6s  %-14s  %2d%2d/%2s/%2s %2s %2s %5.1f %5.1f %-16s %9s%-9s  %10s %10s %-s\n',...
+%  	            grec,...
+%  		    pds_struct.pdsvals(9),...
+%  		    pds_struct.parameter,...
+%  		    pds_struct.units,...
+%  	            pds_struct.century-1,...
+%  		    pds_struct.year,...
+%  		    month,day,hour,minute,...
+%  		    pds_struct.P1,pds_struct.P2,pds_struct.TRI,level_left,level_right,...
+%  		    pds_struct.IC,gds_struct.DRT(1:8),...
+%  		    pds_struct.description)];
+%        end
    end   
    
    % The last 4 octets (bytes) should contain the ascii chars 55;
@@ -351,20 +351,20 @@ while ~isempty(first4octets)
 
    % Get file pointer position 
    fpos=ftell(fid);
-   if ScreenDiag
-      fprintf(1,' : GLen=%8d : FPos2=%8d : EOGRiB=%4s',lengrib,fpos,end_grib_delim)
-      if ~this_one_extracted
-         fprintf(1,'\n')
-      else
-         fprintf(1,' ***\n')
-      end
-
-   end
+%     if ScreenDiag
+%        fprintf(1,' : GLen=%8d : FPos2=%8d : EOGRiB=%4s',lengrib,fpos,end_grib_delim)
+%        if ~this_one_extracted
+%           fprintf(1,'\n')
+%        else
+%           fprintf(1,' ***\n')
+%        end
+%  
+%     end
    if ~strcmp(end_grib_delim,'7777')
-      disp(['Alignment problem reading GRiB message ' gribname])
-      disp(['at GRiB record number ' int2str(grec)])
-      disp(['Should be at the end of GRiB record, and we''re  not.'])
-      disp(['Returning from READ_GRIB with GRiB up to this point.'])
+%        disp(['Alignment problem reading GRiB message ' gribname])
+%        disp(['at GRiB record number ' int2str(grec)])
+%        disp(['Should be at the end of GRiB record, and we''re  not.'])
+%        disp(['Returning from READ_GRIB with GRiB up to this point.'])
       % close grib stream
       fclose(fid);
       return
@@ -376,11 +376,11 @@ while ~isempty(first4octets)
 end
 
 if exist('irecsort'),grib_struct=grib_struct(irecsort);,end
-if inventory_flag
-      %helpwin(inventory_str,'Inventory',['Inventory for ' gribname]);
-       helpwin(inventory_str,'Inventory');
-      grib_struct=[];
-end
+%  if inventory_flag
+%        %helpwin(inventory_str,'Inventory',['Inventory for ' gribname]);
+%         helpwin(inventory_str,'Inventory');
+%        grib_struct=[];
+%  end
 
 % close grib stream
 fclose(fid);

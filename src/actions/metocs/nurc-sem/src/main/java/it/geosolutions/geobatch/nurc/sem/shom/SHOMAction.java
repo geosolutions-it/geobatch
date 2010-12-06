@@ -56,51 +56,65 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
         // looking for file
         if (events.size() != 1)
             throw new IllegalArgumentException("Wrong number of elements for this action: "+ events.size());
-        FileSystemMonitorEvent event=(FileSystemMonitorEvent)events.remove();
-        try{
-            Files.uncompress(event.getSource().getAbsolutePath());
-            
-            File dir=event.getSource();
-//            String[] chld = dir.list();
-//            if(chld == null){
-//                if (LOGGER.isLoggable(Level.SEVERE))
-//                    LOGGER.severe("Failed to list data dir");
-//                throw new ActionException(this, "Failed to list data dir");
-//            }
-//            else {
-//                /*
-//                 * listing data dir
-//                 */
-//                for(int i = 0; i < chld.length; i++){
-//                    String fileName = chld[i];
-//                    
-//                }
-//            }
-            
-            NetcdfDataset dataset=new NetcdfDataset();
-            Aggregation aggr=new AggregationExisting(dataset, AGGREGATING_VAR, "");
-            /*
-             * crawlableDatasetElement - defines a CrawlableDataset, or null
-dirName - scan this directory
-suffix - filter on this suffix (may be null)
-regexpPatternString - include if full name matches this regular expression (may be null)
-dateFormatMark - create dates from the filename (may be null)
-enhanceMode - how should files be enhanced
-subdirs - equals "false" if should not descend into subdirectories
-olderThan - files must be older than this time (now - lastModified >= olderThan); must be a time unit, may ne bull
-             */
-            aggr.addDatasetScan(null, dir.getAbsolutePath(), null, null, null, null, "false", null);
-            aggr.sync();
-            NetcdfEvent ev=new NetcdfEvent(dataset);
-            events.add(ev);
-            return events;
+        
+//TODO CHECK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        EventObject event= events.remove();
+        if (event instanceof FileSystemMonitorEvent){
+            FileSystemMonitorEvent fs_event=(FileSystemMonitorEvent) event;
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("Event is a FileSystemMonitorEvent");
+            try{
+                
+                String dir_name=Files.uncompress(fs_event.getSource().getAbsolutePath());
+                
+                File dir=new File(dir_name);
+                if (LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("Scanning directory: "+dir_name);
+                
+    //            String[] chld = dir.list();
+    //            if(chld == null){
+    //                if (LOGGER.isLoggable(Level.SEVERE))
+    //                    LOGGER.severe("Failed to list data dir");
+    //                throw new ActionException(this, "Failed to list data dir");
+    //            }
+    //            else {
+    //                /*
+    //                 * listing data dir
+    //                 */
+    //                for(int i = 0; i < chld.length; i++){
+    //                    String fileName = chld[i];
+    //                    
+    //                }
+    //            }
+                
+                NetcdfDataset dataset=new NetcdfDataset();
+                Aggregation aggr=new AggregationExisting(dataset, AGGREGATING_VAR, "");
+                
+                /*
+                 * crawlableDatasetElement - defines a CrawlableDataset, or null
+    dirName - scan this directory
+    suffix - filter on this suffix (may be null)
+    regexpPatternString - include if full name matches this regular expression (may be null)
+    dateFormatMark - create dates from the filename (may be null)
+    enhanceMode - how should files be enhanced
+    subdirs - equals "false" if should not descend into subdirectories
+    olderThan - files must be older than this time (now - lastModified >= olderThan); must be a time unit, may ne bull
+                 */
+                aggr.addDatasetScan(null, dir.getAbsolutePath(), null, null, null, null, "false", null);
+                aggr.sync();
+                NetcdfEvent ev=new NetcdfEvent(dataset);
+                events.add(ev);
+                return events;
+            }
+            catch (IOException ioe){
+                throw new ActionException(this, ioe.getLocalizedMessage());
+            }
+            catch (Exception e){
+                throw new ActionException(this, e.getLocalizedMessage());
+            }
         }
-        catch (IOException ioe){
-            throw new ActionException(this, ioe.getLocalizedMessage());
-        }
-        catch (Exception e){
-            throw new ActionException(this, e.getLocalizedMessage());
-        }
+        else
+            throw new IllegalArgumentException("Wrong event type for this action: "+event.getClass().getName());
     }
 
 }

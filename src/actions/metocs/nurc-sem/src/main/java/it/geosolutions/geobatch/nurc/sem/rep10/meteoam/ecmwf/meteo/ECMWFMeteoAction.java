@@ -39,7 +39,7 @@ public class ECMWFMeteoAction extends FileInFileOutAction {
      */
     @Override
     protected String buildFileName(){
-        return "REP10_ECMWFMETEO-Forecast-T" + new Date().getTime()+".nc";
+        return "rep10_ECMWFMETEO-Forecast-T" + new Date().getTime()+".nc";
     }
     
     /**
