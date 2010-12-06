@@ -48,6 +48,7 @@ import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,7 @@ import ucar.nc2.Variable;
  * Public class to insert NetCDF data file (gliders measurements) into DB
  * 
  */
-public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction {
+public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction<FileSystemMonitorEvent> {
 
     protected JGSFLoDeSSCOAMPSFileConfigurator(MetocActionConfiguration configuration)
             throws IOException {

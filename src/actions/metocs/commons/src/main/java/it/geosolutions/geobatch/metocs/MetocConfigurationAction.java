@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.EventObject;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.TimeZone;
@@ -41,14 +42,14 @@ import java.util.logging.Logger;
  * @version $ MetocConfigurationAction.java $ Revision: 0.1 $ 23/oct/09 17:14:23
  */
 
-public abstract class MetocConfigurationAction extends BaseAction<FileSystemMonitorEvent> implements
-        Action<FileSystemMonitorEvent> {
+public abstract class MetocConfigurationAction<T extends EventObject> extends BaseAction<T> implements
+        Action<T> {
 
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(MetocConfigurationAction.class
-            .toString());
+    protected final static Logger LOGGER = 
+                            Logger.getLogger(MetocConfigurationAction.class.toString());
 
     protected final MetocActionConfiguration configuration;
 

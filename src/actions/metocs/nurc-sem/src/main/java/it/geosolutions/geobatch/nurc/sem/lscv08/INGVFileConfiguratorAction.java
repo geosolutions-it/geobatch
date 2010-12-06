@@ -60,7 +60,7 @@ import ucar.nc2.Variable;
  * Public class to transform lscv08::INGV Model
  * 
  */
-public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction {
+public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction{
 
     private static String[] depthNames = new String[] { "depth", "deptht", "depthu", "depthv",
             "depthw" };

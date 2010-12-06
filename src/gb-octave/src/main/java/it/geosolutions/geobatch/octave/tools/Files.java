@@ -120,9 +120,15 @@ public final class Files {
         return type.getType();
     }
     
+    /**
+     * @note regex expression are tested using: http://www.regexplanet.com/simple/index.html
+     * @param in_name
+     * @return
+     */
     protected static Matcher match(String in_name){
-        final String regex=
-            "(.+)((\\.[Zz][Ii][Pp])|((\\.[Tt][Aa][Rr])((\\.[Gg][Zz]([Ii][Pp])?)|(\\.[Bb][Zz]([Ii][Pp])?2))?)|(\\.[Tt]?[Gg][Zz])|(\\.[Tt][Gg][Zz]([Ii][Pp])?)|(\\.[Tt][Bb][Zz]([Ii][Pp])?2))";
+        final String regex="(.+(?:\\.tar)?)(?<!\\.tar)(\\..+)+";
+        //"(.+)((\\.[Zz][Ii][Pp])|((\\.[Tt][Aa][Rr])((\\.[Gg][Zz]([Ii][Pp])?)|(\\.[Bb][Zz]
+        // ([Ii][Pp])?2))?)|(\\.[Tt]?[Gg][Zz])|(\\.[Tt][Gg][Zz]([Ii][Pp])?)|(\\.[Tt][Bb][Zz]([Ii][Pp])?2))";
         Pattern p=Pattern.compile(regex);
                 
         Matcher m=p.matcher(in_name);
@@ -145,8 +151,6 @@ public final class Files {
      * a zip file
      * @return the output dir where files are extracted
      * @throws Exception 
-     * @note regex expression are tested using:
-     * http://www.regexplanet.com/simple/index.html
      */
     public static String uncompress(String in_name) throws Exception{
         File in_file=null;

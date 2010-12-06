@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.EventObject;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Queue;
@@ -59,6 +60,7 @@ import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
+import ucar.nc2.dataset.NetcdfDataset;
 
 /**
  * 
@@ -79,7 +81,9 @@ import ucar.nc2.Variable;
  * height { height:long_name = "height"; height:units = "m"; height:positive = "up"; }
  * 
  */
-public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationAction {
+public class NetCDFCFGeodetic2GeoTIFFsFileAction
+                extends MetocConfigurationAction<EventObject> 
+                implements EventAdapter<NetcdfEvent>{
 
     /**
      * GeoTIFF Writer Default Params
@@ -102,11 +106,63 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
         super(configuration);
         sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
     }
+    
+    /**
+     * This method define the mapping between input and output EventObject instance
+     * @param ieo is the object to transform
+     * @return the EventObject adapted
+     */
+    public NetcdfEvent adapter(EventObject ieo) throws ActionException{
+        NetcdfEvent eo=null;
+        if (ieo!=null)
+            try {
+                /**
+                 * Map the FileSystemMonitorEvent to a NetCDFDataset
+                 * event object 
+                 */
+                if (ieo instanceof FileSystemMonitorEvent){
+                
+                    NetcdfFile ncFileIn = null;
+                    File inputFile = null;
+                    
+                    FileSystemMonitorEvent fs_event = (FileSystemMonitorEvent) ieo;
+                    
+                    inputFile = new File(fs_event.getSource().getAbsolutePath());
+
+                    /**
+                     * Here we assume that each FileSystemMonitorEvent file
+                     * represent a valid NetcdfFile.
+                     * This is done (without checks) since the specific class 
+                     * implementation name define the file type should be passed.
+                     * Be careful when build flux
+                     */
+// TODO we should check if this file is a netcdf file!
+                    
+                    ncFileIn = NetcdfFile.open(inputFile.getAbsolutePath());
+                    NetcdfDataset d=new NetcdfDataset(ncFileIn);
+                    eo=new NetcdfEvent(d);   
+                }
+                /**
+                 * if it is a NetcdfEvent we only have to return a NetcdfEvent 
+                 * input instance
+                 */
+                else if (ieo instanceof NetcdfEvent){
+                    return (NetcdfEvent)ieo;
+                }
+                else
+                    throw new ActionException(this, "Passed event is not a FileSystemMonitorEvent instance");
+        } catch (IOException ioe) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.SEVERE, ioe.getLocalizedMessage(), ioe);
+            throw new ActionException(this, "ioe.getLocalizedMessage()");
+        }
+        return eo;
+    }
 
     /**
      * EXECUTE METHOD
      */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<EventObject> execute(Queue<EventObject> events)
             throws ActionException {
 
         if (LOGGER.isLoggable(Level.INFO))
@@ -118,7 +174,10 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
             if (events.size() != 1)
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
-            FileSystemMonitorEvent event = events.remove();
+            
+            NetcdfEvent event=adapter(events.remove());
+
+            ncFileIn=event.getSource();
 
             // //
             // data flow configuration and dataStore name must not be null.
@@ -145,8 +204,10 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
                 throw new IllegalStateException("WorkingDirectory is null or does not exist.");
             }
 
-            // ... BUSINESS LOGIC ... //
-            String inputFileName = event.getSource().getAbsolutePath();
+//            // ... BUSINESS LOGIC ... //
+
+            String inputFileName = event.getSource().getReferencedFile().getLocation();
+            
             final String filePrefix = FilenameUtils.getBaseName(inputFileName);
             final String fileSuffix = FilenameUtils.getExtension(inputFileName);
             final String fileNameFilter = getConfiguration().getStoreFilePrefix();
@@ -171,9 +232,8 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
 
             inputFileName = FilenameUtils.getBaseName(inputFileName);
             inputFileName = (inputFileName.lastIndexOf("-") > 0 ? inputFileName.substring(0,
-                    inputFileName.lastIndexOf("-")) : inputFileName);
-            inputFile = new File(event.getSource().getAbsolutePath());
-            ncFileIn = NetcdfFile.open(inputFile.getAbsolutePath());
+            inputFileName.lastIndexOf("-")) : inputFileName);
+            
             final File outDir = (!configuration.isTimeUnStampedOutputDir() ? Utilities
                     .createTodayDirectory(workingDir, inputFileName) : Utilities.createDirectory(
                     workingDir, inputFileName));
@@ -205,8 +265,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
 
             if (!latDimExists || !lonDimExists) {
                 if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER
-                            .severe("Invalid input NetCDF-CF Geodetic file: longitude and/or latitude dimensions could not be found!");
+                    LOGGER.severe("Invalid input NetCDF-CF Geodetic file: longitude and/or latitude dimensions could not be found!");
                 throw new IllegalStateException(
                         "Invalid input NetCDF-CF Geodetic file: longitude and/or latitude dimensions could not be found!");
             }
@@ -310,7 +369,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
 
                                 METOCSActionsIOUtils.write2DData(userRaster, var, originalVarArray,
                                         false, false, (hasLocalZLevel ? new int[] { t, z, nLat,
-                                                nLon } : new int[] { t, nLat, nLon }), true);
+                                                nLon } : new int[] { t, nLat, nLon }), configuration.isFlip());
 
                                 // ////
                                 // producing the Coverage here...
@@ -422,5 +481,6 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends MetocConfigurationActio
 
         return integerPart + "." + decimalPart;
     }
+
 
 }

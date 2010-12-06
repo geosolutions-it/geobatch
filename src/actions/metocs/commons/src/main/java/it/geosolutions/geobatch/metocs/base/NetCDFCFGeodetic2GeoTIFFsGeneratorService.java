@@ -26,6 +26,7 @@ import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 
 import java.io.IOException;
+import java.util.EventObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +35,7 @@ import java.util.logging.Logger;
  * 
  */
 public class NetCDFCFGeodetic2GeoTIFFsGeneratorService extends
-        GeoServerConfiguratorService<FileSystemMonitorEvent, MetocActionConfiguration> {
+        GeoServerConfiguratorService<EventObject, MetocActionConfiguration> {
 
     private final static Logger LOGGER = Logger
             .getLogger(NetCDFCFGeodetic2GeoTIFFsGeneratorService.class.toString());

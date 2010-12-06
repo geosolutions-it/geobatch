@@ -34,6 +34,8 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     private boolean packComponents;
 
     private boolean timeUnStampedOutputDir;
+    
+    private boolean flipY=true;
 
     private String workingDirectory;
 
@@ -107,6 +109,18 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     public void setPackComponents(boolean packComponents) {
         this.packComponents = packComponents;
     }
+    
+    /**
+     * Returns true if the image should be flip by Y 
+     * @return boolean
+     */
+    public boolean isFlip(){
+        return flipY;
+    }
+    
+    public void setFlip(boolean f){
+        this.flipY=f;
+    }
 
     public String getCrs() {
         return crs;
@@ -168,6 +182,7 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
         final MetocActionConfiguration configuration = new MetocActionConfiguration(super.getId(),
                 super.getName(), super.getDescription(), super.isDirty());
         configuration.setCrs(crs);
+        configuration.setFlip(flipY);
         configuration.setEnvelope(envelope);
         configuration.setServiceID(getServiceID());
         configuration.setStoreFilePrefix(storeFilePrefix);

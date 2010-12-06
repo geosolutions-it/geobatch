@@ -71,7 +71,7 @@ import ucar.nc2.Variable;
  * @author Alessio Fabiani, GeoSolutions S.A.S.
  * 
  */
-public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAction {
+public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAction<FileSystemMonitorEvent>  {
 
     public METOCSBaseConfiguratorAction(MetocActionConfiguration configuration) {
         super(configuration);
@@ -116,6 +116,7 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
             if (events.size() != 1)
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
+            
             FileSystemMonitorEvent event = events.remove();
             @SuppressWarnings("unused")
             final String configId = configuration.getName();

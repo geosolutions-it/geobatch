@@ -47,16 +47,16 @@
 	<!--     Dependency Management                                   -->
 	<!-- =========================================================== -->
 	<dependencies>
+		<!-- Octave -->
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+			<artifactId>gb-octave</artifactId>
+        </dependency>
+    	
     	<!-- METOCS Commons -->
         <dependency>
             <groupId>it.geosolutions</groupId>
 			<artifactId>gb-action-metocs-commons</artifactId>
-        </dependency>
-
-    	<!-- Octave -->
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-						<artifactId>gb-octave</artifactId>
         </dependency>
 	</dependencies>
 
