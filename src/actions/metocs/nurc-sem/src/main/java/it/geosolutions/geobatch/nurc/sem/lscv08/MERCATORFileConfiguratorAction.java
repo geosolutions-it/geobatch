@@ -92,11 +92,11 @@ public class MERCATORFileConfiguratorAction extends METOCSBaseConfiguratorAction
 
         // input VARIABLES
         final Variable lonOriginalVar = ncGridFile.findVariable("longitude");
-        @SuppressWarnings("unused")
+
         final DataType lonDataType = lonOriginalVar.getDataType();
 
         final Variable latOriginalVar = ncGridFile.findVariable("latitude");
-        @SuppressWarnings("unused")
+
         final DataType latDataType = latOriginalVar.getDataType();
 
         final Variable depthOriginalVar = ncGridFile.findVariable("depth");

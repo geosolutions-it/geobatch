@@ -27,7 +27,7 @@ function ecmwf_meteo2nc(ddir,ncfile)
 
   % we get all the times for all the dates
   %elenco=dir([ddir,'/J4D',fdate,base,'*']);
-  elenco=dir([ddir,'/J4D','*','*','*']);
+  elenco=dir([ddir,'/J4D','*']);
 
   % processing grib file forecast by forecast
 
@@ -256,7 +256,7 @@ function ecmwf_meteo2nc(ddir,ncfile)
       % fillvalue
       f._FillValue= ncdouble(1.e35);
       %base time attribute "yyyyMMddTHHmmssSSSZ"
-      f.base_time=[datestr(datenum(1980,1,1)+datenum(0,0,0,0,0,t(1)),"yyyymmddTHHMMSS"),'000Z'];
+      f.base_time=[datestr(datenum(1980,1,1)+datenum(0,0,0,0,0,seconds),"yyyymmddTHHMMSS"),'000Z'];
       % time origin
       f.time_origin = [datestr(datenum(1980,1,1),"yyyymmddTHHMMSS"),'000Z'];
       % save seconds to calculate TAU

@@ -234,27 +234,19 @@ function elm2nc(ddir,ncfile)
       f{'time'}.long_name=('time since initialization');
       %f{'time'}.units=('days since 1968-5-23 00:00:00 UTC');
       f{'time'}.units=('seconds since 1980-1-1 0:0:0');
-      f{'time'}.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
+      f{'time'}.time_origin = [datestr(datenum(1980,1,1),"yyyymmddTHHMMSS"),'000Z'];
       %f{'time'}.calendar='MJD';
-
-      f{'lat'}=ncfloat('lat');%,'lon'
-      f{'lat'}.long_name='Latitude';
-      f{'lat'}.units = 'degrees_north';
-      f{'lat'}(:)=alat(:,1);%alat;
-
-      f{'lon'}=ncfloat('lon');%'lat',
-      f{'lon'}.long_name='Longitude';
-      f{'lon'}.units = 'degrees_east';
-      f{'lon'}(:)=alon(1,:);%alon;
 
       f{'U10'}=ncfloat('time','lat','lon');
       f{'U10'}.units = 'm/s';
+      f{'U10'}.missing_value = ncfloat(1.e35);
       f{'U10'}.FillValue_=ncfloat(1.e35);
       f{'U10'}.long_name='zonal wind';
       f{'U10'}.coordinates='lat lon';
 
       f{'V10'}=ncfloat('time','lat','lon');
       f{'V10'}.units = 'm/s';
+      f{'V10'}.missing_value = ncfloat(1.e35);
       f{'V10'}.FillValue_=ncfloat(1.e35);
       f{'V10'}.long_name='meridional wind';
       f{'V10'}.coordinates='lat lon';
@@ -262,6 +254,7 @@ function elm2nc(ddir,ncfile)
       f{'airtemp'}=ncfloat('time','lat','lon');
 %      f{'atemp'}.units = 'degC';
       f{'airtemp'}.units = 'K';
+      f{'airtemp'}.missing_value = ncfloat(1.e35);
       f{'airtemp'}.FillValue_=ncfloat(1.e35);
       f{'airtemp'}.long_name = 'air temperature';
       f{'airtemp'}.coordinates='lat lon';
@@ -271,6 +264,7 @@ function elm2nc(ddir,ncfile)
       f{'relhum'}.units = '%25';
 %      f{'relhum'}.long_name = 'Relative Humidity at 2 m';
       f{'relhum'}.long_name = 'relative humidity';
+      f{'relhum'}.missing_value = ncfloat(1.e35);
       f{'relhum'}.FillValue_=ncfloat(1.e35);
       f{'relhum'}.coordinates='lat lon';
 
@@ -320,11 +314,10 @@ function elm2nc(ddir,ncfile)
       f.nodata=ncfloat(1.e35);
       % fillvalue
       f._FillValue= ncfloat(1.e35);
-      %base time attribute
-      %"yyyyMMddTHHmmssSSSZ"
-      f.base_time=datestr(_base_time,"yyyymmddTHHMMSS");
+      %base time attribute "yyyyMMddTHHmmssSSSZ"
+      f.base_time=[datestr(datenum(1980,1,1)+datenum(0,0,0,0,0,seconds),"yyyymmddTHHMMSS"),'000Z'];
       % time origin
-      f.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
+      f.time_origin = [datestr(datenum(1980,1,1),"yyyymmddTHHMMSS"),'000Z'];
       % save seconds to (eventually) calculate TAU
       first_time=seconds;
       % setting TAU

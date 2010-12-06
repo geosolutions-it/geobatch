@@ -123,7 +123,7 @@ function nettuno2nc(ddir,ncfile)
       f{'time'}.long_name=('time since initialization');
       %f{'time'}.units=('days since 1968-5-23 00:00:00 UTC');
       f{'time'}.units=('seconds since 1980-1-1 0:0:0');
-      f{'time'}.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
+      f{'time'}.time_origin = [datestr(datenum(1980,1,1),"yyyymmddTHHMMSS"),'000Z'];
       %f{'time'}.calendar='MJD';
 
       f{'lat'}=ncfloat('lat');%,'lon'
@@ -139,20 +139,22 @@ function nettuno2nc(ddir,ncfile)
       f{'hs'}=ncfloat('time','lat','lon');
       f{'hs'}.units = 'm';
       f{'hs'}.FillValue_= ncfloat(1.e35);
+      f{'hs'}.missing_value = ncfloat(1.e35);
       f{'hs'}.long_name='sea surface swell wave significant height';
       %f{'Hwave'}.long_name='Significant Wave Heigth';
       f{'hs'}.coordinates='lat lon';
 
       f{'meanwavdir'}=ncfloat('time','lat','lon');
-      %f{'Dwave'}.units = 'degrees';
       f{'meanwavdir'}.units = 'deg';
       f{'meanwavdir'}.FillValue_= ncfloat(1.e35);
+      f{'meanwavdir'}.missing_value = ncfloat(1.e35);
       f{'meanwavdir'}.long_name='mean wave direction';
       f{'meanwavdir'}.coordinates='lat lon';
 
       f{'meanwavperiod'}=ncfloat('time','lat','lon');
       f{'meanwavperiod'}.units = 's';
       f{'meanwavperiod'}.FillValue_= ncfloat(1.e35);
+      f{'meanwavperiod'}.missing_value = ncfloat(1.e35);
       f{'meanwavperiod'}.long_name = 'mean wave period';
       f{'meanwavperiod'}.coordinates='lat lon';
 
@@ -162,15 +164,17 @@ function nettuno2nc(ddir,ncfile)
 %        f{'Tpeack'}.FillValue_= ncfloat(1.e35);
 %        f{'Tpeack'}.coordinates='lat lon';
 
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      % writing global attributes
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       % nodata
       f.nodata=ncdouble(1.e35);
       % fillvalue
       f._FillValue= ncdouble(1.e35);
-      %base time attribute
-      %"yyyyMMddTHHmmssSSSZ"
-      f.base_time=datestr(_base_time,"yyyymmddTHHMMSS");
+      %base time attribute %"yyyyMMddTHHmmssSSSZ"
+      f.base_time=[datestr(datenum(1980,1,1)+datenum(0,0,0,0,0,seconds),"yyyymmddTHHMMSS"),'000Z'];
       % time origin
-      f.time_origin = datestr(datenum(1980,1,1),"yyyymmddTHHMMSS");
+      f.time_origin = [datestr(datenum(1980,1,1),"yyyymmddTHHMMSS"),'000Z'];
       % save seconds to (eventually) calculate TAU
       first_time=seconds;
       % setting TAU
@@ -188,8 +192,11 @@ function nettuno2nc(ddir,ncfile)
     %nn
 
     ru=reshape(ut.fltarray,ut.gds.Ni,ut.gds.Nj);
+ru(ru==0)=1e35;
     rv=reshape(vt.fltarray,vt.gds.Ni,vt.gds.Nj);
+rv(rv==0)=1e35;
     e=reshape(et.fltarray,et.gds.Ni,et.gds.Nj);
+e(e==0)=1e35;
 %    d=reshape(dt.fltarray,dt.gds.Ni,dt.gds.Nj); UNUSED
 
   % writing
