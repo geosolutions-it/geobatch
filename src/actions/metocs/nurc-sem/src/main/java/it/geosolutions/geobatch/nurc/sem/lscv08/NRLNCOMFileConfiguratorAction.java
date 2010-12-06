@@ -363,14 +363,17 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
             ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "units",
                     foundVariableUoM.get(varName));
 
+            Attribute missingValue = foundVariables.get(varName).findAttribute("missing_value");
+            if (missingValue != null) {
+                double nD = missingValue.getNumericValue().doubleValue();
+                ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "missing_value", nD);
+            }
             if (Double.isNaN(noData)) {
-                Attribute missingValue = foundVariables.get(varName).findAttribute("missing_value");
                 if (missingValue != null) {
                     noData = missingValue.getNumericValue().doubleValue();
-                    ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName),
-                            "missing_value", noData);
                 }
             }
+
         }
 
         return noData;
