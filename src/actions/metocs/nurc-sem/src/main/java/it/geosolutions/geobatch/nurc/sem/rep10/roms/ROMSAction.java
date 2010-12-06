@@ -39,7 +39,7 @@ public class ROMSAction extends FileInFileOutAction {
      */
     @Override
     protected String buildFileName(){
-        return "REP10_ROMS-Forecast-T" + new Date().getTime()+".nc";
+        return "rep10_ROMS-Forecast-T" + new Date().getTime()+".nc";
     }
     
     /**

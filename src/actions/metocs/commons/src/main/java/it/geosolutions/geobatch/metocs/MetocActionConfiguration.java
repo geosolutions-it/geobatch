@@ -34,7 +34,7 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
 
     private boolean timeUnStampedOutputDir;
     
-    private boolean flipY=true;
+    private boolean flipY;
 
     private String workingDirectory;
 

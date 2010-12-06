@@ -39,7 +39,7 @@ public class ILMAction extends FileInFileOutAction {
      */
     @Override
     protected String buildFileName(){
-        return "REP10_ILM-Forecast-T" + new Date().getTime()+".nc";
+        return "rep10_ILM-Forecast-T" + new Date().getTime()+".nc";
     }
     
     /**

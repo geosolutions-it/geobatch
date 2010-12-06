@@ -67,7 +67,12 @@ public final class Files {
         }
     }
     
-    public static void extractGz(File in_file, File out_file) throws BuildException{
+    /**
+     * Extract a GZip file to a tar
+     * @param in_file the input bz2 file to extract
+     * @param out_file the output tar file to extract to
+     */
+    public static void extractGzip(File in_file, File out_file) throws BuildException{
         FileOutputStream out = null;
         GZIPInputStream zIn = null;
         FileInputStream fis = null;
@@ -76,14 +81,6 @@ public final class Files {
             out = new FileOutputStream(out_file);
             fis = new FileInputStream(in_file);
             bis = new BufferedInputStream(fis);
-            int b = bis.read();
-            if (b != 'B') {
-                throw new BuildException("Invalid bz2 file: "+in_file.getAbsolutePath());
-            }
-            b = bis.read();
-            if (b != 'Z') {
-                throw new BuildException("Invalid bz2 file: "+in_file.getAbsolutePath());
-            }
             zIn = new GZIPInputStream(bis);
             byte[] buffer = new byte[8 * 1024];
             int count = 0;
@@ -92,7 +89,7 @@ public final class Files {
                 count = zIn.read(buffer, 0, buffer.length);
             } while (count != -1);
         } catch (IOException ioe) {
-            String msg = "Problem expanding bzip2 " + ioe.getMessage();
+            String msg = "Problem expanding Gzip " + ioe.getMessage();
             throw new BuildException(msg+in_file.getAbsolutePath());
         } finally {
             FileUtils.close(bis);
@@ -273,7 +270,7 @@ public final class Files {
                 // the de_compressor output file  
                 File tar_file=new File(fileName+".tar");
                 // uncompress BZ2 to the tar file
-                extractGz(in_file,tar_file);
+                extractGzip(in_file,tar_file);
     
                 // preparing path to extract to
                 end_name=fileName+File.separator;

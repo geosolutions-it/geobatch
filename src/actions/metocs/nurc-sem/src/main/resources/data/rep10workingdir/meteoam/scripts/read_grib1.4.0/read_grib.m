@@ -181,8 +181,8 @@ else
 end
 
 first4octets=fread(fid,4);
-if ScreenDiag,
-disp(char(first4octets'));,end
+%  if ScreenDiag,
+%  disp(char(first4octets'));,end
 
 %  if inventory_flag
 %     inventory_str=sprintf('###################################################\n');
@@ -217,7 +217,7 @@ while ~isempty(first4octets)
    oct1to4=char(first4octets');
 
    % Make sure first 4 octets are "GRIB"
-   if ~strcmp(oct1to4,'GRIB')
+   if ~strcmp(oct1to4,'GRIB');
    
       % scanning for next grib marker
       iret=find_grib_marker(fid,ScreenDiag);

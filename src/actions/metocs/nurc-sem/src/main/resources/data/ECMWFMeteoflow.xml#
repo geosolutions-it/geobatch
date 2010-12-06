@@ -99,6 +99,7 @@
 		
 		<MetocActionConfiguration>
 			<workingDirectory>rep10workingdir/meteoam/ecmwf/meteo/nc/</workingDirectory>
+			<flipY>true</flipY>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
