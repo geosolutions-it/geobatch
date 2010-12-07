@@ -50,8 +50,7 @@ diff=(datenum(1980,1,1)-datenum(1968,5,23));
 % calculate seconds
 diff=diff*3600*24;
 % getting time (shifted)
-time=nc{'ocean_time'}(:)-(diff);
-
+t=nc{'ocean_time'}(:)-(diff);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % START WRITING: out_file
@@ -61,9 +60,9 @@ time=nc{'ocean_time'}(:)-(diff);
 nc_out=netcdf(out_file,'c');
 
 % global attributes
-nc_out._FillValue= ncfloat(1.0e+37);
-nc_out.nodata= ncfloat(1.0e+37);
-nc_out.base_time=[datestr(datenum(1900,1,1)+datenum(0,0,0,0,0,time(1)),"yyyymmddTHHMMSS"),'000Z'];;
+nc_out._FillValue= ncfloat(1.0e37);
+nc_out.nodata= ncfloat(1.0e37);
+nc_out.base_time=[datestr(datenum(1980,1,1)+datenum(0,0,0,0,0,t(1)),"yyyymmddTHHMMSS"),'000Z'];
 % Preamble.
 nc_out.type = 'ROMS';
 nc_out.title='ROMS';
@@ -71,11 +70,11 @@ nc_out.author = 'Carlo Cancellieri, carlo.cancellieri@geo-solutions.it';
 nc_out.date = datestr(now);
 
 %write time
-write_time(nc_out, time);
+write_time(nc_out, t);
 
-if (length(time)>1)
+if (length(t)>1)
   % TAU is in hour(s)
-  nc_out.tau=int64((time(2)-time(1))/3600);
+  nc_out.tau=int64((t(2)-t(1))/3600);
 else
   nc_out.tau=0;
 end
@@ -148,16 +147,29 @@ write_lon(nc_out, lon_i);
 %size(dep3d)
 %size(TEMP(:,:,:,:))
 
-nc_out{'wattemp'}=ncfloat('time','depth','latitude','longitude');
+nc_out{'wattemp'}=ncfloat('time','depth','lat','lon');
 nc_out{'wattemp'}.long_name='water temperature';
 nc_out{'wattemp'}.units='cel';
-nc_out{'wattemp'}.FillValue_= ncfloat(1.0E37);
-nc_out{'wattemp'}.nodata= ncfloat(1.0E37);
+nc_out{'wattemp'}.missing_value= ncfloat(1.0e37);
+nc_out{'wattemp'}.FillValue_= ncfloat(1.0e37);
 % for each time slice
 for tk=1:length(time)
 	
 	grd=roms_get_grid(in_file,in_file,tk); % do not activate ZETA
-	T = squeeze(nc{'temp'}(tk,:,:,:));
+	T=nc{'temp'}(tk,:,:,:);
+	T(T>1.0e+36)=NaN;
+	T=squeeze(T);
+% this is slower
+%  	for td=1:length(depth)
+%  	  for tlat=1:length(lat_i)
+%  	    for tlon=1:length(lon_i)
+%  	      T(td,tlat,tlon)=nc{'temp'}(tk,td,tlat,tlon);
+%  	      if (T(td,tlat,tlon)>1.0e+36)
+%  		T(td,tlat,tlon)=NaN;
+%  	      end
+%  	    end
+%  	  end
+%  	end
 	
 %TODO A BETTER INTERPOLATION MESHGRID NOT USING roms_get_grid matrices
 	
@@ -167,15 +179,17 @@ for tk=1:length(time)
 %	T=squeeze(TEMP(tk,:,:,:));
 
 	
-	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,"linear",1.0E37);
+	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,'linear',1.0e37);
+	T(isnan(T))=1.0e37;
 	% write to netcdf adding a time slice per cycle
-	nc_out{'wattemp'}(tk,:,:,:)=T;
+	nc_out{'wattemp'}(tk,:,:,:)=T(:,:,:);
 	
 	%debug
 	%TEMP
 end
 %clear
-clear TEMP;
+clear T;
+%  clear TEMP;
 % if temp or sal           
 %strdepth='z_r';
 % eval(['dep3d=grdroms.' strdepth ';']);
@@ -188,20 +202,21 @@ clear TEMP;
 %dep3d=grdroms.z_r;
 
 % for each time slice
-nc_out{'salt'}=ncfloat('time','depth','latitude','longitude');
+nc_out{'salt'}=ncfloat('time','depth','lat','lon');
 nc_out{'salt'}.long_name='salinity';
 nc_out{'salt'}.units='psu';
-nc_out{'salt'}.FillValue_= ncfloat(1.0E37);
-nc_out{'salt'}.nodata= ncfloat(1.0E37);
+nc_out{'salt'}.missing_value= ncfloat(1.0e37);
+nc_out{'salt'}.FillValue_= ncfloat(1.0e37);
 for tk=1:length(time)
 	grd=roms_get_grid(in_file,in_file,tk); % do not activate ZETA
 	T=squeeze(nc{'salt'}(tk,:,:,:));
+	T(T>=1.0e+36)=NaN;
 %	SAL(1,:,:,:)=roms_interp(depth,grd.lon_rho(1,:),grd.lat_rho(:,1),grdroms.z_r,SAL(1,:,:,:));
 
 	[X,Y,Z]=meshgrid(grd.lat_rho(:,1),grd.z_r(:,1,1),grd.lon_rho(1,:));
-	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,"linear",1.0E37);
-	
-	nc_out{'salt'}(tk,:,:,:)=T;
+	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,'linear',1.0e37);
+	T(isnan(T))=1.0e37;
+	nc_out{'salt'}(tk,:,:,:)=T(:,:,:);
 	%debug
 	%T
 end
@@ -212,11 +227,11 @@ clear T;
 %%%%%% water component u				%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % if u or v lat_u ...
-nc_out{'watvel-u'}=ncfloat('time','depth','latitude','longitude');
+nc_out{'watvel-u'}=ncfloat('time','depth','lat','lon');
 nc_out{'watvel-u'}.long_name='water velocity u-component';
 nc_out{'watvel-u'}.units='m/s';
-nc_out{'watvel-u'}.FillValue_= ncfloat(1.0E37);
-nc_out{'watvel-u'}.nodata= ncfloat(1.0E37);
+nc_out{'watvel-u'}.missing_value= ncfloat(1.0e37);
+nc_out{'watvel-u'}.FillValue_= ncfloat(1.0e37);
 for tk=1:length(time)
 
 	grd=roms_get_grid(in_file,in_file,tk,1);
@@ -226,13 +241,13 @@ for tk=1:length(time)
 	
 	T =squeeze(nc{'u'}(tk,:,:,:));
 %	U(1,:,:,:)=roms_interp(depth,grd.lon_u(1,:),grd.lat_u(:,1),dep3d,U(1,:,:,:));
-
+	T(T>=1.0e+36)=NaN;
 	[X,Y,Z]=meshgrid(grd.lat_u(:,1),grd.z_u(:,1,1),grd.lon_u(1,:));
 %	T=squeeze(U(tk,:,:,:));
 
-	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,"linear",1.0E37);
-	
-	nc_out{'watvel-u'}(tk,:,:,:)=T;
+	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,'linear',1.0e37);
+	T(isnan(T))=1.0e37;
+	nc_out{'watvel-u'}(tk,:,:,:)=T(:,:,:);
 	%debug
 	%T
 end
@@ -245,23 +260,24 @@ clear T;
 % if u or v lat_u ...
 % strdepth='z_v'; if v
 
-nc_out{'watvel-v'}=ncfloat('time','depth','latitude','longitude');
+nc_out{'watvel-v'}=ncfloat('time','depth','lat','lon');
 nc_out{'watvel-v'}.long_name='water velocity v-component';
 nc_out{'watvel-v'}.units='m/s';
-nc_out{'watvel-v'}.FillValue_= ncfloat(1.0E37);
-nc_out{'watvel-v'}.nodata= ncfloat(1.0E37);
+nc_out{'watvel-v'}.missing_value= ncfloat(1.0e37);
+nc_out{'watvel-v'}.FillValue_= ncfloat(1.0e37);
 for tk=1:length(time)
 
 	grd=roms_get_grid(in_file,in_file,tk,1);
 %	lon=grdroms.lon_v(1,:);
 %	lat=grdroms.lat_v(:,1);
 %	dep3d=grdroms.z_v;
-	
 	T=squeeze(nc{'v'}(tk,:,:,:));
+	T(T>=1.0e+36)=NaN;
 %	V(1,:,:,:)=roms_interp(depth,grd.lon_v(1,:),grd.lat_v(:,1),dep3d,V(1,:,:,:));
 	[X,Y,Z]=meshgrid(grd.lat_v(:,1),grd.z_v(:,1,1),grd.lon_v(1,:));
-	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,"linear",1.0E37);
-	nc_out{'watvel-v'}(tk,:,:,:)=T;
+	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,'linear',1.0e37);
+	T(isnan(T))=1.0e37;
+	nc_out{'watvel-v'}(tk,:,:,:)=T(:,:,:);
 	%debug
 	%T
 end
@@ -275,13 +291,13 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % time
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function write_time(nc_out, time)
-nc_out('time') = length(time);
+function write_time(nc_out, t)
+nc_out('time') = length(t);
 nc_out{'time'} = ncdouble('time');
-nc_out{'time'}(:) = int64(time);
+nc_out{'time'}(:) = int64(t(:));
 nc_out{'time'}.long_name='time';
 nc_out{'time'}.units = 'seconds since 1980-1-1 0:0:0';
-nc_out{'time'}.time_origin = int64(time(1));
+nc_out{'time'}.time_origin = int64(t(1));
 end
 
 
