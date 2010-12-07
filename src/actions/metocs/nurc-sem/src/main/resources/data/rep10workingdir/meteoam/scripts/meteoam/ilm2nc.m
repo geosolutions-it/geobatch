@@ -239,8 +239,7 @@ function ilm2nc(ddir,ncfile)
       f{'airtemp'}.coordinates='lat lon';
 
       f{'relhum'}=ncfloat('time','lat','lon');
-%      f{'relhum'}.units = '%';
-      f{'relhum'}.units = '%25';
+      f{'relhum'}.units = '%';
       f{'relhum'}.long_name = 'relative humidity';
       f{'relhum'}.missing_value = ncfloat(1.e35);
       f{'relhum'}.FillValue_=ncfloat(1.e35);

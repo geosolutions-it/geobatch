@@ -213,9 +213,7 @@ function ecmwf_meteo2nc(ddir,ncfile)
       f{'airtemp'}.coordinates='lat lon';
 % HUM
       f{'relhum'}=ncfloat('time','lat','lon');
-%TODO (how to convert from % to %25???)
-      f{'relhum'}.units = '%25';
-%---> %f{'relhum'}.units = '%';
+      f{'relhum'}.units = '%';
 
       f{'relhum'}.long_name = 'relative humidity';%Relative Humidity at 2 m';
       f{'relhum'}.missing_value = ncfloat(1.e35);

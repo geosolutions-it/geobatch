@@ -133,13 +133,13 @@ function ecmwf_wave2nc(ddir,ncfile)
 
       % Meteo Fields
       %f{'Hwave'}=ncfloat('time','lat','lon');
-      f{'hs'}=ncfloat('time','lat','lon');
-      f{'hs'}.units = 'm';
-      f{'hs'}.missing_value = ncfloat(1.e35);
-      f{'hs'}.FillValue_=ncfloat(1.e35);
-      f{'hs'}.long_name='sea surface swell wave significant height';
+      f{'sigwavheight'}=ncfloat('time','lat','lon');
+      f{'sigwavheight'}.units = 'm';
+      f{'sigwavheight'}.missing_value = ncfloat(1.e35);
+      f{'sigwavheight'}.FillValue_=ncfloat(1.e35);
+      f{'sigwavheight'}.long_name='significant wave height';
       %f{'Hwave'}.long_name='Significant Wave Heigth';
-      f{'hs'}.coordinates='lat lon';
+      f{'sigwavheight'}.coordinates='lat lon';
 
 % UNUSED
       %f{'Dwave'}=ncfloat('time','lat','lon');
@@ -200,7 +200,7 @@ function ecmwf_wave2nc(ddir,ncfile)
       clear fist_time;
     end %if
 
-    f{'hs'}(nn,:,:)=ru'; 
+    f{'sigwavheight'}(nn,:,:)=ru'; 
     f{'meanwavdir'}(nn,:,:)=rv';
     f{'meanwavperiod'}(nn,:,:)=e.';
     f{'time'}(nn)=int64(seconds);%jd-2440000;

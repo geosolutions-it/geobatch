@@ -136,13 +136,13 @@ function nettuno2nc(ddir,ncfile)
       f{'lon'}.units = 'degrees_east';
       f{'lon'}(:)=rlon;%alon;
 
-      f{'hs'}=ncfloat('time','lat','lon');
-      f{'hs'}.units = 'm';
-      f{'hs'}.FillValue_= ncfloat(1.e35);
-      f{'hs'}.missing_value = ncfloat(1.e35);
-      f{'hs'}.long_name='sea surface swell wave significant height';
+      f{'sigwavheight'}=ncfloat('time','lat','lon');
+      f{'sigwavheight'}.units = 'm';
+      f{'sigwavheight'}.FillValue_= ncfloat(1.e35);
+      f{'sigwavheight'}.missing_value = ncfloat(1.e35);
+      f{'sigwavheight'}.long_name='significant wave height';
       %f{'Hwave'}.long_name='Significant Wave Heigth';
-      f{'hs'}.coordinates='lat lon';
+      f{'sigwavheight'}.coordinates='lat lon';
 
       f{'meanwavdir'}=ncfloat('time','lat','lon');
       f{'meanwavdir'}.units = 'deg';
@@ -210,7 +210,7 @@ function nettuno2nc(ddir,ncfile)
       clear fist_time;
     end
 
-    f{'hs'}(nn,:,:)=ru';
+    f{'sigwavheight'}(nn,:,:)=ru';
     f{'meanwavdir'}(nn,:,:)=rv';
     f{'meanwavperiod'}(nn,:,:)=e.';
     % this fix a problem of precision writing times into netCDF

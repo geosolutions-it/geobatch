@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<id>SHOMFlow</id>
+	<description>SHOMFlow</description>
+	<name>SHOMFlow</name>
+	
+	<workingDirectory>SHOMworkingdir/</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*</wildCard>
+		<watchDirectory>SHOMworkingdir/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>SHOMFlow</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		<id>shom</id>
+		<description>shom</description>
+		<name>shom</name>
+		
+		<workingDirectory>SHOMworkingdir/</workingDirectory>
+		<performBackup>false</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+		
+		<ShomConfiguration>
+			<id>a1</id>
+			<description>description2</description>
+			<name>test2</name>
+			<serviceID>SHOMGeneratorService</serviceID>
+			<workingDirectory>SHOMworkingdir/</workingDirectory>
+		</ShomConfiguration>
+		
+		<MetocActionConfiguration>
+			<workingDirectory>SHOMworkingdir/</workingDirectory>
+			<flipY>false</flipY>
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
+			<metocHarvesterXMLTemplatePath>registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
+			<serviceID>NetCDFCFGeodetic2GeoTIFFsGeneratorService</serviceID>
+			<id>a2</id>
+			<description>description2</description>
+			<name>test2</name>
+		</MetocActionConfiguration>
+		
+		<ImageMosaicActionConfiguration>
+			<workingDirectory>SHOMworkingdir/</workingDirectory>
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<dataTransferMethod>EXTERNAL</dataTransferMethod>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<wmsPath>/</wmsPath>
+			<defaultNamespace>nurc</defaultNamespace>
+			<defaultStyle>raster</defaultStyle>
+			<styles/>
+			<datastorePropertiesPath>registry_work/config/NURC-2010/datastore.properties</datastorePropertiesPath>
+			<timeRegex>[0-9]{8}T[0-9]{9}Z(?!.*[0-9]{8}T[0-9]{9}Z.*)</timeRegex>
+			<elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>
+			<serviceID>ImageMosaicGeneratorService</serviceID>
+			<id>ImageMosaicService</id>
+			<description>ImageMosaicService</description>
+			<name>ImageMosaicService</name>
+		</ImageMosaicActionConfiguration>
+		
+		<RegistryActionConfiguration>
+			<workingDirectory>SHOMworkingdir/</workingDirectory>
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<dataTransferMethod>DIRECT</dataTransferMethod>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<registryURL>http://localhost:8080/nurccatalogue/webservice</registryURL>
+			<providerURL>http://localhost:8080/geobatch/rest/publish</providerURL>
+			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
+			<metocHarvesterXMLTemplatePath>registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
+			<wmsPath>/</wmsPath>
+			<defaultNamespace>nurc</defaultNamespace>
+			<defaultStyle>raster</defaultStyle>
+			<styles/>
+			<serviceID>RegistryHarvestingGeneratorService</serviceID>
+			<id>a3</id>
+			<description>description3</description>
+			<name>test3</name>
+		</RegistryActionConfiguration>
+		
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>
