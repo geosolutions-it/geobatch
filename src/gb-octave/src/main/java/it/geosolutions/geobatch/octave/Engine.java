@@ -43,7 +43,7 @@ import dk.ange.octave.type.OctaveString;
  */
 public class Engine{
     
-    private final static int TIME_TO_WAIT = 10*60; // in seconds == 10 min
+    private final static int TIME_TO_WAIT = 100*60; // in seconds == 100 min
     private Lock lock=null;
     
     private final static Logger LOGGER = Logger.getLogger(Engine.class.toString());
