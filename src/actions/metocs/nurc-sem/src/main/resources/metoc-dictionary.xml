@@ -2,10 +2,6 @@
 <metocs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xmlns="http://www.nurc.nato.int/metocs" 
     xsi:schemaLocation="http://www.nurc.nato.int/metocs metoc-dictionary.xsd">
-	<metoc defaultUom="urn:ogc:def:uom:UCUM::K" type="meteo">
-		<name>air tempurature</name>
-		<brief>airtemp</brief>
-	</metoc>
 	<metoc defaultUom="dimensionless" type="meteo">
 		<name>land or sea</name>
 		<brief>mask</brief>
@@ -14,14 +10,45 @@
 		<name>lowcloud</name>
 		<brief>lowcloud</brief>
 	</metoc>
-	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
-		<name>longwave (ir) radiation</name>
-		<brief>longwavrad</brief>
+	
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::K" type="meteo">
+		<name>air tempurature</name>
+		<brief>airtemp</brief>
 	</metoc>
 	<metoc defaultUom="urn:ogc:def:uom:UCUM::%25" type="meteo">
 		<name>relative humidity</name>
 		<brief>relhum</brief>
 	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m/s" type="meteo">
+		<name>wind velocity v-component</name>
+		<brief>windvel-v</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::m/s" type="meteo">
+		<name>wind velocity u-component</name>
+		<brief>windvel-u</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::N.m2" type="meteo">
+		<name>wind stress u-component</name>
+		<brief>windstress-u</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::N.m2" type="meteo">
+		<name>wind stress v-component</name>
+		<brief>windstress-v</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::N.m2" type="meteo">
+		<name>wind stress magnitude</name>
+		<brief>windstress-mag</brief>
+	</metoc>
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::deg" type="meteo">
+		<name>wind stress direction</name>
+		<brief>windstress-dir</brief>
+	</metoc>
+	
+	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
+		<name>longwave (ir) radiation</name>
+		<brief>longwavrad</brief>
+	</metoc>
+	
 	<metoc defaultUom="urn:ogc:def:uom:UCUM::K" type="meteo">
 		<name>sea surface temperature</name>
 		<brief>sst</brief>
@@ -49,22 +76,6 @@
 	<metoc defaultUom="urn:ogc:def:uom:UCUM::W.m2" type="meteo">
 		<name>short wave radiation</name>
 		<brief>shortwavrad</brief>
-	</metoc>
-	<metoc defaultUom="urn:ogc:def:uom:UCUM::N.m2" type="meteo">
-		<name>wind stress u-component</name>
-		<brief>windstress-u</brief>
-	</metoc>
-	<metoc defaultUom="urn:ogc:def:uom:UCUM::N.m2" type="meteo">
-		<name>wind stress v-component</name>
-		<brief>windstress-v</brief>
-	</metoc>
-	<metoc defaultUom="urn:ogc:def:uom:UCUM::N.m2" type="meteo">
-		<name>wind stress magnitude</name>
-		<brief>windstress-mag</brief>
-	</metoc>
-	<metoc defaultUom="urn:ogc:def:uom:UCUM::deg" type="meteo">
-		<name>wind stress direction</name>
-		<brief>windstress-dir</brief>
 	</metoc>
 	<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="meteo">
 		<name>terrain height</name>

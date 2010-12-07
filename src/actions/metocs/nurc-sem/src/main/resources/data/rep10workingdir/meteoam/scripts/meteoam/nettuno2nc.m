@@ -192,11 +192,11 @@ function nettuno2nc(ddir,ncfile)
     %nn
 
     ru=reshape(ut.fltarray,ut.gds.Ni,ut.gds.Nj);
-ru(ru==0)=1e35;
+%ru(ru==0)=1e35;
     rv=reshape(vt.fltarray,vt.gds.Ni,vt.gds.Nj);
-rv(rv==0)=1e35;
+%rv(rv==0)=1e35;
     e=reshape(et.fltarray,et.gds.Ni,et.gds.Nj);
-e(e==0)=1e35;
+%e(e==0)=1e35;
 %    d=reshape(dt.fltarray,dt.gds.Ni,dt.gds.Nj); UNUSED
 
   % writing

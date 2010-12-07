@@ -188,19 +188,19 @@ function ecmwf_meteo2nc(ddir,ncfile)
       % Meteo Fields
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % U
-      f{'U10'}=ncfloat('time','lat','lon');
-      f{'U10'}.units = 'm/s';
-      f{'U10'}.missing_value = ncfloat(1.e35);
-      f{'U10'}.FillValue_=ncfloat(1.e35);
-      f{'U10'}.long_name='zonal wind';
-      f{'U10'}.coordinates='lat lon';
+      f{'windvel-u'}=ncfloat('time','lat','lon');
+      f{'windvel-u'}.units = 'm/s';
+      f{'windvel-u'}.missing_value = ncfloat(1.e35);
+      f{'windvel-u'}.FillValue_=ncfloat(1.e35);
+      f{'windvel-u'}.long_name='wind velocity u-component';
+      f{'windvel-u'}.coordinates='lat lon';
 % V
-      f{'V10'}=ncfloat('time','lat','lon');
-      f{'V10'}.units = 'm/s';
-      f{'V10'}.missing_value = ncfloat(1.e35);
-      f{'V10'}.FillValue_=ncfloat(1.e35);
-      f{'V10'}.long_name='meridional wind';
-      f{'V10'}.coordinates='lat lon';
+      f{'windvel-v'}=ncfloat('time','lat','lon');
+      f{'windvel-v'}.units = 'm/s';
+      f{'windvel-v'}.missing_value = ncfloat(1.e35);
+      f{'windvel-v'}.FillValue_=ncfloat(1.e35);
+      f{'windvel-v'}.long_name='wind velocity v-component';
+      f{'windvel-v'}.coordinates='lat lon';
 % TEMP
       %f{'atemp'}=ncfloat('time','lat','lon');
       f{'airtemp'}=ncfloat('time','lat','lon');
@@ -298,8 +298,8 @@ function ecmwf_meteo2nc(ddir,ncfile)
     end
 
     f{'time'}(nn)=int64(seconds);%jd-2440000;
-    f{'U10'}(nn,:,:)=ru';
-    f{'V10'}(nn,:,:)=rv';
+    f{'windvel-u'}(nn,:,:)=ru';
+    f{'windvel-v'}(nn,:,:)=rv';
     f{'airtemp'}(nn,:,:)=e.';
     f{'relhum'}(nn,:,:)=(qsat(dc.')./qsat(ec.'))*100;   % rel humidity calc
 

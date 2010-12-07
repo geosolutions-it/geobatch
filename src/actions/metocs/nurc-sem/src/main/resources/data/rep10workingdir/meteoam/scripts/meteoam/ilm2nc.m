@@ -216,19 +216,19 @@ function ilm2nc(ddir,ncfile)
       f{'time'}.units=('seconds since 1980-1-1 0:0:0');
       f{'time'}.time_origin = [datestr(datenum(1980,1,1),"yyyymmddTHHMMSS"),'000Z'];
 
-      f{'U10'}=ncfloat('time','lat','lon');
-      f{'U10'}.units = 'm/s';
-      f{'U10'}.missing_value = ncfloat(1.e35);
-      f{'U10'}.FillValue_=ncfloat(1.e35);
-      f{'U10'}.long_name='zonal wind';
-      f{'U10'}.coordinates='lat lon';
+      f{'windvel-u'}=ncfloat('time','lat','lon');
+      f{'windvel-u'}.units = 'm/s';
+      f{'windvel-u'}.missing_value = ncfloat(1.e35);
+      f{'windvel-u'}.FillValue_=ncfloat(1.e35);
+      f{'windvel-u'}.long_name='wind velocity u-component';
+      f{'windvel-u'}.coordinates='lat lon';
 
-      f{'V10'}=ncfloat('time','lat','lon');
-      f{'V10'}.units = 'm/s';
-      f{'V10'}.missing_value = ncfloat(1.e35);
-      f{'V10'}.FillValue_=ncfloat(1.e35);
-      f{'V10'}.long_name='meridional wind';
-      f{'V10'}.coordinates='lat lon';
+      f{'windvel-v'}=ncfloat('time','lat','lon');
+      f{'windvel-v'}.units = 'm/s';
+      f{'windvel-v'}.missing_value = ncfloat(1.e35);
+      f{'windvel-v'}.FillValue_=ncfloat(1.e35);
+      f{'windvel-v'}.long_name='wind velocity v-component';
+      f{'windvel-v'}.coordinates='lat lon';
 
       f{'airtemp'}=ncfloat('time','lat','lon');
       f{'airtemp'}.units = 'K';
@@ -340,8 +340,8 @@ function ilm2nc(ddir,ncfile)
     end
   
   
-    f{'U10'}(ntimes,:,:)=interp2(alon,alat,real(www),rlon,rlat,'linear',1.e35);
-    f{'V10'}(ntimes,:,:)=interp2(alon,alat,imag(www),rlon,rlat,'linear',1.e35);
+    f{'windvel-u'}(ntimes,:,:)=interp2(alon,alat,real(www),rlon,rlat,'linear',1.e35);
+    f{'windvel-v'}(ntimes,:,:)=interp2(alon,alat,imag(www),rlon,rlat,'linear',1.e35);
     f{'airtemp'}(ntimes,:,:)=interp2(alon,alat,e.',rlon,rlat,'linear',1.e35);
     f{'relhum'}(ntimes,:,:)=interp2(alon,alat,((qsat(dc.')./qsat(ec.'))*100),rlon,rlat,'linear',1.e35);   % rel humidity calc
     
