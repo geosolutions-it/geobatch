@@ -27,6 +27,8 @@ import org.apache.tools.tar.TarInputStream;
 public final class Files {
     private final static Logger LOGGER = Logger.getLogger(Files.class.toString());
     
+    private static int BUFFER_SIZE=1024*8*100; //100 Kbyte
+    
     /**
      * Extract a BZ2 file to a tar
      * @param in_file the input bz2 file to extract
@@ -50,7 +52,7 @@ public final class Files {
                 throw new BuildException("Invalid bz2 file: "+in_file.getAbsolutePath());
             }
             zIn = new CBZip2InputStream(bis);
-            byte[] buffer = new byte[8 * 1024];
+            byte[] buffer = new byte[BUFFER_SIZE];
             int count = 0;
             do {
                 out.write(buffer, 0, count);
@@ -80,16 +82,15 @@ public final class Files {
         try {
             out = new FileOutputStream(out_file);
             fis = new FileInputStream(in_file);
-            bis = new BufferedInputStream(fis);
+            bis = new BufferedInputStream(fis,BUFFER_SIZE);
             zIn = new GZIPInputStream(bis);
-            byte[] buffer = new byte[8 * 1024];
+            byte[] buffer = new byte[BUFFER_SIZE];
             int count = 0;
-            do {
+            while ((count = zIn.read(buffer, 0, BUFFER_SIZE))!=-1){
                 out.write(buffer, 0, count);
-                count = zIn.read(buffer, 0, buffer.length);
-            } while (count != -1);
+            }
         } catch (IOException ioe) {
-            String msg = "Problem expanding Gzip " + ioe.getMessage();
+            String msg = "Problem uncompressing Gzip " + ioe.getMessage();
             throw new BuildException(msg+in_file.getAbsolutePath());
         } finally {
             FileUtils.close(bis);
@@ -100,9 +101,11 @@ public final class Files {
     }
     
     /**
-     * A method to read tar file
+     * A method to read tar file:
+     * extract its content to the 'dest' file (which could be
+     * a directory or a file depending on the srcF file content)
      */
-    protected static void readTar(File srcF, File dir) {
+    protected static void readTar(File srcF, File dest) {
         
         FileInputStream fis = null;
         TarInputStream tis = null;
@@ -110,28 +113,56 @@ public final class Files {
             fis = new FileInputStream(srcF);
             tis = new TarInputStream(new BufferedInputStream(fis));
             TarEntry te = null;
+            
+            // actual output file name
+            File curr_dest=null;
+            
             while ((te = tis.getNextEntry()) != null) {
-                if (te.isDirectory()) {
-                    // Assume directories are stored parents first then
-                    // children.
-                    (new File(dir, te.getName())).mkdir();
+                /*
+                 * check if the first file name in the tar 
+                 * is the same as the 'dest' one, if so,
+                 * it could be a single file.
+                 * Otherwise it's a directory.
+                 */
+                if (te.getName().compareTo(dest.getName())!=0){
+                    if (!dest.isDirectory())
+                        dest.mkdir();
+                    curr_dest=new File(dest,te.getName());
                 }
                 else {
-                    int size=(int) te.getSize();
-                    byte[] buf = new byte[size];
-                    File newFile = new File(dir, te.getName());
-                    BufferedOutputStream bos_inner=new BufferedOutputStream(
-                            new FileOutputStream(newFile),size);
-                    while ((size = tis.read(buf)) >= 0){
-                        bos_inner.write(buf, 0, size);
+                    curr_dest=dest;
+                }
+                    
+                /*
+                 * if content file is a sub dir dest is
+                 * a directory containing subdirs 
+                 */
+                if (te.isDirectory()) {
+                    if (!dest.isDirectory())
+                        dest.mkdir();
+                    /*
+                     * Assume directories are stored parents first then
+                     * children.
+                     */ 
+                    (curr_dest=new File(dest,te.getName())).mkdir();
+                }
+                
+                if (curr_dest!=null){
+                    byte[] buf = new byte[BUFFER_SIZE];
+                    BufferedOutputStream bos_inner=
+                        new BufferedOutputStream(new FileOutputStream(curr_dest),BUFFER_SIZE);
+                    int read_sz=0;
+                    while ((read_sz=tis.read(buf))!=-1){
+                        bos_inner.write(buf, 0, read_sz);
                     }
                     bos_inner.flush();
                     bos_inner.close();
+                    curr_dest=null;
                 }
             }
         } catch (IOException ioe) {
-            ioe.printStackTrace();
-            throw new BuildException("Error while expanding " + srcF.getPath());
+            throw new BuildException("Error while expanding " + srcF.getPath()+
+                    "\nMessage is: "+ioe.getLocalizedMessage());
         } finally {
             FileUtils.close(tis);
             if (tis == null) {
@@ -220,10 +251,8 @@ public final class Files {
                     LOGGER.info("Input file is a tar file.");
                 
                 // preparing path to extract to
-                end_name=fileName+File.separator;
+                end_name=fileName;
                 end_file=new File(end_name);
-                // make the output dir
-                end_file.mkdir();
                 
                 // read the tar file into the dir
                 readTar(in_file,end_file);
@@ -242,17 +271,15 @@ public final class Files {
                 File tar_file=new File(fileName+".tar");
                 // uncompress BZ2 to the tar file
                 extractBz2(in_file,tar_file);
-    
-                // preparing path to extract to
-                end_name=fileName+File.separator;
-                end_file=new File(end_name);
-                // make the output dir
-                end_file.mkdir();
                 
                 if(LOGGER.isLoggable(Level.INFO)) {
                     LOGGER.info("BZ2 uncompressed to "+tar_file.getAbsolutePath());
                     LOGGER.info("Untarring...");
                 }
+                
+                // preparing path to extract to
+                end_name=fileName;
+                end_file=new File(end_name);
                 
                 // read the tar file into the dir
                 readTar(tar_file,end_file);
@@ -266,22 +293,20 @@ public final class Files {
                 // filename
                 String fileName=m.group(1);
                 if(LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("Input file is a BZ2 compressed file.");
+                    LOGGER.info("Input file is a Gz compressed file.");
                 // the de_compressor output file  
                 File tar_file=new File(fileName+".tar");
                 // uncompress BZ2 to the tar file
                 extractGzip(in_file,tar_file);
     
-                // preparing path to extract to
-                end_name=fileName+File.separator;
-                end_file=new File(end_name);
-                // make the output dir
-                end_file.mkdir();
-                
                 if(LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.info("BZ2 uncompressed to "+tar_file.getAbsolutePath());
+                    LOGGER.info("GZ uncompressed to "+tar_file.getAbsolutePath());
                     LOGGER.info("Untarring...");
                 }
+
+                // preparing path to extract to
+                end_name=fileName;
+                end_file=new File(end_name);
                 
                 // read the tar file into the dir
                 readTar(tar_file,end_file);
@@ -299,10 +324,8 @@ public final class Files {
                     LOGGER.info("Input file is a ZIP compressed file. UnZipping...");
                 
                 // preparing path to extract to
-                end_name=fileName+File.separator;
+                end_name=fileName;
                 end_file=new File(end_name);
-                // make the output dir
-                end_file.mkdir();
                 
                 //run the unzip method
                 IOUtils.unzipFlat(in_file,end_file);
@@ -310,6 +333,8 @@ public final class Files {
             else
                 throw new Exception("File do not match regular expression");
         } // endif gzip or zip
+        else if (type.compareTo("x-bzip")==0)
+            throw new Exception("bzip format file still not supported! Please try using bz2, gzip or zip");
         else {
             if(LOGGER.isLoggable(Level.INFO))
                 LOGGER.info("Working on a not compressed file.");

@@ -35,7 +35,7 @@ function nettuno2nc(ddir,ncfile)
       hr=num2str(ntimes);
     end
     
-    gfile  = [ddir,'NETTUNO_',hr,'.grb'];
+    gfile  = [ddir,'/NETTUNO_',hr,'.grb'];
 
     % grab data
     uhdr=read_grib(gfile,{'SNOHF'},1,0,0);      % H sig

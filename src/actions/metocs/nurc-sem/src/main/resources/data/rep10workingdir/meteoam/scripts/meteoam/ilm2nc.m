@@ -27,12 +27,12 @@ function ilm2nc(ddir,ncfile)
   pole_lat=43; 
 
   % processing all grib file
-  filelist = dir([ddir,'ILM_','*','.grb']);
+  filelist = dir([ddir,'/ILM_','*','.grb']);
   %nn=0;
   maxntimes=length({filelist(:).name});
   for ntimes=1:1:maxntimes;
     %nn=nn+1;
-    gfile = [ddir,'/',filelist(ntimes).name]
+    gfile = [ddir,'/',filelist(ntimes).name];
 
 %    deltantimes=1; maxntimes=24; % mystr=[base,'_']; % mystr='12_';
 %    nn=0;

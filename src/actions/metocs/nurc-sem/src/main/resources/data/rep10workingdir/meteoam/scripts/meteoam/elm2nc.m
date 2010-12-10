@@ -28,12 +28,12 @@ function elm2nc(ddir,ncfile)
   pole_lat=43; 
 
   % processing all grib file
-  filelist = dir([ddir,'ELM_','*','.grb']);
+  filelist = dir([ddir,'/ELM_','*','.grb']);
 
   maxntimes=length({filelist(:).name});
   for ntimes=1:1:maxntimes;
     
-    gfile = [ddir,'/',filelist(ntimes).name]
+    gfile = [ddir,'/',filelist(ntimes).name];
   % processing grib file forecast by forecast
 %    deltantimes=1; maxntimes=72; mystr=[base,'_'];
 %  
