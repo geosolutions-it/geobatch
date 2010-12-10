@@ -92,10 +92,14 @@ grd=roms_get_grid(in_file,in_file,1,1); % activate ZETA
 % dept is a fixed vector
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %depth=[2 5 linspace(10,2500,30)];
-depth=linspace(
-		-(max(max(max(grd.z_r(:,1,1)),max(grd.z_u(:,1,1))),max(grd.z_v(:,1,1)))),		%stop
-		-(min(min(min(grd.z_r(:,1,1)),min(grd.z_u(:,1,1))),min(grd.z_v(:,1,1)))),		%start
-		max(max(length(grd.z_r(:,1,1)),length(grd.z_u(:,1,1))),length(grd.z_v(:,1,1)))); 	%size
+depth=[2 5 (10:10:200) 250 300 500 1500 2000 2500];
+
+% THIS IS WORKING ANYWAY WE WANT TO FIX DEPTH FOR ALL THE 
+% OUTGOING MODULES
+%  depth=linspace(
+%  		-(max(max(max(grd.z_r(:,1,1)),max(grd.z_u(:,1,1))),max(grd.z_v(:,1,1)))),		%stop
+%  		-(min(min(min(grd.z_r(:,1,1)),min(grd.z_u(:,1,1))),min(grd.z_v(:,1,1)))),		%start
+%  		max(max(length(grd.z_r(:,1,1)),length(grd.z_u(:,1,1))),length(grd.z_v(:,1,1)))); 	%size
 %write depth
 write_depth(nc_out, depth);
 
