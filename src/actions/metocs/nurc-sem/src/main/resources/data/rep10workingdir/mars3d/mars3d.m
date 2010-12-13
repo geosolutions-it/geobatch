@@ -73,13 +73,16 @@ nc_out=netcdf(out_file,'c');
 % depth (note depth are positives)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % defining depth:
-%depth=[2 5 (10:10:200) 250 300 500 1500 2000 2500];
-min_depth=min(min(-dep3d(:,:,1)));
-% minimum depth is set to 1m
-if min_depth<1
-  min_depth=1;
+depth=[2 5 (10:10:200) 250 300 500 1500 2000 2500];
 
-depth=linspace(min_depth,max(max(-dep3d(:,:,1))),length(SIG));
+% THIS IS WORKING ANYWAY WE WANT TO FIX DEPTH FOR ALL THE 
+% OUTGOING MODULES
+%  min_depth=min(min(-dep3d(:,:,1)));
+%  % minimum depth is set to 1m
+%  if min_depth<1
+%    min_depth=1;
+%  
+%  depth=linspace(min_depth,max(max(-dep3d(:,:,1))),length(SIG));
 
 % clear no more used variables
 clear SIG;
