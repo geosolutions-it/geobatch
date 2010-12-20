@@ -2,7 +2,7 @@ package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
 import it.geosolutions.geobatch.octave.tools.file.processor.FilterConfiguration;
 
-public class SHOMConfiguration extends FilterConfiguration{
+public class SHOMConfiguration extends FilterConfiguration {
 
     //MENOR,MED
     private String type=null;
