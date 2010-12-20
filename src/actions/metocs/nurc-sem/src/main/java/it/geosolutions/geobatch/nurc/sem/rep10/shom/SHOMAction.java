@@ -29,7 +29,6 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.metocs.base.NetcdfEvent;
 import it.geosolutions.geobatch.octave.tools.file.Extractor;
-import it.geosolutions.geobatch.octave.tools.file.processor.FilterConfiguration;
 import it.geosolutions.geobatch.octave.tools.file.processor.FilterProcessor;
 
 import java.io.File;
@@ -74,13 +73,13 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
 //        CoordTransBuilder.registerTransform("MyTransformName", MyTransform.class);
     }
     
-    private FilterConfiguration conf;
+    private SHOMConfiguration conf;
     
     /**
      * Constructor
      * @param configuration
      */
-    public SHOMAction(FilterConfiguration configuration) {
+    public SHOMAction(SHOMConfiguration configuration) {
         super(configuration);
         conf=configuration;
         
@@ -114,7 +113,7 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
                     dir_name=Extractor.extract(f.getAbsolutePath());
                 }
                 else
-                    throw new FileNotFoundException("Bed fileSystemMonitorEvent path");
+                    throw new FileNotFoundException("BAD FileSystemMonitorEvent path");
                 f=null;
 
                 if (LOGGER.isLoggable(Level.INFO))
@@ -171,7 +170,7 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
                 if (LOGGER.isLoggable(Level.INFO))
                     LOGGER.info("Aggregating by time");
                 
-                NetcdfEvent ev=new NetcdfEvent(dataset);
+                NetcdfEvent ev=new NetcdfEvent(dataset,conf.getPerformBackup());
                 events.add(ev);
                 return events;
             }
@@ -204,7 +203,7 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
         * @note this is due the Netcdf2Geotiff uses this name
         * to extract the cruise name.
         */
-        dataset.setLocation("rep10_SHOM-Forecast-T" + new Date().getTime()+".nc");
+        dataset.setLocation("rep10_SHOM"+conf.getType()+"-Forecast-T" + new Date().getTime()+".nc");
         
         //not needed              
         //dataset.setTitle("TITLE_SHOM_WW3-MENOR-4000M");
@@ -291,6 +290,10 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
         dataset.addAttribute(root,new Attribute("base_time",sdf.format(gc.getTime())));
         dataset.addAttribute(root, new Attribute("time_origin", "seconds since 1980-1-1 0:0:0"));
         dataset.addAttribute(root, new Attribute("tau", tau));
+      /*
+       * TODO read from file:
+       * which file?
+       */
         dataset.addAttribute(root, new Attribute("nodata", -3.4e38));
         return dataset;
     }

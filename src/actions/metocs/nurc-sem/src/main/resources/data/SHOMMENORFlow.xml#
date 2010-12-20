@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<id>SHOMFlow</id>
+	<description>SHOMFlow</description>
+	<name>SHOMFlow</name>
+	
+	<workingDirectory>rep10workingdir/shom_menor/</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*</wildCard>
+		<watchDirectory>rep10workingdir/shom_menor/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>SHOMFlow</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		<id>shom</id>
+		<description>shom</description>
+		<name>shom</name>
+		
+		<workingDirectory>rep10workingdir/shom_menor/</workingDirectory>
+		<performBackup>false</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+		
+		<ShomConfiguration>
+			<id>a1</id>
+			<description>description2</description>
+			<name>test2</name>
+			<performBackup>false</performBackup>
+			<type>MENOR</type>
+			<serviceID>SHOMGeneratorService</serviceID>
+			<workingDirectory>rep10workingdir/shom_menor/</workingDirectory>
+			<!-- FreeMarker TEMPLATE -->
+			<file>joinExisting.ncml</file>
+			<!-- Substitution map -->
+			<map>
+				<entry>
+					<string>joinVar</string>
+					<!--<SimpleScalar>time</SimpleScalar>-->
+					<string>time</string>
+				</entry>
+			</map>
+		</ShomConfiguration>
+		
+		<MetocActionConfiguration>
+			<workingDirectory>rep10workingdir/shom_menor/</workingDirectory>
+			<flipY>true</flipY>
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
+			<metocHarvesterXMLTemplatePath>registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
+			<serviceID>NetCDFCFGeodetic2GeoTIFFsGeneratorService</serviceID>
+			<id>a2</id>
+			<description>description2</description>
+			<name>test2</name>
+		</MetocActionConfiguration>
+		
+		<ImageMosaicActionConfiguration>
+			<workingDirectory>rep10workingdir/shom_menor/</workingDirectory>
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<dataTransferMethod>EXTERNAL</dataTransferMethod>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<wmsPath>/</wmsPath>
+			<defaultNamespace>nurc</defaultNamespace>
+			<defaultStyle>raster</defaultStyle>
+			<styles/>
+			<datastorePropertiesPath>registry_work/config/NURC-2010/datastore.properties</datastorePropertiesPath>
+			<timeRegex>[0-9]{8}T[0-9]{9}Z(?!.*[0-9]{8}T[0-9]{9}Z.*)</timeRegex>
+			<elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>
+			<serviceID>ImageMosaicGeneratorService</serviceID>
+			<id>ImageMosaicService</id>
+			<description>ImageMosaicService</description>
+			<name>ImageMosaicService</name>
+		</ImageMosaicActionConfiguration>
+		
+		<RegistryActionConfiguration>
+			<workingDirectory>rep10workingdir/shom_menor/</workingDirectory>
+			<crs>EPSG:4326</crs>
+			<envelope/>
+			<dataTransferMethod>DIRECT</dataTransferMethod>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<registryURL>http://localhost:8080/nurccatalogue/webservice</registryURL>
+			<providerURL>http://localhost:8080/geobatch/rest/publish</providerURL>
+			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
+			<metocHarvesterXMLTemplatePath>registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
+			<wmsPath>/</wmsPath>
+			<defaultNamespace>nurc</defaultNamespace>
+			<defaultStyle>raster</defaultStyle>
+			<styles/>
+			<serviceID>RegistryHarvestingGeneratorService</serviceID>
+			<id>a3</id>
+			<description>description3</description>
+			<name>test3</name>
+		</RegistryActionConfiguration>
+		
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>

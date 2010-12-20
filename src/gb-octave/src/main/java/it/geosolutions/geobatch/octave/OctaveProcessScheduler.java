@@ -12,8 +12,8 @@ public class OctaveProcessScheduler {
     private static List<Engine> engineList=new ArrayList<Engine>(OctaveConfiguration.getProcessorsSz());
     
 
-    protected static OctaveExecutor getProcessor(OctaveEnv<OctaveExecutableSheet> env)
-            throws InterruptedException
+    protected static Engine getEngine()
+    throws InterruptedException
     {
         Engine eng=null;
         synchronized (engineList) {
@@ -42,7 +42,13 @@ public class OctaveProcessScheduler {
                 }
             }   
         }
-        return new OctaveExecutor(env,eng);
-    }    
+        return eng;
+    }
+    
+    protected static OctaveExecutor getProcessor(OctaveEnv<OctaveExecutableSheet> env)
+            throws InterruptedException
+    {
+        return new OctaveExecutor(env,getEngine());
+    }
 
 }

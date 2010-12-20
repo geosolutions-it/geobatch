@@ -139,8 +139,8 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction
 // TODO we should check if this file is a netcdf file!
                     
                     ncFileIn = NetcdfFile.open(inputFile.getAbsolutePath());
-                    NetcdfDataset d=new NetcdfDataset(ncFileIn);
-                    eo=new NetcdfEvent(d);   
+                    NetcdfDataset d=new NetcdfDataset(ncFileIn);//TODO: add performBackup arg
+                    eo=new NetcdfEvent(d);
                 }
                 /**
                  * if it is a NetcdfEvent we only have to return a NetcdfEvent 

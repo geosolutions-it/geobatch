@@ -78,13 +78,11 @@ public class Engine{
             throw new InterruptedException("Unable to initialize the Octave Egine");
         }
         else {
-            /*
-             * initialize env
-             */
+            // initialize env
             env=new ArrayList<OctaveObject>();
+            // setting load
+            load=new AtomicInteger(0);
         }
-        // setting load
-        load=new AtomicInteger(0);
         
     }
     

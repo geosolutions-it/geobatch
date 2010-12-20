@@ -23,7 +23,6 @@ package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
-import it.geosolutions.geobatch.octave.tools.file.processor.FilterConfiguration;
 
 import java.util.EventObject;
 import java.util.logging.Level;
@@ -35,14 +34,14 @@ import java.util.logging.Logger;
  *
  */
 public class SHOMGeneratorService extends BaseService implements
-//        ActionService<EventObject, SHOMConfiguration> {
-    ActionService<EventObject, FilterConfiguration> {
+        ActionService<EventObject, SHOMConfiguration> {
+//    ActionService<EventObject, FilterConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(SHOMGeneratorService.class
             .toString());
 
-//    public SHOMAction createAction(SHOMConfiguration configuration) {
-    public SHOMAction createAction(FilterConfiguration configuration) {
+    public SHOMAction createAction(SHOMConfiguration configuration) {
+//    public SHOMAction createAction(FilterConfiguration configuration) {
         try {
             return new SHOMAction(configuration);
         } catch (Exception e) {
@@ -52,8 +51,8 @@ public class SHOMGeneratorService extends BaseService implements
         }
     }
 
-//    public boolean canCreateAction(SHOMConfiguration configuration) {
-    public boolean canCreateAction(FilterConfiguration configuration) {
+    public boolean canCreateAction(SHOMConfiguration configuration) {
+//    public boolean canCreateAction(FilterConfiguration configuration) {
         return true;
     }
 

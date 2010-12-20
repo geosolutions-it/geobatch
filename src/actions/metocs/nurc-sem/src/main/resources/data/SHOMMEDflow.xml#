@@ -5,15 +5,15 @@
 	<description>SHOMFlow</description>
 	<name>SHOMFlow</name>
 	
-	<workingDirectory>rep10workingdir/shom/</workingDirectory>
+	<workingDirectory>rep10workingdir/shom_med/</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
 		<wildCard>*</wildCard>
-		<watchDirectory>rep10workingdir/shom/in</watchDirectory>
+		<watchDirectory>rep10workingdir/shom_med/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>SHOMFlow</id>
+		<id>SHOMMEDFlow</id>
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
@@ -24,7 +24,7 @@
 		<description>shom</description>
 		<name>shom</name>
 		
-		<workingDirectory>rep10workingdir/shom/</workingDirectory>
+		<workingDirectory>rep10workingdir/shom_med/</workingDirectory>
 		<performBackup>false</performBackup>
 		
 		<FileEventRule>
@@ -40,8 +40,10 @@
 			<id>a1</id>
 			<description>description2</description>
 			<name>test2</name>
+			<performBackup>false</performBackup>
+			<type>MED</type>
 			<serviceID>SHOMGeneratorService</serviceID>
-			<workingDirectory>rep10workingdir/shom/</workingDirectory>
+			<workingDirectory>rep10workingdir/shom_med/</workingDirectory>
 			<!-- FreeMarker TEMPLATE -->
 			<file>joinExisting.ncml</file>
 			<!-- Substitution map -->
@@ -55,7 +57,7 @@
 		</ShomConfiguration>
 		
 		<MetocActionConfiguration>
-			<workingDirectory>rep10workingdir/shom/</workingDirectory>
+			<workingDirectory>rep10workingdir/shom_med/</workingDirectory>
 			<flipY>true</flipY>
 			<crs>EPSG:4326</crs>
 			<envelope/>
@@ -68,7 +70,7 @@
 		</MetocActionConfiguration>
 		
 		<ImageMosaicActionConfiguration>
-			<workingDirectory>rep10workingdir/shom/</workingDirectory>
+			<workingDirectory>rep10workingdir/shom_med/</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
@@ -89,7 +91,7 @@
 		</ImageMosaicActionConfiguration>
 		
 		<RegistryActionConfiguration>
-			<workingDirectory>rep10workingdir/shom/</workingDirectory>
+			<workingDirectory>rep10workingdir/shom_med/</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>DIRECT</dataTransferMethod>

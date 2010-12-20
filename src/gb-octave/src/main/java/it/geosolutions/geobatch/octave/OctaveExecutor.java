@@ -43,11 +43,60 @@ public class OctaveExecutor implements Callable<List<OctaveObject>> {
      */
     private Engine engine;
     
-    public OctaveExecutor(OctaveEnv<OctaveExecutableSheet> e, Engine eng)throws InterruptedException{
+    protected OctaveExecutor(OctaveEnv<OctaveExecutableSheet> e, Engine eng)throws InterruptedException{
         env=e;
         engine=eng;
     }
     
+    /**
+     * @note this is thread safe
+     * @param env the environment to execute
+     * @param eng the engine to use
+     * @return returns the results obtained by this OctaveEnv
+     * @throws Exception
+     */
+    public static List<OctaveObject> call(OctaveEnv<OctaveExecutableSheet> env, Engine eng) throws Exception {
+        /**
+         * Objects are extracted from the list
+         * since each returning value should be returned
+         * to the requesting process using an XML message
+         */
+        OctaveExecutableSheet es=null;
+        int exit=1;
+        while (exit!=0 && env.hasNext()){
+            // extract next ExecutableSheet
+            es=env.pop();
+            try {
+                if (LOGGER.isLoggable(Level.FINE))
+                    LOGGER.fine("Octave extracted a new OctaveExecutableSheet");
+                /*
+                 * Execute the 
+                 */
+                exit=eng.exec(es, true);
+
+                if (LOGGER.isLoggable(Level.FINE))
+                    LOGGER.fine("Octave extecuted sheet with exit status: "
+                        +((exit>=0)?"GOOD":"BED"));
+                
+            }
+            catch (Exception e) {
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe("Octave throws an exception: "+e.getLocalizedMessage());
+                throw e;
+            }
+
+            if (LOGGER.isLoggable(Level.FINE))
+                LOGGER.fine("Octave process exiting");
+        } // comm!="quit"
+        
+        return eng.getResults();
+    }
+    
+    /**
+     * @note never call this method directly
+     * This method should be called by the OctaveManager's ExecutorService
+     * @return returns the results obtained by this OctaveEnv
+     */
     public List<OctaveObject> call() throws Exception {
         /**
          * Objects are extracted from the list
@@ -60,19 +109,16 @@ System.out.println("Octave extecutor starting");
         while (exit!=0 && env.hasNext()){
             // extract next ExecutableSheet
             es=env.pop();
-System.out.println("Octave extecutor processing: "+env.getUniqueID());
             try {
                 if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine("Octave extracted a new OctaveExecutableSheet");
-System.out.print("engine:"+engine);
+                    LOGGER.fine("Octave extracted a new OctaveExecutableSheet from env "+env.getUniqueID());
+                
                 exit=engine.exec(es, true);
 
                 if (LOGGER.isLoggable(Level.FINE))
                     LOGGER.fine("Octave extecuted sheet with exit status: "
                         +((exit>=0)?"GOOD":"BED"));
                 
-System.out.println("Octave extecuted sheet with exit status: "
-+((exit>=0)?"GOOD":"BED"));
             }
             catch (Exception e) {
                 if (LOGGER.isLoggable(Level.SEVERE))

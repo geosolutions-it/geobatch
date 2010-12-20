@@ -16,8 +16,21 @@ public class NetcdfEvent extends EventObject{
      */
     private static final long serialVersionUID = 1L;
     
+    // remove source files
+    private boolean performBackup=false;
+    
+    public NetcdfEvent(NetcdfDataset d, boolean backup) {
+        super(d);
+        performBackup=backup;
+    }
+    
     public NetcdfEvent(NetcdfDataset d) {
         super(d);
+        performBackup=false;
+    }
+    
+    public boolean getPerformBackup(){
+        return performBackup;
     }
     
     public String getPath(){
