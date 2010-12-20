@@ -25,6 +25,11 @@ package it.geosolutions.geobatch.octave;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
+/**
+ * 
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ *
+ */
 @XStreamAlias("OctaveFile")
 public class SerializableOctaveFile extends SerializableOctaveString{
     

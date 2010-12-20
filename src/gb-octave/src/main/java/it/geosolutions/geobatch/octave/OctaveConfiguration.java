@@ -35,12 +35,27 @@ public class OctaveConfiguration {
     // Working directory
     private String workingDirectory;
     
-    private static OctaveEnv<?> env;
+    private static int executionQueueSz=100;
     
-    public final OctaveEnv<?> getEnv(){
-        return env;
+    private static int processors;
+    
+    static {
+        Runtime r=Runtime.getRuntime();
+        processors=r.availableProcessors();
     }
-
+    
+    public final static int getProcessorsSz(){
+        return processors;
+    }
+    
+    public OctaveConfiguration(String workingdir) {
+        workingDirectory=workingdir;
+    }
+    
+    public final int getExecutionQueueSize(){
+        return executionQueueSz;
+    }
+    
     public final String getWorkingDirectory() {
         return workingDirectory;
     }

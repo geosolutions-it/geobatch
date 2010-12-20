@@ -22,8 +22,10 @@
 
 package it.geosolutions.geobatch.octave;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -33,7 +35,7 @@ import dk.ange.octave.OctaveEngine;
 import dk.ange.octave.OctaveEngineFactory;
 import dk.ange.octave.exception.OctaveEvalException;
 import dk.ange.octave.type.OctaveDouble;
-import dk.ange.octave.type.OctaveString;
+import dk.ange.octave.type.OctaveObject;
 
 /**
  * This is a primitive Octave Engine Layer
@@ -44,48 +46,71 @@ import dk.ange.octave.type.OctaveString;
 public class Engine{
     
     private final static int TIME_TO_WAIT = 100*60; // in seconds == 100 min
-    private Lock lock=null;
     
     private final static Logger LOGGER = Logger.getLogger(Engine.class.toString());
+
+    private Lock lock=null;
     
     private OctaveEngine engine=null;
+    
+    // load of this engine
+    private AtomicInteger load=null;
+    
+    // list of object returned by the sheets executed by this engine
+    private List<OctaveObject> env=null;
 
     /**
      * Constructor
      */
-    public Engine(){
-        /**
+    public Engine()throws InterruptedException{
+        /*
          * The constructor for this class accepts an optional fairness parameter.
          * When set true, under contention, locks favor granting access to the 
          * longest-waiting thread. Otherwise this lock does not guarantee any 
          * particular access order.
          */
         lock=new ReentrantLock(true);
-        /**
+        
+        /*
          * try to start the engine
          */
-        start();
+        if (init()<0){
+            throw new InterruptedException("Unable to initialize the Octave Egine");
+        }
+        else {
+            /*
+             * initialize env
+             */
+            env=new ArrayList<OctaveObject>();
+        }
+        // setting load
+        load=new AtomicInteger(0);
+        
     }
     
     /**
-     * try to start the engine
+     * try to (re)start the engine
      * @note this will use the 'dk.ange' package to run a new Octave process.
      */
-    protected void start(){
+    protected int init() throws InterruptedException{
         if (engine==null){
             try{
                 lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
-                if (engine==null)
+                if (engine==null){
+                    if (LOGGER.isLoggable(Level.INFO))
+                        LOGGER.info("Starting octave engine");
                     engine=new OctaveEngineFactory().getScriptEngine();
-                
+                }
             }catch (InterruptedException ie){
                 if (LOGGER.isLoggable(Level.SEVERE))
                     LOGGER.severe(ie.getLocalizedMessage());
+                throw ie;
             }
             finally{
                 lock.unlock();
             }
         }
+        return 1;
     }
     
     protected void close(){
@@ -93,6 +118,8 @@ public class Engine{
             try{
                 lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
                 if (engine!=null) {
+                    if (LOGGER.isLoggable(Level.INFO))
+                        LOGGER.info("Stopping octave engine");
                     engine.close();
                     engine=null;
                 }
@@ -114,20 +141,20 @@ public class Engine{
      */
     private void eval(String run){
         if (engine!=null){
-                try{
-                    lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
-                    if (engine!=null)
-                        engine.eval(run);
-                    else
-                        throw new OctaveEvalException(
-                                "Unable to use this engine, try to run start() before use it");
-                }catch (InterruptedException ie){
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe(ie.getLocalizedMessage());
-                }
-                finally{
-                    lock.unlock();
-                }
+            try{
+                lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+                if (engine!=null)
+                    engine.eval(run);
+                else
+                    throw new OctaveEvalException(
+                            "Unable to use this engine, try to run start() before use it");
+            }catch (InterruptedException ie){
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe(ie.getLocalizedMessage());
+            }
+            finally{
+                lock.unlock();
+            }
         }
         else {
             throw new OctaveEvalException(
@@ -135,11 +162,19 @@ public class Engine{
         }
     }
     
+    public int getLoad(){
+        return load.get();
+    }
+    
     /**
      * 
      * @param sheet the Executable sheet to execute.
      * @param clear if true all the definitions are cleared from 
      * the octave environment after commands execution
+     * @return an integer:
+     * 	==0 exit is called
+     * 	>0 normal execution
+     * 	<0 error occurred
      * @throws Exception 
      * @note It will not be modified so you can:
      * -get returns variables using sheet.getReturns()<br>
@@ -149,9 +184,13 @@ public class Engine{
      * @note: this method runs the sheet in one shot... 
      * this is due to the possibility to change dir of the context using the 'cd' command.  
      */
-    public void exec(OctaveExecutableSheet sheet, boolean clear) throws Exception{
+    public int exec(OctaveExecutableSheet sheet, boolean clear) throws Exception{
         try{
+            if (engine==null)
+                init();
             lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+            // increase the load of this engine
+            load.incrementAndGet();
 /*
  * USEFUL FOR DEBUG
 if (sheet.getDefinitions().size()==2){
@@ -164,8 +203,17 @@ if (sheet.getDefinitions().size()==2){
             // list of commands to execute
             List<OctaveCommand> oc=sheet.getCommands();
             // check commands existence
-            if (oc==null)
-                return;
+            if (oc==null){
+/*
+ * TODO: check
+ * NOTE this may result in an undesirable behavior since we may want to
+ * use a sheet to set octave environment variable without executing commands:
+ * f.e.: A=zeros(1:10);
+ */
+                if (LOGGER.isLoggable(Level.FINE))
+                    LOGGER.finer("Octave sheet do not contains commands...");
+                return -1;
+            }
             
             // put definitions into octave environment
             if (sheet.hasDefinitions()){
@@ -195,10 +243,15 @@ if (sheet.getDefinitions().size()==2){
                     if (!comm.isExecuted()){
                         String command=comm.getCommand();
                         // check command string
-                        if (command=="" && command=="quit"){
+                        if (command.equalsIgnoreCase("")){
                             if (LOGGER.isLoggable(Level.WARNING))
                                 LOGGER.warning("Octave cannot execute an empty or a \'quit\' command...");
                             continue;
+                        }
+                        else if  (command.equalsIgnoreCase("quit")){
+                            this.eval(command);
+                            comm.set();
+                        	return 0;
                         }
                         else {
                             // evaluate commands (f.e.: source files)                        
@@ -228,6 +281,17 @@ if (sheet.getDefinitions().size()==2){
             //all the command in this sheet are executed
             sheet.setExecuted(true);
             
+            /*
+             * get returning values and put results
+             * into the (local to java) engine env
+             */
+            if (sheet.hasReturns()){
+                if (LOGGER.isLoggable(Level.FINER))
+                    LOGGER.finer(
+                        "Extracting returning values");
+                env.addAll(this.get(sheet.getReturns()));
+            }
+            
             // clear sheet environment
             if (clear && sheet.hasDefinitions()){
                 if (LOGGER.isLoggable(Level.FINER))
@@ -241,7 +305,28 @@ if (sheet.getDefinitions().size()==2){
                 LOGGER.severe(ie.getLocalizedMessage());
         }
         finally{
+            load.decrementAndGet();
             lock.unlock();
+        }
+        return 1; // normal condition
+    }
+    
+    /**
+     * Return the env contents erasing it.
+     * @return the env contents erasing it.
+     */
+    protected List<OctaveObject> getResults(){
+        synchronized (env) {
+            List<OctaveObject> results=null;
+            if (this.env!=null){
+                results=new ArrayList<OctaveObject>();
+                int size=env.size();
+                while (size>0){
+                    OctaveObject o=env.remove(size--);
+                    results.add(o);
+                }
+            }
+            return results;   
         }
     }
     
@@ -254,10 +339,10 @@ if (sheet.getDefinitions().size()==2){
      * @return true if function is found (usable), false otherwise
      */
     protected boolean isRunnable(String _f){
-        if (engine==null)
-            start();
         OctaveDouble r=null;
         try {
+            if (engine==null)
+                init();
             lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
             if (LOGGER.isLoggable(Level.FINER))
                 LOGGER.finer(
@@ -349,28 +434,28 @@ if (sheet.getDefinitions().size()==2){
      * @param list
      */
     protected void put(List<SerializableOctaveObject<?>> list){
-        if (engine==null)
-            start();
-        // fill in serialized values into octave (variable definition)
-        int size =list.size();
-        int i=0;
-        while (i<size){
-            SerializableOctaveObject<?> soo=list.get(i++);
-            synchronized (soo) {
-                soo.setVal();   
+        try{
+            lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+            if (engine==null)
+                init();
+            // fill in serialized values into octave (variable definition)
+            int size =list.size();
+            int i=0;
+            while (i<size){
+                SerializableOctaveObject<?> soo=list.get(i++);
+                synchronized (soo) {
+                    soo.setVal();   
+                }
+                    engine.put(soo.getName(),soo.getOctObj());
             }
-            try{
-                lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
-                engine.put(soo.getName(),soo.getOctObj());
-            }
-            catch (InterruptedException ie){
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(ie.getLocalizedMessage());
-            }
-            finally{
-                lock.unlock();
-            }
-        } 
+        }
+        catch (InterruptedException ie){
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe(ie.getLocalizedMessage());
+        }
+        finally{
+            lock.unlock();
+        }
     }
     
     /**
@@ -378,30 +463,28 @@ if (sheet.getDefinitions().size()==2){
      * @param list
      * @throws Exception 
      */
-    protected void get(List<SerializableOctaveObject<?>> list) throws Exception{
+    protected List<OctaveObject> get(List<SerializableOctaveObject<?>> list) throws Exception{
         if (engine==null)
             throw new Exception("Engine is not running");
-        int size =list.size();
-        int i=0;
-        // store results
-        while (i<size){
-            SerializableOctaveObject<?> soo=list.get(i++);
-            try{
-                lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
-//TODO GENERALIZE
-/**
- * get and put should be done by the SerializableOctaveObject<?>
- * specialization
- */
-                engine.get(OctaveString.class,soo.getName());
-            }
-            catch (InterruptedException ie){
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(ie.getLocalizedMessage());
-            }
-            finally{
-                lock.unlock();
+        // returning
+        List<OctaveObject> ret=new ArrayList<OctaveObject>();
+        try{
+            lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+            int size =list.size();
+            int i=0;
+            // store results
+            while (i<size){
+                SerializableOctaveObject<?> soo=list.get(i++);
+                ret.add(soo.get(engine));
             }
         }
+        catch (InterruptedException ie){
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe(ie.getLocalizedMessage());
+        }
+        finally{
+            lock.unlock();
+        }
+        return ret;
     }
 }

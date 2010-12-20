@@ -54,7 +54,7 @@ public class SHOMGeneratorService extends BaseService implements
 
 //    public boolean canCreateAction(SHOMConfiguration configuration) {
     public boolean canCreateAction(FilterConfiguration configuration) {
-        return false;
+        return true;
     }
 
 }

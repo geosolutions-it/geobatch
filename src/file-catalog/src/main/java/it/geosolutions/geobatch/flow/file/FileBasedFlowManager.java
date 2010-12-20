@@ -156,7 +156,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
         final BlockingQueue<Runnable> queue = new ArrayBlockingQueue(queueSize);
         this.executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAlive,
-                TimeUnit.MILLISECONDS, queue);
+TimeUnit.MILLISECONDS, queue);
 
         if (this.autorun) {
             if (LOGGER.isLoggable(Level.INFO))
