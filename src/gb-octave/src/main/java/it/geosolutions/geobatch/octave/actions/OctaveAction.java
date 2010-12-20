@@ -4,8 +4,10 @@ import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.octave.Engine;
+import it.geosolutions.geobatch.octave.OctaveConfiguration;
 import it.geosolutions.geobatch.octave.OctaveEnv;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
+import it.geosolutions.geobatch.octave.OctaveManager;
 import it.geosolutions.geobatch.octave.SheetPreprocessor;
 
 import java.util.EventObject;
@@ -22,7 +24,7 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
     private volatile OctaveEnv<OctaveExecutableSheet>  env;
     
 //TODO cheange this
-    protected final static Engine engine=new Engine();
+//    protected final static Engine engine=new Engine();
     
     protected final SheetPreprocessor preprocessor=new SheetPreprocessor();
     
@@ -88,15 +90,18 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
                     LOGGER.info("Passing Octave sheet to Octave process... ");
                 
 // TODO ACTUALLY we temporarily skip the THREAD OR JMPOJO interface.
-                int size=env.size();
-                int index=0;
-                while (index<size){
-                    /**
-                     * exec is synchronized and can be called
-                     * without warnings
-                     */
-                    engine.exec(env.getSheet(index++), true);
-                }
+//                int size=env.size();
+//                int index=0;
+//                while (index<size){
+//                    /**
+//                     * exec is synchronized and can be called
+//                     * without warnings
+//                     */
+//                    engine.exec(env.getSheet(index++), true);
+//                }
+                
+                OctaveManager manager=OctaveManager.getOctaveManager(new OctaveConfiguration(config.getWorkingDirectory()));
+                manager.enqueue(env);
 
             } // ev==null
             else {

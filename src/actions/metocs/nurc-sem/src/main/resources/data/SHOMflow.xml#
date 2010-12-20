@@ -5,12 +5,12 @@
 	<description>SHOMFlow</description>
 	<name>SHOMFlow</name>
 	
-	<workingDirectory>SHOMworkingdir/</workingDirectory>
+	<workingDirectory>rep10workingdir/shom/</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
 		<wildCard>*</wildCard>
-		<watchDirectory>SHOMworkingdir/in</watchDirectory>
+		<watchDirectory>rep10workingdir/shom/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>SHOMFlow</id>
@@ -24,7 +24,7 @@
 		<description>shom</description>
 		<name>shom</name>
 		
-		<workingDirectory>SHOMworkingdir/</workingDirectory>
+		<workingDirectory>rep10workingdir/shom/</workingDirectory>
 		<performBackup>false</performBackup>
 		
 		<FileEventRule>
@@ -41,12 +41,22 @@
 			<description>description2</description>
 			<name>test2</name>
 			<serviceID>SHOMGeneratorService</serviceID>
-			<workingDirectory>SHOMworkingdir/</workingDirectory>
+			<workingDirectory>rep10workingdir/shom/</workingDirectory>
+			<!-- FreeMarker TEMPLATE -->
+			<file>joinExisting.ncml</file>
+			<!-- Substitution map -->
+			<map>
+				<entry>
+					<string>joinVar</string>
+					<!--<SimpleScalar>time</SimpleScalar>-->
+					<string>time</string>
+				</entry>
+			</map>
 		</ShomConfiguration>
 		
 		<MetocActionConfiguration>
-			<workingDirectory>SHOMworkingdir/</workingDirectory>
-			<flipY>false</flipY>
+			<workingDirectory>rep10workingdir/shom/</workingDirectory>
+			<flipY>true</flipY>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
@@ -58,7 +68,7 @@
 		</MetocActionConfiguration>
 		
 		<ImageMosaicActionConfiguration>
-			<workingDirectory>SHOMworkingdir/</workingDirectory>
+			<workingDirectory>rep10workingdir/shom/</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
@@ -79,7 +89,7 @@
 		</ImageMosaicActionConfiguration>
 		
 		<RegistryActionConfiguration>
-			<workingDirectory>SHOMworkingdir/</workingDirectory>
+			<workingDirectory>rep10workingdir/shom/</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>DIRECT</dataTransferMethod>

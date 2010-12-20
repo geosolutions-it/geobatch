@@ -79,7 +79,7 @@
 	</bean>
 	
 	<!-- SHOM -->
-	<bean id="SHOMGeneratorService" class="it.geosolutions.geobatch.nurc.sem.shom.SHOMGeneratorService">
+	<bean id="SHOMGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.shom.SHOMGeneratorService">
 		<property  name="id">
     		<value>SHOMGeneratorService</value>
     	</property>

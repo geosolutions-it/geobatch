@@ -1,0 +1,123 @@
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+  <aggregation dimName="${joinVar}" type="joinExisting">
+  
+	  <scan location="${searchPath}" suffix=".nc" />
+	  
+<!-- TIME -->
+     <variable name="time">
+        <attribute name="_CoordinateAxisType" value="Time" />
+        <attribute name="base_time" type="String" value="seconds since 1980-1-1 0:0:0" />
+		<attribute name="units" value="seconds since 1980-1-1 0:0:0" />
+      </variable>
+
+<!-- LON -->  
+      <dimension name="lon" orgName="longitude"/>
+      <variable name="lon" orgName="longitude"/>
+
+<!-- LAT -->
+      <dimension name="lat" orgName="latitude"/>
+      <variable name="lat" orgName="latitude"/>
+
+<!--
+STARTING VAR
+float t(time=1, height=1, latitude=61, longitude=81);
+	:long_name = "Periode moyenne des vagues";
+	:standard_name = "wave_mean_period";
+	:units = "s";
+	:_FillValue = -3.4E38f; // float
+	:valid_min = 0.0f; // float
+	:valid_max = 50.0f; // float
+DESTINATION
+<metoc defaultUom="urn:ogc:def:uom:UCUM::s" type="wave">
+	<name>mean wave period</name>
+	<brief>meanwavperiod</brief>
+</metoc>
+-->
+      <variable name="meanwavperiod" orgName="t">
+		<attribute name="longname" value="mean wave period" />
+      </variable>
+
+<!-- 
+STARTING VAR
+float dir(time=1, height=1, lat=61, lon=81);
+     :long_name = "Direction moyenne des vagues";
+     :standard_name = "wave_mean_direction";
+     :units = "degree";
+     :_FillValue = -3.4E38f; // float
+     :valid_min = 0.0f; // float
+     :valid_max = 360.0f; // float
+DESTINATION
+<metoc defaultUom="urn:ogc:def:uom:UCUM::deg" type="wave">
+	<name>peak wave direction</name>
+	<brief>peakwavdir</brief>
+</metoc>
+-->
+      <variable name="meanwavdir" orgName="dir">
+        <attribute name="units" value="deg" />
+        <attribute name="longname" value="mean wave direction" />
+      </variable>
+
+<!--
+STARTING VAR
+float hs(time=1, height=1, lat=61, lon=81);
+     :long_name = "Hauteur significative des vagues";
+     :standard_name = "significant_height_of_wind_and_swell_waves";
+     :units = "m";
+     :_FillValue = -3.4E38f; // float
+     :valid_min = 0.0f; // float
+     :valid_max = 100.0f; // float
+DESTINATION
+<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="wave">
+	<name>sea surface swell wave significant height</name>
+	<brief>hs</brief>
+</metoc>
+-->
+      <variable name="sigwavheight" orgName="hs">
+        <attribute name="longname" value="significant wave height" />
+      </variable>
+
+<!--
+STARTING VAR
+   float hs1(time=1, height=1, lat=61, lon=81);
+     :long_name = "Hauteur significative de la houle primaire";
+     :standard_name = "significant_height_of_primary_swell_waves";
+     :units = "m";
+     :_FillValue = -3.4E38f; // float
+     :valid_min = 0.0f; // float
+     :valid_max = 100.0f; // float
+DESTINATION
+<metoc defaultUom="urn:ogc:def:uom:UCUM::m" type="wave">
+	<name>significant wave height</name>
+	<brief>sigwavheight</brief>
+</metoc>
+-->
+<!--
+      <variable name="hs">
+		<attribute name="longname" value="sea surface swell wave significant height" />
+      </variable>
+-->
+
+<!-- REMOVE UNUSED -->
+<remove name="dp" type="variable" />
+<remove name="fp" type="variable" />
+<remove name="hs1" type="variable" />
+<remove name="hsw" type="variable" />
+<remove name="spr" type="variable" />
+<remove name="th1" type="variable" />
+<remove name="tp1" type="variable" />
+<remove name="u10m" type="variable" />
+<remove name="uabr" type="variable" />
+<remove name="uubr" type="variable" />
+<remove name="uust" type="variable" />
+<remove name="v10m" type="variable" />
+<remove name="vabr" type="variable" />
+<remove name="vubr" type="variable" />
+<remove name="vust" type="variable" />
+
+
+<!-- GLOBAL INFO -->
+      <attribute name="type" type="String" value="SHOM" />
+      <attribute name="author" type="String" value="Carlo Cancellieri, carlo.cancellieri@geo-solutions.it" />
+
+  </aggregation>
+</netcdf> 

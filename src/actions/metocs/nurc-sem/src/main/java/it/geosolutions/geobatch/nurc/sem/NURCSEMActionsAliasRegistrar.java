@@ -22,8 +22,9 @@
 
 package it.geosolutions.geobatch.nurc.sem;
 
-import it.geosolutions.geobatch.nurc.sem.shom.SHOMConfiguration;
+import freemarker.template.SimpleScalar;
 import it.geosolutions.geobatch.nurc.sem.wmc.WMCActionConfiguration;
+import it.geosolutions.geobatch.octave.tools.file.processor.FilterConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 
@@ -38,7 +39,9 @@ public class NURCSEMActionsAliasRegistrar extends AliasRegistrar {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
         registry.putAlias("WMCActionConfiguration", WMCActionConfiguration.class);
         
-        registry.putAlias("ShomConfiguration", SHOMConfiguration.class);
+        //registry.putAlias("ShomConfiguration", SHOMConfiguration.class);
+        registry.putAlias("ShomConfiguration", FilterConfiguration.class);
+        registry.putAlias("SimpleScalar", SimpleScalar.class);
         
     }
 }

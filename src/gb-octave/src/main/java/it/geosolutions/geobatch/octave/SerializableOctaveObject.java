@@ -26,6 +26,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
+import dk.ange.octave.OctaveEngine;
 import dk.ange.octave.type.OctaveObject;
 
 @XStreamAlias("var")
@@ -61,6 +62,12 @@ public abstract class SerializableOctaveObject<T extends OctaveObject>{
     public void setName(String name){
         _name=name;
     }
+    
+    /**
+     * get the value from the octave env
+     * @param engine - the engine to use to get
+     */
+    public abstract T get(OctaveEngine engine);
     
     @Override
     public abstract Object clone();

@@ -26,8 +26,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
+import dk.ange.octave.OctaveEngine;
 import dk.ange.octave.type.OctaveString;
 
+/**
+ * 
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ *
+ */
 @XStreamAlias("OctaveString")
 public class SerializableOctaveString  extends SerializableOctaveObject<OctaveString>{
     
@@ -82,6 +88,14 @@ public class SerializableOctaveString  extends SerializableOctaveObject<OctaveSt
     @Override
     public void setVal() {
         reSetVal(_val);
+    }
+    
+    /**
+     * get the value from the octave env
+     */
+    @Override
+    public OctaveString get(OctaveEngine engine){
+        return engine.get(OctaveString.class,this.getName());
     }
     
     @Override

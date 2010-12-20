@@ -21,26 +21,36 @@
  */
 package it.geosolutions.geobatch.octave;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
+/**
+ * 
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ *
+ * @param <T> the specialization of this class
+ */
 @XStreamAlias("octave")
 public class OctaveEnv<T extends OctaveExecutableSheet>{
     
+    // used to make thread return synchronization
+    @XStreamOmitField
+    private final long uniqueID;
+    
     @XStreamAlias("sheets")
     private final List<T> env;
-/**
- * COMMENTED OUT SINCE IT IS NEVER USED
- * @TODO change to simple variable environment container 
- */
-    // containing global variables
-    //@XStreamOmitField
-    //public final OctaveExecutableSheet global;
     
     public final int size(){
         return env.size();
+    }
+    
+    public final long getUniqueID(){
+        return uniqueID;
     }
     
     public OctaveExecutableSheet pop(){
@@ -85,13 +95,20 @@ public class OctaveEnv<T extends OctaveExecutableSheet>{
 // TODO LOG
     }
     
+    private final long generateID(){
+        SecureRandom random = new SecureRandom();
+        return new BigInteger(130, random).longValue();
+    }
+    
     public OctaveEnv(){
         env=new ArrayList<T>();
+        uniqueID=generateID();
 //        global=new OctaveExecutableSheet();
     }
     
     public OctaveEnv(List<T> e){
         env=new ArrayList<T>(e);
+        uniqueID=generateID();
 //        global=new OctaveExecutableSheet();
     }
     
@@ -110,6 +127,7 @@ public class OctaveEnv<T extends OctaveExecutableSheet>{
     }
 
     public OctaveEnv(OctaveEnv<T> environment){
+        uniqueID=generateID();
         if (environment!=null){
             this.env=environment.env;
 //            this.global=new OctaveExecutableSheet(environment.global);

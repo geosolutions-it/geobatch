@@ -157,12 +157,11 @@ nc_out{'wattemp'}.units='cel';
 nc_out{'wattemp'}.missing_value= ncfloat(1.0e37);
 nc_out{'wattemp'}.FillValue_= ncfloat(1.0e37);
 % for each time slice
-for tk=1:length(time)
+for tk=1:length(t)
 	
 	grd=roms_get_grid(in_file,in_file,tk); % do not activate ZETA
-	T=nc{'temp'}(tk,:,:,:);
+	T=squeeze(nc{'temp'}(tk,:,:,:));
 	T(T>1.0e+36)=NaN;
-	T=squeeze(T);
 % this is slower
 %  	for td=1:length(depth)
 %  	  for tlat=1:length(lat_i)
@@ -186,7 +185,7 @@ for tk=1:length(time)
 	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,'linear',1.0e37);
 	T(isnan(T))=1.0e37;
 	% write to netcdf adding a time slice per cycle
-	nc_out{'wattemp'}(tk,:,:,:)=T(:,:,:);
+	nc_out{'wattemp'}(tk,:,:,:)=T;
 	
 	%debug
 	%TEMP
@@ -211,7 +210,7 @@ nc_out{'salt'}.long_name='salinity';
 nc_out{'salt'}.units='psu';
 nc_out{'salt'}.missing_value= ncfloat(1.0e37);
 nc_out{'salt'}.FillValue_= ncfloat(1.0e37);
-for tk=1:length(time)
+for tk=1:length(t)
 	grd=roms_get_grid(in_file,in_file,tk); % do not activate ZETA
 	T=squeeze(nc{'salt'}(tk,:,:,:));
 	T(T>=1.0e+36)=NaN;
@@ -220,7 +219,7 @@ for tk=1:length(time)
 	[X,Y,Z]=meshgrid(grd.lat_rho(:,1),grd.z_r(:,1,1),grd.lon_rho(1,:));
 	T=interp3(X,Y,Z,T,lat_i,-depth,lon_i,'linear',1.0e37);
 	T(isnan(T))=1.0e37;
-	nc_out{'salt'}(tk,:,:,:)=T(:,:,:);
+	nc_out{'salt'}(tk,:,:,:)=T;
 	%debug
 	%T
 end
@@ -236,7 +235,7 @@ nc_out{'watvel-u'}.long_name='water velocity u-component';
 nc_out{'watvel-u'}.units='m/s';
 nc_out{'watvel-u'}.missing_value= ncfloat(1.0e37);
 nc_out{'watvel-u'}.FillValue_= ncfloat(1.0e37);
-for tk=1:length(time)
+for tk=1:length(t)
 
 	grd=roms_get_grid(in_file,in_file,tk,1);
 %	lon=grd.lon_u(1,:);
@@ -269,7 +268,7 @@ nc_out{'watvel-v'}.long_name='water velocity v-component';
 nc_out{'watvel-v'}.units='m/s';
 nc_out{'watvel-v'}.missing_value= ncfloat(1.0e37);
 nc_out{'watvel-v'}.FillValue_= ncfloat(1.0e37);
-for tk=1:length(time)
+for tk=1:length(t)
 
 	grd=roms_get_grid(in_file,in_file,tk,1);
 %	lon=grdroms.lon_v(1,:);

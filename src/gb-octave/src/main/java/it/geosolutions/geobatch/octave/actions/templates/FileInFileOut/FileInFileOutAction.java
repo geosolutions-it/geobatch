@@ -28,7 +28,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.octave.SheetBuilder;
 import it.geosolutions.geobatch.octave.actions.OctaveAction;
 import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;
-import it.geosolutions.geobatch.octave.tools.Files;
+import it.geosolutions.geobatch.octave.tools.file.Extractor;
 
 import java.io.File;
 import java.io.IOException;
@@ -107,7 +107,7 @@ public abstract class FileInFileOutAction extends OctaveAction<FileSystemMonitor
                  * build input file name
                  * uncompress the input file (if needed)
                  */
-                String in_name=Files.uncompress(ev.getSource().getAbsolutePath());
+                String in_name=Extractor.extract(ev.getSource().getAbsolutePath());
                 
                 /**
                  * build absolute output file name
