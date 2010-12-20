@@ -51,7 +51,7 @@
 			int flowsPerPage = 10;
 			List flowManagers = (List)request.getAttribute("flowManagers");
 			int pages = Math.round(flowManagers.size() / (float)flowsPerPage);
-			pages = (pages == 0 ? 1 : pages);
+			pages = (pages == 0 ? 1 : pages+1);
 		%>
 		
 		$(function(){
@@ -118,8 +118,6 @@
     <div class="wrap">
       <h2><a class="pngfix" href="index.html"><span>GeoBatch</span></a></h2>
       <div class="button-group selfclear">
-
-
       </div>
     </div><!-- /.wrap -->
   </div><!-- /#header -->
