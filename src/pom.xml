@@ -708,6 +708,13 @@
                 <artifactId>wkb4j</artifactId>
                 <version>1.0-RC1</version>
             </dependency>
+            
+            <!-- NetCDF ========================================================-->
+            <dependency>
+				<groupId>essi-unidata</groupId>
+				<artifactId>netcdf-java</artifactId>
+				<version>4.0.41</version>
+			</dependency>
 
             <!-- XML ========================================================-->
 
@@ -975,17 +982,26 @@
                 <version>${gb.version}</version>
             </dependency>
             
-						<!-- Java Octave -->
+<!-- Java Octave -->
 		    <dependency>
 				<groupId>dk.ange.octave</groupId>
 				<artifactId>javaoctave</artifactId>
 				<version>0.6.1</version>
 			</dependency>
 			
+<!-- Apache Tika -->
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-core</artifactId>
 				<version>0.8</version>
+			</dependency>
+			
+			<!-- FreeMarker -->
+			<dependency>
+				<groupId>org.freemarker</groupId>
+				<artifactId>freemarker</artifactId>
+				<!-- Latest 2.3.x (not 2.4.x), at least 2.3.16 -->
+				<version>2.3.16</version>
 			</dependency>
 
 			<dependency>

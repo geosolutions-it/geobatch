@@ -47,6 +47,18 @@
 	<!--     Dependency Management                                   -->
 	<!-- =========================================================== -->
 	<dependencies>
+	    <!-- NETCDF -->
+	    <!-- NETCDF 4.2 REQUIRE JAVA 6
+		<dependency>
+    		<groupId>edu.ucar</groupId>
+    		<artifactId>netcdf</artifactId>
+		</dependency>
+		-->
+		<dependency>
+    		<groupId>essi-unidata</groupId>
+    		<artifactId>netcdf-java</artifactId>
+		</dependency>
+		
 		<!-- Octave -->
         <dependency>
             <groupId>it.geosolutions</groupId>

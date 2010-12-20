@@ -205,8 +205,12 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction
             }
 
 //            // ... BUSINESS LOGIC ... //
-
-            String inputFileName = event.getSource().getReferencedFile().getLocation();
+          //TODO
+            String inputFileName=null;
+            if (ncFileIn!=null)
+                inputFileName = ncFileIn.getLocation();
+            else
+                throw new IllegalArgumentException("Unable to locate event file sources");
             
             final String filePrefix = FilenameUtils.getBaseName(inputFileName);
             final String fileSuffix = FilenameUtils.getExtension(inputFileName);
@@ -226,7 +230,8 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction
             }
 
             if (baseFileName == null) {
-                LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
                 throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
             }
 
@@ -242,11 +247,51 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction
             final Dimension timeDim = ncFileIn.findDimension(METOCSActionsIOUtils.TIME_DIM);
             final boolean timeDimExists = timeDim != null;
 
-            final String baseTime = ncFileIn.findGlobalAttribute("base_time").getStringValue();
-            final String TAU = String.valueOf(ncFileIn.findGlobalAttribute("tau").getNumericValue()
-                    .intValue());
-            final double noData = ncFileIn.findGlobalAttribute("nodata").getNumericValue()
-                    .doubleValue();
+            /*
+             * @note Carlo Cancellieri 16 Dec 2010
+             * Search the global attributes as global attributes or as 
+             * attributes of the root group.
+             */
+            Attribute baseTimeAttr=null;
+            if ((baseTimeAttr=ncFileIn.findGlobalAttribute("base_time"))==null)
+                if ((baseTimeAttr=ncFileIn.getRootGroup().findAttribute("base_time"))==null){
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.log(Level.SEVERE, "Unable to find \'base_time\' global variable in the source file");
+                    throw new Exception("Unable to find \'base_time\' global variable in the source file");
+                }
+            final String baseTime = baseTimeAttr.getStringValue();
+            baseTimeAttr=null;
+            /*
+             * @note Carlo Cancellieri 16 Dec 2010
+             * Search the global attributes as global attributes or as 
+             * attributes of the root group.
+             */
+            Attribute tauAttr=null;
+            if ((tauAttr=ncFileIn.findGlobalAttribute("tau"))==null)
+                if ((tauAttr=ncFileIn.getRootGroup().findAttribute("tau"))==null){
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.log(Level.SEVERE, "Unable to find \'tau\' global variable in the source file");
+                    throw new Exception("Unable to find \'tau\' global variable in the source file");
+                }
+// TODO check -> if tauAttr.getNumericValue()==NULL
+            final String TAU = String.valueOf(tauAttr.getNumericValue().intValue());
+            tauAttr=null;
+            
+            /*
+             * @note Carlo Cancellieri 16 Dec 2010
+             * Search the global attributes as global attributes or as 
+             * attributes of the root group.
+             */
+            Attribute nodataAttr=null;
+            if ((nodataAttr=ncFileIn.findGlobalAttribute("nodata"))==null)
+                if ((nodataAttr=ncFileIn.getRootGroup().findAttribute("nodata"))==null){
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.log(Level.SEVERE, "Unable to find \'nodata\' global variable in the source file");
+                    throw new Exception("Unable to find \'nodata\' global variable in the source file");
+                }
+// TODO check -> if nodataAttr.getNumericValue()==NULL
+            final double noData = nodataAttr.getNumericValue().doubleValue();
+            nodataAttr=null;
 
             final Dimension depthDim = ncFileIn.findDimension(METOCSActionsIOUtils.DEPTH_DIM);
             final boolean depthDimExists = depthDim != null;

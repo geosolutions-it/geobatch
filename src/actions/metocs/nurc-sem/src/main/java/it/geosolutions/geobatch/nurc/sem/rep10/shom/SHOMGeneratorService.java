@@ -19,32 +19,30 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.nurc.sem.shom;
+package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
 import it.geosolutions.geobatch.catalog.impl.BaseService;
-import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
+import it.geosolutions.geobatch.octave.tools.file.processor.FilterConfiguration;
 
 import java.util.EventObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Public class to generate lscv08::SHOM-WW3-MED-6MIN Model Services
  * 
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ *
  */
 public class SHOMGeneratorService extends BaseService implements
-        ActionService<EventObject, MetocActionConfiguration> {
+//        ActionService<EventObject, SHOMConfiguration> {
+    ActionService<EventObject, FilterConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(SHOMGeneratorService.class
             .toString());
 
-    public boolean canCreateAction(MetocActionConfiguration configuration) {
-        return true;
-    }
-
-    public Action<EventObject> createAction(MetocActionConfiguration configuration) {
+//    public SHOMAction createAction(SHOMConfiguration configuration) {
+    public SHOMAction createAction(FilterConfiguration configuration) {
         try {
             return new SHOMAction(configuration);
         } catch (Exception e) {
@@ -52,6 +50,11 @@ public class SHOMGeneratorService extends BaseService implements
                 LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+//    public boolean canCreateAction(SHOMConfiguration configuration) {
+    public boolean canCreateAction(FilterConfiguration configuration) {
+        return false;
     }
 
 }
