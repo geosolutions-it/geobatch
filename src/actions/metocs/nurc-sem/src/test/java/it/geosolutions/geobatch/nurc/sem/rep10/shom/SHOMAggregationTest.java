@@ -2,24 +2,14 @@ package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
-import ucar.ma2.Array;
-import ucar.ma2.InvalidRangeException;
-import ucar.ma2.Section;
 import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import ucar.nc2.dataset.NetcdfDataset;
 import ucar.nc2.dataset.VariableDS;
 import ucar.nc2.ncml.Aggregation;
-import ucar.nc2.ncml.Aggregation.Dataset;
 import ucar.nc2.ncml.AggregationExisting;
-import ucar.nc2.ncml.DatasetCollectionManager;
-import ucar.nc2.ncml.Scanner;
-import ucar.nc2.util.CancelTask;
 import ucar.nc2.util.DiskCache2;
 
 public class SHOMAggregationTest {

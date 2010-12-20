@@ -21,6 +21,9 @@
  */
 package it.geosolutions.geobatch.octave;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 
@@ -32,16 +35,33 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 @XStreamInclude({OctaveFunctionFile.class})
 public class OctaveConfiguration {
     
+    private final static Logger LOGGER = Logger.getLogger(OctaveConfiguration.class.toString());
+    
+    public final static int TIME_TO_WAIT = 100*60; // in seconds == 100 min
+    
     // Working directory
     private String workingDirectory;
     
     private static int executionQueueSz=100;
     
-    private static int processors;
+    private static int processors=0;
     
     static {
-        Runtime r=Runtime.getRuntime();
-        processors=r.availableProcessors();
+        String arg=System.getProperty("OctaveConfiguration.processors");
+        if (arg!=null){
+            try {
+                processors=Integer.parseInt(arg);
+            }
+            catch (NumberFormatException nfe){
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.warning("OctaveConfiguration.processors: "+nfe.getLocalizedMessage());
+            }
+        }
+        
+        if (processors<=0){
+            Runtime r=Runtime.getRuntime();
+            processors=r.availableProcessors();
+        }
     }
     
     public final static int getProcessorsSz(){

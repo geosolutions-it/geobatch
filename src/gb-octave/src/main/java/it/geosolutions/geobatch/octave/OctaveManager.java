@@ -82,8 +82,11 @@ public final class OctaveManager{
             if (singleton==null){
                 try {
                     l.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
-                    if (singleton==null)
+                    if (singleton==null){
                         singleton=new OctaveManager(configuration);
+                        // init the scheduler
+                        OctaveProcessScheduler.getOctaveProcessScheduler(null);
+                    }
                 }
                 catch(InterruptedException ie){
                     if (LOGGER.isLoggable(Level.SEVERE))
@@ -123,8 +126,11 @@ public final class OctaveManager{
             if (singleton==null){
                 try {
                     l.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
-                    if (singleton==null)
+                    if (singleton==null){
                         singleton=new OctaveManager(configuration);
+                        // init the scheduler
+                        OctaveProcessScheduler.getOctaveProcessScheduler(es);
+                    }
                 }
                 catch(InterruptedException ie){
                     if (LOGGER.isLoggable(Level.SEVERE))

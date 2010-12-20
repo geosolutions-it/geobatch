@@ -7,6 +7,7 @@ import it.geosolutions.geobatch.octave.OctaveConfiguration;
 import it.geosolutions.geobatch.octave.OctaveEnv;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveManager;
+import it.geosolutions.geobatch.octave.OctaveProcessScheduler;
 import it.geosolutions.geobatch.octave.SheetPreprocessor;
 
 import java.util.EventObject;
@@ -92,6 +93,7 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
                 
                 //OctaveManager manager=OctaveManager.getOctaveManager(new OctaveConfiguration(config.getWorkingDirectory()));
                 //manager.enqueue(env);
+                
                 OctaveManager.process(env);
 
             } // ev==null

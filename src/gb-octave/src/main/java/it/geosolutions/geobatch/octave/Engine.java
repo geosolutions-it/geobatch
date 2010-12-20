@@ -45,8 +45,6 @@ import dk.ange.octave.type.OctaveObject;
  */
 public class Engine{
     
-    private final static int TIME_TO_WAIT = 100*60; // in seconds == 100 min
-    
     private final static Logger LOGGER = Logger.getLogger(Engine.class.toString());
 
     private Lock lock=null;
@@ -93,7 +91,7 @@ public class Engine{
     protected int init() throws InterruptedException{
         if (engine==null){
             try{
-                lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+                lock.tryLock(OctaveConfiguration.TIME_TO_WAIT, TimeUnit.SECONDS);
                 if (engine==null){
                     if (LOGGER.isLoggable(Level.INFO))
                         LOGGER.info("Starting octave engine");
@@ -114,7 +112,7 @@ public class Engine{
     protected void close(){
         if (engine!=null){
             try{
-                lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+                lock.tryLock(OctaveConfiguration.TIME_TO_WAIT, TimeUnit.SECONDS);
                 if (engine!=null) {
                     if (LOGGER.isLoggable(Level.INFO))
                         LOGGER.info("Stopping octave engine");
@@ -140,7 +138,7 @@ public class Engine{
     private void eval(String run){
         if (engine!=null){
             try{
-                lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+                lock.tryLock(OctaveConfiguration.TIME_TO_WAIT, TimeUnit.SECONDS);
                 if (engine!=null)
                     engine.eval(run);
                 else
@@ -186,7 +184,7 @@ public class Engine{
         try{
             if (engine==null)
                 init();
-            lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+            lock.tryLock(OctaveConfiguration.TIME_TO_WAIT, TimeUnit.SECONDS);
             // increase the load of this engine
             load.incrementAndGet();
 /*
@@ -341,7 +339,7 @@ if (sheet.getDefinitions().size()==2){
         try {
             if (engine==null)
                 init();
-            lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+            lock.tryLock(OctaveConfiguration.TIME_TO_WAIT, TimeUnit.SECONDS);
             if (LOGGER.isLoggable(Level.FINER))
                 LOGGER.finer(
                     "Checking existance of function \""+_f+"\" in the octaev environment...");
@@ -408,7 +406,7 @@ if (sheet.getDefinitions().size()==2){
         if (engine==null)
             throw new Exception("Engine is not up");
         try{
-            lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+            lock.tryLock(OctaveConfiguration.TIME_TO_WAIT, TimeUnit.SECONDS);
             this.eval("clear \'"+def.getName()+"\';");
         }
         catch (InterruptedException ie){
@@ -433,7 +431,7 @@ if (sheet.getDefinitions().size()==2){
      */
     protected void put(List<SerializableOctaveObject<?>> list){
         try{
-            lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+            lock.tryLock(OctaveConfiguration.TIME_TO_WAIT, TimeUnit.SECONDS);
             if (engine==null)
                 init();
             // fill in serialized values into octave (variable definition)
@@ -467,7 +465,7 @@ if (sheet.getDefinitions().size()==2){
         // returning
         List<OctaveObject> ret=new ArrayList<OctaveObject>();
         try{
-            lock.tryLock(TIME_TO_WAIT, TimeUnit.SECONDS);
+            lock.tryLock(OctaveConfiguration.TIME_TO_WAIT, TimeUnit.SECONDS);
             int size =list.size();
             int i=0;
             // store results
