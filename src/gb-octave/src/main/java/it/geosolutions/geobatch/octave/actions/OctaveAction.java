@@ -3,7 +3,6 @@ package it.geosolutions.geobatch.octave.actions;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.octave.Engine;
 import it.geosolutions.geobatch.octave.OctaveConfiguration;
 import it.geosolutions.geobatch.octave.OctaveEnv;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
@@ -33,13 +32,15 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
     @SuppressWarnings("unchecked")
     public OctaveAction(OctaveActionConfiguration actionConfiguration) {
         super(actionConfiguration);
-        env=(OctaveEnv<OctaveExecutableSheet>)actionConfiguration.getEnv().clone();
+        if ((env=actionConfiguration.getEnv())!=null)
+            env=(OctaveEnv<OctaveExecutableSheet>)env.clone();
+        else
+        {
+            if(LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("Bad configuration, cannot find Octave environment");
+        }
+            
         config=actionConfiguration;
-        
-     // TODO implement a M.D.POJO
-        //run thread manually
-        //if (!oct.isAlive())
-        //    oct.start();
     }
     
     /**
@@ -89,19 +90,9 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
                 if(LOGGER.isLoggable(Level.INFO))
                     LOGGER.info("Passing Octave sheet to Octave process... ");
                 
-// TODO ACTUALLY we temporarily skip the THREAD OR JMPOJO interface.
-//                int size=env.size();
-//                int index=0;
-//                while (index<size){
-//                    /**
-//                     * exec is synchronized and can be called
-//                     * without warnings
-//                     */
-//                    engine.exec(env.getSheet(index++), true);
-//                }
-                
-                OctaveManager manager=OctaveManager.getOctaveManager(new OctaveConfiguration(config.getWorkingDirectory()));
-                manager.enqueue(env);
+                //OctaveManager manager=OctaveManager.getOctaveManager(new OctaveConfiguration(config.getWorkingDirectory()));
+                //manager.enqueue(env);
+                OctaveManager.process(env);
 
             } // ev==null
             else {
