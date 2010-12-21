@@ -91,9 +91,6 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
                 if(LOGGER.isLoggable(Level.INFO))
                     LOGGER.info("Passing Octave sheet to Octave process... ");
                 
-                //OctaveManager manager=OctaveManager.getOctaveManager(new OctaveConfiguration(config.getWorkingDirectory()));
-                //manager.enqueue(env);
-                
                 OctaveManager.process(env);
 
             } // ev==null

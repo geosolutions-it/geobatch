@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -42,14 +43,20 @@ import dk.ange.octave.type.OctaveObject;
  * @author Carlo Cancellieri, ccancellieri AT geo-solutions.it, GeoSolutions
  */
 public final class OctaveManager{
+    
+    private final static Logger LOGGER = Logger.getLogger(OctaveManager.class.toString());
 
     private final static int TIME_TO_WAIT = 100*60; // in seconds == 100 min
     
-    private static OctaveManager singleton=null;
-    
     private final static Lock l=new ReentrantLock();
+    
+    private static boolean notExit=true;
+    
+    private static boolean initted=false;
+    
+    private static OctaveManager singleton=null;
 
-    private final static Logger LOGGER = Logger.getLogger(OctaveManager.class.toString());
+    
     
     /**
      * blocking execution queue
@@ -64,18 +71,6 @@ public final class OctaveManager{
     // decide if the executorService should be handled (true) or not
     private static boolean manageService;
     
-//    /**
-//     * never call this method
-//     * @deprecated
-//     * @return
-//     * @throws Exception
-//     */
-//    public static OctaveManager getOctaveManager() throws Exception {
-//        if (singleton==null){
-//            throw new Exception("Unable to pass a not initialized object");
-//        }
-//        return singleton;
-//    }
     
     public static OctaveManager getOctaveManager(OctaveConfiguration configuration) throws Exception {
         try {
@@ -168,24 +163,20 @@ public final class OctaveManager{
         inQueue=new ArrayBlockingQueue<OctaveEnv<OctaveExecutableSheet>>(configuration.getExecutionQueueSize());
         out=new ConcurrentHashMap<Long,Future<List<OctaveObject>>>(configuration.getExecutionQueueSize());
         executorService = Executors.newFixedThreadPool(configuration.getExecutionQueueSize());
-        // the service is owned by this object so we should manage it 
+        // the service is owned by this object so we should manage it
         manageService=true;
+        
+        initted=true;
+        notExit=true;
         
         Thread t=new Thread(new Runnable() {
             public void run() {
                 try {
                     startup();
-                } catch (Exception e) {
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe(e.getLocalizedMessage());
                 }
                 finally{
-                    try {
+                    if (initted)
                         shutdown();
-                    } catch (InterruptedException e) {
-                        if (LOGGER.isLoggable(Level.SEVERE))
-                            LOGGER.severe(e.getLocalizedMessage());
-                    }
                 }
             }
         });
@@ -205,21 +196,18 @@ public final class OctaveManager{
         executorService = es;
         // the service is created externally 
         manageService=false;
+        
+        initted=true;
+        notExit=true;
+        
         Thread t=new Thread(new Runnable() {
             public void run() {
                 try {
                     startup();
-                } catch (Exception e) {
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe(e.getLocalizedMessage());
                 }
                 finally{
-                    try {
+                    if (initted)
                         shutdown();
-                    } catch (InterruptedException e) {
-                        if (LOGGER.isLoggable(Level.SEVERE))
-                            LOGGER.severe(e.getLocalizedMessage());
-                    }
                 }
             }
         });
@@ -264,38 +252,118 @@ public final class OctaveManager{
      * Call this method to stop the manager 
      * @throws InterruptedException
      */
-    public void shutdown() throws InterruptedException{
-        inQueue.put(null);
+    public void shutdown(){
+        exit();
+        clear();
+    }
+    
+    /**
+     * clear all the state variables resetting 
+     * this singleton state
+     */
+    private void clear(){
+        initted=false;
+        
+        if (manageService){
+            synchronized (executorService) {
+                executorService.shutdown();
+                executorService=null;
+            }  
+        }
+        
+        synchronized (singleton) {
+            singleton=null;
+        }
+        
+        inQueue.clear();
+        out.clear();
+    }
+    
+    /**
+     * make the thread exits from the cycle
+     */
+    private void exit(){
+        notExit=false; //exit
+        /*
+         * add fake empty object to the queue to make it start the check
+         */
+        OctaveEnv<OctaveExecutableSheet> exit_env=new OctaveEnv<OctaveExecutableSheet>();
+        try {
+            inQueue.put(exit_env);
+        } catch (InterruptedException e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("OctaveManager engine process exit abnormally\n"
+                        +e.getLocalizedMessage());
+        }
     }
     
     // this is the method to call to start the executorService
-    private void startup() throws Exception {
+    private void startup(){
         OctaveEnv<OctaveExecutableSheet> env=null;
-        while ((env=inQueue.take())!=null){
+        try{
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("OctaveManager starting up...");
+            //wait for an new object
+            while ((env=inQueue.take())!=null && notExit){
+                
+                OctaveExecutor task = null;
             
-            //get Asynch task from scheduler
-            OctaveExecutor task = OctaveProcessScheduler.getProcessor(env);
-            //new OctaveExecutor(env, new Engine());
-            
-            //wrap using a future task
-            Future<List<OctaveObject>> result = executorService.submit(task);
-            
-            // put the task into the map
-            out.put(env.getUniqueID(), result);
-            
-            synchronized (env) {
-                // notify the waiting thread
-                env.notify();
-            }
-        } // while !shutdown()
-/*
- * TODO some notify on the inQueue to make shutdown able to
- * set to null all the members. (something like a C++ dtor()).
- * @note: add a inQueue.wait() into shutdown before set to null all the
- * members! 
- */
-        // shutdown was called
-        if (manageService)
-            executorService.shutdown();
+                try{
+                    //get Asynch task from scheduler
+                    task=OctaveProcessScheduler.getProcessor(env);
+                }
+                catch(InterruptedException ie){
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.severe("OctaveManager engine process exit abnormally\n"
+                                +ie.getLocalizedMessage());
+                    // octave engine process exit abnormally
+                    shutdown();
+                }
+                
+                Future<List<OctaveObject>> result=null;
+                try{
+                    //wrap using a future task
+                    result = executorService.submit(task);
+                }
+                catch(RejectedExecutionException ree){
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.severe("OctaveManager task cannot be scheduled for execution\n"
+                                +ree.getLocalizedMessage());
+                    //if task cannot be scheduled for execution
+                    shutdown();
+                }
+                catch(NullPointerException npe){
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.severe("OctaveManager passed task is null\n"+npe.getLocalizedMessage());
+                    //The passed task is null
+                    shutdown();
+                }
+                try {
+                // put the task into the map
+                out.put(env.getUniqueID(), result);
+                }
+                catch(NullPointerException npe){
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.severe("OctaveManager the key or value is null\n"+npe.getLocalizedMessage());
+                    //NullPointerException - if the key or value is null.
+                    shutdown();
+                }
+                synchronized (env) {
+                    // notify the waiting thread
+                    env.notify();
+                }
+            } // while !shutdown()
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("OctaveManager is exiting");
+        }
+        catch(InterruptedException ie){
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("OctaveManager interrupted while waiting\n"
+                        +ie.getLocalizedMessage());
+//InterruptedException - if interrupted while waiting
+        }
+        finally{
+            clear();
+        }
     }
 }

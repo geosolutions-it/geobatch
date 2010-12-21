@@ -12,9 +12,7 @@ import java.util.logging.Logger;
 
 public class OctaveProcessScheduler implements Runnable{
     private final static Logger LOGGER = Logger.getLogger(OctaveProcessScheduler.class.toString());
-    /*
- * TODO we should run a daemon thread to make clean/close operation on this list
-     */
+    
     private static List<Engine> engineList=new ArrayList<Engine>(OctaveConfiguration.getProcessorsSz());
     
     private static OctaveProcessScheduler singleton=null;
@@ -23,6 +21,10 @@ public class OctaveProcessScheduler implements Runnable{
     
     private static boolean initted=false;
     
+    /**
+     * Private constructor needed to implement
+     * singleton pattern
+     */
     private OctaveProcessScheduler(){
         
     }
@@ -109,6 +111,8 @@ public class OctaveProcessScheduler implements Runnable{
 
     public void run() {
         boolean notExit=true;
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("OctaveProcessScheduler starting up...");
         while (notExit){
             try {
 // DEBUG
@@ -148,8 +152,10 @@ public class OctaveProcessScheduler implements Runnable{
                     initted=false;
                     singleton=null;
                 }
-            }
-        }
+            } // sync on engineList
+        } // while noExit
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("OctaveProcessScheduler shutdown...");
 // DEBUG
 // System.out.println("Shutdown done, bye!");
     }
