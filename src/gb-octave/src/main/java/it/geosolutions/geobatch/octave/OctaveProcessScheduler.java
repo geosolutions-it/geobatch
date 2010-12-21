@@ -49,7 +49,8 @@ public class OctaveProcessScheduler implements Runnable{
                     initted=true;
                     if (LOGGER.isLoggable(Level.INFO))
                         LOGGER.info("OctaveProcessScheduler is up and running");
-System.out.println("OctaveProcessScheduler is up and running");
+// DEBUG
+//System.out.println("OctaveProcessScheduler is up and running");
                 }
             } catch (InterruptedException e) {
                 if (LOGGER.isLoggable(Level.SEVERE))
@@ -110,9 +111,11 @@ System.out.println("OctaveProcessScheduler is up and running");
         boolean notExit=true;
         while (notExit){
             try {
-System.out.println("Sleeping");
+// DEBUG
+//System.out.println("Sleeping");
                 Thread.sleep(10000);
-System.out.println("Starting");
+// DEBUG
+//System.out.println("Starting");
             } catch (InterruptedException e) {
                 if (LOGGER.isLoggable(Level.SEVERE))
                     LOGGER.severe(e.getLocalizedMessage());
@@ -128,7 +131,8 @@ System.out.println("Starting");
                     if (load==0){
                         engineList.remove(next_eng);
                         next_eng.close();
-System.out.println("Removing engine");
+// DEBUG
+//System.out.println("Removing engine");
                         next_eng=null;
                     }
                 }
@@ -138,14 +142,16 @@ System.out.println("Removing engine");
                  * to a lower load process...
                  */
                 if (engineList.size()==0){
-System.out.println("starting Shutdown");
+// DEBUG
+// System.out.println("starting Shutdown");
                     notExit=false;
                     initted=false;
                     singleton=null;
                 }
             }
         }
-System.out.println("Shutdown done, bye!");
+// DEBUG
+// System.out.println("Shutdown done, bye!");
     }
 
 }
