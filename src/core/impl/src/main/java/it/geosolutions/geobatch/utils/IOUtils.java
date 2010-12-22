@@ -1106,8 +1106,6 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
 
                 out.closeEntry();
 
-                in.close();
-                in = null;
 
             } catch (IOException e) {
                 if (LOGGER.isLoggable(Level.SEVERE))

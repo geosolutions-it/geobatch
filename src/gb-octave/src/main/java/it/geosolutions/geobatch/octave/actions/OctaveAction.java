@@ -7,11 +7,12 @@ import it.geosolutions.geobatch.octave.OctaveConfiguration;
 import it.geosolutions.geobatch.octave.OctaveEnv;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveManager;
-import it.geosolutions.geobatch.octave.OctaveProcessScheduler;
 import it.geosolutions.geobatch.octave.SheetPreprocessor;
 
 import java.util.EventObject;
 import java.util.Queue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -90,8 +91,10 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
                 
                 if(LOGGER.isLoggable(Level.INFO))
                     LOGGER.info("Passing Octave sheet to Octave process... ");
+//TODO set number of the Thread pool or use the Catalog thread pool
+                ExecutorService es=Executors.newFixedThreadPool(OctaveConfiguration.getExecutionQueueSize());
                 
-                OctaveManager.process(env);
+                OctaveManager.process(env,es);
 
             } // ev==null
             else {

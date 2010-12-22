@@ -21,66 +21,234 @@
  */
 package it.geosolutions.geobatch.octave;
 
+import it.geosolutions.geobatch.octave.tools.system.Property;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 
-/*
- * @author Carlo Cancellieri
+/**
+ * This class is used to define most of the values needed to handle
+ * the octave multiprocess platform.
+ * 
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
 @XStreamAlias("OctaveActionConfiguration")
 @XStreamInclude({OctaveFunctionFile.class})
 public class OctaveConfiguration {
     
+    private static Lock l=new ReentrantLock(true);
+    
+    private static OctaveConfiguration singleton=null;
+    
     private final static Logger LOGGER = Logger.getLogger(OctaveConfiguration.class.toString());
     
-    public final static int TIME_TO_WAIT = 100*60; // in seconds == 100 min
+    private static int timeToWait = 100*60; // in seconds == 100 min
+    
+    private static int executionQueueSize=100;
     
     // Working directory
-    private String workingDirectory;
+    private static String workingDirectory=null;
     
-    private static int executionQueueSz=100;
+    private static ExecutorService executorService=null;
     
     private static int processors=0;
     
-    static {
-        String arg=System.getProperty("OctaveConfiguration.processors");
-        if (arg!=null){
+    static {   
+        // init statically configured variables
+        init();
+    }
+        
+    
+    public static OctaveConfiguration getOctaveConfiguration(String workingdir, ExecutorService es){
+        if (singleton==null){
             try {
-                processors=Integer.parseInt(arg);
+                l.tryLock(OctaveConfiguration.getTimeToWait(),TimeUnit.SECONDS);
+                if (singleton==null){
+                    singleton=new OctaveConfiguration(workingdir, es);
+                }
+            } catch (InterruptedException e) {
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe(e.getLocalizedMessage());
             }
-            catch (NumberFormatException nfe){
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning("OctaveConfiguration.processors: "+nfe.getLocalizedMessage());
+            finally {
+                l.unlock();
             }
         }
+        return singleton;
+    }
+    
+    private static void init(){
+        /*
+         * configuring number of processors
+         */
         
+        Integer p=null;
+        try {
+            p=Property.getIntProperty("OctaveConfiguration.processors");        
+        }
+        catch (NullPointerException npe){
+            if (LOGGER.isLoggable(Level.WARNING))
+                LOGGER.warning("OctaveConfiguration.processors: "+npe.getLocalizedMessage());
+        }
+        if (p!=null){
+            processors=p;
+            
+        }
         if (processors<=0){
             Runtime r=Runtime.getRuntime();
             processors=r.availableProcessors();
         }
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("OctaveConfiguration.processors: "+processors);
+//System.out.println("OctaveConfiguration.processors: "+processors);
+        /*
+         * configuring ExecutionQueueSize
+         */
+        p=null;
+        try {
+            p=Property.getIntProperty("OctaveConfiguration.executionQueueSize");        
+        }
+        catch (NullPointerException npe){
+            if (LOGGER.isLoggable(Level.WARNING))
+                LOGGER.warning("OctaveConfiguration.executionQueueSize: "+npe.getLocalizedMessage());
+        }
+        if (p!=null){
+            executionQueueSize=p;
+        }
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("OctaveConfiguration.executionQueueSize: "+executionQueueSize);
+//System.out.println("OctaveConfiguration.executionQueueSize: "+executionQueueSize);
+        
+        /*
+         * configuring TIME_TO_WAIT
+         * time in seconds used for various lock.tryToLock
+         */
+        p=null;
+        try {
+            p=Property.getIntProperty("OctaveConfiguration.timeToWait");        
+        }
+        catch (NullPointerException npe){
+            if (LOGGER.isLoggable(Level.WARNING))
+                LOGGER.warning("OctaveConfiguration.timeToWait: "+npe.getLocalizedMessage());
+        }
+        if (p!=null){
+            timeToWait=p;
+        }
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("OctaveConfiguration.timeToWait: "+timeToWait);
+        
+        /*
+         * configuring workingDirectory
+         * time in seconds used for various lock.tryToLock
+         */
+        String arg=System.getProperty("OctaveConfiguration.workingDirectory");
+        if (arg!=null){
+                workingDirectory=arg;
+        }
+        else
+            if (LOGGER.isLoggable(Level.WARNING))
+                LOGGER.warning("OctaveConfiguration.workingDirectory actually not set.");
+        
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("OctaveConfiguration.workingDirectory: "+workingDirectory);
+    }
+
+    /**
+     * Constr
+     * @param workingdir
+     * @param es
+     */
+    private OctaveConfiguration(String workingdir, ExecutorService es) {
+        if (workingdir!=null){
+            if (workingDirectory!=null){
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.warning("OctaveConfiguration.workingDirectory is set by command line argument\n" +
+                    		"this will override the code set.\n No changes will be applied.\n" +
+                    		"Working dir: "+workingDirectory);
+            }
+            else
+                setWorkingDirectory(workingdir);
+        }
+        else {
+            if (workingDirectory==null){
+                String message="OctaveConfiguration.workingDirectory is not set by command line nor by argument";
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe(message);
+                throw new NullPointerException(message);
+            }
+        }
+        if (executorService==null){
+            if (es!=null){
+                executorService=es;
+                if (LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("OctaveConfiguration.executorService is set.");
+            }
+            else {
+                String message="OctaveConfiguration.executorService can't be null";
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe(message);
+                throw new NullPointerException(message);
+            }
+        }
+        else {
+            if (executorService.isShutdown()){
+                if (es!=null){
+                    executorService=es;
+                    if (LOGGER.isLoggable(Level.INFO))
+                        LOGGER.info("OctaveConfiguration.executorService is set.");
+                }
+                else {
+                    String message="OctaveConfiguration.executorService can't be null";
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.severe(message);
+                    throw new NullPointerException(message);
+                }
+            }
+            else
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.warning("OctaveConfiguration.executorService is already set.\nNo modifications are performed.");
+        }
     }
     
-    public final static int getProcessorsSz(){
+    public final static int getTimeToWait(){
+        return timeToWait;
+    }
+    
+    public final static int getProcessors(){
         return processors;
     }
     
-    public OctaveConfiguration(String workingdir) {
-        workingDirectory=workingdir;
+    public final static int getExecutionQueueSize(){
+        return executionQueueSize;
     }
     
-    public final int getExecutionQueueSize(){
-        return executionQueueSz;
-    }
-    
-    public final String getWorkingDirectory() {
+    public final static String getWorkingDirectory() {
         return workingDirectory;
     }
-
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
+    
+    public final ExecutorService getExecutorService(){
+        return executorService;
     }
+
+    public void setWorkingDirectory(String workingDir) {
+        if (workingDirectory!=null){
+            if (LOGGER.isLoggable(Level.WARNING))
+                LOGGER.warning("OctaveConfiguration.workingDirectory: overriding working dir");
+        }
+        else {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("OctaveConfiguration.workingDirectory: setting working dir");
+        }
+        workingDirectory = workingDir;
+    }
+    
+    
 }

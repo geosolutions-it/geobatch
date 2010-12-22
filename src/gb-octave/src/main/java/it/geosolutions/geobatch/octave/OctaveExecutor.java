@@ -105,19 +105,19 @@ public class OctaveExecutor implements Callable<List<OctaveObject>> {
          */
         OctaveExecutableSheet es=null;
         int exit=1;
-System.out.println("Octave extecutor starting");
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("Octave extecutor started");
         while (exit!=0 && env.hasNext()){
             // extract next ExecutableSheet
             es=env.pop();
             try {
                 if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine("Octave extracted a new OctaveExecutableSheet from env "+env.getUniqueID());
+                    LOGGER.fine("Octave extracted a new ExecutableSheet from env "+env.getUniqueID());
                 
                 exit=engine.exec(es, true);
 
                 if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine("Octave extecuted sheet with exit status: "
-                        +((exit>=0)?"GOOD":"BED"));
+                    LOGGER.fine("Octave extecuted sheet with exit status: "+((exit>=0)?"GOOD":"BED"));
                 
             }
             catch (Exception e) {
@@ -125,11 +125,9 @@ System.out.println("Octave extecutor starting");
                     LOGGER.severe("Octave throws an exception: "+e.getLocalizedMessage());
                 throw e;
             }
-
-            if (LOGGER.isLoggable(Level.FINE))
-                LOGGER.fine("Octave process exiting");
         } // comm!="quit"
-        
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("Octave process exiting");
 //        if (exit>0)
             return engine.getResults();
 //        else

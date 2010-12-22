@@ -30,8 +30,6 @@ import dk.ange.octave.exception.OctaveException;
 
 public abstract class SheetBuilder {
     
-   
-    
     /**
      * Generate a string functions serializing informations extracted
      * from returns ad arguments building something like:
