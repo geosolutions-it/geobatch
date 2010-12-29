@@ -30,7 +30,7 @@ import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.MetocConfigurationAction;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 
 import java.awt.image.Raster;
@@ -191,7 +191,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction
             // Initializing input variables
             //
             // ////////////////////////////////////////////////////////////////////
-            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+            final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
                     new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
             // ////////////////////////////////////////////////////////////////////

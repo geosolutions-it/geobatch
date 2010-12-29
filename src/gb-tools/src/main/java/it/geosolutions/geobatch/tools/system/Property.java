@@ -1,4 +1,4 @@
-package it.geosolutions.geobatch.octave.tools.system;
+package it.geosolutions.geobatch.tools.system;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +14,7 @@ public final class Property {
      * @param arg the system property to parse
      * @return an integer corresponding to the value of the property
      */
-    public static Integer getIntProperty(String arg) throws NullPointerException {
+    public static Integer getIntProperty(final String arg) throws NullPointerException {
         String value;
         if (arg!=null)
             value=System.getProperty(arg);
@@ -36,5 +36,33 @@ public final class Property {
         }
         
         return ret;
+    }
+    
+    /**
+     * Return the Integer value of the passed property logging
+     * accordingly. Use this function if you do not want to handle
+     * Exceptions.
+     * @param property the string key representing the wanted value.
+     * @return an Integer representing the value or null if it is
+     * unavailable.
+     * @see Property.getIntProperty()
+     */
+    public static Integer setIntProperty(final String property){
+        Integer p=null;
+        try {
+            p=Property.getIntProperty("Property.getIntProperty: "+property);
+        }
+        catch (NullPointerException npe){
+            if (LOGGER.isLoggable(Level.WARNING))
+                LOGGER.warning("Property.getIntProperty: "+property+": "+npe.getLocalizedMessage());
+        }
+        
+        if (p!=null){
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("Property.getIntProperty: "+property+": "+p);
+            return p;
+        }
+        else
+            return null;
     }
 }

@@ -27,6 +27,7 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
@@ -43,20 +44,10 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- GEOBATCH lib -->
-<!--        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-core-impl</artifactId>
-        </dependency>-->
-
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-alias-registry</artifactId>
         </dependency>
-<!--        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-fs-catalog</artifactId>
-        </dependency>-->
         
         <dependency>
         	<groupId>it.geosolutions</groupId>
@@ -67,6 +58,14 @@
         	<groupId>it.geosolutions</groupId>
     		<artifactId>gb-action-geoserver-restclient</artifactId>
         </dependency>
+        
+        <!-- ============================== -->
+        <!--            tools               -->
+        <!-- ============================== -->
+        <dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-tools</artifactId>
+		</dependency>
 
     </dependencies>
 </project>

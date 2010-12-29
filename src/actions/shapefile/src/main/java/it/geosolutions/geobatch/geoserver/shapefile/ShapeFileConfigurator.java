@@ -28,7 +28,9 @@ import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Extractor;
+import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -98,7 +100,7 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
             // Initializing input variables
             //
             // ////////////////////////////////////////////////////////////////////
-            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+            final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
                     new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
             // ////////////////////////////////////////////////////////////////////
@@ -305,7 +307,7 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
                 throw new IOException("Can't create temp dir '" + tempOutDir.getAbsolutePath()
                         + "'");
             }
-            List<File> fileList = IOUtils.unzipFlat(source, tempOutDir);
+            List<File> fileList = Extractor.unzipFlat(source, tempOutDir);
             if (fileList == null) {
                 throw new Exception("Error unzipping file");
             }

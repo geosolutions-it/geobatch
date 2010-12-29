@@ -1,6 +1,6 @@
 package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
-import it.geosolutions.geobatch.octave.tools.file.processor.FilterConfiguration;
+import it.geosolutions.geobatch.action.tools.file.processor.FilterConfiguration;
 
 public class SHOMConfiguration extends FilterConfiguration {
 

@@ -29,7 +29,7 @@ import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.flow.event.generator.BaseEventGeneratorService;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +59,7 @@ public class FileBasedEventGeneratorService extends
             return false;
         final File sensedDir;
         try {
-            sensedDir = IOUtils.findLocation(configuration.getWorkingDirectory(), new File(
+            sensedDir = Path.findLocation(configuration.getWorkingDirectory(), new File(
                     ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
             if (sensedDir != null) {
                 if (sensedDir.exists() && sensedDir.isDirectory() && sensedDir.canRead()) // TODO
@@ -86,7 +86,7 @@ public class FileBasedEventGeneratorService extends
             final OsType osType = configuration.getOsType();
             final FileSystemMonitorNotifications eventType = configuration.getEventType();
             final File sensedDir;
-            sensedDir = IOUtils.findLocation(configuration.getWorkingDirectory(), new File(
+            sensedDir = Path.findLocation(configuration.getWorkingDirectory(), new File(
                     ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
             if (sensedDir != null) {
                 if (!sensedDir.exists() || !sensedDir.isDirectory() || !sensedDir.canRead()) // TODO

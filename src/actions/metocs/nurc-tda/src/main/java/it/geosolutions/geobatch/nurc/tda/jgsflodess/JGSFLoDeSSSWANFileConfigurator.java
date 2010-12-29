@@ -32,7 +32,7 @@ import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
 import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFUtilities;
 
@@ -114,7 +114,7 @@ public class JGSFLoDeSSSWANFileConfigurator extends MetocConfigurationAction<Fil
             // Initializing input variables
             //
             // ////////////////////////////////////////////////////////////////////
-            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+            final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
                     new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
             // ////////////////////////////////////////////////////////////////////
@@ -241,7 +241,7 @@ public class JGSFLoDeSSSWANFileConfigurator extends MetocConfigurationAction<Fil
             JAXBContext context = JAXBContext.newInstance(Metocs.class);
             Unmarshaller um = context.createUnmarshaller();
 
-            File metocDictionaryFile = IOUtils.findLocation(configuration.getMetocDictionaryPath(),
+            File metocDictionaryFile = Path.findLocation(configuration.getMetocDictionaryPath(),
                     new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
             Metocs metocDictionary = (Metocs) um.unmarshal(new FileReader(metocDictionaryFile));
             Map<String, Variable> foundVariables = new HashMap<String, Variable>();

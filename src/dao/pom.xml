@@ -70,6 +70,13 @@
         </profile>
         <profile>
             <id>dao.xstream</id>
+            <!--
+            <activation>
+                <property>
+                    <name>all</name>
+                </property>
+            </activation>
+            -->
             <modules>
                 <module>xstream</module>
             </modules>

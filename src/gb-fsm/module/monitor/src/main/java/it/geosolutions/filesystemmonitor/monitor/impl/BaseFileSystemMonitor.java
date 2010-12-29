@@ -7,7 +7,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitor;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
+
 
 /**
  * @author Alessio Fabiani, GeoSolutions

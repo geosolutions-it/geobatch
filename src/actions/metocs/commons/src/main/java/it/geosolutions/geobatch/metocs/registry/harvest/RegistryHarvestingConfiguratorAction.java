@@ -33,7 +33,7 @@ import it.geosolutions.geobatch.metocs.registry.RegistryConfiguratorAction;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
 import it.geosolutions.geobatch.metocs.utils.io.rest.PublishingRestletGlobalConfig;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -129,7 +129,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 // Initializing input variables
                 //
                 // ////////////////////////////////////////////////////////////////////
-                final File workingDir = IOUtils
+                final File workingDir = Path
                         .findLocation(configuration.getWorkingDirectory(), new File(
                                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
@@ -187,7 +187,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 final String path = new File(inputFile.getParentFile(), props.getProperty("path"))
                         .getAbsolutePath();
 
-                final File metadataTemplate = IOUtils.findLocation(configuration
+                final File metadataTemplate = Path.findLocation(configuration
                         .getMetocHarvesterXMLTemplatePath(), new File(
                         ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
@@ -249,7 +249,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
         JAXBContext context = JAXBContext.newInstance(Metocs.class);
         Unmarshaller um = context.createUnmarshaller();
 
-        File metocDictionaryFile = IOUtils.findLocation(configuration.getMetocDictionaryPath(),
+        File metocDictionaryFile = Path.findLocation(configuration.getMetocDictionaryPath(),
                 new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
         Metocs metocDictionary = (Metocs) um.unmarshal(new FileReader(metocDictionaryFile));
 

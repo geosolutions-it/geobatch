@@ -38,7 +38,7 @@ import it.geosolutions.geobatch.flow.event.generator.EventGeneratorService;
 import it.geosolutions.geobatch.flow.event.generator.FlowEventListener;
 import it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGenerator;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +52,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  * 
@@ -133,7 +134,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         if (baseDir == null)
             throw new IllegalArgumentException("Working dir is null");
 
-        this.workingDirectory = IOUtils.findLocation(configuration.getWorkingDirectory(), new File(
+        this.workingDirectory = Path.findLocation(configuration.getWorkingDirectory(), new File(
                 baseDir));
 
         if (workingDirectory == null || !workingDirectory.exists() || !workingDirectory.canWrite()

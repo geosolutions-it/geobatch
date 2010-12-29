@@ -43,7 +43,7 @@ public class OctaveAliasRegistrar extends AliasRegistrar {
     public OctaveAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
         registry.putAlias(
-                "OctaveActionConfiguration",OctaveActionConfiguration.class);
+                "OctaveConfiguration",OctaveActionConfiguration.class);
         
         registry.putAlias(
                 "octave",OctaveEnv.class);

@@ -10,7 +10,7 @@ Modify the module's pom.xml, adding this dep:
 
     <dependency>
         <groupId>it.geosolutions</groupId>
-        <artifactId>gb-registry</artifactId>
+        <artifactId>gb-alias-registry</artifactId>
     </dependency>
 
 ==================================================

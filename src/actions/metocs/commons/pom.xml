@@ -51,6 +51,11 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-tools</artifactId>
+        </dependency>
+	
 		<!-- GeoBatch CORE -->
 		<dependency>
 			<groupId>it.geosolutions</groupId>
@@ -211,6 +216,7 @@
 		</dependency>
 
 		<!-- Utils -->
+		
 		<dependency>
 			<groupId>it.geosolutions</groupId>
 			<artifactId>COAMPSParser</artifactId>
@@ -244,7 +250,6 @@
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.3.1</version>
 		</dependency>
 
 		<!-- threadsafe concurrent datastructures -->

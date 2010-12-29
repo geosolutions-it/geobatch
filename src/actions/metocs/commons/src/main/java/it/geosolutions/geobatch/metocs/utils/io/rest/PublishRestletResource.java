@@ -1,6 +1,6 @@
 package it.geosolutions.geobatch.metocs.utils.io.rest;
 
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.IOUtils;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -108,7 +108,7 @@ public class PublishRestletResource extends Resource {
             // search for the base directory
             // File workingDir=null;
             // try {
-            // workingDir = IOUtils.findLocation(config.getRootDirectory(),
+            // workingDir = Path.findLocation(config.getRootDirectory(),
             // new File(((FileBaseCatalog)
             // CatalogHolder.getCatalog()).getBaseDirectory()));
             // } catch (IOException e) {

@@ -29,7 +29,7 @@ import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -131,7 +131,7 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements
             try {
 
                 if (xslPath != null && xslPath.trim().length() > 0) {
-                    xslFile = IOUtils.findLocation(xslPath, new File(
+                    xslFile = Path.findLocation(xslPath, new File(
                             ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
                 }
                 if (xslFile == null || !xslFile.exists())
@@ -142,7 +142,7 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements
                 String outputFile = null;
                 if (useDefaultScript) {
                     if (defaultScriptPath != null && defaultScriptPath.trim().length() > 0) {
-                        xmlFile = IOUtils.findLocation(defaultScriptPath, new File(
+                        xmlFile = Path.findLocation(defaultScriptPath, new File(
                                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
                         final File outXmlFile = File.createTempFile("script", ".xml");
                         outXmlFile.deleteOnExit();
@@ -190,7 +190,7 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements
                 // Setting Error logging
                 final String errorPath = configuration.getErrorFile();
                 if (errorPath != null && errorPath.trim().length() > 0) {
-                    File errorFile = IOUtils.findLocation(errorPath, new File(
+                    File errorFile = Path.findLocation(errorPath, new File(
                             ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
                     if (errorFile != null) {
                         if (!errorFile.exists()) {
@@ -233,7 +233,7 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements
                                     + configuration.getOutputName().substring(
                                             configuration.getOutputName().indexOf(".")));
                         } else {
-                            output = IOUtils.findLocation(configuration.getOutput(), inputFile
+                            output = Path.findLocation(configuration.getOutput(), inputFile
                                     .getParentFile());
                             output = new File(output, FilenameUtils
                                     .getBaseName(inputFile.getName())

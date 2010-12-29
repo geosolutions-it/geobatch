@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.octave;
 
-import it.geosolutions.geobatch.octave.tools.system.Property;
+import it.geosolutions.geobatch.tools.system.Property;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +40,7 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
-@XStreamAlias("OctaveActionConfiguration")
+@XStreamAlias("OctaveConfiguration")
 @XStreamInclude({OctaveFunctionFile.class})
 public class OctaveConfiguration {
     
@@ -91,40 +91,43 @@ public class OctaveConfiguration {
          */
         
         Integer p=null;
+        String property="OctaveConfiguration.processors";
         try {
-            p=Property.getIntProperty("OctaveConfiguration.processors");        
+            p=Property.getIntProperty(property);
         }
         catch (NullPointerException npe){
             if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("OctaveConfiguration.processors: "+npe.getLocalizedMessage());
+                LOGGER.warning(property+": "+npe.getLocalizedMessage());
         }
         if (p!=null){
             processors=p;
-            
         }
         if (processors<=0){
             Runtime r=Runtime.getRuntime();
             processors=r.availableProcessors();
         }
+        
         if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("OctaveConfiguration.processors: "+processors);
+            LOGGER.info(property+": "+processors);
 //System.out.println("OctaveConfiguration.processors: "+processors);
         /*
          * configuring ExecutionQueueSize
          */
         p=null;
+        property="OctaveConfiguration.executionQueueSize";
         try {
-            p=Property.getIntProperty("OctaveConfiguration.executionQueueSize");        
+            p=Property.getIntProperty(property);        
         }
         catch (NullPointerException npe){
             if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("OctaveConfiguration.executionQueueSize: "+npe.getLocalizedMessage());
+                LOGGER.warning(property+" :"+npe.getLocalizedMessage());
         }
         if (p!=null){
             executionQueueSize=p;
         }
         if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("OctaveConfiguration.executionQueueSize: "+executionQueueSize);
+            LOGGER.info(property+": "+executionQueueSize);
+        
 //System.out.println("OctaveConfiguration.executionQueueSize: "+executionQueueSize);
         
         /*
@@ -132,33 +135,35 @@ public class OctaveConfiguration {
          * time in seconds used for various lock.tryToLock
          */
         p=null;
+        property="OctaveConfiguration.timeToWait";
         try {
-            p=Property.getIntProperty("OctaveConfiguration.timeToWait");        
+            p=Property.getIntProperty(property);        
         }
         catch (NullPointerException npe){
             if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("OctaveConfiguration.timeToWait: "+npe.getLocalizedMessage());
+                LOGGER.warning(property+": "+npe.getLocalizedMessage());
         }
         if (p!=null){
             timeToWait=p;
         }
+
         if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("OctaveConfiguration.timeToWait: "+timeToWait);
-        
+            LOGGER.info(property+": "+timeToWait);
         /*
          * configuring workingDirectory
          * time in seconds used for various lock.tryToLock
          */
-        String arg=System.getProperty("OctaveConfiguration.workingDirectory");
+        property="OctaveConfiguration.workingDirectory";
+        String arg=System.getProperty(property);
         if (arg!=null){
                 workingDirectory=arg;
         }
         else
             if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("OctaveConfiguration.workingDirectory actually not set.");
+                LOGGER.warning(property+" actually not set.");
         
         if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("OctaveConfiguration.workingDirectory: "+workingDirectory);
+            LOGGER.info(property+": "+workingDirectory);
     }
 
     /**

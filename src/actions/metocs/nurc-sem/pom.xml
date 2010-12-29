@@ -47,6 +47,11 @@
 	<!--     Dependency Management                                   -->
 	<!-- =========================================================== -->
 	<dependencies>
+		<dependency>
+            <groupId>it.geosolutions</groupId>
+			<artifactId>gb-action-tools</artifactId>
+        </dependency>
+	
 	    <!-- NETCDF -->
 	    <!-- NETCDF 4.2 REQUIRE JAVA 6
 		<dependency>

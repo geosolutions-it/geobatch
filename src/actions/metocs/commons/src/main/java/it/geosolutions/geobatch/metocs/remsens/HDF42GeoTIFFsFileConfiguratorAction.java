@@ -29,7 +29,7 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,11 +50,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.Category;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.coverage.io.CoverageReadRequest;
 import org.geotools.coverage.io.CoverageResponse;
-import org.geotools.coverage.io.CoverageSource;
-import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.coverage.io.CoverageResponse.Status;
+import org.geotools.coverage.io.CoverageSource;
 import org.geotools.coverage.io.domain.RasterDatasetDomainManager.HorizontalDomain;
 import org.geotools.coverage.io.domain.RasterDatasetDomainManager.TemporalDomain;
 import org.geotools.coverage.io.driver.BaseFileDriver;
@@ -133,7 +133,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
             // Initializing input variables
             //
             // ////////////////////////////////////////////////////////////////////
-            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+            final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
                     new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
             // ////////////////////////////////////////////////////////////////////

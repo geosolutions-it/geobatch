@@ -22,11 +22,10 @@
 package it.geosolutions.geobatch.nurc.sem.wmc;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.action.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.GeneralWMCConfiguration;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.OLDimension;
@@ -51,7 +50,6 @@ import it.geosolutions.geobatch.nurc.sem.wmc.model.WMCLayer;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.WMCOnlineResource;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.WMCServer;
 import it.geosolutions.geobatch.nurc.sem.wmc.model.WMCWindow;
-import it.geosolutions.geobatch.utils.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -115,8 +113,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
             // Initializing input variables
             //
             // ////////////////////////////////////////////////////////////////////
-            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
-                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+            final File workingDir = new File(Path.getAbsolutePath(configuration.getWorkingDirectory()));
 
             // ////////////////////////////////////////////////////////////////////
             //

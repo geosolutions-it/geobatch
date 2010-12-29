@@ -75,8 +75,7 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
         </dependency>
-
-  
+        
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-api</artifactId>
@@ -185,8 +184,15 @@
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-core-impl</artifactId>
+            <version>${version}</version>
         </dependency>
-
+        
+     	<dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-tools</artifactId>
+            <version>${version}</version>
+        </dependency>
+   
     </dependencies>
 
 

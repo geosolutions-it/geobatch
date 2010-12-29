@@ -29,6 +29,14 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @todo take a look to 
+ * @see FileBasedCatalogConfiguration
+ * 
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author simone giannecchini
+ *
+ */
 public abstract class ActionConfiguration extends BaseConfiguration implements Configuration,
         Cloneable {
 
@@ -37,6 +45,31 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
     private List<ProgressListenerConfiguration> listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
 
     private boolean failIgnored = false;
+    
+    /**
+     * workingDirectory: this attribute represents the configuring directory for this flow. It can
+     * be relative to the catalog.xml directory or absolute.
+     * 
+     * Attention: the configuring directory should be different from the one containing the
+     * configuration files.
+     */
+    private String workingDirectory;
+
+    /**
+     * Getter for the workingDirectory
+     */
+    public String getWorkingDirectory() {
+        return workingDirectory;
+    }
+    
+    /**
+     * Setter for the workingDirectory.
+     * 
+     * @param workingDirectory
+     */
+    public void setWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
+    }
 
     public ActionConfiguration() {
         super();

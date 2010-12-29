@@ -112,6 +112,7 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
                         +oee.getLocalizedMessage());
         }
         catch(Exception e){
+e.printStackTrace();
             throw new ActionException(this,"Unable to run octave script:\n"
                     +e.getLocalizedMessage());
         }

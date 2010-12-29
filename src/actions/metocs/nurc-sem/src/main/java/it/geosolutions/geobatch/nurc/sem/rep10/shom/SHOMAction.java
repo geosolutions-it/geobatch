@@ -24,12 +24,12 @@ package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModel;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.geobatch.action.tools.file.processor.FilterProcessor;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.metocs.base.NetcdfEvent;
-import it.geosolutions.geobatch.octave.tools.file.Extractor;
-import it.geosolutions.geobatch.octave.tools.file.processor.FilterProcessor;
+import it.geosolutions.geobatch.tools.file.Extract;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -110,7 +110,7 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
                 String dir_name=null;
                 if ((f=fs_event.getSource())!=null) {
                     // try to extract the received file
-                    dir_name=Extractor.extract(f.getAbsolutePath());
+                    dir_name=Extract.extract(f.getAbsolutePath());
                 }
                 else
                     throw new FileNotFoundException("BAD FileSystemMonitorEvent path");
@@ -178,6 +178,7 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
                 throw new ActionException(this, ioe.getLocalizedMessage());
             }
             catch (Exception e){
+e.printStackTrace();
                 throw new ActionException(this, e.getLocalizedMessage());
             }
             finally {

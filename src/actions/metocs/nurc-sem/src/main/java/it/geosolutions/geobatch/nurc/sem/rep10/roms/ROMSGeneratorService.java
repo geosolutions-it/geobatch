@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.nurc.sem.rep10.roms;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.geobatch.action.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;
@@ -34,7 +35,7 @@ public class ROMSGeneratorService
     public boolean canCreateAction(final OctaveActionConfiguration configuration)  {
         
         String base_dir=configuration.getWorkingDirectory();
-        base_dir=OctaveActionConfiguration.absolutize(base_dir);
+        base_dir=Path.getAbsolutePath(base_dir);
         if (base_dir!=null){
             configuration.setWorkingDirectory(base_dir);
             // NOW THE WORKING DIR IS AN ABSOLUTE PATH

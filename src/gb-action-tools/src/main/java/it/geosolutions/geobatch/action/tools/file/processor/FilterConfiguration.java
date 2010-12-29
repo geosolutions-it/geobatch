@@ -19,13 +19,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.octave.tools.file.processor;
+package it.geosolutions.geobatch.action.tools.file.processor;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
+import it.geosolutions.geobatch.action.tools.configuration.Path;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,15 +63,11 @@ public class FilterConfiguration extends ActionConfiguration {
     @XStreamAlias("file")
     private String template_path=null;
     
-    // Working directory
-    private String workingDirectory=null;
-    
     /*
      * You should do this ONLY ONCE in the whole application life-cycle: 
      */
     @XStreamOmitField 
     private freemarker.template.Configuration cfg = null;
-
 
     // Hold the template 
     @XStreamOmitField 
@@ -113,10 +109,11 @@ public class FilterConfiguration extends ActionConfiguration {
         if (root==null){
             root=new HashMap<String, TemplateModel>();
         }
+        String workingDirectory=getWorkingDirectory();
         if (workingDirectory!=null && cfg!=null){
             try {
 //TODO make this function member of the TOOLS package!!!
-                workingDirectory=OctaveActionConfiguration.absolutize(workingDirectory);
+                setWorkingDirectory(Path.getAbsolutePath(workingDirectory));
                 cfg.setDirectoryForTemplateLoading(new File(workingDirectory));
             }
             catch (IOException e){
@@ -191,24 +188,4 @@ public class FilterConfiguration extends ActionConfiguration {
         }
         return false;
     }
-    
-    
-    /**
-     * return the workingdir 
-     * @return 
-     */
-    public final String getWorkingDirectory() {
-        return workingDirectory;
-    }
-
-    /**
-     * set workingdirectory
-     * @param workingDirectory
-     * @throws IOException 
-     */
-    public void setWorkingDirectory(String workingDirectory) throws IOException {
-        cfg.setDirectoryForTemplateLoading(new File(workingDirectory));
-        this.workingDirectory = workingDirectory;
-    }
-
 }

@@ -147,7 +147,7 @@
             <id>ftp</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -159,7 +159,7 @@
             <id>geotiff</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -172,7 +172,7 @@
             <id>gliders</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -185,7 +185,7 @@
             <id>ctd</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -197,7 +197,7 @@
             <id>ais</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -210,7 +210,7 @@
             <id>geowebcache</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -222,7 +222,7 @@
             <id>imagemosaic</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -244,7 +244,7 @@
             <id>ascii-grids</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -257,7 +257,7 @@
             <id>shapefile</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -270,7 +270,7 @@
             <id>task-executor</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -287,7 +287,6 @@
                 <module>imagemosaic</module>
                 <module>shapefile</module>
                 <module>gb-task-executor</module>
-<!--                <module>gb-octave</module>-->
                 <module>scripting</module>
                 <module>splitting</module>
                 <module>metocs</module>
@@ -338,7 +337,7 @@
             <id>registry</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -350,7 +349,7 @@
             <id>scripting</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>
@@ -362,7 +361,7 @@
             <id>splitting</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <modules>

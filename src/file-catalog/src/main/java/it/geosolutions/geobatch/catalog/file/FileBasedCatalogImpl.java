@@ -22,7 +22,11 @@
 
 package it.geosolutions.geobatch.catalog.file;
 
+import java.io.File;
+import java.io.IOException;
+
 import it.geosolutions.geobatch.catalog.impl.BaseCatalog;
+import it.geosolutions.geobatch.global.CatalogHolder;
 
 /**
  * A Catalog based on an xml marshalled file.

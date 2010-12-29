@@ -50,6 +50,11 @@
     <!--     Dependency Management                                   -->
     <!-- =========================================================== -->
     <dependencies>
+    	<dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-tools</artifactId>
+        </dependency>
+    
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-core-impl</artifactId>
@@ -70,6 +75,7 @@
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-action-geoserver</artifactId>
@@ -87,8 +93,8 @@
             <!-- imageio-ext ================================================-->
 
             <dependency>
-								<groupId>it.geosolutions.imageio-ext</groupId>
-  							<artifactId>imageio-ext-tiff</artifactId>
+				<groupId>it.geosolutions.imageio-ext</groupId>
+				<artifactId>imageio-ext-tiff</artifactId>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions.imageio-ext</groupId>

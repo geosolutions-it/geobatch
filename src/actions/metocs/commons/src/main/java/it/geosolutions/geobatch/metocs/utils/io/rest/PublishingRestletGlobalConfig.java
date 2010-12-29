@@ -31,7 +31,7 @@ package it.geosolutions.geobatch.metocs.utils.io.rest;
 
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +64,7 @@ public final class PublishingRestletGlobalConfig {
     public void init() throws Exception {
         File workingDir = null;
         try {
-            workingDir = IOUtils.findLocation(rootDirectory, new File(
+            workingDir = Path.findLocation(rootDirectory, new File(
                     ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
         } catch (IOException e) {
             if (LOGGER.isLoggable(Level.SEVERE))

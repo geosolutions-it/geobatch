@@ -35,13 +35,10 @@ import java.util.logging.Logger;
  */
 public class SHOMGeneratorService extends BaseService implements
         ActionService<EventObject, SHOMConfiguration> {
-//    ActionService<EventObject, FilterConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(SHOMGeneratorService.class
-            .toString());
+    private final static Logger LOGGER = Logger.getLogger(SHOMGeneratorService.class.toString());
 
     public SHOMAction createAction(SHOMConfiguration configuration) {
-//    public SHOMAction createAction(FilterConfiguration configuration) {
         try {
             return new SHOMAction(configuration);
         } catch (Exception e) {
@@ -52,7 +49,6 @@ public class SHOMGeneratorService extends BaseService implements
     }
 
     public boolean canCreateAction(SHOMConfiguration configuration) {
-//    public boolean canCreateAction(FilterConfiguration configuration) {
         return true;
     }
 

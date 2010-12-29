@@ -35,7 +35,8 @@ import it.geosolutions.geobatch.flow.event.generator.BaseEventGenerator;
 import it.geosolutions.geobatch.flow.event.generator.EventGenerator;
 import it.geosolutions.geobatch.flow.event.generator.FlowEventListener;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -247,7 +248,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             throws IOException {
         OsType osType = configuration.getOsType();
         FileSystemMonitorNotifications eventType = configuration.getEventType();
-        final File notifyDir = IOUtils.findLocation(configuration.getWorkingDirectory(), new File(
+        final File notifyDir = Path.findLocation(configuration.getWorkingDirectory(), new File(
                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
         if (notifyDir == null
                 || !(notifyDir.exists() && notifyDir.isDirectory() & notifyDir.canRead())) {
@@ -385,7 +386,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info("Cleaning up " + watchDirectory.getAbsolutePath().toString());
             }
-            IOUtils.emptyDirectory(watchDirectory, true, false);
+            Path.emptyDirectory(watchDirectory, true, false);
         } else if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.info("Keep existing files in " + watchDirectory.getAbsolutePath().toString());
         }

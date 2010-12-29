@@ -22,19 +22,20 @@
 
 package it.geosolutions.geobatch.catalog.dao.file.xstream;
 
-import com.thoughtworks.xstream.XStream;
 import it.geosolutions.geobatch.catalog.dao.CatalogConfigurationDAO;
 import it.geosolutions.geobatch.configuration.CatalogConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration;
-
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.IOUtils;
 import it.geosolutions.geobatch.xstream.Alias;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  * 

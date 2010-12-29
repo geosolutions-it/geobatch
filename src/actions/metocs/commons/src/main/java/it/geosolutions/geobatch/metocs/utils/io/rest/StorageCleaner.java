@@ -1,6 +1,7 @@
 package it.geosolutions.geobatch.metocs.utils.io.rest;
 
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -41,7 +42,7 @@ public class StorageCleaner extends TimerTask {
             //
             final File workingDir = new File(config.getRootDirectory());
             // final File workingDir =
-            // IOUtils.findLocation(config.getRootDirectory(),new
+            // Path.findLocation(config.getRootDirectory(),new
             // File(((FileBaseCatalog)
             // CatalogHolder.getCatalog()).getBaseDirectory()));
             // if (workingDir == null ||
@@ -65,7 +66,7 @@ public class StorageCleaner extends TimerTask {
                         raf = new RandomAccessFile(f, "rw");
                         channel = raf.getChannel();
                         lock = channel.lock();
-                        IOUtils.deleteFile(f);
+                        Path.deleteFile(f);
                     } catch (Throwable e) {
                     } finally {
                         try {

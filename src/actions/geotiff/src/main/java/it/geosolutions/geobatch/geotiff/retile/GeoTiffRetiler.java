@@ -24,8 +24,9 @@ package it.geosolutions.geobatch.geotiff.retile;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.Action;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +54,6 @@ import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 
 import com.sun.media.jai.operator.ImageReadDescriptor;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
 
 /**
  * Comments here ...
@@ -96,8 +96,8 @@ public class GeoTiffRetiler extends BaseAction<FileSystemMonitorEvent> implement
                     + extension);
             // do we need to remove the input?
             if (!inputFile.renameTo(tiledInputFile)) {
-                IOUtils.copyFile(inputFile, tiledInputFile);
-                IOUtils.deleteFile(inputFile);
+                Path.copyFile(inputFile, tiledInputFile);
+                Path.deleteFile(inputFile);
             }
 
             // //
@@ -195,8 +195,8 @@ public class GeoTiffRetiler extends BaseAction<FileSystemMonitorEvent> implement
 
             // do we need to remove the input?
             if (!tiledInputFile.renameTo(inputFile)) {
-                IOUtils.copyFile(tiledInputFile, inputFile);
-                IOUtils.deleteFile(tiledInputFile);
+                Path.copyFile(tiledInputFile, inputFile);
+                Path.deleteFile(tiledInputFile);
             }
 
             return events;

@@ -36,7 +36,8 @@ import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,7 +114,7 @@ public class FileBasedEventConsumer extends
 
         final File catalogFile = new File(((FileBaseCatalog) CatalogHolder.getCatalog())
                 .getBaseDirectory());
-        final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+        final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
                 catalogFile);
 
         if (workingDir == null)
@@ -440,7 +441,7 @@ public class FileBasedEventConsumer extends
                 destDataFile.createNewFile();
 
                 if (IOUtils.acquireLock(this, sourceDataFile)) {
-                    IOUtils.copyFile(sourceDataFile, destDataFile);
+                    Path.copyFile(sourceDataFile, destDataFile);
                     LOGGER.info(new StringBuilder("FileBasedEventConsumer [").append(
                             Thread.currentThread().getName()).append("]: accepted file ").append(
                             sourceDataFile).toString());
@@ -464,7 +465,7 @@ public class FileBasedEventConsumer extends
                                 "Creating backup files");
                         performBackup(sourceDataFile, backup, fileBareName);
                     } else { // schedule for removal
-                        IOUtils.deleteFile(sourceDataFile);
+                        Path.deleteFile(sourceDataFile);
                     }
                 } else {
                     fileEventList.offer(new FileSystemMonitorEvent(sourceDataFile,

@@ -52,6 +52,11 @@
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->
     <dependencies>
+    
+    	<dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-tools</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.geotools</groupId>

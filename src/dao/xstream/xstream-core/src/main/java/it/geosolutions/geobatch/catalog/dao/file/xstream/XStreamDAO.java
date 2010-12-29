@@ -25,7 +25,8 @@ package it.geosolutions.geobatch.catalog.dao.file.xstream;
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.dao.DAO;
 import it.geosolutions.geobatch.catalog.dao.file.BaseFileBaseDAO;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 import it.geosolutions.geobatch.xstream.Alias;
 
 import java.io.BufferedOutputStream;
@@ -74,7 +75,7 @@ public abstract class XStreamDAO<T extends Configuration> extends BaseFileBaseDA
         final File entityfile = new File(getBaseDirectory(), entity.getId() + ".xml");
         if (entityfile.exists()) {
             if (!entityfile.delete())
-                IOUtils.deleteFile(entityfile);
+                Path.deleteFile(entityfile);
             return true;
         }
         return false;

@@ -204,18 +204,10 @@ public final class OctaveManager{
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("OctaveManager clear");
         
+        // resetting initialization flag to false
         initted=false;
         
-//        if (executorService!=null){
-//            synchronized (executorService) {
-//                if (executorService!=null){
-//                    executorService.shutdown();
-//                    executorService.shutdownNow();
-//                    executorService=null;
-//                }
-//            }  
-//        }
-        
+        // clear the singleton
         if (singleton!=null) {
             synchronized (singleton) {
                 if (singleton!=null)
@@ -223,16 +215,18 @@ public final class OctaveManager{
             }
         }
         
+        // clear the incoming queue        
         if (inQueue!=null){
             inQueue.clear();
 //            inQueue=null;
         }
+        // clear outgoing results
         if (out!=null){
             out.clear();
 //            out=null;
         }
         if (octaveProcessScheduler!=null){
-        // this should automatically goes down after some time
+            // should automatically goes down after some time
             octaveProcessScheduler=null;
         }
         if (octaveConfiguration!=null){

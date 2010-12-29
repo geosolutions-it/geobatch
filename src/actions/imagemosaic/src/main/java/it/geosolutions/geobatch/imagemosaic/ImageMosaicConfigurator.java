@@ -27,8 +27,8 @@ import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.utils.IOUtils;
-import it.geosolutions.geobatch.utils.TimeParser;
+import it.geosolutions.geobatch.tools.file.Path;
+import it.geosolutions.geobatch.tools.time.TimeParser;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -137,7 +137,7 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                 // Initializing input variables
                 //
                 // ////////////////////////////////////////////////////////////////////
-                final File workingDir = IOUtils
+                final File workingDir = Path
                         .findLocation(configuration.getWorkingDirectory(), new File(
                                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
@@ -325,7 +325,7 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                 // CHECKING FOR datastore.properties
                 // ////
                 if (configuration.getDatastorePropertiesPath() != null) {
-                    final File dsFile = IOUtils.findLocation(configuration
+                    final File dsFile = Path.findLocation(configuration
                             .getDatastorePropertiesPath(), new File(
                             ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
                     if (dsFile != null && dsFile.exists() && !dsFile.isDirectory()) {
