@@ -78,18 +78,16 @@
 	      <version>5.3.2</version>
 	      <exclusions>
 	      	<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring-context</artifactId>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
 	      	</exclusion>
 	      </exclusions>
 	    </dependency>
-		
+	    
 	  </dependencies>		
 
     <build>
         <plugins>
-            <!--
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -148,6 +146,7 @@
             <activation>
                 <property>
                     <name>all</name>
+                    <value>true</value>
                 </property>
             </activation>
             <modules>
@@ -160,6 +159,7 @@
             <activation>
                 <property>
                     <name>all</name>
+                    <value>true</value>
                 </property>
             </activation>
             <modules>
@@ -211,6 +211,7 @@
             <activation>
                 <property>
                     <name>all</name>
+                    <value>true</value>
                 </property>
             </activation>
             <modules>
@@ -223,6 +224,7 @@
             <activation>
                 <property>
                     <name>all</name>
+                    <value>true</value>
                 </property>
             </activation>
             <modules>
@@ -230,21 +232,22 @@
                 <module>gb-geoserver</module>
             </modules>
         </profile>
-        <!--
-		    <profile>
-		        <id>jgsflodess</id>
-		        <modules>
-		             <module>gb-geoserver</module>
-		             <module>imagemosaic</module>
-		             <module>jgsflodess</module>
-		        </modules>
-		    </profile>
+        <!-- 
+		<profile>
+			<id>jgsflodess</id>
+			<modules>
+				 <module>gb-geoserver</module>
+				 <module>imagemosaic</module>
+				 <module>jgsflodess</module>
+			</modules>
+		</profile>
 		    -->
         <profile>
             <id>ascii-grids</id>
             <activation>
                 <property>
                     <name>all</name>
+                    <value>true</value>
                 </property>
             </activation>
             <modules>
@@ -258,6 +261,7 @@
             <activation>
                 <property>
                     <name>all</name>
+                    <value>true</value>
                 </property>
             </activation>
             <modules>
@@ -271,6 +275,7 @@
             <activation>
                 <property>
                     <name>all</name>
+                    <value>true</value>
                 </property>
             </activation>
             <modules>
@@ -281,6 +286,12 @@
 
         <profile>
             <id>metocs</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <modules>
                 <module>geotiff</module>
                 <module>gb-geoserver</module>
@@ -295,6 +306,12 @@
 
         <profile>
             <id>emsa</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <modules>
                 <module>registry</module>
                 <module>metocs</module>
@@ -306,6 +323,18 @@
 
         <profile>
             <id>lamma</id>
+<!-- COMMENDED OUT SINCE: 
+Missing:
+1) it.geosolutions.opensdi.lamma:lamma-ws-su:jar:0.1-SNAPSHOT
+REFER TO MAIL: [GEOBATCH] tree
+
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+-->
             <modules>
                 <module>geotiff</module>
                 <module>gb-geoserver</module>
@@ -315,29 +344,44 @@
                 <module>lamma</module>
             </modules>
         </profile>
-
+<!-- REF. MAIL 30Dec2010: "[PENDING] action"
         <profile>
             <id>sas</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <modules>
                 <module>sas</module>
                 <module>gb-task-executor</module>
             </modules>
         </profile>
-
+-->
+<!-- REF. MAIL 30Dec2010: "[GEOBATCH] tree"
         <profile>
             <id>sasgs</id>
+            
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <modules>
                 <module>sas</module>
                 <module>sasgs</module>
                 <module>gb-task-executor</module>
             </modules>
         </profile>
-
+-->
         <profile>
             <id>registry</id>
             <activation>
                 <property>
                     <name>all</name>
+                    <value>true</value>
                 </property>
             </activation>
             <modules>
@@ -350,6 +394,7 @@
             <activation>
                 <property>
                     <name>all</name>
+                    <value>true</value>
                 </property>
             </activation>
             <modules>
@@ -362,13 +407,26 @@
             <activation>
                 <property>
                     <name>all</name>
+                    <value>true</value>
                 </property>
             </activation>
             <modules>
                 <module>splitting</module>
             </modules>
         </profile>
-
+        
+        <profile>
+            <id>pending</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+				<module>pending</module>
+            </modules>
+        </profile>
     </profiles>
-
+    
 </project>

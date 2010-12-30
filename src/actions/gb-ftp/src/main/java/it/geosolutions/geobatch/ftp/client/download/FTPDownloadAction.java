@@ -28,7 +28,7 @@ import it.geosolutions.geobatch.ftp.client.FTPHelper;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPBaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +91,7 @@ public class FTPDownloadAction extends FTPBaseAction<FileSystemMonitorEvent> {
             //
             // ////////////////////////////////////////////////////////////////////
 
-            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+            final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
                     new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
             // ////////////////////////////////////////////////////////////////////

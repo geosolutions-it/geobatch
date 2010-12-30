@@ -29,7 +29,10 @@ import it.geosolutions.geobatch.ftp.client.FTPHelper;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPBaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.Compressor;
+import it.geosolutions.geobatch.tools.file.Extractor;
+import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,7 +95,7 @@ public class FTPUploadAction extends FTPBaseAction<FileSystemMonitorEvent> {
             //
             // ////////////////////////////////////////////////////////////////////
 
-            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+            final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
                     new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
             // ////////////////////////////////////////////////////////////////////
@@ -173,7 +176,7 @@ public class FTPUploadAction extends FTPBaseAction<FileSystemMonitorEvent> {
                 // Zipping the files and directory before sending this
                 // ///////////////////////////////////////////////////
 
-                final File zippedFile = IOUtils.zip(tempDir, zipFileName, filesToSend
+                final File zippedFile = Compressor.zip(tempDir, zipFileName, filesToSend
                         .toArray(new File[filesToSend.size()]));
 
                 FTPHelperBare.putBinaryFileTo(ftpserverHost, zippedFile.getAbsolutePath(), path,

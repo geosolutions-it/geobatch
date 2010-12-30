@@ -25,7 +25,8 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.utils.IOUtils;
+import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +73,7 @@ public class GWCConfigurator extends GeoWebCacheConfiguratorAction<FileSystemMon
             // Initializing input variables
             // ///////////////////////////////////
 
-            final File workingDir = IOUtils.findLocation(configuration.getWorkingDirectory(),
+            final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
                     new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
 
             // ///////////////////////////////////

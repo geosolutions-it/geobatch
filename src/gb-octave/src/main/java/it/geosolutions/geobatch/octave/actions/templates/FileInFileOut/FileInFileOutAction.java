@@ -150,7 +150,8 @@ public abstract class FileInFileOutAction extends OctaveAction<FileSystemMonitor
                         +oee.getLocalizedMessage());
         }
         catch(Exception e){
-e.printStackTrace();
+// DEBUG
+//e.printStackTrace();
             throw new ActionException(this,"Unable to run octave script:\n"
                     +e.getLocalizedMessage());
         }

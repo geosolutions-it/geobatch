@@ -23,7 +23,6 @@ package it.geosolutions.geobatch.tools.file;
 
 import it.geosolutions.geobatch.tools.system.Property;
 
-import java.nio.channels.FileChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

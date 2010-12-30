@@ -48,13 +48,18 @@
     <!-- =========================================================== -->
     <dependencies>
     	<!-- GeoBatch CORE -->
+
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fs-catalog</artifactId>
+        </dependency>
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-core-impl</artifactId>
         </dependency>
         <dependency>
             <groupId>it.geosolutions</groupId>
-            <artifactId>gb-fs-catalog</artifactId>
+            <artifactId>gb-core-model</artifactId>
         </dependency>
         <dependency>
             <groupId>it.geosolutions</groupId>
@@ -164,7 +169,6 @@
         <dependency>
             <groupId>it.geosolutions.opensdi.lamma</groupId>
 			<artifactId>lamma-ws-su</artifactId>
-            <version>0.1-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>asm</groupId>
@@ -179,6 +183,7 @@
 					<artifactId>geoapi-dummy-pending</artifactId>
 				</exclusion>
             </exclusions>
+             
         </dependency>
         
         <!-- CXF -->

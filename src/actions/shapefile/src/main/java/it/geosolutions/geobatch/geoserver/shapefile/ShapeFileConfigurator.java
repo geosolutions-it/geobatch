@@ -28,8 +28,8 @@ import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
+import it.geosolutions.geobatch.tools.file.Compressor;
 import it.geosolutions.geobatch.tools.file.Extractor;
-import it.geosolutions.geobatch.tools.file.IOUtils;
 import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
@@ -232,7 +232,7 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
                 zipFileToSend = zippedFile;
             } else {
                 listenerForwarder.progressing(50, "Rezipping shape");
-                zipFileToSend = IOUtils.deflate(workingDir, "sending_" + shpBaseName
+                zipFileToSend = Compressor.deflate(workingDir, "sending_" + shpBaseName
                         + System.currentTimeMillis(), shpList);
             }
             LOGGER.info("ZIP file: " + zipFileToSend.getAbsolutePath());

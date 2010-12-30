@@ -15,10 +15,8 @@
     <!--       modify the build process in certain conditions.       -->
     <!-- =========================================================== -->
     <!--   Available properties are:                                 -->
-    <!--     all_actions        build and pack all the available     -->
-    <!--                        actions (except the legacy ones)     -->
-    <!--     all_legacy_actions  build and pack all the legacy       -->
-    <!--                        actions                              -->
+    <!--     all        build and pack all the available 		     -->
+    <!--                        actions 							 -->
     <!--                                                             -->
     <!-- =========================================================== -->
     <!--   Available profiles are:                                   -->
@@ -48,20 +46,11 @@
     <!--     dao.xstream        Use XStream in DAO instead of        -->
     <!--                        default JiBX                         -->
     <!--                                                             -->
-    <!--     legacy             Includes legacy modules - You'll     -->
-    <!--                        have as well to specify the list     -->
-    <!--                        of the modules you need.                                     -->
-    <!--                                                             -->
-    <!--                                                             -->
-    <!--   Examples:                                                  -->
+    <!--   Examples:                                                 -->
     <!--       mvn -P extensive.tests install                        -->
     <!--       mvn -P online,stress install                          -->
     <!--       mvn -P site.build site                                -->
     <!--       mvn eclipse:eclipse -Djdbc.oracle=true -P pending     -->
-    <!--                                                             -->
-    <!--     Install all the current actions and the legacy glider:  -->
-    <!--     mvn -Pdao.xstream,legacy,gliders -Dall_actions install  -->
-    <!--                                                             -->
     <!--                                                             -->
     <!--     While you can specify properties one at a time on the   -->
     <!--     command line, for properties describing your            -->
@@ -216,7 +205,7 @@
         <profile>
             <id>dao.xstream</id>
             <activation>
-                <property>
+				<property>
                     <name>dao.type</name> <!-- if dao.type has still the default value, let's set the xstream profile -->
                     <value>xstream</value>
                 </property>
@@ -225,21 +214,7 @@
                 <dao.type>xstream</dao.type>
             </properties>-->
         </profile>
-        <!-- octave -->
-        <profile>
-            <id>octave</id>
-            <activation>
-                <property>
-                    <name>all_actions</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>gb-octave</module>
-                <module>gb-action-tools</module>
-                <module>gb-tools</module>
-            </modules>
-        </profile>
+        
 
         <!-- deploy libs -->
         <profile>
@@ -253,26 +228,71 @@
                 <module>deploy</module>
             </modules>
         </profile>
+<!-- REF. MAIL 30Dec2010: "[GEOBATCH] tree"
         <profile>
             <id>gb-ftp-support</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <modules>
                 <module>gb-ftp-support</module>
             </modules>
         </profile>
+-->
         <profile>
             <id>gb-ftp-server</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <modules>
                 <module>gb-ftp-server</module>
             </modules>
         </profile>
-
+        <!-- 		ACTIONS 		-->
+<!-- octave -->
         <profile>
-            <id>legacy</id>
+            <id>octave</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <modules>
-                <module>legacy</module>
+                <module>gb-octave</module>
+                <module>gb-action-tools</module>
+                <module>gb-tools</module>
             </modules>
         </profile>
-
+        <!-- this profile can be used instead of:
+        -Pdao.xstream,metocs,nurc,octave
+        -->
+        <profile>
+            <id>sem</id>
+            <modules>
+				<module>gb-octave</module>
+                <module>gb-action-tools</module>
+                <module>gb-tools</module>
+                <module>dao/xstream</module>
+				<module>actions/geotiff</module>
+                <module>actions/gb-geoserver</module>
+                <module>actions/imagemosaic</module>
+                <module>actions/shapefile</module>
+                <module>actions/gb-task-executor</module>
+                <module>actions/scripting</module>
+                <module>actions/splitting</module>
+                <module>actions/metocs/commons</module>
+                <module>actions/metocs/nurc-sem</module>
+                <module>actions/metocs/nurc-tda</module>
+            </modules>
+        </profile>
+        
     </profiles>
 
 
@@ -363,6 +383,12 @@
         <dependencies>
 
             <!-- Spring Framework ===========================================-->
+
+            <dependency> <!-- used by: pending/gb-action-ais -->
+				<groupId>org.springframework</groupId>
+				<artifactId>spring</artifactId>
+				<version>2.5.6</version>
+			</dependency>
 
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -1077,25 +1103,32 @@
                 <artifactId>gb-action-lamma</artifactId>
                 <version>${gb.version}</version>
             </dependency>
-
+            <dependency>
+				<groupId>it.geosolutions.opensdi.lamma</groupId>
+				<artifactId>lamma-ws-su</artifactId>
+				<!--<version>${gb.version}</version>-->
+				<version>0.1-SNAPSHOT</version>
+            </dependency>
 						<!-- NURC::SAS -->
             <dependency>
                 <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-sas</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+<!--            
             <dependency>
                 <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-sasgs</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+-->            
             <dependency>
                 <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-sasmanager</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
-						<!--  -->
+            			<!--  -->
             <dependency>
                 <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-taskexecutor</artifactId>
@@ -1133,12 +1166,13 @@
             </dependency>
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-action-ftp</artifactId>
+                <artifactId>gb-action-ais</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+            
             <dependency>
                 <groupId>it.geosolutions</groupId>
-                <artifactId>gb-action-ais</artifactId>
+                <artifactId>gb-action-ftp</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
@@ -1185,7 +1219,7 @@
                 <version>${gb.version}</version>
             </dependency>
 
-            <!-- Tests or legacy -->
+            <!-- Tests or pending -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -1495,10 +1529,10 @@
     <!-- =========================================================== -->
     <modules>
 		<module>gb-fsm</module>
+        <module>dao</module>
         <module>gb-tools</module>
 		<module>file-catalog</module>
 		<module>core</module>
-        <module>dao</module>
 		<module>gb-action-tools</module>
         <module>gb-octave</module>
         <module>actions</module>

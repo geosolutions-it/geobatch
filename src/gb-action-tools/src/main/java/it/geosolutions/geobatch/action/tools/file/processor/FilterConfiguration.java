@@ -112,9 +112,8 @@ public class FilterConfiguration extends ActionConfiguration {
         String workingDirectory=getWorkingDirectory();
         if (workingDirectory!=null && cfg!=null){
             try {
-//TODO make this function member of the TOOLS package!!!
                 setWorkingDirectory(Path.getAbsolutePath(workingDirectory));
-                cfg.setDirectoryForTemplateLoading(new File(workingDirectory));
+                cfg.setDirectoryForTemplateLoading(new File(getWorkingDirectory()));
             }
             catch (IOException e){
                 if (LOGGER.isLoggable(Level.SEVERE))

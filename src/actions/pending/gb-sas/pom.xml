@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+        =======================================================================
+        Maven Project Configuration File GeoSolutions GeoBatch Project
+        http://geobatch.codehaus.org Version: $Id: pom.xml 382 2010-01-07
+        18:00:13Z dany111 $
+        =======================================================================
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>it.geosolutions</groupId>
+        <artifactId>gb-pending-actions</artifactId>
+        <version>0.9-SNAPSHOT</version>
+    </parent>
+
+
+    <!-- =========================================================== -->
+    <!--     Module Description                                      -->
+    <!-- =========================================================== -->
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb-action-sas</artifactId>
+    <packaging>jar</packaging>
+    <name>GeoBatch action: (legacy) SAS Tiles composer</name>
+    <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
+
+    <scm>
+        <connection>
+            scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
+        </connection>
+        <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
+    </scm>
+
+    <description>
+        GeoSolutions GeoBatch flow managers - Matlab5 SAS flow.
+    </description>
+
+    <licenses>
+        <license>
+            <name>Lesser General Public License (LGPL)</name>
+            <url>http://www.gnu.org/copyleft/lesser.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- =========================================================== -->
+    <!--     Dependency Management                                   -->
+    <!-- =========================================================== -->
+    <dependencies>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-geoserver</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-alias-registry</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-geotiff</artifactId>
+            <exclusions>
+            	<exclusion>
+            		<groupId>it.geosolutions.imageio-ext</groupId>
+            		<artifactId>imageio-ext-tiff</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-matfile5</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fs-catalog</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-taskexecutor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-geotiff</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-shapefile</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-coveragetools</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-launcher</artifactId>
+        </dependency>
+
+        <!-- imageio-ext ================================================-->
+
+        <dependency>
+						<groupId>it.geosolutions.imageio-ext</groupId>
+						<artifactId>imageio-ext-tiff</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions.imageio-ext</groupId>
+            <artifactId>imageio-ext-utilities</artifactId>
+        </dependency>
+
+        <!-- Java Advanced Imaging (JAI) ================================-->
+
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jai_core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jai_codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jai_imageio</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

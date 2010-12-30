@@ -126,8 +126,8 @@
         <!-- imageio-ext ================================================-->
 
         <dependency>
-						<groupId>it.geosolutions.imageio-ext</groupId>
-						<artifactId>imageio-ext-tiff</artifactId>
+			<groupId>it.geosolutions.imageio-ext</groupId>
+			<artifactId>imageio-ext-tiff</artifactId>
         </dependency>
         <dependency>
             <groupId>it.geosolutions.imageio-ext</groupId>
