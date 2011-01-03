@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<id>FreeMarkerFlow</id>
+	<description>FreeMarkerFlow</description>
+	<name>FreeMarkerFlow</name>
+	
+	<workingDirectory>freemarker/</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>freemarker/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>FreeMarkerFlow</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		<id>FreeMarker</id>
+		<description>FreeMarker</description>
+		<name>FreeMarker</name>
+		
+		<workingDirectory>freemarker/</workingDirectory>
+		<performBackup>false</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+		
+		<filter>
+			<serviceID>FreeMarkerGeneratorService</serviceID>
+			<id>FreeMarkerGeneratorService</id>
+			<description>description</description>
+			<name>FreeMarkerConfiguration</name>
+		  
+			<dirty>false</dirty>
+			<listenerConfigurations/>
+			<failIgnored>false</failIgnored>
+		  
+			<workingDirectory>freemarker/</workingDirectory>
+			<input>test.xml</input>
+			<output>test_out.xml</output>
+			<root>
+				<entry>
+					<string>KEY</string>
+					<string>value</string>
+				</entry>
+			</root>
+		</filter>
+		
+		<!-- ${KEY} -->
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>

@@ -140,6 +140,19 @@
     <!--     Modules for the build in approximate dependency order   -->
     <!-- =========================================================== -->
     <profiles>
+    
+		<profile>
+            <id>FreeMarker</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-FreeMarker</module>
+            </modules>
+        </profile>
 
         <profile>
             <id>ftp</id>

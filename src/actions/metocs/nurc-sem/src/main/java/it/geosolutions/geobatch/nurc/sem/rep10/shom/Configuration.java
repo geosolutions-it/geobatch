@@ -23,7 +23,7 @@ package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import it.geosolutions.geobatch.action.tools.configuration.Path;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.io.File;

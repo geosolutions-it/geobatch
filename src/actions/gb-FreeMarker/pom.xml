@@ -15,7 +15,7 @@
 
   <parent>
     <groupId>it.geosolutions</groupId>
-    <artifactId>gb</artifactId>
+    <artifactId>gb-actions</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
   
@@ -24,9 +24,9 @@
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
   <groupId>it.geosolutions</groupId>
-  <artifactId>gb-action-tools</artifactId>
+  <artifactId>gb-action-FreeMarker</artifactId>
   <packaging>jar</packaging>
-  <name>GeoBatch action tools</name>
+  <name>GeoBatch FreeMarker action</name>
   <url>http://www.geo-solutions.it/maven_reports/gb/</url><!--<url>flowmanagers/</url>-->
   
   <scm>
@@ -52,6 +52,13 @@
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->
   <dependencies>
+  
+        
+        <!-- [FreeMarker] -->
+        <dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+		</dependency>
 		
 		<!--  file.processor.FilterConfiguration  -->
 		<dependency>
@@ -76,5 +83,9 @@
 	            <artifactId>gb-tools</artifactId>
 	        </dependency>
 	         -->
+         <dependency>
+			<groupId>it.geosolutions</groupId>
+            <artifactId>gb-action-tools</artifactId>
+		</dependency>
   </dependencies>
 </project>

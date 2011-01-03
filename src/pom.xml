@@ -1052,6 +1052,13 @@
 				<artifactId>gb-action-tools</artifactId>
 				<version>${gb.version}</version>
 			</dependency>
+			
+<!-- action-FreeMarker -->
+			<dependency>
+				<groupId>it.geosolutions</groupId>
+				<artifactId>gb-action-FreeMarker</artifactId>
+				<version>${gb.version}</version>
+			</dependency>
             
 <!-- Java Octave -->
 		    <dependency>
