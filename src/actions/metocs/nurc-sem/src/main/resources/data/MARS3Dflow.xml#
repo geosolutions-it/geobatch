@@ -68,7 +68,6 @@
 			        <OctaveCommand executed="false">
 						<command>source "/usr/share/octave/3.0.5/m/startup/octaverc";</command>
 			        </OctaveCommand>
-			        <!-- todo: variables! -->
 			        <OctaveCommand executed="false">
 						<command>cd "/home/carlo/work/data/rep10workingdir/mars3d/"</command>
 			        </OctaveCommand>

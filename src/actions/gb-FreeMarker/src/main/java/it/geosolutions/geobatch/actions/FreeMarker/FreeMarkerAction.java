@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.actions.FreeMarker;
 
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
@@ -113,16 +112,8 @@ public class FreeMarkerAction
         TemplateModelEvent ev=null;
         while ((ev=adapter(events.peek()))!=null){
             try {
-                TemplateModel tm=ev.getModel(f);
-                root.put(ev.getName(), tm);
-                
-///*
-// * process the output file using the passed
-// * TemplateModel 
-// */
-//f.process(tm, fw);
-//fw.flush();
-                
+                // append the incoming data structure
+                root.put(ev.getName(), ev.getModel(f));
             }
             catch (TemplateModelException tme){
                 String message="Unable to wrap the passed object: "+tme.getLocalizedMessage();
@@ -136,19 +127,6 @@ public class FreeMarkerAction
                     LOGGER.severe(message);
                 throw new ActionException(this,message);
             }
-            
-//            finally {
-//                try {
-//                    if (fw!=null)
-//                        fw.close();
-//                }
-//                catch (IOException ioe){
-//                    String message="Unable close the output file writer: "+ioe.getLocalizedMessage();
-//                    if (LOGGER.isLoggable(Level.SEVERE))
-//                        LOGGER.severe(message);
-//                    throw new ActionException(this,message);
-//                }
-//            }
             
             // remove the processed element
             events.remove(ev);
