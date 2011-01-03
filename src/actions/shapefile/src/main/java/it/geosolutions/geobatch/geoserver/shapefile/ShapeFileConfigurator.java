@@ -49,7 +49,7 @@ import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 
 /**
- * Geoserver ShapeFile Configuration action.
+ * Geoserver ShapeFile Conf action.
  * 
  * <P>
  * Process shapefiles and inject them into a Geoserver instance.

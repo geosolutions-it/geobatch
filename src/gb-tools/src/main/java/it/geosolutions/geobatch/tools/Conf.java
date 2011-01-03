@@ -19,7 +19,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.tools.file;
+package it.geosolutions.geobatch.tools;
 
 import it.geosolutions.geobatch.tools.system.Property;
 
@@ -31,8 +31,8 @@ import java.util.logging.Logger;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
-public class Configuration {
-    private final static Logger LOGGER = Logger.getLogger(Configuration.class.toString());
+public class Conf {
+    private final static Logger LOGGER = Logger.getLogger(Conf.class.toString());
     
     /**
      * Variables used by FileRemover
@@ -52,13 +52,18 @@ public class Configuration {
     /**
      * Variables used by reader and Extractor classes
      */
-    private static int bufferSize;
+    private static int timeToWait = 10*60; // in seconds = 10 min
+    
+    /**
+     * Variables used by reader and Action.tools classes
+     */
+    private static int bufferSize = (1024*8*100); // default value
     
     static {
         /*
-         * Extractor.bufferSize
+         * Action.tools.bufferSize
          */
-        String property="Extractor.bufferSize";
+        String property="tools.bufferSize";
         try {
             bufferSize=Property.getIntProperty(property);
         }
@@ -66,12 +71,28 @@ public class Configuration {
             bufferSize=(1024*8*100); // default value
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.info(property+": "+bufferSize);
-            
+        }
+        
+        /*
+         * Action.tools.bufferSize
+         */
+        property="tools.timeToWait";
+        try {
+            timeToWait=Property.getIntProperty(property);
+        }
+        catch (NullPointerException e){
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info(property+": "+timeToWait);   
         }
     }
     
-    public static int getBufferSize(){
+    public static final int getBufferSize(){
         return bufferSize;
     }
+    
+    public static final int getTimeToWait(){
+        return timeToWait;
+    }
+
 
 }

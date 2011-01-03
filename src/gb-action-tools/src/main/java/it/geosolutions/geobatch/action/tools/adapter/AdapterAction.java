@@ -19,7 +19,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.metocs.base;
+package it.geosolutions.geobatch.action.tools.adapter;
 
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -33,7 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * TODO this class should be moved in a more general package
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  * This class define an abstraction layer to handle and transform
  * the input EventObject to an output instance of a derived EventObject.

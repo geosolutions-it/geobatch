@@ -19,11 +19,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.action.tools.file.processor;
+package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
 import it.geosolutions.geobatch.action.tools.configuration.Path;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
@@ -45,27 +44,23 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  *
  */
 @XStreamAlias("filter")
-@XStreamInclude(
-    FilterConfiguration.class
-)
-public class FilterConfiguration extends ActionConfiguration {
+@XStreamInclude(Configuration.class)
+public class Configuration extends ActionConfiguration {
     @XStreamOmitField
     private boolean initted=false;
     
     @XStreamOmitField
-    private final static Logger LOGGER = Logger.getLogger(FilterConfiguration.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(Configuration.class.toString());
     
     // Create a data-model
     @XStreamAlias("map")
-    private Map<String, TemplateModel> root=null;
+    private Map<String, String> root=null;
     
     // path where to find ncml template
     @XStreamAlias("file")
     private String template_path=null;
     
-    /*
-     * You should do this ONLY ONCE in the whole application life-cycle: 
-     */
+    // You should do this ONLY ONCE in the whole application life-cycle: 
     @XStreamOmitField 
     private freemarker.template.Configuration cfg = null;
 
@@ -77,7 +72,7 @@ public class FilterConfiguration extends ActionConfiguration {
      * Default constructor
      * @note this is never called by XStream
      */
-    public FilterConfiguration() {
+    public Configuration() {
         super();
         if (init())
             if (LOGGER.isLoggable(Level.WARNING))
@@ -107,7 +102,7 @@ public class FilterConfiguration extends ActionConfiguration {
         }
         
         if (root==null){
-            root=new HashMap<String, TemplateModel>();
+            root=new HashMap<String, String>();
         }
         String workingDirectory=getWorkingDirectory();
         if (workingDirectory!=null && cfg!=null){
@@ -152,7 +147,7 @@ public class FilterConfiguration extends ActionConfiguration {
      * @note before you call init() method
      * this object can be null
      */
-    public Map<String, TemplateModel> getRoot(){
+    public Map<String, String> getRoot(){
         return root;
     }
     

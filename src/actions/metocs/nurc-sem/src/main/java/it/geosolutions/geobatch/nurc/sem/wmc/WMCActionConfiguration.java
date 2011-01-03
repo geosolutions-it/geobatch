@@ -25,7 +25,7 @@ import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 /**
- * A Base Configuration class sharing common configuration's parameters
+ * A Base Conf class sharing common configuration's parameters
  * 
  * @author Daniele Romagnoli, GeoSolutions SAS
  * 

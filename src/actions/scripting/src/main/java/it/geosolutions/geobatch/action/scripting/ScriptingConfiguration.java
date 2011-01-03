@@ -46,7 +46,7 @@ public class ScriptingConfiguration extends ActionConfiguration implements Confi
 
     /**
      * Script params are stored as String properties, since it must be really dynamic and we don't
-     * want to configure the Configuration marshaller (e.g. XStream) with its details.
+     * want to configure the Conf marshaller (e.g. XStream) with its details.
      */
     private Map<String, String> properties = null;
 

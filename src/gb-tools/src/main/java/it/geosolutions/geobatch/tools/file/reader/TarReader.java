@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.tools.file.reader;
 
-import it.geosolutions.geobatch.tools.file.Configuration;
+import it.geosolutions.geobatch.tools.Conf;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -90,9 +90,9 @@ public class TarReader{
                 }
                 
                 if (curr_dest!=null){
-                    byte[] buf = new byte[Configuration.getBufferSize()];
+                    byte[] buf = new byte[Conf.getBufferSize()];
                     BufferedOutputStream bos_inner=
-                        new BufferedOutputStream(new FileOutputStream(curr_dest),Configuration.getBufferSize());
+                        new BufferedOutputStream(new FileOutputStream(curr_dest),Conf.getBufferSize());
                     int read_sz=0;
                     while ((read_sz=tis.read(buf))!=-1){
                         bos_inner.write(buf, 0, read_sz);
@@ -176,9 +176,9 @@ public class TarReader{
                 }
                 
                 if (curr_dest!=null){
-                    byte[] buf = new byte[Configuration.getBufferSize()];
+                    byte[] buf = new byte[Conf.getBufferSize()];
                     BufferedOutputStream bos_inner=
-                        new BufferedOutputStream(new FileOutputStream(curr_dest),Configuration.getBufferSize());
+                        new BufferedOutputStream(new FileOutputStream(curr_dest),Conf.getBufferSize());
                     int read_sz=0;
                     while ((read_sz=tis.read(buf))!=-1){
                         bos_inner.write(buf, 0, read_sz);

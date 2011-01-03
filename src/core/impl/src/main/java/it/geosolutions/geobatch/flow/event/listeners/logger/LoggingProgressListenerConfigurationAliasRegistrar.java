@@ -33,7 +33,7 @@ import java.util.logging.Level;
 public class LoggingProgressListenerConfigurationAliasRegistrar extends AliasRegistrar {
 
     /**
-     * A basic constructor to put the LoggingProgressListener Configuration alias into registry.
+     * A basic constructor to put the LoggingProgressListener Conf alias into registry.
      * 
      * @param registry
      *            The alias registry.

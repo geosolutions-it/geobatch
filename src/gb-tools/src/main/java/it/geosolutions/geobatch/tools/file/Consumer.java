@@ -19,30 +19,19 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package it.geosolutions.geobatch.tools.file;
 
-package it.geosolutions.geobatch.flow.event.listeners.cumulator;
-
-import it.geosolutions.geobatch.registry.AliasRegistrar;
-import it.geosolutions.geobatch.registry.AliasRegistry;
-import java.util.logging.Level;
 
 /**
- * Register XStream aliases for the relevant services we ship in this class.
+ * @TODO The whole class!
+ * @see Producer 
  * 
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ *
  */
-public class CumulatingProgressListenerConfigurationAliasRegistrar extends AliasRegistrar {
-
-    /**
-     * A basic constructor to put the LoggingProgressListener Conf alias into registry.
-     * 
-     * @param registry
-     *            The alias registry.
-     */
-    public CumulatingProgressListenerConfigurationAliasRegistrar(AliasRegistry registry) {
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-
-        registry.putAlias("CumulatingProgressListener",
-                CumulatingProgressListenerConfiguration.class);
-    }
+public abstract class Consumer{
+//    private final static Logger LOGGER = Logger.getLogger(Consumer.class.toString());
+    
+    
+    
 }

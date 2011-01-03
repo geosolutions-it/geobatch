@@ -1,8 +1,7 @@
 package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
-import it.geosolutions.geobatch.action.tools.file.processor.FilterConfiguration;
 
-public class SHOMConfiguration extends FilterConfiguration {
+public class SHOMConfiguration extends Configuration {
 
     //MENOR,MED
     private String type=null;

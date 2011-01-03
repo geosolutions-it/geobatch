@@ -33,8 +33,8 @@ import java.util.List;
  * @todo take a look to 
  * @see FileBasedCatalogConfiguration
  * 
+ * @author Simone Giannecchini
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- * @author simone giannecchini
  *
  */
 public abstract class ActionConfiguration extends BaseConfiguration implements Configuration,

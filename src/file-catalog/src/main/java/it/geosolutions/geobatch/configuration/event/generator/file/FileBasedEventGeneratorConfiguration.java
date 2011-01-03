@@ -28,7 +28,7 @@ import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
 
 /**
- * Configuration for the event generators based on xml marshalled files.
+ * Conf for the event generators based on xml marshalled files.
  * 
  * @author Simone Giannecchini, GeoSolutions
  */

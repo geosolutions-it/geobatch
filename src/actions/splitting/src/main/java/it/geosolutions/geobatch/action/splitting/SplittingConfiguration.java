@@ -36,7 +36,7 @@ public class SplittingConfiguration extends ActionConfiguration implements Confi
 
     /**
      * Script params are stored as String serviceIDs, since it must be really dynamic and we don't
-     * want to configure the Configuration marshaller (e.g. XStream) with its details.
+     * want to configure the Conf marshaller (e.g. XStream) with its details.
      */
     private List<String> serviceIDs = null;
 

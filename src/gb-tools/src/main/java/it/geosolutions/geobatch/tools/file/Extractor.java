@@ -22,6 +22,8 @@
 package it.geosolutions.geobatch.tools.file;
 
 
+import it.geosolutions.geobatch.tools.Conf;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -124,7 +126,7 @@ public final class Extractor {
             }
             */
             zIn = new BZip2CompressorInputStream(bis);
-            byte[] buffer = new byte[Configuration.getBufferSize()];
+            byte[] buffer = new byte[Conf.getBufferSize()];
             int count = 0;
             do {
                 out.write(buffer, 0, count);
@@ -182,11 +184,11 @@ public final class Extractor {
         try {
             out = new FileOutputStream(out_file);
             fis = new FileInputStream(in_file);
-            bis = new BufferedInputStream(fis,Configuration.getBufferSize());
+            bis = new BufferedInputStream(fis,Conf.getBufferSize());
             zIn = new GZIPInputStream(bis);
-            byte[] buffer = new byte[Configuration.getBufferSize()];
+            byte[] buffer = new byte[Conf.getBufferSize()];
             int count = 0;
-            while ((count = zIn.read(buffer, 0, Configuration.getBufferSize()))!=-1){
+            while ((count = zIn.read(buffer, 0, Conf.getBufferSize()))!=-1){
                 out.write(buffer, 0, count);
             }
         } catch (IOException ioe) {
@@ -251,7 +253,7 @@ public final class Extractor {
                 throw new BuildException("Invalid bz2 file: "+in_file.getAbsolutePath());
             }
             zIn = new CBZip2InputStream(bis);
-            byte[] buffer = new byte[Configuration.getBufferSize()];
+            byte[] buffer = new byte[Conf.getBufferSize()];
             int count = 0;
             do {
                 out.write(buffer, 0, count);
@@ -286,11 +288,11 @@ public final class Extractor {
         try {
             out = new FileOutputStream(out_file);
             fis = new FileInputStream(in_file);
-            bis = new BufferedInputStream(fis,Configuration.getBufferSize());
+            bis = new BufferedInputStream(fis,Conf.getBufferSize());
             zIn = new GZIPInputStream(bis);
-            byte[] buffer = new byte[Configuration.getBufferSize()];
+            byte[] buffer = new byte[Conf.getBufferSize()];
             int count = 0;
-            while ((count = zIn.read(buffer, 0, Configuration.getBufferSize()))!=-1){
+            while ((count = zIn.read(buffer, 0, Conf.getBufferSize()))!=-1){
                 out.write(buffer, 0, count);
             }
         } catch (IOException ioe) {

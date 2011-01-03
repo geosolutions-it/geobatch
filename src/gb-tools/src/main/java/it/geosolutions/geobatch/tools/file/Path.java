@@ -1,5 +1,6 @@
 package it.geosolutions.geobatch.tools.file;
 
+import it.geosolutions.geobatch.tools.Conf;
 import it.geosolutions.geobatch.tools.check.Objects;
 
 import java.io.File;
@@ -49,10 +50,13 @@ public class Path {
      * @throws IOException
      */
     public static File findLocation(String location, File directory) throws IOException {
-
-        // trim spaces
-        location = location.trim();
-
+        if (location!=null){
+            // trim spaces
+            location = location.trim();
+        }
+        else
+            return null;
+        
         // first to an existance check
         File file = new File(location);
 
@@ -60,7 +64,8 @@ public class Path {
             return file;
         } else {
             // try a relative url
-            file = new File(directory, location);
+            if (directory!=null)
+                file = new File(directory, location);
 
             if (file.exists()) {
                 return file;
@@ -224,7 +229,7 @@ public class Path {
      *             in case something bad happens.
      */
     public static void copyFile(File sourceFile, File destinationFile) throws IOException {
-        copyFile(sourceFile, destinationFile, Configuration.DEFAULT_SIZE);
+        copyFile(sourceFile, destinationFile, Conf.DEFAULT_SIZE);
     }
 
     /**

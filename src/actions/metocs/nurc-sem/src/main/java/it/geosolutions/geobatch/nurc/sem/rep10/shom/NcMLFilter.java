@@ -19,30 +19,38 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
-package it.geosolutions.geobatch.flow.event.listeners.cumulator;
+import java.io.PipedWriter;
+import java.util.concurrent.ExecutorService;
 
-import it.geosolutions.geobatch.registry.AliasRegistrar;
-import it.geosolutions.geobatch.registry.AliasRegistry;
-import java.util.logging.Level;
+import it.geosolutions.geobatch.tools.file.Producer;
 
 /**
- * Register XStream aliases for the relevant services we ship in this class.
- * 
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ *
  */
-public class CumulatingProgressListenerConfigurationAliasRegistrar extends AliasRegistrar {
+public class NcMLFilter extends Producer {
+    private SHOMConfiguration conf=null;
+    
+    public NcMLFilter(SHOMConfiguration c, ExecutorService e) {
+        super(e);
+        conf=c;
+    }
 
     /**
-     * A basic constructor to put the LoggingProgressListener Conf alias into registry.
-     * 
-     * @param registry
-     *            The alias registry.
+     * Produce the output from an NcML file
+     * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+     * @see it.geosolutions.geobatch.tools.file.Producer#producer(java.io.PipedWriter)
      */
-    public CumulatingProgressListenerConfigurationAliasRegistrar(AliasRegistry registry) {
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-
-        registry.putAlias("CumulatingProgressListener",
-                CumulatingProgressListenerConfiguration.class);
+    @Override
+    protected void producer(PipedWriter pw) throws Exception {
+        /*
+         * Merge data-model with template
+         * elaborate template
+         */
+        conf.process(pw);
+        pw.flush();
     }
+
 }

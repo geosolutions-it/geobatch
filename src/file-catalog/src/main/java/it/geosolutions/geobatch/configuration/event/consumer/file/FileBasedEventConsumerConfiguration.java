@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Configuration for the event consumers based on xml marshalled files.
+ * Conf for the event consumers based on xml marshalled files.
  * 
  * <P>
  * TODO: we may need another hierarchy level for a <B>BaseEventConsumerConfiguration</B> class
@@ -70,7 +70,7 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     private boolean preserveInput;
 
     /**
-     * The id of the Listener Configuration. <BR>
+     * The id of the Listener Conf. <BR>
      * They are needed for a post-load binding; loader logic will put the proper listener
      * configurations into {@link #listenerConfigurations}.
      */

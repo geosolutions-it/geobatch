@@ -57,7 +57,7 @@ public final class Extract {
              */
             //p=compile("(.+(?:\\.tar)?)(?<!\\.tar)(\\..+)*"); // do not match simple dir name
             //p=compile("(.+)(?:(\\..+))(?<!$2)"); // do not match simple dir name [more general]
-            p=compile("(.+)(?:\\.(.+))");// do not match simple (not dotted) dir name [simpler]
+            //p=compile("(.+)(?:\\.(.+))");// do not match simple (not dotted) dir name [simpler]
             p=compile("(.+)(?:(\\..+))$|(.+)$"); // MATCH simple (not dotted) dir name in group(3)
         }
         catch (Exception e){
@@ -134,6 +134,13 @@ public final class Extract {
         return type.getType();
     }
     
+    /**
+     * Mark the handled type
+     * @see getEnumType
+     * @see extract
+     * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+     *
+     */
     static enum TYPE {
         NORMAL, // not tarred not compressed
         TAR,
@@ -212,7 +219,10 @@ public final class Extract {
     }
     
     /**
-     * check if it is a compressed file, if so it will uncompress the file into the same
+     * @warning read the todo note
+     * @TODO fix zip file extraction to make possible to extract not only 'simple' zip file
+     * 
+     * Check if it is a compressed file, if so it will uncompress the file into the same
      * dir using the input file name as base for the output name
      * @param in_name the name of the file to decompress, it could be:
      * a directory

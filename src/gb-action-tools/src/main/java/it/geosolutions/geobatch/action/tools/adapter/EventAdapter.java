@@ -19,30 +19,27 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package it.geosolutions.geobatch.action.tools.adapter;
 
-package it.geosolutions.geobatch.flow.event.listeners.cumulator;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 
-import it.geosolutions.geobatch.registry.AliasRegistrar;
-import it.geosolutions.geobatch.registry.AliasRegistry;
-import java.util.logging.Level;
+import java.util.EventObject;
 
 /**
- * Register XStream aliases for the relevant services we ship in this class.
- * 
+ * An adapter interface which should be implemented by Actions
+ * want to work using general EventObject
+ *  
+ * @author carlo cancellieri - carlo.cancellieri@geo-solutions.it
+ *
+ * @param <T>
  */
-public class CumulatingProgressListenerConfigurationAliasRegistrar extends AliasRegistrar {
-
+public interface EventAdapter <T extends EventObject> {
+    
     /**
-     * A basic constructor to put the LoggingProgressListener Conf alias into registry.
-     * 
-     * @param registry
-     *            The alias registry.
+     * This method define the mapping between input and output EventObject instance
+     * @param ieo is the object to transform
+     * @return the EventObject adapted
      */
-    public CumulatingProgressListenerConfigurationAliasRegistrar(AliasRegistry registry) {
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+    public T adapter(EventObject ieo) throws ActionException;
 
-        registry.putAlias("CumulatingProgressListener",
-                CumulatingProgressListenerConfiguration.class);
-    }
 }

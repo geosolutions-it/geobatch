@@ -30,7 +30,7 @@ import it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 
 /**
- * A Configuration for the Flow based on xml marshalled files.
+ * A Conf for the Flow based on xml marshalled files.
  * 
  * @author Simone Giannecchini, GeoSolutions
  * @author Alessio Fabiani, GeoSolutions

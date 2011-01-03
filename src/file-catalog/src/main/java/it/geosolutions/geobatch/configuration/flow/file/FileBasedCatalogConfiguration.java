@@ -32,7 +32,7 @@ import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
 
 /**
- * A Configuration for the Catalog based on xml marshalled files.
+ * A Conf for the Catalog based on xml marshalled files.
  * 
  * @author Simone Giannecchini, GeoSolutions
  * @author Alessio Fabiani, GeoSolutions

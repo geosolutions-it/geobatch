@@ -21,11 +21,7 @@
  */
 package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
-import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateModel;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.geobatch.action.tools.file.processor.FilterProcessor;
-import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.metocs.base.NetcdfEvent;
@@ -59,7 +55,7 @@ import ucar.nc2.ncml.NcMLReader;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
-public class SHOMAction extends BaseAction<EventObject> implements Action<EventObject>{
+public class SHOMAction extends BaseAction<EventObject>{
     // logger
     private final static Logger LOGGER = Logger.getLogger(SHOMAction.class.toString());
     // time zone
@@ -70,7 +66,6 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
     static {
         // setting time zone to UTC
         sdf.setTimeZone(TZ_UTC);
-//        CoordTransBuilder.registerTransform("MyTransformName", MyTransform.class);
     }
     
     private SHOMConfiguration conf;
@@ -104,7 +99,7 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
             
             try{
                 /*
-                 * checking the resulting object
+                 * check the resulting object
                  */
                 File f=null;
                 String dir_name=null;
@@ -138,7 +133,7 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
                     return null;
                 }
                 
-                Map<String, TemplateModel> map=conf.getRoot(); 
+                Map<String, String> map=conf.getRoot(); 
                 if (map!=null){
 // added into configuration
 //                    map.put("joinVar", new SimpleScalar("time"));
@@ -146,18 +141,26 @@ public class SHOMAction extends BaseAction<EventObject> implements Action<EventO
                      * append the searchPath variable to the 
                      * substitution map
                      */
-                    map.put("searchPath", new SimpleScalar(dir_name));
+                    map.put("searchPath", dir_name);
                 }
                 
                 /*
                  * Processing the input model
+ * TODO pass the main ThreadPool
+ * using null will be used a SingleThreadPool
                  */
-                PipedReader pr=FilterProcessor.process(conf);
-//CatalogHolder.getCatalog().getFlowManager("", clazz)
+                NcMLFilter filter=new NcMLFilter(conf,null);
+
+                PipedReader pr=filter.produce(filter);
+
                 NetcdfDataset dataset=NcMLReader.readNcML(pr, null);
 
-//                CoordTransBuilder.makeDummyTransformVariable(arg0, arg1)registerTransform("MyTransformName", MyTransform.class);
                 pr.close();
+                
+                if (LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("Closing the producer");
+                // be sure the producer thread ends
+                filter.close(false);
                 
                 /*
                  * Apply transformations to the dataset 

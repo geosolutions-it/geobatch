@@ -75,8 +75,8 @@ public class GroovyAction extends ScriptingAction implements Action<FileSystemMo
             // data flow configuration and dataStore name must not be null.
             // //
             if (getConfiguration() == null) {
-                LOGGER.log(Level.SEVERE, "Configuration is null.");
-                throw new IllegalStateException("Configuration is null.");
+                LOGGER.log(Level.SEVERE, "Conf is null.");
+                throw new IllegalStateException("Conf is null.");
             }
 
             // final String configId = getConfiguration().getName();

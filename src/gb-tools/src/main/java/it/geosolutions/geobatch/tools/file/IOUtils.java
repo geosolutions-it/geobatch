@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.tools.file;
 
+import it.geosolutions.geobatch.tools.Conf;
 import it.geosolutions.geobatch.tools.check.Objects;
 
 import java.io.BufferedInputStream;
@@ -298,7 +299,7 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
      */
     public static void copyStream(InputStream sourceStream, OutputStream destinationStream,
             boolean closeInput, boolean closeOutput) throws IOException {
-        copyStream(sourceStream, destinationStream, Configuration.DEFAULT_SIZE, closeInput, closeOutput);
+        copyStream(sourceStream, destinationStream, Conf.DEFAULT_SIZE, closeInput, closeOutput);
     }
 
     /**
@@ -570,10 +571,10 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
             // Sleep for ATOMIC_WAIT milliseconds prior to retry for acquiring
             // the lock
             synchronized (caller) {
-                caller.wait(Configuration.ATOMIC_WAIT);
+                caller.wait(Conf.ATOMIC_WAIT);
             }
 
-            sumWait += Configuration.ATOMIC_WAIT;
+            sumWait += Conf.ATOMIC_WAIT;
             if (sumWait > maxwait) {
                 LOGGER.info("Waiting time beyond maximum specified waiting time, exiting...");
                 // Quitting the loop

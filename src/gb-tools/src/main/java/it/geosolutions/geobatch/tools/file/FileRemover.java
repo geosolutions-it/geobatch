@@ -1,5 +1,7 @@
 package it.geosolutions.geobatch.tools.file;
 
+import it.geosolutions.geobatch.tools.Conf;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,12 +34,12 @@ public final class FileRemover extends Thread {
      * If the provided number of attempts is exceeded we simply drop warn the user and we remove
      * the {@link File} from our list.
      */
-    private int maxAttempts = Configuration.DEF_MAX_ATTEMPTS;
+    private int maxAttempts = Conf.DEF_MAX_ATTEMPTS;
 
     /**
      * Period in seconds between two checks.
      */
-    private volatile long period = Configuration.DEFAULT_PERIOD;
+    private volatile long period = Conf.DEFAULT_PERIOD;
     
     private final static Set<String> FILES_PATH = Collections
     .synchronizedSet(new HashSet<String>());
@@ -72,7 +74,7 @@ public final class FileRemover extends Thread {
      * Default constructor for a {@link FileRemover}.
      */
     public FileRemover() {
-        this(Configuration.DEFAULT_PERIOD, Thread.NORM_PRIORITY - 3, Configuration.DEF_MAX_ATTEMPTS);
+        this(Conf.DEFAULT_PERIOD, Thread.NORM_PRIORITY - 3, Conf.DEF_MAX_ATTEMPTS);
     }
 
     /**

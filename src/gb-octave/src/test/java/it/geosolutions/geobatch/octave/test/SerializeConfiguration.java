@@ -22,9 +22,6 @@
 
 package it.geosolutions.geobatch.octave.test;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
 import it.geosolutions.geobatch.octave.OctaveEnv;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveFunctionFile;
