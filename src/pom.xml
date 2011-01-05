@@ -183,20 +183,6 @@
                 <module>deploy</module>
             </modules>
         </profile>
-<!-- REF. MAIL 30Dec2010: "[GEOBATCH] tree"
-        <profile>
-            <id>gb-ftp-support</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>gb-ftp-support</module>
-            </modules>
-        </profile>
--->
 <!--
         <profile>
             <id>gb-fs-catalog</id>

@@ -280,7 +280,7 @@
             <id>gliders</id>
             <activation>
                 <property>
-                    <name>all_legacy_actions</name>
+                    <name>all</name>
                 </property>
             </activation>
             <dependencies>
@@ -322,13 +322,14 @@
             </build>
         </profile>
 
-        <!-- CTD ============================================================-->
+        <!-- CTD ============================================================
+        
         <profile>
             <id>ctd</id>
 
             <activation>
                 <property>
-                    <name>all_legacy_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -370,13 +371,13 @@
                 </plugins>
             </build>
         </profile>
-
-        <!-- AIS ============================================================-->
+-->
+        <!-- AIS ============================================================
         <profile>
             <id>ais</id>
             <activation>
                 <property>
-                    <name>all_legacy_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -418,7 +419,7 @@
                 </plugins>
             </build>
         </profile>
-
+-->
         <!-- NURC/TDA ============================================================-->
         <profile>
             <id>nurc</id>
@@ -591,7 +592,8 @@
             </build>
         </profile>
         
-        <!-- SAS ============================================================-->
+        <!-- SAS ============================================================
+REF. MAIL 30Dec2010: "[GEOBATCH] tree"
         <profile>
             <id>sas</id>
 
@@ -633,13 +635,13 @@
                 </plugins>
             </build>
         </profile>
-
+-->
         <!-- GeoTIFF ========================================================-->
         <profile>
             <id>geotiff</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -692,7 +694,7 @@
             <id>ascii</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -742,7 +744,7 @@
             <id>shapefile</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -795,7 +797,7 @@
             <id>task-executor</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -838,13 +840,61 @@
                 </plugins>
             </build>
         </profile>
+        <!-- Task Executor ==================================================-->
+        <profile>
+            <id>freemarker</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
+            <dependencies>
+                <dependency>
+                    <groupId>it.geosolutions</groupId>
+                    <artifactId>gb-action-freemarker</artifactId>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_freemark</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-action-freemarker</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>flowdata</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
         <!-- octave ==================================================-->
         <profile>
             <id>octave</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -893,7 +943,7 @@
             <id>geowebcache</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -942,7 +992,7 @@
             <id>ftp</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -991,7 +1041,7 @@
             <id>scripting</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -1040,7 +1090,7 @@
             <id>splitting</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -1089,7 +1139,7 @@
             <id>imagemosaic</id>
             <activation>
                 <property>
-                    <name>all_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>
@@ -1102,12 +1152,13 @@
             </dependencies>
         </profile>
 
-        <!--
+<!--
+REF. MAIL 30Dec2010: "[GEOBATCH] tree"
         <profile>
             <id>jgsflodess</id>
             <activation>
                 <property>
-                    <name>all_legacy_actions</name>
+                    <name>all</name>
                     <value>true</value>
                 </property>
             </activation>

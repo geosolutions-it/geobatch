@@ -181,7 +181,8 @@
             </modules>
         </profile>
 
-        <!--        <profile>
+<!--
+        <profile>
             <id>gliders</id>
             <activation>
                 <property>
@@ -194,7 +195,8 @@
             </modules>
         </profile>
 -->
-<!--        <profile>
+<!--
+        <profile>
             <id>ctd</id>
             <activation>
                 <property>
@@ -245,7 +247,8 @@
                 <module>gb-geoserver</module>
             </modules>
         </profile>
-        <!-- 
+<!--
+REF. MAIL 30Dec2010: "[GEOBATCH] tree"
 		<profile>
 			<id>jgsflodess</id>
 			<modules>
@@ -254,7 +257,7 @@
 				 <module>jgsflodess</module>
 			</modules>
 		</profile>
-		    -->
+-->
         <profile>
             <id>ascii-grids</id>
             <activation>
