@@ -43,11 +43,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-alias-registry</artifactId>
-        </dependency>
         
         <dependency>
         	<groupId>it.geosolutions</groupId>

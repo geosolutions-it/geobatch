@@ -36,7 +36,7 @@
 			<name>test</name>
 		</FileEventRule>
 		
-		<filter>
+		<freemarker>
 			<serviceID>FreeMarkerGeneratorService</serviceID>
 			<id>FreeMarkerGeneratorService</id>
 			<description>description</description>
@@ -55,7 +55,7 @@
 					<string>value</string>
 				</entry>
 			</root>
-		</filter>
+		</freemarker>
 		
 		<!-- ${KEY} -->
 	</EventConsumerConfiguration>

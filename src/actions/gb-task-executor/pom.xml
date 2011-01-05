@@ -56,10 +56,6 @@
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-alias-registry</artifactId>
-        </dependency> 
         
         <dependency>
 	        <groupId>org.apache.ant</groupId>

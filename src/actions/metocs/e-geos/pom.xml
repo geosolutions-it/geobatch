@@ -58,7 +58,6 @@
     <profiles>
         <profile>
             <id>dao.jibx</id>
-            <!--<activation>...</activation>-->
             <build>
                 <plugins>
                     <plugin>
@@ -84,11 +83,6 @@
                     </plugin>
                 </plugins>
             </build>
-            <!--
-            <modules>...</modules>
-            <repositories>...</repositories>
-            <pluginRepositories>...</pluginRepositories>
-             -->
             <dependencies>
                 <dependency>
                     <groupId>org.jibx</groupId>
@@ -101,11 +95,6 @@
                     <version>1.1.6</version>
                 </dependency>
             </dependencies>
-            <!--
-            <reporting>...</reporting>
-            <dependencyManagement>...</dependencyManagement>
-            <distributionManagement>...</distributionManagement>
--->
         </profile>
     </profiles>
     

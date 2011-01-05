@@ -1,6 +1,6 @@
-package it.geosolutions.geobatch.actions.FreeMarker.test;
+package it.geosolutions.geobatch.actions.freemarker.test;
 
-import it.geosolutions.geobatch.actions.FreeMarker.FreeMarkerConfiguration;
+import it.geosolutions.geobatch.actions.freemarker.FreeMarkerConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;

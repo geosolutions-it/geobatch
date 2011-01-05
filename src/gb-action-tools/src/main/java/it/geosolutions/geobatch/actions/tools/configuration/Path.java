@@ -40,6 +40,7 @@ public final class Path {
      * @note it should be a relative or absolute path referring to a sub-dir of 
      * the FileBaseCatalog BaseDirectory
      * @see FileBaseCatalog
+     * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
      */
     public static String getAbsolutePath(String working_dir) /*throws FileNotFoundException */{ 
         FileBaseCatalog c = (FileBaseCatalog) CatalogHolder.getCatalog();

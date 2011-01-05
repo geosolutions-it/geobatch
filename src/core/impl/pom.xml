@@ -88,11 +88,12 @@
         <!-- ============================== -->
         <!--     GeoBatch  		            -->
         <!-- ============================== -->
+
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-alias-registry</artifactId>
         </dependency>
-        
+
         <!-- ============================== -->
         <!--            tools               -->
         <!-- ============================== --> 

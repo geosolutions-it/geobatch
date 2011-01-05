@@ -24,9 +24,6 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
     
     private volatile OctaveEnv<OctaveExecutableSheet>  env;
     
-//TODO cheange this
-//    protected final static Engine engine=new Engine();
-    
     protected final SheetPreprocessor preprocessor=new SheetPreprocessor();
     
     protected final OctaveActionConfiguration config;
@@ -47,8 +44,9 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
     
     /**
      * This method should add all the needed preprocessors to the preprocessors map
+     * modifying as needed the event queue.
      * @param events
-     * @return
+     * @return events
      */
     public abstract Queue<T> load(Queue<T> events) throws ActionException;
     
@@ -78,7 +76,7 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
                  * this operation should transform all the OctaveFunction stored into the env
                  * into OctaveExecutableSheet which can be freely executed by the Octave Engine.class
                  * @note each sheet is executed atomically so be careful with the 'cd' command
-                 * (which change context dir) or other commands like so.    
+                 * (which change context dir) or other commands like so.
                  */
                 try {
                     preprocessor.preprocess(env);

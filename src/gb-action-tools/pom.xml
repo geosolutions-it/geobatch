@@ -54,10 +54,7 @@
   <dependencies>
 		
 		<!--  file.processor.FilterConfiguration  -->
-		<dependency>
-		    <groupId>it.geosolutions</groupId>
-    		<artifactId>gb-alias-registry</artifactId>
-		</dependency>
+		
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-core-model</artifactId>
@@ -71,6 +68,10 @@
 	            <groupId>it.geosolutions</groupId>
 	            <artifactId>gb-core-impl</artifactId>
 	        </dependency>
+				<dependency>
+					<groupId>it.geosolutions</groupId>
+					<artifactId>gb-alias-registry</artifactId>
+				</dependency>
 	        <dependency>
 	            <groupId>it.geosolutions</groupId>
 	            <artifactId>gb-tools</artifactId>

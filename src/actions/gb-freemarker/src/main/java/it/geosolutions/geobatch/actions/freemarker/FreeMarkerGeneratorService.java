@@ -19,7 +19,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.actions.FreeMarker;
+package it.geosolutions.geobatch.actions.freemarker;
 
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
@@ -38,6 +38,10 @@ public class FreeMarkerGeneratorService extends BaseService implements
 
     private final static Logger LOGGER = Logger.getLogger(FreeMarkerGeneratorService.class.toString());
 
+    public FreeMarkerGeneratorService(){
+        super();
+    }
+    
     public FreeMarkerAction createAction(FreeMarkerConfiguration configuration) {
         try {
             return new FreeMarkerAction(configuration);
@@ -49,6 +53,7 @@ public class FreeMarkerGeneratorService extends BaseService implements
     }
 
     public boolean canCreateAction(FreeMarkerConfiguration configuration) {
+//TODO check input and output file existence
         return true;
     }
 

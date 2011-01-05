@@ -62,12 +62,13 @@
             <artifactId>javaoctave</artifactId>
         </dependency>
         
-        <!-- AliasRegistrar -->
+<!-- AliasRegistrar 
 		<dependency>
 		    <groupId>it.geosolutions</groupId>
     		<artifactId>gb-alias-registry</artifactId>
 		</dependency>
-		
+-->
+
 <!-- tools -->        
         <dependency>
 			<groupId>it.geosolutions</groupId>
@@ -105,6 +106,9 @@
             <scope>test</scope>
         </dependency>
         
+
+
+
 <!--
         <dependency>
             <groupId>it.geosolutions</groupId>
@@ -126,6 +130,7 @@
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-core-impl</artifactId>
         </dependency>
+        
 -->
   </dependencies>
 </project>

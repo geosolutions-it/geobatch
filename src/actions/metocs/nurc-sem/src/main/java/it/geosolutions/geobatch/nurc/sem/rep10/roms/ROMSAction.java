@@ -27,14 +27,23 @@ import it.geosolutions.geobatch.octave.actions.templates.FileInFileOut.FileInFil
 
 import java.util.Date;
 
-
+/**
+ * 
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ *
+ */
 public class ROMSAction extends FileInFileOutAction {
 
+    /**
+     * Constructor
+     * @param actionConfiguration
+     */
     public ROMSAction(OctaveActionConfiguration actionConfiguration) {
         super(actionConfiguration);
     }
     
     /**
+     * 
      * @return a string representing the output file name of the script
      */
     @Override

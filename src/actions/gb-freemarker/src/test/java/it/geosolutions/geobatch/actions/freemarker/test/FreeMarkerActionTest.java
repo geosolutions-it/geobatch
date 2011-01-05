@@ -19,11 +19,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.actions.FreeMarker.test;
+package it.geosolutions.geobatch.actions.freemarker.test;
 
-import it.geosolutions.geobatch.actions.FreeMarker.FreeMarkerAction;
-import it.geosolutions.geobatch.actions.FreeMarker.FreeMarkerConfiguration;
-import it.geosolutions.geobatch.actions.FreeMarker.TemplateModelEvent;
+import it.geosolutions.geobatch.actions.freemarker.FreeMarkerAction;
+import it.geosolutions.geobatch.actions.freemarker.FreeMarkerConfiguration;
+import it.geosolutions.geobatch.actions.freemarker.TemplateModelEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 
 import java.util.EventObject;

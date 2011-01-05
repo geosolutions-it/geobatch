@@ -67,62 +67,49 @@ public class FileInFileOutSheetBuilder extends SheetBuilder {
          */
         List<SerializableOctaveObject<?>> arguments=off.getDefinitions();
         
-        if(off.getDefinitions().size()==2){
-            // setting value of arguments
-            /**
-             * get the first variable definition which is supposed
-             * to be the first argument of the function
-             * mars3d(file_in,file_out)
-             * and set its VALUE to the incoming file
-             * This will be transformed by the DefaultFunctionBuilder.preprocess
-             * into a sheet variable definition
-             */
-            ((SerializableOctaveFile) arguments.get(0)).reSetVal(filein);
-
-            /**
-             * get the second variable definition which is supposed
-             * to be the second argument of the function
-             * mars3d(file_in,file_out)
-             * set its VALUE to the conventional string obtained by 
-             * buildFileName() method
-             * This will be transformed by the DefaultFunctionBuilder.preprocess
-             * into a sheet variable definition
-             */
-            ((SerializableOctaveFile) arguments.get(1)).reSetVal(fileout);
-        }
-        else
-            throw new OctaveEvalException("Bad argument list in function: "+off.getName());
-        // name should be -> mars3d
-        String script=off.getName();//Command(0).getCommand();
+        String script=off.getName();
         
         if (arguments!=null){
-            /**
-             * if function has more than a input parameter
-             * it is in the form:
-             * ... function(arg1,arg2);
-             */
-            if (arguments.size()==2) {
+            if(arguments.size()==2){
+                // setting value of arguments
                 /**
-                 * @note: Here we suppose that
-                 * getName returns serialized value which is
-                 * modified into the execute() method of the
-                 * MARS3DAction class.
-                 * Variable Name should be substituted with
-                 * the file name it is representing:
-                 * arguments.get(0).getName() -> file_in
-                 * arguments.get(1).getName() -> file_out
+                 * get the first variable definition which is supposed
+                 * to be the first argument of the function
+                 * function(file_in,file_out)
+                 * and set its VALUE to the incoming file
+                 * This will be transformed by the DefaultFunctionBuilder.preprocess
+                 * into a sheet variable definition
                  */
-                script+="("+arguments.get(0).getName()+
-                    ","+arguments.get(1).getName()+");";
+                ((SerializableOctaveFile) arguments.get(0)).reSetVal(filein);
+    
+                /**
+                 * get the second variable definition which is supposed
+                 * to be the second argument of the function
+                 * function(file_in,file_out)
+                 * set its VALUE to the conventional string obtained by 
+                 * buildFileName() method
+                 * This will be transformed by the DefaultFunctionBuilder.preprocess
+                 * into a sheet variable definition
+                 */
+                ((SerializableOctaveFile) arguments.get(1)).reSetVal(fileout);
             }
-            /**
-             * if function has only one input parameter
-             * it is int the form:
-             * ... function(arg1);
-             */
             else
                 throw new OctaveEvalException("Argument list of "+off.getName()+
-                        " should contain at least 2 arguments!");
+                " should contain at least 2 arguments!");
+        
+            /**
+             * @note: Here we suppose that
+             * getName returns serialized value which is
+             * modified into the execute() method of the
+             * FunctionAction class.
+             * Variable Name should be substituted with
+             * the file name it is representing:
+             * arguments.get(0).getName() -> file_in
+             * arguments.get(1).getName() -> file_out
+             */
+            script+="("+arguments.get(0).getName()+
+                ","+arguments.get(1).getName()+");";
+                
         } //endif arguments!=null
         else
             throw new OctaveEvalException("Argument list of "+off.getName()+" is empty!");

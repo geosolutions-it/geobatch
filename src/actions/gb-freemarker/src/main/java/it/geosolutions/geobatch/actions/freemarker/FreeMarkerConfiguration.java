@@ -19,8 +19,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.actions.FreeMarker;
+package it.geosolutions.geobatch.actions.freemarker;
 
+import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.Map;
@@ -33,21 +34,24 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
-@XStreamAlias("filter")
+@XStreamAlias("FreeMarker")
 @XStreamInclude(FreeMarkerConfiguration.class)
-public class FreeMarkerConfiguration extends ActionConfiguration {
+public class FreeMarkerConfiguration extends ActionConfiguration implements Configuration{
+
     public FreeMarkerConfiguration() {
-        // 
+        super();
+    }
+    
+    public FreeMarkerConfiguration(String id, String name, String description, boolean dirty) {
+        super(id, name, description, dirty);
     }
     
     // path where to find the template
     @XStreamAlias("input")
-//    @XStreamOmitField
     private String input;
 
     // path where to write
     @XStreamAlias("output")
-//    @XStreamOmitField
     private String output;
     
     // Create a data-model

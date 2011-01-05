@@ -72,11 +72,6 @@
 
 		<dependency>
 			<groupId>it.geosolutions</groupId>
-			<artifactId>gb-alias-registry</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>it.geosolutions</groupId>
 			<artifactId>gb-fsm-core</artifactId>
 			<version>0.9-SNAPSHOT</version>
 			<type>jar</type>

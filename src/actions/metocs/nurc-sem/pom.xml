@@ -63,13 +63,19 @@
     		<groupId>essi-unidata</groupId>
     		<artifactId>netcdf-java</artifactId>
 		</dependency>
-		
+<!-- mars3d meteoam roms -->
 		<!-- Octave -->
         <dependency>
             <groupId>it.geosolutions</groupId>
 			<artifactId>gb-octave</artifactId>
         </dependency>
-    	
+<!-- SHOM -->
+        <!-- FreeMarker -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+        </dependency>
+<!-- ALL -->    	
     	<!-- METOCS Commons -->
         <dependency>
             <groupId>it.geosolutions</groupId>
@@ -77,6 +83,5 @@
         </dependency>
 	</dependencies>
 
-    <profiles>    </profiles>
     
 </project>

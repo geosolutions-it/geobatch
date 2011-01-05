@@ -249,12 +249,12 @@
         <!--
             I wanted to select all action profiles by selecting the "all" profile,
             via an internal property definition, but it seems not to work as expected...
-            You'll need to explicitly set the -Dall_actions env var.
+            You'll need to explicitly set the -Dall env var.
         -->
         <profile>
             <id>all</id>
             <properties>
-                <all_actions>true</all_actions>
+                <all>true</all>
             </properties>
         </profile>
 

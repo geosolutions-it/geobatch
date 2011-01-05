@@ -142,16 +142,11 @@
             <artifactId>gt-main</artifactId>
         </dependency>
         
-<!-- 
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-core-model</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-fs-catalog</artifactId>
-        </dependency>
--->
+		<!-- tools.netcdf -->
+		<dependency>
+			<groupId>essi-unidata</groupId>
+			<artifactId>netcdf-java</artifactId>
+		</dependency>
+		
   </dependencies>
 </project>

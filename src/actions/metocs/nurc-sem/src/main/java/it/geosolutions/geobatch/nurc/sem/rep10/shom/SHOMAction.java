@@ -52,6 +52,13 @@ import ucar.nc2.dataset.NetcdfDataset;
 import ucar.nc2.ncml.NcMLReader;
 /**
  * 
+ * This action perform multiple rep10_SHOM netCDF file join and transformation
+ * to get a NetCDF-CF file format as output.
+ * To do so it make use of the NcML and Aggregation.
+ * 
+ * @todo use standard interface and or functions of the NetCDF-CF standard (see note)
+ * @note transformation are performed by code without using the standard interface
+ * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
@@ -294,10 +301,10 @@ e.printStackTrace();
         dataset.addAttribute(root,new Attribute("base_time",sdf.format(gc.getTime())));
         dataset.addAttribute(root, new Attribute("time_origin", "seconds since 1980-1-1 0:0:0"));
         dataset.addAttribute(root, new Attribute("tau", tau));
-      /*
-       * TODO read from file:
-       * which file?
-       */
+  /*
+   * TODO read from file:
+   * which file?
+   */
         dataset.addAttribute(root, new Attribute("nodata", -3.4e38));
         return dataset;
     }

@@ -157,36 +157,6 @@
             <properties>
                 <dao.type>jibx</dao.type>
             </properties>
-            <!-- build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jibx</groupId>
-                        <artifactId>maven-jibx-plugin</artifactId>
-                        <version>1.1.6</version>
-                        <configuration>
-                            <verbose>true</verbose>
-                            <directory>src/main/resources/jibx</directory>
-                            <includes>
-                                <includes>binding.xml</includes>
-                            </includes>
-                            <verbose>true</verbose>
-                            <multi-module>true</multi-module>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>bind</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build -->
-    <!--
-    <modules>...</modules>
-    <repositories>...</repositories>
-    <pluginRepositories>...</pluginRepositories>
-     -->
             <dependencies>
                 <dependency>
                     <groupId>org.jibx</groupId>
@@ -199,22 +169,7 @@
                     <version>1.1.6</version>
                 </dependency>
             </dependencies>
-
         </profile>
-
-        <profile>
-            <id>dao.xstream</id>
-            <activation>
-				<property>
-                    <name>dao.type</name> <!-- if dao.type has still the default value, let's set the xstream profile -->
-                    <value>xstream</value>
-                </property>
-            </activation>
-            <!--<properties>
-                <dao.type>xstream</dao.type>
-            </properties>-->
-        </profile>
-        
 
         <!-- deploy libs -->
         <profile>
@@ -242,6 +197,33 @@
             </modules>
         </profile>
 -->
+<!--
+        <profile>
+            <id>gb-fs-catalog</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>file-catalog</module>
+            </modules>
+        </profile>
+        
+        <profile>
+            <id>gb-fsm</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-fsm</module>
+            </modules>
+        </profile>
+        
         <profile>
             <id>gb-ftp-server</id>
             <activation>
@@ -254,7 +236,73 @@
                 <module>gb-ftp-server</module>
             </modules>
         </profile>
-        <!-- 		ACTIONS 		-->
+        
+        <profile>
+            <id>web</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>web</module>
+            </modules>
+        </profile>
+        
+        <profile>
+            <id>gb-core</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>core</module>
+            </modules>
+        </profile>
+        
+        <profile>
+            <id>gb-action-tools</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-action-tools</module>
+            </modules>
+        </profile>        
+                
+        <profile>
+            <id>gb-tools</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-tools</module>
+            </modules>
+        </profile>
+                -->
+        <!-- 		ACTIONS
+        <profile>
+            <id>actions</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>actions</module>
+            </modules>
+        </profile>
+         		-->
 <!-- octave -->
         <profile>
             <id>octave</id>
@@ -1017,7 +1065,6 @@
                 <version>${gb.version}</version>
             </dependency>
 
-
 <!-- tools -->
 <!-- Apache Tika -->
 			<dependency>
@@ -1053,10 +1100,10 @@
 				<version>${gb.version}</version>
 			</dependency>
 			
-<!-- action-FreeMarker -->
+<!-- action-freemarker -->
 			<dependency>
 				<groupId>it.geosolutions</groupId>
-				<artifactId>gb-action-FreeMarker</artifactId>
+				<artifactId>gb-action-freemarker</artifactId>
 				<version>${gb.version}</version>
 			</dependency>
             
@@ -1536,10 +1583,10 @@
     <!-- =========================================================== -->
     <modules>
 		<module>gb-fsm</module>
-        <module>dao</module>
         <module>gb-tools</module>
 		<module>file-catalog</module>
 		<module>core</module>
+		<module>dao</module>
 		<module>gb-action-tools</module>
         <module>gb-octave</module>
         <module>actions</module>

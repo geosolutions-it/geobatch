@@ -37,7 +37,7 @@
     </scm>
   
     <description>
-    GeoSolutions GeoBatch pluggable DAOs.
+		GeoSolutions GeoBatch pluggable DAOs.
     </description>
 
     <licenses>
@@ -68,15 +68,15 @@
                 <module>jibx</module>
             </modules>
         </profile>
+        
         <profile>
             <id>dao.xstream</id>
-            <!--
             <activation>
                 <property>
                     <name>all</name>
+                    <value>true</value>
                 </property>
             </activation>
-            -->
             <modules>
                 <module>xstream</module>
             </modules>

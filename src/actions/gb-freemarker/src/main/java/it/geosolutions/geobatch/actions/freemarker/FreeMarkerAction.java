@@ -19,7 +19,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.actions.FreeMarker;
+package it.geosolutions.geobatch.actions.freemarker;
 
 import freemarker.template.TemplateModelException;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
@@ -152,21 +152,10 @@ public class FreeMarkerAction
             throw new ActionException(this,message);
         }
         catch (TemplateModelException tme){
-            /*
-             * DO NOTHING Since missing variable can be substituted by the incoming
-             * data structure...
-             */
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning(tme.getLocalizedMessage()+
-                    " missing variable can be substituted by the incoming data structure event");
-            
-            /*
             String message="Unable to wrap the passed object: "+tme.getLocalizedMessage();
-            
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.severe(message);
             throw new ActionException(this,message);
-             */
         }
         catch (Exception e){
             String message="Unable to process the input file: "+e.getLocalizedMessage();

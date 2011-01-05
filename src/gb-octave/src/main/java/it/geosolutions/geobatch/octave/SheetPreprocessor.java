@@ -68,7 +68,19 @@ public class SheetPreprocessor {
                     SheetBuilder sb=null;
                     if ((sb=preprocessors.get(f.getName()))!=null){
                         // build the executable sheet
-                        env.push(sb.buildSheet(f));
+                        OctaveExecutableSheet oes=sb.buildSheet(f);
+/*
+ * TODO check this could be redundant
+ * probably we may want to add on top of the list a sheet
+ * pushing definitions and at the bottom, a sheet getting
+ * returns. 
+ */
+                        // appending parent definitions
+                        oes.pushDefinitions(sheet.getDefinitions());
+                        // appending parent returns
+                        oes.pushReturns(sheet.getReturns());
+                        
+                        env.push(oes);
                     }
                     else {
                         String message="No preprocessor found for the OctaveFunctionSheet named "+f.getName();

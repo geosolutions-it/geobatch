@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.actions.FreeMarker;
+package it.geosolutions.geobatch.actions.freemarker;
 
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
@@ -35,10 +35,7 @@ public class FreeMarkerAliasRegistrar extends AliasRegistrar {
     public FreeMarkerAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
         
-        registry.putAlias("filter",FreeMarkerConfiguration.class);
-        
-        registry.putAlias("input", String.class);
-        registry.putAlias("output", String.class);
+        registry.putAlias("FreeMarker",FreeMarkerConfiguration.class);
         
         }
 }

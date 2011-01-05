@@ -142,7 +142,7 @@
     <profiles>
     
 		<profile>
-            <id>FreeMarker</id>
+            <id>freemarker</id>
             <activation>
                 <property>
                     <name>all</name>
@@ -150,7 +150,7 @@
                 </property>
             </activation>
             <modules>
-                <module>gb-FreeMarker</module>
+                <module>gb-freemarker</module>
             </modules>
         </profile>
 
@@ -336,10 +336,6 @@
 
         <profile>
             <id>lamma</id>
-<!-- COMMENDED OUT SINCE: 
-Missing:
-1) it.geosolutions.opensdi.lamma:lamma-ws-su:jar:0.1-SNAPSHOT
-REFER TO MAIL: [GEOBATCH] tree
 
             <activation>
                 <property>
@@ -347,7 +343,6 @@ REFER TO MAIL: [GEOBATCH] tree
                     <value>true</value>
                 </property>
             </activation>
--->
             <modules>
                 <module>geotiff</module>
                 <module>gb-geoserver</module>
@@ -441,5 +436,25 @@ REFER TO MAIL: [GEOBATCH] tree
             </modules>
         </profile>
     </profiles>
-    
+    <!--
+    <modules>
+		<module>gb-freemarker</module>
+		<module>splitting</module>
+		<module>metocs</module>
+		<module>scripting</module>
+		<module>gb-task-executor</module>
+		<module>shapefile</module>
+		<module>imagemosaic</module>
+		<module>geotiff</module>
+		<module>gb-geoserver</module>
+		<module>pending</module>
+		<module>registry</module>
+		<module>emsa</module>
+		<module>ascii-grids</module>
+		<module>geowebcache</module>
+		<module>gb-ftp</module>
+		<module>lamma</module>
+		<module>sas</module>
+    </modules>
+    -->
 </project>

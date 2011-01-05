@@ -23,7 +23,6 @@ package it.geosolutions.geobatch.octave;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -290,7 +289,7 @@ public class OctaveExecutableSheet {
         definitions.add(d);
     }
     
-    public void pushDefinitions(Vector<SerializableOctaveObject<?>> ds){
+    public void pushDefinitions(List<SerializableOctaveObject<?>> ds){
         definitions.addAll(ds);
     }
     
@@ -298,7 +297,7 @@ public class OctaveExecutableSheet {
         returns.add(r);
     }
     
-    public void pushReturns(Vector<SerializableOctaveObject<?>> rs){
+    public void pushReturns(List<SerializableOctaveObject<?>> rs){
         returns.addAll(rs);
     }
 }

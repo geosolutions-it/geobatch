@@ -6,8 +6,7 @@
 		 
 	<!-- Environment Initialization -->
 	
-	<!-- lscv08-SEM fluxes  -->	
-	<bean id="FreeMarkerGeneratorService" class="it.geosolutions.geobatch.actions.FreeMarker.FreeMarkerGeneratorService">
+	<bean id="FreeMarkerGeneratorService" class="it.geosolutions.geobatch.actions.freemarker.FreeMarkerGeneratorService">
 		<property  name="id">
     		<value>FreeMarkerGeneratorService</value>
     	</property>
@@ -19,7 +18,7 @@
     	</property>
 	</bean>
 	
-	<bean id="FreeMarkerAliasRegistrar" class="it.geosolutions.geobatch.actions.FreeMarker.FreeMarkerAliasRegistrar" lazy-init="false">
+	<bean id="FreeMarkerAliasRegistrar" class="it.geosolutions.geobatch.actions.freemarker.FreeMarkerAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
  

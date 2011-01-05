@@ -26,7 +26,8 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.imagemosaic.Utils;
 import it.geosolutions.geobatch.lamma.base.LammaBaseAction;
-import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.geobatch.tools.file.Compressor;
+import it.geosolutions.geobatch.tools.file.Path;
 import it.geosolutions.geobatch.tools.time.TimeParser;
 
 import java.io.File;
@@ -149,18 +150,18 @@ public class LammaContourBuilderAction extends LammaBaseAction {
 				 * Initialize shapefile
 				 */
 				if (contourShapefile.exists()) {
-					IOUtils.deleteFile(contourShapefile);
+					Path.deleteFile(contourShapefile);
 					try {
-						IOUtils.deleteFile(new File(inputDir, FilenameUtils
+					    Path.deleteFile(new File(inputDir, FilenameUtils
 								.getBaseName(contourShapefile.getName())
 								+ ".shx"));
-						IOUtils.deleteFile(new File(inputDir, FilenameUtils
+					    Path.deleteFile(new File(inputDir, FilenameUtils
 								.getBaseName(contourShapefile.getName())
 								+ ".dbf"));
-						IOUtils.deleteFile(new File(inputDir, FilenameUtils
+					    Path.deleteFile(new File(inputDir, FilenameUtils
 								.getBaseName(contourShapefile.getName())
 								+ ".prj"));
-						IOUtils.deleteFile(new File(inputDir, FilenameUtils
+					    Path.deleteFile(new File(inputDir, FilenameUtils
 								.getBaseName(contourShapefile.getName())
 								+ ".zip"));
 					} catch (Exception e) {
@@ -332,7 +333,7 @@ public class LammaContourBuilderAction extends LammaBaseAction {
 						return res;
 					}
 				});
-				final File compressedShapefile = IOUtils.deflate(inputDir,
+				final File compressedShapefile = Compressor.deflate(inputDir,
 						FilenameUtils.getBaseName(contourShapefile.getName()),
 						files);
 				outEvents.add(new FileSystemMonitorEvent(compressedShapefile,

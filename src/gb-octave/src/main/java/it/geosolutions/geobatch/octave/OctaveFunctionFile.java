@@ -66,27 +66,10 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
     SerializableOctaveString.class,
     SerializableOctaveObject.class})
 public class OctaveFunctionFile extends OctaveExecutableSheet{
-/**
- * TODO this is essentially an OctaveExecutableSheet !!!
- * add only an 'executable' flag
- */
+    
     @XStreamOmitField
     protected boolean executable=false;
-    
-    /*
-    //< function name
-    @XStreamAlias("name")
-    @XStreamAsAttribute
-    private String function;
-    
-    //< returning name variable list to set
-    //@XStreamImplicit(itemFieldName="ret")
-    private List<SerializableOctaveObject<?>> returns;
-    
-    //< arguments values
-    //@XStreamImplicit(itemFieldName="arg")
-    private List<SerializableOctaveObject<?>> arguments;
-*/    
+
     public OctaveFunctionFile(){
         super("EMPTY_NAME_FUNCTION",
                 new OctaveCommand(""),
@@ -127,28 +110,5 @@ public class OctaveFunctionFile extends OctaveExecutableSheet{
     public Object clone(){
         return new OctaveFunctionFile((OctaveExecutableSheet)super.clone());
     }
-/*    
-    public List<SerializableOctaveObject<?>> getReturns(){
-        return returns;
-    }
-    
-    public List<SerializableOctaveObject<?>> getArguments(){
-        return arguments;
-    }
-    
-    public void setName(String n){
-        function=n;
-    }
-    
-    public String getName(){
-        return function;
-    }
-    
-    public void pushArgument(SerializableOctaveObject<?> soo){
-        arguments.add(soo);
-    }
-    public void pushReturn(SerializableOctaveObject<?> soo){
-        returns.add(soo);
-    }
-*/
+
 }

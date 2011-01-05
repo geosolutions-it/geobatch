@@ -68,10 +68,6 @@
             <artifactId>gb-action-geoserver</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-alias-registry</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

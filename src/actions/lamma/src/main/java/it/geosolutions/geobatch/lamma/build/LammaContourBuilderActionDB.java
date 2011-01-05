@@ -26,7 +26,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.imagemosaic.Utils;
 import it.geosolutions.geobatch.lamma.base.LammaBaseAction;
-import it.geosolutions.geobatch.utils.TimeParser;
+import it.geosolutions.geobatch.tools.time.TimeParser;
 
 import java.io.File;
 import java.io.FileInputStream;
