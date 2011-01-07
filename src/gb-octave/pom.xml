@@ -75,6 +75,11 @@
 			<artifactId>gb-tools</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-action-tools</artifactId>
+		</dependency>
+		
 		<!-- ============================== -->
         <!--     Platform                   -->
         <!-- ============================== -->

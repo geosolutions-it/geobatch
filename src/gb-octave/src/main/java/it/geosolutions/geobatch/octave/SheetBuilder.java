@@ -33,7 +33,6 @@ public abstract class SheetBuilder {
     /**
      * Generate a string functions serializing informations extracted
      * from returns ad arguments building something like:
-     * 
      * [ret1,ret2,...,retN]=function_name(arg1,arg2,...,argN);
      * 
      * @return a string as above
@@ -42,79 +41,76 @@ public abstract class SheetBuilder {
     protected OctaveExecutableSheet buildSheet(OctaveFunctionFile off) throws OctaveException{
         List<SerializableOctaveObject<?>> returns=off.getReturns();
         List<SerializableOctaveObject<?>> arguments=off.getDefinitions();
-        List<OctaveCommand> commands=new ArrayList<OctaveCommand>();
+        List<OctaveCommand> commands=off.getCommands();
         
-        int size=commands.size();
-        int index=0;
-        while (index<size){
-            String script="";
-            /**
-             * if function returns more than a value
-             * it is in the form:
-             * [ret1,ret2,...,retN]=function(...);
-             */
-            if (returns!=null){
-                if (returns.size()>1) {
-                    Iterator<SerializableOctaveObject<?>> i=returns.iterator();
-                    script="["+i.next();
-                    while (i.hasNext()){
-                        script+=","+i.next().getName();
-                    }
-                    script+="]=";
+        StringBuilder script=new StringBuilder("");
+        /**
+         * if function returns more than a value
+         * it is in the form:
+         * [ret1,ret2,...,retN]=function(...);
+         */
+        if (returns!=null){
+            if (returns.size()>1) {
+                Iterator<SerializableOctaveObject<?>> i=returns.iterator();
+                script.append("["+i.next());
+                while (i.hasNext()){
+                    script.append(","+i.next().getName());
                 }
-                /**
-                 * if function return only a value
-                 * it is int the form:
-                 * ret1 = function(...);
-                 */
-                else if (returns.size()==1){
-                    Iterator<SerializableOctaveObject<?>> i=returns.iterator();
-                    script=i.next().getName()+"=";
-                }
-                /**
-                 * else
-                 * function do not return values
-                 * function(...);
-                 */
+                script.append("]=");
             }
-            
             /**
-             * The SheetFunctionFile name represents the function name
+             * if function return only a value
+             * it is int the form:
+             * ret1 = function(...);
              */
-            script+=off.getName();
-            
-            if (arguments!=null){
-                /**
-                 * if function has more than a input parameter
-                 * it is in the form:
-                 * ... function(arg1,arg2,...,argN);
-                 */
-                if (arguments.size()>1) {
-                    Iterator<SerializableOctaveObject<?>> i=arguments.iterator();
-                    script+="("+i.next().getName();
-                    while (i.hasNext()){
-                        script+=","+i.next().getName();
-                    }
-                    script+=")";
+            else if (returns.size()==1){
+                Iterator<SerializableOctaveObject<?>> i=returns.iterator();
+                script.append(i.next().getName()+"=");
+            }
+            /**
+             * else
+             * function do not return values
+             * function(...);
+             */
+        }
+        
+        /**
+         * The SheetFunctionFile name represents the function name
+         */
+        script.append(off.getName());
+        
+        if (arguments!=null){
+            /**
+             * if function has more than a input parameter
+             * it is in the form:
+             * ... function(arg1,arg2,...,argN);
+             */
+            if (arguments.size()>1) {
+                Iterator<SerializableOctaveObject<?>> i=arguments.iterator();
+                script.append("("+i.next().getName());
+                while (i.hasNext()){
+                    script.append(","+i.next().getName());
                 }
-                /**
-                 * if function has only one input parameter
-                 * it is int the form:
-                 * ... function(arg1);
-                 */
-                else if (arguments.size()==1){
-                    Iterator<SerializableOctaveObject<?>> i=arguments.iterator();
-                    script+="("+i.next().getName()+")";
-                }
-                /**
-                 * else
-                 * function has not input parameter
-                 * ... function;
-                 */
-            } //endif arguments!=null
-        script+=";";
-        commands.add(new OctaveCommand(script));
-        } // end wile
+                script.append(")");
+            }
+            /**
+             * if function has only one input parameter
+             * it is int the form:
+             * ... function(arg1);
+             */
+            else if (arguments.size()==1){
+                Iterator<SerializableOctaveObject<?>> i=arguments.iterator();
+                script.append("("+i.next().getName()+")");
+            }
+            /**
+             * else
+             * function has not input parameter
+             * ... function;
+             */
+        } //endif arguments!=null
+        script.append(";");
+        
+        commands.add(new OctaveCommand(script.toString()));
         
         return new OctaveExecutableSheet("DEFAULT_FUNCTION_SHEET",commands,arguments,returns);
     }

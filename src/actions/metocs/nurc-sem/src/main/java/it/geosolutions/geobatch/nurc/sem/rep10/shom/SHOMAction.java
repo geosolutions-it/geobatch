@@ -158,7 +158,7 @@ public class SHOMAction extends BaseAction<EventObject>{
                  */
                 NcMLFilter filter=new NcMLFilter(conf,null);
 
-                PipedReader pr=filter.produce(filter);
+                PipedReader pr=filter.produce();
 
                 NetcdfDataset dataset=NcMLReader.readNcML(pr, null);
 

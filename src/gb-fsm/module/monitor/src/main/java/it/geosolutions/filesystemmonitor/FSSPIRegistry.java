@@ -5,8 +5,8 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,7 +38,6 @@ class FSSPIRegistry implements ApplicationContextAware, InitializingBean {
 
     }
 
-    @SuppressWarnings("unchecked")
     FileSystemMonitor getMonitor(final Map<String, ?> config, final OsType osType) {
         if (applicationContext == null) {
             if (LOGGER.isLoggable(Level.SEVERE))

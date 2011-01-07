@@ -31,11 +31,9 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("sheet")
 @XStreamInclude({
-    OctaveFunctionFile.class,
     OctaveCommand.class,
-    SerializableOctaveFile.class,
-    SerializableOctaveString.class,
-    SerializableOctaveObject.class})
+    SerializableOctaveObject.class,
+    ArrayList.class})
 public class OctaveExecutableSheet {
     
     // the name of this sheet

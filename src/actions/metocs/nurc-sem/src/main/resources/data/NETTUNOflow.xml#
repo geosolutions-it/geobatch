@@ -36,39 +36,72 @@
 			<name>test</name>
 		</FileEventRule>
 		
+		<OctaveFreeMarkerConfiguration>
+			<serviceID>OctaveFreeMarkerGeneratorService</serviceID>
+			<id>OctaveFreeMarkerGeneratorService</id>
+			<description>OctaveFreeMarkerGeneratorService</description>
+			<name>OctaveFreeMarkerConfiguration</name>
+			<workingDirectory>rep10workingdir/meteoam/nettuno/</workingDirectory>
+			<execute>../sheet_meteoam.xml</execute> <!-- relative to the working dir -->
+			
+			<cruise>rep10</cruise>
+			<model>NETTUNO</model>
+			<extension>.nc</extension>
+			<outDir>nc/</outDir>
+			
+			<root>
+			<!-- CANNOT USE A VARIABLE FOR THIS NODE SINCE
+			SheetPreprocessor use that name to assign the
+			preprocessor to use.
+			Anyway if you use the FreeMarker action to filter
+			this file before passing it to the octave action
+			you can freely set this variable but this should
+			be done into the FreeMarker configuration root
+			map.
+				<entry>
+					<string>SHEETNAME</string>
+					<string>NettunoSheet</string>
+				</entry>
+				-->
+				<entry>
+					<string>FUNCTION</string>
+					<string>nettuno2nc</string>
+				</entry>
+				<entry>
+					<string>SOURCEDIR</string>
+					<string>/usr/share/octave/3.0.5/m/startup/octaverc</string>
+				</entry>
+				<!-- RUNTIME
+				<entry>
+					<string>WORKINGDIR</string>
+					<string></string>
+				</entry>
+				<entry>
+					<string>IN_FILE</string>
+					<string>NettunoSheet</string>
+				</entry>
+				<entry>
+					<string>OUT_FILE</string>
+					<string>NettunoSheet</string>
+				</entry>
+				-->
+			</root>
+		</OctaveFreeMarkerConfiguration>
+		
+		<!--
 		<OctaveConfiguration>
 			<serviceID>NETTUNOGeneratorService</serviceID>
 			<id>NETTUNOGeneratorService</id>
 			<description>NETTUNOGeneratorService</description>
 			<name>NETTUNOActionConfiguration</name>
 			<workingDirectory>rep10workingdir/meteoam/nettuno/</workingDirectory>
-			<!-- OCTAVE ENV -->
 			<octave>
 			  <sheets>
-			  	<!-- OCTAVE SHEET -->
 			    <sheet name="NETTUNOFlow">
 			      <commands>
-			      <!--
-					/**
-					 * I can see that it is because I start the octave process with the
-					 * option - - no-site-file, I think I need to remove that option in the
-					 * next release.
-					 * Until I create a new octave.jar you can source the site file manually
-					 * doing something like this:
-					 * octave.eval("source /usr/share/octave/3.2.4/m/startup/octaverc");
-					 * after that netcdf() should work. You might have to adjust the path to
-					 * octaverc to fit your local octave installation.
-					 * Regards,
-					 * Kim Hansen
-					 * Vadgårdsvej 3, 2.tv
-					 * 2860 Søborg
-					 * Phone: +45 3091 2437
-					 */
-					 -->
 			        <OctaveCommand executed="false">
 						<command>source "/usr/share/octave/3.0.5/m/startup/octaverc";</command>
 			        </OctaveCommand>
-			        <!-- todo: variables! -->
 			        <OctaveCommand executed="false">
 						<command>cd "/home/carlo/work/data/rep10workingdir/meteoam/scripts"</command>
 			        </OctaveCommand>
@@ -81,12 +114,12 @@
 			      </commands>
 			      <definitions/>
 			      <functions>
-			        <function name="nettuno2nc">
+			        <function name="${FUNCTION}">
 				  <commands/>
 			          <returns/>
 			          <definitions>
-			            <OctaveFile name="file_in" value="" output="false" input="true"/>
-			            <OctaveFile name="file_out" value="" output="false" input="true"/>
+			            <OctaveFile name="file_in" value="${IN_FILE}" output="false" input="true"/>
+			            <OctaveFile name="file_out" value="${OUT_FILE}" output="false" input="true"/>
 			          </definitions>
 			        </function>
 			      </functions>
@@ -94,9 +127,8 @@
 			    </sheet>
 			  </sheets>
 			</octave>
-
 		</OctaveConfiguration>
-		
+		-->
 		<MetocActionConfiguration>
 			<workingDirectory>rep10workingdir/meteoam/nettuno/nc/</workingDirectory>
 			<flipY>false</flipY>

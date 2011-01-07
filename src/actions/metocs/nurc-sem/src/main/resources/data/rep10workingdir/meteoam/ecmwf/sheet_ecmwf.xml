@@ -1,0 +1,32 @@
+<!-- OCTAVE ENV -->
+<octave>
+  <sheets>
+	<!-- OCTAVE SHEET -->
+	<!-- This sheet can be used with all the ecmwf octave scripts-->
+	<FunctionSheet name="fileInFileOut_ecmwf">
+	  <commands/>
+	  <definitions/>
+	  <functions>
+		<function name="${FUNCTION}">
+		  <commands>
+			  <OctaveCommand executed="false">
+				<command>source "${SOURCEDIR}";</command>
+			</OctaveCommand>
+			<OctaveCommand executed="false">
+				<command>cd "${WORKINGDIR}/../../scripts"</command>
+			</OctaveCommand>
+			<OctaveCommand executed="false">
+				<command>env</command>
+			</OctaveCommand>
+	      </commands>
+		  <definitions>
+			<OctaveFile name="file_in" value="${IN_FILE}" output="false" input="true"/>
+			<OctaveFile name="file_out" value="${OUT_FILE}" output="false" input="true"/>
+		  </definitions>
+		  <returns/>
+		</function>
+	  </functions>
+	  <returns/>
+	</FunctionSheet>
+  </sheets>
+</octave>

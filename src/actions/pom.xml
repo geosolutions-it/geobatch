@@ -153,6 +153,19 @@
                 <module>gb-freemarker</module>
             </modules>
         </profile>
+        
+        <profile>
+            <id>octave-fileinfileout</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+				<module>gb-octave-fileinfileout</module>
+            </modules>
+        </profile>
 
         <profile>
             <id>ftp</id>

@@ -24,12 +24,18 @@ package it.geosolutions.geobatch.octave;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import dk.ange.octave.OctaveEngine;
 import dk.ange.octave.type.OctaveObject;
 
-@XStreamAlias("var")
+@XStreamInclude({
+//TODO add extensions here
+    SerializableOctaveObject.class,
+    SerializableOctaveFile.class,
+    SerializableOctaveString.class,
+    OctaveObject.class})
 public abstract class SerializableOctaveObject<T extends OctaveObject>{
     
     /*

@@ -36,19 +36,40 @@
 			<name>test</name>
 		</FileEventRule>
 		
-		<OctaveConfiguration>
-			<serviceID>ROMSGeneratorService</serviceID>
-			<id>ROMSGeneratorService</id>
-			<description>ROMSGeneratorService</description>
-			<name>ROMSActionConfiguration</name>
-			<workingDirectory>rep10workingdir/roms</workingDirectory>
-			<!-- OCTAVE ENV -->
-			<octave>
-			  <sheets>
-			  	<!-- OCTAVE SHEET -->
-			    <sheet>
-			      <commands>
-			      <!--
+		<OctaveFreeMarkerConfiguration>
+			<serviceID>OctaveFreeMarkerGeneratorService</serviceID>
+			<id>OctaveFreeMarkerGeneratorService</id>
+			<description>OctaveFreeMarkerGeneratorService</description>
+			<name>OctaveFreeMarkerConfiguration</name>
+			<workingDirectory>rep10workingdir/roms/</workingDirectory>
+			<execute>sheet.xml</execute> <!-- relative to the working dir -->
+			
+			<cruise>rep10</cruise>
+			<model>ROMS</model>
+			<extension>.nc</extension>
+			<outDir>nc/</outDir>
+			
+			<root>
+			<!-- CANNOT USE A VARIABLE FOR THIS NODE SINCE
+			SheetPreprocessor use that name to assign the
+			preprocessor to use.
+			Anyway if you use the FreeMarker action to filter
+			this file before passing it to the octave action
+			you can freely set this variable but this should
+			be done into the FreeMarker configuration root
+			map.
+			
+				<entry>
+					<string>SHEETNAME</string>
+					<string>NettunoSheet</string>
+				</entry>
+				
+				-->
+				<entry>
+					<string>FUNCTION</string>
+					<string>roms_f</string>
+				</entry>
+				  <!--
 					/**
 					 * I can see that it is because I start the octave process with the
 					 * option - - no-site-file, I think I need to remove that option in the
@@ -65,10 +86,40 @@
 					 * Phone: +45 3091 2437
 					 */
 					 -->
+				<entry>
+					<string>SOURCEDIR</string>
+					<string>/usr/share/octave/3.0.5/m/startup/octaverc</string>
+				</entry>
+				<!-- RUNTIME
+				<entry>
+					<string>WORKINGDIR</string>
+					<string></string>
+				</entry>
+				<entry>
+					<string>IN_FILE</string>
+					<string>NettunoSheet</string>
+				</entry>
+				<entry>
+					<string>OUT_FILE</string>
+					<string>NettunoSheet</string>
+				</entry>
+				-->
+			</root>
+		</OctaveFreeMarkerConfiguration>
+		<!--
+		<OctaveConfiguration>
+			<serviceID>ROMSGeneratorService</serviceID>
+			<id>ROMSGeneratorService</id>
+			<description>ROMSGeneratorService</description>
+			<name>ROMSActionConfiguration</name>
+			<workingDirectory>rep10workingdir/roms</workingDirectory>
+			<octave>
+			  <sheets>
+			    <sheet>
+			      <commands>
 			        <OctaveCommand executed="false">
 						<command>source "/usr/share/octave/3.0.5/m/startup/octaverc";</command>
 			        </OctaveCommand>
-			        <!-- todo: variables! -->
 			        <OctaveCommand executed="false">
 						<command>cd "/home/carlo/work/data/rep10workingdir/roms/"</command>
 			        </OctaveCommand>
@@ -88,9 +139,8 @@
 			    </sheet>
 			  </sheets>
 			</octave>
-
 		</OctaveConfiguration>
-		
+		-->
 		<MetocActionConfiguration>
 			<workingDirectory>rep10workingdir/roms/nc/</workingDirectory>
 			<flipY>true</flipY>

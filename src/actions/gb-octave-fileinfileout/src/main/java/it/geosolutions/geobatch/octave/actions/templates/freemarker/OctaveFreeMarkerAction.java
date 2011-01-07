@@ -20,18 +20,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.octave.actions.templates.FileInFileOut;
+package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.octave.OctaveEnv;
+import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
+import it.geosolutions.geobatch.octave.OctaveFunctionSheet;
 import it.geosolutions.geobatch.octave.SheetBuilder;
 import it.geosolutions.geobatch.octave.actions.OctaveAction;
-import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;
 import it.geosolutions.geobatch.tools.file.Extract;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
+import java.util.Map;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,12 +44,15 @@ import java.util.logging.Logger;
 import dk.ange.octave.exception.OctaveEvalException;
 
 
-public abstract class FileInFileOutAction extends OctaveAction<FileSystemMonitorEvent> {
+public class OctaveFreeMarkerAction extends OctaveAction<FileSystemMonitorEvent> {
        
-    private final static Logger LOGGER = Logger.getLogger(FileInFileOutAction.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(OctaveFreeMarkerAction.class.toString());
     
-    public FileInFileOutAction(OctaveActionConfiguration actionConfiguration) {
+    private final OctaveFreeMarkerConfiguration config;
+    
+    public OctaveFreeMarkerAction(OctaveFreeMarkerConfiguration actionConfiguration) {
         super(actionConfiguration);
+        config=actionConfiguration;
     }
     
     /**
@@ -52,18 +60,16 @@ public abstract class FileInFileOutAction extends OctaveAction<FileSystemMonitor
      *  @note this should be relative path as 
      *  it will be a sub dir of the working dir
      */
-    protected abstract String getOutputDir();
+    protected String getOutputDir(){
+        return config.getOutDir();
+    }
     
     /**
      * @return a string representing the output file name of the script
      */
-    protected abstract String buildFileName();
-    
-    /**
-     * @return a string representing the function name to map with this
-     * preprocessor template
-     */
-    protected abstract String getFunction();
+    protected String buildFileName(){
+        return config.getCruise()+"_"+config.getModel()+"-Forecast-T" + new Date().getTime()+config.getExtension();
+    }
 
     /**
      * Action to execute on the FileSystemMonitorEvent event queue.
@@ -72,7 +78,8 @@ public abstract class FileInFileOutAction extends OctaveAction<FileSystemMonitor
      * action executions.
      * @return Queue<FileSystemMonitorEvent> the resulting list of events
      */
-    public Queue<FileSystemMonitorEvent> load(Queue<FileSystemMonitorEvent> events)
+    @Override
+    public Queue<FileSystemMonitorEvent> load(Queue<FileSystemMonitorEvent> events, OctaveEnv<OctaveExecutableSheet> env)
             throws ActionException {
         try {
             if(LOGGER.isLoggable(Level.INFO))
@@ -114,24 +121,49 @@ public abstract class FileInFileOutAction extends OctaveAction<FileSystemMonitor
                  */
                 String out_name=out_dir_name+buildFileName();
                 
-                /**
-                 * Build the SheetBuilder using a FileInFileOutSheetBuilder which get
-                 * two files:
-                 * in file (coming from events)
-                 * out file build into the extending class  
-                 */
-                SheetBuilder fb=new FileInFileOutSheetBuilder(in_name,out_name);
-                
-                if(LOGGER.isLoggable(Level.INFO)){
-                    LOGGER.info(
-                            "Preprocessing functions on arguents: \nFile_in: "+ev.getSource().getAbsolutePath()
-                            +" \nFile_out: "+out_name);
+                Map<String, Object> root=config.getRoot();
+                if (root!=null){
+//                  root.put(config.FUNCTION_KEY, getFunction());
+                    if(LOGGER.isLoggable(Level.INFO)){
+                        LOGGER.info(
+                                "Preprocessing functions on arguents: \nFile_in: "+in_name
+                                +" \nFile_out: "+out_name);
+                    }
+                    root.put(config.IN_FILE_KEY, in_name);
+                    root.put(config.OUT_FILE_KEY, out_name);
+                    StringBuilder sb=new StringBuilder(Path.getAbsolutePath(config.getWorkingDirectory())+File.separator);
+                    if(LOGGER.isLoggable(Level.INFO)){
+                        LOGGER.info(
+                                "WorkingDir: "+sb.toString());
+                    }
+                    root.put(config.WORKINGDIR_KEY, sb.toString());
+                    sb=null;
+
+                    /**
+                     * Build the SheetBuilder using a FreeMarkerSheetBuilder which get
+                     * two files:
+                     * in file (coming from events)
+                     * out file build into the extending class  
+                     */
+                    SheetBuilder fb=new FreeMarkerSheetBuilder(config);
+
+                    String name=null;
+ // TODO this is a very bad check! add checks!
+                    OctaveExecutableSheet es=env.getSheet(0);
+                    if (es!=null){
+                        if (es instanceof OctaveFunctionSheet){
+                            OctaveFunctionSheet fs=(OctaveFunctionSheet) es;
+                            name=fs.getFunctions().get(0).getName();
+                        }
+                    }
+
+                    //add the SheetBuilder to the preprocessor map
+                    preprocessor.addBuilder(name, fb);
                 }
+                else
+                    throw new NullPointerException("The substitution root map cannot be null");
                 
-                /**
-                 * add the SheetBuilder to the preprocessor map
-                 */
-                preprocessor.addBuilder(getFunction(), fb);
+                
 
                 /**
                  * add output file to the event queue
@@ -151,12 +183,10 @@ public abstract class FileInFileOutAction extends OctaveAction<FileSystemMonitor
         }
         catch(Exception e){
 // DEBUG
-//e.printStackTrace();
+e.printStackTrace();
             throw new ActionException(this,"Unable to run octave script:\n"
                     +e.getLocalizedMessage());
         }
         return events;
-    }
-    
-    
+    }    
 }

@@ -20,19 +20,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.nurc.sem.rep10.mars3d;
+package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
-import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;
+import it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMarkerAction;
+import it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMarkerConfiguration;
 
-public class MARS3DGeneratorService
+public class OctaveFreeMarkerGeneratorService
     extends BaseService 
-    implements ActionService<FileSystemMonitorEvent, OctaveActionConfiguration> {
+    implements ActionService<FileSystemMonitorEvent, OctaveFreeMarkerConfiguration> {
 
-    public boolean canCreateAction(final OctaveActionConfiguration configuration)  {
+    public boolean canCreateAction(final OctaveFreeMarkerConfiguration configuration)  {
         
         String base_dir=configuration.getWorkingDirectory();
         base_dir=Path.getAbsolutePath(base_dir);
@@ -44,14 +45,15 @@ public class MARS3DGeneratorService
             return false;
         
 //TODO check if the m file is present and is readable
+//TODO check if the sheet (execute) file is present and is readable
         
         return true;
     }
 
 
-    public MARS3DAction createAction(final OctaveActionConfiguration configuration) {
+    public OctaveFreeMarkerAction createAction(final OctaveFreeMarkerConfiguration configuration) {
         if(canCreateAction(configuration)){
-            return new MARS3DAction(configuration);
+            return new OctaveFreeMarkerAction(configuration);
         }
         return null;
     }

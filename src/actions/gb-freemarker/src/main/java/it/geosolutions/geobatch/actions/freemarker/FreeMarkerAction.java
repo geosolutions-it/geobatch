@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.actions.tools.adapter.EventAdapter;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.tools.filter.FreeMarkerFilter;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -65,7 +66,7 @@ public class FreeMarkerAction
      */
     public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
         // the filter
-        FreeMarkerFilter f=new FreeMarkerFilter(conf.getWorkingDirectory(),conf.getInput());
+        FreeMarkerFilter f=new FreeMarkerFilter(Path.getAbsolutePath(conf.getWorkingDirectory()),conf.getInput());
         
         // build the output absolute file name
         StringBuilder output=null;

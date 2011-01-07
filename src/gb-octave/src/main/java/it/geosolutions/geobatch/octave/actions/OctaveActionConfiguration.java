@@ -39,11 +39,26 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
     OctaveEnv.class,
     OctaveExecutableSheet.class,
     OctaveFunctionSheet.class})
-public class OctaveActionConfiguration extends ActionConfiguration {    
-    @XStreamAlias("octave")
-    private OctaveEnv<OctaveExecutableSheet> env;
+public class OctaveActionConfiguration extends ActionConfiguration {
     
-    public final OctaveEnv<OctaveExecutableSheet> getEnv(){
+    public OctaveActionConfiguration(){
+        super();
+    }
+    
+    public OctaveActionConfiguration(ActionConfiguration ac){
+        super(ac.getId(),ac.getName(),ac.getDescription(),ac.isDirty());
+    }
+    /*
+     * represents the file containing the Octave environment to execute
+     */
+    @XStreamAlias("execute")
+    private String env;
+    
+    public final String getEnv(){
         return env;
+    }
+    
+    public void setEnv(String ex){
+        env=ex;
     }
 }

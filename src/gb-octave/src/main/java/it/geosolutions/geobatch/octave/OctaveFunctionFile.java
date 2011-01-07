@@ -62,8 +62,8 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  */
 @XStreamAlias("function")
 @XStreamInclude({
-    SerializableOctaveFile.class,
-    SerializableOctaveString.class,
+    OctaveFunctionFile.class,
+    OctaveExecutableSheet.class,
     SerializableOctaveObject.class})
 public class OctaveFunctionFile extends OctaveExecutableSheet{
     
@@ -87,8 +87,8 @@ public class OctaveFunctionFile extends OctaveExecutableSheet{
      * @param n the function name to call
      */
     public OctaveFunctionFile(String n){
-        super("EMPTY_NAME_FUNCTION",
-                new OctaveCommand(n),
+        super("n",
+                new ArrayList<OctaveCommand>(),
                 new ArrayList<SerializableOctaveObject<?>>(),
                 new ArrayList<SerializableOctaveObject<?>>());
         executable=false;

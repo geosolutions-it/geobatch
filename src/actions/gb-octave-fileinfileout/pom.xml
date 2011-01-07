@@ -23,9 +23,9 @@
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
   <groupId>it.geosolutions</groupId>
-  <artifactId>gb-action-freemarker</artifactId>
+  <artifactId>gb-action-octave-fileinfileout</artifactId>
   <packaging>jar</packaging>
-  <name>GeoBatch action: freemarker</name>
+  <name>GeoBatch action: octave-fileinfileout</name>
   <url>http://www.geo-solutions.it/maven_reports/gb/</url><!--<url>flowmanagers/</url>-->
   
   <scm>
@@ -88,6 +88,11 @@
          <dependency>
 			<groupId>it.geosolutions</groupId>
             <artifactId>gb-action-tools</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+            <artifactId>gb-octave</artifactId>
 		</dependency>
 		
 		<!-- ============================== -->

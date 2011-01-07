@@ -43,7 +43,7 @@ public class SheetPreprocessor {
     }
     
     /**
-     * Transform a OctaveFunctionSheet in a OctaveExecutableSheet
+     * Transform all OctaveFunctionSheet in OctaveExecutableSheet
      * 
      * @param sheet input output variable:
      * input is a OctaveFunctionSheet to be preprocessed
@@ -58,7 +58,7 @@ public class SheetPreprocessor {
             // if it is a FunctionSheet
             if (es instanceof OctaveFunctionSheet){
                 /**
-                 * this is a sheet that contains a function
+                 * this is a sheet containing a function
                  * which will produce a new OctaveExecutableSheet
                  */
                 OctaveFunctionSheet sheet=(OctaveFunctionSheet) es;
@@ -68,19 +68,29 @@ public class SheetPreprocessor {
                     SheetBuilder sb=null;
                     if ((sb=preprocessors.get(f.getName()))!=null){
                         // build the executable sheet
-                        OctaveExecutableSheet oes=sb.buildSheet(f);
-/*
- * TODO check this could be redundant
- * probably we may want to add on top of the list a sheet
- * pushing definitions and at the bottom, a sheet getting
- * returns. 
- */
-                        // appending parent definitions
-                        oes.pushDefinitions(sheet.getDefinitions());
-                        // appending parent returns
-                        oes.pushReturns(sheet.getReturns());
-                        
-                        env.push(oes);
+                        try {
+                            OctaveExecutableSheet oes=sb.buildSheet(f);
+                            /*
+                             * TODO check this could be redundant
+                             * probably we may want to add on top of the list a sheet
+                             * pushing definitions and at the bottom, a sheet getting
+                             * returns. 
+                             */
+                            // appending parent definitions
+                            oes.pushDefinitions(sheet.getDefinitions());
+                            // appending parent returns
+                            oes.pushReturns(sheet.getReturns());
+                            
+                            env.push(oes);
+                        }
+                        catch (OctaveException oe){
+                            if (LOGGER.isLoggable(Level.SEVERE))
+                                LOGGER.severe("Unable to build the sheet named: "+f.getName()
+                                        +" message is:\n"+oe.getLocalizedMessage());
+// debug
+oe.printStackTrace();
+                            throw oe;
+                        }
                     }
                     else {
                         String message="No preprocessor found for the OctaveFunctionSheet named "+f.getName();

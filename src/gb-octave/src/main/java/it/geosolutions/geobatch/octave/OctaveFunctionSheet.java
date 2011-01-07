@@ -29,12 +29,13 @@ import java.util.Vector;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 
-@XStreamAlias("sheet")
+@XStreamAlias("FunctionSheet")
 @XStreamInclude({
+    OctaveFunctionSheet.class,
+    OctaveExecutableSheet.class,
     OctaveFunctionFile.class,
-    SerializableOctaveFile.class,
-    SerializableOctaveString.class,
-    SerializableOctaveObject.class})
+    SerializableOctaveObject.class,
+    List.class})
 public class OctaveFunctionSheet extends OctaveExecutableSheet{
 
     // functions

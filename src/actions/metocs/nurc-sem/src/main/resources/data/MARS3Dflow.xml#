@@ -36,19 +36,40 @@
 			<name>test</name>
 		</FileEventRule>
 		
-		<OctaveConfiguration>
-			<serviceID>MARS3DGeneratorService</serviceID>
-			<id>MARS3DGeneratorService</id>
-			<description>MARS3DGeneratorService</description>
-			<name>MARS3DActionConfiguration</name>
-			<workingDirectory>rep10workingdir/mars3d</workingDirectory>
-			<!-- OCTAVE ENV -->
-			<octave>
-			  <sheets>
-			  	<!-- OCTAVE SHEET -->
-			    <sheet name="MARS3DFlow">
-			      <commands>
-			      <!--
+		<OctaveFreeMarkerConfiguration>
+			<serviceID>OctaveFreeMarkerGeneratorService</serviceID>
+			<id>OctaveFreeMarkerGeneratorService</id>
+			<description>OctaveFreeMarkerGeneratorService</description>
+			<name>OctaveFreeMarkerConfiguration</name>
+			<workingDirectory>rep10workingdir/mars3d/</workingDirectory>
+			<execute>sheet.xml</execute> <!-- relative to the working dir -->
+			
+			<cruise>rep10</cruise>
+			<model>MARS3D</model>
+			<extension>.nc</extension>
+			<outDir>nc/</outDir>
+			
+			<root>
+			<!-- CANNOT USE A VARIABLE FOR THIS NODE SINCE
+			SheetPreprocessor use that name to assign the
+			preprocessor to use.
+			Anyway if you use the FreeMarker action to filter
+			this file before passing it to the octave action
+			you can freely set this variable but this should
+			be done into the FreeMarker configuration root
+			map.
+			
+				<entry>
+					<string>SHEETNAME</string>
+					<string>NettunoSheet</string>
+				</entry>
+				
+				-->
+				<entry>
+					<string>FUNCTION</string>
+					<string>mars3d</string>
+				</entry>
+				  <!--
 					/**
 					 * I can see that it is because I start the octave process with the
 					 * option - - no-site-file, I think I need to remove that option in the
@@ -65,6 +86,38 @@
 					 * Phone: +45 3091 2437
 					 */
 					 -->
+				<entry>
+					<string>SOURCEDIR</string>
+					<string>/usr/share/octave/3.0.5/m/startup/octaverc</string>
+				</entry>
+				<!-- RUNTIME
+				<entry>
+					<string>WORKINGDIR</string>
+					<string></string>
+				</entry>
+				<entry>
+					<string>IN_FILE</string>
+					<string>NettunoSheet</string>
+				</entry>
+				<entry>
+					<string>OUT_FILE</string>
+					<string>NettunoSheet</string>
+				</entry>
+				-->
+			</root>
+		</OctaveFreeMarkerConfiguration>
+		
+		<!--
+		<OctaveConfiguration>
+			<serviceID>MARS3DGeneratorService</serviceID>
+			<id>MARS3DGeneratorService</id>
+			<description>MARS3DGeneratorService</description>
+			<name>MARS3DActionConfiguration</name>
+			<workingDirectory>rep10workingdir/mars3d</workingDirectory>
+			<octave>
+			  <sheets>
+			    <sheet name="MARS3DFlow">
+			      <commands>
 			        <OctaveCommand executed="false">
 						<command>source "/usr/share/octave/3.0.5/m/startup/octaverc";</command>
 			        </OctaveCommand>
@@ -75,12 +128,12 @@
 			      <definitions/>
 			      <functions>
 			        <function name="mars3d">
-					  	<commands/>
-						<returns/>
-						<definitions>
-							<OctaveFile name="file_in" value="" output="false" input="true"/>
-							<OctaveFile name="file_out" value="" output="false" input="true"/>
-						</definitions>
+				  <commands/>
+			          <returns/>
+			          <definitions>
+			            <OctaveFile name="file_in" value="" output="false" input="true"/>
+			            <OctaveFile name="file_out" value="" output="false" input="true"/>
+			          </definitions>
 			        </function>
 			      </functions>
 			      <returns/>
@@ -89,10 +142,10 @@
 			</octave>
 
 		</OctaveConfiguration>
+		-->
 		
 		<MetocActionConfiguration>
 			<workingDirectory>rep10workingdir/mars3d/nc/</workingDirectory>
-			<flipY>true</flipY>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>

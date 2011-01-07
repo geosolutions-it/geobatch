@@ -27,54 +27,79 @@ import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveFunctionFile;
 import it.geosolutions.geobatch.octave.OctaveFunctionSheet;
 import it.geosolutions.geobatch.octave.SerializableOctaveFile;
-import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;
+import it.geosolutions.geobatch.octave.SerializableOctaveString;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 
 public class SerializeConfiguration {
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         XStream stream = new XStream();
-//        stream.processAnnotations(OctaveFunctionFile.class);
+//        stream.processAnnotations(OctaveFunctionSheet.class);
 //        stream.processAnnotations(SerializableOctaveFile.class);
 //        stream.processAnnotations(SerializableOctaveString.class);
-        stream.processAnnotations(OctaveActionConfiguration.class);
+//        stream.processAnnotations(OctaveActionConfiguration.class);
         stream.processAnnotations(OctaveEnv.class);
-        
-        OctaveActionConfiguration oac=new OctaveActionConfiguration();
+        stream.processAnnotations(ArrayList.class);
         
         OctaveEnv<OctaveExecutableSheet> oe=new OctaveEnv<OctaveExecutableSheet>();
         
         OctaveFunctionSheet ofs=new OctaveFunctionSheet();
         
-        OctaveFunctionFile off=
-            new OctaveFunctionFile("funzione");
+            ofs.pushDefinition(new SerializableOctaveString("STRING_NAME", "VALUE"));
+            ofs.pushCommand("COMMAND_NAME");
+            OctaveFunctionFile off=new OctaveFunctionFile("funzione");
         
+                off.pushCommand("COMMAND1");
+                off.pushCommand("COMMAND2");
+
+                off.pushDefinition(new SerializableOctaveFile("file_in",""));
+                off.pushDefinition(new SerializableOctaveFile("file_out",""));
+                
         ofs.pushFunction(off);
+        OctaveExecutableSheet ofs2=new OctaveExecutableSheet();
         
-//        off.setBuilder(new OctaveFunctionFile("funzione2"));
-        off.pushDefinition(new SerializableOctaveFile("file_in",""));
-        off.pushDefinition(new SerializableOctaveFile("file_out",""));
+            ofs2.pushDefinition(new SerializableOctaveFile("variable_name2","VALUE"));
+            ofs2.pushDefinition(new SerializableOctaveFile("returning_var_name2","VALUE"));
+            ofs2.pushCommand("COMMAND");
         
-        //soo.setName("variable_name");
-        OctaveFunctionSheet os=new OctaveFunctionSheet();
-        os.pushDefinition(new SerializableOctaveFile("variable_name2","VALUE"));
-        os.pushDefinition(new SerializableOctaveFile("returning_var_name2","VALUE"));
-        os.pushCommand("COMMAND");
-        
-        oe.push(os);
         oe.push(ofs);
+        oe.push(ofs2);
         
         System.out.println("-------------------------------------");
 //        oac.setEnv(oe);
         
-
-  //      System.out.println(stream.toXML(oac));
+        String sob=stream.toXML(oe);
+        System.out.println(sob);
         System.out.println("-------------------------------------");
         
+        byte[] s=stream.toXML(oe).getBytes();
         
-        stream.processAnnotations(OctaveFunctionFile.class);
-        System.out.println(stream.toXML(oac));
+        InputStream is=new ByteArrayInputStream(s);
+        
+        // get an input stream on the buffer
+        DataInputStream dis=new DataInputStream(is);
+        
+        // build a Hierarchical stream reader
+        HierarchicalStreamReader preader=null;
+        
+//            preader = new BinaryStreamReader(stream.createObjectInputStream(dis));
+            ObjectInputStream oos=stream.createObjectInputStream(dis);
+            
+            
         System.out.println("-------------------------------------");
+        System.out.println(stream.fromXML(sob));
+        System.out.println("-------------------------------------");
+        System.out.println(stream.fromXML(new FileReader(new File("/home/carlo/work/data/rep10workingdir/meteoam/nettuno2/sheet.xml"))));
     }
 }

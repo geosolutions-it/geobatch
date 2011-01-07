@@ -46,6 +46,37 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
         super(id, name, description, dirty);
     }
     
+    /**
+     * 
+     * @param id
+     * @param name
+     * @param description
+     * @param dirty
+     * @param in the input template file
+     * @param out the output filtered (resulting) file
+     * @param r the root data model to use as root
+     */
+    public FreeMarkerConfiguration(String id, String name, String description, boolean dirty,
+            String in, String out, Map<String,Object> r) {
+        super(id, name, description, dirty);
+        input=in;
+        output=out;
+        root=r;
+    }
+    
+    /**
+     * 
+     * @param in the input template file
+     * @param out the output filtered (resulting) file
+     * @param r the root data model to use as root
+     */
+    public FreeMarkerConfiguration(String in, String out, Map<String,Object> r) {
+        super();
+        input=in;
+        output=out;
+        root=r;
+    }
+    
     // path where to find the template
     @XStreamAlias("input")
     private String input;
@@ -53,11 +84,11 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
     // path where to write
     @XStreamAlias("output")
     private String output;
-    
+
     // Create a data-model
     @XStreamAlias("root")
     private Map<String, Object> root=null;
-        
+    
     public void setInput(String s){
         input=s;
     }

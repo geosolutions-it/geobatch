@@ -19,13 +19,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.actions.freemarker;
+package it.geosolutions.geobatch.tools.filter;
 
-
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +42,7 @@ import freemarker.template.TemplateModelException;
  *
  */
 public class FreeMarkerFilter {
-    private final static Logger LOGGER = Logger.getLogger(FreeMarkerConfiguration.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(FreeMarkerFilter.class.toString());
     
     // You should initialize this ONLY ONCE in the whole application life-cycle:
     private freemarker.template.Configuration cfg = null;
@@ -64,7 +63,21 @@ public class FreeMarkerFilter {
     public FreeMarkerFilter(String wd, String ifn){
         super();
         if (!initted){
-            init(wd,ifn);
+            initted=(initConfig(wd)&&initTemplate(ifn));
+        }
+    }
+    
+    /**
+     * Constructor
+     * @param wd workingDir (Set the explicit directory from which to load templates)
+     * @param r the reader of a FreeMarker template
+     * @param data data structure (containing variable to substitute)
+     * @see Freemarker documentation for detailed accepted data types.
+     */
+    public FreeMarkerFilter(String wd, Reader r){
+        super();
+        if (!initted){
+            initted=(initConfig(wd)&&initTemplate(r));
         }
     }
     
@@ -122,15 +135,15 @@ public class FreeMarkerFilter {
      * @return true if the init() method has already run
      * false otherwise
      */
-    public boolean isInitted(){
+    private boolean isInitted(){
         return initted;
     }
 
     /**
-     * Initialize members
+     * Initialize configuration
      * @return true if init ends successful
      */
-    public boolean init(String workingDirectory, String input_name){
+    private boolean initConfig(String workingDirectory){
         if (initted)
             return initted;
         
@@ -141,11 +154,7 @@ public class FreeMarkerFilter {
         
         if (workingDirectory!=null && cfg!=null){
             try {
-                String path=Path.getAbsolutePath(workingDirectory);
-                if (path!=null)
-                    cfg.setDirectoryForTemplateLoading(new File(path));
-                else
-                    throw new NullPointerException("Unable to get an absolute path!");
+                cfg.setDirectoryForTemplateLoading(new File(workingDirectory));
             }
             catch (IOException e){
                 if (LOGGER.isLoggable(Level.SEVERE))
@@ -159,6 +168,39 @@ public class FreeMarkerFilter {
                 LOGGER.severe("Unable to get the working dir for this filter");
             return false;
         }
+        
+        return true;
+    }
+    
+    private boolean initTemplate(Reader reader){
+
+        if (initted)
+            return initted;
+        
+        /* Get or create a template */
+        if (reader!=null){
+            try {
+                template = new Template(null,reader,cfg,cfg.getEncoding(cfg.getLocale()));
+            } catch (IOException e) {
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe("Unable to get the template: "+e.getLocalizedMessage());
+                return false;
+            }
+        }
+        else {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("Unable to set the template file check the input_name parameter");
+            return false;
+        }
+        
+        return true;
+    }
+
+    
+    private boolean initTemplate(String input_name){
+
+        if (initted)
+            return initted;
         
         /* Get or create a template */
         if (input_name!=null){
@@ -176,7 +218,6 @@ public class FreeMarkerFilter {
             return false;
         }
         
-        initted=true;
         return true;
     }
     
@@ -185,21 +226,28 @@ public class FreeMarkerFilter {
      * this configuration
      * @param out the Writer
      * @return true if success
-     * @throws TemplateException 
-     * @throws IOException 
+     * @throws TemplateException if an exception occurs during template processing
+     * @throws IOException if an I/O exception occurs during writing to the writer.
      */
     public final boolean process(TemplateModel root, Writer out) throws TemplateException, IOException {
-        try {
-            template.process(root,out);
-            return true;
-        } catch (TemplateException e) {
+        if (isInitted()){
+            try {
+                template.process(root,out);
+                return true;
+            } catch (TemplateException e) {
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe(e.getLocalizedMessage());
+                throw e;
+            } catch (IOException e) {
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe(e.getLocalizedMessage());
+                throw e;
+            }
+        }
+        else {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(e.getLocalizedMessage());
-            throw e;
-        } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(e.getLocalizedMessage());
-            throw e;
+                LOGGER.severe("This filter is not well initialized");
+            return false;   
         }
     }
         

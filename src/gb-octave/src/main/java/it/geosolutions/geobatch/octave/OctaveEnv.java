@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
@@ -36,6 +37,11 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * @param <T> the specialization of this class
  */
 @XStreamAlias("octave")
+@XStreamInclude({
+//TODO ADD HERE ALL THE SUPPORTED SHEETS
+    OctaveExecutableSheet.class,
+    OctaveFunctionSheet.class,
+    List.class})
 public class OctaveEnv<T extends OctaveExecutableSheet>{
     
     // used to make thread return synchronization
@@ -43,10 +49,10 @@ public class OctaveEnv<T extends OctaveExecutableSheet>{
     private final long uniqueID;
     
     @XStreamAlias("sheets")
-    private final List<T> env;
+    private final List<T> sheets;
     
     public final int size(){
-        return env.size();
+        return sheets.size();
     }
     
     public final long getUniqueID(){
@@ -54,18 +60,18 @@ public class OctaveEnv<T extends OctaveExecutableSheet>{
     }
     
     public OctaveExecutableSheet pop(){
-        if (env.isEmpty())
+        if (sheets.isEmpty())
             return null;
         else {
             OctaveExecutableSheet os=getSheet(0);
-            env.remove(os);
+            sheets.remove(os);
             return os;
         }
     }
     
     public T getSheet(int index) throws IndexOutOfBoundsException{
-        if (env.size()>index)
-            return env.get(index);
+        if (sheets.size()>index)
+            return sheets.get(index);
         else
             throw
                 new IndexOutOfBoundsException(
@@ -73,24 +79,24 @@ public class OctaveEnv<T extends OctaveExecutableSheet>{
     }
     
     public boolean hasNext(){
-        if (env.isEmpty())
+        if (sheets.isEmpty())
             return false;
         else
             return true;
     }
     
     public void push(T os){
-        env.add(os);
+        sheets.add(os);
     }
     
     /**
-     * add a list of sheet to the environment
+     * add a list of sheet to the sheetsironment
      * @param os
      */
     public void push(List<T> os){
         if (os!=null)
             for(T t:os)
-                env.add(t);
+                sheets.add(t);
         //else
 // TODO LOG
     }
@@ -101,13 +107,13 @@ public class OctaveEnv<T extends OctaveExecutableSheet>{
     }
     
     public OctaveEnv(){
-        env=new ArrayList<T>();
+        sheets=new ArrayList<T>();
         uniqueID=generateID();
 //        global=new OctaveExecutableSheet();
     }
     
     public OctaveEnv(List<T> e){
-        env=new ArrayList<T>(e);
+        sheets=new ArrayList<T>(e);
         uniqueID=generateID();
 //        global=new OctaveExecutableSheet();
     }
@@ -117,24 +123,24 @@ public class OctaveEnv<T extends OctaveExecutableSheet>{
     public Object clone(){
         OctaveEnv<T> oe=new OctaveEnv<T>();
         int index=0;
-        int size=this.env.size();
+        int size=this.sheets.size();
         while(index<size){
-            T t=this.env.get(index++);
+            T t=this.sheets.get(index++);
             oe.push((T)t.clone());
         }
         return oe;
 //        global(this.global);
     }
 
-    public OctaveEnv(OctaveEnv<T> environment){
+    public OctaveEnv(OctaveEnv<T> sheetsironment){
         uniqueID=generateID();
-        if (environment!=null){
-            this.env=environment.env;
-//            this.global=new OctaveExecutableSheet(environment.global);
+        if (sheetsironment!=null){
+            this.sheets=sheetsironment.sheets;
+//            this.global=new OctaveExecutableSheet(sheetsironment.global);
         }
         else{
 // TODO LOG
-            env=new ArrayList<T>();
+            sheets=new ArrayList<T>();
 //            global=new OctaveExecutableSheet();
         }
     }

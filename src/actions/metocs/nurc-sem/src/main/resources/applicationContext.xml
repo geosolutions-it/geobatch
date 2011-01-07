@@ -97,7 +97,7 @@
     
     <!-- REP10 -->
     	<!-- MARS3D -->
-		<bean id="MARS3DGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.mars3d.MARS3DGeneratorService">
+<!--	<bean id="MARS3DGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.mars3d.MARS3DGeneratorService">
 			<property  name="id">
 	    		<value>MARS3DGeneratorService</value>
 	    	</property>
@@ -108,9 +108,9 @@
 	    		<value>MARS3DGeneratorService</value>
 	    	</property>	
 		</bean>
-		
+-->		
 		<!-- ROMS -->
-		<bean id="ROMSGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.roms.ROMSGeneratorService">
+<!--	<bean id="ROMSGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.roms.ROMSGeneratorService">
 			<property  name="id">
 	    		<value>ROMSGeneratorService</value>
 	    	</property>
@@ -121,9 +121,9 @@
 	    		<value>ROMSGeneratorService</value>
 	    	</property>	
 		</bean>
-		
+-->		
 		<!-- NETTUNO -->
-		<bean id="NETTUNOGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.nettuno.NETTUNOGeneratorService">
+<!--	<bean id="NETTUNOGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.nettuno.NETTUNOGeneratorService">
 			<property  name="id">
 	    		<value>NETTUNOGeneratorService</value>
 	    	</property>
@@ -134,9 +134,9 @@
 	    		<value>NETTUNOGeneratorService</value>
 	    	</property>	
 		</bean>
-		
+-->		
 		<!-- ILM -->
-		<bean id="ILMGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.ilm.ILMGeneratorService">
+<!--	<bean id="ILMGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.ilm.ILMGeneratorService">
 			<property  name="id">
 	    		<value>ILMGeneratorService</value>
 	    	</property>
@@ -147,9 +147,9 @@
 	    		<value>ILMGeneratorService</value>
 	    	</property>	
 		</bean>
-		
+-->		
 		<!-- ELM -->
-		<bean id="ELMGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.elm.ELMGeneratorService">
+<!--	<bean id="ELMGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.elm.ELMGeneratorService">
 			<property  name="id">
 	    		<value>ELMGeneratorService</value>
 	    	</property>
@@ -160,9 +160,9 @@
 	    		<value>ELMGeneratorService</value>
 	    	</property>	
 		</bean>
-		
+-->	
 		<!-- ECMWFWave -->
-		<bean id="ECMWFWaveGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.ecmwf.wave.ECMWFWaveGeneratorService">
+<!--	<bean id="ECMWFWaveGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.ecmwf.wave.ECMWFWaveGeneratorService">
 			<property  name="id">
 	    		<value>ECMWFWaveGeneratorService</value>
 	    	</property>
@@ -173,9 +173,9 @@
 	    		<value>ECMWFWaveGeneratorService</value>
 	    	</property>	
 		</bean>
-		
+-->		
 		<!-- ECMWFMeteo -->
-		<bean id="ECMWFMeteoGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.ecmwf.meteo.ECMWFMeteoGeneratorService">
+<!--	<bean id="ECMWFMeteoGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.meteoam.ecmwf.meteo.ECMWFMeteoGeneratorService">
 			<property  name="id">
 	    		<value>ECMWFMeteoGeneratorService</value>
 	    	</property>
@@ -189,8 +189,8 @@
 		
 		
     
-    <bean id="OctaveAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.OctaveAliasRegistrar" lazy-init="false">
+    <bean id="OctaveMetocsAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.OctaveAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
- 
+--> 
 </beans>

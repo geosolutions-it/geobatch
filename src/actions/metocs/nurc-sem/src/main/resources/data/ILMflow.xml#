@@ -36,18 +36,37 @@
 			<name>test</name>
 		</FileEventRule>
 		
-		<OctaveConfiguration>
-			<serviceID>ILMGeneratorService</serviceID>
-			<id>ILMGeneratorService</id>
-			<description>ILMGeneratorService</description>
-			<name>ILMActionConfiguration</name>
+		<OctaveFreeMarkerConfiguration>
+			<serviceID>OctaveFreeMarkerGeneratorService</serviceID>
+			<id>OctaveFreeMarkerGeneratorService</id>
+			<description>OctaveFreeMarkerGeneratorService</description>
+			<name>OctaveFreeMarkerConfiguration</name>
 			<workingDirectory>rep10workingdir/meteoam/ilm/</workingDirectory>
-			<!-- OCTAVE ENV -->
-			<octave>
-			  <sheets>
-			  	<!-- OCTAVE SHEET -->
-			    <sheet name="ILMFlow">
-			      <commands>
+			<execute>../sheet_meteoam.xml</execute> <!-- relative to the working dir -->
+			
+			<cruise>rep10</cruise>
+			<model>ILM</model>
+			<extension>.nc</extension>
+			<outDir>nc/</outDir>
+			
+			<root>
+			<!-- CANNOT USE A VARIABLE FOR THIS NODE SINCE
+			SheetPreprocessor use that name to assign the
+			preprocessor to use.
+			Anyway if you use the FreeMarker action to filter
+			this file before passing it to the octave action
+			you can freely set this variable but this should
+			be done into the FreeMarker configuration root
+			map.
+				<entry>
+					<string>SHEETNAME</string>
+					<string>NettunoSheet</string>
+				</entry>
+				-->
+				<entry>
+					<string>FUNCTION</string>
+					<string>ilm2nc</string>
+				</entry>
 			      <!--
 					/**
 					 * I can see that it is because I start the octave process with the
@@ -65,10 +84,40 @@
 					 * Phone: +45 3091 2437
 					 */
 					 -->
+				<entry>
+					<string>SOURCEDIR</string>
+					<string>/usr/share/octave/3.0.5/m/startup/octaverc</string>
+				</entry>
+				<!-- RUNTIME
+				<entry>
+					<string>WORKINGDIR</string>
+					<string></string>
+				</entry>
+				<entry>
+					<string>IN_FILE</string>
+					<string>NettunoSheet</string>
+				</entry>
+				<entry>
+					<string>OUT_FILE</string>
+					<string>NettunoSheet</string>
+				</entry>
+				-->
+			</root>
+		</OctaveFreeMarkerConfiguration>
+		<!--
+		<OctaveConfiguration>
+			<serviceID>ILMGeneratorService</serviceID>
+			<id>ILMGeneratorService</id>
+			<description>ILMGeneratorService</description>
+			<name>ILMActionConfiguration</name>
+			<workingDirectory>rep10workingdir/meteoam/ilm/</workingDirectory>
+			<octave>
+			  <sheets>
+			    <sheet name="ILMFlow">
+			      <commands>
 			        <OctaveCommand executed="false">
 						<command>source "/usr/share/octave/3.0.5/m/startup/octaverc";</command>
 			        </OctaveCommand>
-			        <!-- todo: variables! -->
 			        <OctaveCommand executed="false">
 						<command>cd "/home/carlo/work/data/rep10workingdir/meteoam/scripts"</command>
 			        </OctaveCommand>
@@ -94,12 +143,10 @@
 			    </sheet>
 			  </sheets>
 			</octave>
-
 		</OctaveConfiguration>
-		
+-->		
 		<MetocActionConfiguration>
 			<workingDirectory>rep10workingdir/meteoam/ilm/nc/</workingDirectory>
-			<flipY>true</flipY>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>

@@ -89,7 +89,7 @@ public abstract class Producer {
      * be sure to consume all the reader data. Be sure to close
      * the reader.
      */
-    public final PipedReader produce(final Producer p) throws IOException{
+    public final PipedReader produce() throws IOException{
         PipedReader pr=null;
         try {
             // reader
@@ -104,7 +104,7 @@ public abstract class Producer {
                 executor.submit(new Callable<Object>() {
                         public PipedWriter call() throws Exception {
                             try {
-                                p.producer(out);
+                                producer(out);
                                 out.flush();
                             } catch (IOException e) {
                                 if (LOGGER.isLoggable(Level.SEVERE))

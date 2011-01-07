@@ -840,7 +840,9 @@ REF. MAIL 30Dec2010: "[GEOBATCH] tree"
                 </plugins>
             </build>
         </profile>
-        <!-- Task Executor ==================================================-->
+        
+        <!-- FreeMarker ==================================================-->
+        
         <profile>
             <id>freemarker</id>
             <activation>
@@ -871,6 +873,56 @@ REF. MAIL 30Dec2010: "[GEOBATCH] tree"
                                         <artifactItem>
                                             <groupId>it.geosolutions</groupId>
                                             <artifactId>gb-action-freemarker</artifactId>
+                                            <version>${gb.version}</version>
+                                            <classifier>flowdata</classifier>
+                                            <type>jar</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                                            <includes>data/**</includes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+<!-- action-octave-fileinfileout ==================================================-->
+        
+        <profile>
+            <id>freemarker</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
+            <dependencies>
+                <dependency>
+				    <groupId>it.geosolutions</groupId>
+					<artifactId>gb-action-octave-fileinfileout</artifactId>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack_octave_fileinfileout</id>
+                                <phase>package</phase>
+                                <goals><goal>unpack</goal></goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>it.geosolutions</groupId>
+                                            <artifactId>gb-action-octave-fileinfileout</artifactId>
                                             <version>${gb.version}</version>
                                             <classifier>flowdata</classifier>
                                             <type>jar</type>
