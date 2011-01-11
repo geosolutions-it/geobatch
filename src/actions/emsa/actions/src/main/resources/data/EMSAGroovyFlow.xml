@@ -9,7 +9,7 @@
 
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>/var/www/html/emsa</watchDirectory>
+		<watchDirectory>EMSAWorkingDir/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>id</id>
@@ -50,7 +50,7 @@
 			<serviceID>EMSAScriptingService</serviceID>
 
             <language>groovy</language>
-            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EMSA.groovy</scriptFile>
+            <scriptFile>/home/carlo/work/data/emsa/script/EMSA.groovy</scriptFile>
 
 		    <properties>
 				 <entry>

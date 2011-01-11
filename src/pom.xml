@@ -1509,23 +1509,7 @@
             <url>http://download.java.net/maven/2/</url>
         </repository>
 
-        <!--repository>
-            <id>refractions</id>
-            <name>Refractions Research Maven 2 Repository</name>
-            <url>http://lists.refractions.net/m2</url>
-        </repository-->
-<!--
-COMMENTED OUT: Simone request on 05 01 2011
 
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>geotools</id>
-            <name>Geotools repository</name>
-            <url>http://maven.geotools.fr/repository</url>
-        </repository>
--->
         <repository>
             <id>JBoss</id>
             <url>http://repository.jboss.com/maven2</url>
@@ -1551,6 +1535,17 @@ COMMENTED OUT: Simone request on 05 01 2011
             <url>http://maven.restlet.org</url>
         </repository>
                 
+        <repository>
+            <id>official maven 1</id>
+            <name>Public online maven repository</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+        
+        <repository>
+            <id>official maven 2</id>
+            <name>Public online maven repository</name>
+            <url>http://repo2.maven.org/maven2</url>
+        </repository>                        
 
     </repositories>
 

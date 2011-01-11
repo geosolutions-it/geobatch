@@ -1,25 +1,16 @@
 /** 
  * Java Imports ...
  **/
-import it.geosolutions.geobatch.action.scripting.GroovyAction
+import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration
+import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder
+import it.geosolutions.geobatch.flow.event.action.ActionException
 
 import java.util.logging.Level
 import java.util.logging.Logger
 
-import it.geosolutions.geobatch.flow.event.IProgressListener
-import it.geosolutions.geobatch.flow.event.ProgressListener
-import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder
-
-import it.geosolutions.geobatch.flow.event.action.ActionException
-
-import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration
-
 import org.apache.commons.io.FilenameUtils
 
-import ucar.ma2.InvalidRangeException
 import ucar.nc2.NetcdfFile
-import ucar.nc2.NetcdfFileWriteable
-import ucar.nc2.Variable
 
 /** 
  * Script execute function
@@ -30,7 +21,7 @@ public String execute(ScriptingConfiguration configuration, String eventFilePath
     try {
         listenerForwarder.started();
 
-				println(eventFilePath);
+        println(eventFilePath);
 
         String inputFileName = eventFilePath;
         final String filePrefix = FilenameUtils.getBaseName(inputFileName);

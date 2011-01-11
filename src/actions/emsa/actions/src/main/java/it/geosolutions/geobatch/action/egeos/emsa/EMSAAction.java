@@ -4,7 +4,7 @@
 package it.geosolutions.geobatch.action.egeos.emsa;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.geobatch.action.scripting.GroovyAction;
+import it.geosolutions.geobatch.action.scripting.ScriptingAction;
 import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration;
 import it.geosolutions.geobatch.flow.event.action.Action;
 
@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * @author Administrator
  * 
  */
-public class EMSAAction extends GroovyAction implements Action<FileSystemMonitorEvent> {
+public class EMSAAction extends ScriptingAction implements Action<FileSystemMonitorEvent> {
 
     /**
      * Default Logger

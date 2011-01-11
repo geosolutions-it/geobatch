@@ -3,24 +3,20 @@
 
 package it.geosolutions.geobatch.action.scripting;
 
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyObject;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import junit.framework.TestCase;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+
+import junit.framework.Assert;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -29,24 +25,14 @@ import org.springframework.core.io.ClassPathResource;
  * 
  * @author etj
  */
-public class ScriptingActionTest extends TestCase {
+public class ScriptingActionTest extends Assert {
 
-    public ScriptingActionTest() {
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        System.out.println();
-        System.out.println("Running test " + getName());
-    }
+    
 
     @Test
-    @Ignore
     public void testLoop() throws ScriptException {
 
-        String engineName = "Rhino";
+        String engineName = "groovy";
 
         ScriptEngine foundEngine = null;
         // create a script engine manager
@@ -57,7 +43,7 @@ public class ScriptingActionTest extends TestCase {
             System.out.println("FACTORY: " + "'" + sef.getEngineName() + "' " + "'"
                     + sef.getLanguageName() + "' " + "'" + sef.getExtensions() + "' " + "'"
                     + sef.getNames() + "' ");
-            if (sef.getEngineName().contains("Rhino")) {
+            if (sef.getEngineName().contains(engineName)) {
                 foundEngine = sef.getScriptEngine();
             }
 
@@ -89,7 +75,6 @@ public class ScriptingActionTest extends TestCase {
     }
 
     @Test
-    @Ignore
     public void testGetEngineByName() throws ScriptException {
 
         String engineName = "JavaScript";
@@ -110,7 +95,6 @@ public class ScriptingActionTest extends TestCase {
     }
 
     @Test
-    @Ignore
     public void testGroovy() throws ScriptException {
 
         String engineName = "groovy";
@@ -129,6 +113,7 @@ public class ScriptingActionTest extends TestCase {
         engine.eval("println \"hello, groovy\"");
     }
 
+    @Test
     public void testGroovyFileAndParam() throws ScriptException, IOException {
 
         String engineName = "groovy";
@@ -147,95 +132,95 @@ public class ScriptingActionTest extends TestCase {
         // evaluate code from File
         engine.eval(new FileReader(script));
     }
+//
+//    public void testGroovyClassReload() throws ScriptException, IOException,
+//            InstantiationException, IllegalAccessException {
+//
+//        String engineName = "groovy";
+//
+//        ScriptEngineManager mgr = new ScriptEngineManager();
+//        // create a JavaScript engine
+//        ScriptEngine engine = mgr.getEngineByName(engineName);
+//        assertNotNull("Can't find engine '" + engineName + "'", engine);
+//
+//        File script1 = new ClassPathResource("test-data/TestClassV1.groovy").getFile();
+//        File script2 = new ClassPathResource("test-data/TestClassV2.groovy").getFile();
+//        File dstFile = File.createTempFile("TestClassReload", ".groovy");
+//
+//        try {
+//            {
+//                FileInputStream fis = new FileInputStream(script1);
+//                FileOutputStream fos = new FileOutputStream(dstFile);
+//                IOUtils.copy(fis, fos);
+//                fos.flush();
+//                IOUtils.closeQuietly(fis);
+//                IOUtils.closeQuietly(fos);
+//            }
+//
+//            // let's call some method on an instance
+//            {
+//                ClassLoader parent = getClass().getClassLoader();
+//                GroovyClassLoader loader = new GroovyClassLoader(parent);
+//                Class groovyClass = loader.parseClass(dstFile);
+//
+//                GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
+//                Object[] args = {};
+//                Object ret = groovyObject.invokeMethod("getVersion", args);
+//                assertEquals(new Integer(1), ret);
+//            }
+//
+//            // Overwrite the class
+//            {
+//                FileInputStream fis = new FileInputStream(script2);
+//                FileOutputStream fos = new FileOutputStream(dstFile);
+//                IOUtils.copy(fis, fos);
+//                fos.flush();
+//                IOUtils.closeQuietly(fis);
+//                IOUtils.closeQuietly(fos);
+//
+//                FileUtils.touch(dstFile); // just to be sure
+//            }
+//
+//            {
+//                ClassLoader parent = getClass().getClassLoader();
+//                GroovyClassLoader loader = new GroovyClassLoader(parent);
+//                // Class groovyClass = loader.parseClass(dstFile);
+//
+//                Class groovyClass2 = loader.parseClass(dstFile);
+//                GroovyObject groovyObject = (GroovyObject) groovyClass2.newInstance();
+//                Object[] args = {};
+//                Object ret = groovyObject.invokeMethod("getVersion", args);
+//                assertEquals("File " + dstFile + " not reparsed.", new Integer(2), ret);
+//            }
+//        } finally {
+//            FileUtils.deleteQuietly(dstFile);
+//        }
+//    }
 
-    public void testGroovyClassReload() throws ScriptException, IOException,
-            InstantiationException, IllegalAccessException {
-
-        String engineName = "groovy";
-
-        ScriptEngineManager mgr = new ScriptEngineManager();
-        // create a JavaScript engine
-        ScriptEngine engine = mgr.getEngineByName(engineName);
-        assertNotNull("Can't find engine '" + engineName + "'", engine);
-
-        File script1 = new ClassPathResource("test-data/TestClassV1.groovy").getFile();
-        File script2 = new ClassPathResource("test-data/TestClassV2.groovy").getFile();
-        File dstFile = File.createTempFile("TestClassReload", ".groovy");
-
-        try {
-            {
-                FileInputStream fis = new FileInputStream(script1);
-                FileOutputStream fos = new FileOutputStream(dstFile);
-                IOUtils.copy(fis, fos);
-                fos.flush();
-                IOUtils.closeQuietly(fis);
-                IOUtils.closeQuietly(fos);
-            }
-
-            // let's call some method on an instance
-            {
-                ClassLoader parent = getClass().getClassLoader();
-                GroovyClassLoader loader = new GroovyClassLoader(parent);
-                Class groovyClass = loader.parseClass(dstFile);
-
-                GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
-                Object[] args = {};
-                Object ret = groovyObject.invokeMethod("getVersion", args);
-                assertEquals(new Integer(1), ret);
-            }
-
-            // Overwrite the class
-            {
-                FileInputStream fis = new FileInputStream(script2);
-                FileOutputStream fos = new FileOutputStream(dstFile);
-                IOUtils.copy(fis, fos);
-                fos.flush();
-                IOUtils.closeQuietly(fis);
-                IOUtils.closeQuietly(fos);
-
-                FileUtils.touch(dstFile); // just to be sure
-            }
-
-            {
-                ClassLoader parent = getClass().getClassLoader();
-                GroovyClassLoader loader = new GroovyClassLoader(parent);
-                // Class groovyClass = loader.parseClass(dstFile);
-
-                Class groovyClass2 = loader.parseClass(dstFile);
-                GroovyObject groovyObject = (GroovyObject) groovyClass2.newInstance();
-                Object[] args = {};
-                Object ret = groovyObject.invokeMethod("getVersion", args);
-                assertEquals("File " + dstFile + " not reparsed.", new Integer(2), ret);
-            }
-        } finally {
-            FileUtils.deleteQuietly(dstFile);
-        }
-    }
-
-    public void testGroovyAction() throws ScriptException, IOException, InstantiationException,
-            IllegalAccessException, NoSuchMethodException, IllegalArgumentException,
-            InvocationTargetException {
-
-        File script = new ClassPathResource("test-data/TestAction.groovy").getFile();
-        ClassLoader parent = getClass().getClassLoader();
-        GroovyClassLoader loader = new GroovyClassLoader(parent);
-        Class groovyClass = loader.parseClass(script);
-
-        // GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
-        ScriptingConfiguration scriptingConfiguration = new ScriptingConfiguration();
-        scriptingConfiguration.setId("testId");
-        scriptingConfiguration.setName("testName");
-        scriptingConfiguration.setScriptFile("/tmp/scriptCfg");
-        scriptingConfiguration.setServiceID("scriptingService");
-
-        Constructor constr = groovyClass.getConstructor(ScriptingConfiguration.class);
-        GroovyObject groovyObject = (GroovyObject) constr.newInstance(scriptingConfiguration);
-        assertTrue(groovyObject instanceof ScriptingAction);
-        ScriptingAction groovyAction = (ScriptingAction) groovyObject;
-
-        TestListener listener = new TestListener();
-        groovyAction.addListener(listener);
-    }
+//    public void testGroovyAction() throws ScriptException, IOException, InstantiationException,
+//            IllegalAccessException, NoSuchMethodException, IllegalArgumentException,
+//            InvocationTargetException {
+//
+//        File script = new ClassPathResource("test-data/TestAction.groovy").getFile();
+//        ClassLoader parent = getClass().getClassLoader();
+//        GroovyClassLoader loader = new GroovyClassLoader(parent);
+//        Class groovyClass = loader.parseClass(script);
+//
+//        // GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
+//        ScriptingConfiguration scriptingConfiguration = new ScriptingConfiguration();
+//        scriptingConfiguration.setId("testId");
+//        scriptingConfiguration.setName("testName");
+//        scriptingConfiguration.setScriptFile("/tmp/scriptCfg");
+//        scriptingConfiguration.setServiceID("scriptingService");
+//
+//        Constructor constr = groovyClass.getConstructor(ScriptingConfiguration.class);
+//        GroovyObject groovyObject = (GroovyObject) constr.newInstance(scriptingConfiguration);
+//        assertTrue(groovyObject instanceof ScriptingAction);
+//        ScriptingAction groovyAction = (ScriptingAction) groovyObject;
+//
+//        TestListener listener = new TestListener();
+//        groovyAction.addListener(listener);
+//    }
 
 }
 

@@ -50,7 +50,7 @@
 			<serviceID>EGEOSGeoServerDeployerService</serviceID>
 
             <language>groovy</language>
-            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EGEOSGeoServerDeployer.groovy</scriptFile>
+            <scriptFile>/home/carlo/work/data/emsa/script/EGEOSGeoServerDeployer.groovy</scriptFile>
 
 		    <properties/>
             

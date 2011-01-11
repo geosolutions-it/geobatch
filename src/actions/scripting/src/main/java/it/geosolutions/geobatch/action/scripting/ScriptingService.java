@@ -44,7 +44,7 @@ public class ScriptingService extends BaseService implements
 
     public ScriptingAction createAction(ScriptingConfiguration configuration) {
         try {
-            return new GroovyAction(configuration);
+            return new ScriptingAction(configuration);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error occurred creating scripting Action... "
                     + e.getLocalizedMessage(), e);
