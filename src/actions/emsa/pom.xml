@@ -41,7 +41,7 @@
 
     <modules>
         <module>common</module>
-				<module>actions</module>
+		<module>actions</module>
     </modules>
 
 </project>

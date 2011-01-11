@@ -4,12 +4,12 @@
 	<name>E-GEOS Web-Deployer Flow</name>
 	<description>E-GEOS Web Deployer Flow</description>
 
-	<workingDirectory>EGEOSWorkingDir/WebDeployer</workingDirectory>
+	<workingDirectory>EGEOSworkingDir/WebDeployer</workingDirectory>
 	<autorun>true</autorun>
 
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>EGEOSWorkingDir/WebDeployer/in</watchDirectory>
+		<watchDirectory>EGEOSworkingDir/WebDeployer/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>id</id>
@@ -26,8 +26,9 @@
 		<listenerId>EGEOSConsumerLoggerListener</listenerId>
         <listenerId>EGEOSCumulatorListener</listenerId>
         
-		<workingDirectory>EGEOSWorkingDir/WebDeployer</workingDirectory>
+		<workingDirectory>EGEOSworkingDir/WebDeployer</workingDirectory>
 		<performBackup>false</performBackup>
+		<preserveInput>true</preserveInput>
 
 		<FileEventRule>
 			<optional>false</optional>
@@ -49,7 +50,9 @@
 			<serviceID>EGEOSWebDeployerService</serviceID>
 
             <language>groovy</language>
-            <scriptFile>G:/work/E-GEOS/EMSA/EGEOSWebDeployer.groovy</scriptFile>
+            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EGEOSWebDeployer.groovy</scriptFile>
+
+		    <properties/>
             
 		</EGEOSWebDeployerConfiguration>
 		

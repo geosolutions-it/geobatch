@@ -9,11 +9,11 @@
 
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>EMSAWorkingDir/in</watchDirectory>
+		<watchDirectory>/var/www/html/emsa</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>id</id>
-        <serviceID>fsEventGeneratorService</serviceID>
+    <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>
 	</EventGeneratorConfiguration>
@@ -28,11 +28,12 @@
         
 		<workingDirectory>EMSAWorkingDir</workingDirectory>
 		<performBackup>false</performBackup>
+                <preserveInput>true</preserveInput>
 
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.tar.*</regex>
+			<regex>.*\.*</regex>
 			<id>r1</id>
 			<description>description</description>
 			<name>test</name>
@@ -49,7 +50,7 @@
 			<serviceID>EMSAScriptingService</serviceID>
 
             <language>groovy</language>
-            <scriptFile>G:/work/E-GEOS/EMSA/EMSA.groovy</scriptFile>
+            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EMSA.groovy</scriptFile>
 
 		    <properties>
 				 <entry>

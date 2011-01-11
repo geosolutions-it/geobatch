@@ -4,12 +4,12 @@
 	<name>E-GEOS Registry-Deployer Flow</name>
 	<description>E-GEOS Registry-Deployer Flow</description>
 
-	<workingDirectory>EGEOSWorkingDir/RegistryDeployer</workingDirectory>
+	<workingDirectory>EGEOSworkingDir/RegistryDeployer</workingDirectory>
 	<autorun>true</autorun>
 
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>EGEOSWorkingDir/RegistryDeployer/in</watchDirectory>
+		<watchDirectory>EGEOSworkingDir/RegistryDeployer/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>id</id>
@@ -26,8 +26,9 @@
 		<listenerId>EGEOSConsumerLoggerListener</listenerId>
         <listenerId>EGEOSCumulatorListener</listenerId>
         
-		<workingDirectory>EGEOSWorkingDir/RegistryDeployer</workingDirectory>
+		<workingDirectory>EGEOSworkingDir/RegistryDeployer</workingDirectory>
 		<performBackup>false</performBackup>
+		<preserveInput>true</preserveInput>
 
 		<FileEventRule>
 			<optional>false</optional>
@@ -49,7 +50,9 @@
 			<serviceID>EGEOSRegistryDeployerService</serviceID>
 
             <language>groovy</language>
-            <scriptFile>G:/work/E-GEOS/EMSA/EGEOSRegistryDeployer.groovy</scriptFile>
+            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EGEOSRegistryDeployer.groovy</scriptFile>
+
+		    <properties/>
             
 		</EGEOSRegistryDeployerConfiguration>
 		

@@ -99,17 +99,19 @@
 			<artifactId>js-engine</artifactId>
 			<version>1.0</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>rhino</groupId>
 			<artifactId>js</artifactId>
 			<version>1.7R2</version>
 		</dependency>
-		 
+		
 		<dependency>
-			<groupId>javax.script</groupId>
+			<groupId>com.sun.script</groupId>
 			<artifactId>groovy-engine</artifactId>
-			<version>1.0</version>
+			<version>20080611</version><!-- JDK5 -->  
 		</dependency>
+		
 		<dependency>
 			<groupId>groovy</groupId>
 			<artifactId>groovy-all</artifactId>

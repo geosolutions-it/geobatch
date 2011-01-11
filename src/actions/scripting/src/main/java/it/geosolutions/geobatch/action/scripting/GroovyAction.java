@@ -149,7 +149,7 @@ public class GroovyAction extends ScriptingAction implements Action<FileSystemMo
 
             listenerForwarder.completed();
             return events;
-        } catch (Exception t) {
+        } catch (Throwable t) {
             LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to
             // log,
             // we're

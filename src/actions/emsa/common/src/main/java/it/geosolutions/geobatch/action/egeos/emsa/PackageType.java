@@ -4,8 +4,7 @@
 package it.geosolutions.geobatch.action.egeos.emsa;
 
 /**
- * @author Administrator
- *
+ * @author Alessio Fabiani
  */
 public enum PackageType {
     EOP,

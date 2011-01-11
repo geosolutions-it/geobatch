@@ -36,7 +36,7 @@ public class EMSAIOUtils {
     }
 
     /**
-     * 
+     ***********************************************
      * @param destBaseDir
      * @return
      * @throws IOException
@@ -86,7 +86,7 @@ public class EMSAIOUtils {
         return tmpDestDir;
     }
 
-    /**
+    /***************************************************************************************
      * 
      * @param destBaseDir
      * @return
@@ -134,42 +134,42 @@ public class EMSAIOUtils {
 
         return tmpDestDir;
     }
-
-    /**
-     * 
-     * @param destDir
-     * @return
-     * @throws IOException
-     */
-    public static File unTarGz(final File inputFile, final File destDir) throws IOException {
-        File unzippedDir = unZip(inputFile, destDir);
-
-        if (unzippedDir != null && unzippedDir.exists() && unzippedDir.isDirectory()) {
-
-            File[] tarFiles = unzippedDir.listFiles(new FilenameFilter() {
-
-                public boolean accept(File dir, String name) {
-                    if (FilenameUtils.getExtension(name).equalsIgnoreCase("tar"))
-                        return true;
-                    return false;
-                }
-            });
-
-            if (tarFiles != null && tarFiles.length > 0) {
-                if (tarFiles.length == 1) {
-                    return unTar(tarFiles[0], destDir);
-                } else {
-                    for (File tarFile : tarFiles)
-                        unTar(tarFile, destDir);
-                }
-
-                return destDir;
-            }
-        }
-
-        throw new IOException(
-                "::decompressTarGz : could not find any valid tar file to decompress.");
-    }
+//
+//    /**
+//     * 
+//     * @param destDir
+//     * @return
+//     * @throws IOException
+//     */
+//    public static File unTarGz(final File inputFile, final File destDir) throws IOException {
+//        File unzippedDir = unZip(inputFile, destDir);
+//
+//        if (unzippedDir != null && unzippedDir.exists() && unzippedDir.isDirectory()) {
+//
+//            File[] tarFiles = unzippedDir.listFiles(new FilenameFilter() {
+//
+//                public boolean accept(File dir, String name) {
+//                    if (FilenameUtils.getExtension(name).equalsIgnoreCase("tar"))
+//                        return true;
+//                    return false;
+//                }
+//            });
+//
+//            if (tarFiles != null && tarFiles.length > 0) {
+//                if (tarFiles.length == 1) {
+//                    return unTar(tarFiles[0], destDir);
+//                } else {
+//                    for (File tarFile : tarFiles)
+//                        unTar(tarFile, destDir);
+//                }
+//
+//                return destDir;
+//            }
+//        }
+//
+//        throw new IOException(
+//                "::decompressTarGz : could not find any valid tar file to decompress.");
+//    }
 
     /**
      * Calling tar -xzf from command line

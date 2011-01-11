@@ -502,8 +502,8 @@
                     <artifactId>gb-action-emsa-actions</artifactId>
                 </dependency>
                 <dependency>
-								    <groupId>it.geosolutions</groupId>
-								    <artifactId>gb-action-registry-egeos</artifactId>
+				    <groupId>it.geosolutions</groupId>
+				    <artifactId>gb-action-registry-egeos</artifactId>
                 </dependency>                
             </dependencies>
             <build>

@@ -4,12 +4,12 @@
 	<name>E-GEOS GeoServer-Deployer Flow</name>
 	<description>E-GEOS GeoServer-Deployer Flow</description>
 
-	<workingDirectory>EGEOSWorkingDir/GeoServerDeployer</workingDirectory>
+	<workingDirectory>EGEOSworkingDir/GeoServerDeployer</workingDirectory>
 	<autorun>true</autorun>
 
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>EGEOSWorkingDir/GeoServerDeployer/in</watchDirectory>
+		<watchDirectory>EGEOSworkingDir/GeoServerDeployer/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>id</id>
@@ -26,8 +26,9 @@
 		<listenerId>EGEOSConsumerLoggerListener</listenerId>
         <listenerId>EGEOSCumulatorListener</listenerId>
         
-		<workingDirectory>EGEOSWorkingDir/GeoServerDeployer</workingDirectory>
+		<workingDirectory>EGEOSworkingDir/GeoServerDeployer</workingDirectory>
 		<performBackup>false</performBackup>
+		<preserveInput>true</preserveInput>
 
 		<FileEventRule>
 			<optional>false</optional>
@@ -49,9 +50,28 @@
 			<serviceID>EGEOSGeoServerDeployerService</serviceID>
 
             <language>groovy</language>
-            <scriptFile>G:/work/E-GEOS/EMSA/EGEOSGeoServerDeployer.groovy</scriptFile>
+            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EGEOSGeoServerDeployer.groovy</scriptFile>
+
+		    <properties/>
             
 		</EGEOSGeoServerDeployerConfiguration>
+		
+		<SplittingConfiguration>
+			<id>EMSA_split</id>
+			<description>EMSA Splitting Action</description>
+			<name>EMSASplit</name>
+			
+			<listenerId>EGEOSActionLoggerListener</listenerId>
+			<listenerId>EGEOSActionStatusListener</listenerId>
+						
+			<serviceID>splittingService</serviceID>
+
+			<serviceIDs>
+				<string>SARWaveFlow</string>
+				<string>SARWindFlow</string>
+			</serviceIDs>
+			
+		</SplittingConfiguration>
 		
 	</EventConsumerConfiguration>
 
