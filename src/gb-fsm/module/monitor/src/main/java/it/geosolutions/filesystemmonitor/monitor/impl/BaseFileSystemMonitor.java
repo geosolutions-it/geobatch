@@ -1,5 +1,23 @@
-/**
- * 
+/*
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  http://geobatch.codehaus.org/
+ *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package it.geosolutions.filesystemmonitor.monitor.impl;
 
@@ -10,13 +28,8 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 import it.geosolutions.geobatch.tools.file.IOUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 
 
@@ -26,88 +39,12 @@ import javax.swing.event.EventListenerList;
  */
 public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
 
-    public final static ExecutorService threadPool = Executors.newCachedThreadPool();
+    protected EventListenerList listeners = new EventListenerList();
+    
+    protected GBEventConsumer consumer=null;
 
     /** Default Logger **/
     private final static Logger LOGGER = Logger.getLogger(BaseFileSystemMonitor.class.toString());
-
-    private class EventManager implements Runnable {
-        private FileSystemMonitorEvent event;
-
-        // ----------------------------------------------- PUBLIC METHODS
-        /**
-         * Default Constructor
-         */
-        public EventManager(final FileSystemMonitorEvent fe) {
-            this.event = fe;
-
-            // handle the event
-            threadPool.execute(this);
-        }
-
-        // ----------------------------------------------- UTILITY METHODS
-
-        /**
-         * Sending an event by putting it inside the Swing dispatching thred. This might be useless
-         * in command line app but it is important in GUi apps. I might change this though.
-         * 
-         * @param file
-         */
-        private void handleEvent() {
-            // deal with locking of input files
-            if (lockInputFiles) {
-                final File source = event.getSource();
-                try {
-                    IOUtils.acquireLock(this, source, lockWaitThreshold);
-                } catch (InterruptedException e) {
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-                    return;
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-                    return;
-                }
-            }
-
-            // Guaranteed to return a non-null array
-            final Object[] listenersArray = listeners.getListenerList();
-            // Process the listeners last to first, notifying
-            // those that are interested in this event
-            final int length = listenersArray.length;
-            for (int i = length - 2; i >= 0; i -= 2) {
-                final int index = i + 1;
-                if (listenersArray[i] == FileSystemMonitorListener.class) {
-                    // Lazily create the event inside the dispatching thread in
-                    // order to avoid problems if we run this inside a GUI app.
-                    SwingUtilities.invokeLater(new Runnable() {
-
-                        public void run() {
-                            ((FileSystemMonitorListener) listenersArray[index])
-                                    .fileMonitorEventDelivered(event);
-
-                        }
-                    });
-
-                }
-            }
-
-        }
-
-        /**
-    	 *
-    	 */
-        public void run() {
-            try {
-
-                // send event
-                handleEvent();
-
-            } catch (Throwable e) {
-                LOGGER.log(Level.SEVERE, new StringBuffer("Caught an IOException Exception: ")
-                        .append(e.getLocalizedMessage()).toString(), e);
-            }
-
-        }
-    }
 
     protected BaseFileSystemMonitor(File file, String wildCard) {
         this(file, wildCard, false, -1);
@@ -129,8 +66,8 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
             throw new IllegalArgumentException("Wild card provided, while monitoring a singl file");
         this.file = file;
         this.wildCardString = wildCard;
-        this.lockInputFiles = lockInputFiles;
-        this.lockWaitThreshold = maxLockingWait;
+        
+        consumer=new GBEventConsumer(lockInputFiles, maxLockingWait, listeners);
 
     }
 
@@ -142,15 +79,9 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
         return this.wildCardString;
     }
 
-    protected EventListenerList listeners = new EventListenerList();
-
     protected File file = null;
 
     protected String wildCardString = null;
-
-    protected long lockWaitThreshold = IOUtils.MAX_WAITING_TIME_FOR_LOCK;
-
-    protected boolean lockInputFiles;
 
     public abstract FileSystemMonitorSPI getSPI();
 
@@ -175,7 +106,6 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
         for (int i = length - 2; i >= 0; i -= 2) {
             if (listenerArray[i].equals(fileListener)) {
                 return;
-
             }
         }
 
@@ -215,8 +145,7 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
      * @param file
      */
     protected void sendEvent(final FileSystemMonitorEvent fe) {
-        new EventManager(fe);
-
+        consumer.add(fe);
     }
 
     public int hashCode() {

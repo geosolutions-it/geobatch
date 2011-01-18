@@ -2,6 +2,7 @@ package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
 import it.geosolutions.filesystemmonitor.OsType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 
 import java.io.File;
 import java.util.Map;
@@ -52,6 +53,10 @@ public final class PureJavaFileSystemWatcherSPI implements FileSystemMonitorSPI 
             return new PureJavaFileSystemWatcher(file);
 
         return null;
+    }
+
+    public FileSystemMonitorType getType() {
+        return FileSystemMonitorType.PUREJAVA;
     }
 
 }

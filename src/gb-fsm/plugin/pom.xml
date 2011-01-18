@@ -53,6 +53,7 @@
   <!--     All modules included in the build                                 -->
   <!-- ===================================================================== -->
   <modules>
+		<module>quartzmonitor</module>
 		<module>jnimonitor</module>
 		<module>javamonitor</module>
   </modules>

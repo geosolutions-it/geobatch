@@ -39,7 +39,6 @@
     <dependency>
 		  <groupId>it.geosolutions</groupId>
 			<artifactId>gb-fsm-core</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
 		  <groupId>jnotify</groupId>

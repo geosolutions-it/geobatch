@@ -38,35 +38,29 @@ import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
 /**
- * 
+ *
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * Calculate magnitude for a given vector name using its u and v
  * components.
- * 
- * @todo calculate also direction
  * @warning only magnitude is written (do direction)
  *
  */
 public class NetcdfMag {
-	
+
 	/*
 	 * Dictionary
 	 */
 	private final static String _NO_DATA="_FillValue";
-        // used for no_data representation
-        private double noData=NODATA;
-        // used for no_data comparison
-        private double noDataVal=NODATA;
-        
+
         /*
          * Test Target String   matches()     group(0)        group(1)        group(2)        group(3)
          * 1       vat_vel-v       Yes        vat_vel-v       vat_vel         -v              -v
-         * 2       vatvel-u        Yes        vatvel-u        vatvel          -u                      
+         * 2       vatvel-u        Yes        vatvel-u        vatvel          -u
          * 3       svatvel-v       Yes        svatvel-v       svatvel         -v              -v
          * 4       vatvel-usd-v    Yes        vatvel-usd-v    vatvel-usd      -v              -v
          */
         private final static String regex="(.+)(-u)$";
-        
+
 /*
 * final String regex="(.+)((-u)|(-v))";
 * Test Target String   matches()     group(0)        group(1)        group(2)
@@ -74,32 +68,32 @@ public class NetcdfMag {
 * 2       vatvel-usd-v    no
 * 3       vatvel-usd-u    Yes        vatvel-usd-v    vatvel-usd      -u
 */
-        
+
         private final static Pattern p=Pattern.compile(regex);
-        
+
 	private final static String _UNITS="units";
 	private final static String _LONG_NAME="long_name";
 
 //TODO calculate an epsilon
 	/**
-	 * The epsilon used to compare doubles 
+	 * The epsilon used to compare doubles
 	 */
-    private final static double EPS=0.01;
-	
+	private final static double EPS=0.01;
+
 	/*
-	 * This is only a default value the finally 
+	 * This is only a default value the finally
 	 * used FillValue will be searched into the input
 	 * file using the dictionary _NO_DATA term, if
 	 * it's not found, this value will be used.
 	 */
-	private final static Double NODATA=-9999d;
-	
-	
+	private final static Number NODATA=-9999d;
+
+
 	private static void usage(){
 // TODO apply this output to a logger
 System.out.println("USAGE:\n$java NetcdfMag in_out_filename.nc");
 	}
-	
+
 	/**
 	 * @param args an array containing 3 elements:
 	 * 1- the file name to read and modify
@@ -107,7 +101,7 @@ System.out.println("USAGE:\n$java NetcdfMag in_out_filename.nc");
 	 * @see usage function
 	 */
 	public static void main(String[] args) throws Exception {
-		
+
 		if (args.length != 1){
 			throw new Exception("Wrong arguments!");
 		}
@@ -122,7 +116,7 @@ System.out.println("USAGE:\n$java NetcdfMag in_out_filename.nc");
 				throw new FileNotFoundException("Wrong path argument!");
 			}
 			else{
-				
+
 //TODO better check output result >0 ==0 or <0
 				// read, calculate and write magnitude
 				NetcdfMag magCalculator=new NetcdfMag();
@@ -131,7 +125,7 @@ System.out.println("USAGE:\n$java NetcdfMag in_out_filename.nc");
 System.out.println("DONE");
 				else
 System.out.println("NOT DONE -> error: "+res);
-				
+
 			}
 		}
 		catch (NullPointerException npe){
@@ -146,22 +140,22 @@ fnfe.printStackTrace();
 		}
 		catch(Exception e){
 		    usage();
-System.err.println("ERROR: "+e.getLocalizedMessage());		    
+System.err.println("ERROR: "+e.getLocalizedMessage());
 		}
-		
+		return;
 	}
-	
+
 	private boolean scan(java.util.Iterator<Variable> i, NetcdfFileWriteable ncdf) throws Exception{
 	    Variable v=null;
 	    Variable aVar=null;
             Variable bVar=null;
             String magName=null;
-            
+
 	    if (i.hasNext()){ // step
 	        v=i.next();
 	        if (v==null)
 	            throw new Exception("Null object into the list!");
-	        
+
 	        Matcher m=p.matcher(v.getName());
                 /*
                  *  found the U component
@@ -172,7 +166,7 @@ System.err.println("ERROR: "+e.getLocalizedMessage());
                         // set redefine file mode
                         ncdf.setRedefineMode(true);
                     }
-                    
+
                     /*
                      * We have to build a magnitude variable basing its contents
                      * and shape on the wind_vel variable so we will use those
@@ -181,8 +175,8 @@ System.err.println("ERROR: "+e.getLocalizedMessage());
                     final String varName=m.group(1);
                     aVar=ncdf.findVariable(m.group(0));
                     bVar=ncdf.findVariable(varName+"-v");
-                    
-                    magName=varName+"-mag";
+
+                    magName=varName;
                     String magLName= varName+" velocity magnitude";
 
                     Variable magnitudeVar = ncdf.findVariable(magName);
@@ -191,24 +185,23 @@ System.err.println("ERROR: "+e.getLocalizedMessage());
 System.out.println("Found variables to calculate. Named A:"+aVar.getName()+" B:"+bVar.getName());
                         // try to get FillValue/missing_value from the dataset
                         final Attribute noDataAtt=aVar.findAttribute(_NO_DATA);
-
+                        
+                        Number noDataNum=NODATA;
                         if (noDataAtt!=null){
-                                Number num=noDataAtt.getNumericValue();
-                                noData=Double.parseDouble(num.toString());
-                                noDataVal=num.doubleValue();
-//        System.out.println("NODATA: "+noData);
+                                noDataNum=noDataAtt.getNumericValue();
+System.out.println("NODATA: "+noDataNum);
                             }
                             else {
 System.err.println("FillValue or missing_data not found!\nUsing "+NODATA);
                         }
-                        
-                        magnitudeVar=
-                            new Variable(ncdf, aVar.getParentGroup(), aVar.getParentStructure(), 
-                                        magName, aVar.getDataType(), aVar.getDimensionsString());
 
+                        magnitudeVar=
+                            new Variable(ncdf, aVar.getParentGroup(), aVar.getParentStructure(),
+                                        magName, aVar.getDataType(), aVar.getDimensionsString());
+                        
                         // setting attributes
-                        magnitudeVar.addAttribute(new Attribute(_NO_DATA, noData));
-                                
+                        magnitudeVar.addAttribute(new Attribute(_NO_DATA, noDataNum));
+
                         /*
                          * try to get the unit from the model
                          * if it is not found no one is set
@@ -220,7 +213,7 @@ System.err.println("FillValue or missing_data not found!\nUsing "+NODATA);
                         else {
 System.out.println("WARNING: Unable to find unit, will not be used");
                         }
-                            
+
                         magnitudeVar.addAttribute(new Attribute(_LONG_NAME,magLName));
 
                         ncdf.addVariable(aVar.getParentGroup(),magnitudeVar);
@@ -229,20 +222,20 @@ System.out.println("WARNING: Unable to find unit, will not be used");
                         ///////////////////////////////////////////////////////////////
                         if (scan(i,ncdf)){
                             /*
-                             * 
+                             *
                              */
                             Array magArray=null;
 
                             // calculate Array
-                            magArray=magnitude(v, aVar, bVar);
+                            magArray=magnitude(v, aVar, bVar, noDataNum);
 
-                            if (magArray!=null){   
-                                try {    
+                            if (magArray!=null){
+                                try {
                                     ncdf.write(magName, magArray);
                                 }
                                 catch (InvalidRangeException e) {
                                     throw e;
-                                }        
+                                }
                             }
                             else {
                                 throw new Exception("No Action is performed, magnitude creation returns error");
@@ -250,13 +243,13 @@ System.out.println("WARNING: Unable to find unit, will not be used");
                         }
                         else
                             return true;
-                        
+
                     } // if (magnitudeVar==null && aVar != null && bVar != null)
                     else {
                     /*
                      * This file already contain a variable of this type
                      */
-    System.out.println("No Action is performed, magnitude "+magName+
+System.err.println("No Action is performed, magnitude "+magName+
             " is already present in this file or"+
             "\nUnable to find vectors variables!");
                         return false;
@@ -265,7 +258,7 @@ System.out.println("WARNING: Unable to find unit, will not be used");
                 } // if matches
                 else {
                     /*
-                     * do not add var 
+                     * do not add var
                      * only apply recursion on the next variable
                      */
                     scan(i, ncdf);
@@ -273,24 +266,24 @@ System.out.println("WARNING: Unable to find unit, will not be used");
 	    }
 	    else {
 	        /*
-	         * If we are here Variables are all added to the 
+	         * If we are here Variables are all added to the
 	         * Netcdf definition so we can set Redefinition to
 	         * false
 	         */
                 // redefine file off
                 ncdf.setRedefineMode(false);
                 /*
-                 * return true to end recursion and starting writing arrays 
+                 * return true to end recursion and starting writing arrays
                  */
 	        return true; // end recursion
 	    }
-	    
+
 	    return true;
 
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param file
 	 * @return
 	 */
@@ -298,9 +291,9 @@ System.out.println("WARNING: Unable to find unit, will not be used");
 	    NetcdfFileWriteable ncdf=null;
             try{
                 ncdf=NetcdfFileWriteable.openExisting(file.getAbsolutePath());
-                
 
-                
+
+
                 List<Variable> varList=ncdf.getVariables();
                 java.util.Iterator<Variable> i=varList.iterator();
                 // go
@@ -309,7 +302,7 @@ System.out.println("WARNING: Unable to find unit, will not be used");
                 } catch (Exception e) {
                    e.printStackTrace();
                 }
-                
+
             }
             catch(IOException ioe){
                 System.err.println("IOException ERROR: "+ioe.getLocalizedMessage());
@@ -327,12 +320,12 @@ System.out.println("WARNING: Unable to find unit, will not be used");
 
             return 1;
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	/**
 	 * @param file an existing netcdf file to open and modify
 	 * @param magName the name of the magnitude
@@ -345,7 +338,7 @@ System.out.println("WARNING: Unable to find unit, will not be used");
 	 *  <0 - if an error occurred
 	 * @note vectA and vectB must have the same shape and unit
 	 */
-	private Array magnitude(Variable magnitudeVar, Variable aVar, Variable bVar){
+	private Array magnitude(Variable magnitudeVar, Variable aVar, Variable bVar, Number noDataNum){
 	    try{
 	        Array a = null;
 	        Array b = null;
@@ -359,26 +352,53 @@ System.out.println("WARNING: Unable to find unit, will not be used");
 System.err.println("Problems getting variables");
 	            return null;
 	        }
-	            
-		if (a != null && b != null && mag!=null) {    
+
+		if (a != null && b != null && mag!=null) {
 			            // get shape from the model
 		    int [] shape=aVar.getShape();
-	        	
+
 	            Section s=new Section(shape);
 	            Iterator i=s.getIterator(shape);
-			            
+
 	            while(i.hasNext()){
 	            	int index=i.next();
-	            	double uValue = a.getDouble(index);
-	                double vValue = b.getDouble(index);
-	                
-	                if (Math.abs(uValue-noDataVal)>EPS && Math.abs(vValue-noDataVal)>EPS){
-	                	mag.setDouble(index,
-	                			Math.sqrt(Math.pow(uValue, 2)+ Math.pow(vValue, 2)));
-	                }
-	                else {
-	                	mag.setDouble(index,noData);
-	                }
+	            	
+                        double uValue;// =Double.parseDouble(aVar.toString());
+                        double vValue;// =Double.parseDouble(bVar.toString());
+                        double noDataVal;
+                        
+                        Class<?> type=aVar.getDataType().getPrimitiveClassType();
+	            	if (type == double.class){
+	            	    uValue = a.getDouble(index);
+                            vValue = b.getDouble(index);
+                            noDataVal= noDataNum.doubleValue();
+//                            mag.setDouble(index,calculate(uValue,vValue,noDataVal));
+	            	}
+	            	else if (type == float.class){
+	            	    uValue = a.getFloat(index);
+                            vValue = b.getFloat(index);
+                            noDataVal= noDataNum.floatValue();
+//                            mag.setFloat(index,(float) calculate(uValue,vValue,noDataVal));
+	            	}
+	            	else if (type == long.class){
+    	            	    uValue = a.getLong(index);
+                            vValue = b.getLong(index);
+                            noDataVal= noDataNum.longValue();
+//                            mag.setLong(index,(long) calculate(uValue,vValue,noDataVal));
+	            	}
+	            	else if (type == int.class){
+                            uValue = a.getInt(index);
+                            vValue = b.getInt(index);
+                            noDataVal= noDataNum.intValue();
+//                            mag.setInt(index,(int) calculate(uValue,vValue,noDataVal));
+                        }
+	            	else{
+System.err.println("Unable to find vectors type!\nNo action is performed");
+                            return null;
+	            	}
+	            	// automatically cat to the mag type...
+	            	mag.setObject(index,calculate(uValue,vValue,noDataVal));
+	            	
 	            }
 	            a = null;
 	            b = null;
@@ -395,5 +415,23 @@ System.err.println("Unable to find vectors values!\nNo action is performed");
             }
             return null;
 	}
-
+	
+//	
+//	private <T extends MathType> T calculate(T a, T b, T noData){
+//	    if (Math.abs((double)(a-noData))>EPS && Math.abs(((double)(b-noData))>EPS){
+//                return Math.sqrt(Math.pow(a, 2)+ Math.pow(b, 2)));
+//            }
+//            else {
+//                    return noData;
+//            }
+//	}
+	
+	private double calculate(double a, double b, double noData){
+            if (Math.abs(a-noData)>EPS && Math.abs(b-noData)>EPS){
+                return Math.sqrt(Math.pow(a, 2)+ Math.pow(b, 2));
+            }
+            else {
+                    return noData;
+            }
+        }
 }

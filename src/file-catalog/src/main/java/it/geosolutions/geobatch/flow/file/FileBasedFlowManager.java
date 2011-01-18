@@ -301,7 +301,8 @@ TimeUnit.MILLISECONDS, queue);
                 LOGGER.info("EventGeneratorCreationCreated!");
                 eventGenerator.addListener(new GeneratorListener());
                 eventGenerator.start();
-                LOGGER.info("EventGeneratorCreationStarted!");
+                if (LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("EventGeneratorCreationStarted!");
             } else {
                 throw new RuntimeException("Error on EventGenerator creations");
             }

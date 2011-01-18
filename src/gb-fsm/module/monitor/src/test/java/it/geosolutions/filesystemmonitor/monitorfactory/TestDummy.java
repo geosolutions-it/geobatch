@@ -27,7 +27,7 @@ public class TestDummy extends AbstractJUnit4SpringContextTests {
         // get the registered services
         FSMSPIFinder finder = (FSMSPIFinder) applicationContext.getBean("fsmSPIFinder");
         Assert.assertTrue(finder != null);
-        FileSystemMonitor abstractMonitor = FSMSPIFinder.getMonitor(null, OsType.OS_UNDEFINED);
+        FileSystemMonitor abstractMonitor = FSMSPIFinder.getMonitor(null, OsType.OS_UNDEFINED,null);
         Assert.assertTrue(abstractMonitor != null);
         Assert.assertTrue(abstractMonitor instanceof DummyMonitor);
     }

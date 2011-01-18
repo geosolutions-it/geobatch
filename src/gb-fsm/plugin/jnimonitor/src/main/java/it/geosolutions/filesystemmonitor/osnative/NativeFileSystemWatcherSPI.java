@@ -2,6 +2,7 @@ package it.geosolutions.filesystemmonitor.osnative;
 
 import it.geosolutions.filesystemmonitor.OsType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 
 import java.io.File;
 import java.util.Map;
@@ -57,6 +58,10 @@ public class NativeFileSystemWatcherSPI implements FileSystemMonitorSPI {
             return new NativeFileSystemWatcher(file);
 
         return null;
+    }
+
+    public FileSystemMonitorType getType() {
+        return FileSystemMonitorType.NATIVE;
     }
 
 }

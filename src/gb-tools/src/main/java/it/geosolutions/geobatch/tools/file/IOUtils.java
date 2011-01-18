@@ -535,6 +535,10 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
      */
     public static boolean acquireLock(Object caller, File inputFile, final long maxwait)
             throws InterruptedException, IOException {
+        
+        if (!inputFile.exists())
+            return false;// file not exists!
+        
         // //
         //
         // Acquire an exclusive lock to wait for long

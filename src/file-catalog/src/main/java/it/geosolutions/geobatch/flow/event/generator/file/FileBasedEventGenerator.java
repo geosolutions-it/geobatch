@@ -28,14 +28,13 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
-import it.geosolutions.filesystemmonitor.monitor.impl.BaseFileSystemMonitor;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.flow.event.generator.BaseEventGenerator;
 import it.geosolutions.geobatch.flow.event.generator.EventGenerator;
 import it.geosolutions.geobatch.flow.event.generator.FlowEventListener;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.tools.file.IOUtils;
 import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
@@ -48,6 +47,7 @@ import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
+import javax.transaction.NotSupportedException;
 
 /**
  * Comments here ...
@@ -66,7 +66,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
     /**
      * Helper class implementing an event listener for the FileSystem Monitor.
      */
-    private final class EventListener implements FileSystemMonitorListener {
+    private final class GBEventListener implements FileSystemMonitorListener {
         /*
          * (non-Javadoc)
          * 
@@ -141,7 +141,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
 
     private EventListenerList listeners = new EventListenerList();
 
-    private EventListener fsListener;
+    private FileSystemMonitorListener fsListener;
 
     // ----------------------------------------------- PUBLIC CONSTRUCTORS
     /**
@@ -153,9 +153,9 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      *            File directory to watch
      * @throws NotSupportedException
      */
-    public FileBasedEventGenerator(final OsType osType,
+    public FileBasedEventGenerator(final OsType osType, final FileSystemMonitorType type,
             final FileSystemMonitorNotifications eventType, final File dir) {
-        this(osType, eventType, dir, null, false);
+        this(osType, type, eventType, dir, null, false);
     }
 
     /**
@@ -169,9 +169,9 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      *            String file extension wildcard
      * @throws NotSupportedException
      */
-    public FileBasedEventGenerator(final OsType osType,
+    public FileBasedEventGenerator(final OsType osType, final FileSystemMonitorType type,
             final FileSystemMonitorNotifications eventType, final File dir, final String wildcard) {
-        this(osType, eventType, dir, wildcard, false);
+        this(osType, type, eventType, dir, wildcard, false);
     }
 
     /**
@@ -185,9 +185,9 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      *            Flag used to keep file in watched directory when flow is started
      * @throws NotSupportedException
      */
-    FileBasedEventGenerator(OsType osType, FileSystemMonitorNotifications eventType,
+    FileBasedEventGenerator(OsType osType, final FileSystemMonitorType type, FileSystemMonitorNotifications eventType,
             File sensedDir, boolean keepFiles) {
-        this(osType, eventType, sensedDir, null, keepFiles);
+        this(osType, type, eventType, sensedDir, null, keepFiles);
     }
 
     /**
@@ -204,25 +204,26 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      *            Flag used to keep file in watched directory when flow is started
      * @throws NotSupportedException
      */
-    public FileBasedEventGenerator(final OsType osType,
+    public FileBasedEventGenerator(final OsType osType, final FileSystemMonitorType type,
             final FileSystemMonitorNotifications eventType, final File dir, final String wildcard,
             final boolean keepFiles) {
 
-        initialize(osType, eventType, dir, wildcard, keepFiles);
+        initialize(osType, type, eventType, dir, wildcard, keepFiles);
     }
 
     /**
      * @param osType
+     * @param type the preferred fs monitor type 
      * @param eventType
      * @param dir
      * @param wildcard
      * @param keepFiles
      * @throws NotSupportedException
      */
-    private void initialize(final OsType osType, final FileSystemMonitorNotifications eventType,
+    private void initialize(final OsType osType, final FileSystemMonitorType type, final FileSystemMonitorNotifications eventType,
             final File dir, final String wildcard, final boolean keepFiles) {
         // add myself as listener
-        fsListener = new EventListener();
+        fsListener = new GBEventListener();
 
         this.watchDirectory = dir;
         this.wildCard = wildcard;
@@ -236,11 +237,12 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             params.put(FileSystemMonitorSPI.SOURCE, dir);
             if (this.wildCard != null)
                 params.put(FileSystemMonitorSPI.WILDCARD, wildCard);
-            this.fsMonitor = (BaseFileSystemMonitor) FSMSPIFinder.getMonitor(params, osType);
+            this.fsMonitor = FSMSPIFinder.getMonitor(params, osType,type);
+
             this.fsMonitor.addListener(fsListener);
         } else
             throw new IllegalArgumentException(
-                    "Unable to start the FileSystemMonitor for directory:" + dir);
+                    "Unable to start the GBFileSystemMonitorJob for directory:" + dir);
     }
 
     // ----------------------------------------------- PUBLIC ACCESS METHODS
@@ -256,7 +258,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
         }
         boolean keepFiles = configuration.getKeepFiles();
         String wildCard = configuration.getWildCard();
-        initialize(osType, eventType, notifyDir, wildCard, keepFiles);
+        initialize(osType, configuration.getMonitorType(), eventType, notifyDir, wildCard, keepFiles);
     }
 
     /**

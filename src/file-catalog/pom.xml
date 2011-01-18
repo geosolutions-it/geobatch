@@ -168,29 +168,30 @@
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-fsm-purejava</artifactId>
-            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-fsm-native</artifactId>
-            <version>${version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fsm-quartz</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-fsm-core</artifactId>
-            <version>${version}</version>
         </dependency>
 
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-core-impl</artifactId>
-            <version>${version}</version>
         </dependency>
         
      	<dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-tools</artifactId>
-            <version>${version}</version>
         </dependency>
    
     </dependencies>

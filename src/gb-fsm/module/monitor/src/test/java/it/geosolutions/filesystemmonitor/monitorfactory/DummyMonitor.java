@@ -4,6 +4,7 @@ import it.geosolutions.filesystemmonitor.OsType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitor;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 
 import java.io.File;
 import java.util.Map;
@@ -93,6 +94,11 @@ public final class DummyMonitor implements FileSystemMonitorSPI, FileSystemMonit
 
     public FileSystemMonitor createInstance(Map<String, ?> configuration) {
         return new DummyMonitor();
+    }
+
+    public FileSystemMonitorType getType() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

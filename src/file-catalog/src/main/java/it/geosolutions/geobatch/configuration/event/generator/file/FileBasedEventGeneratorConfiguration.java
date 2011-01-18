@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.configuration.event.generator.file;
 
 import it.geosolutions.filesystemmonitor.OsType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
 
@@ -45,6 +46,9 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
      * FILE_ADDED, FILE_REMOVED, FILE_MODIFIED, etc...
      */
     private FileSystemMonitorNotifications eventType;
+    
+
+    private FileSystemMonitorType monitorType;
 
     /**
      * The configuring directory.
@@ -61,6 +65,15 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
      */
     private String wildCard;
 
+
+    public FileSystemMonitorType getMonitorType() {
+        return monitorType;
+    }
+
+    public void setMonitorType(FileSystemMonitorType monitorType) {
+        this.monitorType = monitorType;
+    }
+    
     /**
      * Default Constructor.
      */

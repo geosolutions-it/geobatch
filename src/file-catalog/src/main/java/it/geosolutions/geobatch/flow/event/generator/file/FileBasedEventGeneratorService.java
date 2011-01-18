@@ -95,10 +95,9 @@ public class FileBasedEventGeneratorService extends
             }
             final boolean keepFiles = configuration.getKeepFiles();
             if (configuration.getWildCard() == null)
-                return new FileBasedEventGenerator(osType, eventType, sensedDir, keepFiles);
+                return new FileBasedEventGenerator(osType, configuration.getMonitorType(), eventType, sensedDir, keepFiles);
             else
-                return new FileBasedEventGenerator(osType, eventType, sensedDir, configuration
-                        .getWildCard(), keepFiles);
+                return new FileBasedEventGenerator(osType, configuration.getMonitorType(), eventType, sensedDir, configuration.getWildCard(), keepFiles);
         } catch (IOException ex) {
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
