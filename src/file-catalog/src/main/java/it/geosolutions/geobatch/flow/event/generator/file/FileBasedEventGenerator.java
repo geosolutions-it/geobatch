@@ -370,6 +370,8 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
         fsMonitor.removeListener(fsListener);
         fsMonitor.dispose();
     }
+    
+    
 
     /**
      * @return
@@ -403,6 +405,12 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
     public synchronized void stop() {
         fsMonitor.stop();
     }
+    
+
+    public void pause() {
+//TODO check do we need to pause any other components?
+        fsMonitor.pause();
+    }
 
     /**
      * Add listener to this file monitor.
@@ -435,8 +443,16 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      *            Listener to remove.
      */
     public synchronized void removeListener(FlowEventListener<T> fileListener) {
-        listeners.remove(FlowEventListener.class, fileListener);
-
+        try{
+            if (fileListener!=null)
+                listeners.remove(FlowEventListener.class, fileListener);
+            else
+                throw new NullPointerException("Unable to remove a NULL listener list.");
+        }
+        catch (Throwable t){
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("Unable to remove listener list:\n"+t.getLocalizedMessage());
+        }
     }
 
     /**
@@ -456,14 +472,8 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             if (listenersArray[i] == FlowEventListener.class) {
                 // Lazily create the event inside the dispatching thread in
                 // order to avoid problems if we run this inside a GUI app.
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    @SuppressWarnings("unchecked")
-                    public void run() {
-                        ((FlowEventListener<FileSystemMonitorEvent>) listenersArray[index])
+                ((FlowEventListener<FileSystemMonitorEvent>) listenersArray[index])
                                 .eventGenerated(fe);
-                    }
-                });
 
             }
         }
@@ -476,4 +486,5 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
     public FileSystemMonitorNotifications getEventType() {
         return eventType;
     }
+
 }

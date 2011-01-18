@@ -30,6 +30,8 @@ import java.util.EventObject;
  * 
  */
 public interface EventGenerator<EO extends EventObject> {
+    
+    public void pause();
 
     public void start();
 

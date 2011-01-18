@@ -28,6 +28,7 @@ import java.util.logging.Level;
  * file monitor. It investigates the file in question and notify listeners if changed.
  * 
  * @author SImone Giannecchini
+ * @deprecated This interface will be removed soon
  */
 public abstract class AbstractPeriodicThread extends AbstractPausableThread {
 

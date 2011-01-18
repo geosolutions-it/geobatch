@@ -56,9 +56,8 @@ import java.util.logging.Logger;
 
 /**
  * 
- * 
- * 
  * @author Alessio Fabiani, GeoSolutions
+ * @author (rev2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
 public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowConfiguration>
@@ -106,10 +105,6 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      */
     private EventGenerator eventGenerator;
 
-    // private final List<BaseEventConsumer<FileSystemMonitorEvent,
-    // FileBasedEventConsumerConfiguration>> eventConsumers =
-    // new ArrayList<BaseEventConsumer<FileSystemMonitorEvent,
-    // FileBasedEventConsumerConfiguration>>();
     private final List<FileBasedEventConsumer> eventConsumers = new ArrayList<FileBasedEventConsumer>();
 
     private ThreadPoolExecutor executor;
@@ -118,27 +113,26 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @param configuration
      * @throws IOException
      */
-    public FileBasedFlowManager() throws IOException {
-    }
+    public FileBasedFlowManager() throws IOException {}
 
     /**
      * @param configuration
      * @throws IOException
      */
-    private void initialize(FileBasedFlowConfiguration configuration) throws IOException {
+    private void initialize(FileBasedFlowConfiguration configuration) throws IOException, NullPointerException {
         this.initialized = false;
         this.paused = false;
         this.terminationRequest = false;
 
         String baseDir = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
+        
         if (baseDir == null)
-            throw new IllegalArgumentException("Working dir is null");
+            throw new NullPointerException("Working dir is null");
 
-        this.workingDirectory = Path.findLocation(configuration.getWorkingDirectory(), new File(
-                baseDir));
+        this.workingDirectory = 
+            Path.findLocation(configuration.getWorkingDirectory(),new File(baseDir));
 
-        if (workingDirectory == null || !workingDirectory.exists() || !workingDirectory.canWrite()
-                || !workingDirectory.isDirectory())
+        if (workingDirectory == null || !workingDirectory.canWrite() || !workingDirectory.isDirectory())
             throw new IllegalArgumentException(new StringBuilder("Working dir is invalid: ")
                     .append('>').append(baseDir).append("< ").append('>').append(
                             configuration.getWorkingDirectory()).append("< ").toString());
@@ -217,8 +211,9 @@ TimeUnit.MILLISECONDS, queue);
 
     /**
      * Main thread loop.
-     * 
      * <LI>Create and tear down generators when the flow is paused. <LI>Init the dispatcher.
+     * 
+     * TODO the stopping condition is never used...
      */
     public synchronized void run() {
         for (;;) {
@@ -236,9 +231,8 @@ TimeUnit.MILLISECONDS, queue);
             while (paused) {
                 try {
                     if (initialized && ((eventGenerator != null) && eventGenerator.isRunning())) {
-                        eventGenerator.stop();
-                        eventGenerator.dispose();
-                        eventGenerator = null;
+                        
+                        eventGenerator.pause();
                     }
 
                     this.wait();
@@ -261,16 +255,20 @@ TimeUnit.MILLISECONDS, queue);
 
             while (!paused) {
                 try {
-                    if (initialized && ((eventGenerator == null) || !eventGenerator.isRunning())) {
-                        // Creating the FileBasedEventGenerator, which waits for
-                        // new events
-                        try {
-                            createGenerator();
-                        } catch (Throwable t) {
-                            LOGGER.log(Level.SEVERE, "Error on FS-Monitor initialization: "
-                                    + t.getLocalizedMessage(), t);
-                            throw new RuntimeException(t);
+                    if (initialized){
+                        if (eventGenerator == null) { //|| !eventGenerator.isRunning())
+                            // (re)Creating the FileBasedEventGenerator, which waits for
+                            // new events
+                            try {
+                                createGenerator();
+                            } catch (Throwable t) {
+                                LOGGER.log(Level.SEVERE, "Error on FS-Monitor initialization: "
+                                        + t.getLocalizedMessage(), t);
+                                throw new RuntimeException(t);
+                            }
                         }
+                        else
+                            eventGenerator.start();
                     }
 
                     this.wait();
@@ -291,14 +289,17 @@ TimeUnit.MILLISECONDS, queue);
         final EventGeneratorConfiguration generatorConfig = getConfiguration()
                 .getEventGeneratorConfiguration();
         final String serviceID = generatorConfig.getServiceID();
-        LOGGER.info("EventGeneratorCreationServiceID: " + serviceID);
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("EventGeneratorCreationServiceID: " + serviceID);
         final EventGeneratorService<EventObject, EventGeneratorConfiguration> generatorService = CatalogHolder
                 .getCatalog().getResource(serviceID, EventGeneratorService.class);
         if (generatorService != null) {
-            LOGGER.info("EventGeneratorCreationFound!");
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("EventGeneratorCreationFound!");
             eventGenerator = generatorService.createEventGenerator(generatorConfig);
             if (eventGenerator != null) {
-                LOGGER.info("EventGeneratorCreationCreated!");
+                if (LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("EventGeneratorCreationCreated!");
                 eventGenerator.addListener(new GeneratorListener());
                 eventGenerator.start();
                 if (LOGGER.isLoggable(Level.INFO))

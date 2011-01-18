@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 /**
  * @author Alessio
+ * @deprecated This interface will be removed soon
  */
 public abstract class AbstractPausableThread extends Thread {
 

@@ -26,7 +26,6 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.geobatch.tools.file.IOUtils;
 
-import java.awt.Event;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -36,7 +35,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 
 /**
@@ -60,6 +58,8 @@ public class GBEventConsumer implements Runnable {
     
     // queue of events to pass to the listener list
     private BlockingQueue<FileSystemMonitorEvent> eventQueue=new ArrayBlockingQueue<FileSystemMonitorEvent>(100); //TODO change
+    // the stop element
+    private static FileSystemMonitorEvent STOP=new FileSystemMonitorEvent(new File(""), null);
     
     // set true to end the thread
     private boolean stop;
@@ -93,7 +93,7 @@ public class GBEventConsumer implements Runnable {
      */
     public void stop(){
         try {
-            eventQueue.put(null);
+            eventQueue.put(STOP);
         } catch (InterruptedException e) {
             if (LOGGER.isLoggable(Level.WARNING))
                 LOGGER.warning(e.getLocalizedMessage());
@@ -155,14 +155,8 @@ public class GBEventConsumer implements Runnable {
             if (listenersArray[i] == FileSystemMonitorListener.class) {
                 // Lazily create the event inside the dispatching thread in
                 // order to avoid problems if we run this inside a GUI app.
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    public void run() {
-                        ((FileSystemMonitorListener) listenersArray[index])
+                ((FileSystemMonitorListener) listenersArray[index])
                                 .fileMonitorEventDelivered(event);
-
-                    }
-                });
 
             }
         }
@@ -184,7 +178,7 @@ public class GBEventConsumer implements Runnable {
     public void run() {
         try {
             FileSystemMonitorEvent event=null;
-            while ((event=eventQueue.take())!=null && !stop){
+            while ((event=eventQueue.take())!=STOP && !stop){
                 // send event
                 handleEvent(event);
             }
