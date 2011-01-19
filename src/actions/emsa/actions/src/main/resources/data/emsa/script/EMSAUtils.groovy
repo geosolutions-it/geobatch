@@ -19,13 +19,16 @@ import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder
 
 import it.geosolutions.geobatch.flow.event.action.ActionException
 
+import it.geosolutions.geobatch.action.egeos.emsa.PackageType;
 import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration
 
-import it.geosolutions.geobatch.action.egeos.emsa.PackageType
-import it.geosolutions.geobatch.action.egeos.emsa.EMSAIOUtils
+//import it.geosolutions.geobatch.action.egeos.emsa.PackageType
+//import it.geosolutions.geobatch.action.egeos.emsa.EMSAIOUtils
 
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
+
+//import com.sun.tools.javac.code.Type.PackageType;
 
 class EMSAUtils {
 
@@ -39,6 +42,7 @@ class EMSAUtils {
     void sendError(final ProgressListenerForwarder listenerForwarder, final String message) throws Exception {
         sendError(listenerForwarder, message, null);
     }
+    
     void sendError(final ProgressListenerForwarder listenerForwarder, final String message, final Throwable cause) throws Exception {
         final Logger LOGGER = Logger.getLogger(EMSAUtils.class.toString());
 
@@ -89,14 +93,14 @@ class EMSAUtils {
             return null;
         }
     }
-
+    
     /**
      * Check if delivery is ready to be processed
-     **/
+    
     boolean isPackageReady(final File baseDir, final String packageName) {
         // 11 -> date length
         String prefix = packageName.substring(11, packageName.lastIndexOf("_"));
-        String pkgRdyFileName = /* prefix + ".txt"*/ "PackageReady.txt";
+        String pkgRdyFileName = "PackageReady.txt";
 
         File packageReadyFile = new File(baseDir, pkgRdyFileName);
 
@@ -121,12 +125,13 @@ class EMSAUtils {
 
         return false;
     }
+**/
 
     /**
      * Retrieve EOP Packages not ready...
-     **/
+     
     File getEOPNotReady(final File baseDir) {
-        String pkgRdyFileName = /* prefix + ".txt"*/ "PackageReady.txt";
+        String pkgRdyFileName = "PackageReady.txt";
 
         File[] packages = baseDir.listFiles(new EOPPackageNameFilter());
 
@@ -140,10 +145,10 @@ class EMSAUtils {
 
         return null;
     }
-
+**/
     /**
      * Check if the EOP package is available for the same product
-     **/
+     
     boolean isAvailableEOP(final File baseDir, final String packageName) {
         // 11 -> date length
         String prefix = packageName.substring(11, packageName.lastIndexOf("_"));
@@ -158,10 +163,11 @@ class EMSAUtils {
 
         return false;
     }
-
+**/
+    
     /**
      * Create an empty tag file into package deflated dir
-     **/
+     
     boolean tagPackage(final File deflatedInputDir) {
         File tag = new File(deflatedInputDir, getTagId());
 
@@ -177,10 +183,11 @@ class EMSAUtils {
             return false;
         }
     }
-
+**/
+    
     /**
      * Remove tag from directory
-     **/
+    
     boolean unTagPackage(final File deflatedInputDir) {
         File tag = new File(deflatedInputDir, getTagId());
 
@@ -188,19 +195,20 @@ class EMSAUtils {
             return tag.delete();
         }
     }
-
+ **/
+    
     /**
      * Remove tag from directory
-     **/
     boolean isTagged(final File deflatedInputDir) {
         File tag = new File(deflatedInputDir, getTagId());
 
         return (tag.exists() && !tag.isDirectory());
     }
-
+    **/
+    
     /**
      * Returns the list of tagged packages for the specified product
-     **/
+    
     File[] getTaggedPackages(final File baseDir, final File deflatedInputDir) {
         final String packageName = FilenameUtils.getBaseName(deflatedInputDir.getName());
         // 11 -> date length
@@ -218,12 +226,37 @@ class EMSAUtils {
 
         return taggedPackages;
     }
+ **/
+    
+    /** ******************
+     *  Packages Processing...
+     */
+    void processPackage(PackageType type, final File baseDir, final File deflatedInputDir, List results) {
 
+        // 11 -> date length
+        String packageName = FilenameUtils.getBaseName(deflatedInputDir.getName());
+        String prefix = packageName.substring(11, packageName.lastIndexOf("_"));
+
+        File[] packages = baseDir.listFiles(new PackageNameFilter(prefix));
+
+        for (File pkg : packages) {
+            if (getPackageTypeFromName(pkg.getName()) == type) {
+                File pckFile = new File(pkg, prefix + "_PCK.xml");
+                if (pckFile.exists() && !pckFile.isDirectory()) {
+                    results.add(pckFile.getAbsolutePath());
+
+                    //TODO PRO!
+                } else if (type == PackageType.PRO) {
+                    results.add(pkg.getAbsolutePath());
+                }
+                break;
+            }
+        }
+    }
 
     /** ******************
      *  Packages Processing...
-     *
-     ** ****************** */
+    
     void processPackage(PackageType type, final File baseDir, final File deflatedInputDir, List results) {
 
         // 11 -> date length
@@ -244,4 +277,5 @@ class EMSAUtils {
             }
         }
     }
+     ** ****************** */
 }
