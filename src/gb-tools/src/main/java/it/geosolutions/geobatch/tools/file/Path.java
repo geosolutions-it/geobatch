@@ -227,6 +227,7 @@ public class Path {
      *            the {@link File} to copy to.
      * @throws IOException
      *             in case something bad happens.
+     * @deprecated use the org.apache.commons.io.FileUtils.copyFile(sourceDataFile, destDataFile);
      */
     public static void copyFile(File sourceFile, File destinationFile) throws IOException {
         copyFile(sourceFile, destinationFile, Conf.DEFAULT_SIZE);
@@ -243,6 +244,7 @@ public class Path {
      *            buffer size.
      * @throws IOException
      *             in case something bad happens.
+     * @deprecated use the org.apache.commons.io.FileUtils.copyFile(sourceDataFile, destDataFile);
      */
     public static void copyFile(File sourceFile, File destinationFile, int size) throws IOException {
         Objects.notNull(sourceFile, destinationFile);

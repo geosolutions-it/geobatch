@@ -27,11 +27,12 @@ import java.util.EventObject;
 /**
  * 
  * @author Simone Giannecchini, Ivano Picco
+ * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
 public interface EventGenerator<EO extends EventObject> {
     
-    public void pause();
+    public void pause(); // added on 18 Jan 2011
 
     public void start();
 

@@ -24,10 +24,17 @@ package it.geosolutions.filesystemmonitor.monitor.impl;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitor;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 import it.geosolutions.geobatch.tools.file.IOUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.event.EventListenerList;
@@ -39,13 +46,166 @@ import javax.swing.event.EventListenerList;
  */
 public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
 
-    protected EventListenerList listeners = new EventListenerList();
-    
-    protected GBEventConsumer consumer=null;
-
     /** Default Logger **/
     private final static Logger LOGGER = Logger.getLogger(BaseFileSystemMonitor.class.toString());
 
+    protected EventListenerList listeners = new EventListenerList();
+    
+    protected EventConsumer consumer=null;
+
+    private static class EventConsumer implements Runnable {
+        
+        private long lockWaitThreshold = IOUtils.MAX_WAITING_TIME_FOR_LOCK;
+
+        private boolean lockInputFiles;
+        
+        public static final ExecutorService threadPool = Executors.newCachedThreadPool();
+        
+        private EventListenerList listeners =null;
+        
+        // queue of events to pass to the listener list
+        private BlockingQueue<FileSystemMonitorEvent> eventQueue=new ArrayBlockingQueue<FileSystemMonitorEvent>(100); //TODO change
+        // the stop element
+        private static final FileSystemMonitorEvent STOP=new FileSystemMonitorEvent(new File(""), null);
+        
+        // set true to end the thread
+        private boolean stop;
+        
+        /**
+         * used to check the status of this event consumer
+         * if this method return true thread is stopped and 
+         * @return
+         */
+        public boolean isStopped(){
+            return stop;
+        }
+        
+        /**
+         * used to start the consumer
+         */
+        public void start(){
+            if (this.isStopped()){
+                if (LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("Starting the event consumer...");
+                threadPool.execute(this);
+                stop=false;
+            }
+            else
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.warning("The event consumer is already started");
+        }
+
+        /**
+         * used to stop the event consumer
+         */
+        public void stop(){
+            try {
+                eventQueue.put(STOP);
+            } catch (InterruptedException e) {
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.warning(e.getLocalizedMessage());
+            }
+            finally {
+                stop=true;
+            }
+        }
+        /**
+         * Default Constructor
+         */
+        public EventConsumer(boolean lockInputFiles, long maxLockingWait, EventListenerList list){
+            this.lockInputFiles=lockInputFiles;
+            this.lockWaitThreshold=maxLockingWait;
+            this.stop=true; //still not started
+            this.listeners=list;
+            // handle the event
+            this.start();
+        }
+
+        // ----------------------------------------------- UTILITY METHODS
+
+        /**
+         * Sending an event by putting it inside the Swing dispatching thred. This might be useless
+         * in command line app but it is important in GUi apps. I might change this though.
+         * 
+         * @param file
+         */
+        private void handleEvent(final FileSystemMonitorEvent event) {
+            FileSystemMonitorNotifications notified= event.getNotification();
+            
+            if (// if file event is NOT FILE_REMOVED and NOT DIR_REMOVED
+                (notified!= FileSystemMonitorNotifications.DIR_REMOVED &&
+                    notified!=FileSystemMonitorNotifications.FILE_REMOVED) ){
+                // deal with locking of input files
+                if (lockInputFiles) {
+                    final File source = event.getSource();
+                    try {
+                        IOUtils.acquireLock(this, source, lockWaitThreshold);
+                    } catch (InterruptedException e) {
+                        if (LOGGER.isLoggable(Level.SEVERE))
+                            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                        return;
+                    } catch (IOException e) {
+                        if (LOGGER.isLoggable(Level.SEVERE))
+                            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                        return;
+                    }
+                }
+            }
+
+            // Guaranteed to return a non-null array
+            final Object[] listenersArray = listeners.getListenerList();
+            // Process the listeners last to first, notifying
+            // those that are interested in this event
+            final int length = listenersArray.length;
+            for (int i = length - 2; i >= 0; i -= 2) {
+                final int index = i + 1;
+                if (listenersArray[i] == FileSystemMonitorListener.class) {
+                    // Lazily create the event inside the dispatching thread in
+                    // order to avoid problems if we run this inside a GUI app.
+                    ((FileSystemMonitorListener) listenersArray[index])
+                                    .fileMonitorEventDelivered(event);
+
+                }
+            }
+        }
+
+        /**
+         * Use this method to add events to this consumer
+         * 
+         * @param o - The fileSystemMonitorEvent to add
+         */
+        public void add(FileSystemMonitorEvent o){
+            eventQueue.add(o);
+        }
+        
+        /**
+         * Never call this method manually
+         *
+         */
+        public void run() {
+            try {
+                FileSystemMonitorEvent event=null;
+                while ((event=eventQueue.take())!=STOP && !stop){
+                    // send event
+                    handleEvent(event);
+                }
+                // clean
+                eventQueue.clear();
+            }
+            catch (UnsupportedOperationException uoe){
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE, new StringBuilder("Caught an UnsupportedOperationException: ")
+                        .append(uoe.getLocalizedMessage()).toString(), uoe);
+            } catch (Throwable e) {
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE, new StringBuilder("Caught an IOException: ")
+                        .append(e.getLocalizedMessage()).toString(), e);
+            }
+
+        }
+    }
+
+    
     protected BaseFileSystemMonitor(File file, String wildCard) {
         this(file, wildCard, false, -1);
 
@@ -67,7 +227,7 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
         this.file = file;
         this.wildCardString = wildCard;
         
-        consumer=new GBEventConsumer(lockInputFiles, maxLockingWait, listeners);
+        consumer=new EventConsumer(lockInputFiles, maxLockingWait, listeners);
 
     }
 

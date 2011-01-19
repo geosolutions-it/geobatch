@@ -201,6 +201,9 @@ public final class Extract {
             if (type.compareTo("application/x-tar")==0){
                 return TYPE.TAR;
             }
+            else if (type.compareTo("application/x-gtar")==0){
+                return TYPE.TAR;
+            }
             else if (type.compareTo("application/x-bzip2")==0){
                 return TYPE.BZIP2;
             }

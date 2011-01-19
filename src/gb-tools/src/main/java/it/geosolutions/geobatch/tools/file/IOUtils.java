@@ -181,81 +181,44 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
 
 
 
-    /**
-     * Get an input <code>FileChannel</code> for the provided <code>File</code>
-     * 
-     * @param file
-     *            <code>File</code> for which we need to get an input <code>FileChannel</code>
-     * @return a <code>FileChannel</code>
-     * @throws IOException
-     *             in case something bad happens.
-     */
-    public static FileChannel getInputChannel(File source) throws IOException {
-        Objects.notNull(source);
-        if (!source.exists() || !source.canRead() || !source.isDirectory())
-            throw new IllegalStateException("Source is not in a legal state.");
-        FileChannel channel = null;
-        while (channel == null) {
-            try {
-                channel = new FileInputStream(source).getChannel();
-            } catch (Exception e) {
-                channel = null;
-            }
-        }
-        return channel;
-    }
+//    /**
+//     * Get an input <code>FileChannel</code> for the provided <code>File</code>
+//     * 
+//     * @param file
+//     *            <code>File</code> for which we need to get an input <code>FileChannel</code>
+//     * @return a <code>FileChannel</code>
+//     * @throws IOException
+//     *             in case something bad happens.
+//     */
+//    public static FileChannel getInputChannel(File source) throws IOException {
+//        Objects.notNull(source);
+//        if (!source.exists() || !source.canRead() || !source.isDirectory())
+//            throw new IllegalStateException("Source is not in a legal state.");
+//        FileChannel channel = null;
+//        while (channel == null) {
+//            try {
+//                channel = new FileInputStream(source).getChannel();
+//            } catch (Exception e) {
+//                channel = null;
+//            }
+//        }
+//        return channel;
+//    }
 
-    /**
-     * Get an output <code>FileChannel</code> for the provided <code>File</code>
-     * 
-     * @param file
-     *            <code>File</code> for which we need to get an output <code>FileChannel</code>
-     * @return a <code>FileChannel</code>
-     * @throws IOException
-     *             in case something bad happens.
-     */
-    public static FileChannel getOuputChannel(File file) throws IOException {
-        Objects.notNull(file);
-        return new RandomAccessFile(file, "rw").getChannel();
-
-    }
-
-    /**
-     * Move the specified input file to the specified destination directory.
-     * 
-     * @param source
-     *            the input <code>File</code> which need to be moved.
-     * @param destDir
-     *            the destination directory where to move the file.
-     * @throws IOException
-     */
-    public static void moveFileTo(File source, File destDir, boolean removeInputFile)
-            throws IOException {
-        Objects.notNull(source, destDir);
-        if (!source.exists() || !source.canRead() || source.isDirectory())
-            throw new IllegalStateException("Source is not in a legal state.");
-        if (!destDir.exists() || !destDir.canWrite() || !destDir.isDirectory())
-            throw new IllegalStateException("Source is not in a legal state.");
-        if (destDir.getAbsolutePath().equalsIgnoreCase(source.getParentFile().getAbsolutePath()))
-            return;
-        // ///////////////////////////////////////////////////////////////
-        //
-        // Copy the inputFile in the specified destination directory
-        //
-        // ///////////////////////////////////////////////////////////////
-        Path.copyFile(source, new File(destDir, source.getName()));
-
-        // ///////////////////////////////////////////////////////////////
-        //
-        // Delete the source file.
-        //
-        // ///////////////////////////////////////////////////////////////
-        // we need to call the gc, see
-        // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4715154
-        if (removeInputFile)
-            FILE_CLEANER.addFile(source);
-
-    }
+//    /**
+//     * Get an output <code>FileChannel</code> for the provided <code>File</code>
+//     * 
+//     * @param file
+//     *            <code>File</code> for which we need to get an output <code>FileChannel</code>
+//     * @return a <code>FileChannel</code>
+//     * @throws IOException
+//     *             in case something bad happens.
+//     */
+//    public static FileChannel getOuputChannel(File file) throws IOException {
+//        Objects.notNull(file);
+//        return new RandomAccessFile(file, "r").getChannel();
+//
+//    }
 
     /**
      * This method is responsible for checking if the input file is still being written or if its
@@ -538,6 +501,9 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
         
         if (!inputFile.exists())
             return false;// file not exists!
+        if(inputFile.isDirectory())
+            return true;// cannot lock directory
+        
         
         // //
         //
@@ -547,11 +513,14 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
         // //
         double sumWait = 0;
         while (true) {
+            FileOutputStream outStream=null;
             FileChannel channel = null;
             FileLock lock = null;
             try {
+                outStream=new FileOutputStream(inputFile);
+                
                 // get a rw channel
-                channel = getOuputChannel(inputFile);
+                channel = outStream.getChannel();
 
                 if (channel != null) {
                     // here we could block
@@ -563,13 +532,25 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
                 // File is already locked in this thread or virtual machine
                 LOGGER.info("File is already locked in this thread or virtual machine");
             } catch (Exception e) {
-                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
             } finally {
+                
+                org.apache.commons.io.IOUtils.closeQuietly(outStream);
+                
                 // release the lock
                 if (lock != null)
-                    lock.release();
+                    try{
+                        lock.release();
+                    }catch (Exception e) {
+                        // eat me
+                    }
+                
                 if (channel != null)
-                    channel.close();
+                    try{
+                        channel.close();
+                    }catch (Exception e) {
+                        // eat me
+                    }
             }
 
             // Sleep for ATOMIC_WAIT milliseconds prior to retry for acquiring

@@ -23,7 +23,6 @@ package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
-import it.geosolutions.filesystemmonitor.monitor.impl.GBEventConsumer;
 
 import java.io.File;
 

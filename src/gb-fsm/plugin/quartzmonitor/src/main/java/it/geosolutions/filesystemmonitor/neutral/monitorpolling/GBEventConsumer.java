@@ -19,7 +19,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.filesystemmonitor.monitor.impl;
+package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
@@ -123,6 +123,7 @@ public class GBEventConsumer implements Runnable {
      * @param file
      */
     private void handleEvent(final FileSystemMonitorEvent event) {
+/*
         FileSystemMonitorNotifications notified= event.getNotification();
         
         if (// if file event is NOT FILE_REMOVED and NOT DIR_REMOVED
@@ -132,6 +133,8 @@ public class GBEventConsumer implements Runnable {
             if (lockInputFiles) {
                 final File source = event.getSource();
                 try {
+                    //java.nio.channels.FileLock
+                    //org.apache.commons.io.FileUtils.
                     IOUtils.acquireLock(this, source, lockWaitThreshold);
                 } catch (InterruptedException e) {
                     if (LOGGER.isLoggable(Level.SEVERE))
@@ -144,20 +147,18 @@ public class GBEventConsumer implements Runnable {
                 }
             }
         }
+*/
 
-        // Guaranteed to return a non-null array
-        final Object[] listenersArray = listeners.getListenerList();
-        // Process the listeners last to first, notifying
-        // those that are interested in this event
+        final Object[] listenersArray = listeners.getListenerList();//return a not-null array
+        /*
+         * Process the listeners last to first, 
+         * notifying those that are interested in this event
+         */
         final int length = listenersArray.length;
         for (int i = length - 2; i >= 0; i -= 2) {
             final int index = i + 1;
             if (listenersArray[i] == FileSystemMonitorListener.class) {
-                // Lazily create the event inside the dispatching thread in
-                // order to avoid problems if we run this inside a GUI app.
-                ((FileSystemMonitorListener) listenersArray[index])
-                                .fileMonitorEventDelivered(event);
-
+                ((FileSystemMonitorListener) listenersArray[index]).fileMonitorEventDelivered(event);
             }
         }
     }

@@ -83,7 +83,8 @@ public class ScriptingConfiguration extends ActionConfiguration implements Confi
         final ScriptingConfiguration configuration = (ScriptingConfiguration) super.clone();
 
         configuration.setLanguage(getLanguage());
-        configuration.setProperties(Collections.unmodifiableMap(getProperties()));
+        if (getProperties()!=null)
+            configuration.setProperties(Collections.unmodifiableMap(getProperties()));
         configuration.setScriptFile(getScriptFile());
 
         return configuration;

@@ -21,7 +21,6 @@
  */
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
-import it.geosolutions.filesystemmonitor.monitor.impl.GBEventConsumer;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;

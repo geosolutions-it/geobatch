@@ -57,7 +57,7 @@ public class FlowManagerFormValidator implements Validator {
         if (givenData == null) {
             errors.reject("error.nullpointer", "Null data received");
         } else {
-            /* Test givenData�s fields here */
+            /* Collector givenData�s fields here */
             if ((givenData.getDescriptorId() == null)
                     || (givenData.getDescriptorId().trim().length() <= 0)) {
                 errors.rejectValue("descriptorId", "error.code",
