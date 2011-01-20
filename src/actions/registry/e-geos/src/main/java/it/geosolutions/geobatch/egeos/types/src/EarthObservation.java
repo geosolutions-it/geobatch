@@ -117,7 +117,7 @@ public class EarthObservation {
         LOGGER.info("sposlist: " + sposlist);
         ret.footprintPosList = Arrays.asList(sposlist.split(" "));
 
-
+        
 //        ret. = JDOMUtils.getString(root, );
 //        ret. = JDOMUtils.getString(root, );
 //        ret. = JDOMUtils.getString(root, );

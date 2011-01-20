@@ -34,7 +34,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.nio.channels.Channel;
 import java.nio.channels.FileChannel;
@@ -401,9 +400,7 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
     /**
      * Singleton
      */
-    private IOUtils() {
-
-    }
+    private IOUtils() {}
 
 
     /**
@@ -501,8 +498,11 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
         
         if (!inputFile.exists())
             return false;// file not exists!
-        if(inputFile.isDirectory())
+        
+        if(inputFile.isDirectory()){
+            //return inputFile.setReadOnly();
             return true;// cannot lock directory
+        }
         
         
         // //
@@ -517,7 +517,7 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
             FileChannel channel = null;
             FileLock lock = null;
             try {
-                outStream=new FileOutputStream(inputFile);
+                outStream=new FileOutputStream(inputFile,true);
                 
                 // get a rw channel
                 channel = outStream.getChannel();

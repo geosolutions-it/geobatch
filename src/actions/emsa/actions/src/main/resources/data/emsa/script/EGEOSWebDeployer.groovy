@@ -37,115 +37,103 @@ import org.geotools.jdbc.JDBCDataStoreFactory;
  **/
 /* ----------------------------------------------------------------- */
 public List execute(ScriptingConfiguration configuration, String eventFilePath, ProgressListenerForwarder listenerForwarder) throws Exception {
-		/* ----------------------------------------------------------------- */
-		// Main Input Variables: must be configured 
-		/** Web Service URL 
-		 *  - IMPORTANT: DON'T FORGET THE '/' AT THE END OF 'httpdServiceURL'
-		 **/
-		def httpdServiceURL = "http://ows-csn.e-geos.it/e-geos/";
-		
-		/** Server physical directory:
-		 *  - where to copy files
-		 **/
-		def httpdPhysicalBaseDir = "/home/tomcat/e-geos/";
+    /* ----------------------------------------------------------------- */
+    // Main Input Variables: must be configured
+    /** Web Service URL 
+     *  - IMPORTANT: DON'T FORGET THE '/' AT THE END OF 'httpdServiceURL'
+     **/
+    def httpdServiceURL = "http://ows-csn.e-geos.it/e-geos/";
+
+    /** Server physical directory:
+     *  - where to copy files
+     **/
+    def httpdPhysicalBaseDir = "/home/tomcat/e-geos/";
+    //def httpdPhysicalBaseDir = "/home/carlo/work/data/emsa/out/";
 
     try {
         listenerForwarder.started();
-				// ////
-				// Instatiate EMSA Utilities
-				// ////
-				utils = new EMSAUtils();
-				
-        // ////////////////////////////////////////////////////////////////////
-        //
-        // Initializing input variables from Flow configuration
-        //
-        // ////////////////////////////////////////////////////////////////////
-        /* Map props = configuration.getProperties();
+        // ////
+        // Instatiate EMSA Utilities
+        // ////
+        utils = new EMSAUtils();
 
-        String example0 = props.get("key0");
-        listenerForwarder.progressing(50, example0);
-        String example1 = props.get("key1");
-        listenerForwarder.progressing(90, example1); */
-
-				// ////
-				// some initial checks on input file name
-				// ////
+        // ////
+        // some initial checks on input file name
+        // ////
         String inputFileName = eventFilePath;
         final String filePrefix = FilenameUtils.getBaseName(inputFileName);
         final String fileSuffix = FilenameUtils.getExtension(inputFileName);
-				if (!fileSuffix.equalsIgnoreCase("xml")) {
-					sendError(listenerForwarder, "::EGEOSWebDeployer : invalid input archive \"" + inputFileName + "\"");
-				}
-				
-				// ////
-				// forwarding some logging information to Flow Logger Listener
-				// ////
-        listenerForwarder.setTask("Processing event " + eventFilePath)
+        if (!fileSuffix.equalsIgnoreCase("xml")) {
+            sendError(listenerForwarder, "::EGEOSWebDeployer : invalid input archive \"" + inputFileName + "\"");
+        }
 
-				/** The outcome events variable **/
-				List results = new ArrayList();
+        // ////
+        // forwarding some logging information to Flow Logger Listener
+        // ////
+        listenerForwarder.setTask("::EGEOSWebDeployer : Processing event " + eventFilePath)
 
-				// ////
-				// getting package directory
-				// ////
-				File pkgDir = new File(inputFileName).getParentFile();
-				/** DO NOT CHANGE THIS! **/
-				String pkgDirName = FilenameUtils.getBaseName(pkgDir.getName()).substring(11) + "/";
-				
-				// ////
-				// getting package type
-				// ////
-				PackageType type = utils.getPackageTypeFromName(FilenameUtils.getBaseName(pkgDir.getName()));
-				
+        /** The outcome events variable **/
+        List results = new ArrayList();
+
+        // ////
+        // getting package directory
+        // ////
+        File pkgDir = new File(inputFileName).getParentFile();
+/** DO NOT CHANGE THIS! **/
+//String pkgDirName = FilenameUtils.getBaseName(pkgDir.getName()).substring(11) + "/";
+
+        // ////
+        // getting package type
+        // ////
+//PackageType type = utils.getPackageTypeFromName(FilenameUtils.getBaseName(pkgDir.getName()));
+
         // ////
         // Copy files...
         // ////
         // creating sub-folder if not exists...
-        println(httpdPhysicalBaseDir + "/" + pkgDirName);
-        File pkgOutputDataDir = utils.createInputDataDirIfNotExists(httpdPhysicalBaseDir + "/" + pkgDirName);
+//println(httpdPhysicalBaseDir + "/" + pkgDir.getName());
+        File pkgOutputDataDir = utils.createInputDataDirIfNotExists(listenerForwarder,httpdPhysicalBaseDir + "/" + pkgDir.getName());
         println(pkgOutputDataDir.getAbsolutePath());
-        
+
         if (pkgOutputDataDir != null && pkgOutputDataDir.exists() && pkgOutputDataDir.isDirectory()) {
-        	FileUtils.copyDirectory(pkgDir, pkgOutputDataDir, true);
-				}
-				
-				// ////
-				// forwarding event to the next action
-				// ////
-				// fake event to avoid Failed Status!
-				results.add("DONE");
+            FileUtils.copyDirectory(pkgDir, pkgOutputDataDir, true);
+        }
+
+        // ////
+        // forwarding event to the next action
+        // ////
+        // fake event to avoid Failed Status!
+        results.add("DONE");
         return results;
     } catch (Exception cause) {
-	      sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
+        sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
     }
-    
 }
 
-	// ///////////////////////////////////////////////////////////////////////////// //
-	//                                                                               //
-	//                       E-GEOS - U T I L I T I E S                              //
-	//                                                                               //
-	// ///////////////////////////////////////////////////////////////////////////// //
+// ///////////////////////////////////////////////////////////////////////////// //
+//                                                                               //
+//                       E-GEOS - U T I L I T I E S                              //
+//                                                                               //
+// ///////////////////////////////////////////////////////////////////////////// //
 
 /** ****************************************************************************
-    Script Utility Methods...
-    **************************************************************************** **/
-    
-    /**
-     * Error forwarder...
-     **/
-    void sendError(final ProgressListenerForwarder listenerForwarder, final String message) throws Exception {
-    	sendError(listenerForwarder, message, null);
-  	}
-    void sendError(final ProgressListenerForwarder listenerForwarder, final String message, final Throwable cause) throws Exception {
-    	/**
-			 * Default LOGGER
-			 **/
-			final Logger LOGGER = Logger.getLogger(EGEOSDeployerBaseAction.class.toString());
+ Script Utility Methods...
+ **************************************************************************** **/
 
-    	LOGGER.log(Level.SEVERE, message);
-	    Exception theCause = (cause != null ? cause : new Exception(message));
-	    listenerForwarder.failed(theCause);
-	    throw theCause;
-	  }
+/**
+ * Error forwarder...
+ **/
+void sendError(final ProgressListenerForwarder listenerForwarder, final String message) throws Exception {
+    sendError(listenerForwarder, message, null);
+}
+void sendError(final ProgressListenerForwarder listenerForwarder, final String message, final Throwable cause) throws Exception {
+    /**
+     * Default LOGGER
+     **/
+    final Logger LOGGER = Logger.getLogger(EGEOSDeployerBaseAction.class.toString());
+
+    LOGGER.log(Level.SEVERE, message);
+    Exception theCause = (cause != null ? cause : new Exception(message));
+    listenerForwarder.failed(theCause);
+    throw theCause;
+}

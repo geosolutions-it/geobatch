@@ -41,22 +41,30 @@ public class ShipParser {
     
     @SuppressWarnings("unchecked")
     public void parseShip(DataStore store, XPath xpath, File fXmlFile) throws Exception {
-        // parse the document into a dom
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        dbFactory.setNamespaceAware(true);
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(fXmlFile);
-        doc.getDocumentElement().normalize();
-
-        // build the ship and insert it
-        SimpleFeatureType shipType = buildShipFeatureType();
-        if (!Arrays.asList(store.getTypeNames()).contains(shipType.getTypeName())) {
-            store.createSchema(shipType);
+        try {
+            // parse the document into a dom
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            dbFactory.setNamespaceAware(true);
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(fXmlFile);
+            doc.getDocumentElement().normalize();
+        
+            // build the ship and insert it
+            SimpleFeatureType shipType = buildShipFeatureType();
+            if (!Arrays.asList(store.getTypeNames()).contains(shipType.getTypeName())) {
+                store.createSchema(shipType);
+            }
+            Node oilSpillNode = (Node) xpath.evaluate("/csn:Ship", doc, XPathConstants.NODE);
+            SimpleFeature ship = parseShip(shipType, xpath, oilSpillNode);
+            FeatureStore fs = (FeatureStore) store.getFeatureSource(shipType.getTypeName());
+            fs.addFeatures(DataUtilities.collection(ship));
         }
-        Node oilSpillNode = (Node) xpath.evaluate("/csn:Ship", doc, XPathConstants.NODE);
-        SimpleFeature ship = parseShip(shipType, xpath, oilSpillNode);
-        FeatureStore fs = (FeatureStore) store.getFeatureSource(shipType.getTypeName());
-        fs.addFeatures(DataUtilities.collection(ship));
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        finally{
+            
+        }
     }
 
     private SimpleFeature parseShip(SimpleFeatureType ft, XPath xpath, Node oilSpillNode)

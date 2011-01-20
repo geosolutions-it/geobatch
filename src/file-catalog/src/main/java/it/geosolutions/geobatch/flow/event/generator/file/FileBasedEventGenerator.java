@@ -45,7 +45,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import javax.transaction.NotSupportedException;
 

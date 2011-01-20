@@ -37,265 +37,265 @@ import java.net.URL;
  **/
 /* ----------------------------------------------------------------- */
 public List execute(ScriptingConfiguration configuration, String eventFilePath, ProgressListenerForwarder listenerForwarder) throws Exception {
-		/* ----------------------------------------------------------------- */
-		// Main Input Variables: must be configured 
-		
-		/** Registry URL **/
-		def registryURL = "http://csw-csn.e-geos.it/ergorr/webservice?wsdl";
-		/** Web Service URL 
-		 *  - IMPORTANT: DON'T FORGET THE '/' AT THE END OF 'httpdServiceURL'
-		 **/
-		def httpdServiceURL = "http://ows-csn.e-geos.it/e-geos/";
-		
-		/** OGC Web Services GetCapabilities **/
-		def wfsGetCapabilities = "http://ows-csn.e-geos.it/geoserver/wfs?SERVICE=wfs&amp;VERSION=1.1.1&amp;REQUEST=GetCapabilities";
-		def wcsGetCapabilities = "http://ows-csn.e-geos.it/geoserver/wcs?SERVICE=wcs&amp;VERSION=1.0.0&amp;REQUEST=GetCapabilities";
-		def wmsGetCapabilities = "http://ows-csn.e-geos.it/geoserver/wms?SERVICE=wms&amp;VERSION=1.1.0&amp;REQUEST=GetCapabilities";
+    // ////////////////////////////////////////////////////////////////////
+    //
+    // Initializing input variables from Flow configuration
+    //
+    // ////////////////////////////////////////////////////////////////////
+    /* Map props = configuration.getProperties();
+     String example0 = props.get("key0");
+     listenerForwarder.progressing(50, example0);
+     String example1 = props.get("key1");
+     listenerForwarder.progressing(90, example1); */
+    
+    /* ----------------------------------------------------------------- */
+    // Main Input Variables: must be configured
+    /** Registry URL **/
+    def registryURL = "http://csw-csn.e-geos.it/ergorr/webservice?wsdl";
+    /** Web Service URL 
+     *  - IMPORTANT: DON'T FORGET THE '/' AT THE END OF 'httpdServiceURL'
+     **/
+    def httpdServiceURL = "http://ows-csn.e-geos.it/e-geos/";
+
+    /** OGC Web Services GetCapabilities **/
+    def wfsGetCapabilities = "http://ows-csn.e-geos.it/geoserver/wfs?SERVICE=wfs&amp;VERSION=1.1.1&amp;REQUEST=GetCapabilities";
+    def wcsGetCapabilities = "http://ows-csn.e-geos.it/geoserver/wcs?SERVICE=wcs&amp;VERSION=1.0.0&amp;REQUEST=GetCapabilities";
+    def wmsGetCapabilities = "http://ows-csn.e-geos.it/geoserver/wms?SERVICE=wms&amp;VERSION=1.1.0&amp;REQUEST=GetCapabilities";
 
     try {
         listenerForwarder.started();
-				// ////
-				// Instatiate EMSA Utilities
-				// ////
-				utils = new EMSAUtils();
-				
-        // ////////////////////////////////////////////////////////////////////
-        //
-        // Initializing input variables from Flow configuration
-        //
-        // ////////////////////////////////////////////////////////////////////
-        /* Map props = configuration.getProperties();
+        // ////
+        // Instatiate EMSA Utilities
+        // ////
+        utils = new EMSAUtils();
 
-        String example0 = props.get("key0");
-        listenerForwarder.progressing(50, example0);
-        String example1 = props.get("key1");
-        listenerForwarder.progressing(90, example1); */
-
-				// ////
-				// some initial checks on input file name
-				// ////
+        // ////
+        // some initial checks on input file name
+        // ////
         String inputFileName = eventFilePath;
         final String filePrefix = FilenameUtils.getBaseName(inputFileName);
         final String fileSuffix = FilenameUtils.getExtension(inputFileName);
-				if (!fileSuffix.equalsIgnoreCase("xml")) {
-					sendError(listenerForwarder, "::EGEOSRegistryDeployer : invalid input archive \"" + inputFileName + "\"");
-				}
-				
-				// ////
-				// forwarding some logging information to Flow Logger Listener
-				// ////
-        listenerForwarder.setTask("Processing event " + eventFilePath)
+        if (!fileSuffix.equalsIgnoreCase("xml")) {
+            sendError(listenerForwarder, "::EGEOSRegistryDeployer : invalid input archive \"" + inputFileName + "\"");
+        }
 
-				/** The outcome events variable **/
-				List results = new ArrayList();
+        // ////
+        // forwarding some logging information to Flow Logger Listener
+        // ////
+        listenerForwarder.setTask("::EGEOSRegistryDeployer : Processing event " + eventFilePath)
 
-				// ////
-				// getting package directory
-				// ////
-				File pkgDir = new File(inputFileName).getParentFile();
-				/** DO NOT CHANGE THIS! **/
-				String pkgDirName = FilenameUtils.getBaseName(pkgDir.getName()).substring(11) + "/";
-				
-				// ////
-				// Reading Basic Package Info
-				// ////
-				File packageFile = new File(inputFileName);
-				EOProcessor eoProcessor = new EOProcessor(packageFile.getParentFile());
-        eoProcessor.setGmlBaseURI(httpdServiceURL + pkgDirName);
-        println(httpdServiceURL + pkgDirName);
-        EarthObservationPackage pkg = eoProcessor.parsePackage();
+        /** The outcome events variable **/
+        List results = new ArrayList();
+
+        // ////
+        // getting package directory
+        // ////
+        File pkgDir = new File(inputFileName).getParentFile();
         
+        EOProcessor eoProcessor = new EOProcessor(pkgDir);
+/** DO NOT CHANGE THIS! **/
+//String pkgDirName = FilenameUtils.getBaseName(pkgDir.getName()).substring(11) + "/";
+
+        // ////
+        // Reading Basic Package Info
+        // ////
+        File packageFile = new File(inputFileName);
+        eoProcessor.setGmlBaseURI(httpdServiceURL + pkgDir.getName());
+        
+        println("::EGEOSRegistryDeployer : eoProcessor.setGmlBaseURI("+httpdServiceURL + pkgDir.getName()+")");
+        
+        EarthObservationPackage pkg = eoProcessor.parsePackage();
+
         // ////
         // Instantiating CSW Connector:
         // - provide here correct Registry URL
         // ////
         URL serviceURL = null;
         try {
-             serviceURL = new URL(registryURL);
+            serviceURL = new URL(registryURL);
         } catch (MalformedURLException ex) {
-            sendError(listenerForwarder, "Error initializing URL", ex);
+            sendError(listenerForwarder, "::EGEOSRegistryDeployer : Error initializing URL", ex);
         }
         CSWConn conn = new CSWConn(serviceURL);
 
-				// ////
-				// Initialize RR Data:
-				// - This process ensures the base services and collection datasets have been correctly inserted into RR
-				// ////        
-				initializeRR(serviceURL, conn, wfsGetCapabilities, wcsGetCapabilities, wmsGetCapabilities);
-				
+        // ////
+        // Initialize RR Data:
+        // - This process ensures the base services and collection datasets have been correctly inserted into RR
+        // ////
+        initializeRR(serviceURL, conn, wfsGetCapabilities, wcsGetCapabilities, wmsGetCapabilities);
+
         // ////
         // Send METADATA with appropriate sender...
         // ////
         if (pkg.getPackageType().equals("EO_PRODUCT")) {
-        	EOPSender eoSender = new EOPSender(eoProcessor);
-        	eoSender.setServiceURL(serviceURL);
-        	eoSender.setCollections("SAR:DATA");
-	        try {
-        		eoSender.run();
-	        } catch (IllegalStateException e) {
-          	sendError(listenerForwarder, "OK: Caught proper IllegalStateException", e);
-	        }
+            EOPSender eoSender = new EOPSender(eoProcessor);
+            eoSender.setServiceURL(serviceURL);
+            eoSender.setCollections("SAR:DATA");
+            try {
+                eoSender.run();
+            } catch (IllegalStateException e) {
+                sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
+            }
         } else if (pkg.getPackageType().equals("SAR_DERIVED")) {
-        	ShipProcessor dsProcessor = new ShipProcessor(packageFile.getParentFile());
-        	dsProcessor.setGmlBaseURI(httpdServiceURL + pkgDirName);
+            ShipProcessor dsProcessor = new ShipProcessor(packageFile.getParentFile());
+            dsProcessor.setGmlBaseURI(httpdServiceURL + pkgDir.getName());
 
-	        DERSender derSender = new DERSender(dsProcessor);
-	        derSender.setServiceURL(serviceURL);
-	        derSender.setCollections("VESSEL:DETECTION");
-	        try {
-	        	derSender.run();
-	        } catch (IllegalStateException e) {
-          	sendError(listenerForwarder, "OK: Caught proper IllegalStateException", e);
-	        }
-	        
-	        SarDerivedProcessor sdfProcessor = new SarDerivedProcessor(packageFile.getParentFile());
-	        sdfProcessor.setGmlBaseURI(httpdServiceURL + pkgDirName);
-	        
-	        derSender = new DERSender(sdfProcessor);
-	        derSender.setServiceURL(serviceURL);
-	        derSender.setCollections("WIND", "WAVE");
-	        try {
-	        	derSender.run();
-	        } catch (IllegalStateException e) {
-          	sendError(listenerForwarder, "OK: Caught proper IllegalStateException", e);
-	        }
-        } else if (pkg.getPackageType().equals("OS_NOTIFICATION") || 
-        					 pkg.getPackageType().equals("OS_WARNING")) {
-	        OilSpillProcessor osProcessor = new OilSpillProcessor(packageFile.getParentFile());
-	        osProcessor.setBaseGMLURL(httpdServiceURL + pkgDirName);
-	        
-	        OilSpillSender osSender = new OilSpillSender(osProcessor);
-	        osSender.setServiceURL(serviceURL);
-	        osSender.setCollections("OIL:SPILL:WARNING", "OIL:SPILL:NOTIFICATION");
-	        try {
-	        	osSender.run();
-	        } catch (IllegalStateException e) {
-          	sendError(listenerForwarder, "OK: Caught proper IllegalStateException", e);
-	        }	        
+            DERSender derSender = new DERSender(dsProcessor);
+            derSender.setServiceURL(serviceURL);
+            derSender.setCollections("VESSEL:DETECTION");
+            try {
+                derSender.run();
+            } catch (IllegalStateException e) {
+                sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
+            }
+
+            SarDerivedProcessor sdfProcessor = new SarDerivedProcessor(packageFile.getParentFile());
+            sdfProcessor.setGmlBaseURI(httpdServiceURL + pkgDirName);
+
+            derSender = new DERSender(sdfProcessor);
+            derSender.setServiceURL(serviceURL);
+            derSender.setCollections("WIND", "WAVE");
+            try {
+                derSender.run();
+            } catch (IllegalStateException e) {
+                sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
+            }
+        } else if (pkg.getPackageType().equals("OS_NOTIFICATION") ||
+        pkg.getPackageType().equals("OS_WARNING")) {
+            OilSpillProcessor osProcessor = new OilSpillProcessor(packageFile.getParentFile());
+            osProcessor.setBaseGMLURL(httpdServiceURL + pkgDirName);
+
+            OilSpillSender osSender = new OilSpillSender(osProcessor);
+            osSender.setServiceURL(serviceURL);
+            osSender.setCollections("OIL:SPILL:WARNING", "OIL:SPILL:NOTIFICATION");
+            try {
+                osSender.run();
+            } catch (IllegalStateException e) {
+                sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
+            }
         }
-        
-				// ////
-				// forwarding event to the next action
-				// ////
-				// fake event to avoid Failed Status!
-				results.add("DONE");
+
+        // ////
+        // forwarding event to the next action
+        // ////
+        // fake event to avoid Failed Status!
+        results.add("DONE");
         return results;
     } catch (Exception cause) {
-	      sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
+        sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
     }
-    
 }
 
-	// ///////////////////////////////////////////////////////////////////////////// //
-	//                                                                               //
-	//                       E-GEOS - U T I L I T I E S                              //
-	//                                                                               //
-	// ///////////////////////////////////////////////////////////////////////////// //
+// ///////////////////////////////////////////////////////////////////////////// //
+//                                                                               //
+//                       E-GEOS - U T I L I T I E S                              //
+//                                                                               //
+// ///////////////////////////////////////////////////////////////////////////// //
 
 /** ****************************************************************************
-    Script Utility Methods...
-    **************************************************************************** **/
-    
+ Script Utility Methods...
+ **************************************************************************** **/
+
+/**
+ * Error forwarder...
+ **/
+void sendError(final ProgressListenerForwarder listenerForwarder, final String message) throws Exception {
+    sendError(listenerForwarder, message, null);
+}
+void sendError(final ProgressListenerForwarder listenerForwarder, final String message, final Throwable cause) throws Exception {
     /**
-     * Error forwarder...
+     * Default LOGGER
      **/
-    void sendError(final ProgressListenerForwarder listenerForwarder, final String message) throws Exception {
-    	sendError(listenerForwarder, message, null);
-  	}
-    void sendError(final ProgressListenerForwarder listenerForwarder, final String message, final Throwable cause) throws Exception {
-    	/**
-			 * Default LOGGER
-			 **/
-			final Logger LOGGER = Logger.getLogger(EGEOSDeployerBaseAction.class.toString());
+    final Logger LOGGER = Logger.getLogger(EGEOSDeployerBaseAction.class.toString());
 
-    	LOGGER.log(Level.SEVERE, message);
-	    Exception theCause = (cause != null ? cause : new Exception(message));
-	    listenerForwarder.failed(theCause);
-	    throw theCause;
-	  }
+    LOGGER.log(Level.SEVERE, message);
+    Exception theCause = (cause != null ? cause : new Exception(message));
+    listenerForwarder.failed(theCause);
+    throw theCause;
+}
 
-		/**
-		 * Initialize Registry
-		 **/
-		void initializeRR(URL serviceURL, CSWConn conn, String wfsGetCapabilities, String wcsGetCapabilities, String wmsGetCapabilities) {
-      ServicesProcessor serviceProcessor = new ServicesProcessor(wfsGetCapabilities, wcsGetCapabilities, wmsGetCapabilities);
-      ServicesSender serviceSender = new ServicesSender(serviceProcessor); 
-      serviceSender.setServiceURL(serviceURL);
-      
-      serviceSender.run();
-      
-			CollectionsProcessor collectionProcessor = new CollectionsProcessor("SAR:DATA", "WIND", "WAVE", "VESSEL:DETECTION", "OIL:SPILL:WARNING", "OIL:SPILL:NOTIFICATION");
-      CollectionsSender collectionsSender = new CollectionsSender(collectionProcessor);
-      collectionsSender.setServiceURL(serviceURL);
+/**
+ * Initialize Registry
+ **/
+void initializeRR(URL serviceURL, CSWConn conn, String wfsGetCapabilities, String wcsGetCapabilities, String wmsGetCapabilities) {
+    ServicesProcessor serviceProcessor = new ServicesProcessor(wfsGetCapabilities, wcsGetCapabilities, wmsGetCapabilities);
+    ServicesSender serviceSender = new ServicesSender(serviceProcessor);
+    serviceSender.setServiceURL(serviceURL);
 
-			collectionsSender.run();
-			
-			if (wfsGetCapabilities != null) {
-				def vesselDetectCollection = collectionProcessor.getCollection("VESSEL:DETECTION");
-				if (vesselDetectCollection != null) {
-					conn.insert(vesselDetectCollection.getServiceAssociationXML("WFS"));
-				}
-				
-				def oswCollection = collectionProcessor.getCollection("OIL:SPILL:WARNING");
-				if (oswCollection != null) {
-					conn.insert(oswCollection.getServiceAssociationXML("WFS"));
-				}
+    serviceSender.run();
 
-				def osnCollection = collectionProcessor.getCollection("OIL:SPILL:NOTIFICATION");
-				if (osnCollection != null) {
-					conn.insert(osnCollection.getServiceAssociationXML("WFS"));
-				}
-			}
-			
-			if (wcsGetCapabilities != null) {
-				def sarDataCollection = collectionProcessor.getCollection("SAR:DATA");
-				if (sarDataCollection != null) {
-					conn.insert(sarDataCollection.getServiceAssociationXML("WCS"));
-				}
-				
-				def windDataCollection = collectionProcessor.getCollection("WIND");
-				if (windDataCollection != null) {
-					conn.insert(windDataCollection.getServiceAssociationXML("WCS"));
-				}
+    CollectionsProcessor collectionProcessor = new CollectionsProcessor("SAR:DATA", "WIND", "WAVE", "VESSEL:DETECTION", "OIL:SPILL:WARNING", "OIL:SPILL:NOTIFICATION");
+    CollectionsSender collectionsSender = new CollectionsSender(collectionProcessor);
+    collectionsSender.setServiceURL(serviceURL);
 
-				def waveDataCollection = collectionProcessor.getCollection("WAVE");
-				if (waveDataCollection != null) {
-					conn.insert(waveDataCollection.getServiceAssociationXML("WCS"));
-				}
-			}
-			
-			if (wmsGetCapabilities != null) {
-				/** VECTORIAL **/
-				def vesselDetectCollection = collectionProcessor.getCollection("VESSEL:DETECTION");
-				if (vesselDetectCollection != null) {
-					conn.insert(vesselDetectCollection.getServiceAssociationXML("WMS"));
-				}
-				
-				def oswCollection = collectionProcessor.getCollection("OIL:SPILL:WARNING");
-				if (oswCollection != null) {
-					conn.insert(oswCollection.getServiceAssociationXML("WMS"));
-				}
+    collectionsSender.run();
 
-				def osnCollection = collectionProcessor.getCollection("OIL:SPILL:NOTIFICATION");
-				if (osnCollection != null) {
-					conn.insert(osnCollection.getServiceAssociationXML("WMS"));
-				}
+    if (wfsGetCapabilities != null) {
+        def vesselDetectCollection = collectionProcessor.getCollection("VESSEL:DETECTION");
+        if (vesselDetectCollection != null) {
+            conn.insert(vesselDetectCollection.getServiceAssociationXML("WFS"));
+        }
 
-				/** RASTER **/
-				def sarDataCollection = collectionProcessor.getCollection("SAR:DATA");
-				if (sarDataCollection != null) {
-					conn.insert(sarDataCollection.getServiceAssociationXML("WMS"));
-				}
-				
-				def windDataCollection = collectionProcessor.getCollection("WIND");
-				if (windDataCollection != null) {
-					conn.insert(windDataCollection.getServiceAssociationXML("WMS"));
-				}
+        def oswCollection = collectionProcessor.getCollection("OIL:SPILL:WARNING");
+        if (oswCollection != null) {
+            conn.insert(oswCollection.getServiceAssociationXML("WFS"));
+        }
 
-				def waveDataCollection = collectionProcessor.getCollection("WAVE");
-				if (waveDataCollection != null) {
-					conn.insert(waveDataCollection.getServiceAssociationXML("WMS"));
-				}
-			}
-			
+        def osnCollection = collectionProcessor.getCollection("OIL:SPILL:NOTIFICATION");
+        if (osnCollection != null) {
+            conn.insert(osnCollection.getServiceAssociationXML("WFS"));
+        }
+    }
+
+    if (wcsGetCapabilities != null) {
+        def sarDataCollection = collectionProcessor.getCollection("SAR:DATA");
+        if (sarDataCollection != null) {
+            conn.insert(sarDataCollection.getServiceAssociationXML("WCS"));
+        }
+
+        def windDataCollection = collectionProcessor.getCollection("WIND");
+        if (windDataCollection != null) {
+            conn.insert(windDataCollection.getServiceAssociationXML("WCS"));
+        }
+
+        def waveDataCollection = collectionProcessor.getCollection("WAVE");
+        if (waveDataCollection != null) {
+            conn.insert(waveDataCollection.getServiceAssociationXML("WCS"));
+        }
+    }
+
+    if (wmsGetCapabilities != null) {
+        /** VECTORIAL **/
+        def vesselDetectCollection = collectionProcessor.getCollection("VESSEL:DETECTION");
+        if (vesselDetectCollection != null) {
+            conn.insert(vesselDetectCollection.getServiceAssociationXML("WMS"));
+        }
+
+        def oswCollection = collectionProcessor.getCollection("OIL:SPILL:WARNING");
+        if (oswCollection != null) {
+            conn.insert(oswCollection.getServiceAssociationXML("WMS"));
+        }
+
+        def osnCollection = collectionProcessor.getCollection("OIL:SPILL:NOTIFICATION");
+        if (osnCollection != null) {
+            conn.insert(osnCollection.getServiceAssociationXML("WMS"));
+        }
+
+        /** RASTER **/
+        def sarDataCollection = collectionProcessor.getCollection("SAR:DATA");
+        if (sarDataCollection != null) {
+            conn.insert(sarDataCollection.getServiceAssociationXML("WMS"));
+        }
+
+        def windDataCollection = collectionProcessor.getCollection("WIND");
+        if (windDataCollection != null) {
+            conn.insert(windDataCollection.getServiceAssociationXML("WMS"));
+        }
+
+        def waveDataCollection = collectionProcessor.getCollection("WAVE");
+        if (waveDataCollection != null) {
+            conn.insert(waveDataCollection.getServiceAssociationXML("WMS"));
+        }
+    }
+
 		}

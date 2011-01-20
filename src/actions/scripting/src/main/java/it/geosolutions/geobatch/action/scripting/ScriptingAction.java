@@ -122,7 +122,7 @@ public class ScriptingAction extends BaseAction<FileSystemMonitorEvent>implement
             }
 
             /**
-             * Evalutaing script ...
+             * Evaluating script ...
              */
             try {
                 // Now, pass a different script context

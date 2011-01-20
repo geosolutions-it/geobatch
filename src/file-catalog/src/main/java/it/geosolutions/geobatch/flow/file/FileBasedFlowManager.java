@@ -499,6 +499,9 @@ TimeUnit.MILLISECONDS, queue);
     public void postEvent(FileSystemMonitorEvent event) {
         try {
             eventMailBox.put(event);
+        }
+        catch (NullPointerException npe){
+            throw new RuntimeException(npe);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

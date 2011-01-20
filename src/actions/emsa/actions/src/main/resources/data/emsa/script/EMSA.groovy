@@ -1,6 +1,7 @@
-import it.geosolutions.geobatch.action.scripting.Collector;
+
 import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
+import it.geosolutions.geobatch.tools.file.Collector;
 import it.geosolutions.geobatch.tools.file.Extract;
 
 import java.io.File;
@@ -24,12 +25,22 @@ import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder
  * @eventFilePath
  **/
 public List execute(ScriptingConfiguration configuration, String eventFilePath, ProgressListenerForwarder listenerForwarder) throws Exception {
+    // ////////////////////////////////////////////////////////////////////
+    //
+    // Initializing input variables from Flow configuration
+    //
+    // ////////////////////////////////////////////////////////////////////
+     /*Map props = configuration.getProperties();
+     String example0 = props.get("key0");
+     String example1 = props.get("key1");*/
+    
     /* ----------------------------------------------------------------- */
     // Main Input Variables: must be configured
     /**
      * The physical folder where to extract emsa packages
      **/
-    def emsaExchangePhysicalDir = "/home/carlo/work/data/emsa/out/";
+    def emsaExchangePhysicalDir = "/home/tomcat/e-geos/";
+    //def emsaExchangePhysicalDir = "/home/carlo/work/data/emsa/out/";
     def readyFileName="PackagesReady.txt";
 
     final Logger LOGGER = Logger.getLogger(EMSA.class.toString());
@@ -60,13 +71,13 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     try {
         outDir=new File(inDir.getParent()+"/../out/"+inDir.getName());
         FileUtils.moveDirectory(inDir,outDir.getCanonicalFile());
-    } catch (IOException e) {
+    } catch (IOException ioe) {
         String message="::EMSAService : problem moving dir " + inDir + " to out dir "+outDir;
 
         LOGGER.log(Level.SEVERE, message);
-        Exception theCause = (cause != null ? cause : new Exception(message));
-        listenerForwarder.failed(theCause);
-        throw theCause;
+        Exception e=new Exception(message);
+        listenerForwarder.failed(e);
+        throw e;
     }
 
     // listing all the other files
@@ -89,7 +100,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     }
 
     // forwarding some logging information to Flow Logger Listener
-    listenerForwarder.setTask("Processing event " + eventFilePath)
+    listenerForwarder.setTask("::EMSAService : Processing event " + eventFilePath)
 
     // defining the Input Data Dir:
     //  - here the input packages will be extracted to be further processed
@@ -101,9 +112,9 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
             String message="::EMSAService : Could not create EMSA input data dir:"+emsaExchangePhysicalDir;
 
             LOGGER.log(Level.SEVERE, message);
-            Exception theCause = (cause != null ? cause : new Exception(message));
-            listenerForwarder.failed(theCause);
-            throw theCause;
+            Exception e=new Exception(message);
+            listenerForwarder.failed(e);
+            throw e;
        }
    }
 
