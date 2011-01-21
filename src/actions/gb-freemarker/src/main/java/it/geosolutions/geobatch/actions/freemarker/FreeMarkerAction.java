@@ -22,8 +22,8 @@
 package it.geosolutions.geobatch.actions.freemarker;
 
 import freemarker.template.TemplateModelException;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.tools.adapter.EventAdapter;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -167,7 +167,7 @@ public class FreeMarkerAction
         }
         
         // add the file to the queue
-        events.add(new FileSystemMonitorEvent(out.getAbsoluteFile(), FileSystemMonitorNotifications.FILE_ADDED));
+        events.add(new FileSystemEvent(out.getAbsoluteFile(), FileSystemEventType.FILE_ADDED));
         return events;
     }
 

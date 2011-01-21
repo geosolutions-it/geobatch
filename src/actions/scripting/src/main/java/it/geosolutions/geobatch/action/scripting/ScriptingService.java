@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.action.scripting;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
@@ -38,7 +38,7 @@ import javax.script.ScriptEngineManager;
  * @author etj
  */
 public class ScriptingService extends BaseService implements
-        ActionService<FileSystemMonitorEvent, ScriptingConfiguration> {
+        ActionService<FileSystemEvent, ScriptingConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(ScriptingService.class.toString());
 

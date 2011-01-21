@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * 
  */
 public class INGVGeneratorService extends BaseService implements
-        ActionService<FileSystemMonitorEvent, MetocActionConfiguration> {
+        ActionService<FileSystemEvent, MetocActionConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(INGVGeneratorService.class.toString());
 

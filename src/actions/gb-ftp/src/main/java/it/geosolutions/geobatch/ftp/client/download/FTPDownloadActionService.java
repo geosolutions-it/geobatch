@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.ftp.client.download;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * 
  */
 public class FTPDownloadActionService extends BaseService implements
-        ActionService<FileSystemMonitorEvent, FTPActionConfiguration> {
+        ActionService<FileSystemEvent, FTPActionConfiguration> {
 
     private final static Logger LOGGER = Logger
             .getLogger(FTPDownloadActionService.class.toString());

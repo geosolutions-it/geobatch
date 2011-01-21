@@ -26,10 +26,19 @@ import it.geosolutions.geobatch.catalog.Identifiable;
 
 public abstract class BaseIdentifiable implements Identifiable, Cloneable {
 
+    /**
+     * @uml.property  name="id"
+     */
     private String id;
 
+    /**
+     * @uml.property  name="name"
+     */
     private String name;
 
+    /**
+     * @uml.property  name="description"
+     */
     private String description = "No description set.";
 
     public BaseIdentifiable() {
@@ -42,38 +51,50 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
         this.description = description;
     }
 
+    /**
+     * @return
+     * @uml.property  name="id"
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * @return
+     * @uml.property  name="name"
+     */
     public String getName() {
         return name;
     }
 
     /**
-     * @param id
-     *            the id to set
+     * @param id  the id to set
+     * @uml.property  name="id"
      */
     public void setId(String id) {
         this.id = id;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name  the name to set
+     * @uml.property  name="name"
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * @param description
-     *            the description to set
+     * @param description  the description to set
+     * @uml.property  name="description"
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * @return
+     * @uml.property  name="description"
+     */
     public String getDescription() {
         return description;
     }

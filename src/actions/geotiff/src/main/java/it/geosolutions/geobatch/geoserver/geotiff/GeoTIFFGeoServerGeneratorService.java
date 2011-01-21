@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.geoserver.geotiff;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * @version $ ShapeFileDTOProducerSPI.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
 public class GeoTIFFGeoServerGeneratorService extends
-        GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
+        GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(GeoTIFFGeoServerGenerator.class
             .toString());

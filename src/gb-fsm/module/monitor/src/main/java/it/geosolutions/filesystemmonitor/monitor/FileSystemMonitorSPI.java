@@ -26,10 +26,9 @@ import it.geosolutions.filesystemmonitor.OsType;
 import java.util.Map;
 
 /**
- * ServiceProviderInterface class for {@link ThreadedFileSystemMonitor} implementations.
- * 
- * @author Simone Giannecchini
- * @since 0.2
+ * ServiceProviderInterface class for  {@link ThreadedFileSystemMonitor}  implementations.
+ * @author  Simone Giannecchini
+ * @since  0.2
  */
 public interface FileSystemMonitorSPI {
 
@@ -42,6 +41,8 @@ public interface FileSystemMonitorSPI {
     /**
      * Get the type of this FileSystemMonitor
      * @return
+     * @uml.property  name="type"
+     * @uml.associationEnd  
      */
     public FileSystemMonitorType getType();
 

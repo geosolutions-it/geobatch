@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.flow.event.consumer.file;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
@@ -54,9 +54,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.util.FileSystemUtils;
-
-import com.thoughtworks.xstream.XStream.InitializationException;
 
 /**
  * Comments here ...
@@ -65,36 +62,49 @@ import com.thoughtworks.xstream.XStream.InitializationException;
  * 
  */
 public class FileBasedEventConsumer extends
-        BaseEventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> implements
-        EventConsumer<FileSystemMonitorEvent, FileBasedEventConsumerConfiguration> {
+        BaseEventConsumer<FileSystemEvent, FileBasedEventConsumerConfiguration> implements
+        EventConsumer<FileSystemEvent, FileBasedEventConsumerConfiguration> {
 
     /**
      * Common file prefix (unless the rule specify another one)
+     * @uml.property  name="commonPrefixRegex"
      */
     private String commonPrefixRegex;
 
     /**
      * Stream Transfer control
+     * @uml.property  name="numInputFiles"
      */
     private long numInputFiles = 0;
 
     /**
      * Storing mandatory rules and the times they will occur.
+     * @uml.property  name="mandatoryRules"
+     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule"
      */
     private final List<FileEventRule> mandatoryRules = new ArrayList<FileEventRule>();
 
     /**
      * Storing optional rules and the times they will occur.
+     * @uml.property  name="optionalRules"
+     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule"
      */
     private final List<FileEventRule> optionalRules = new ArrayList<FileEventRule>();
 
     /**
-     *
+     * @uml.property  name="workingDir"
      */
     private File workingDir;
 
+    /**
+     * @uml.property  name="configuration"
+     * @uml.associationEnd  
+     */
     private FileBasedEventConsumerConfiguration configuration;
 
+    /**
+     * @uml.property  name="canceled"
+     */
     private volatile boolean canceled;
     
     /**
@@ -106,8 +116,9 @@ public class FileBasedEventConsumer extends
     public FileBasedEventConsumer(FileBasedEventConsumerConfiguration configuration)
             throws InterruptedException, IOException {
 
-        final File catalogFile = new File(((FileBaseCatalog) CatalogHolder.getCatalog())
-                .getBaseDirectory());
+        final File catalogFile = new File(
+                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
+        
         final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
                 catalogFile);
 
@@ -130,19 +141,19 @@ public class FileBasedEventConsumer extends
      *         for it.
      * @throws InterruptedException
      */
-    private boolean canConsume(FileSystemMonitorEvent event) {
+    private boolean canConsume(FileSystemEvent event) {
         final String path = event.getSource().getAbsolutePath();
         final String fileName = FilenameUtils.getName(path);
         final String filePrefix = FilenameUtils.getBaseName(fileName);
-        final String fullPath = FilenameUtils.getFullPath(path);
+//        final String fullPath = FilenameUtils.getFullPath(path);
 
         // check mandatory rules
         boolean res = this
-                .checkRuleConsistency(event.getNotification(), filePrefix, fileName, true);
+                .checkRuleConsistency(event.getEventType(), filePrefix, fileName, true);
 
         // check optional rules if needed
         if (!res) {
-            res = this.checkRuleConsistency(event.getNotification(), filePrefix, fileName, false);
+            res = this.checkRuleConsistency(event.getEventType(), filePrefix, fileName, false);
         }
 
         /*
@@ -159,7 +170,7 @@ public class FileBasedEventConsumer extends
      * @NOTE: CHECKME: is it really needed? will it not break flows that need scattered files?
      */
     private boolean checkSamePath(String fullpath) {
-        for (FileSystemMonitorEvent event : eventsQueue) {
+        for (FileSystemEvent event : eventsQueue) {
             String existingFP = FilenameUtils.getFullPath(event.getSource().getAbsolutePath());
             if (!fullpath.equals(existingFP)) {
                 return false;
@@ -177,7 +188,7 @@ public class FileBasedEventConsumer extends
      * @return boolean
      * 
      */
-    private boolean checkRuleConsistency(final FileSystemMonitorNotifications eventType,
+    private boolean checkRuleConsistency(final FileSystemEventType eventType,
             final String prefix, final String fileName, final boolean mandatory) {
 
         int occurrencies;
@@ -186,7 +197,7 @@ public class FileBasedEventConsumer extends
         for (FileEventRule rule : rules) {
 
             // check event type
-            final List<FileSystemMonitorNotifications> eventTypes = rule
+            final List<FileSystemEventType> eventTypes = rule
                     .getAcceptableNotifications();
             if (!checkEvent(eventType, eventTypes)) {
                 return false;
@@ -223,12 +234,12 @@ public class FileBasedEventConsumer extends
         return false;
     }
 
-    private static boolean checkEvent(FileSystemMonitorNotifications eventType,
-            List<FileSystemMonitorNotifications> eventTypes) {
+    private static boolean checkEvent(FileSystemEventType eventType,
+            List<FileSystemEventType> eventTypes) {
         if (eventTypes == null) {
             return true;
         }
-        for (FileSystemMonitorNotifications notification : eventTypes) {
+        for (FileSystemEventType notification : eventTypes) {
             if (notification.equals(eventType)) {
                 return true;
             }
@@ -240,7 +251,6 @@ public class FileBasedEventConsumer extends
     /**
      * FileBasedEventConsumer initialization.
      * 
-     * @throws InitializationException
      * @throws InterruptedException
      */
     private void initialize(FileBasedEventConsumerConfiguration configuration, File workingDir)
@@ -291,13 +301,13 @@ public class FileBasedEventConsumer extends
         // ACTIONS
         // ////////////////////////////////////////////////////////////////////
 
-        final List<Action<FileSystemMonitorEvent>> loadedActions = new ArrayList<Action<FileSystemMonitorEvent>>();
+        final List<Action<FileSystemEvent>> loadedActions = new ArrayList<Action<FileSystemEvent>>();
         for (ActionConfiguration actionConfig : configuration.getActions()) {
             final String actionServiceID = actionConfig.getServiceID();
-            final ActionService<FileSystemMonitorEvent, ActionConfiguration> actionService = CatalogHolder
-                    .getCatalog().getResource(actionServiceID, ActionService.class);
+            final ActionService<FileSystemEvent, ActionConfiguration> actionService = 
+                    CatalogHolder.getCatalog().getResource(actionServiceID, ActionService.class);
             if (actionService != null) {
-                Action<FileSystemMonitorEvent> action = actionService.createAction(actionConfig);
+                Action<FileSystemEvent> action = actionService.createAction(actionConfig);
                 if (action == null) {
                     throw new IllegalArgumentException("Action could not be created for config "
                             + actionConfig);
@@ -389,9 +399,9 @@ public class FileBasedEventConsumer extends
             //
             // Cycling on all the input events
             //
-            final Queue<FileSystemMonitorEvent> fileEventList = new LinkedList<FileSystemMonitorEvent>();
+            final Queue<FileSystemEvent> fileEventList = new LinkedList<FileSystemEvent>();
             int numProcessedFiles = 0;
-            for (FileSystemMonitorEvent event : this.eventsQueue) {
+            for (FileSystemEvent event : this.eventsQueue) {
                 if (LOGGER.isLoggable(Level.INFO))
                     LOGGER.info("FileBasedEventConsumer ["+
                             Thread.currentThread().getName()+
@@ -406,7 +416,7 @@ public class FileBasedEventConsumer extends
                         "Preprocessing event " + fileBareName);
 
                 //
-                // move input file/dir to current working directory
+                // copy input file/dir to current working directory
                 //
                 if (IOUtils.acquireLock(this, sourceDataFile)) {
                     
@@ -443,8 +453,8 @@ public class FileBasedEventConsumer extends
                             FileUtils.moveFile(sourceDataFile, destDataFile);
                         
                         // adjust event sources since we moved the files locally
-                        fileEventList.offer(new FileSystemMonitorEvent(destDataFile,
-                                event.getNotification()));
+                        fileEventList.offer(new FileSystemEvent(destDataFile,
+                                event.getEventType()));
                     }else{
                         // we are going to work directly on the input files 
                         fileEventList.offer(event);
@@ -527,18 +537,27 @@ public class FileBasedEventConsumer extends
     }
 
 
+    /**
+     * @param configuration
+     * @uml.property  name="configuration"
+     */
     public void setConfiguration(FileBasedEventConsumerConfiguration configuration) {
         this.configuration = configuration;
 
     }
 
     /**
-     * @return the workingDirectory
+     * @return  the workingDirectory
+     * @uml.property  name="workingDir"
      */
     public File getWorkingDir() {
         return workingDir;
     }
 
+    /**
+     * @return
+     * @uml.property  name="configuration"
+     */
     public FileBasedEventConsumerConfiguration getConfiguration() {
         return configuration;
     }
@@ -561,7 +580,7 @@ public class FileBasedEventConsumer extends
     }
 
     @Override
-    public boolean consume(FileSystemMonitorEvent event) {
+    public boolean consume(FileSystemEvent event) {
         if (getStatus() != EventConsumerStatus.IDLE && getStatus() != EventConsumerStatus.WAITING) {
             return false;
         }
@@ -587,6 +606,10 @@ public class FileBasedEventConsumer extends
         this.canceled = true;
     }
 
+    /**
+     * @return
+     * @uml.property  name="canceled"
+     */
     public boolean isCanceled() {
         return canceled;
     }

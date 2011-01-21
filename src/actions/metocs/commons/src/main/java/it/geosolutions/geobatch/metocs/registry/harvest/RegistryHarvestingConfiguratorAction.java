@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.metocs.registry.harvest;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.global.CatalogHolder;
@@ -100,7 +100,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
     /**
      * EXECUTE METHOD
      */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         if (LOGGER.isLoggable(Level.INFO))
@@ -112,10 +112,10 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
 
-            List<FileSystemMonitorEvent> generatedEvents = new ArrayList<FileSystemMonitorEvent>();
+            List<FileSystemEvent> generatedEvents = new ArrayList<FileSystemEvent>();
 
             while (events.size() > 0) {
-                FileSystemMonitorEvent event = events.remove();
+                FileSystemEvent event = events.remove();
 
                 // //
                 // data flow configuration and dataStore name must not be null.
@@ -200,8 +200,8 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                     // forwarding to the next Action
                     LOGGER.info("RegistryHarvestingAction ... forwarding to the next Action: "
                             + inputFile.getAbsolutePath());
-                    generatedEvents.add(new FileSystemMonitorEvent(inputFile,
-                            FileSystemMonitorNotifications.FILE_ADDED));
+                    generatedEvents.add(new FileSystemEvent(inputFile,
+                            FileSystemEventType.FILE_ADDED));
                 }
             }
 

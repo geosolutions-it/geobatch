@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.action.splitting;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * 
  * @author etj
  */
-public class SplittingAction extends BaseAction<FileSystemMonitorEvent> {
+public class SplittingAction extends BaseAction<FileSystemEvent> {
     private static final Logger LOGGER = Logger.getLogger(SplittingAction.class.getName());
 
     private SplittingConfiguration configuration;
@@ -52,16 +52,16 @@ public class SplittingAction extends BaseAction<FileSystemMonitorEvent> {
         return configuration;
     }
 
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
         try {
             listenerForwarder.started();
 
-            Queue<FileSystemMonitorEvent> forwardingEvents = new LinkedList<FileSystemMonitorEvent>();
+            Queue<FileSystemEvent> forwardingEvents = new LinkedList<FileSystemEvent>();
 
             int numEvents = events.size();
             for (int i = 0; i < numEvents; i++) {
-                FileSystemMonitorEvent event = events.remove();
+                FileSystemEvent event = events.remove();
 
                 // //
                 // data flow configuration and dataStore name must not be null.

@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.metocs.base;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.tools.adapter.EventAdapter;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -118,20 +118,20 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction
         if (ieo!=null)
             try {
                 /**
-                 * Map the FileSystemMonitorEvent to a NetCDFDataset
+                 * Map the FileSystemEvent to a NetCDFDataset
                  * event object 
                  */
-                if (ieo instanceof FileSystemMonitorEvent){
+                if (ieo instanceof FileSystemEvent){
                 
                     NetcdfFile ncFileIn = null;
                     File inputFile = null;
                     
-                    FileSystemMonitorEvent fs_event = (FileSystemMonitorEvent) ieo;
+                    FileSystemEvent fs_event = (FileSystemEvent) ieo;
                     
                     inputFile = new File(fs_event.getSource().getAbsolutePath());
 
                     /**
-                     * Here we assume that each FileSystemMonitorEvent file
+                     * Here we assume that each FileSystemEvent file
                      * represent a valid NetcdfFile.
                      * This is done (without checks) since the specific class 
                      * implementation name define the file type should be passed.
@@ -151,7 +151,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction
                     return (NetcdfEvent)ieo;
                 }
                 else
-                    throw new ActionException(this, "Passed event is not a FileSystemMonitorEvent instance");
+                    throw new ActionException(this, "Passed event is not a FileSystemEvent instance");
         } catch (IOException ioe) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.log(Level.SEVERE, ioe.getLocalizedMessage(), ioe);
@@ -479,8 +479,8 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction
 
                         // ... setting up the appropriate event for the next
                         // action
-                        events.add(new FileSystemMonitorEvent(gtiffOutputDir,
-                                FileSystemMonitorNotifications.FILE_ADDED));
+                        events.add(new FileSystemEvent(gtiffOutputDir,
+                                FileSystemEventType.FILE_ADDED));
                     }
 
                     numVars++;

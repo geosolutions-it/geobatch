@@ -23,8 +23,8 @@
 package it.geosolutions.geobatch.flow.event.generator.file;
 
 import it.geosolutions.filesystemmonitor.OsType;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.flow.event.generator.BaseEventGeneratorService;
@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * 
  */
 public class FileBasedEventGeneratorService extends
-        BaseEventGeneratorService<FileSystemMonitorEvent, FileBasedEventGeneratorConfiguration> {
+        BaseEventGeneratorService<FileSystemEvent, FileBasedEventGeneratorConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(FileBasedEventGeneratorService.class
             .toString());
@@ -79,25 +79,32 @@ public class FileBasedEventGeneratorService extends
      * @seeit.geosolutions.geobatch.flow.event.generator.EventGeneratorService#
      * createEventGenerator(java .util.Map)
      */
-    public FileBasedEventGenerator createEventGenerator(
+    public FileBasedEventGenerator<FileSystemEvent> createEventGenerator(
             FileBasedEventGeneratorConfiguration configuration) {
 
         try {
             final OsType osType = configuration.getOsType();
-            final FileSystemMonitorNotifications eventType = configuration.getEventType();
+            final FileSystemEventType eventType = configuration.getEventType();
             final File sensedDir;
             sensedDir = Path.findLocation(configuration.getWorkingDirectory(), new File(
                     ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
             if (sensedDir != null) {
-                if (!sensedDir.exists() || !sensedDir.isDirectory() || !sensedDir.canRead()) // TODO
-                                                                                             // message
+                if (!sensedDir.exists() || !sensedDir.isDirectory() || !sensedDir.canRead()){
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.severe("FileBasedEventGenerator: Watching dir is not valid!");
                     return null;
+                }
             }
             final boolean keepFiles = configuration.getKeepFiles();
-            if (configuration.getWildCard() == null)
-                return new FileBasedEventGenerator(osType, configuration.getMonitorType(), eventType, sensedDir, keepFiles);
-            else
-                return new FileBasedEventGenerator(osType, configuration.getMonitorType(), eventType, sensedDir, configuration.getWildCard(), keepFiles);
+
+            return new FileBasedEventGenerator<FileSystemEvent>(
+                                    osType,
+                                    configuration.getMonitorType(),
+                                    eventType,
+                                    sensedDir,
+                                    configuration.getWildCard(),
+                                    keepFiles);
+            
         } catch (IOException ex) {
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);

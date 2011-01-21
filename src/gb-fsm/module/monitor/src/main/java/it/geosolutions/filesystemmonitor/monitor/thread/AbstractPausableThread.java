@@ -39,29 +39,25 @@ public abstract class AbstractPausableThread extends Thread {
 
     /**
      * Indicates whether or not this thread is running.
-     * 
-     * @uml.property name="isPaused"
+     * @uml.property  name="isPaused"
      */
     protected volatile boolean isPaused = false;
 
     /**
      * Indicates that we are requesting a pause.
-     * 
-     * @uml.property name="pauseRequested"
+     * @uml.property  name="pauseRequested"
      */
     protected volatile boolean pauseRequested;
 
     /**
      * Indicates whether or not this thread is running.
-     * 
-     * @uml.property name="isRunning"
+     * @uml.property  name="isRunning"
      */
     protected volatile boolean isRunning = false;
 
     /**
      * Indicates if a termination was requested to this thread.
-     * 
-     * @uml.property name="terminationRequested"
+     * @uml.property  name="terminationRequested"
      */
     protected volatile boolean terminationRequested = false;
 

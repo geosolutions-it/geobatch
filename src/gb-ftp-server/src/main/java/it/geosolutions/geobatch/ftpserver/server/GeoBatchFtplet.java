@@ -26,8 +26,8 @@
  */
 package it.geosolutions.geobatch.ftpserver.server;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.global.CatalogHolder;
@@ -215,8 +215,8 @@ public class GeoBatchFtplet
 
         if (fm != null) {
             LOGGER.log(Level.INFO, "Firing FILEADDED event to {0}", fm);
-            fm.postEvent(new FileSystemMonitorEvent(targetFile,
-                    FileSystemMonitorNotifications.FILE_ADDED));
+            fm.postEvent(new FileSystemEvent(targetFile,
+                    FileSystemEventType.FILE_ADDED));
         } else {
             LOGGER.log(Level.INFO, "No FlowManager ''{0}'' to notify about {1} -- {2}",
                     new Object[] { flowid, targetFile, availFmSb });

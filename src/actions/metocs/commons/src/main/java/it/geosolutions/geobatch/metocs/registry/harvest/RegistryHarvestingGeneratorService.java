@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.metocs.registry.harvest;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.metocs.registry.RegistryActionConfiguration;
 import it.geosolutions.geobatch.metocs.registry.RegistryConfiguratorService;
 
@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * 
  */
 public class RegistryHarvestingGeneratorService extends
-        RegistryConfiguratorService<FileSystemMonitorEvent, RegistryActionConfiguration> {
+        RegistryConfiguratorService<FileSystemEvent, RegistryActionConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(RegistryHarvestingGeneratorService.class
             .toString());

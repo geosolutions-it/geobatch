@@ -1,6 +1,6 @@
 package it.geosolutions.geobatch.ais.raster;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.ascii.AsciiGeoServerGenerator;
 
@@ -18,7 +18,7 @@ public class AISCoverageGeoServerGenerator extends AsciiGeoServerGenerator {
 		super(configuration);
 	}
 	
-	public void sendToGeoServer(File workingDir, FileSystemMonitorEvent event, String coverageStoreId, String storeFilePrefix, String configId) throws MalformedURLException, FileNotFoundException {
+	public void sendToGeoServer(File workingDir, FileSystemEvent event, String coverageStoreId, String storeFilePrefix, String configId) throws MalformedURLException, FileNotFoundException {
 		// ////////////////////////////////////////////////////////////////////
 		//
 		// SENDING data to GeoServer via REST protocol.

@@ -22,8 +22,8 @@
 
 package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.octave.OctaveEnv;
@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import dk.ange.octave.exception.OctaveEvalException;
 
 
-public class OctaveFreeMarkerAction extends OctaveAction<FileSystemMonitorEvent> {
+public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
        
     private final static Logger LOGGER = Logger.getLogger(OctaveFreeMarkerAction.class.toString());
     
@@ -72,20 +72,20 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemMonitorEvent>
     }
 
     /**
-     * Action to execute on the FileSystemMonitorEvent event queue.
+     * Action to execute on the FileSystemEvent event queue.
      * 
-     * @param Queue<FileSystemMonitorEvent> queue of events to handle in this (and next)
+     * @param Queue<FileSystemEvent> queue of events to handle in this (and next)
      * action executions.
-     * @return Queue<FileSystemMonitorEvent> the resulting list of events
+     * @return Queue<FileSystemEvent> the resulting list of events
      */
     @Override
-    public Queue<FileSystemMonitorEvent> load(Queue<FileSystemMonitorEvent> events, OctaveEnv<OctaveExecutableSheet> env)
+    public Queue<FileSystemEvent> load(Queue<FileSystemEvent> events, OctaveEnv<OctaveExecutableSheet> env)
             throws ActionException {
         try {
             if(LOGGER.isLoggable(Level.INFO))
                 LOGGER.info("Running FileInFileOut script...");
             
-            FileSystemMonitorEvent ev=events.remove();
+            FileSystemEvent ev=events.remove();
             
             if ((ev)!=null){
 
@@ -168,8 +168,8 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemMonitorEvent>
                 /**
                  * add output file to the event queue
                  */
-                events.add(new FileSystemMonitorEvent(
-                        new File(out_name),FileSystemMonitorNotifications.FILE_ADDED));
+                events.add(new FileSystemEvent(
+                        new File(out_name),FileSystemEventType.FILE_ADDED));
 
             } // ev==null
             else {

@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.ais.anomalies;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.ais.dao.AISAnomaliesDAO;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 
 public class AISAnomaliesGeoServerGeneratorService
 		extends
-		GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
+		GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
 
 	private final static Logger LOGGER = Logger
 			.getLogger(AISAnomaliesGeoServerGeneratorService.class.toString());
@@ -49,7 +49,7 @@ public class AISAnomaliesGeoServerGeneratorService
 		return aisAnomaliesDAO;
 	}
 
-	public Action<FileSystemMonitorEvent> createAction(
+	public Action<FileSystemEvent> createAction(
 			GeoServerActionConfiguration configuration) {
 		try {
 			return new AISAnomaliesGeoServerGenerator(configuration,

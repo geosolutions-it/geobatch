@@ -36,10 +36,19 @@ public class CatalogModifyEventImpl<T> extends CatalogEventImpl<T> implements Ca
         super(source);
     }
 
+    /**
+     * @uml.property  name="propertyNames"
+     */
     private List<String> propertyNames = new ArrayList<String>();
 
+    /**
+     * @uml.property  name="oldValues"
+     */
     private List<T> oldValues = new ArrayList<T>();
 
+    /**
+     * @uml.property  name="newValues"
+     */
     private List<T> newValues = new ArrayList<T>();
 
     public void setPropertyNames(final List<String> propertyNames) {

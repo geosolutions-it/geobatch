@@ -21,13 +21,11 @@
  */
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemListener;
 import it.geosolutions.geobatch.tools.file.IOUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -48,20 +46,37 @@ public class GBEventConsumer implements Runnable {
     /** Default Logger **/
     private final static Logger LOGGER = Logger.getLogger(GBEventConsumer.class.toString());
     
+    /**
+     * @uml.property  name="lockWaitThreshold"
+     */
     private long lockWaitThreshold = IOUtils.MAX_WAITING_TIME_FOR_LOCK;
 
+    /**
+     * @uml.property  name="lockInputFiles"
+     */
     private boolean lockInputFiles;
     
     public final static ExecutorService threadPool = Executors.newCachedThreadPool();
     
+    /**
+     * @uml.property  name="listeners"
+     * @uml.associationEnd  multiplicity="(1 1)"
+     */
     private EventListenerList listeners =null;
     
     // queue of events to pass to the listener list
-    private BlockingQueue<FileSystemMonitorEvent> eventQueue=new ArrayBlockingQueue<FileSystemMonitorEvent>(100); //TODO change
+    /**
+     * @uml.property  name="eventQueue"
+     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.filesystemmonitor.monitor.FileSystemEvent"
+     */
+    private BlockingQueue<FileSystemEvent> eventQueue=new ArrayBlockingQueue<FileSystemEvent>(100); //TODO change
     // the stop element
-    private static FileSystemMonitorEvent STOP=new FileSystemMonitorEvent(new File(""), null);
+    private static FileSystemEvent STOP=new FileSystemEvent(new File(""), null);
     
     // set true to end the thread
+    /**
+     * @uml.property  name="stop"
+     */
     private boolean stop;
     
     /**
@@ -102,6 +117,7 @@ public class GBEventConsumer implements Runnable {
             stop=true;
         }
     }
+    
     /**
      * Default Constructor
      */
@@ -120,15 +136,16 @@ public class GBEventConsumer implements Runnable {
      * Sending an event by putting it inside the Swing dispatching thred. This might be useless
      * in command line app but it is important in GUi apps. I might change this though.
      * 
-     * @param file
+     * @param event
      */
-    private void handleEvent(final FileSystemMonitorEvent event) {
+    private void handleEvent(final FileSystemEvent event) {
+        
 /*
-        FileSystemMonitorNotifications notified= event.getNotification();
+        FileSystemEventType notified= event.getNotification();
         
         if (// if file event is NOT FILE_REMOVED and NOT DIR_REMOVED
-            (notified!= FileSystemMonitorNotifications.DIR_REMOVED &&
-                notified!=FileSystemMonitorNotifications.FILE_REMOVED) ){
+            (notified!= FileSystemEventType.DIR_REMOVED &&
+                notified!=FileSystemEventType.FILE_REMOVED) ){
             // deal with locking of input files
             if (lockInputFiles) {
                 final File source = event.getSource();
@@ -148,7 +165,6 @@ public class GBEventConsumer implements Runnable {
             }
         }
 */
-
         final Object[] listenersArray = listeners.getListenerList();//return a not-null array
         /*
          * Process the listeners last to first, 
@@ -157,8 +173,8 @@ public class GBEventConsumer implements Runnable {
         final int length = listenersArray.length;
         for (int i = length - 2; i >= 0; i -= 2) {
             final int index = i + 1;
-            if (listenersArray[i] == FileSystemMonitorListener.class) {
-                ((FileSystemMonitorListener) listenersArray[index]).fileMonitorEventDelivered(event);
+            if (listenersArray[i] == FileSystemListener.class) {
+                ((FileSystemListener) listenersArray[index]).onFileSystemEvent(event);
             }
         }
     }
@@ -166,19 +182,18 @@ public class GBEventConsumer implements Runnable {
     /**
      * Use this method to add events to this consumer
      * 
-     * @param o - The fileSystemMonitorEvent to add
+     * @param o - The FileSystemEvent to add
      */
-    public void add(FileSystemMonitorEvent o){
+    public void add(FileSystemEvent o){
         eventQueue.add(o);
     }
     
     /**
      * Never call this method manually
-     *
      */
     public void run() {
         try {
-            FileSystemMonitorEvent event=null;
+            FileSystemEvent event=null;
             while ((event=eventQueue.take())!=STOP && !stop){
                 // send event
                 handleEvent(event);

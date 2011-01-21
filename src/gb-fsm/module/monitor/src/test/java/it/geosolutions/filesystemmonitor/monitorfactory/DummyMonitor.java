@@ -2,7 +2,7 @@ package it.geosolutions.filesystemmonitor.monitorfactory;
 
 import it.geosolutions.filesystemmonitor.OsType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitor;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemListener;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 
@@ -35,10 +35,10 @@ public final class DummyMonitor implements FileSystemMonitorSPI, FileSystemMonit
     public void setFile(File file, String extension) {
     }
 
-    public void addListener(FileSystemMonitorListener fileListener) {
+    public void addListener(FileSystemListener fileListener) {
     }
 
-    public void removeListener(FileSystemMonitorListener fileListener) {
+    public void removeListener(FileSystemListener fileListener) {
     }
 
     public void dispose() {

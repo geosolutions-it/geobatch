@@ -34,8 +34,7 @@ public abstract class AbstractPeriodicThread extends AbstractPausableThread {
 
     /**
      * Interval at which we will check the file system.
-     * 
-     * @uml.property name="pollingInterval"
+     * @uml.property  name="pollingInterval"
      */
     protected long pollingInterval = 10;
 

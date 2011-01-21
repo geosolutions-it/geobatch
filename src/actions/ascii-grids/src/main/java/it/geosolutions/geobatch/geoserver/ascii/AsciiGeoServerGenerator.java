@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.geoserver.ascii;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
@@ -51,7 +51,7 @@ import org.geotools.gce.arcgrid.ArcGridReader;
  * @author fabiania
  * 
  */
-public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSystemEvent> {
 
     protected AsciiGeoServerGenerator(GeoServerActionConfiguration configuration)
             throws IOException {
@@ -160,7 +160,7 @@ public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSys
         }
     }
 
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
         try {
             listenerForwarder.started();
@@ -173,7 +173,7 @@ public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSys
             if (events.size() != 1)
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
-            FileSystemMonitorEvent event = events.remove();
+            FileSystemEvent event = events.remove();
             final String configId = configuration.getName();
 
             // //
@@ -346,7 +346,7 @@ public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSys
 
     }
 
-    public void sendToGeoServer(File workingDir, FileSystemMonitorEvent event,
+    public void sendToGeoServer(File workingDir, FileSystemEvent event,
             String coverageStoreId, String storeFilePrefix, String configId)
             throws MalformedURLException, FileNotFoundException {
         LOGGER.info("Sending ArcGrid to GeoServer ... " + getConfiguration().getGeoserverURL());

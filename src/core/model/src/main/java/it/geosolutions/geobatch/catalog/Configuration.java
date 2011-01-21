@@ -21,6 +21,9 @@
  */
 package it.geosolutions.geobatch.catalog;
 
+/**
+ * @author  Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ */
 public interface Configuration extends Identifiable {
 
     public boolean isDirty();
@@ -28,13 +31,14 @@ public interface Configuration extends Identifiable {
     public void setDirty(boolean dirty);
 
     /**
-     * @return the serviceID
+     * @return  the serviceID
+     * @uml.property  name="serviceID"
      */
     public String getServiceID();
 
     /**
-     * @param serviceID
-     *            the serviceID to set
+     * @param serviceID  the serviceID to set
+     * @uml.property  name="serviceID"
      */
     public void setServiceID(String serviceID);
 

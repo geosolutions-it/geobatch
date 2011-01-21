@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.lamma.extract;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  */
 public class LammaGribMetadataExtractorService extends BaseService
 		implements
-		ActionService<FileSystemMonitorEvent, LammaGribMetadataExtractorConfiguration> {
+		ActionService<FileSystemEvent, LammaGribMetadataExtractorConfiguration> {
 
 	private final static Logger LOGGER = Logger
 			.getLogger(LammaGribMetadataExtractorService.class.toString());

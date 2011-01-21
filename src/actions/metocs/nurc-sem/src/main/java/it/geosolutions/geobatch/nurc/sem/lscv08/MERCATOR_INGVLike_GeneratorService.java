@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * 
  */
 public class MERCATOR_INGVLike_GeneratorService extends
-        GeoServerConfiguratorService<FileSystemMonitorEvent, MetocActionConfiguration> {
+        GeoServerConfiguratorService<FileSystemEvent, MetocActionConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(MERCATOR_INGVLike_GeneratorService.class
             .toString());

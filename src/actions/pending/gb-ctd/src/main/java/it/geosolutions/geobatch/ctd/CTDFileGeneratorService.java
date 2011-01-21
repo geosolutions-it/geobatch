@@ -24,7 +24,7 @@
 
 package it.geosolutions.geobatch.ctd;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.ctd.configuration.CTDActionConfiguration;
 import it.geosolutions.geobatch.ctd.configuration.CTDConfiguratorService;
 
@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  * 
  */
 public class CTDFileGeneratorService extends
-        CTDConfiguratorService<FileSystemMonitorEvent, CTDActionConfiguration> {
+        CTDConfiguratorService<FileSystemEvent, CTDActionConfiguration> {
 	
     private final static Logger LOGGER = Logger.getLogger(CTDFileGeneratorService.class
             .toString());

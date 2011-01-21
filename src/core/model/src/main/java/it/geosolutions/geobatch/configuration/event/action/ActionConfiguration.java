@@ -40,23 +40,31 @@ import java.util.List;
 public abstract class ActionConfiguration extends BaseConfiguration implements Configuration,
         Cloneable {
 
+    /**
+     * @uml.property  name="listenerIds"
+     */
     private List<String> listenerIds = null;
 
+    /**
+     * @uml.property  name="listenerConfigurations"
+     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration"
+     */
     private List<ProgressListenerConfiguration> listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
 
+    /**
+     * @uml.property  name="failIgnored"
+     */
     private boolean failIgnored = false;
     
     /**
-     * workingDirectory: this attribute represents the configuring directory for this flow. It can
-     * be relative to the catalog.xml directory or absolute.
-     * 
-     * Attention: the configuring directory should be different from the one containing the
-     * configuration files.
+     * workingDirectory: this attribute represents the configuring directory for this flow. It can be relative to the catalog.xml directory or absolute. Attention: the configuring directory should be different from the one containing the configuration files.
+     * @uml.property  name="workingDirectory"
      */
     private String workingDirectory;
 
     /**
      * Getter for the workingDirectory
+     * @uml.property  name="workingDirectory"
      */
     public String getWorkingDirectory() {
         return workingDirectory;
@@ -64,8 +72,8 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
     
     /**
      * Setter for the workingDirectory.
-     * 
-     * @param workingDirectory
+     * @param  workingDirectory
+     * @uml.property  name="workingDirectory"
      */
     public void setWorkingDirectory(String workingDirectory) {
         this.workingDirectory = workingDirectory;
@@ -80,18 +88,18 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
     }
 
     /**
-     * Tells if an exception in this Actions should break the entire flow. <BR>
-     * Defaults to false.
-     * <P>
-     * Some somehow "minor" actions would not break the logical flow, for instance a remote file
-     * deletion via FTP.
-     * 
-     * @return true if an error in this Actions should not stop the whole flow.
+     * Tells if an exception in this Actions should break the entire flow. <BR> Defaults to false. <P> Some somehow "minor" actions would not break the logical flow, for instance a remote file deletion via FTP.
+     * @return  true if an error in this Actions should not stop the whole flow.
+     * @uml.property  name="failIgnored"
      */
     public boolean isFailIgnored() {
         return failIgnored;
     }
 
+    /**
+     * @param failIgnored
+     * @uml.property  name="failIgnored"
+     */
     public void setFailIgnored(boolean failIgnored) {
         this.failIgnored = failIgnored;
     }

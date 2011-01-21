@@ -31,6 +31,9 @@ public abstract class BaseFileBaseDAO<T extends Configuration> implements DAO<T,
         this.directory = directory;
     }
 
+    /**
+     * @uml.property  name="directory"
+     */
     private String directory;
 
     public String getBaseDirectory() {

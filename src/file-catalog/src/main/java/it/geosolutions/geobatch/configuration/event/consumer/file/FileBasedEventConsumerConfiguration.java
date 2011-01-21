@@ -43,41 +43,46 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
         EventConsumerConfiguration {
 
     /**
-     * List of configurable actions that will be sequentially performed at the end of event
-     * consumption.
+     * List of configurable actions that will be sequentially performed at the end of event consumption.
+     * @uml.property  name="actions"
+     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.configuration.event.action.ActionConfiguration"
      */
     private List<? extends ActionConfiguration> actions;
 
     /**
      * List of rules defining the consumer behavior.
+     * @uml.property  name="rules"
+     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule"
      */
     private List<FileEventRule> rules;
 
     /**
-     * The configuring directory. This is the directory where the consumer will store the input
-     * data.
+     * The configuring directory. This is the directory where the consumer will store the input data.
+     * @uml.property  name="workingDirectory"
      */
     private String workingDirectory;
 
     /**
      * Do we remove input files and put them on a backup directory?
+     * @uml.property  name="performBackup"
      */
     private boolean performBackup;
 
     /**
-     * 
+     * @uml.property  name="preserveInput"
      */
     private boolean preserveInput;
 
     /**
-     * The id of the Listener Conf. <BR>
-     * They are needed for a post-load binding; loader logic will put the proper listener
-     * configurations into {@link #listenerConfigurations}.
+     * The id of the Listener Conf. <BR> They are needed for a post-load binding; loader logic will put the proper listener configurations into  {@link #listenerConfigurations} .
+     * @uml.property  name="listenerIds"
      */
     private List<String> listenerIds = new ArrayList<String>();
 
     /**
      * These configs are filled by the loader, dereferencing the listenersId.
+     * @uml.property  name="listenerConfigurations"
+     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration"
      */
     protected List<ProgressListenerConfiguration> listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
 
@@ -135,8 +140,8 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
 
     /**
      * Getter for the configuring directory attribute.
-     * 
-     * @return workingDirectory
+     * @return  workingDirectory
+     * @uml.property  name="workingDirectory"
      */
     public String getWorkingDirectory() {
         return workingDirectory;
@@ -144,8 +149,8 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
 
     /**
      * Setter for the configuring directory attribute.
-     * 
-     * @param workingDirectory
+     * @param  workingDirectory
+     * @uml.property  name="workingDirectory"
      */
     public void setWorkingDirectory(String workingDirectory) {
         this.workingDirectory = workingDirectory;
@@ -153,8 +158,8 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
 
     /**
      * Is the backup of the input data enabled?
-     * 
-     * @return performBackup
+     * @return  performBackup
+     * @uml.property  name="performBackup"
      */
     public boolean isPerformBackup() {
         return performBackup;
@@ -162,17 +167,25 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
 
     /**
      * Setter for the perform backup option.
-     * 
-     * @param performBackup
+     * @param  performBackup
+     * @uml.property  name="performBackup"
      */
     public void setPerformBackup(boolean performBackup) {
         this.performBackup = performBackup;
     }
 
+    /**
+     * @return
+     * @uml.property  name="preserveInput"
+     */
     public boolean isPreserveInput() {
         return this.preserveInput;
     }
     
+    /**
+     * @param preserveInput
+     * @uml.property  name="preserveInput"
+     */
     public void setPreserveInput(boolean preserveInput) {
         this.preserveInput = preserveInput;
     }

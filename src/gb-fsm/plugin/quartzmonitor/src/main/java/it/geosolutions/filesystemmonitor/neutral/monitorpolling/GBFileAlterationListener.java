@@ -21,8 +21,8 @@
  */
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 
 import java.io.File;
 
@@ -38,6 +38,10 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
  */
 public class GBFileAlterationListener implements FileAlterationListener{
 
+    /**
+     * @uml.property  name="consumer"
+     * @uml.associationEnd  multiplicity="(1 1)"
+     */
     GBEventConsumer consumer=null;
     
     // TODO CAMEL
@@ -58,9 +62,9 @@ public class GBFileAlterationListener implements FileAlterationListener{
      */
     public void onDirectoryChange(File file) {
 //        CAMEL
-//        consumer.add(new FileSystemMonitorEvent(file, notification))
+//        consumer.add(new FileSystemEvent(file, notification))
 //        System.out.println("onDirectoryChange for file: "+file);
-        consumer.add(new FileSystemMonitorEvent(file, FileSystemMonitorNotifications.DIR_MODIFIED));
+        consumer.add(new FileSystemEvent(file, FileSystemEventType.DIR_MODIFIED));
     }
 
     /* (non-Javadoc)
@@ -68,7 +72,7 @@ public class GBFileAlterationListener implements FileAlterationListener{
      */
     public void onDirectoryCreate(File file) {
 //        System.out.println("onDirectoryCreate for file: "+arg0);
-        consumer.add(new FileSystemMonitorEvent(file, FileSystemMonitorNotifications.DIR_CREATED));
+        consumer.add(new FileSystemEvent(file, FileSystemEventType.DIR_CREATED));
     }
 
     /* (non-Javadoc)
@@ -76,14 +80,14 @@ public class GBFileAlterationListener implements FileAlterationListener{
      */
     public void onDirectoryDelete(File file) {
 //        System.out.println("onDirectoryDelete for file: "+arg0);
-        consumer.add(new FileSystemMonitorEvent(file, FileSystemMonitorNotifications.DIR_REMOVED));
+        consumer.add(new FileSystemEvent(file, FileSystemEventType.DIR_REMOVED));
     }
 
     /* (non-Javadoc)
      * @see org.apache.commons.io.monitor.FileAlterationListener#onFileChange(java.io.File)
      */
     public void onFileChange(File file) {
-        consumer.add(new FileSystemMonitorEvent(file, FileSystemMonitorNotifications.FILE_MODIFIED));
+        consumer.add(new FileSystemEvent(file, FileSystemEventType.FILE_MODIFIED));
 //        System.out.println("onFileChange for file: "+file);
 //        try{
 //            producer.sendBody(arg0);
@@ -98,7 +102,7 @@ public class GBFileAlterationListener implements FileAlterationListener{
      */
     public void onFileCreate(File file) {
 //        System.out.println("onFileCreate for file: "+arg0);
-        consumer.add(new FileSystemMonitorEvent(file, FileSystemMonitorNotifications.FILE_ADDED));
+        consumer.add(new FileSystemEvent(file, FileSystemEventType.FILE_ADDED));
     }
 
     /* (non-Javadoc)
@@ -106,7 +110,7 @@ public class GBFileAlterationListener implements FileAlterationListener{
      */
     public void onFileDelete(File file) {
 //        System.out.println("onFileDelete for file: "+arg0);
-        consumer.add(new FileSystemMonitorEvent(file, FileSystemMonitorNotifications.FILE_REMOVED));
+        consumer.add(new FileSystemEvent(file, FileSystemEventType.FILE_REMOVED));
     }
     
     public void onStart(FileAlterationObserver fao) {

@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.metocs.registry;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
@@ -38,8 +38,8 @@ import java.util.logging.Logger;
  * @version $ GeoServerConfiguratorAction.java $ Revision: 0.1 $ 12/feb/07 12:07:06
  */
 
-public abstract class RegistryConfiguratorAction extends BaseAction<FileSystemMonitorEvent>
-        implements Action<FileSystemMonitorEvent> {
+public abstract class RegistryConfiguratorAction extends BaseAction<FileSystemEvent>
+        implements Action<FileSystemEvent> {
     /**
      * Default logger
      */

@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  */
 public class CumulatingProgressListenerService extends BaseService implements
         ProgressListenerService<CumulatingProgressListenerConfiguration> {
-    // implements Service<FileSystemMonitorEvent,
+    // implements Service<FileSystemEvent,
     // GeoTiffOverviewsEmbedderConfiguration> {
 
     private CumulatingProgressListenerService() {

@@ -44,8 +44,15 @@ public abstract class BaseAction<XEO extends EventObject> extends BaseIdentifiab
 
     private final static Logger LOGGER = Logger.getLogger(BaseAction.class.toString());
 
+    /**
+     * @uml.property  name="listenerForwarder"
+     * @uml.associationEnd  multiplicity="(1 1)"
+     */
     protected ProgressListenerForwarder listenerForwarder = new ProgressListenerForwarder();
 
+    /**
+     * @uml.property  name="failIgnored"
+     */
     protected boolean failIgnored = false;
 
     public BaseAction(ActionConfiguration actionConfiguration) {
@@ -73,10 +80,18 @@ public abstract class BaseAction<XEO extends EventObject> extends BaseIdentifiab
         LOGGER.info("Resuming " + getClass().getSimpleName());
     }
 
+    /**
+     * @return
+     * @uml.property  name="failIgnored"
+     */
     public boolean isFailIgnored() {
         return failIgnored;
     }
 
+    /**
+     * @param failIgnored
+     * @uml.property  name="failIgnored"
+     */
     public void setFailIgnored(boolean failIgnored) {
         this.failIgnored = failIgnored;
     }

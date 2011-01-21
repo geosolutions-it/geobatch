@@ -36,27 +36,56 @@ import java.util.List;
  */
 public abstract class BaseFlowConfiguration extends BaseConfiguration implements FlowConfiguration {
 
+    /**
+     * @uml.property  name="eventGeneratorConfiguration"
+     * @uml.associationEnd  
+     */
     private EventGeneratorConfiguration eventGeneratorConfiguration;
 
+    /**
+     * @uml.property  name="eventConsumerConfiguration"
+     * @uml.associationEnd  
+     */
     private EventConsumerConfiguration eventConsumerConfiguration;
 
     /**
      * These configurations can be recalled by name by any Action or Consumer that will need them.
+     * @uml.property  name="progressListenerConfigurations"
      */
     private List<ProgressListenerConfiguration> progressListenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
 
+    /**
+     * @uml.property  name="corePoolSize"
+     */
     private int corePoolSize;
 
+    /**
+     * @uml.property  name="maximumPoolSize"
+     */
     private int maximumPoolSize;
 
+    /**
+     * @uml.property  name="keepAliveTime"
+     */
     private long keepAliveTime;
 
+    /**
+     * @uml.property  name="workQueueSize"
+     */
     private int workQueueSize;
 
+    /**
+     * @return
+     * @uml.property  name="workQueueSize"
+     */
     public int getWorkQueueSize() {
         return workQueueSize;
     }
 
+    /**
+     * @param workQueueSize
+     * @uml.property  name="workQueueSize"
+     */
     public void setWorkQueueSize(int workQueueSize) {
         this.workQueueSize = workQueueSize;
     }
@@ -78,13 +107,17 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
      * 
      * @see it.geosolutions.geobatch.catalog.FlowManagerDescriptor#getRuleSet()
      */
+    /**
+     * @return
+     * @uml.property  name="eventGeneratorConfiguration"
+     */
     public EventGeneratorConfiguration getEventGeneratorConfiguration() {
         return eventGeneratorConfiguration;
     }
 
     /**
-     * @param eventGeneratorConfiguration
-     *            the eventGeneratorConfiguration to set
+     * @param eventGeneratorConfiguration  the eventGeneratorConfiguration to set
+     * @uml.property  name="eventGeneratorConfiguration"
      */
     public void setEventGeneratorConfiguration(
             EventGeneratorConfiguration eventGeneratorConfiguration) {
@@ -101,10 +134,18 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
         return getId();
     }
 
+    /**
+     * @return
+     * @uml.property  name="eventConsumerConfiguration"
+     */
     public EventConsumerConfiguration getEventConsumerConfiguration() {
         return eventConsumerConfiguration;
     }
 
+    /**
+     * @param eventConsumerConfiguration
+     * @uml.property  name="eventConsumerConfiguration"
+     */
     public void setEventConsumerConfiguration(EventConsumerConfiguration eventConsumerConfiguration) {
         this.eventConsumerConfiguration = eventConsumerConfiguration;
 
@@ -127,26 +168,50 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
         return null;
     }
 
+    /**
+     * @return
+     * @uml.property  name="corePoolSize"
+     */
     public int getCorePoolSize() {
         return corePoolSize;
     }
 
+    /**
+     * @param corePoolSize
+     * @uml.property  name="corePoolSize"
+     */
     public void setCorePoolSize(int corePoolSize) {
         this.corePoolSize = corePoolSize;
     }
 
+    /**
+     * @return
+     * @uml.property  name="maximumPoolSize"
+     */
     public int getMaximumPoolSize() {
         return maximumPoolSize;
     }
 
+    /**
+     * @param maximumPoolSize
+     * @uml.property  name="maximumPoolSize"
+     */
     public void setMaximumPoolSize(int maximumPoolSize) {
         this.maximumPoolSize = maximumPoolSize;
     }
 
+    /**
+     * @return
+     * @uml.property  name="keepAliveTime"
+     */
     public long getKeepAliveTime() {
         return keepAliveTime;
     }
 
+    /**
+     * @param keepAliveTime
+     * @uml.property  name="keepAliveTime"
+     */
     public void setKeepAliveTime(long keepAliveTime) {
         this.keepAliveTime = keepAliveTime;
     }

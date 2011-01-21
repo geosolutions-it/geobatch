@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
@@ -88,7 +88,7 @@ import com.vividsolutions.jts.io.WKTReader;
  * Public class to ingest a geotiff image-mosaic into GeoServer
  * 
  */
-public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileSystemMonitorEvent> {
+public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileSystemEvent> {
 
     /**
      * 
@@ -105,7 +105,7 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
     /**
 	 * 
 	 */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         if (LOGGER.isLoggable(Level.INFO))
@@ -119,10 +119,10 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
 
-            Collection<FileSystemMonitorEvent> layers = new ArrayList<FileSystemMonitorEvent>();
+            Collection<FileSystemEvent> layers = new ArrayList<FileSystemEvent>();
 
             while (events.size() > 0) {
-                FileSystemMonitorEvent event = events.remove();
+                FileSystemEvent event = events.remove();
                 // final String configId = configuration.getName();
 
                 // //
@@ -574,8 +574,8 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                                         File layerDescriptor = new File(inputDir,
                                                 mosaicDescriptor.coverageStoreId + ".layer");
                                         if (layerDescriptor.exists() && layerDescriptor.isFile())
-                                            layers.add(new FileSystemMonitorEvent(layerDescriptor,
-                                                    FileSystemMonitorNotifications.FILE_ADDED));
+                                            layers.add(new FileSystemEvent(layerDescriptor,
+                                                    FileSystemEventType.FILE_ADDED));
                                     } catch (Throwable e) {
                                         LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
                                         throw e;
@@ -602,8 +602,8 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                         File layerDescriptor = new File(inputDir, mosaicDescriptor.coverageStoreId
                                 + ".layer");
                         if (layerDescriptor.exists() && layerDescriptor.isFile())
-                            layers.add(new FileSystemMonitorEvent(layerDescriptor,
-                                    FileSystemMonitorNotifications.FILE_ADDED));
+                            layers.add(new FileSystemEvent(layerDescriptor,
+                                    FileSystemEventType.FILE_ADDED));
                     }
                 }
             }
@@ -706,7 +706,7 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
      */
     private void createNewImageMosaicLayer(File inputDir,
             ImageMosaicGranulesDescriptor mosaicDescriptor,
-            Collection<FileSystemMonitorEvent> layers) throws ParserConfigurationException,
+            Collection<FileSystemEvent> layers) throws ParserConfigurationException,
             IOException, TransformerException {
         FileWriter outFile;
 
@@ -780,8 +780,8 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                     out = null;
                 }
 
-                layers.add(new FileSystemMonitorEvent(layerDescriptor,
-                        FileSystemMonitorNotifications.FILE_ADDED));
+                layers.add(new FileSystemEvent(layerDescriptor,
+                        FileSystemEventType.FILE_ADDED));
             }
         }
     }

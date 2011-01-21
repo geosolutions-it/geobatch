@@ -24,7 +24,7 @@
 
 package it.geosolutions.geobatch.gliders;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.gliders.configuration.GlidersActionConfiguration;
@@ -74,7 +74,7 @@ import com.vividsolutions.jts.simplify.DouglasPeuckerLineSimplifier;
  *  
  */
 public class GlidersFileConfigurator extends
-        GlidersConfiguratorAction<FileSystemMonitorEvent>{
+        GlidersConfiguratorAction<FileSystemEvent>{
 	
 	// //////////////////////////
 	// JDBC data fields  
@@ -89,7 +89,7 @@ public class GlidersFileConfigurator extends
         super(configuration);
     }
 
-	public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+	public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         try {
@@ -204,10 +204,10 @@ public class GlidersFileConfigurator extends
 	 * @param events The received event queue
 	 * @return
 	 */
-	private File[] handleNetCDFfile(Queue<FileSystemMonitorEvent> events) {
+	private File[] handleNetCDFfile(Queue<FileSystemEvent> events) {
 		File ret[] = new File[events.size()];
 		int idx = 0;
-		for (FileSystemMonitorEvent event : events) {
+		for (FileSystemEvent event : events) {
 			ret[idx++] = event.getSource();
 		}
 		return ret;

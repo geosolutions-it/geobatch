@@ -43,6 +43,8 @@ public class ProgressListenerForwarder extends ProgressListener implements
 
     /**
      * The list of the registered sublisteners that will get the events.
+     * @uml.property  name="listeners"
+     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.flow.event.IProgressListener"
      */
     protected List<IProgressListener> listeners = new ArrayList<IProgressListener>();
 

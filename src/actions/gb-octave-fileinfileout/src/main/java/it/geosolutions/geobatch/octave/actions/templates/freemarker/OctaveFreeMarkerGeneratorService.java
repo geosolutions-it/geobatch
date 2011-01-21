@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
@@ -31,7 +31,7 @@ import it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMa
 
 public class OctaveFreeMarkerGeneratorService
     extends BaseService 
-    implements ActionService<FileSystemMonitorEvent, OctaveFreeMarkerConfiguration> {
+    implements ActionService<FileSystemEvent, OctaveFreeMarkerConfiguration> {
 
     public boolean canCreateAction(final OctaveFreeMarkerConfiguration configuration)  {
         

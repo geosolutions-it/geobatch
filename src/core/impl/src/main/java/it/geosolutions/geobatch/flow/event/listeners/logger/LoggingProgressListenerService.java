@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  */
 public class LoggingProgressListenerService extends BaseService implements
         ProgressListenerService<LoggingProgressListenerConfiguration> {
-    // implements Service<FileSystemMonitorEvent,
+    // implements Service<FileSystemEvent,
     // GeoTiffOverviewsEmbedderConfiguration> {
 
     private LoggingProgressListenerService() {

@@ -24,13 +24,8 @@ package it.geosolutions.geobatch.flow.event;
 import java.util.EventListener;
 
 /**
- * Listener interface for monitorable object.
- * 
- * <P>
- * This Listner is designed to have stateful information, such as current task running or current
- * progress percentage, so it should be bound to one object only.
- * 
- * @author ETj <etj at geo-solutions.it>
+ * Listener interface for monitorable object. <P> This Listner is designed to have stateful information, such as current task running or current progress percentage, so it should be bound to one object only.
+ * @author  ETj <etj at geo-solutions.it>
  */
 public interface IProgressListener extends EventListener {
 
@@ -79,6 +74,7 @@ public interface IProgressListener extends EventListener {
 
     /**
      * Get the name of the current task.
+     * @uml.property  name="task"
      */
     String getTask();
 
@@ -89,6 +85,7 @@ public interface IProgressListener extends EventListener {
 
     /**
      * Used by the notifier.
+     * @uml.property  name="task"
      */
     void setTask(String currentTask);
 

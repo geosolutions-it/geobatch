@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.base.METOCSBaseConfiguratorAction;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
@@ -86,7 +86,7 @@ public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction{
     }
 
     @Override
-    protected File unzipMetocArchive(FileSystemMonitorEvent event, String fileSuffix, File outDir,
+    protected File unzipMetocArchive(FileSystemEvent event, String fileSuffix, File outDir,
             File tempFile) throws IOException {
         return ("zip".equalsIgnoreCase(fileSuffix) || "tar".equalsIgnoreCase(fileSuffix)) ? Utilities
                 .decompress("INGV-MFS", event.getSource(), tempFile)

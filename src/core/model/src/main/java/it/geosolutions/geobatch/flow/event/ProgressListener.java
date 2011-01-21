@@ -12,10 +12,20 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
 public abstract class ProgressListener<PLC extends ProgressListenerConfiguration> implements
         IProgressListener {
 
+    /**
+     * @uml.property  name="configuration"
+     * @uml.associationEnd  
+     */
     protected PLC configuration;
 
+    /**
+     * @uml.property  name="currentTask"
+     */
     private String currentTask = null;
 
+    /**
+     * @uml.property  name="progress"
+     */
     private float progress = 0;
 
     protected ProgressListener(PLC configuration) {
@@ -46,6 +56,10 @@ public abstract class ProgressListener<PLC extends ProgressListenerConfiguration
     // public void terminated() {
     // }
 
+    /**
+     * @return
+     * @uml.property  name="progress"
+     */
     public float getProgress() {
         return progress;
     }
@@ -63,6 +77,7 @@ public abstract class ProgressListener<PLC extends ProgressListenerConfiguration
 
     /**
      * Used by the notifier.
+     * @uml.property  name="progress"
      */
     public void setProgress(float progress) {
         this.progress = progress;

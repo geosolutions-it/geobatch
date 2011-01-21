@@ -22,8 +22,8 @@
 
 package it.geosolutions.geobatch.task;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -66,8 +66,8 @@ import org.apache.tools.ant.types.Environment.Variable;
  * 
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
-public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements
-        Action<FileSystemMonitorEvent> {
+public class TaskExecutor extends BaseAction<FileSystemEvent> implements
+        Action<FileSystemEvent> {
 
     private final static Logger LOGGER = Logger.getLogger(TaskExecutor.class.toString());
 
@@ -86,7 +86,7 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements
         this.configuration = configuration;
     }
 
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         listenerForwarder.started();
@@ -95,11 +95,11 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements
             throw new IllegalStateException("DataFlowConfig is null.");
         }
 
-        Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
+        Queue<FileSystemEvent> outEvents = new LinkedList<FileSystemEvent>();
 
         while (events.size() > 0) {
             // get the first event
-            final FileSystemMonitorEvent event = events.remove();
+            final FileSystemEvent event = events.remove();
             final File inputFile = event.getSource();
             if (inputFile == null) {
                 throw new IllegalArgumentException("Input File is null");
@@ -269,8 +269,8 @@ public class TaskExecutor extends BaseAction<FileSystemMonitorEvent> implements
                     outFile = inputFile;
                 }
 
-                outEvents.add(new FileSystemMonitorEvent(outFile,
-                        FileSystemMonitorNotifications.FILE_ADDED));
+                outEvents.add(new FileSystemEvent(outFile,
+                        FileSystemEventType.FILE_ADDED));
             } catch (Throwable e) {
                 if (LOGGER.isLoggable(Level.FINE))
                     LOGGER.fine(e.getLocalizedMessage());

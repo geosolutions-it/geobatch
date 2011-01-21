@@ -30,28 +30,32 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
 import java.util.List;
 
 /**
- * @author Alessio Fabiani, GeoSolutions
- * 
+ * @author  Alessio Fabiani, GeoSolutions
  */
 public interface FlowConfiguration extends Configuration {
     /**
      * The Rule-Set Configuration
+     * @uml.property  name="eventGeneratorConfiguration"
+     * @uml.associationEnd  
      */
     public EventGeneratorConfiguration getEventGeneratorConfiguration();
 
     /**
-     * @param ruleSet
-     *            the ruleSet to set
+     * @param ruleSet  the ruleSet to set
+     * @uml.property  name="eventGeneratorConfiguration"
      */
     public void setEventGeneratorConfiguration(EventGeneratorConfiguration ruleSet);
 
     /**
      * The Rule-Set Configuration
+     * @uml.property  name="eventConsumerConfiguration"
+     * @uml.associationEnd  
      */
     public EventConsumerConfiguration getEventConsumerConfiguration();
 
     /**
      * The Rule-Set Configuration
+     * @uml.property  name="eventConsumerConfiguration"
      */
     public void setEventConsumerConfiguration(EventConsumerConfiguration eventConsumerConfiguration);
 

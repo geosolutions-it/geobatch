@@ -1,8 +1,8 @@
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemListener;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 import it.geosolutions.filesystemmonitor.monitor.impl.BaseFileSystemMonitor;
 import it.geosolutions.filesystemmonitor.monitor.thread.AbstractPausableThread;
@@ -168,16 +168,16 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
                 //
                 // //
                 if (newModifiedTime == -1)
-                    sendEvent(new FileSystemMonitorEvent(file,
-                            FileSystemMonitorNotifications.DIR_REMOVED));
+                    sendEvent(new FileSystemEvent(file,
+                            FileSystemEventType.DIR_REMOVED));
                 // //
                 //
                 // Directory created
                 //
                 // //
                 else if (lastModifiedTime == -1)
-                    sendEvent(new FileSystemMonitorEvent(file,
-                            FileSystemMonitorNotifications.DIR_CREATED));
+                    sendEvent(new FileSystemEvent(file,
+                            FileSystemEventType.DIR_CREATED));
                 else {
                     // //
                     //
@@ -253,8 +253,8 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
                                 newValues.put(oldFileName, new Long(newLastModified));
 
                                 // event
-                                sendEvent(new FileSystemMonitorEvent(file,
-                                        FileSystemMonitorNotifications.FILE_MODIFIED));
+                                sendEvent(new FileSystemEvent(file,
+                                        FileSystemEventType.FILE_MODIFIED));
                             }
                         } else {
                             // the file has been removed
@@ -262,8 +262,8 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
                             it.remove();
 
                             // removed
-                            sendEvent(new FileSystemMonitorEvent(file,
-                                    FileSystemMonitorNotifications.FILE_REMOVED));
+                            sendEvent(new FileSystemEvent(file,
+                                    FileSystemEventType.FILE_REMOVED));
                         }
 
                     }
@@ -287,8 +287,8 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
                         newValues.put(newFileName, new Long(file.lastModified()));
 
                         // fire event
-                        sendEvent(new FileSystemMonitorEvent(file,
-                                FileSystemMonitorNotifications.FILE_ADDED));
+                        sendEvent(new FileSystemEvent(file,
+                                FileSystemEventType.FILE_ADDED));
                     }
                     // add them all
                     filesMap.putAll(newValues);
@@ -314,9 +314,9 @@ public final class PureJavaFileSystemWatcher extends BaseFileSystemMonitor {
             Object[] listenerArray = listeners.getListenerList();
             final int length = listenerArray.length;
             for (int i = length - 2; i >= 0; i -= 2) {
-                if (listenerArray[i] == FileSystemMonitorListener.class) {
-                    listeners.remove(FileSystemMonitorListener.class,
-                            (FileSystemMonitorListener) listenerArray[i + 1]);
+                if (listenerArray[i] == FileSystemListener.class) {
+                    listeners.remove(FileSystemListener.class,
+                            (FileSystemListener) listenerArray[i + 1]);
                 }
             }
         }

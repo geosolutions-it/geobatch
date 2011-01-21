@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.nurc.sem.wmc;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -75,8 +75,8 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.Format;
 import org.opengis.geometry.DirectPosition;
 
-public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent> implements
-        Action<FileSystemMonitorEvent> {
+public class WMCFileConfiguratorAction extends BaseAction<FileSystemEvent> implements
+        Action<FileSystemEvent> {
 
     private final static Logger LOGGER = Logger.getLogger(WMCFileConfiguratorAction.class
             .toString());
@@ -99,7 +99,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
     /**
      * EXECUTE METHOD
      */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         try {
@@ -130,7 +130,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemMonitorEvent
 
             LOGGER.info("WMCFileConfiguratorAction ... fetching events...");
             while (events.size() > 0) {
-                FileSystemMonitorEvent event = events.remove();
+                FileSystemEvent event = events.remove();
 
                 // //
                 // data flow configuration must not be null.

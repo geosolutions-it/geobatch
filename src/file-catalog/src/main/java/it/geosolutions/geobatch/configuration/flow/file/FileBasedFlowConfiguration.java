@@ -39,17 +39,14 @@ import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 public class FileBasedFlowConfiguration extends BaseFlowConfiguration implements FlowConfiguration {
 
     /**
-     * workingDirectory: this attribute represents the configuring directory for this flow. It can
-     * be relative to the catalog.xml directory or absolute.
-     * 
-     * Attention: the configuring directory should be different from the one containing the
-     * configuration files.
+     * workingDirectory: this attribute represents the configuring directory for this flow. It can be relative to the catalog.xml directory or absolute. Attention: the configuring directory should be different from the one containing the configuration files.
+     * @uml.property  name="workingDirectory"
      */
     private String workingDirectory;
 
     /**
      * autorun: this attribute is used to autorun a flow on startup.
-     * 
+     * @uml.property  name="autorun"
      */
     private boolean autorun = false;
 
@@ -92,6 +89,7 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration implements
 
     /**
      * Getter for the workingDirectory
+     * @uml.property  name="workingDirectory"
      */
     public String getWorkingDirectory() {
         return workingDirectory;
@@ -99,8 +97,8 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration implements
 
     /**
      * Setter for the workingDirectory.
-     * 
-     * @param workingDirectory
+     * @param  workingDirectory
+     * @uml.property  name="workingDirectory"
      */
     public void setWorkingDirectory(String workingDirectory) {
         this.workingDirectory = workingDirectory;
@@ -114,10 +112,18 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration implements
                 + getEventGeneratorConfiguration() + "]";
     }
 
+    /**
+     * @return
+     * @uml.property  name="autorun"
+     */
     public boolean isAutorun() {
         return autorun;
     }
 
+    /**
+     * @param autorun
+     * @uml.property  name="autorun"
+     */
     public void setAutorun(boolean autorun) {
         this.autorun = autorun;
     }

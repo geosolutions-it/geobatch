@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.metocs.base;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.global.CatalogHolder;
@@ -71,7 +71,7 @@ import ucar.nc2.Variable;
  * @author Alessio Fabiani, GeoSolutions S.A.S.
  * 
  */
-public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAction<FileSystemMonitorEvent>  {
+public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAction<FileSystemEvent>  {
 
     public METOCSBaseConfiguratorAction(MetocActionConfiguration configuration) {
         super(configuration);
@@ -106,7 +106,7 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
     /**
 	 * 
 	 */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         if (LOGGER.isLoggable(Level.INFO))
@@ -117,7 +117,7 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
             
-            FileSystemMonitorEvent event = events.remove();
+            FileSystemEvent event = events.remove();
             @SuppressWarnings("unused")
             final String configId = configuration.getName();
 
@@ -217,8 +217,8 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
             writeDownNetCDF(outDir, inputFileName);
 
             // ... setting up the appropriate event for the next action
-            events.add(new FileSystemMonitorEvent(outputFile,
-                    FileSystemMonitorNotifications.FILE_ADDED));
+            events.add(new FileSystemEvent(outputFile,
+                    FileSystemEventType.FILE_ADDED));
             return events;
         } catch (Throwable t) {
             LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
@@ -322,7 +322,7 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
      * @return
      * @throws IOException
      */
-    protected abstract File unzipMetocArchive(FileSystemMonitorEvent event,
+    protected abstract File unzipMetocArchive(FileSystemEvent event,
             final String fileSuffix, final File outDir, final File tempFile) throws IOException;
 
     /**

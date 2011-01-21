@@ -24,7 +24,7 @@
 
 package it.geosolutions.geobatch.gliders;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.gliders.configuration.GlidersActionConfiguration;
 import it.geosolutions.geobatch.gliders.configuration.GlidersConfiguratorService;
 
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * 
  */
 public class GlidersFileGeneratorService extends
-        GlidersConfiguratorService<FileSystemMonitorEvent, GlidersActionConfiguration> {
+        GlidersConfiguratorService<FileSystemEvent, GlidersActionConfiguration> {
 	
     private final static Logger LOGGER = Logger.getLogger(GlidersFileGeneratorService.class
             .toString());

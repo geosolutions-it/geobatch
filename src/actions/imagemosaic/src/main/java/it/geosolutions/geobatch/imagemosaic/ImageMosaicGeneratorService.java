@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  * 
  */
 public class ImageMosaicGeneratorService extends
-        ImageMosaicConfiguratorService<FileSystemMonitorEvent, ImageMosaicActionConfiguration> {
+        ImageMosaicConfiguratorService<FileSystemEvent, ImageMosaicActionConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(ImageMosaicGeneratorService.class
             .toString());

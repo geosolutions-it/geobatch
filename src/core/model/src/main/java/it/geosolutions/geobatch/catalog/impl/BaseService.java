@@ -26,6 +26,9 @@ import it.geosolutions.geobatch.catalog.Service;
 
 public class BaseService extends BaseResource implements Service {
 
+    /**
+     * @uml.property  name="available"
+     */
     private boolean available;
 
     public BaseService() {
@@ -42,13 +45,17 @@ public class BaseService extends BaseResource implements Service {
         this.available = available;
     }
 
+    /**
+     * @return
+     * @uml.property  name="available"
+     */
     public boolean isAvailable() {
         return available;
     }
 
     /**
-     * @param available
-     *            the available to set
+     * @param available  the available to set
+     * @uml.property  name="available"
      */
     public void setAvailable(boolean available) {
         this.available = available;

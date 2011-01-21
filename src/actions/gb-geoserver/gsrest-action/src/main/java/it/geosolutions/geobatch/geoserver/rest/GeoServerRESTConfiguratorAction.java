@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.geoserver.rest;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
@@ -48,7 +48,7 @@ import org.apache.commons.io.FilenameUtils;
  */
 
 public class GeoServerRESTConfiguratorAction extends
-        GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+        GeoServerConfiguratorAction<FileSystemEvent> {
 
     /**
      * Default logger
@@ -82,7 +82,7 @@ public class GeoServerRESTConfiguratorAction extends
      * @return
      * @throws ActionException
      */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         listenerForwarder.setTask("config");
@@ -129,10 +129,10 @@ public class GeoServerRESTConfiguratorAction extends
 
             // Fetch the first event in the queue.
             listenerForwarder.progressing(10, "In progress");
-            Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
+            Queue<FileSystemEvent> outEvents = new LinkedList<FileSystemEvent>();
 
             while (events.size() > 0) {
-                FileSystemMonitorEvent event = events.remove();
+                FileSystemEvent event = events.remove();
                 final File fileToSend = event.getSource();
                 final String fileBaseName = FilenameUtils.getBaseName(fileToSend.getName());
 
@@ -170,8 +170,8 @@ public class GeoServerRESTConfiguratorAction extends
                         configuration.getDefaultStyle());
 
                 if (returnedLayer != null) {
-                    outEvents.add(new FileSystemMonitorEvent(fileToSend,
-                            FileSystemMonitorNotifications.FILE_ADDED));
+                    outEvents.add(new FileSystemEvent(fileToSend,
+                            FileSystemEventType.FILE_ADDED));
                 } else {
                     throw new RuntimeException("Error configuring the layer on GeoServer");
                 }

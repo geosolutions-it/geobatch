@@ -30,6 +30,9 @@ import it.geosolutions.geobatch.catalog.event.CatalogEvent;
  */
 public class CatalogEventImpl<T> implements CatalogEvent<T> {
 
+    /**
+     * @uml.property  name="source"
+     */
     private T source;
 
     public CatalogEventImpl(T source) {

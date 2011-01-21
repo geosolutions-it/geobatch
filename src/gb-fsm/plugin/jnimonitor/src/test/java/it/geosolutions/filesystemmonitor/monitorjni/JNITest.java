@@ -1,9 +1,9 @@
 package it.geosolutions.filesystemmonitor.monitorjni;
 
 import it.geosolutions.filesystemmonitor.OsType;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemListener;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.impl.BaseFileSystemMonitor;
 import it.geosolutions.filesystemmonitor.osnative.NativeFileSystemWatcherSPI;
 import it.geosolutions.resources.TestData;
@@ -160,16 +160,16 @@ public class JNITest extends AbstractJUnit4SpringContextTests {
 
     }
 
-    private final class TestListener implements FileSystemMonitorListener {
-        public void fileMonitorEventDelivered(FileSystemMonitorEvent fe) {
+    private final class TestListener implements FileSystemListener {
+        public void onFileSystemEvent(FileSystemEvent fe) {
             Assert.assertTrue("Controllo valore del MonitorEvent ", fe != null);
             LOGGER.info(new StringBuffer("\nFile changed: ").append(fe.getSource()).toString());
             String s = "";
-            if (fe.getNotification() == FileSystemMonitorNotifications.FILE_ADDED)
+            if (fe.getEventType() == FileSystemEventType.FILE_ADDED)
                 s = "file added";
-            else if (fe.getNotification() == FileSystemMonitorNotifications.FILE_REMOVED)
+            else if (fe.getEventType() == FileSystemEventType.FILE_REMOVED)
                 s = "file removed";
-            else if (fe.getNotification() == FileSystemMonitorNotifications.FILE_MODIFIED)
+            else if (fe.getEventType() == FileSystemEventType.FILE_MODIFIED)
                 s = "file modified";
             LOGGER.info(new StringBuffer("Event: ").append(s).toString());
             LOGGER.info(Thread.currentThread().getName());

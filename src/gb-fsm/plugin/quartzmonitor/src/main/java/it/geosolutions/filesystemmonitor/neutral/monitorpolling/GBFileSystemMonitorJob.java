@@ -52,19 +52,22 @@ public class GBFileSystemMonitorJob implements StatefulJob{
     
     
     /**
-     * Define a policy.
-     * 
-     * Refer to the Quartz Exception Handler documentation to define a new policy
-     * 
-     * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
-     *
+     * Define a policy. Refer to the Quartz Exception Handler documentation to define a new policy
+     * @author    Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
      */
     private enum ExcPolicy { // Exceptions Policy 
+        /**
+         * @uml.property  name="iMMEDIATELY"
+         * @uml.associationEnd  
+         */
         IMMEDIATELY // throw immediately
     }; // Exceptions Policy
     
     /*
      * The lock to synchronize multiple calls to this job instance
+     */
+    /**
+     * @uml.property  name="lock"
      */
     private Lock lock=new ReentrantLock();
     
@@ -242,6 +245,7 @@ public class GBFileSystemMonitorJob implements StatefulJob{
         } // first time initializer ends
 //DEBUG        
 //        System.out.println("DOTHEJOB");      
+        
         // do the job
         observer.checkAndNotify();
         

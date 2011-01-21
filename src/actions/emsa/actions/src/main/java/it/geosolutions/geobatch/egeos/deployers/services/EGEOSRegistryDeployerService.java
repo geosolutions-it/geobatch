@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.egeos.deployers.services;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.egeos.deployers.actions.EGEOSDeployerBaseAction;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  * @author etj
  */
 public class EGEOSRegistryDeployerService extends BaseService implements
-        ActionService<FileSystemMonitorEvent, EGEOSRegistryDeployerConfiguration> {
+        ActionService<FileSystemEvent, EGEOSRegistryDeployerConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(EGEOSRegistryDeployerService.class
             .toString());

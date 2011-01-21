@@ -24,9 +24,9 @@ package it.geosolutions.geobatch.flow.event.generator.file;
 import it.geosolutions.filesystemmonitor.FSMSPIFinder;
 import it.geosolutions.filesystemmonitor.OsType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitor;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemListener;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
@@ -65,31 +65,33 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
     /**
      * Helper class implementing an event listener for the FileSystem Monitor.
      */
-    private final class GBEventListener implements FileSystemMonitorListener {
+    private final class GBEventListener implements FileSystemListener {
         /*
          * (non-Javadoc)
          * 
-         * @see it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener
+         * @see it.geosolutions.filesystemmonitor.monitor.FileSystemListener
          * #fileMonitorEventDelivered
-         * (it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent)
+         * (it.geosolutions.filesystemmonitor.monitor.FileSystemEvent)
          */
-        public void fileMonitorEventDelivered(final FileSystemMonitorEvent fe) {
+        public void onFileSystemEvent(final FileSystemEvent fe) {
             if (fe != null && fe.getSource() != null) {
 
-                final FileSystemMonitorNotifications acceptedNotification = FileBasedEventGenerator.this
-                        .getEventType();
-                final FileSystemMonitorNotifications notification = fe.getNotification();
+                final FileSystemEventType acceptedEvent = 
+                                                        FileBasedEventGenerator.this.getEventType();
+                
+                final FileSystemEventType incomingEvent = fe.getEventType();
 
                 if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.info(new StringBuilder("Event: ").append(notification.toString())
+                    LOGGER.info(new StringBuilder("Event: ").append(incomingEvent.toString())
                             .append(" ").append(fe.getSource()).toString());
                 }
 
-                if (acceptedNotification != null && notification.equals(acceptedNotification)) {
-                    FileBasedEventGenerator.this.sendEvent(fe);
-                } else if (acceptedNotification == null) {
+                if (incomingEvent.equals(acceptedEvent)) {
                     FileBasedEventGenerator.this.sendEvent(fe);
                 }
+//                else if (acceptedEvent == null) {
+//                    FileBasedEventGenerator.this.sendEvent(fe);
+//                }
             } else {
                 if (fe == null) {
                     if (LOGGER.isLoggable(Level.INFO)) {
@@ -106,41 +108,45 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
 
     /**
      * The File-System Monitor thread.
-     * 
-     * @uml.property name="fsMonitor"
+     * @uml.property  name="fsMonitor"
      */
     private FileSystemMonitor fsMonitor;
 
     /**
      * The directory to watch.
-     * 
-     * @uml.property name="watchDirectory"
+     * @uml.property  name="watchDirectory"
      */
     private File watchDirectory;
 
     /**
-     * 
      * A flag used to keep files in watchDirectory when flow is started.
-     * 
-     * @uml.property name="keepFiles"
+     * @uml.property  name="keepFiles"
      */
     private boolean keepFiles;
 
     /**
-     * 
+     * @uml.property  name="acceptedEvent"
+     * @uml.associationEnd  
      */
-    private FileSystemMonitorNotifications eventType;
+    private FileSystemEventType acceptedEvent;
 
     /**
      * The file extension wildcard.
-     * 
-     * @uml.property name="wildCard"
+     * @uml.property  name="wildCard"
      */
     private String wildCard;
 
+    /**
+     * @uml.property  name="listeners"
+     * @uml.associationEnd  multiplicity="(1 1)"
+     */
     private EventListenerList listeners = new EventListenerList();
 
-    private FileSystemMonitorListener fsListener;
+    /**
+     * @uml.property  name="fsListener"
+     * @uml.associationEnd  
+     */
+    private FileSystemListener fsListener;
 
     // ----------------------------------------------- PUBLIC CONSTRUCTORS
     /**
@@ -153,7 +159,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      * @throws NotSupportedException
      */
     public FileBasedEventGenerator(final OsType osType, final FileSystemMonitorType type,
-            final FileSystemMonitorNotifications eventType, final File dir) {
+            final FileSystemEventType eventType, final File dir) {
         this(osType, type, eventType, dir, null, false);
     }
 
@@ -169,7 +175,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      * @throws NotSupportedException
      */
     public FileBasedEventGenerator(final OsType osType, final FileSystemMonitorType type,
-            final FileSystemMonitorNotifications eventType, final File dir, final String wildcard) {
+            final FileSystemEventType eventType, final File dir, final String wildcard) {
         this(osType, type, eventType, dir, wildcard, false);
     }
 
@@ -184,7 +190,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      *            Flag used to keep file in watched directory when flow is started
      * @throws NotSupportedException
      */
-    FileBasedEventGenerator(OsType osType, final FileSystemMonitorType type, FileSystemMonitorNotifications eventType,
+    FileBasedEventGenerator(OsType osType, final FileSystemMonitorType type, FileSystemEventType eventType,
             File sensedDir, boolean keepFiles) {
         this(osType, type, eventType, sensedDir, null, keepFiles);
     }
@@ -204,7 +210,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      * @throws NotSupportedException
      */
     public FileBasedEventGenerator(final OsType osType, final FileSystemMonitorType type,
-            final FileSystemMonitorNotifications eventType, final File dir, final String wildcard,
+            final FileSystemEventType eventType, final File dir, final String wildcard,
             final boolean keepFiles) {
 
         initialize(osType, type, eventType, dir, wildcard, keepFiles);
@@ -213,27 +219,41 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
     /**
      * @param osType
      * @param type the preferred fs monitor type 
-     * @param eventType
+     * @param acceptedEvent
      * @param dir
      * @param wildcard
      * @param keepFiles
      * @throws NotSupportedException
      */
-    private void initialize(final OsType osType, final FileSystemMonitorType type, final FileSystemMonitorNotifications eventType,
-            final File dir, final String wildcard, final boolean keepFiles) {
+    private void initialize(final OsType osType, final FileSystemMonitorType type, final FileSystemEventType eventType,
+            final File watchDirectory, final String wildcard, final boolean keepFiles) {
         // add myself as listener
         fsListener = new GBEventListener();
 
-        this.watchDirectory = dir;
-        this.wildCard = wildcard;
-        this.eventType = eventType;
+        if (watchDirectory!=null)
+            this.watchDirectory = watchDirectory;
+        else
+            throw new IllegalArgumentException(
+                "Unable to initialize FileBasedEventGenerator using a null watchingDirectory");
+        
+        if (wildCard!=null)
+            this.wildCard = wildcard;
+        else
+            this.wildCard = "*";
+        
+        if (eventType!=null)
+            this.acceptedEvent = eventType;
+        else
+            throw new IllegalArgumentException(
+                    "Unable to initialize FileBasedEventGenerator using a null EventType");
+        
         this.keepFiles = keepFiles;
 
         if ((this.watchDirectory != null) && this.watchDirectory.isDirectory()
                 && this.watchDirectory.exists()) {
 
             final Map<String, Object> params = new HashMap<String, Object>();
-            params.put(FileSystemMonitorSPI.SOURCE, dir);
+            params.put(FileSystemMonitorSPI.SOURCE, watchDirectory);
             if (this.wildCard != null)
                 params.put(FileSystemMonitorSPI.WILDCARD, wildCard);
             this.fsMonitor = FSMSPIFinder.getMonitor(params, osType,type);
@@ -241,14 +261,14 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             this.fsMonitor.addListener(fsListener);
         } else
             throw new IllegalArgumentException(
-                    "Unable to start the GBFileSystemMonitorJob for directory:" + dir);
+                    "Unable to start the GBFileSystemMonitorJob for directory:"+watchDirectory);
     }
 
     // ----------------------------------------------- PUBLIC ACCESS METHODS
     public FileBasedEventGenerator(FileBasedEventGeneratorConfiguration configuration)
             throws IOException {
         OsType osType = configuration.getOsType();
-        FileSystemMonitorNotifications eventType = configuration.getEventType();
+        FileSystemEventType eventType = configuration.getEventType();
         final File notifyDir = Path.findLocation(configuration.getWorkingDirectory(), new File(
                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
         if (notifyDir == null
@@ -460,7 +480,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      * 
      * @param file
      */
-    private void sendEvent(final FileSystemMonitorEvent fe) {
+    private void sendEvent(final FileSystemEvent fe) {
         // Guaranteed to return a non-null array
         final Object[] listenersArray = listeners.getListenerList();
         // Process the listeners last to first, notifying
@@ -471,7 +491,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             if (listenersArray[i] == FlowEventListener.class) {
                 // Lazily create the event inside the dispatching thread in
                 // order to avoid problems if we run this inside a GUI app.
-                ((FlowEventListener<FileSystemMonitorEvent>) listenersArray[index])
+                ((FlowEventListener<FileSystemEvent>) listenersArray[index])
                                 .eventGenerated(fe);
 
             }
@@ -480,10 +500,11 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
     }
 
     /**
-     * @return the eventType
+     * @return  the acceptedEvent
+     * @uml.property  name="acceptedEvent"
      */
-    public FileSystemMonitorNotifications getEventType() {
-        return eventType;
+    public FileSystemEventType getEventType() {
+        return acceptedEvent;
     }
 
 }

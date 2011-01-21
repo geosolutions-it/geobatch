@@ -21,11 +21,19 @@
  */
 package it.geosolutions.filesystemmonitor.monitor;
 
+import java.util.EventListener;
+
 /**
  * 
  * @author Simone Giannecchini, GeoSolutions
  * 
  */
-public enum FileSystemMonitorNotifications {
-    DIR_CREATED, DIR_REMOVED, DIR_MODIFIED,FILE_MODIFIED, FILE_REMOVED, FILE_ADDED;
+public interface FileSystemListener extends EventListener {
+    /**
+     * Called when one of the monitored files are created, deleted or modified.
+     * 
+     * @param file
+     *            File which has been changed.
+     */
+    void onFileSystemEvent(FileSystemEvent fe);
 }

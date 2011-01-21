@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.nurc.sem.wmc;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * 
  */
 public class NURCWPSOutput2WMCGeneratorService extends
-        GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
+        GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(NURCWPSOutput2WMCGeneratorService.class
             .toString());

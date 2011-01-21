@@ -23,7 +23,7 @@
 package it.geosolutions.geobatch.testsuite;
 
 import it.geosolutions.filesystemmonitor.OsType;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.flow.event.generator.FlowEventListener;
 import it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGenerator;
@@ -45,12 +45,19 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author Simone Giannecchini, GeoSolutions
  * 
  */
-public class EventGeneratorTestCase implements FlowEventListener<FileSystemMonitorEvent> {
+public class EventGeneratorTestCase implements FlowEventListener<FileSystemEvent> {
 
     private final static Logger LOGGER = Logger.getLogger(EventGeneratorTestCase.class.toString());
 
+    /**
+     * @uml.property  name="context"
+     * @uml.associationEnd  
+     */
     private ClassPathXmlApplicationContext context;
 
+    /**
+     * @uml.property  name="caughtEvent"
+     */
     private boolean caughtEvent;
 
     /**
@@ -120,7 +127,7 @@ public class EventGeneratorTestCase implements FlowEventListener<FileSystemMonit
 
     }
 
-    public void eventGenerated(FileSystemMonitorEvent event) {
+    public void eventGenerated(FileSystemEvent event) {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e1) {

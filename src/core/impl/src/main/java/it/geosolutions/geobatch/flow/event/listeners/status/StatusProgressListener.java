@@ -22,24 +22,49 @@ import java.util.List;
  */
 public class StatusProgressListener extends ProgressListener<StatusProgressListenerConfiguration> {
 
+    /**
+     * @uml.property  name="source"
+     */
     private Object source;
 
+    /**
+     * @uml.property  name="started"
+     */
     protected boolean started = false;
 
+    /**
+     * @uml.property  name="paused"
+     */
     protected boolean paused = false;
 
+    /**
+     * @uml.property  name="failed"
+     */
     protected boolean failed = false;
 
+    /**
+     * @uml.property  name="completed"
+     */
     protected boolean completed = false;
 
+    /**
+     * @uml.property  name="terminated"
+     */
     protected boolean terminated = false;
 
+    /**
+     * @uml.property  name="failException"
+     */
     protected Throwable failException = null;
 
     public StatusProgressListener(StatusProgressListenerConfiguration configuration) {
         super(configuration);
     }
 
+    /**
+     * @param source
+     * @uml.property  name="source"
+     */
     public void setSource(Object source) {
         this.source = source;
     }
@@ -48,6 +73,10 @@ public class StatusProgressListener extends ProgressListener<StatusProgressListe
         started = true;
     }
 
+    /**
+     * @return
+     * @uml.property  name="started"
+     */
     public boolean isStarted() {
         return started;
     }
@@ -62,6 +91,10 @@ public class StatusProgressListener extends ProgressListener<StatusProgressListe
         paused = true;
     }
 
+    /**
+     * @return
+     * @uml.property  name="paused"
+     */
     public boolean isPaused() {
         return paused;
     }
@@ -74,6 +107,10 @@ public class StatusProgressListener extends ProgressListener<StatusProgressListe
         completed = true;
     }
 
+    /**
+     * @return
+     * @uml.property  name="completed"
+     */
     public boolean isCompleted() {
         return completed;
     }
@@ -83,10 +120,18 @@ public class StatusProgressListener extends ProgressListener<StatusProgressListe
         failException = exception;
     }
 
+    /**
+     * @return
+     * @uml.property  name="failed"
+     */
     public boolean isFailed() {
         return failed;
     }
 
+    /**
+     * @return
+     * @uml.property  name="failException"
+     */
     public Throwable getFailException() {
         return failException;
     }
@@ -95,6 +140,10 @@ public class StatusProgressListener extends ProgressListener<StatusProgressListe
         terminated = true;
     }
 
+    /**
+     * @return
+     * @uml.property  name="terminated"
+     */
     public boolean isTerminated() {
         return terminated;
     }

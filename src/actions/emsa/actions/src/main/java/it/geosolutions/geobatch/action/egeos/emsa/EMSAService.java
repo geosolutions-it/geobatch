@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.action.egeos.emsa;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.action.scripting.ScriptingAction;
 import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
@@ -40,7 +40,7 @@ import javax.script.ScriptEngineManager;
  * @author etj
  */
 public class EMSAService extends BaseService implements
-        ActionService<FileSystemMonitorEvent, ScriptingConfiguration> {
+        ActionService<FileSystemEvent, ScriptingConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(EMSAService.class.toString());
 

@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.gwc;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * 
  */
 public class GWCGeneratorService extends
-        GeoWebCacheConfiguratorService<FileSystemMonitorEvent, GeoWebCacheActionConfiguration> {
+        GeoWebCacheConfiguratorService<FileSystemEvent, GeoWebCacheActionConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(GWCGeneratorService.class.toString());
 

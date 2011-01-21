@@ -20,8 +20,11 @@ import java.util.logging.Logger;
  * number is exceeded it simply throws the file away notifying the users with a warning message.
  * 
  * @author Simone Giannecchini, GeoSolutions.
+ * 
+ * @deprecated Use FileGarbageCollector instead
  */
 public final class FileRemover extends Thread {
+    
     private final static Logger LOGGER = Logger.getLogger(Path.class.toString());
 
     private final static Map<String, Integer> FILE_ATTEMPTS_COUNTS = Collections

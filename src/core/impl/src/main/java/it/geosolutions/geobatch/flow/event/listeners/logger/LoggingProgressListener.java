@@ -12,12 +12,19 @@ import java.util.logging.Logger;
  */
 public class LoggingProgressListener extends ProgressListener<LoggingProgressListenerConfiguration> {
 
+    /**
+     * @uml.property  name="source"
+     */
     private Object source;
 
     public LoggingProgressListener(LoggingProgressListenerConfiguration configuration) {
         super(configuration);
     }
 
+    /**
+     * @param source
+     * @uml.property  name="source"
+     */
     public void setSource(Object source) {
         this.source = source;
     }

@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.flow.event.consumer.file;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 
@@ -31,15 +31,30 @@ import java.util.List;
 
 public class FileEventRule extends BaseConfiguration implements Configuration, Cloneable {
 
+    /**
+     * @uml.property  name="regex"
+     */
     private String regex;
 
+    /**
+     * @uml.property  name="originalOccurrencies"
+     */
     private int originalOccurrencies;
 
+    /**
+     * @uml.property  name="actualOccurrencies"
+     */
     private int actualOccurrencies;
 
+    /**
+     * @uml.property  name="optional"
+     */
     private boolean optional;
 
-    private List<FileSystemMonitorNotifications> acceptableNotifications;
+    /**
+     * @uml.property  name="acceptableNotifications"
+     */
+    private List<FileSystemEventType> acceptableNotifications;
 
     public FileEventRule() {
         super();
@@ -49,43 +64,75 @@ public class FileEventRule extends BaseConfiguration implements Configuration, C
         super(id, name, description, dirty);
     }
 
+    /**
+     * @return
+     * @uml.property  name="regex"
+     */
     public String getRegex() {
         return regex;
     }
 
+    /**
+     * @param regex
+     * @uml.property  name="regex"
+     */
     public void setRegex(String regex) {
         this.regex = regex;
     }
 
+    /**
+     * @return
+     * @uml.property  name="originalOccurrencies"
+     */
     public int getOriginalOccurrencies() {
         return originalOccurrencies;
     }
 
+    /**
+     * @param occurrencies
+     * @uml.property  name="actualOccurrencies"
+     */
     public void setActualOccurrencies(int occurrencies) {
         this.actualOccurrencies = occurrencies;
     }
 
+    /**
+     * @return
+     * @uml.property  name="optional"
+     */
     public boolean isOptional() {
         return optional;
     }
 
+    /**
+     * @param optional
+     * @uml.property  name="optional"
+     */
     public void setOptional(boolean optional) {
         this.optional = optional;
     }
 
-    public List<FileSystemMonitorNotifications> getAcceptableNotifications() {
+    public List<FileSystemEventType> getAcceptableNotifications() {
         return acceptableNotifications;
     }
 
     public void setAcceptableNotifications(
-            List<FileSystemMonitorNotifications> acceptableNotifications) {
+            List<FileSystemEventType> acceptableNotifications) {
         this.acceptableNotifications = acceptableNotifications;
     }
 
+    /**
+     * @return
+     * @uml.property  name="actualOccurrencies"
+     */
     public int getActualOccurrencies() {
         return actualOccurrencies;
     }
 
+    /**
+     * @param originalOccurrencies
+     * @uml.property  name="originalOccurrencies"
+     */
     public void setOriginalOccurrencies(int originalOccurrencies) {
         this.originalOccurrencies = originalOccurrencies;
     }
@@ -98,7 +145,7 @@ public class FileEventRule extends BaseConfiguration implements Configuration, C
         // rule.setName(getName());
         // rule.setDescription(getDescription());
         if (acceptableNotifications != null)
-            rule.setAcceptableNotifications(new ArrayList<FileSystemMonitorNotifications>(
+            rule.setAcceptableNotifications(new ArrayList<FileSystemEventType>(
                     acceptableNotifications));
         rule.setOptional(optional);
         rule.setRegex(regex);

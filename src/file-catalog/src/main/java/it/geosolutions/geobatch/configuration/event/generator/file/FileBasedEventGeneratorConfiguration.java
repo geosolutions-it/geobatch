@@ -23,7 +23,7 @@
 package it.geosolutions.geobatch.configuration.event.generator.file;
 
 import it.geosolutions.filesystemmonitor.OsType;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
@@ -38,38 +38,56 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
 
     /**
      * The type of OS which will be used by the embedded File System Watcher.
+     * @uml.property  name="osType"
+     * @uml.associationEnd  
      */
     private OsType osType;
 
     /**
-     * The type of File System Event accepted by the generator. The events can be of kind
-     * FILE_ADDED, FILE_REMOVED, FILE_MODIFIED, etc...
+     * The type of File System Event accepted by the generator. The events can be of kind FILE_ADDED, FILE_REMOVED, FILE_MODIFIED, etc...
+     * @uml.property  name="eventType"
+     * @uml.associationEnd  
      */
-    private FileSystemMonitorNotifications eventType;
+    private FileSystemEventType eventType;
     
 
+    /**
+     * @uml.property  name="monitorType"
+     * @uml.associationEnd  
+     */
     private FileSystemMonitorType monitorType;
 
     /**
      * The configuring directory.
+     * @uml.property  name="watchDirectory"
      */
     private String watchDirectory;
 
     /**
      * A flag used to keep files in watchDirectory when flow is started.
+     * @uml.property  name="keepFiles"
      */
     private boolean keepFiles = false;
 
     /**
      * The wild-card used to catch the kind of input files.
+     * @uml.property  name="wildCard"
      */
     private String wildCard;
 
 
+    /**
+     * @return
+     * @uml.property  name="monitorType"
+     */
     public FileSystemMonitorType getMonitorType() {
         return monitorType;
     }
 
+    /**
+     * @param monitorType
+     * @uml.property  name="monitorType"
+     */
     public void setMonitorType(FileSystemMonitorType monitorType) {
         this.monitorType = monitorType;
     }
@@ -93,7 +111,7 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
      * @param wildCard
      */
     public FileBasedEventGeneratorConfiguration(String id, String name, String description,
-            boolean dirty, OsType osType, FileSystemMonitorNotifications eventType,
+            boolean dirty, OsType osType, FileSystemEventType eventType,
             String workingDirectory, String wildCard) {
         super(id, name, description, dirty);
         this.osType = osType;
@@ -115,7 +133,7 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
      * @param keepFiles
      */
     public FileBasedEventGeneratorConfiguration(String id, String name, String description,
-            boolean dirty, OsType osType, FileSystemMonitorNotifications eventType,
+            boolean dirty, OsType osType, FileSystemEventType eventType,
             String workingDirectory, String wildCard, boolean keepFiles) {
         super(id, name, description, dirty);
         this.osType = osType;
@@ -127,8 +145,8 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
 
     /**
      * Getter for the OS type attribute.
-     * 
-     * @return osType
+     * @return  osType
+     * @uml.property  name="osType"
      */
     public OsType getOsType() {
         return osType;
@@ -136,8 +154,8 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
 
     /**
      * Setter for the OS type attribute.
-     * 
-     * @param osType
+     * @param  osType
+     * @uml.property  name="osType"
      */
     public void setOsType(OsType osType) {
         this.osType = osType;
@@ -163,8 +181,8 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
 
     /**
      * Getter for the wild card attribute.
-     * 
-     * @return wildCard
+     * @return  wildCard
+     * @uml.property  name="wildCard"
      */
     public String getWildCard() {
         return wildCard;
@@ -172,8 +190,8 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
 
     /**
      * Setter for the wild card attribute.
-     * 
-     * @param wildCard
+     * @param  wildCard
+     * @uml.property  name="wildCard"
      */
     public void setWildCard(String wildCard) {
         this.wildCard = wildCard;
@@ -181,19 +199,19 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
 
     /**
      * Getter for the event type attribute.
-     * 
-     * @return eventType
+     * @return  eventType
+     * @uml.property  name="eventType"
      */
-    public FileSystemMonitorNotifications getEventType() {
+    public FileSystemEventType getEventType() {
         return eventType;
     }
 
     /**
      * Setter for the event type attribute.
-     * 
-     * @param eventType
+     * @param  eventType
+     * @uml.property  name="eventType"
      */
-    public void setEventType(FileSystemMonitorNotifications eventType) {
+    public void setEventType(FileSystemEventType eventType) {
         this.eventType = eventType;
     }
 
@@ -208,8 +226,8 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
 
     /**
      * Setter for the keep files in watchDirectory flag.
-     * 
-     * @param keepFiles
+     * @param  keepFiles
+     * @uml.property  name="keepFiles"
      */
     public void setKeepFiles(boolean keepFiles) {
         this.keepFiles = keepFiles;

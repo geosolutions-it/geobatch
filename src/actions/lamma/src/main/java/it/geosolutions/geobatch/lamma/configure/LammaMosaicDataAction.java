@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.lamma.configure;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.lamma.base.LammaBaseAction;
 
@@ -63,8 +63,8 @@ public class LammaMosaicDataAction extends LammaBaseAction {
 	 * @return
 	 * @throws ActionException
 	 */
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+	public Queue<FileSystemEvent> execute(
+			Queue<FileSystemEvent> events) throws ActionException {
 		try {
 			listenerForwarder.started();
 
@@ -77,7 +77,7 @@ public class LammaMosaicDataAction extends LammaBaseAction {
 				throw new IllegalStateException("DataFlowConfig is null.");
 			}
 
-			Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
+			Queue<FileSystemEvent> outEvents = new LinkedList<FileSystemEvent>();
 			List<File> mosaicInputDirs = new ArrayList<File>();
 
 			// Logging to ESB ...
@@ -87,14 +87,14 @@ public class LammaMosaicDataAction extends LammaBaseAction {
 
 			while (events.size() > 0) {
 				// get the first event
-				final FileSystemMonitorEvent event = events.remove();
+				final FileSystemEvent event = events.remove();
 				final File inputFile = event.getSource();
 
 				if (!mosaicInputDirs.contains(inputFile.getParentFile())) {
 					mosaicInputDirs.add(inputFile.getParentFile());
-					outEvents.add(new FileSystemMonitorEvent(inputFile
+					outEvents.add(new FileSystemEvent(inputFile
 							.getParentFile(),
-							FileSystemMonitorNotifications.FILE_ADDED));
+							FileSystemEventType.FILE_ADDED));
 				}
 			}
 

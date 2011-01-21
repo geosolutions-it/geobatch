@@ -57,11 +57,11 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
     public abstract Queue<T> load(Queue<T> events, OctaveEnv<OctaveExecutableSheet> env) throws ActionException;
     
     /**
-     * Action to execute on the FileSystemMonitorEvent event queue.
+     * Action to execute on the FileSystemEvent event queue.
      * 
-     * @param Queue<FileSystemMonitorEvent> queue of events to handle in this (and next)
+     * @param Queue<FileSystemEvent> queue of events to handle in this (and next)
      * action executions.
-     * @return Queue<FileSystemMonitorEvent> the resulting list of events
+     * @return Queue<FileSystemEvent> the resulting list of events
      */
     public Queue<T> execute(Queue<T> events)
             throws ActionException {

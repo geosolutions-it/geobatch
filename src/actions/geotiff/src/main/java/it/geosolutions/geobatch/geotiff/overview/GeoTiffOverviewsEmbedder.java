@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.geotiff.overview;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -47,8 +47,8 @@ import org.geotools.utils.progress.ProcessingEventListener;
  * 
  * @version $GeoTIFFOverviewsEmbedder.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
-public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemMonitorEvent> implements
-        Action<FileSystemMonitorEvent> {
+public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> implements
+        Action<FileSystemEvent> {
 
     private GeoTiffOverviewsEmbedderConfiguration configuration;
 
@@ -61,7 +61,7 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemMonitorEvent>
         this.configuration = configuration;
     }
 
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         listenerForwarder.setTask("config");
@@ -74,7 +74,7 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemMonitorEvent>
                         + events.size());
 
             // get the first event
-            final FileSystemMonitorEvent event = events.peek();
+            final FileSystemEvent event = events.peek();
 
             // //
             //

@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.geotiff.retile;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * @version $ ShapeFileDTOProducerSPI.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
 public class GeoTiffRetilerService extends BaseService implements
-        ActionService<FileSystemMonitorEvent, GeoTiffRetilerConfiguration> {
+        ActionService<FileSystemEvent, GeoTiffRetilerConfiguration> {
 
     private GeoTiffRetilerService() {
         super(true);

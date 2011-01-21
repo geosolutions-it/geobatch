@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.task;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
 public class TaskExecutorService extends BaseService implements
-        ActionService<FileSystemMonitorEvent, TaskExecutorConfiguration> {
+        ActionService<FileSystemEvent, TaskExecutorConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(TaskExecutorService.class.toString());
 

@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.metocs.remsens;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
@@ -81,7 +81,7 @@ import org.opengis.temporal.TemporalGeometricPrimitive;
  * their basic metadata.
  */
 public class HDF42GeoTIFFsFileConfiguratorAction extends
-        GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+        GeoServerConfiguratorAction<FileSystemEvent> {
 
     /**
      * GeoTIFF Writer Default Params
@@ -108,7 +108,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
     /**
      * EXECUTE METHOD
      */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         if (LOGGER.isLoggable(Level.INFO))
@@ -118,7 +118,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
             if (events.size() != 1)
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
-            FileSystemMonitorEvent event = events.remove();
+            FileSystemEvent event = events.remove();
             final String configId = configuration.getName();
 
             // //
@@ -289,8 +289,8 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
 
                                 // ... setting up the appropriate event for the
                                 // next action
-                                events.add(new FileSystemMonitorEvent(gtiffOutputDir,
-                                        FileSystemMonitorNotifications.FILE_ADDED));
+                                events.add(new FileSystemEvent(gtiffOutputDir,
+                                        FileSystemEventType.FILE_ADDED));
                             }
                         }
                     }

@@ -3,8 +3,8 @@ import java.util.logging.Logger;
 
 import it.geosolutions.geobatch.flow.event.action.BaseAction
 import it.geosolutions.geobatch.flow.event.action.Action
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType
 import it.geosolutions.geobatch.flow.event.action.ActionException
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog
 import it.geosolutions.geobatch.action.scripting.ScriptingAction
@@ -18,8 +18,8 @@ class GAction extends ScriptingAction implements Action {
         super(configuration);
     }
 
-    public Queue<FileSystemMonitorEvent> execute(
-        Queue<FileSystemMonitorEvent> events) throws ActionException {
+    public Queue<FileSystemEvent> execute(
+        Queue<FileSystemEvent> events) throws ActionException {
         try {
             listenerForwarder.started();
 
@@ -29,7 +29,7 @@ class GAction extends ScriptingAction implements Action {
                         "Wrong number of elements for this action: "
                     + events.size());
             }
-            FileSystemMonitorEvent event = events.remove();
+            FileSystemEvent event = events.remove();
 
             // //
             // data flow configuration and dataStore name must not be null.
@@ -61,7 +61,7 @@ class GAction extends ScriptingAction implements Action {
 
 			// DO SOMETHING HERE
 
-            events.add(new FileSystemMonitorEvent(new File(example0), FileSystemMonitorNotifications.FILE_ADDED));
+            events.add(new FileSystemEvent(new File(example0), FileSystemEventType.FILE_ADDED));
 
             listenerForwarder.completed();
             return events;

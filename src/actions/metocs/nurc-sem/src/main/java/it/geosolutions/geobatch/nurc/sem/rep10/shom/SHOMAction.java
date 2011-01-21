@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.metocs.base.NetcdfEvent;
@@ -99,10 +99,10 @@ public class SHOMAction extends BaseAction<EventObject>{
             throw new IllegalArgumentException("Wrong number of elements for this action: "+ events.size());
         
         EventObject event= events.remove();
-        if (event instanceof FileSystemMonitorEvent){
-            FileSystemMonitorEvent fs_event=(FileSystemMonitorEvent) event;
+        if (event instanceof FileSystemEvent){
+            FileSystemEvent fs_event=(FileSystemEvent) event;
             if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("Event is a FileSystemMonitorEvent");
+                LOGGER.info("Event is a FileSystemEvent");
             
             try{
                 /*
@@ -115,7 +115,7 @@ public class SHOMAction extends BaseAction<EventObject>{
                     dir_name=Extract.extract(f.getAbsolutePath());
                 }
                 else
-                    throw new FileNotFoundException("BAD FileSystemMonitorEvent path");
+                    throw new FileNotFoundException("BAD FileSystemEvent path");
                 f=null;
 
                 if (LOGGER.isLoggable(Level.INFO))
@@ -194,7 +194,7 @@ e.printStackTrace();
             finally {
                 NetcdfDataset.shutdown();
             }
-        } // if (event instanceof FileSystemMonitorEvent)
+        } // if (event instanceof FileSystemEvent)
         else
             throw new IllegalArgumentException("Wrong event type for this action: "+event.getClass().getName());
     }

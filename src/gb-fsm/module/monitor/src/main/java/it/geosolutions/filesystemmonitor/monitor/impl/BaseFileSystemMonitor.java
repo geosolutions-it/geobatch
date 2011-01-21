@@ -22,9 +22,9 @@
 package it.geosolutions.filesystemmonitor.monitor.impl;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitor;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemListener;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 import it.geosolutions.geobatch.tools.file.IOUtils;
 
@@ -41,18 +41,29 @@ import javax.swing.event.EventListenerList;
 
 
 /**
- * @author Alessio Fabiani, GeoSolutions
- * @author Simone Giannecchini, GeoSolutions
+ * @author  Alessio Fabiani, GeoSolutions
+ * @author  Simone Giannecchini, GeoSolutions
  */
 public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
 
     /** Default Logger **/
     private final static Logger LOGGER = Logger.getLogger(BaseFileSystemMonitor.class.toString());
 
+    /**
+     * @uml.property  name="listeners"
+     * @uml.associationEnd  
+     */
     protected EventListenerList listeners = new EventListenerList();
     
+    /**
+     * @uml.property  name="consumer"
+     * @uml.associationEnd  multiplicity="(1 1)"
+     */
     protected EventConsumer consumer=null;
 
+    /**
+     * @author  Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+     */
     private static class EventConsumer implements Runnable {
         
         private long lockWaitThreshold = IOUtils.MAX_WAITING_TIME_FOR_LOCK;
@@ -64,9 +75,13 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
         private EventListenerList listeners =null;
         
         // queue of events to pass to the listener list
-        private BlockingQueue<FileSystemMonitorEvent> eventQueue=new ArrayBlockingQueue<FileSystemMonitorEvent>(100); //TODO change
+        private BlockingQueue<FileSystemEvent> eventQueue=new ArrayBlockingQueue<FileSystemEvent>(100); //TODO change
         // the stop element
-        private static final FileSystemMonitorEvent STOP=new FileSystemMonitorEvent(new File(""), null);
+        /**
+         * @uml.property  name="sTOP"
+         * @uml.associationEnd  
+         */
+        private static final FileSystemEvent STOP=new FileSystemEvent(new File(""), null);
         
         // set true to end the thread
         private boolean stop;
@@ -129,12 +144,12 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
          * 
          * @param file
          */
-        private void handleEvent(final FileSystemMonitorEvent event) {
-            FileSystemMonitorNotifications notified= event.getNotification();
+        private void handleEvent(final FileSystemEvent event) {
+            FileSystemEventType notified= event.getEventType();
             
             if (// if file event is NOT FILE_REMOVED and NOT DIR_REMOVED
-                (notified!= FileSystemMonitorNotifications.DIR_REMOVED &&
-                    notified!=FileSystemMonitorNotifications.FILE_REMOVED) ){
+                (notified!= FileSystemEventType.DIR_REMOVED &&
+                    notified!=FileSystemEventType.FILE_REMOVED) ){
                 // deal with locking of input files
                 if (lockInputFiles) {
                     final File source = event.getSource();
@@ -159,11 +174,11 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
             final int length = listenersArray.length;
             for (int i = length - 2; i >= 0; i -= 2) {
                 final int index = i + 1;
-                if (listenersArray[i] == FileSystemMonitorListener.class) {
+                if (listenersArray[i] == FileSystemListener.class) {
                     // Lazily create the event inside the dispatching thread in
                     // order to avoid problems if we run this inside a GUI app.
-                    ((FileSystemMonitorListener) listenersArray[index])
-                                    .fileMonitorEventDelivered(event);
+                    ((FileSystemListener) listenersArray[index])
+                                    .onFileSystemEvent(event);
 
                 }
             }
@@ -172,9 +187,9 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
         /**
          * Use this method to add events to this consumer
          * 
-         * @param o - The fileSystemMonitorEvent to add
+         * @param o - The FileSystemEvent to add
          */
-        public void add(FileSystemMonitorEvent o){
+        public void add(FileSystemEvent o){
             eventQueue.add(o);
         }
         
@@ -184,7 +199,7 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
          */
         public void run() {
             try {
-                FileSystemMonitorEvent event=null;
+                FileSystemEvent event=null;
                 while ((event=eventQueue.take())!=STOP && !stop){
                     // send event
                     handleEvent(event);
@@ -231,6 +246,10 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
 
     }
 
+    /**
+     * @return
+     * @uml.property  name="file"
+     */
     public File getFile() {
         return this.file;
     }
@@ -239,10 +258,20 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
         return this.wildCardString;
     }
 
+    /**
+     * @uml.property  name="file"
+     */
     protected File file = null;
 
+    /**
+     * @uml.property  name="wildCardString"
+     */
     protected String wildCardString = null;
 
+    /**
+     * @uml.property  name="sPI"
+     * @uml.associationEnd  readOnly="true"
+     */
     public abstract FileSystemMonitorSPI getSPI();
 
     protected void finalize() throws Throwable {
@@ -255,7 +284,7 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
      * @param fileListener
      *            Listener to add.
      */
-    public synchronized void addListener(FileSystemMonitorListener fileListener) {
+    public synchronized void addListener(FileSystemListener fileListener) {
         // Don't add if its already there
 
         // Guaranteed to return a non-null array
@@ -269,7 +298,7 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
             }
         }
 
-        listeners.add(FileSystemMonitorListener.class, fileListener);
+        listeners.add(FileSystemListener.class, fileListener);
     }
 
     /**
@@ -278,8 +307,8 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
      * @param fileListener
      *            Listener to remove.
      */
-    public synchronized void removeListener(FileSystemMonitorListener fileListener) {
-        listeners.remove(FileSystemMonitorListener.class, fileListener);
+    public synchronized void removeListener(FileSystemListener fileListener) {
+        listeners.remove(FileSystemListener.class, fileListener);
 
     }
 
@@ -289,9 +318,9 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
             Object[] listenerArray = listeners.getListenerList();
             final int length = listenerArray.length;
             for (int i = length - 2; i >= 0; i -= 2) {
-                if (listenerArray[i] == FileSystemMonitorListener.class) {
-                    listeners.remove(FileSystemMonitorListener.class,
-                            (FileSystemMonitorListener) listenerArray[i + 1]);
+                if (listenerArray[i] == FileSystemListener.class) {
+                    listeners.remove(FileSystemListener.class,
+                            (FileSystemListener) listenerArray[i + 1]);
                 }
             }
         }
@@ -304,7 +333,7 @@ public abstract class BaseFileSystemMonitor implements FileSystemMonitor {
      * 
      * @param file
      */
-    protected void sendEvent(final FileSystemMonitorEvent fe) {
+    protected void sendEvent(final FileSystemEvent fe) {
         consumer.add(fe);
     }
 

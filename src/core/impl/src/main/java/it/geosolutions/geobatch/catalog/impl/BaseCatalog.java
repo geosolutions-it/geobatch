@@ -56,16 +56,22 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
 
     /**
      * flow manager types
+     * @uml.property  name="flowManagers"
+     * @uml.associationEnd  multiplicity="(1 1)"
      */
     private final MultiHashMap /* <Class> */flowManagers = new MultiHashMap();
 
     /**
      * resources
+     * @uml.property  name="resources"
+     * @uml.associationEnd  qualifier="getClass:java.lang.Class it.geosolutions.geobatch.flow.FlowManager"
      */
     private final MultiHashMap /* <Class> */resources = new MultiHashMap();
 
     /**
      * listeners
+     * @uml.property  name="listeners"
+     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.catalog.event.CatalogListener"
      */
     private final List<CatalogListener> listeners = new CopyOnWriteArrayList<CatalogListener>();
 

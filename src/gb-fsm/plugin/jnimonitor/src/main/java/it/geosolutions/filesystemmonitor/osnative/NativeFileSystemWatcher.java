@@ -1,7 +1,7 @@
 package it.geosolutions.filesystemmonitor.osnative;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 import it.geosolutions.filesystemmonitor.monitor.impl.BaseFileSystemMonitor;
 
@@ -28,35 +28,35 @@ public final class NativeFileSystemWatcher extends BaseFileSystemMonitor {
         public void fileRenamed(int wd, String rootPath, String oldName, String newName) {
             // fire event
             if (!isPaused() && isRunning()) {
-                sendEvent(new FileSystemMonitorEvent(new File(rootPath + File.separatorChar
-                        + newName), FileSystemMonitorNotifications.FILE_MODIFIED));
+                sendEvent(new FileSystemEvent(new File(rootPath + File.separatorChar
+                        + newName), FileSystemEventType.FILE_MODIFIED));
             }
         }
 
         public void fileModified(int wd, String rootPath, String name) {
             // fire event
             if (!isPaused() && isRunning()) {
-                sendEvent(new FileSystemMonitorEvent(
+                sendEvent(new FileSystemEvent(
                         new File(rootPath + File.separatorChar + name),
-                        FileSystemMonitorNotifications.FILE_MODIFIED));
+                        FileSystemEventType.FILE_MODIFIED));
             }
         }
 
         public void fileDeleted(int wd, String rootPath, String name) {
             // fire event
             if (!isPaused() && isRunning()) {
-                sendEvent(new FileSystemMonitorEvent(
+                sendEvent(new FileSystemEvent(
                         new File(rootPath + File.separatorChar + name),
-                        FileSystemMonitorNotifications.FILE_REMOVED));
+                        FileSystemEventType.FILE_REMOVED));
             }
         }
 
         public void fileCreated(int wd, String rootPath, String name) {
             // fire event
             if (!isPaused() && isRunning()) {
-                sendEvent(new FileSystemMonitorEvent(
+                sendEvent(new FileSystemEvent(
                         new File(rootPath + File.separatorChar + name),
-                        FileSystemMonitorNotifications.FILE_ADDED));
+                        FileSystemEventType.FILE_ADDED));
             }
         }
     }

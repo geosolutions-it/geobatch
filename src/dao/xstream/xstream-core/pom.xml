@@ -17,7 +17,7 @@
 
     <groupId>it.geosolutions</groupId>
     <artifactId>gb-dao-xstream</artifactId>
-
+	<packaging>jar</packaging>
     <name>GeoBatch DAOs - XStream main</name>
     <description>GeoSolutions GeoBatch pluggable DAOs - XStream</description>
 

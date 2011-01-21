@@ -82,7 +82,7 @@ public class Start {
             // need to be done on container shutdown (and yes, this will make
             // jetty stop just after you started it...)
             // jettyServer.stop();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.log(Level.SEVERE, "Could not start the Jetty server: " + e.getMessage(), e);
 
             if (jettyServer != null) {

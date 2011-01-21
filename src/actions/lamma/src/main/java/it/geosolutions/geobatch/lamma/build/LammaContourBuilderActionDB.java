@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.lamma.build;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.imagemosaic.Utils;
@@ -107,8 +107,8 @@ public class LammaContourBuilderActionDB extends LammaBaseAction {
 	 * @return
 	 * @throws ActionException
 	 */
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+	public Queue<FileSystemEvent> execute(
+			Queue<FileSystemEvent> events) throws ActionException {
 		try {
 			listenerForwarder.started();
 
@@ -121,7 +121,7 @@ public class LammaContourBuilderActionDB extends LammaBaseAction {
 				throw new IllegalStateException("DataFlowConfig is null.");
 			}
 
-			Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
+			Queue<FileSystemEvent> outEvents = new LinkedList<FileSystemEvent>();
 
 			// Logging to ESB ...
 			logMessage.setMessage("Building contour shapefiles...");
@@ -129,7 +129,7 @@ public class LammaContourBuilderActionDB extends LammaBaseAction {
 			logToESB(logMessage);
 
 			while (events.size() > 0) {
-				final FileSystemMonitorEvent event = events.remove();
+				final FileSystemEvent event = events.remove();
 				final File inputFile = event.getSource();
 				final File inputDir = inputFile.getParentFile();
 

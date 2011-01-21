@@ -1,6 +1,6 @@
 package it.geosolutions.geobatch.lamma.base;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.opensdi.lamma.model.LammaLog;
@@ -16,8 +16,8 @@ import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 
 public abstract class LammaBaseAction extends
-		BaseAction<FileSystemMonitorEvent> implements
-		Action<FileSystemMonitorEvent> {
+		BaseAction<FileSystemEvent> implements
+		Action<FileSystemEvent> {
 
 	protected final LammaBaseConfiguration configuration;
 

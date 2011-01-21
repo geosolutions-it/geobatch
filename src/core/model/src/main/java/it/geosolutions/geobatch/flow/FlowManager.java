@@ -32,7 +32,7 @@ import java.util.EventObject;
 import java.util.List;
 
 /**
- * @author Alessio Fabiani
+ * @author  Alessio Fabiani
  */
 public interface FlowManager<EO extends EventObject, FC extends FlowConfiguration> extends
         PersistentResource<FC>, Job {
@@ -58,11 +58,13 @@ public interface FlowManager<EO extends EventObject, FC extends FlowConfiguratio
 
     /**
      * Output Directory
+     * @uml.property  name="workingDirectory"
      */
     public File getWorkingDirectory();
 
     /**
      * Output Directory
+     * @uml.property  name="workingDirectory"
      */
     public void setWorkingDirectory(File workingDir);
 

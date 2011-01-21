@@ -23,7 +23,7 @@
 package it.geosolutions.geobatch.testsuite;
 
 import it.geosolutions.filesystemmonitor.OsType;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
@@ -53,8 +53,15 @@ public class FileBasedFlowManagerTestCase {
     private final static Logger LOGGER = Logger.getLogger(FileBasedFlowManagerTestCase.class
             .toString());
 
+    /**
+     * @uml.property  name="context"
+     * @uml.associationEnd  
+     */
     private ClassPathXmlApplicationContext context;
 
+    /**
+     * @uml.property  name="caughtEvent"
+     */
     private boolean caughtEvent;
 
     /**
@@ -108,18 +115,18 @@ public class FileBasedFlowManagerTestCase {
         eventConsumerConfiguration.setWorkingDirectory(TestData.file(this, ".").getAbsolutePath());
 
         final FileEventRule rule = new FileEventRule();
-        rule.setAcceptableNotifications(Arrays.asList(FileSystemMonitorNotifications.FILE_ADDED));
+        rule.setAcceptableNotifications(Arrays.asList(FileSystemEventType.FILE_ADDED));
         rule.setActualOccurrencies(1);
         rule.setId("tesRule");
         rule.setOptional(false);
         rule.setRegex(".*\\.txt");
         eventConsumerConfiguration.setRules(Arrays.asList(rule));
         // eventConsumerConfiguration.setActions(Arrays.asList(new
-        // BaseAction<FileSystemMonitorEvent>() {
+        // BaseAction<FileSystemEvent>() {
         //
         //
-        // public FileSystemMonitorEvent process(
-        // FileSystemMonitorEvent event) {
+        // public FileSystemEvent process(
+        // FileSystemEvent event) {
         // FileBasedFlowManagerTestCase.this.LOGGER.log(Level.INFO,event.toString());
         // return event;
         // }});

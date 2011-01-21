@@ -3,8 +3,8 @@ package it.geosolutions.geobatch.action.scripting;
 /** 
  * Java Imports ...
  **/
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
@@ -32,7 +32,7 @@ import javax.script.SimpleScriptContext;
 /**
  * ScriptingAction Class definition ...
  **/
-public class ScriptingAction extends BaseAction<FileSystemMonitorEvent>implements Action<FileSystemMonitorEvent> {
+public class ScriptingAction extends BaseAction<FileSystemEvent>implements Action<FileSystemEvent> {
 
     /**
      * Default Logger
@@ -61,7 +61,7 @@ public class ScriptingAction extends BaseAction<FileSystemMonitorEvent>implement
      * Default execute method...
      */
     @SuppressWarnings("unchecked")
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
         try {
 
@@ -72,7 +72,7 @@ public class ScriptingAction extends BaseAction<FileSystemMonitorEvent>implement
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
             }
-            FileSystemMonitorEvent event = events.remove();
+            FileSystemEvent event = events.remove();
 
             // //
             // data flow configuration and dataStore name must not be null.
@@ -141,8 +141,8 @@ public class ScriptingAction extends BaseAction<FileSystemMonitorEvent>implement
 
                 // FORWARDING EVENTS
                 for (String outputFile : outputFiles) {
-                    events.add(new FileSystemMonitorEvent(new File(outputFile),
-                            FileSystemMonitorNotifications.FILE_ADDED));
+                    events.add(new FileSystemEvent(new File(outputFile),
+                            FileSystemEventType.FILE_ADDED));
                 }
             } catch (FileNotFoundException e) {
                 LOGGER.log(Level.SEVERE, "Can't create an Action for " + configuration, e);

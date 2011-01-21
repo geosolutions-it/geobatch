@@ -1,6 +1,6 @@
 package it.geosolutions.geobatch.ais.raster;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class AISCoverageGeoServerGeneratorService
 		extends
-		GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
+		GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
 
 	private final static Logger LOGGER = Logger
 			.getLogger(AISCoverageGeoServerGeneratorService.class.toString());

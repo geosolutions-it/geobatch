@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
@@ -54,7 +54,7 @@ public class MERCATOR_INGVLike_FileConfiguratorAction extends INGVFileConfigurat
     }
 
     @Override
-    protected File unzipMetocArchive(FileSystemMonitorEvent event, String fileSuffix, File outDir,
+    protected File unzipMetocArchive(FileSystemEvent event, String fileSuffix, File outDir,
             File tempFile) throws IOException {
         return ("zip".equalsIgnoreCase(fileSuffix) || "tar".equalsIgnoreCase(fileSuffix)) ? Utilities
                 .decompress("MERCATOR", event.getSource(), tempFile)

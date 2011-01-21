@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.nurc.tda.jgsflodess;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.global.CatalogHolder;
@@ -75,7 +75,7 @@ import ucar.nc2.Variable;
  * Public class to insert NetCDF data file (gliders measurements) into DB
  * 
  */
-public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction<FileSystemMonitorEvent> {
+public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction<FileSystemEvent> {
 
     protected JGSFLoDeSSCOAMPSFileConfigurator(MetocActionConfiguration configuration)
             throws IOException {
@@ -85,7 +85,7 @@ public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction<F
     /**
 	 * 
 	 */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         if (LOGGER.isLoggable(Level.INFO))
@@ -96,7 +96,7 @@ public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction<F
             if (events.size() != 1)
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
-            FileSystemMonitorEvent event = events.remove();
+            FileSystemEvent event = events.remove();
             final String configId = configuration.getName();
 
             final boolean packComponents = configuration.isPackComponents();
@@ -528,8 +528,8 @@ public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction<F
                 }
             }
             // ... setting up the appropriate event for the next action
-            events.add(new FileSystemMonitorEvent(outputFile,
-                    FileSystemMonitorNotifications.FILE_ADDED));
+            events.add(new FileSystemEvent(outputFile,
+                    FileSystemEventType.FILE_ADDED));
             return events;
         } catch (Throwable t) {
             LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);

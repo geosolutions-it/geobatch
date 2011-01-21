@@ -67,7 +67,7 @@ public abstract class AdapterAction<T extends EventObject>
                     queue.add(event);
                 }
                 else
-                    throw new ActionException(this, "Passed event is not a FileSystemMonitorEvent instance");
+                    throw new ActionException(this, "Passed event is not a FileSystemEvent instance");
             }
             return queue;
         }

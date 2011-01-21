@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.nurc.tda.jgsflodess;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 
@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * 
  */
 public class JGSFLoDeSSCOAMPSGeneratorService extends
-        GeoServerConfiguratorService<FileSystemMonitorEvent, MetocActionConfiguration> {
+        GeoServerConfiguratorService<FileSystemEvent, MetocActionConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(JGSFLoDeSSCOAMPSGeneratorService.class
             .toString());

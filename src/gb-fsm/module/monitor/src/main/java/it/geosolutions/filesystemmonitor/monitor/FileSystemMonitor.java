@@ -24,9 +24,7 @@ package it.geosolutions.filesystemmonitor.monitor;
 import java.io.File;
 
 /**
- * 
- * @author Simone Giannecchini, GeoSolutions
- * 
+ * @author  Simone Giannecchini, GeoSolutions
  */
 public interface FileSystemMonitor {
 
@@ -59,8 +57,8 @@ public interface FileSystemMonitor {
     public void dispose();
 
     /**
-     * @return the watchDirectory
-     * @uml.property name="watchDirectory"
+     * @return  the watchDirectory
+     * @uml.property  name="file"
      */
     public File getFile();
 
@@ -70,7 +68,7 @@ public interface FileSystemMonitor {
      */
     public String getWildCard();
 
-    public void addListener(FileSystemMonitorListener fileListener);
+    public void addListener(FileSystemListener fileListener);
 
-    public void removeListener(FileSystemMonitorListener fileListener);
+    public void removeListener(FileSystemListener fileListener);
 }

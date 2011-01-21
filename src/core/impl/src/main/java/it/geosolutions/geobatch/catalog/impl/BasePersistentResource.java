@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.catalog.impl;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.geosolutions.geobatch.catalog.Configuration;
@@ -34,10 +35,21 @@ public abstract class BasePersistentResource<C extends Configuration> extends Ba
 
     private final static Logger LOGGER = Logger.getLogger(BasePersistentResource.class.toString());
 
+    /**
+     * @uml.property  name="configuration"
+     * @uml.associationEnd  
+     */
     private C configuration;
 
+    /**
+     * @uml.property  name="dao"
+     * @uml.associationEnd  
+     */
     private DAO dao;
 
+    /**
+     * @uml.property  name="removed"
+     */
     private boolean removed;
 
     public C getConfiguration() {
@@ -49,16 +61,30 @@ public abstract class BasePersistentResource<C extends Configuration> extends Ba
     }
 
     public void persist() throws IOException {
-        if (configuration.isDirty())
-            configuration = (C) dao.persist(configuration);
-
+        if (configuration!=null)
+            if (configuration.isDirty()){
+                configuration = (C) dao.persist(configuration);
+            }
+        else {
+            String message="BasePersistentResource: applying persist() with a null configuration";
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe(message);
+            throw new IOException(message);
+        }
     }
 
     public void load() throws IOException {
         final Configuration config = dao.find(this.getId(), false);
         setConfiguration((C) config);
-        configuration.setDirty(false);
-
+        if (configuration!=null){
+            configuration.setDirty(false);
+        }
+        else {
+            String message="BasePersistentResource: applying load() with a null configuration";
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe(message);
+            throw new IOException(message);
+        }
     }
 
     public boolean remove() throws IOException {

@@ -25,25 +25,22 @@ package it.geosolutions.geobatch.catalog.file;
 import it.geosolutions.geobatch.catalog.Catalog;
 
 /**
- * <p>
- * A Catalog based on an xml marshalled file.
- * </p>
- * 
- * @author Simone Giannecchini, GeoSolutions
+ * <p> A Catalog based on an xml marshalled file. </p>
+ * @author  Simone Giannecchini, GeoSolutions
  */
 public interface FileBaseCatalog extends Catalog {
 
     /**
      * Getter for the base directory.
-     * 
-     * @return baseDirectory
+     * @return  baseDirectory
+     * @uml.property  name="baseDirectory"
      */
     public String getBaseDirectory();
 
     /**
      * Setter for the base directory.
-     * 
-     * @param baseDirectory
+     * @param  baseDirectory
+     * @uml.property  name="baseDirectory"
      */
     public void setBaseDirectory(String baseDirectory);
 

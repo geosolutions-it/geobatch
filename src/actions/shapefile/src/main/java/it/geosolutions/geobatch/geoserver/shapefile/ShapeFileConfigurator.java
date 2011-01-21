@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.geoserver.shapefile;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -58,8 +58,8 @@ import org.geotools.data.shapefile.ShapefileDataStoreFactory;
  * @author ETj
  * @author Daniele Romagnoli, GeoSolutions S.A.S.
  */
-public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> implements
-        Action<FileSystemMonitorEvent> {
+public class ShapeFileConfigurator extends BaseAction<FileSystemEvent> implements
+        Action<FileSystemEvent> {
 
     private final static Logger LOGGER = Logger.getLogger(ShapeFileConfigurator.class.toString());
 
@@ -77,7 +77,7 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
     /**
      * 
      */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         listenerForwarder.setTask("config");
@@ -128,7 +128,7 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
             // 2) a list of events for the .shp+.dbf+.shx+ some other optional
             // files
 
-            FileSystemMonitorEvent event = events.peek();
+            FileSystemEvent event = events.peek();
 
             File[] shpList;
             final boolean isZipped;
@@ -242,8 +242,8 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
             // Removing old files...
             events.clear();
             // Adding the zipped file to send...
-            events.add(new FileSystemMonitorEvent(zipFileToSend,
-                    FileSystemMonitorNotifications.FILE_ADDED));
+            events.add(new FileSystemEvent(zipFileToSend,
+                    FileSystemEventType.FILE_ADDED));
             return events;
         } catch (Throwable t) {
             // LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // we're
@@ -273,10 +273,10 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemMonitorEvent> im
      *            The received event queue
      * @return
      */
-    private File[] handleShapefile(Queue<FileSystemMonitorEvent> events) {
+    private File[] handleShapefile(Queue<FileSystemEvent> events) {
         File ret[] = new File[events.size()];
         int idx = 0;
-        for (FileSystemMonitorEvent event : events) {
+        for (FileSystemEvent event : events) {
             ret[idx++] = event.getSource();
         }
         return ret;

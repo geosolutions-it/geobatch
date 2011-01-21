@@ -53,24 +53,45 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
     private static Counter counter = new Counter();
 
+    /**
+     * @uml.property  name="creationTimestamp"
+     */
     private final Calendar creationTimestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
     /**
+     * @uml.property  name="eventConsumerStatus"
+     * @uml.associationEnd  multiplicity="(1 1)"
      */
     private volatile EventConsumerStatus eventConsumerStatus;
 
     /**
      * The MailBox
+     * @uml.property  name="eventsQueue"
      */
     protected final Queue<XEO> eventsQueue = new LinkedList<XEO>();
 
+    /**
+     * @uml.property  name="actions"
+     */
     protected final List<Action<XEO>> actions = new ArrayList<Action<XEO>>();
 
+    /**
+     * @uml.property  name="currentAction"
+     * @uml.associationEnd  
+     */
     protected volatile Action<XEO> currentAction = null;
 
     // private EventListenerList listeners = new EventListenerList();
+    /**
+     * @uml.property  name="listenerForwarder"
+     * @uml.associationEnd  multiplicity="(1 1)" inverse="this$0:it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer$EventConsumerListenerForwarder"
+     */
     protected EventConsumerListenerForwarder listenerForwarder = new EventConsumerListenerForwarder();
 
+    /**
+     * @uml.property  name="pauseHandler"
+     * @uml.associationEnd  multiplicity="(1 1)"
+     */
     protected PauseHandler pauseHandler = new PauseHandler(false);
 
     public BaseEventConsumer() {
@@ -120,7 +141,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
      * (non-Javadoc)
      * 
      * @seeit.geosolutions.geobatch.flow.event.consumer.EventConsumer#put(it. geosolutions
-     * .filesystemmonitor .monitor.FileSystemMonitorEvent)
+     * .filesystemmonitor .monitor.FileSystemEvent)
      */
     public boolean consume(XEO event) {
         if (!eventsQueue.offer(event)) {

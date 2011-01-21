@@ -22,8 +22,8 @@
 
 package it.geosolutions.geobatch.geoserver.geotiff;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
@@ -59,7 +59,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
  * @version $ GeoTIFFFolderGeoServerConfigurator.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
 public class GeoTIFFFolderGeoServerConfigurator extends
-        GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+        GeoServerConfiguratorAction<FileSystemEvent> {
 
     public final static String GEOSERVER_VERSION = "2.X";
 
@@ -68,7 +68,7 @@ public class GeoTIFFFolderGeoServerConfigurator extends
         super(configuration);
     }
 
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("Starting with processing...");
@@ -79,10 +79,10 @@ public class GeoTIFFFolderGeoServerConfigurator extends
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
 
-            Collection<FileSystemMonitorEvent> layers = new ArrayList<FileSystemMonitorEvent>();
+            Collection<FileSystemEvent> layers = new ArrayList<FileSystemEvent>();
 
             while (events.size() > 0) {
-                FileSystemMonitorEvent event = events.remove();
+                FileSystemEvent event = events.remove();
                 final String configId = configuration.getName();
 
                 // //
@@ -190,8 +190,8 @@ public class GeoTIFFFolderGeoServerConfigurator extends
                                     out = null;
                                 }
 
-                                layers.add(new FileSystemMonitorEvent(layerDescriptor,
-                                        FileSystemMonitorNotifications.FILE_ADDED));
+                                layers.add(new FileSystemEvent(layerDescriptor,
+                                        FileSystemEventType.FILE_ADDED));
                             }
                         }
                     }

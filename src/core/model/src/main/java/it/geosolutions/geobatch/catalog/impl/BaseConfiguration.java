@@ -26,8 +26,14 @@ import it.geosolutions.geobatch.catalog.Configuration;
 
 public class BaseConfiguration extends BaseIdentifiable implements Configuration, Cloneable {
 
+    /**
+     * @uml.property  name="serviceID"
+     */
     private String serviceID;
 
+    /**
+     * @uml.property  name="dirty"
+     */
     private boolean dirty;
 
     public BaseConfiguration() {
@@ -43,24 +49,33 @@ public class BaseConfiguration extends BaseIdentifiable implements Configuration
         this.dirty = dirty;
     }
 
+    /**
+     * @return
+     * @uml.property  name="dirty"
+     */
     public boolean isDirty() {
         return dirty;
     }
 
+    /**
+     * @param dirty
+     * @uml.property  name="dirty"
+     */
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
 
     /**
-     * @return the serviceID
+     * @return  the serviceID
+     * @uml.property  name="serviceID"
      */
     public String getServiceID() {
         return serviceID;
     }
 
     /**
-     * @param serviceID
-     *            the serviceID to set
+     * @param serviceID  the serviceID to set
+     * @uml.property  name="serviceID"
      */
     public void setServiceID(String serviceID) {
         this.serviceID = serviceID;

@@ -27,7 +27,7 @@ import java.util.EventObject;
 /**
  * @author Alessio Fabiani, GeoSolutions
  */
-public class FileSystemMonitorEvent extends EventObject {
+public class FileSystemEvent extends EventObject {
 
 
     /**
@@ -36,24 +36,27 @@ public class FileSystemMonitorEvent extends EventObject {
     private static final long serialVersionUID = 7915893220009824087L;
 
     /**
-     * @uml.property name="notification"
+     * @uml.property  name="eventType"
      */
-    private final FileSystemMonitorNotifications notification;
+    private final FileSystemEventType eventType;
 
+    /**
+     * @uml.property  name="timestamp"
+     */
     private final long timestamp;
 
-    public FileSystemMonitorEvent(File source, FileSystemMonitorNotifications notification) {
+    public FileSystemEvent(File source, FileSystemEventType eventType) {
         super(source);
         this.timestamp = System.currentTimeMillis();
-        this.notification = notification;
+        this.eventType = eventType;
     }
 
     /**
-     * @return Returns the notification.
-     * @uml.property name="notification"
+     * @return Returns the eventType.
+     * @uml.property name="eventType"
      */
-    public FileSystemMonitorNotifications getNotification() {
-        return notification;
+    public FileSystemEventType getEventType() {
+        return eventType;
     }
 
     @Override
@@ -61,6 +64,10 @@ public class FileSystemMonitorEvent extends EventObject {
         return (File) super.getSource();
     }
 
+    /**
+     * @return
+     * @uml.property  name="timestamp"
+     */
     public long getTimestamp() {
         return timestamp;
     }
@@ -69,7 +76,7 @@ public class FileSystemMonitorEvent extends EventObject {
 
     @Override
     public String toString() {
-        return "FileSystemMonitorEvent [notification=" + notification + ", timestamp=" + timestamp
+        return "FileSystemEvent [eventType=" + eventType + ", timestamp=" + timestamp
                 + ", source=" + source + "]";
     }
 }

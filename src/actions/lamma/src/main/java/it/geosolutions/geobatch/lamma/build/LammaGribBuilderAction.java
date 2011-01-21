@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.lamma.build;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.lamma.base.LammaBaseAction;
 
@@ -120,8 +120,8 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 	 * @return
 	 * @throws ActionException
 	 */
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+	public Queue<FileSystemEvent> execute(
+			Queue<FileSystemEvent> events) throws ActionException {
 		try {
 			listenerForwarder.started();
 
@@ -134,7 +134,7 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 				throw new IllegalStateException("DataFlowConfig is null.");
 			}
 
-			Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
+			Queue<FileSystemEvent> outEvents = new LinkedList<FileSystemEvent>();
 
 			// Logging to ESB ...
 			logMessage.setMessage("Going to create " + events.size()
@@ -144,7 +144,7 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 
 			while (events.size() > 0) {
 				// get the first event
-				final FileSystemMonitorEvent event = events.remove();
+				final FileSystemEvent event = events.remove();
 				final File inputFile = event.getSource();
 
 				final File datFile = new File(getScriptArguments(inputFile
@@ -194,8 +194,8 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 
 						final File contourFile = buildContourXMLFile(
 								geoTiffFile, extrema);
-						outEvents.add(new FileSystemMonitorEvent(contourFile,
-								FileSystemMonitorNotifications.FILE_ADDED));
+						outEvents.add(new FileSystemEvent(contourFile,
+								FileSystemEventType.FILE_ADDED));
 					} catch (Exception e) {
 						LOGGER.severe("Errors occurred reading DAT file: "
 								+ e.getLocalizedMessage());

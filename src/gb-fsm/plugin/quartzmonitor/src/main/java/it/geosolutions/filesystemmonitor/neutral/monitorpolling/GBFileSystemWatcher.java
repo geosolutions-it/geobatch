@@ -21,7 +21,7 @@
  */
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorListener;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemListener;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -44,33 +44,69 @@ public class GBFileSystemWatcher implements it.geosolutions.filesystemmonitor.mo
     private final static Logger LOGGER = Logger.getLogger(GBFileSystemWatcher.class.toString());
 
     // JOB
+    /**
+     * @uml.property  name="jobName"
+     */
     String jobName=null;
+    /**
+     * @uml.property  name="jobGroup"
+     */
     String jobGroup=null;
+    /**
+     * @uml.property  name="jobDetail"
+     * @uml.associationEnd  multiplicity="(1 1)"
+     */
     JobDetail jobDetail=null;
+    /**
+     * @uml.property  name="jdm"
+     * @uml.associationEnd  multiplicity="(1 1)"
+     */
     JobDataMap jdm=null;
     
     // TRIGGER
+    /**
+     * @uml.property  name="trigger"
+     * @uml.associationEnd  multiplicity="(1 1)"
+     */
     Trigger trigger=null;
+    /**
+     * @uml.property  name="triggerName"
+     */
     String triggerName=null;
     
     /*
      * status (means isPaused() or !isPaused()
      * do not regard start() or stop() status
      */
+    /**
+     * @uml.property  name="pause"
+     */
     private boolean pause=false;
     
     // the stateful GBFileSystemMonitorJob job
+    /**
+     * @uml.property  name="fsm"
+     * @uml.associationEnd  multiplicity="(1 1)"
+     */
     private GBFileSystemMonitorJob fsm=null;
 
     /*
      * The list of reveled events. this is used to detach
      * the poller thread job from the event delivery 
      */
+    /**
+     * @uml.property  name="listeners"
+     * @uml.associationEnd  
+     */
     private EventListenerList listeners = new EventListenerList();
     
     /*
      *  the event consumer, this is used
      *  to pass events to the events listener list
+     */
+    /**
+     * @uml.property  name="consumer"
+     * @uml.associationEnd  
      */
     GBEventConsumer consumer=null;
     
@@ -193,7 +229,7 @@ public class GBFileSystemWatcher implements it.geosolutions.filesystemmonitor.mo
             if (!getScheduler().isStarted()){
                 getScheduler().start();
             }
-System.out.print("START");
+//System.out.print("START");
             try {
                 
                 if (pause){
@@ -232,7 +268,7 @@ System.out.print("START");
 
     public void stop() {
         try {
-System.out.print("STOP");
+//System.out.print("STOP");
             if (getScheduler().isStarted() && !pause){
                 getScheduler().deleteJob(jobName, jobGroup);
                 int numJob=getScheduler().getContext().getInt(FS_JOBS_NUM_KEY);
@@ -252,7 +288,7 @@ System.out.print("STOP");
     // TODO check when is this method called?
     public void pause() {
         try {
-System.out.print("PAUSE");
+//System.out.print("PAUSE");
             if (getScheduler().isStarted() && !pause){
                 pause=true;
                 getScheduler().pauseJob(jobName, jobGroup);
@@ -268,18 +304,20 @@ System.out.print("PAUSE");
         }
     }
 
+
+    /**
+     * TODO: check: no sense to remove and re-add with the same trigger
+     * so no operation is performed.
+     * @see getScheduler().rescheduleJob(triggerName, jobGroup,trigger);   
+     */
     public void reset() {
+//System.out.print("RESET");
 //        try {
-            /*
-             * no sense to remove and re-add with the same trigger
-             * so no operation is performed.
-             * @see getScheduler().rescheduleJob(triggerName, jobGroup,trigger);   
-             */
             
 //            if (!getScheduler().isStarted()){
 //                getScheduler().start();
 //            }
-System.out.print("RESET");
+
 //            getScheduler().rescheduleJob(triggerName, jobGroup,trigger);
             // number of jobs may vary if readd fails
             
@@ -303,7 +341,7 @@ System.out.print("RESET");
     public void dispose() {
         try {
             
-System.out.print("DISPOSE");
+//System.out.print("DISPOSE");
 
             /*
              * if the job is NOT the last in its group
@@ -325,9 +363,9 @@ System.out.print("DISPOSE");
                 Object[] listenerArray = listeners.getListenerList();
                 final int length = listenerArray.length;
                 for (int i = length - 2; i >= 0; i -= 2) {
-                    if (listenerArray[i] == FileSystemMonitorListener.class) {
-                        listeners.remove(FileSystemMonitorListener.class,
-                                (FileSystemMonitorListener) listenerArray[i + 1]);
+                    if (listenerArray[i] == FileSystemListener.class) {
+                        listeners.remove(FileSystemListener.class,
+                                (FileSystemListener) listenerArray[i + 1]);
                     }
                 }
             }
@@ -355,22 +393,20 @@ System.out.print("DISPOSE");
         return jobName;
     }
 
-    public void addListener(FileSystemMonitorListener fileListener) {
+    public void addListener(FileSystemListener fileListener) {
         try{
             if (fileListener!=null){
-                // Don't add if its already there
                 // Guaranteed to return a non-null array
                 final Object[] listenerArray = listeners.getListenerList();
-                // Process the listeners last to first, notifying
-                // those that are interested in this event
+                // Don't add if its already there
                 final int length = listenerArray.length;
                 for (int i = length - 2; i >= 0; i -= 2) {
                     if (listenerArray[i].equals(fileListener)) {
                         return;
                     }
                 }
-        
-                listeners.add(FileSystemMonitorListener.class, fileListener);
+                // add
+                listeners.add(FileSystemListener.class, fileListener);
             }
             else
                 throw new NullPointerException("Unable to add a NULL listener");
@@ -380,10 +416,12 @@ System.out.print("DISPOSE");
                 LOGGER.severe("GBFileSystemWatcher: Error adding a listener.\n"+t.getLocalizedMessage());
         }
     }
-    public void removeListener(FileSystemMonitorListener fileListener) {
+    
+    
+    public void removeListener(FileSystemListener fileListener) {
         try {
             if (fileListener!=null)
-                listeners.remove(FileSystemMonitorListener.class, fileListener);
+                listeners.remove(FileSystemListener.class, fileListener);
         }
         catch(Throwable t){
             if (LOGGER.isLoggable(Level.SEVERE))

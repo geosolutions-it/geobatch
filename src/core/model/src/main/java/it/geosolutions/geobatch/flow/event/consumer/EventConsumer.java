@@ -28,6 +28,9 @@ import it.geosolutions.geobatch.flow.Job;
 
 import java.util.EventObject;
 
+/**
+ * @author  Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ */
 public interface EventConsumer<EO extends EventObject, ECC extends EventConsumerConfiguration>
         extends ListenerRegistry<EventConsumerListener>, Job {
     /**
@@ -51,9 +54,10 @@ public interface EventConsumer<EO extends EventObject, ECC extends EventConsumer
     public void setConfiguration(ECC configuration);
 
     /**
-     * Retrieves the status for this {@link EventConsumer}.
-     * 
-     * @return the status for this {@link EventConsumer}.
+     * Retrieves the status for this  {@link EventConsumer} .
+     * @return  the status for this  {@link EventConsumer}  .
+     * @uml.property  name="status"
+     * @uml.associationEnd  
      */
     public EventConsumerStatus getStatus();
 

@@ -10,9 +10,9 @@ package it.geosolutions.geobatch.flow.event.action;
 public class ActionException extends Exception {
 
     /**
-     * The Action that threw the Exception.
-     * <P>
-     * Maybe is not a good idea to store the Action here, because it may hold heavy data.
+     * The Action that threw the Exception. <P> Maybe is not a good idea to store the Action here, because it may hold heavy data.
+     * @uml.property  name="action"
+     * @uml.associationEnd  multiplicity="(1 1)"
      */
     private Action action;
 
@@ -27,7 +27,8 @@ public class ActionException extends Exception {
     }
 
     /**
-     * @return The Action that threw the Exception.
+     * @return  The Action that threw the Exception.
+     * @uml.property  name="action"
      */
     public Action getAction() {
         return action;

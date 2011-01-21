@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.geoserver.geotiff;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
@@ -53,7 +53,7 @@ import org.geotools.gce.geotiff.GeoTiffReader;
  * 
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
-public class GeoTIFFGeoServerGenerator extends GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+public class GeoTIFFGeoServerGenerator extends GeoServerConfiguratorAction<FileSystemEvent> {
 
     public final static String GEOSERVER_VERSION = "1.7.X";
 
@@ -62,7 +62,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerConfiguratorAction<FileS
         super(configuration);
     }
 
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
         try {
             listenerForwarder.started();
@@ -72,7 +72,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerConfiguratorAction<FileS
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
             }
-            FileSystemMonitorEvent event = events.remove();
+            FileSystemEvent event = events.remove();
             final String configId = configuration.getName();
 
             // //

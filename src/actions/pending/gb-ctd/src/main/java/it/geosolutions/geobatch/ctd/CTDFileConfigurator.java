@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.ctd;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.ctd.configuration.CTDActionConfiguration;
 import it.geosolutions.geobatch.ctd.configuration.CTDConfiguratorAction;
@@ -62,7 +62,7 @@ import org.postgresql.Driver;
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  * 
  */
-public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemMonitorEvent> {
+public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> {
 
     // //////////////////////////
     // JDBC data fields
@@ -76,7 +76,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemMonitor
         super(configuration);
     }
 
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events) {
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) {
 
         try {
 
@@ -179,10 +179,10 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemMonitor
      *            The received event queue
      * @return
      */
-    private File[] handleCTDfile(Queue<FileSystemMonitorEvent> events) {
+    private File[] handleCTDfile(Queue<FileSystemEvent> events) {
         File ret[] = new File[events.size()];
         int idx = 0;
-        for (FileSystemMonitorEvent event : events) {
+        for (FileSystemEvent event : events) {
             ret[idx++] = event.getSource();
         }
         return ret;

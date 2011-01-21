@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.ais.anomalies;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.ais.dao.AISAnomaliesDAO;
 import it.geosolutions.geobatch.ais.dao.DAOException;
 import it.geosolutions.geobatch.ais.model.AISAnomalies;
@@ -59,7 +59,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import com.vividsolutions.jts.geom.Point;
 
 public class AISAnomaliesGeoServerGenerator extends
-		GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+		GeoServerConfiguratorAction<FileSystemEvent> {
 
 	private AISAnomaliesDAO aisAnomaliesDAO;
 
@@ -77,8 +77,8 @@ public class AISAnomaliesGeoServerGenerator extends
 		this.aisAnomaliesDAO = aisAnomaliesDAO;
 	}
 
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) {
+	public Queue<FileSystemEvent> execute(
+			Queue<FileSystemEvent> events) {
 
 		// ////////////////////////////////////////////////////////////////////
 		//
@@ -109,7 +109,7 @@ public class AISAnomaliesGeoServerGenerator extends
 								+ workingDir.getAbsolutePath() + ").");
 			}
 
-			FileSystemMonitorEvent event = events.peek();
+			FileSystemEvent event = events.peek();
 
 			File[] shpList;
 
@@ -245,10 +245,10 @@ public class AISAnomaliesGeoServerGenerator extends
 		}
 	}
 
-	private File[] handleShapefile(Queue<FileSystemMonitorEvent> events) {
+	private File[] handleShapefile(Queue<FileSystemEvent> events) {
 		File ret[] = new File[events.size()];
 		int idx = 0;
-		for (FileSystemMonitorEvent event : events) {
+		for (FileSystemEvent event : events) {
 			ret[idx++] = event.getSource();
 		}
 		return ret;

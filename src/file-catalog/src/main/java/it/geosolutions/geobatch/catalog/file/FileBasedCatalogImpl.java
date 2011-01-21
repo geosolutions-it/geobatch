@@ -22,11 +22,7 @@
 
 package it.geosolutions.geobatch.catalog.file;
 
-import java.io.File;
-import java.io.IOException;
-
 import it.geosolutions.geobatch.catalog.impl.BaseCatalog;
-import it.geosolutions.geobatch.global.CatalogHolder;
 
 /**
  * A Catalog based on an xml marshalled file.
@@ -53,14 +49,14 @@ public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog
     }
 
     /**
-     * baseDirectory: represents the base directory where the xml files are located. The
-     * workingDirecotry will be relative to this base directory unless an absolute path has been
-     * specified.
+     * baseDirectory: represents the base directory where the xml files are located. The workingDirecotry will be relative to this base directory unless an absolute path has been specified.
+     * @uml.property  name="baseDirectory"
      */
     private String baseDirectory;
 
     /**
      * Getter for the baseDirectory.
+     * @uml.property  name="baseDirectory"
      */
     public String getBaseDirectory() {
         return this.baseDirectory;
@@ -68,6 +64,7 @@ public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog
 
     /**
      * Setter for the baseDirectory.
+     * @uml.property  name="baseDirectory"
      */
     public void setBaseDirectory(final String baseDirectory) {
         this.baseDirectory = baseDirectory;

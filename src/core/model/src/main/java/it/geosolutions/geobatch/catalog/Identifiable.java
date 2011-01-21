@@ -21,36 +21,43 @@
  */
 package it.geosolutions.geobatch.catalog;
 
+/**
+ * @author  Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ */
 public interface Identifiable {
 
     /**
-	 *
-	 */
+     * @uml.property  name="description"
+     */
     public abstract String getDescription();
 
     /**
      * The Flow BaseEventConsumer Type identifier.
+     * @uml.property  name="id"
      */
     public abstract String getId();
 
     /**
      * The Flow BaseEventConsumer Type name.
+     * @uml.property  name="name"
      */
     public abstract String getName();
 
     /**
      * The Flow BaseEventConsumer Type identifier.
+     * @uml.property  name="id"
      */
     public abstract void setId(String id);
 
     /**
      * The Flow BaseEventConsumer Type name.
+     * @uml.property  name="name"
      */
     public abstract void setName(String name);
 
     /**
-	 *
-	 */
+     * @uml.property  name="description"
+     */
     public abstract void setDescription(String description);
 
 }

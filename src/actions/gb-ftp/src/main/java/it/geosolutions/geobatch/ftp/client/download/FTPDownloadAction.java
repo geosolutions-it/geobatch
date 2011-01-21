@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.ftp.client.download;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.ftp.client.FTPHelper;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
@@ -49,7 +49,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  * 
  */
-public class FTPDownloadAction extends FTPBaseAction<FileSystemMonitorEvent> {
+public class FTPDownloadAction extends FTPBaseAction<FileSystemEvent> {
 
     /**
      * The constructor of the download action.
@@ -69,7 +69,7 @@ public class FTPDownloadAction extends FTPBaseAction<FileSystemMonitorEvent> {
      *            The events queue.
      * @throws IOException
      */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         try {
@@ -119,7 +119,7 @@ public class FTPDownloadAction extends FTPBaseAction<FileSystemMonitorEvent> {
             // //////////////////////////////////////////////
 
             final List<File> filesToGet = new ArrayList<File>();
-            for (FileSystemMonitorEvent event : events) {
+            for (FileSystemEvent event : events) {
                 final File input = event.getSource();
                 if (input.exists() && input.isFile() && input.canRead())
                     filesToGet.add(input);

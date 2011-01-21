@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.geotiff.retile;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -63,8 +63,8 @@ import com.sun.media.jai.operator.ImageReadDescriptor;
  * @version $GeoTIFFOverviewsEmbedder.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
 @SuppressWarnings("deprecation")
-public class GeoTiffRetiler extends BaseAction<FileSystemMonitorEvent> implements
-        Action<FileSystemMonitorEvent> {
+public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
+        Action<FileSystemEvent> {
 
     private GeoTiffRetilerConfiguration configuration;
 
@@ -75,7 +75,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemMonitorEvent> implement
         this.configuration = configuration;
     }
 
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
         try {
 
@@ -86,7 +86,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemMonitorEvent> implement
             }
 
             // get the first event
-            final FileSystemMonitorEvent event = events.peek();
+            final FileSystemEvent event = events.peek();
             final File inputFile = event.getSource();
             final String absolutePath = inputFile.getAbsolutePath();
             final String name = FilenameUtils.getName(absolutePath);

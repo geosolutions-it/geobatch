@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.lamma.extract;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.lamma.base.LammaBaseAction;
 import it.geosolutions.geobatch.lamma.base.WgribInventory;
@@ -70,8 +70,8 @@ public class LammaGribMetadataExtractorAction extends LammaBaseAction {
 	 * @return
 	 * @throws ActionException
 	 */
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+	public Queue<FileSystemEvent> execute(
+			Queue<FileSystemEvent> events) throws ActionException {
 		try {
 			listenerForwarder.started();
 
@@ -92,7 +92,7 @@ public class LammaGribMetadataExtractorAction extends LammaBaseAction {
 			}
 
 			// get the first event
-			final FileSystemMonitorEvent event = events.remove();
+			final FileSystemEvent event = events.remove();
 			final File inputFile = event.getSource();
 
 			final File srcGribFile = new File(getScriptArguments(inputFile
@@ -136,8 +136,8 @@ public class LammaGribMetadataExtractorAction extends LammaBaseAction {
 					// metadataFile.getName());
 					// logMessage.setMessageTime(new Date());
 					// logToESB(logMessage);
-					events.add(new FileSystemMonitorEvent(metadataFile,
-							FileSystemMonitorNotifications.FILE_ADDED));
+					events.add(new FileSystemEvent(metadataFile,
+							FileSystemEventType.FILE_ADDED));
 				}
 			} else {
 				// Logging to ESB ...

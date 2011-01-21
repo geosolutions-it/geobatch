@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.nurc.sem.wmc;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
@@ -88,7 +88,7 @@ import ucar.nc2.Variable;
  * 
  */
 public class NURCWPSOutput2WMCFileAction extends
-        GeoServerConfiguratorAction<FileSystemMonitorEvent> {
+        GeoServerConfiguratorAction<FileSystemEvent> {
 
     /**
      * GeoTIFF Writer Default Params
@@ -127,7 +127,7 @@ public class NURCWPSOutput2WMCFileAction extends
     /**
      * EXECUTE METHOD
      */
-    public Queue<FileSystemMonitorEvent> execute(Queue<FileSystemMonitorEvent> events)
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
         if (LOGGER.isLoggable(Level.INFO))
@@ -138,7 +138,7 @@ public class NURCWPSOutput2WMCFileAction extends
             if (events.size() != 1)
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
-            FileSystemMonitorEvent event = events.remove();
+            FileSystemEvent event = events.remove();
 
             // //
             // data flow configuration and dataStore name must not be null.
@@ -670,8 +670,8 @@ public class NURCWPSOutput2WMCFileAction extends
 
                         // ... setting up the appropriate event for the next
                         // action
-                        events.add(new FileSystemMonitorEvent(gtiffOutputDir,
-                                FileSystemMonitorNotifications.FILE_ADDED));
+                        events.add(new FileSystemEvent(gtiffOutputDir,
+                                FileSystemEventType.FILE_ADDED));
                     }
 
                     numVars++;

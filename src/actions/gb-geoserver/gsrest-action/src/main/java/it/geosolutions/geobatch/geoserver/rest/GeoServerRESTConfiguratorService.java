@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.geoserver.rest;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
 import java.util.logging.Logger;
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * @version $ GeoServerRESTConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
  */
 public class GeoServerRESTConfiguratorService extends
-        GeoServerConfiguratorService<FileSystemMonitorEvent, GeoServerRESTActionConfiguration> {
+        GeoServerConfiguratorService<FileSystemEvent, GeoServerRESTActionConfiguration> {
     private final static Logger LOGGER = Logger.getLogger(GeoServerRESTConfiguratorService.class
             .toString());
 

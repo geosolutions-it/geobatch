@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.metocs.remsens;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.metocs.registry.RegistryConfiguratorService;
 
@@ -37,7 +37,7 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
  * 
  */
 public class HDF42GeoTIFFsGeneratorService extends
-        RegistryConfiguratorService<FileSystemMonitorEvent, GeoServerActionConfiguration> {
+        RegistryConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(HDF42GeoTIFFsGeneratorService.class
             .toString());

@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.lamma.build;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorNotifications;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.imagemosaic.Utils;
 import it.geosolutions.geobatch.lamma.base.LammaBaseAction;
@@ -84,8 +84,8 @@ public class LammaContourBuilderAction extends LammaBaseAction {
 	 * @return
 	 * @throws ActionException
 	 */
-	public Queue<FileSystemMonitorEvent> execute(
-			Queue<FileSystemMonitorEvent> events) throws ActionException {
+	public Queue<FileSystemEvent> execute(
+			Queue<FileSystemEvent> events) throws ActionException {
 		try {
 			listenerForwarder.started();
 
@@ -98,7 +98,7 @@ public class LammaContourBuilderAction extends LammaBaseAction {
 				throw new IllegalStateException("DataFlowConfig is null.");
 			}
 
-			Queue<FileSystemMonitorEvent> outEvents = new LinkedList<FileSystemMonitorEvent>();
+			Queue<FileSystemEvent> outEvents = new LinkedList<FileSystemEvent>();
 
 			// Logging to ESB ...
 			logMessage.setMessage("Building contour shapefiles...");
@@ -106,7 +106,7 @@ public class LammaContourBuilderAction extends LammaBaseAction {
 			logToESB(logMessage);
 
 			while (events.size() > 0) {
-				final FileSystemMonitorEvent event = events.remove();
+				final FileSystemEvent event = events.remove();
 				final File inputFile = event.getSource();
 				final File inputDir = inputFile.getParentFile();
 
@@ -336,8 +336,8 @@ public class LammaContourBuilderAction extends LammaBaseAction {
 				final File compressedShapefile = Compressor.deflate(inputDir,
 						FilenameUtils.getBaseName(contourShapefile.getName()),
 						files);
-				outEvents.add(new FileSystemMonitorEvent(compressedShapefile,
-						FileSystemMonitorNotifications.FILE_ADDED));
+				outEvents.add(new FileSystemEvent(compressedShapefile,
+						FileSystemEventType.FILE_ADDED));
 			}
 
 			listenerForwarder.completed();
