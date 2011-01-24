@@ -329,6 +329,7 @@ REF. MAIL 30Dec2010: "[GEOBATCH] tree"
                 <module>gb-task-executor</module>
                 <module>scripting</module>
                 <module>splitting</module>
+                <module>gb-octave-fileinfileout</module>
                 <module>metocs</module>
             </modules>
         </profile>
