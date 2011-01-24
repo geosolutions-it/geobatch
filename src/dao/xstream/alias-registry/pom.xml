@@ -21,7 +21,7 @@
     <!-- =========================================================== -->
     <groupId>it.geosolutions</groupId>
     <artifactId>gb-alias-registry</artifactId>
-    <packaging>jar</packaging>
+    <!--<packaging>jar</packaging>-->
     <name>GeoBatch DAOs - XStream Alias Registry</name>
     <description>
         GeoSolutions GeoBatch XStream Alias Registry: Dynamic registry for XStream aliases.

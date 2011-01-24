@@ -1085,12 +1085,12 @@
 			</dependency>
 			
 <!-- ALIAS REGISTRY -->
-            <dependency>
-                <groupId>it.geosolutions</groupId>
-                <artifactId>gb-alias-registry</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-            
+			<dependency>
+				<groupId>it.geosolutions</groupId>
+				<artifactId>gb-dao</artifactId>
+				<version>${gb.version}</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>it.geosolutions</groupId>
 				<artifactId>gb-dao-xstream-base</artifactId>
@@ -1102,6 +1102,20 @@
 				<artifactId>gb-dao-xstream</artifactId>
 				<version>${gb.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>it.geosolutions</groupId>
+				<artifactId>gb-alias-registry-base</artifactId>
+				<version>${gb.version}</version>
+			</dependency>
+            <dependency>
+                <groupId>it.geosolutions</groupId>
+                <artifactId>gb-alias-registry</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            
+			
+			
 
             <dependency>
                 <groupId>it.geosolutions</groupId>
