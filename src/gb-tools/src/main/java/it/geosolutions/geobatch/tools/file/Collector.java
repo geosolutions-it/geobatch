@@ -11,7 +11,6 @@ import java.util.List;
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 public class Collector extends DirectoryWalker<File>{
@@ -62,7 +61,7 @@ public class Collector extends DirectoryWalker<File>{
                         new WildcardFileFilter("*_PCK.xml",IOCase.INSENSITIVE),
                         new WildcardFileFilter("*_PRO",IOCase.INSENSITIVE)));
         try {
-            List<File> list=c.collect(new File("/home/carlo/work/data/EMSAWorkingDir/outa/"));
+            List<File> list=c.collect(new File("/home/carlo/work/data/EMSAWorkingDir/out/20110118T084207016UTC"));
             System.out.println("Number of files: "+list.size());
             for (File f : list)
                 System.out.println("FILE: "+f.getAbsolutePath());

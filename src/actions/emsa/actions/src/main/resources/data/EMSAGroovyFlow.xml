@@ -8,10 +8,12 @@
 	<autorun>true</autorun>
 
 	<EventGeneratorConfiguration>
-		<wildCard>*.*</wildCard>
+		<wildCard>*</wildCard>
 		<watchDirectory>EMSAWorkingDir/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
-		<eventType>FILE_ADDED</eventType>
+<!--DIR_CREATED, DIR_REMOVED, DIR_MODIFIED,FILE_MODIFIED, FILE_REMOVED, FILE_ADDED-->
+		<eventType>DIR_MODIFIED</eventType>
+		<monitorType>DEFAULT</monitorType>
 		<id>id</id>
     <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
@@ -28,17 +30,17 @@
         
 		<workingDirectory>EMSAWorkingDir</workingDirectory>
 		<performBackup>false</performBackup>
-                <preserveInput>true</preserveInput>
-
+        <preserveInput>true</preserveInput>
+<!--Rules List-->
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.*</regex>
+			<regex>.+</regex>
 			<id>r1</id>
 			<description>description</description>
 			<name>test</name>
 		</FileEventRule>
-
+<!--Actions List-->
 		<ScriptingConfiguration>
 			<id>EMSAgroovy_script</id>
 			<description>EMSA Groovy Script</description>
@@ -62,6 +64,7 @@
 				    <string>data1</string>
 				  </entry>
 			</properties>
+			
 		</ScriptingConfiguration>
 		
 		<SplittingConfiguration>

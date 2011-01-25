@@ -97,7 +97,10 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
         // ////
         // getting package type
         // ////
-        PackageType type = utils.getPackageTypeFromName(FilenameUtils.getBaseName(pkgDir.getName()));
+        //PackageType type = utils.getPackageTypeFromName(FilenameUtils.getBaseName(pkgDir.getName()));
+        PackageType type = utils.getPackageTypeFromName(pkgDir.getName());
+        
+println("Type is: "+type);        
 
         // ////
         // Update GeoServer DataStore...

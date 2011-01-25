@@ -150,7 +150,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
             }
 
             SarDerivedProcessor sdfProcessor = new SarDerivedProcessor(packageFile.getParentFile());
-            sdfProcessor.setGmlBaseURI(httpdServiceURL + pkgDirName);
+            sdfProcessor.setGmlBaseURI(httpdServiceURL + pkgDir.getName());
 
             derSender = new DERSender(sdfProcessor);
             derSender.setServiceURL(serviceURL);
@@ -163,7 +163,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
         } else if (pkg.getPackageType().equals("OS_NOTIFICATION") ||
         pkg.getPackageType().equals("OS_WARNING")) {
             OilSpillProcessor osProcessor = new OilSpillProcessor(packageFile.getParentFile());
-            osProcessor.setBaseGMLURL(httpdServiceURL + pkgDirName);
+            osProcessor.setBaseGMLURL(httpdServiceURL + pkgDir.getName());
 
             OilSpillSender osSender = new OilSpillSender(osProcessor);
             osSender.setServiceURL(serviceURL);

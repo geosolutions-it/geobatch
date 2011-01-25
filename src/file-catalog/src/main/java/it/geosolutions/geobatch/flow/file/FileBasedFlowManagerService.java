@@ -72,10 +72,14 @@ public class FileBasedFlowManagerService extends BaseService implements
             }
 
             try {
-                final FileBasedFlowManager manager = new FileBasedFlowManager();
-                manager.setConfiguration(configuration);
+                final FileBasedFlowManager manager = new FileBasedFlowManager(configuration);
                 return manager;
-            } catch (IOException e) {
+            }
+            catch (NullPointerException e) {
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            }
+            catch (IOException e) {
                 if (LOGGER.isLoggable(Level.SEVERE))
                     LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
             }

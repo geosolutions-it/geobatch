@@ -30,13 +30,11 @@ import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConf
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 import it.geosolutions.geobatch.flow.FlowManager;
 import it.geosolutions.geobatch.flow.Job;
-import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.event.generator.EventGenerator;
 import it.geosolutions.geobatch.flow.event.generator.EventGeneratorService;
 import it.geosolutions.geobatch.flow.event.generator.FlowEventListener;
-import it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGenerator;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
 
@@ -52,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  * 
  * @author Alessio Fabiani, GeoSolutions
@@ -66,97 +63,117 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     private final static Logger LOGGER = Logger.getLogger(FlowManager.class.toString());
 
     /**
-     * @uml.property  name="autorun"
+     * @uml.property name="autorun"
      */
     private boolean autorun = false;
 
     /**
-     * @uml.property  name="workingDirectory"
+     * @uml.property name="workingDirectory"
      */
     private File workingDirectory;
 
     /**
      * initialized flag
-     * @uml.property  name="initialized"
+     * 
+     * @uml.property name="initialized"
      */
     private boolean initialized;
 
     /**
      * started flag
-     * @uml.property  name="started"
+     * 
+     * @uml.property name="started"
      */
     private boolean started = false;
 
     /**
      * paused flag
-     * @uml.property  name="paused"
+     * 
+     * @uml.property name="paused"
      */
     private boolean paused;
 
     /**
      * termination flag
-     * @uml.property  name="terminationRequest"
+     * 
+     * @uml.property name="terminationRequest"
      */
     private boolean terminationRequest;
 
     /**
      * The MailBox
-     * @uml.property  name="eventMailBox"
+     * 
+     * @uml.property name="eventMailBox"
      */
     private final BlockingQueue<FileSystemEvent> eventMailBox = new LinkedBlockingQueue<FileSystemEvent>();
 
     /**
      * The FileMonitorEventDispatcher
-     * @uml.property  name="dispatcher"
-     * @uml.associationEnd  inverse="fm:it.geosolutions.geobatch.flow.file.EventDispatcher"
+     * 
+     * @uml.property name="dispatcher"
+     * @uml.associationEnd inverse="fm:it.geosolutions.geobatch.flow.file.EventDispatcher"
      */
     private EventDispatcher dispatcher;
 
     /**
      * EventGenerator
-     * @uml.property  name="eventGenerator"
-     * @uml.associationEnd  
+     * 
+     * @uml.property name="eventGenerator"
+     * @uml.associationEnd
      */
-    private EventGenerator<FileSystemEvent> eventGenerator;
+    private EventGenerator<FileSystemEvent> eventGenerator; // FileBasedEventGenerator<FileSystemEvent>
 
     /**
-     * @uml.property  name="eventConsumers"
-     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer"
+     * @uml.property name="eventConsumers"
+     * @uml.associationEnd multiplicity="(0 -1)"
+     *                     elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer"
      */
     private final List<FileBasedEventConsumer> eventConsumers = new ArrayList<FileBasedEventConsumer>();
 
     /**
-     * @uml.property  name="executor"
+     * @uml.property name="executor"
      */
     private ThreadPoolExecutor executor;
 
     /**
-     * @param configuration
      * @throws IOException
      */
-    public FileBasedFlowManager() throws IOException {}
+    public FileBasedFlowManager() throws IOException {
+    }
+
+    /**
+     * @param configuration
+     *            the fileBasedFlowConfiguration to use in initialization
+     * @throws IOException
+     */
+    public FileBasedFlowManager(FileBasedFlowConfiguration configuration) throws IOException,
+            NullPointerException {
+        initialize(configuration);
+    }
 
     /**
      * @param configuration
      * @throws IOException
      */
-    private void initialize(FileBasedFlowConfiguration configuration) throws IOException, NullPointerException {
+    private void initialize(FileBasedFlowConfiguration configuration) throws IOException,
+            NullPointerException {
         this.initialized = false;
         this.paused = false;
         this.terminationRequest = false;
 
         String baseDir = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
-        
+
         if (baseDir == null)
             throw new NullPointerException("Working dir is null");
 
-        this.workingDirectory = 
-            Path.findLocation(configuration.getWorkingDirectory(),new File(baseDir));
+        this.workingDirectory = Path.findLocation(configuration.getWorkingDirectory(), new File(
+                baseDir));
 
-        if (workingDirectory == null || !workingDirectory.canWrite() || !workingDirectory.isDirectory())
+        if (workingDirectory == null || !workingDirectory.canWrite()
+                || !workingDirectory.isDirectory())
             throw new IllegalArgumentException(new StringBuilder("Working dir is invalid: ")
-                    .append('>').append(baseDir).append("< ").append('>').append(
-                            configuration.getWorkingDirectory()).append("< ").toString());
+                    .append('>').append(baseDir).append("< ").append('>')
+                    .append(configuration.getWorkingDirectory()).append("< ").toString());
 
         this.autorun = configuration.isAutorun();
 
@@ -171,10 +188,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                 .getKeepAliveTime() : 15000;
 
         final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueSize);
-        this.executor = new ThreadPoolExecutor(corePoolSize, 
-                                                maximumPoolSize, 
-                                                keepAlive,
-                                                TimeUnit.MILLISECONDS, queue);
+        this.executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAlive,
+                TimeUnit.MILLISECONDS, queue);
 
         if (this.autorun) {
             if (LOGGER.isLoggable(Level.INFO))
@@ -233,8 +248,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     /**
-     * Main thread loop.
-     * <LI>Create and tear down generators when the flow is paused. <LI>Init the dispatcher.
+     * Main thread loop. <LI>Create and tear down generators when the flow is paused. <LI>Init the
+     * dispatcher.
      * 
      * TODO the stopping condition is never used...
      */
@@ -254,7 +269,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             while (paused) {
                 try {
                     if (initialized && ((eventGenerator != null) && eventGenerator.isRunning())) {
-                        
+
                         eventGenerator.pause();
                     }
 
@@ -278,19 +293,19 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
             while (!paused) {
                 try {
-                    if (initialized){
-                        if (eventGenerator == null) { //|| !eventGenerator.isRunning())
+                    if (initialized) {
+                        if (eventGenerator == null) { // || !eventGenerator.isRunning())
                             // (re)Creating the FileBasedEventGenerator, which waits for
                             // new events
                             try {
                                 createGenerator();
                             } catch (Throwable t) {
                                 LOGGER.log(Level.SEVERE,
-                                        "FileBasedFlowManager:Error on FS-Monitor initialization: "+t.getLocalizedMessage(), t);
+                                        "FileBasedFlowManager:Error on FS-Monitor initialization: "
+                                                + t.getLocalizedMessage(), t);
                                 throw new RuntimeException(t);
                             }
-                        }
-                        else
+                        } else
                             eventGenerator.start();
                     }
 
@@ -309,23 +324,24 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
     private void createGenerator() {
         // LOGGER.info("EventGeneratorCreationStart");
-        final EventGeneratorConfiguration generatorConfig = getConfiguration().getEventGeneratorConfiguration();
+        final EventGeneratorConfiguration generatorConfig = getConfiguration()
+                .getEventGeneratorConfiguration();
         final String serviceID = generatorConfig.getServiceID();
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("EventGeneratorCreationServiceID: " + serviceID);
-        final EventGeneratorService<FileSystemEvent, EventGeneratorConfiguration> generatorService = 
-                CatalogHolder.getCatalog().getResource(serviceID, EventGeneratorService.class);
+        final EventGeneratorService<FileSystemEvent, EventGeneratorConfiguration> generatorService = CatalogHolder
+                .getCatalog().getResource(serviceID, EventGeneratorService.class);
         if (generatorService != null) {
             if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("EventGeneratorCreationFound!");
+                LOGGER.info("EventGeneratorService found");
             eventGenerator = generatorService.createEventGenerator(generatorConfig);
             if (eventGenerator != null) {
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("EventGeneratorCreationCreated!");
+                    LOGGER.info("FileSystemEventGenerator created");
                 eventGenerator.addListener(new GeneratorListener());
                 eventGenerator.start();
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("EventGeneratorCreationStarted!");
+                    LOGGER.info("FileSystemEventGenerator started");
             } else {
                 throw new RuntimeException("Error on EventGenerator creations");
             }
@@ -412,8 +428,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     /**
-     * @return  the paused
-     * @uml.property  name="paused"
+     * @return the paused
+     * @uml.property name="paused"
      */
     public boolean isPaused() {
         return paused;
@@ -427,16 +443,17 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     /**
-     * @return  the workingDirectory
-     * @uml.property  name="workingDirectory"
+     * @return the workingDirectory
+     * @uml.property name="workingDirectory"
      */
     public File getWorkingDirectory() {
         return workingDirectory;
     }
 
     /**
-     * @param workingDirectory  the workingDirectory to set
-     * @uml.property  name="workingDirectory"
+     * @param workingDirectory
+     *            the workingDirectory to set
+     * @uml.property name="workingDirectory"
      */
     public void setWorkingDirectory(File outputDir) {
         this.workingDirectory = outputDir;
@@ -479,7 +496,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
     /**
      * @return
-     * @uml.property  name="autorun"
+     * @uml.property name="autorun"
      */
     public boolean isAutorun() {
         return autorun;
@@ -487,7 +504,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
     /**
      * @param autorun
-     * @uml.property  name="autorun"
+     * @uml.property name="autorun"
      */
     public void setAutorun(boolean autorun) {
         this.autorun = autorun;
@@ -531,8 +548,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     public void postEvent(FileSystemEvent event) {
         try {
             eventMailBox.put(event);
-        }
-        catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
             throw new RuntimeException(npe);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -563,14 +579,16 @@ final class EventDispatcher extends Thread {
     private final static Logger LOGGER = Logger.getLogger(EventDispatcher.class.getName());
 
     /**
-     * @uml.property  name="eventMailBox"
-     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.filesystemmonitor.monitor.FileSystemEvent"
+     * @uml.property name="eventMailBox"
+     * @uml.associationEnd multiplicity="(0 -1)"
+     *                     elementType="it.geosolutions.filesystemmonitor.monitor.FileSystemEvent"
      */
     private final BlockingQueue<FileSystemEvent> eventMailBox;
 
     /**
-     * @uml.property  name="fm"
-     * @uml.associationEnd  multiplicity="(1 1)" inverse="dispatcher:it.geosolutions.geobatch.flow.file.FileBasedFlowManager"
+     * @uml.property name="fm"
+     * @uml.associationEnd multiplicity="(1 1)"
+     *                     inverse="dispatcher:it.geosolutions.geobatch.flow.file.FileBasedFlowManager"
      */
     private final FileBasedFlowManager fm;
 
@@ -578,8 +596,7 @@ final class EventDispatcher extends Thread {
     /**
      * Default Constructor
      */
-    public EventDispatcher(FileBasedFlowManager fm,
-            BlockingQueue<FileSystemEvent> eventMailBox) {
+    public EventDispatcher(FileBasedFlowManager fm, BlockingQueue<FileSystemEvent> eventMailBox) {
         super(new StringBuilder("EventDispatcherThread-").append(fm.getId()).toString());
 
         this.eventMailBox = eventMailBox;
@@ -666,9 +683,10 @@ final class EventDispatcher extends Thread {
                     // //
                     // if no EventConsumer is found, we need to create a new one
                     // //
-                    final FileBasedEventConsumerConfiguration configuration = 
-                            ((FileBasedEventConsumerConfiguration) fm.getConfiguration().getEventConsumerConfiguration()).clone();
-                    final FileBasedEventConsumer brandNewConsumer = new FileBasedEventConsumer(configuration);
+                    final FileBasedEventConsumerConfiguration configuration = ((FileBasedEventConsumerConfiguration) fm
+                            .getConfiguration().getEventConsumerConfiguration()).clone();
+                    final FileBasedEventConsumer brandNewConsumer = new FileBasedEventConsumer(
+                            configuration);
 
                     if (brandNewConsumer.consume(event)) {
                         // //
