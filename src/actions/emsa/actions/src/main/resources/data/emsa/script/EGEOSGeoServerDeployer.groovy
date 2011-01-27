@@ -27,6 +27,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,7 +41,7 @@ import org.geotools.jdbc.JDBCDataStoreFactory;
  * Script Main "execute" function
  **/
 /* ----------------------------------------------------------------- */
-public List execute(ScriptingConfiguration configuration, String eventFilePath, ProgressListenerForwarder listenerForwarder) throws Exception {
+public List execute(ScriptingConfiguration configuration, String inputFileName, ProgressListenerForwarder listenerForwarder) throws Exception {
 		/* ----------------------------------------------------------------- */
 		// Main Input Variables: must be configured 
 
@@ -51,6 +52,9 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
 		def port 			= 5432
 		def user 			= "postgres"
 		def passwd 		= "postgres_matera"
+		
+		def ImageIODir=new File("/home/tomcat/e-geos/sarImages/");
+		//def ImageIODir=new File("/home/carlo/work/data/emsa/sarImages");
 
     try {
         listenerForwarder.started();
@@ -70,37 +74,41 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
         listenerForwarder.progressing(50, example0);
         String example1 = props.get("key1");
         listenerForwarder.progressing(90, example1); */
-
-        // ////
-        // some initial checks on input file name
-        // ////
-        String inputFileName = eventFilePath;
+        
         final String filePrefix = FilenameUtils.getBaseName(inputFileName);
+        
         final String fileSuffix = FilenameUtils.getExtension(inputFileName);
-        if (!fileSuffix.equalsIgnoreCase("xml")) {
-            sendError(listenerForwarder, "::EGEOSGeoServerDeployer : invalid input archive \"" + inputFileName + "\"");
+        
+//println("Input file name is: "+inputFileName);
+        // ////
+		// getting package directory
+		// ////
+		File pkgDir=null;
+        if (fileSuffix.equalsIgnoreCase("xml")) {
+			 pkgDir= new File(inputFileName).getParentFile();   
         }
+        else
+			pkgDir= new File(inputFileName);
 
         // ////
         // forwarding some logging information to Flow Logger Listener
         // ////
-        listenerForwarder.setTask("::EGEOSGeoServerDeployer : Processing event " + eventFilePath)
+        listenerForwarder.setTask("::EGEOSGeoServerDeployer : Processing event " + inputFileName)
 
         /** The outcome events variable **/
         List results = new ArrayList();
 
-        // ////
-        // getting package directory
-        // ////
-        File pkgDir = new File(inputFileName).getParentFile();
 
         // ////
         // getting package type
         // ////
         //PackageType type = utils.getPackageTypeFromName(FilenameUtils.getBaseName(pkgDir.getName()));
+
+//println("File name is: "+pkgDir.getName());
+
         PackageType type = utils.getPackageTypeFromName(pkgDir.getName());
         
-println("Type is: "+type);        
+//println("Type is: "+type);
 
         // ////
         // Update GeoServer DataStore...
@@ -136,6 +144,19 @@ println("Type is: "+type);
                 }
 
                 store.dispose();
+            } else if (type == PackageType.PRO) {
+				
+                File[] proFiles = pkgDir.listFiles((FilenameFilter)new WildcardFileFilter("*.xml"));
+				if (proFiles!=null){
+					for (File proXmlFile : proFiles) {
+						File test=ProParser.moveTif(ProParser.parse(proXmlFile),ImageIODir);
+//println("RESULTING_FILE: "+test.getAbsolutePath());
+					}
+				}
+				else
+//println("PROFILES list is null ");
+                
+				results.add(ImageIODir.getAbsolutePath());
             }
         }
 

@@ -1,16 +1,39 @@
-package it.geosolutions.geobatch.action.egeos.emsa.features;
+package it.geosolutions.geobatch.action.egeos.emsa.raster;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class ProParser {
+
+    final static class ProType {
+        public ProType() {
+        };
+
+        /*
+         * The absolute dir path containing this image/xml: it represents the path of the PRO
+         * package
+         */
+        String imageParentPath;
+
+        String imageFileName;
+
+        String productID;
+
+        String startTime;
+        // ...
+    }
 
     /**
      * 
@@ -21,8 +44,7 @@ public class ProParser {
      * xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      * xsi:schemaLocation=
      * "http://cweb.ksat.no/cweb/schema/satellite http://cweb.ksat.no/cweb/schema/satellite/img.xsd"
-     * > 
-     * <sat:imageFileName>RS1_20100707050441.046.SCN8.NEAR.1.00000_geo8.tif</sat:imageFileName>
+     * > <sat:imageFileName>RS1_20100707050441.046.SCN8.NEAR.1.00000_geo8.tif</sat:imageFileName>
      * <sat:pixelSpacingX>200</sat:pixelSpacingX> <sat:pixelSpacingY>200</sat:pixelSpacingY>
      * <sat:samplesPerPixel>1</sat:samplesPerPixel> <sat:bitsPerSample>8</sat:bitsPerSample>
      * <sat:sampleType>Unsigned Integer</sat:sampleType>
@@ -43,8 +65,7 @@ public class ProParser {
      * 25.4647</gml:pos> </sat:LowerRight> <sat:UpperLeft srsName="EPSG:4326"> <gml:pos>63.3412
      * 17.6785</gml:pos> </sat:UpperLeft> <sat:UpperRight srsName="EPSG:4326"> <gml:pos>63.3412
      * 25.4647</gml:pos> </sat:UpperRight> <sat:Center srsName="EPSG:4326"> <gml:pos>61.6186
-     * 21.5716</gml:pos> </sat:Center> <sat:requestID>N/A</sat:requestID>
-     *  <sat:source>
+     * 21.5716</gml:pos> </sat:Center> <sat:requestID>N/A</sat:requestID> <sat:source>
      * <sat:productID>RS1_20100707050441.046.SCN8.NEAR.1.00000</sat:productID>
      * <sat:satellite>RADARSAT1</sat:satellite> <sat:sensor>SAR</sat:sensor>
      * <sat:orbit>76584</sat:orbit> <sat:beamMode>SCN-HH</sat:beamMode>
@@ -58,34 +79,32 @@ public class ProParser {
      * <gml:pos>62.9996033 22.1541824</gml:pos> </sat:centerPoint>
      * <sat:acrossTrackIncidenceAngle>0.0</sat:acrossTrackIncidenceAngle>
      * <sat:alongTrackIncidenceAngle>N/A</sat:alongTrackIncidenceAngle>
-     * <sat:illuminationAzimuthAngle>N/A</sat:illuminationAzimuthAngle> 
-     *  </sat:source> 
-     * </sat:image>
-     * 
-     * returning a file which is the 'sat:imageFileName' file renamed in a filename_date.tiff which
-     * will be passed to the image
+     * <sat:illuminationAzimuthAngle>N/A</sat:illuminationAzimuthAngle> </sat:source> </sat:image>
      * 
      * @param xmlFile
      * @return
      * @throws Exception
      */
-    public File parse(File xmlFile) throws Exception {
-        File ret = null;
+    public static ProType parse(File xmlFile) throws Exception {
+        if (xmlFile == null) {
+            throw new NullPointerException("ProParser.parse() argument could not be null.");
+        }
         // parse the document into a dom
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(xmlFile);
         doc.getDocumentElement().normalize();
 
-        boolean found = false;
-        String fileName = null;
-        String time = null;
+        ProType ret = new ProType();
+        boolean complete = false;
         NodeList list = doc.getDocumentElement().getChildNodes();
         int size = list.getLength();
         for (int i = 0; i < size; i++) {
             Node proNode = list.item(i);
             if (proNode.getNodeName() == "sat:imageFileName") {
-                fileName = proNode.getTextContent();
+                ret.imageParentPath = xmlFile.getParent();
+                ret.imageFileName = proNode.getTextContent();
+
                 System.out.println("FILE:" + proNode.getTextContent());
             } else if (proNode.getNodeName() == "sat:source") {
                 NodeList sourceList = proNode.getChildNodes();
@@ -93,37 +112,86 @@ public class ProParser {
                 for (int j = 0; j < sourceSize; j++) {
                     Node sourceNode = sourceList.item(j);
                     if (sourceNode.getNodeName() == "sat:startTime") {
-                        time = sourceNode.getTextContent();
-                        found = true;
+                        ret.startTime = sourceNode.getTextContent();
+                        complete = true;
                         System.out.println("TIME:" + sourceNode.getTextContent());
                         break;
                     }
                 }
-                break;
-            }
-            if (found) {
-                StringBuilder file = new StringBuilder();
-                ret = new File(xmlFile.getParent() + fileName);
-                file.append(xmlFile.getParent()).append(FilenameUtils.getBaseName(fileName))
-                        .append("_").append(time).append(".tiff");
-                // rename the file
-                try {
-                    if (!ret.renameTo(new File(file.toString())))
-                        return null; // if filed
-                } catch (Exception e) {
-System.out.println("Exception: " + e.getLocalizedMessage());
-                    ret = null;
-                }
             }
         }
-        return ret;
+        if (complete) {
+            return ret;
+        }
+        return null;
     }
-    
-// TODO JUnit tests
+
+    /**
+     * Move the tif file referenced by the obj argument to the specified destDir renaming the tif
+     * as: destName/imageFileName_startTime.tif
+     * 
+     * @param obj
+     *            object representing a PRO tif
+     * @param destDir
+     *            destination dir
+     * @return
+     * @throws Exception
+     */
+    public static File moveTif(ProType obj, File destDir) throws Exception {
+        if (obj == null || destDir == null) {
+            throw new NullPointerException("ProParser.moveTiff() arguments could not be null.");
+        }
+        if (!destDir.exists() || !destDir.isDirectory() || !destDir.canWrite()) {
+            throw new IllegalArgumentException(
+                    "ProParser.moveTiff() destDir argument do not refer to a writeable or existent directory: \""
+                            + destDir.getAbsolutePath() + "\"");
+        }
+
+        String sourceName = new String(obj.imageParentPath + File.separator + obj.imageFileName);
+        File source = new File(sourceName);
+        if (!source.exists() || !source.canWrite()) {
+            throw new IllegalArgumentException(
+                    "ProParser.moveTiff() ProType argument do not refer to a writeable or existent file: \""
+                            + sourceName + "\"");
+        }
+
+        // change date format
+        final TimeZone tz=TimeZone.getTimeZone("UTC");
+        final SimpleDateFormat sdf_in = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        sdf_in.setTimeZone(tz);
+        Date d = sdf_in.parse(obj.startTime);
+        
+        final SimpleDateFormat sdf_out = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
+        sdf_out.setTimeZone(tz);
+        final String outDate = sdf_out.format(d);
+        /*
+         * building path to move to as: destName/imageFileName_startTime.tiff
+         */
+        StringBuilder destName = new StringBuilder();
+        destName.append(destDir).append(File.separator)
+                .append(FilenameUtils.getBaseName(obj.imageFileName))// or -> obj.productID
+                .append("_").append(outDate).append(".tif");
+
+        File dest = new File(destName.toString());
+
+        try {
+            // rename the file
+            if (!source.renameTo(dest))
+                dest = null; // if filed
+        } catch (Exception e) {
+            System.err.println("Exception: " + e.getLocalizedMessage());
+            dest = null;
+        }
+        return dest;
+    }
+
+    // TODO JUnit tests
     public static void main(String[] args0) throws Exception {
-        new ProParser()
-                .parse(new File(
-                "/home/carlo/work/data/EMSAWorkingDir/out/20110118T084207016UTC/"+
-                "569_RS1_20100707050441.046.SCN8.NEAR.1.00000_PRO/RS1_20100707050441.046.SCN8.NEAR.1.00000_geo8.xml"));
+        File proDir = new File(
+                "/home/carlo/work/data/EMSAWorkingDir/out/test_1/569_RS1_20100707050441.046.SCN8.NEAR.1.00000_PRO/");
+        File[] proFiles = proDir.listFiles((FilenameFilter) new WildcardFileFilter("*.xml"));
+        if (proFiles != null)
+            for (File f : proFiles)
+                moveTif(ProParser.parse(f), new File("/home/carlo/Downloads/"));
     }
 }

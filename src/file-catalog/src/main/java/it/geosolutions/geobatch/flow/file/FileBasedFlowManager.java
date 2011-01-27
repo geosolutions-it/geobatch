@@ -329,8 +329,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         final String serviceID = generatorConfig.getServiceID();
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("EventGeneratorCreationServiceID: " + serviceID);
-        final EventGeneratorService<FileSystemEvent, EventGeneratorConfiguration> generatorService = CatalogHolder
-                .getCatalog().getResource(serviceID, EventGeneratorService.class);
+        final EventGeneratorService<FileSystemEvent, EventGeneratorConfiguration> generatorService = 
+                            CatalogHolder.getCatalog().getResource(serviceID, EventGeneratorService.class);
         if (generatorService != null) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.info("EventGeneratorService found");

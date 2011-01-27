@@ -27,7 +27,6 @@ import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEvent
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration;
-import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 
 /**
  * A Conf for the Flow based on xml marshalled files.
@@ -36,7 +35,7 @@ import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
  * @author Alessio Fabiani, GeoSolutions
  * @author Ivano Picco
  */
-public class FileBasedFlowConfiguration extends BaseFlowConfiguration implements FlowConfiguration {
+public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
 
     /**
      * workingDirectory: this attribute represents the configuring directory for this flow. It can be relative to the catalog.xml directory or absolute. Attention: the configuring directory should be different from the one containing the configuration files.

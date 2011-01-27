@@ -33,7 +33,6 @@ import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
-import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.IOUtils;
@@ -62,8 +61,7 @@ import org.apache.commons.io.FilenameUtils;
  * 
  */
 public class FileBasedEventConsumer extends
-        BaseEventConsumer<FileSystemEvent, FileBasedEventConsumerConfiguration> implements
-        EventConsumer<FileSystemEvent, FileBasedEventConsumerConfiguration> {
+        BaseEventConsumer<FileSystemEvent, FileBasedEventConsumerConfiguration> {
 
     /**
      * Common file prefix (unless the rule specify another one)

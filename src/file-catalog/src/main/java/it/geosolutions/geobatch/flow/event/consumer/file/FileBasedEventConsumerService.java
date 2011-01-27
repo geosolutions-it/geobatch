@@ -22,18 +22,15 @@
 
 package it.geosolutions.geobatch.flow.event.consumer.file;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
-import it.geosolutions.geobatch.flow.event.consumer.EventConsumerService;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class FileBasedEventConsumerService extends BaseService implements
-        EventConsumerService<FileSystemEvent, FileBasedEventConsumerConfiguration> {
+public class FileBasedEventConsumerService extends BaseService {
 
     private final static Logger LOGGER = Logger.getLogger(FileBasedEventConsumerService.class
             .toString());

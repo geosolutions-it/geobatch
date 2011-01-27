@@ -39,26 +39,26 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     /**
      * The physical folder where to extract emsa packages
      **/
-    def emsaExchangePhysicalDir = "/home/tomcat/e-geos/";
+    def emsaExchangePhysicalDir = "/home/tomcat/e-geos/registered/";
     //def emsaExchangePhysicalDir = "/home/carlo/work/data/emsa/out/";
+    
     def readyFileName="PackagesReady.txt";
 
     final Logger LOGGER = Logger.getLogger(EMSA.class.toString());
     
-    //
+    // results
     List results = new ArrayList();
     
     listenerForwarder.started();
 
-
-    System.out.println("FILE: "+eventFilePath);
+//System.out.println("FILE: "+eventFilePath);
     // check if in the incoming eventFilePath is present the PackagesReady.txt file
     FileFilter filter=FileFilterUtils.nameFileFilter(readyFileName);
     File inDir=new File(eventFilePath);
     File[] readyFile=inDir.listFiles((FileFilter)filter);
     if (readyFile.length<1){
 
-        System.out.println("ERROR");
+//System.out.println("ERROR");
         String message="::EMSAService : do not contain \"" + readyFileName + "\" file..."
 
         LOGGER.log(Level.SEVERE, message);
@@ -85,7 +85,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     File[] list=outDir.listFiles((FileFilter)filter);
     for (file in list){
         String inputFileName = Extract.extract(file.getAbsolutePath());
-        System.out.println("2FILE:"+inputFileName);
+//System.out.println("2FILE:"+inputFileName);
     }
     
     // search for needed files
@@ -96,7 +96,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     list=c.collect(outDir);
     for (file in list){
         results.add(file.getAbsolutePath());
-        System.out.println("3FILE: "+file);
+//System.out.println("3FILE: "+file);
     }
 
     // forwarding some logging information to Flow Logger Listener

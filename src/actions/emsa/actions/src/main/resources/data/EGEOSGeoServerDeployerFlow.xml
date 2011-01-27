@@ -33,7 +33,7 @@
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.xml.*</regex>
+			<regex>((.*\.xml)|(.*_PRO))</regex>
 			<id>r1</id>
 			<description>description</description>
 			<name>test</name>
@@ -50,7 +50,8 @@
 			<serviceID>EGEOSGeoServerDeployerService</serviceID>
 
             <language>groovy</language>
-            <scriptFile>/home/carlo/work/data/emsa/script/EGEOSGeoServerDeployer.groovy</scriptFile>
+            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EGEOSGeoServerDeployer.groovy</scriptFile>
+<!-- <scriptFile>/home/carlo/work/data/emsa/script/EGEOSGeoServerDeployer.groovy</scriptFile>-->
 
 		    <properties/>
             
@@ -67,8 +68,9 @@
 			<serviceID>splittingService</serviceID>
 
 			<serviceIDs>
-				<string>SARWaveFlow</string>
-				<string>SARWindFlow</string>
+				<string>EGEOSSARWaveFlow</string>
+				<string>EGEOSSARWindFlow</string>
+				<string>EGEOSProImagemosaicFlow</string>
 			</serviceIDs>
 			
 		</SplittingConfiguration>

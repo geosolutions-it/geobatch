@@ -23,13 +23,12 @@
 package it.geosolutions.geobatch.flow.event.consumer.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileEventRule extends BaseConfiguration implements Configuration, Cloneable {
+public class FileEventRule extends BaseConfiguration implements Cloneable {
 
     /**
      * @uml.property  name="regex"

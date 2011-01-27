@@ -47,7 +47,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     /** Server physical directory:
      *  - where to copy files
      **/
-    def httpdPhysicalBaseDir = "/home/tomcat/e-geos/";
+    def httpdPhysicalBaseDir = "/home/tomcat/e-geos/registered/";
     //def httpdPhysicalBaseDir = "/home/carlo/work/data/emsa/out/";
 
     try {

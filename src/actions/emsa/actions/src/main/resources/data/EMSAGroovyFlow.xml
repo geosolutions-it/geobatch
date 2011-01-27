@@ -11,7 +11,7 @@
 		<wildCard>*</wildCard>
 		<watchDirectory>EMSAWorkingDir/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
-<!--DIR_CREATED, DIR_REMOVED, DIR_MODIFIED,FILE_MODIFIED, FILE_REMOVED, FILE_ADDED-->
+		<!-- when dir is modified -->
 		<eventType>DIR_MODIFIED</eventType>
 		<monitorType>DEFAULT</monitorType>
 		<id>id</id>
@@ -52,16 +52,13 @@
 			<serviceID>EMSAScriptingService</serviceID>
 
             <language>groovy</language>
-            <scriptFile>/home/carlo/work/data/emsa/script/EMSA.groovy</scriptFile>
+            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EMSA.groovy</scriptFile>
+<!--<scriptFile>/home/carlo/work/data/emsa/script/EMSA.groovy</scriptFile>-->
 
 		    <properties>
 				 <entry>
 				    <string>key0</string>
 				    <string>content0</string>
-				  </entry>
-				  <entry>
-				    <string>key1</string>
-				    <string>data1</string>
 				  </entry>
 			</properties>
 			
@@ -84,10 +81,11 @@
 			</serviceIDs>
 			
 		</SplittingConfiguration>
-		
-	</EventConsumerConfiguration>
 
+	</EventConsumerConfiguration>
+	
     <ListenerConfigurations>
+<!-- EMSAGroovyFlow -->        
     	<StatusProgressListener>
     		<serviceID>statusListenerService</serviceID>
             <id>EMSAActionStatusListener</id>
@@ -111,6 +109,7 @@
             <serviceID>cumulatingListenerService</serviceID>
             <id>EMSACumulatorListener</id>
         </CumulatingProgressListener>
+        
     </ListenerConfigurations>
     
 </FlowConfiguration>
