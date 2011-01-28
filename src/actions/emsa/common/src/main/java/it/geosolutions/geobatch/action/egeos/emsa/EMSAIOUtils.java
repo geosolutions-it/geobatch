@@ -6,7 +6,6 @@ package it.geosolutions.geobatch.action.egeos.emsa;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -95,11 +94,17 @@ public class EMSAIOUtils {
     public static File unTar(final File inputFile, final File destBaseDir) throws IOException {
         final File tmpDestDir = createTodayDirectory(destBaseDir, FilenameUtils
                 .getBaseName(inputFile.getName()));
-
-        final TarInputStream stream = new TarInputStream(new FileInputStream(inputFile));
-
-        if (stream == null) {
-            throw new IOException("Not valid archive file type.");
+        TarInputStream stream = null;
+        try {
+            stream = new TarInputStream(new FileInputStream(inputFile));
+        }
+        catch(IOException ioe){
+            throw ioe;
+        }
+        finally{
+            if (stream == null) {
+                throw new IOException("Not valid archive file type.");
+            }
         }
 
         TarEntry entry;

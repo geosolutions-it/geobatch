@@ -55,7 +55,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     /** Web Service URL 
      *  - IMPORTANT: DON'T FORGET THE '/' AT THE END OF 'httpdServiceURL'
      **/
-    def httpdServiceURL = "http://ows-csn.e-geos.it/e-geos/";
+    def httpdServiceURL = "http://ows-csn.e-geos.it/emsa/";
 
     /** OGC Web Services GetCapabilities **/
     def wfsGetCapabilities = "http://ows-csn.e-geos.it/geoserver/wfs?SERVICE=wfs&amp;VERSION=1.1.1&amp;REQUEST=GetCapabilities";

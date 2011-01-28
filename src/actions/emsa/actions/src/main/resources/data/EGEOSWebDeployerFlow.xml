@@ -33,7 +33,7 @@
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.xml.*</regex>
+			<regex>((.*\.xml)|(.*\_PRO))</regex>
 			<id>r1</id>
 			<description>description</description>
 			<name>test</name>

@@ -39,7 +39,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     /**
      * The physical folder where to extract emsa packages
      **/
-    def emsaExchangePhysicalDir = "/home/tomcat/e-geos/registered/";
+    def emsaExchangePhysicalDir = "/home/tomcat/emsa/registered/";
     //def emsaExchangePhysicalDir = "/home/carlo/work/data/emsa/out/";
     
     def readyFileName="PackagesReady.txt";

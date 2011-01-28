@@ -20,6 +20,7 @@ import it.geosolutions.geobatch.action.egeos.emsa.PackageType
 import it.geosolutions.geobatch.action.egeos.emsa.EMSAIOUtils
 
 import it.geosolutions.geobatch.action.egeos.emsa.features.*;
+import it.geosolutions.geobatch.action.egeos.emsa.raster.*;
 import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration;
 
 import java.io.File;
@@ -48,12 +49,12 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
 		/** DataStore properties **/
 		def database 	= "egeos"
 		def dbtype 		= "postgis"
-		def host 			= "localhost"
+		def host 			= "10.20.2.4"
 		def port 			= 5432
 		def user 			= "postgres"
 		def passwd 		= "postgres_matera"
 		
-		def ImageIODir=new File("/home/tomcat/e-geos/sarImages/");
+		def ImageIODir=new File("/home/tomcat/emsa/sarImages/");
 		//def ImageIODir=new File("/home/carlo/work/data/emsa/sarImages");
 
     try {
@@ -149,12 +150,14 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
                 File[] proFiles = pkgDir.listFiles((FilenameFilter)new WildcardFileFilter("*.xml"));
 				if (proFiles!=null){
 					for (File proXmlFile : proFiles) {
-						File test=ProParser.moveTif(ProParser.parse(proXmlFile),ImageIODir);
+//File test=
+						ProParser.moveTif(ProParser.parse(proXmlFile),ImageIODir);
 //println("RESULTING_FILE: "+test.getAbsolutePath());
 					}
 				}
-				else
+//else{
 //println("PROFILES list is null ");
+//}
                 
 				results.add(ImageIODir.getAbsolutePath());
             }

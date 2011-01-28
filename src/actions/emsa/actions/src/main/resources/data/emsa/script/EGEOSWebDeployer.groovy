@@ -42,12 +42,12 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     /** Web Service URL 
      *  - IMPORTANT: DON'T FORGET THE '/' AT THE END OF 'httpdServiceURL'
      **/
-    def httpdServiceURL = "http://ows-csn.e-geos.it/e-geos/";
+    def httpdServiceURL = "http://ows-csn.e-geos.it/emsa/";
 
     /** Server physical directory:
      *  - where to copy files
      **/
-    def httpdPhysicalBaseDir = "/home/tomcat/e-geos/registered/";
+    def httpdPhysicalBaseDir = "/home/tomcat/emsa/registered/";
     //def httpdPhysicalBaseDir = "/home/carlo/work/data/emsa/out/";
 
     try {
@@ -58,42 +58,41 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
         utils = new EMSAUtils();
 
         // ////
-        // some initial checks on input file name
+        // getting package directory
         // ////
         String inputFileName = eventFilePath;
-        final String filePrefix = FilenameUtils.getBaseName(inputFileName);
         final String fileSuffix = FilenameUtils.getExtension(inputFileName);
-        if (!fileSuffix.equalsIgnoreCase("xml")) {
-            sendError(listenerForwarder, "::EGEOSWebDeployer : invalid input archive \"" + inputFileName + "\"");
+//        final String filePrefix = FilenameUtils.getBaseName(inputFileName);
+        
+println("SUFFIX:"+fileSuffix);
+
+        File pkgDir;
+        if (fileSuffix.equalsIgnoreCase("xml")) {
+			pkgDir= new File(inputFileName).getParentFile()
         }
+        else {
+			pkgDir= new File(inputFileName);
+		}
 
         // ////
         // forwarding some logging information to Flow Logger Listener
         // ////
-        listenerForwarder.setTask("::EGEOSWebDeployer : Processing event " + eventFilePath)
+        listenerForwarder.setTask("::EGEOSWebDeployer : Processing event " + eventFilePath);
 
         /** The outcome events variable **/
         List results = new ArrayList();
 
-        // ////
-        // getting package directory
-        // ////
-        File pkgDir = new File(inputFileName).getParentFile();
-/** DO NOT CHANGE THIS! **/
-//String pkgDirName = FilenameUtils.getBaseName(pkgDir.getName()).substring(11) + "/";
-
-        // ////
-        // getting package type
-        // ////
-//PackageType type = utils.getPackageTypeFromName(FilenameUtils.getBaseName(pkgDir.getName()));
 
         // ////
         // Copy files...
         // ////
         // creating sub-folder if not exists...
-//println(httpdPhysicalBaseDir + "/" + pkgDir.getName());
-        File pkgOutputDataDir = utils.createInputDataDirIfNotExists(listenerForwarder,httpdPhysicalBaseDir + "/" + pkgDir.getName());
-        println(pkgOutputDataDir.getAbsolutePath());
+        File pkgOutputDataDir = utils.createInputDataDirIfNotExists(
+												listenerForwarder,
+												httpdPhysicalBaseDir + "/" + pkgDir.getName());
+
+println("WEBDeployer:copy "+pkgDir.getAbsolutePath());
+println("WEBDeployer:to "+pkgOutputDataDir.getAbsolutePath());
 
         if (pkgOutputDataDir != null && pkgOutputDataDir.exists() && pkgOutputDataDir.isDirectory()) {
             FileUtils.copyDirectory(pkgDir, pkgOutputDataDir, true);

@@ -5,6 +5,8 @@ import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,6 +18,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class ProParser {
+
+    private final static Logger LOGGER = Logger.getLogger(ProParser.class.toString());
 
     final static class ProType {
         public ProType() {
@@ -104,8 +108,9 @@ public class ProParser {
             if (proNode.getNodeName() == "sat:imageFileName") {
                 ret.imageParentPath = xmlFile.getParent();
                 ret.imageFileName = proNode.getTextContent();
+                if (LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("ProParser.parse() sat:imageFileName:" + proNode.getTextContent());
 
-                System.out.println("FILE:" + proNode.getTextContent());
             } else if (proNode.getNodeName() == "sat:source") {
                 NodeList sourceList = proNode.getChildNodes();
                 int sourceSize = sourceList.getLength();
@@ -114,7 +119,9 @@ public class ProParser {
                     if (sourceNode.getNodeName() == "sat:startTime") {
                         ret.startTime = sourceNode.getTextContent();
                         complete = true;
-                        System.out.println("TIME:" + sourceNode.getTextContent());
+                        if (LOGGER.isLoggable(Level.INFO))
+                            LOGGER.info("ProParser.parse() sat:startTime:"
+                                    + sourceNode.getTextContent());
                         break;
                     }
                 }
@@ -156,11 +163,11 @@ public class ProParser {
         }
 
         // change date format
-        final TimeZone tz=TimeZone.getTimeZone("UTC");
+        final TimeZone tz = TimeZone.getTimeZone("UTC");
         final SimpleDateFormat sdf_in = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         sdf_in.setTimeZone(tz);
         Date d = sdf_in.parse(obj.startTime);
-        
+
         final SimpleDateFormat sdf_out = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
         sdf_out.setTimeZone(tz);
         final String outDate = sdf_out.format(d);
@@ -176,10 +183,16 @@ public class ProParser {
 
         try {
             // rename the file
-            if (!source.renameTo(dest))
+            if (!source.renameTo(dest)) {
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe("ProParser.moveTif() : failed to rename tif");
                 dest = null; // if filed
+            } else if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("ProParser.moveTif() success file moved to-> "+dest.getAbsolutePath());
         } catch (Exception e) {
-            System.err.println("Exception: " + e.getLocalizedMessage());
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("ProParser.moveTif() : failed to rename tif, message is:"
+                        + e.getLocalizedMessage());
             dest = null;
         }
         return dest;
