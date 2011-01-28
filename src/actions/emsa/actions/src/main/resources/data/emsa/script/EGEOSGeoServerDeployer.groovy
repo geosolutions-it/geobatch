@@ -151,7 +151,7 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
 				if (proFiles!=null){
 					for (File proXmlFile : proFiles) {
 //File test=
-						ProParser.moveTif(ProParser.parse(proXmlFile),ImageIODir);
+						ProParser.copyTif(ProParser.parse(proXmlFile),ImageIODir,120);
 //println("RESULTING_FILE: "+test.getAbsolutePath());
 					}
 				}
