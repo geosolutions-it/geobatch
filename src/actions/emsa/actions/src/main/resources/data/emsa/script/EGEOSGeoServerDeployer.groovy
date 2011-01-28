@@ -54,7 +54,7 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
 		def user 			= "postgres"
 		def passwd 		= "postgres_matera"
 		
-		def ImageIODir=new File("/home/tomcat/emsa/sarImages/");
+		def ImageIODir=new File("/emsa/out/nfs/sarImages/");
 		//def ImageIODir=new File("/home/carlo/work/data/emsa/sarImages");
 
     try {

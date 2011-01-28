@@ -9,7 +9,7 @@
 
 	<EventGeneratorConfiguration>
 		<wildCard>*</wildCard>
-		<watchDirectory>EMSAWorkingDir/in</watchDirectory>
+		<watchDirectory>/emsa/in/ftp</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<!-- when dir is modified -->
 		<eventType>DIR_MODIFIED</eventType>

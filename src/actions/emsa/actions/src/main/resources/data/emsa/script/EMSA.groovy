@@ -39,7 +39,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     /**
      * The physical folder where to extract emsa packages
      **/
-    def emsaExchangePhysicalDir = "/home/tomcat/emsa/registered/";
+    def emsaExchangePhysicalDir = "/emsa/out/nfs/registered/";
     //def emsaExchangePhysicalDir = "/home/carlo/work/data/emsa/out/";
     
     def readyFileName="PackagesReady.txt";
@@ -69,7 +69,8 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     }
     // if the directory is complete move it
     try {
-        outDir=new File(inDir.getParent()+"/../out/"+inDir.getName());
+		//	from: /emsa/out/nfs/ to: /emsa/tmp/
+        outDir=new File(inDir.getParent()+"/../../tmp/"+inDir.getName());
         FileUtils.moveDirectory(inDir,outDir.getCanonicalFile());
     } catch (IOException ioe) {
         String message="::EMSAService : problem moving dir " + inDir + " to out dir "+outDir;
