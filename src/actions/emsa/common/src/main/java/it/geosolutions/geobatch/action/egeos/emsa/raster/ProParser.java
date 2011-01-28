@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.w3c.dom.Document;
@@ -141,16 +142,18 @@ public class ProParser {
      *            object representing a PRO tif
      * @param destDir
      *            destination dir
+     * @param seconds
+     *            seconds to wait (maximum) for nfs propagate. If -1 no check is performed.
      * @return
      * @throws Exception
      */
-    public static File moveTif(ProType obj, File destDir) throws Exception {
+    public static File copyTif(ProType obj, File destDir, final int seconds) throws Exception {
         if (obj == null || destDir == null) {
             throw new NullPointerException("ProParser.moveTiff() arguments could not be null.");
         }
         if (!destDir.exists() || !destDir.isDirectory() || !destDir.canWrite()) {
             throw new IllegalArgumentException(
-                    "ProParser.moveTiff() destDir argument do not refer to a writeable or existent directory: \""
+                    "ProParser.copyTif() destDir argument do not refer to a writeable or existent directory: \""
                             + destDir.getAbsolutePath() + "\"");
         }
 
@@ -158,7 +161,7 @@ public class ProParser {
         File source = new File(sourceName);
         if (!source.exists() || !source.canWrite()) {
             throw new IllegalArgumentException(
-                    "ProParser.moveTiff() ProType argument do not refer to a writeable or existent file: \""
+                    "ProParser.copyTif() ProType argument do not refer to a writeable or existent file: \""
                             + sourceName + "\"");
         }
 
@@ -182,17 +185,26 @@ public class ProParser {
         File dest = new File(destName.toString());
 
         try {
-            // rename the file
-            if (!source.renameTo(dest)) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("ProParser.moveTif() : failed to rename tif");
-                dest = null; // if filed
-            } else if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("ProParser.moveTif() success file moved to-> "+dest.getAbsolutePath());
+            // copy the file
+            FileUtils.copyFile(source, dest);
+            if (seconds>0){
+                if (!FileUtils.waitFor(dest, seconds)){
+                    dest=null;
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.severe("ProParser.copyTif() : failed to propagate tif to->"+dest.getAbsolutePath());
+                } else if (LOGGER.isLoggable(Level.INFO)){
+                    LOGGER.info("ProParser.copyTif() : file: "+source.getAbsoluteFile()
+                            +" succesfully copied and propagated over nfs to: "+dest.getAbsolutePath());
+                }
+            }
+            else if (LOGGER.isLoggable(Level.INFO)){
+                LOGGER.info("ProParser.copyTif() : source file: "+source.getAbsoluteFile()
+                        +" succesfully copied to: "+dest.getAbsolutePath());
+            }
         } catch (Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("ProParser.moveTif() : failed to rename tif, message is:"
-                        + e.getLocalizedMessage());
+                LOGGER.severe("ProParser.copyTif() : failed to copy tif to->"+dest.getAbsolutePath()+
+                        "message is: "+e.getLocalizedMessage());
             dest = null;
         }
         return dest;
@@ -205,6 +217,6 @@ public class ProParser {
         File[] proFiles = proDir.listFiles((FilenameFilter) new WildcardFileFilter("*.xml"));
         if (proFiles != null)
             for (File f : proFiles)
-                moveTif(ProParser.parse(f), new File("/home/carlo/Downloads/"));
+                copyTif(ProParser.parse(f), new File("/home/carlo/Downloads/"),-1);
     }
 }
