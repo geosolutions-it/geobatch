@@ -42,8 +42,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -134,6 +136,10 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @uml.property name="executor"
      */
     private ThreadPoolExecutor executor;
+
+    public ThreadPoolExecutor getExecutor() {
+        return executor;
+    }
 
     /**
      * @throws IOException
@@ -329,8 +335,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         final String serviceID = generatorConfig.getServiceID();
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("EventGeneratorCreationServiceID: " + serviceID);
-        final EventGeneratorService<FileSystemEvent, EventGeneratorConfiguration> generatorService = 
-                            CatalogHolder.getCatalog().getResource(serviceID, EventGeneratorService.class);
+        final EventGeneratorService<FileSystemEvent, EventGeneratorConfiguration> generatorService = CatalogHolder
+                .getCatalog().getResource(serviceID, EventGeneratorService.class);
         if (generatorService != null) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.info("EventGeneratorService found");
@@ -533,7 +539,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @throws IllegalArgumentException
      *             if the consumer is not in the {@link #eventConsumers} list of this FlowManager.
      */
-    /* package private */void execute(FileBasedEventConsumer consumer) {
+    /* package private */Future<Queue<FileSystemEvent>> execute(FileBasedEventConsumer consumer) {
         if (consumer.getStatus() != EventConsumerStatus.EXECUTING)
             throw new IllegalStateException("Consumer " + consumer
                     + " is not in an EXECUTING state.");
@@ -541,8 +547,11 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         if (!eventConsumers.contains(consumer))
             throw new IllegalArgumentException("Consumer " + consumer
                     + " is not handled by the current flowmanager.");
-
-        this.executor.execute(consumer);
+        try {
+            return this.executor.submit(consumer);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
     }
 
     public void postEvent(FileSystemEvent event) {
@@ -705,9 +714,10 @@ final class EventDispatcher extends Thread {
                                 LOGGER.fine(event + " was the only needed event for "
                                         + brandNewConsumer);
 
+                            fm.add(brandNewConsumer);
                             // etj: shouldn't we call
                             // executor.execute(consumer); here?
-                            fm.add(brandNewConsumer);
+                            // carlo: probably this is a good idea
                             fm.execute(brandNewConsumer);
                         }
 

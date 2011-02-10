@@ -31,8 +31,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class GBFileSystemWatcherSPI implements FileSystemMonitorSPI {
-    private final static Logger LOGGER = Logger.getLogger(GBFileSystemWatcherSPI.class.toString());
+public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
+    private final static Logger LOGGER = Logger.getLogger(GBFileSystemMonitorSPI.class.toString());
 
     public final static long DEFAULT_POLLING_INTERVAL = 1000; // milliseconds
     public final static long DEFAULT_MAX_LOOKING_INTERVAL = 10000; // milliseconds
@@ -47,7 +47,7 @@ public class GBFileSystemWatcherSPI implements FileSystemMonitorSPI {
         return true;
     }
 
-    public GBFileSystemWatcher createInstance(Map<String, ?> configuration) {
+    public GBFileSystemMonitor createInstance(Map<String, ?> configuration) {
         // get the params
         // polling interval
         Long interval = null;
@@ -81,14 +81,14 @@ public class GBFileSystemWatcherSPI implements FileSystemMonitorSPI {
             if (wildcard != null){
                 if (interval!=null){
                     if (interval != null && interval > 0)
-                        return new GBFileSystemWatcher(
+                        return new GBFileSystemMonitor(
                                 file.getAbsolutePath(), wildcard, interval, true, DEFAULT_MAX_LOOKING_INTERVAL);
                     else
-                        return new GBFileSystemWatcher(
+                        return new GBFileSystemMonitor(
                                 file.getAbsolutePath(), wildcard, DEFAULT_POLLING_INTERVAL, true, DEFAULT_MAX_LOOKING_INTERVAL);
                 }
                 else {
-                        return new GBFileSystemWatcher(
+                        return new GBFileSystemMonitor(
                                 file.getAbsolutePath(), wildcard, DEFAULT_POLLING_INTERVAL, true, DEFAULT_MAX_LOOKING_INTERVAL);
                 }
             }

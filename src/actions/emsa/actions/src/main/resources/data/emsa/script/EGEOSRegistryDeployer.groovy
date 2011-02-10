@@ -93,9 +93,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
         File pkgDir = new File(inputFileName).getParentFile();
         
         EOProcessor eoProcessor = new EOProcessor(pkgDir);
-/** DO NOT CHANGE THIS! **/
-//String pkgDirName = FilenameUtils.getBaseName(pkgDir.getName()).substring(11) + "/";
-
+        
         // ////
         // Reading Basic Package Info
         // ////

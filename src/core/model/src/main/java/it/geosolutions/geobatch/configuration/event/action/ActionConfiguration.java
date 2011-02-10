@@ -22,10 +22,8 @@
 
 package it.geosolutions.geobatch.configuration.event.action;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,11 +32,10 @@ import java.util.List;
  * @see FileBasedCatalogConfiguration
  * 
  * @author Simone Giannecchini
- * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
-public abstract class ActionConfiguration extends BaseConfiguration implements Configuration,
-        Cloneable {
+public abstract class ActionConfiguration extends BaseConfiguration implements Cloneable {
 
     /**
      * @uml.property  name="listenerIds"
@@ -57,7 +54,9 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
     private boolean failIgnored = false;
     
     /**
-     * workingDirectory: this attribute represents the configuring directory for this flow. It can be relative to the catalog.xml directory or absolute. Attention: the configuring directory should be different from the one containing the configuration files.
+     * workingDirectory: this attribute represents the configuring directory for this flow. 
+     * It can be relative to the catalog.xml directory or absolute. Attention: the configuring 
+     * directory should be different from the one containing the configuration files.
      * @uml.property  name="workingDirectory"
      */
     private String workingDirectory;
@@ -88,7 +87,8 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
     }
 
     /**
-     * Tells if an exception in this Actions should break the entire flow. <BR> Defaults to false. <P> Some somehow "minor" actions would not break the logical flow, for instance a remote file deletion via FTP.
+     * Tells if an exception in this Actions should break the entire flow. <BR> Defaults to false.
+     *  <P> Some somehow "minor" actions would not break the logical flow, for instance a remote file deletion via FTP.
      * @return  true if an error in this Actions should not stop the whole flow.
      * @uml.property  name="failIgnored"
      */

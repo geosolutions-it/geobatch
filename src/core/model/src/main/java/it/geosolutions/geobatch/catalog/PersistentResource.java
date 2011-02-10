@@ -23,8 +23,12 @@ package it.geosolutions.geobatch.catalog;
 
 import java.io.IOException;
 
-//import it.geosolutions.geobatch.catalog.dao.DAO;
-
+/**
+ * @author Simone Giannecchini
+ * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ *
+ * @param <C>
+ */
 public interface PersistentResource<C extends Configuration> extends Resource {
 
     /**
@@ -39,9 +43,5 @@ public interface PersistentResource<C extends Configuration> extends Resource {
     public void load() throws IOException;
 
     public boolean remove() throws IOException;
-
-    // public void setDAO(DAO<C, ?> dao);
-    //
-    // public DAO<C, ?> getDAO();
 
 }

@@ -34,8 +34,7 @@ import java.util.List;
 /**
  * @author  Alessio Fabiani
  */
-public interface FlowManager<EO extends EventObject, FC extends FlowConfiguration> extends
-        PersistentResource<FC>, Job {
+public interface FlowManager<EO extends EventObject, FC extends FlowConfiguration> extends PersistentResource<FC>, Job {
     /**
      * The Flow BaseEventConsumer identifier.
      */

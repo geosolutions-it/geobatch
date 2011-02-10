@@ -26,9 +26,7 @@ import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder
  **/
 public List execute(ScriptingConfiguration configuration, String eventFilePath, ProgressListenerForwarder listenerForwarder) throws Exception {
     // ////////////////////////////////////////////////////////////////////
-    //
     // Initializing input variables from Flow configuration
-    //
     // ////////////////////////////////////////////////////////////////////
      /*Map props = configuration.getProperties();
      String example0 = props.get("key0");
@@ -50,16 +48,30 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     List results = new ArrayList();
     
     listenerForwarder.started();
-
+//DEBUG
 //System.out.println("FILE: "+eventFilePath);
     // check if in the incoming eventFilePath is present the PackagesReady.txt file
-    FileFilter filter=FileFilterUtils.nameFileFilter(readyFileName);
+    // check if in the incoming eventFilePath is present the EOP Package
+    
+    //FileFilter filter=FileFilterUtils.nameFileFilter(readyFileName);
+    FileFilter filter=FileFilterUtils.or(
+				FileFilterUtils.nameFileFilter(readyFileName),
+				new WildcardFileFilter("*_EOP.tgz",IOCase.SENSITIVE));
+				
     File inDir=new File(eventFilePath);
     File[] readyFile=inDir.listFiles((FileFilter)filter);
-    if (readyFile.length<1){
-
+//DEBUG
+//int i=0;
+//for (File f : readyFile) {
+//System.out.println("Filtered "+(++i)+"FILE: "+f.getAbsolutePath());
+//}
+    // 1 - PackagesReady.txt file
+    // 2 - EOP Package
+    if (readyFile.length!=2){
+//DEBUG
 //System.out.println("ERROR");
-        String message="::EMSAService : do not contain \"" + readyFileName + "\" file..."
+        String message="::EMSAService : do not contain the needed \"" + readyFileName 
+							+ "\" file and the EOP package ... STOPPING!"
 
         LOGGER.log(Level.SEVERE, message);
         // ////
@@ -71,7 +83,10 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     try {
 		//	from: /emsa/out/nfs/ to: /emsa/tmp/
         outDir=new File(inDir.getParent()+"/../../tmp/"+inDir.getName());
-        FileUtils.moveDirectory(inDir,outDir.getCanonicalFile());
+        if (outDir.exists())
+			FileUtils.deleteQuietly(outDir);
+        FileUtils.copyDirectory(inDir,outDir.getCanonicalFile());
+        FileUtils.deleteQuietly(inDir);
     } catch (IOException ioe) {
         String message="::EMSAService : problem moving dir " + inDir + " to out dir "+outDir;
 

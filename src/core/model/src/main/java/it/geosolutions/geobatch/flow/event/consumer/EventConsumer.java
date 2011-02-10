@@ -29,7 +29,7 @@ import it.geosolutions.geobatch.flow.Job;
 import java.util.EventObject;
 
 /**
- * @author  Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public interface EventConsumer<EO extends EventObject, ECC extends EventConsumerConfiguration>
         extends ListenerRegistry<EventConsumerListener>, Job {

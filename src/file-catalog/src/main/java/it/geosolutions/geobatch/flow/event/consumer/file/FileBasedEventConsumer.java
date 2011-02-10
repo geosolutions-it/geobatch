@@ -65,46 +65,52 @@ public class FileBasedEventConsumer extends
 
     /**
      * Common file prefix (unless the rule specify another one)
-     * @uml.property  name="commonPrefixRegex"
+     * 
+     * @uml.property name="commonPrefixRegex"
      */
     private String commonPrefixRegex;
 
     /**
      * Stream Transfer control
-     * @uml.property  name="numInputFiles"
+     * 
+     * @uml.property name="numInputFiles"
      */
     private long numInputFiles = 0;
 
     /**
      * Storing mandatory rules and the times they will occur.
-     * @uml.property  name="mandatoryRules"
-     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule"
+     * 
+     * @uml.property name="mandatoryRules"
+     * @uml.associationEnd multiplicity="(0 -1)"
+     *                     elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule"
      */
     private final List<FileEventRule> mandatoryRules = new ArrayList<FileEventRule>();
 
     /**
      * Storing optional rules and the times they will occur.
-     * @uml.property  name="optionalRules"
-     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule"
+     * 
+     * @uml.property name="optionalRules"
+     * @uml.associationEnd multiplicity="(0 -1)"
+     *                     elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule"
      */
     private final List<FileEventRule> optionalRules = new ArrayList<FileEventRule>();
 
     /**
-     * @uml.property  name="workingDir"
+     * @uml.property name="workingDir"
      */
     private File workingDir;
 
     /**
-     * @uml.property  name="configuration"
-     * @uml.associationEnd  
+     * @uml.property name="configuration"
+     * @uml.associationEnd
      */
     private FileBasedEventConsumerConfiguration configuration;
 
     /**
-     * @uml.property  name="canceled"
+     * @uml.property name="canceled"
      */
     private volatile boolean canceled;
-    
+
     /**
      * Default logger
      */
@@ -116,9 +122,8 @@ public class FileBasedEventConsumer extends
 
         final File catalogFile = new File(
                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
-        
-        final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
-                catalogFile);
+
+        final File workingDir = Path.findLocation(configuration.getWorkingDirectory(), catalogFile);
 
         if (workingDir == null)
             throw new IllegalArgumentException("Invalid configuring directory");
@@ -143,11 +148,10 @@ public class FileBasedEventConsumer extends
         final String path = event.getSource().getAbsolutePath();
         final String fileName = FilenameUtils.getName(path);
         final String filePrefix = FilenameUtils.getBaseName(fileName);
-//        final String fullPath = FilenameUtils.getFullPath(path);
+        // final String fullPath = FilenameUtils.getFullPath(path);
 
         // check mandatory rules
-        boolean res = this
-                .checkRuleConsistency(event.getEventType(), filePrefix, fileName, true);
+        boolean res = this.checkRuleConsistency(event.getEventType(), filePrefix, fileName, true);
 
         // check optional rules if needed
         if (!res) {
@@ -155,16 +159,16 @@ public class FileBasedEventConsumer extends
         }
 
         /*
-         * COMMENTED OUT 19 Jan 2011 Carlo Cancellieri
-         * This is a not needed limitation to the fluxes
+         * COMMENTED OUT 19 Jan 2011 Carlo Cancellieri This is a not needed limitation to the fluxes
          */
-        //res &= this.checkSamePath(fullPath);
+        // res &= this.checkSamePath(fullPath);
 
         return res;
     }
 
     /**
-     * Check if all queued events refer to files in the same dir. 
+     * Check if all queued events refer to files in the same dir.
+     * 
      * @NOTE: CHECKME: is it really needed? will it not break flows that need scattered files?
      */
     private boolean checkSamePath(String fullpath) {
@@ -186,8 +190,8 @@ public class FileBasedEventConsumer extends
      * @return boolean
      * 
      */
-    private boolean checkRuleConsistency(final FileSystemEventType eventType,
-            final String prefix, final String fileName, final boolean mandatory) {
+    private boolean checkRuleConsistency(final FileSystemEventType eventType, final String prefix,
+            final String fileName, final boolean mandatory) {
 
         int occurrencies;
 
@@ -195,8 +199,7 @@ public class FileBasedEventConsumer extends
         for (FileEventRule rule : rules) {
 
             // check event type
-            final List<FileSystemEventType> eventTypes = rule
-                    .getAcceptableNotifications();
+            final List<FileSystemEventType> eventTypes = rule.getAcceptableNotifications();
             if (!checkEvent(eventType, eventTypes)) {
                 return false;
             }
@@ -228,7 +231,6 @@ public class FileBasedEventConsumer extends
                 }
             }
         }
-
         return false;
     }
 
@@ -302,8 +304,8 @@ public class FileBasedEventConsumer extends
         final List<Action<FileSystemEvent>> loadedActions = new ArrayList<Action<FileSystemEvent>>();
         for (ActionConfiguration actionConfig : configuration.getActions()) {
             final String actionServiceID = actionConfig.getServiceID();
-            final ActionService<FileSystemEvent, ActionConfiguration> actionService = 
-                    CatalogHolder.getCatalog().getResource(actionServiceID, ActionService.class);
+            final ActionService<FileSystemEvent, ActionConfiguration> actionService = CatalogHolder
+                    .getCatalog().getResource(actionServiceID, ActionService.class);
             if (actionService != null) {
                 Action<FileSystemEvent> action = actionService.createAction(actionConfig);
                 if (action == null) {
@@ -353,7 +355,7 @@ public class FileBasedEventConsumer extends
      * <LI>Create needed dirs</LI> <LI>Optionally backup files</LI> <LI>Move files into a
      * job-specific working dir</LI> <LI>Run the actions</LI>
      */
-    public void run() {
+    public Queue<FileSystemEvent> call() throws Exception {
         this.canceled = false;
         boolean jobResultSuccessful = false;
         Throwable exceptionOccurred = null;
@@ -366,34 +368,33 @@ public class FileBasedEventConsumer extends
             // create live working dir
             getListenerForwarder().progressing(10, "Managing events");
 
-            
-            // 
+            //
             // Management of current working directory
             //
-            // if we work on the input directory, we do not move around anything, unless we want to perform
+            // if we work on the input directory, we do not move around anything, unless we want to
+            // perform
             // a backup
 
-            
-            //Dateformat for creating working dirs. 
+            // Dateformat for creating working dirs.
             final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
             TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
-            dateFormatter.setTimeZone(TZ_UTC);           
+            dateFormatter.setTimeZone(TZ_UTC);
             final String timeStamp = dateFormatter.format(new Date());
-            
-            // current directory inside working dir, specifically created for this execution. Creation is deferred until first usage
+
+            // current directory inside working dir, specifically created for this execution.
+            // Creation is deferred until first usage
             final File currentRunDirectory = new File(this.workingDir, timeStamp);
-            if (configuration.isPerformBackup()||!configuration.isPreserveInput())
-                if(!currentRunDirectory.exists()&&!currentRunDirectory.mkdirs())
-                        throw new IllegalStateException("Could not create consumer backup directory!");       
-            
+            if (configuration.isPerformBackup() || !configuration.isPreserveInput())
+                if (!currentRunDirectory.exists() && !currentRunDirectory.mkdirs())
+                    throw new IllegalStateException("Could not create consumer backup directory!");
+
             // create backup dir. Creation is deferred until first usage
             getListenerForwarder().progressing(20, "Creating backup dir");
             final File backupDirectory = new File(currentRunDirectory, "backup");
             if (configuration.isPerformBackup())
-                if(!backupDirectory.exists()&&!backupDirectory.mkdirs())
-                        throw new IllegalStateException("Could not create consumer backup directory!");            
+                if (!backupDirectory.exists() && !backupDirectory.mkdirs())
+                    throw new IllegalStateException("Could not create consumer backup directory!");
 
-            
             //
             // Cycling on all the input events
             //
@@ -401,9 +402,8 @@ public class FileBasedEventConsumer extends
             int numProcessedFiles = 0;
             for (FileSystemEvent event : this.eventsQueue) {
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("FileBasedEventConsumer ["+
-                            Thread.currentThread().getName()+
-                            "]: new element retrieved from the MailBox.");
+                    LOGGER.info("FileBasedEventConsumer [" + Thread.currentThread().getName()
+                            + "]: new element retrieved from the MailBox.");
 
                 // get info for the input file event
                 final File sourceDataFile = event.getSource();
@@ -417,8 +417,8 @@ public class FileBasedEventConsumer extends
                 // copy input file/dir to current working directory
                 //
                 if (IOUtils.acquireLock(this, sourceDataFile)) {
-                    
-                    // 
+
+                    //
                     // Backing up inputs?
                     //
                     if (this.configuration.isPerformBackup()) {
@@ -435,12 +435,12 @@ public class FileBasedEventConsumer extends
                             FileUtils.copyDirectory(sourceDataFile, destDataFile);
                         else
                             FileUtils.copyFile(sourceDataFile, destDataFile);
-                    } 
-                    
+                    }
+
                     //
                     // Working on input events directly without moving to working dir?
                     //
-                    if(!configuration.isPreserveInput()){   
+                    if (!configuration.isPreserveInput()) {
 
                         // In case we do not work on the input as is, we move it to our
                         // current working directory
@@ -449,53 +449,55 @@ public class FileBasedEventConsumer extends
                             FileUtils.moveDirectory(sourceDataFile, destDataFile);
                         else
                             FileUtils.moveFile(sourceDataFile, destDataFile);
-                        
+
                         // adjust event sources since we moved the files locally
-                        fileEventList.offer(new FileSystemEvent(destDataFile,
-                                event.getEventType()));
-                    }else{
-                        // we are going to work directly on the input files 
+                        fileEventList
+                                .offer(new FileSystemEvent(destDataFile, event.getEventType()));
+                    } else {
+                        // we are going to work directly on the input files
                         fileEventList.offer(event);
-                        
+
                     }
 
-                    LOGGER.info("FileBasedEventConsumer ["+
-                            Thread.currentThread().getName()+"]: accepted file "+
-                            sourceDataFile);  
+                    LOGGER.info("FileBasedEventConsumer [" + Thread.currentThread().getName()
+                            + "]: accepted file " + sourceDataFile);
                 } else {
-                    LOGGER.severe(new StringBuilder("FileBasedEventConsumer [").append(
-                            Thread.currentThread().getName()).append("]: could not lock file ")
-                            .append(sourceDataFile).toString());
+                    LOGGER.severe(new StringBuilder("FileBasedEventConsumer [")
+                            .append(Thread.currentThread().getName())
+                            .append("]: could not lock file ").append(sourceDataFile).toString());
 
                     // TODO: lock not acquired: what else?
                 }
 
             }
 
-            
             // //
             // TODO if no further processing is necessary or can be
             // done due to some error, set eventConsumerStatus to Finished or
             // Failure. (etj: ???)
             // //
-            LOGGER.info("FileBasedEventConsumer ["+
-                    Thread.currentThread().getName()+"]: new element processed.");
+            LOGGER.info("FileBasedEventConsumer [" + Thread.currentThread().getName()
+                    + "]: new element processed.");
 
             // // Finally, run the Actions on the files
             getListenerForwarder().progressing(50, "Running actions");
 
-            if (this.applyActions(fileEventList)) {
+            try{ 
+                this.applyActions(fileEventList);
                 this.setStatus(EventConsumerStatus.COMPLETED);
                 jobResultSuccessful = true;
-            } else {
+            } catch (ActionException ae){
                 this.setStatus(EventConsumerStatus.FAILED);
+                throw ae;
             }
+
+            return fileEventList;
         } catch (ActionException e) {
             if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "FileBasedEventConsumer "
-                        + Thread.currentThread().getName() + " Error during "
-                        + e.getAction().getClass().getSimpleName() + " execution: "
-                        + e.getLocalizedMessage(), e);
+                LOGGER.log(Level.SEVERE,
+                        "FileBasedEventConsumer " + Thread.currentThread().getName()
+                                + " Error during " + e.getAction().getClass().getSimpleName()
+                                + " execution: " + e.getLocalizedMessage(), e);
             }
             this.setStatus(EventConsumerStatus.FAILED);
             exceptionOccurred = e;
@@ -532,12 +534,12 @@ public class FileBasedEventConsumer extends
             else
                 getListenerForwarder().failed(exceptionOccurred);
         }
+        return null;
     }
-
 
     /**
      * @param configuration
-     * @uml.property  name="configuration"
+     * @uml.property name="configuration"
      */
     public void setConfiguration(FileBasedEventConsumerConfiguration configuration) {
         this.configuration = configuration;
@@ -545,8 +547,8 @@ public class FileBasedEventConsumer extends
     }
 
     /**
-     * @return  the workingDirectory
-     * @uml.property  name="workingDir"
+     * @return the workingDirectory
+     * @uml.property name="workingDir"
      */
     public File getWorkingDir() {
         return workingDir;
@@ -554,7 +556,7 @@ public class FileBasedEventConsumer extends
 
     /**
      * @return
-     * @uml.property  name="configuration"
+     * @uml.property name="configuration"
      */
     public FileBasedEventConsumerConfiguration getConfiguration() {
         return configuration;
@@ -606,7 +608,7 @@ public class FileBasedEventConsumer extends
 
     /**
      * @return
-     * @uml.property  name="canceled"
+     * @uml.property name="canceled"
      */
     public boolean isCanceled() {
         return canceled;

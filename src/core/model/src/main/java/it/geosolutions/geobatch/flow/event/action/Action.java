@@ -60,13 +60,4 @@ public interface Action<XEO extends EventObject> extends Identifiable, Job,
      */
     public boolean isFailIgnored();
 
-    // public <T extends ActionConfiguration> T getConfiguration();
-
-    // public boolean isRunning();
-
-    // public void stop();
-
-    // public void addListener(ActionListener listener);
-
-    // public void removeListener(ActionListener listener);
 }

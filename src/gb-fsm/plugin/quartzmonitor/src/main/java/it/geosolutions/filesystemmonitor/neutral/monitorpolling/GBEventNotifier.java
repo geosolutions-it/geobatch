@@ -41,10 +41,10 @@ import javax.swing.event.EventListenerList;
  * @author (v2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
-public class GBEventConsumer implements Runnable {
+public class GBEventNotifier implements Runnable {
 
     /** Default Logger **/
-    private final static Logger LOGGER = Logger.getLogger(GBEventConsumer.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(GBEventNotifier.class.toString());
     
     /**
      * @uml.property  name="lockWaitThreshold"
@@ -121,7 +121,7 @@ public class GBEventConsumer implements Runnable {
     /**
      * Default Constructor
      */
-    public GBEventConsumer(boolean lockInputFiles, long maxLockingWait, EventListenerList list){
+    public GBEventNotifier(boolean lockInputFiles, long maxLockingWait, EventListenerList list){
         this.lockInputFiles=lockInputFiles;
         this.lockWaitThreshold=maxLockingWait;
         this.stop=true; //still not started
@@ -138,7 +138,7 @@ public class GBEventConsumer implements Runnable {
      * 
      * @param event
      */
-    private void handleEvent(final FileSystemEvent event) {
+    private void notifyAll(final FileSystemEvent event) {
         
 /*
         FileSystemEventType notified= event.getNotification();
@@ -184,8 +184,10 @@ public class GBEventConsumer implements Runnable {
      * 
      * @param o - The FileSystemEvent to add
      */
-    public void add(FileSystemEvent o){
-        eventQueue.add(o);
+    public void newEvent(FileSystemEvent o){
+        if (!eventQueue.offer(o))
+            if (LOGGER.isLoggable(Level.WARNING))
+                LOGGER.warning("GBEventNotifier: Unable to offer a new object to the eventQueue");
     }
     
     /**
@@ -196,7 +198,7 @@ public class GBEventConsumer implements Runnable {
             FileSystemEvent event=null;
             while ((event=eventQueue.take())!=STOP && !stop){
                 // send event
-                handleEvent(event);
+                notifyAll(event);
             }
             // clean
             eventQueue.clear();

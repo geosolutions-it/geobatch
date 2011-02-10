@@ -22,7 +22,8 @@
 package it.geosolutions.geobatch.catalog;
 
 /**
- * @author  Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author Simone Giannecchini
+ * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public interface Identifiable {
 

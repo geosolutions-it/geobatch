@@ -22,6 +22,7 @@
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemListener;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitor;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -40,8 +41,8 @@ import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
-public class GBFileSystemWatcher implements it.geosolutions.filesystemmonitor.monitor.FileSystemMonitor {
-    private final static Logger LOGGER = Logger.getLogger(GBFileSystemWatcher.class.toString());
+public class GBFileSystemMonitor implements FileSystemMonitor {
+    private final static Logger LOGGER = Logger.getLogger(GBFileSystemMonitor.class.toString());
 
     // JOB
     /**
@@ -108,14 +109,14 @@ public class GBFileSystemWatcher implements it.geosolutions.filesystemmonitor.mo
      * @uml.property  name="consumer"
      * @uml.associationEnd  
      */
-    GBEventConsumer consumer=null;
+    GBEventNotifier consumer=null;
     
     /*
      * This is discussed on 17 jan 2011 with
      * Carlo Cancellieri and Alessio Fabiani
      * 
      * The scheduler is a singleton and is used
-     * by all the GBFileSystemWatcher instances.
+     * by all the GBFileSystemMonitor instances.
      * 
      * This is due to the GeoBatch architecture.
      */
@@ -142,7 +143,7 @@ public class GBFileSystemWatcher implements it.geosolutions.filesystemmonitor.mo
     private Scheduler getScheduler() throws SchedulerException, InterruptedException{
         if (sched==null){
             try{
-                lock.tryLock(GBFileSystemWatcherSPI.DEFAULT_MAX_LOOKING_INTERVAL,TimeUnit.MILLISECONDS);
+                lock.tryLock(GBFileSystemMonitorSPI.DEFAULT_MAX_LOOKING_INTERVAL,TimeUnit.MILLISECONDS);
                 if (sched==null){
                     try {
                         sched=StdSchedulerFactory.getDefaultScheduler();
@@ -166,8 +167,11 @@ public class GBFileSystemWatcher implements it.geosolutions.filesystemmonitor.mo
         return sched;
     }
     
-    public GBFileSystemWatcher(String path, String wildcard, long pollingInterval,
-            final boolean lockInputFiles, final long maxLockingWait)
+    public GBFileSystemMonitor(final String path,
+                                final String wildcard,
+                                final long pollingInterval,
+                                final boolean lockInputFiles,
+                                final long maxLockingWait)
         throws SchedulerException, NullPointerException 
         {
         fsm=new GBFileSystemMonitorJob();
@@ -202,7 +206,7 @@ public class GBFileSystemWatcher implements it.geosolutions.filesystemmonitor.mo
         
         jobDetail=new JobDetail(jobName, jobGroup, GBFileSystemMonitorJob.class);
 
-        consumer=new GBEventConsumer(lockInputFiles, maxLockingWait, listeners);
+        consumer=new GBEventNotifier(lockInputFiles, maxLockingWait, listeners);
         
         // setting the JobDataMap to initialize the job 
         jdm=jobDetail.getJobDataMap();
@@ -210,11 +214,11 @@ public class GBFileSystemWatcher implements it.geosolutions.filesystemmonitor.mo
             jdm.put(GBFileSystemMonitorJob.ROOT_PATH_KEY, path);
             jdm.put(GBFileSystemMonitorJob.WILDCARD_KEY, wildcard);
             jdm.put(GBFileSystemMonitorJob.WAITING_LOCK_TIME_KEY, maxLockingWait);
-            jdm.put(GBFileSystemMonitorJob.EVENT_CONSUMER_KEY, consumer);
+            jdm.put(GBFileSystemMonitorJob.EVENT_NOTIFIER_KEY, consumer);
         }
         else
             throw new NullPointerException(
-                    "Could not start a GBFileSystemMonitorJob the corresponding JobDataMap is null.");
+                    "GBFileSystemMonitor: Could not start a GBFileSystemMonitorJob the corresponding JobDataMap is null.");
         
         // a SimpleTrigger to start the job indefinitely number of times with pollingInterval interval
         trigger=new SimpleTrigger(path+wildcard, SimpleTrigger.REPEAT_INDEFINITELY, pollingInterval);
@@ -413,7 +417,7 @@ public class GBFileSystemWatcher implements it.geosolutions.filesystemmonitor.mo
         }
         catch (Throwable t){
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("GBFileSystemWatcher: Error adding a listener.\n"+t.getLocalizedMessage());
+                LOGGER.severe("GBFileSystemMonitor: Error adding a listener.\n"+t.getLocalizedMessage());
         }
     }
     
@@ -425,7 +429,7 @@ public class GBFileSystemWatcher implements it.geosolutions.filesystemmonitor.mo
         }
         catch(Throwable t){
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("GBFileSystemWatcher: Unable to remove the listener: "+fileListener
+                LOGGER.severe("GBFileSystemMonitor: Unable to remove the listener: "+fileListener
                         +" message:\n"+t.getLocalizedMessage());
         }
     }

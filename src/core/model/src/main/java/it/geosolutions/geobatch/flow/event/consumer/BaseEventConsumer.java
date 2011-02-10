@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.TimeZone;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,7 +48,7 @@ import java.util.logging.Logger;
  * @author Simone Giannecchini, GeoSolutions
  */
 public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends EventConsumerConfiguration>
-        extends BaseResource implements Runnable, EventConsumer<XEO, ECC> {
+        extends BaseResource implements Callable<Queue<XEO>>, EventConsumer<XEO, ECC> {
 
     private static Logger LOGGER = Logger.getLogger(BaseEventConsumer.class.toString());
 
@@ -84,7 +85,8 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
     // private EventListenerList listeners = new EventListenerList();
     /**
      * @uml.property  name="listenerForwarder"
-     * @uml.associationEnd  multiplicity="(1 1)" inverse="this$0:it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer$EventConsumerListenerForwarder"
+     * @uml.associationEnd  multiplicity="(1 1)" 
+     * inverse="this$0:it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer$EventConsumerListenerForwarder"
      */
     protected EventConsumerListenerForwarder listenerForwarder = new EventConsumerListenerForwarder();
 
@@ -159,7 +161,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
      * We may need to specify on a per-action basis if an error in the action should stop the whole
      * flow.</I>
      */
-    protected boolean applyActions(Queue<XEO> events) throws ActionException {
+    protected Queue<XEO> applyActions(Queue<XEO> events) throws ActionException {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.log(Level.FINE, "Applying " + actions.size() + " actions on " + events.size()
                     + " events.");
@@ -182,14 +184,16 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                 currentAction = action;
                 events = action.execute(events);
 
-                if (events == null || events.isEmpty()) {
+                if (events == null){
+                    throw new IllegalArgumentException("Action " + action.getClass().getSimpleName()
+                            + " left no event in queue.");
+                }
+                if (events.isEmpty()) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.warning("Action " + action.getClass().getSimpleName()
                                 + " left no event in queue.");
                     }
-                    return false;
                 }
-
                 step++;
 
             } catch (ActionException e) {
@@ -240,8 +244,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                     + " events left in the queue after last action ("
                     + currentAction.getClass().getSimpleName() + ")");
         }
-
-        return true;
+        return events;
     }
 
     public boolean pause() {

@@ -44,7 +44,7 @@ public class GBFileSystemMonitorJob implements StatefulJob{
     protected static final String ROOT_PATH_KEY="ROOT_PATH";
     protected static final String WILDCARD_KEY="WILDCARD";
     protected static final String OBSERVER_KEY="OBSERVER";
-    protected static final String EVENT_CONSUMER_KEY="EVENT_CONSUMER";
+    protected static final String EVENT_NOTIFIER_KEY="EVENT_NOTIFIER";
     // time to wait to get the lock
     protected static final String WAITING_LOCK_TIME_KEY="WAITING_LOCK_TIME";
     protected static final long WAITING_LOCK_TIME_DEFAULT=1000; // milliseconds
@@ -147,14 +147,14 @@ public class GBFileSystemMonitorJob implements StatefulJob{
     private static FileAlterationObserver buildObserver(JobDataMap jdm) throws JobExecutionException {
         
         FileAlterationObserver observer=null;
-        GBEventConsumer consumer=null;
+        GBEventNotifier notifier=null;
         // first time build
         try {
             File directory = new File(jdm.getString(ROOT_PATH_KEY));
             observer = new FileAlterationObserver(directory,
                                 new WildcardFileFilter(jdm.getString(WILDCARD_KEY)));
-            consumer=(GBEventConsumer)jdm.get(EVENT_CONSUMER_KEY);
-            FileAlterationListener fal=new GBFileAlterationListener(consumer);
+            notifier=(GBEventNotifier)jdm.get(EVENT_NOTIFIER_KEY);
+            FileAlterationListener fal=new GBFileAlterationListener(notifier);
             observer.addListener(fal);
         }
         catch (ClassCastException cce){

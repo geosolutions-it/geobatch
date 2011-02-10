@@ -24,9 +24,10 @@ package it.geosolutions.geobatch.catalog;
 /**
  * @author Alessio Fabiani, GeoSolutions
  * @author Simone Giannecchini, GeoSolutions
+ * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public interface Service extends Resource, Identifiable {
+public interface Service extends Resource {
 
     public boolean isAvailable();
 

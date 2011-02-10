@@ -76,7 +76,7 @@
         <imageio-ext.version>1.1-SNAPSHOT</imageio-ext.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <spring.security.version>3.0.3.RELEASE</spring.security.version>
-        <camel.version>2.5.0</camel.version>
+        <camel.version>2.6.0</camel.version>
         <dao.type>xstream</dao.type> <!-- the default dao type -->
     </properties>
 
@@ -910,7 +910,12 @@
             </dependency>
 
 <!-- CAMEL =============================================-->
-			
+			<dependency>    
+			    <groupId>it.geosolutions</groupId>
+				<artifactId>gb-camel</artifactId>
+				<version>${gb.version}</version>
+            </dependency>
+            
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-core</artifactId>
@@ -920,6 +925,35 @@
 				<groupId>org.apache.camel</groupId>
 				<artifactId>camel-quartz</artifactId>
 				<version>${camel.version}</version>
+			</dependency>
+			<!-- required by both client and server -->
+			<dependency>
+				<groupId>org.apache.camel</groupId>
+				<artifactId>camel-core</artifactId>
+				<version>${camel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.camel</groupId>
+				<artifactId>camel-jms</artifactId>
+				<version>${camel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.camel</groupId>
+				<artifactId>camel-spring</artifactId>
+				<version>${camel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-camel</artifactId>
+				<version>5.2.0</version>
+			</dependency>
+
+			<!-- xbean is required for ActiveMQ broker configuration in the spring xml file -->
+			<dependency>
+				<groupId>org.apache.xbean</groupId>
+				<artifactId>xbean-spring</artifactId>
+				<version>3.6</version>
+				<!--<version>${spring.version}</version>-->
 			</dependency>
 
 <!-- restlet dependencies =======================================-->
@@ -1055,7 +1089,6 @@
                 <artifactId>gb-fs-catalog</artifactId>
                 <version>${gb.version}</version>
             </dependency>
-            	
 <!-- gb-fsm -->
             <dependency>
                 <groupId>it.geosolutions</groupId>
@@ -1113,10 +1146,15 @@
                 <artifactId>gb-alias-registry</artifactId>
                 <version>${gb.version}</version>
             </dependency>
-            
-			
-			
 
+<!-- CAMEL -->            
+			<dependency>
+				<groupId>it.geosolutions</groupId>
+				<artifactId>gb-camel</artifactId>
+				<version>${gb.version}</version>
+            </dependency>
+			
+<!-- GEOTIFF -->
             <dependency>
                 <groupId>it.geosolutions</groupId>
                 <artifactId>gb-action-geotiff</artifactId>
@@ -1658,6 +1696,7 @@
 		<module>gb-fsm</module>
         <module>gb-tools</module>
 		<module>file-catalog</module>
+		<module>gb-camel</module>
 		<module>core</module>
 		<module>dao</module>
 		<module>gb-action-tools</module>

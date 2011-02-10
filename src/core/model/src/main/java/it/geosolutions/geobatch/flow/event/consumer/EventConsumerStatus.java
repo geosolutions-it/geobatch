@@ -44,8 +44,23 @@ public enum EventConsumerStatus {
     COMPLETED,
 
     /**
-     * Finished KO EventConsumerStatus CODE
+     * Finished OK EventConsumerStatus CODE
      */
-    FAILED;
+    FAILED,
+    /*
+     * added by Carlo on 02 02 2011
+     * these status are inherited from the EventConsumer
+     * interface methods
+     * isPaused()
+     * isCanceled()
+     */
+    /**
+     * isCanceled()
+     */
+    CANCELED,
+    /**
+     * isPaused()
+     */
+    PAUSED;
 
 }

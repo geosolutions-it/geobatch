@@ -22,33 +22,37 @@
 
 package it.geosolutions.geobatch.catalog.impl;
 
+import it.geosolutions.geobatch.catalog.Configuration;
+import it.geosolutions.geobatch.catalog.dao.DAO;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import it.geosolutions.geobatch.catalog.Configuration;
-import it.geosolutions.geobatch.catalog.PersistentResource;
-import it.geosolutions.geobatch.catalog.dao.DAO;
-
-public abstract class BasePersistentResource<C extends Configuration> extends BaseResource
-        implements PersistentResource<C> {
+/**
+ * 
+ * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * 
+ * @param <C>
+ */
+public abstract class BasePersistentResource<C extends Configuration> extends BaseResource {
 
     private final static Logger LOGGER = Logger.getLogger(BasePersistentResource.class.toString());
 
     /**
-     * @uml.property  name="configuration"
-     * @uml.associationEnd  
+     * @uml.property name="configuration"
+     * @uml.associationEnd
      */
     private C configuration;
 
     /**
-     * @uml.property  name="dao"
-     * @uml.associationEnd  
+     * @uml.property name="dao"
+     * @uml.associationEnd
      */
     private DAO dao;
 
     /**
-     * @uml.property  name="removed"
+     * @uml.property name="removed"
      */
     private boolean removed;
 
@@ -61,26 +65,24 @@ public abstract class BasePersistentResource<C extends Configuration> extends Ba
     }
 
     public void persist() throws IOException {
-        if (configuration!=null)
-            if (configuration.isDirty()){
+        if (configuration != null)
+            if (configuration.isDirty()) {
                 configuration = (C) dao.persist(configuration);
+            } else {
+                String message = "BasePersistentResource: applying persist() with a null configuration";
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe(message);
+                throw new IOException(message);
             }
-        else {
-            String message="BasePersistentResource: applying persist() with a null configuration";
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
-            throw new IOException(message);
-        }
     }
 
     public void load() throws IOException {
         final Configuration config = dao.find(this.getId(), false);
         setConfiguration((C) config);
-        if (configuration!=null){
+        if (configuration != null) {
             configuration.setDirty(false);
-        }
-        else {
-            String message="BasePersistentResource: applying load() with a null configuration";
+        } else {
+            String message = "BasePersistentResource: applying load() with a null configuration";
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.severe(message);
             throw new IOException(message);
@@ -90,17 +92,14 @@ public abstract class BasePersistentResource<C extends Configuration> extends Ba
     public boolean remove() throws IOException {
         removed = dao.remove(configuration);
         return removed;
-
     }
 
     public void setConfiguration(C configuration) {
         this.configuration = configuration;
-
     }
 
     public void setDAO(DAO flowConfigurationDAO) {
         this.dao = flowConfigurationDAO;
-
     }
 
 }
