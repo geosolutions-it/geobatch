@@ -4,53 +4,266 @@
 ##
 ## - ETj
 
-*.log
-*.db
 nb*.xml
 src/web/ftp*db
-src/web/gbusers*db
-src/web/src/main/webapp/WEB-INF/data
 .classpath
 .project
 .settings
+*.euml2
+*.umlproject
+# src/gb-octave/
+
+src/gb-octave/target
+
+# src/
+
 src/target
-src/target.txt
-src/actions/target
-src/actions/ascii-grids/target
-src/actions/emsa/target
-src/actions/emsa/actions/target
-src/actions/emsa/common/target
-src/actions/gb-ftp/target
-src/actions/gb-geoserver/target
-src/actions/gb-geoserver/gb-geoserver-action/target
-src/actions/gb-geoserver/gsrest-action/target
-src/actions/gb-geoserver/gsrestclient/target
-src/actions/gb-octave/target
-src/actions/gb-task-executor/target
-src/actions/geotiff/target
-src/actions/geowebcache/target
-src/actions/imagemosaic/target
-src/actions/metocs/target
-src/actions/metocs/commons/target
-src/actions/metocs/e-geos/target
-src/actions/metocs/nurc-sem/target
-src/actions/metocs/nurc-tda/target
-src/actions/registry/target
-src/actions/registry/e-geos/target
-src/actions/sas/target
-src/actions/scripting/target
-src/actions/scripting/bin/target
-src/actions/shapefile/target
-src/actions/splitting/target
-src/core/impl/target
-src/core/model/target
+
+# src/dao/
+
+src/dao/target
+
+# src/dao/xstream/
+
+src/dao/xstream/target
+
+# src/dao/xstream/alias-registry/
+
 src/dao/xstream/alias-registry/target
+
+# src/dao/xstream/xstream-core/
+
 src/dao/xstream/xstream-core/target
-src/file-catalog/target
-src/gb-fsm/module/monitor/target
-src/gb-fsm/plugin/javamonitor/target
-src/gb-fsm/plugin/jnimonitor/target
-src/gb-ftp-server/target
-src/legacy/actions/gb-ctd/target
-src/users/target
+
+# src/dao/jibx/
+
+src/dao/jibx/target
+
+# src/gb-camel/
+
+src/gb-camel/target
+
+# src/gb-action-tools/
+
+src/gb-action-tools/target
+
+# src/actions/
+
+src/actions/target
+
+# src/actions/ascii-grids/
+
+src/actions/ascii-grids/target
+
+# src/actions/lamma/
+
+src/actions/lamma/target
+
+# src/actions/lamma/bin/
+
+src/actions/lamma/bin/target
+
+# src/actions/emsa/
+
+src/actions/emsa/target
+
+# src/actions/emsa/actions/
+
+src/actions/emsa/actions/target
+
+# src/actions/emsa/common/
+
+src/actions/emsa/common/target
+
+# src/actions/registry/
+
+src/actions/registry/target
+
+# src/actions/registry/e-geos/
+
+src/actions/registry/e-geos/target
+
+# src/actions/imagemosaic/
+
+src/actions/imagemosaic/target
+
+# src/actions/gb-geoserver/
+
+src/actions/gb-geoserver/target
+
+# src/actions/gb-geoserver/gsrest-action/
+
+src/actions/gb-geoserver/gsrest-action/target
+
+# src/actions/gb-geoserver/gb-geoserver-action/
+
+src/actions/gb-geoserver/gb-geoserver-action/target
+
+# src/actions/gb-geoserver/gsrestclient/
+
+src/actions/gb-geoserver/gsrestclient/target
+
+# src/actions/gb-octave-fileinfileout/
+
+src/actions/gb-octave-fileinfileout/target
+
+# src/actions/scripting/
+
+src/actions/scripting/target
+
+# src/actions/shapefile/
+
+src/actions/shapefile/target
+
+# src/actions/gb-freemarker/
+
+src/actions/gb-freemarker/target
+
+# src/actions/pending/
+
+src/actions/pending/target
+
+# src/actions/pending/gb-gliders/
+
+src/actions/pending/gb-gliders/target
+
+# src/actions/pending/gb-ctd/
+
+src/actions/pending/gb-ctd/target
+
+# src/actions/pending/gb-sas/
+
+src/actions/pending/gb-sas/target
+
+# src/actions/pending/gb-ais/
+
+src/actions/pending/gb-ais/target
+
+# src/actions/pending/gb-jgsflodess/
+
+src/actions/pending/gb-jgsflodess/target
+
+# src/actions/pending/sasmanager/
+
+src/actions/pending/sasmanager/target
+
+# src/actions/gb-task-executor/
+
+src/actions/gb-task-executor/target
+
+# src/actions/sas/
+
+src/actions/sas/target
+
+# src/actions/gb-ftp/
+
+src/actions/gb-ftp/target
+
+# src/actions/geowebcache/
+
+src/actions/geowebcache/target
+
+# src/actions/splitting/
+
+src/actions/splitting/target
+
+# src/actions/geotiff/
+
+src/actions/geotiff/target
+
+# src/actions/metocs/
+
+src/actions/metocs/target
+
+# src/actions/metocs/commons/
+
+src/actions/metocs/commons/target
+
+# src/actions/metocs/nurc-tda/
+
+src/actions/metocs/nurc-tda/target
+
+# src/actions/metocs/e-geos/
+
+src/actions/metocs/e-geos/target
+
+# src/actions/metocs/nurc-sem/
+
+src/actions/metocs/nurc-sem/target
+
+# src/web/
+
 src/web/target
+
+# src/file-catalog/
+
+src/file-catalog/target
+
+# src/core/
+
+src/core/target
+
+# src/core/impl/
+
+src/core/impl/target
+
+# src/core/model/
+
+src/core/model/target
+
+# src/gb-ftp-server/
+
+src/gb-ftp-server/target
+
+# src/gb-fsm/
+
+src/gb-fsm/target
+
+# src/gb-fsm/plugin/
+
+src/gb-fsm/plugin/target
+
+# src/gb-fsm/plugin/jnimonitor/
+
+src/gb-fsm/plugin/jnimonitor/target
+
+# src/gb-fsm/plugin/quartzmonitor/
+
+src/gb-fsm/plugin/quartzmonitor/target
+
+# src/gb-fsm/module/
+
+src/gb-fsm/module/target
+
+# src/gb-fsm/module/monitor/
+
+src/gb-fsm/module/monitor/target
+
+# src/gb-fsm/deploy/
+
+src/gb-fsm/deploy/target
+
+# src/gb-fsm/deploy/libs/
+
+src/gb-fsm/deploy/libs/target
+
+# src/gb-fsm/deploy/libs/windows/
+
+src/gb-fsm/deploy/libs/windows/target
+
+# src/gb-fsm/deploy/libs/linux/
+
+src/gb-fsm/deploy/libs/linux/target
+
+# src/gb-fsm/deploy/jar/
+
+src/gb-fsm/deploy/jar/target
+
+# src/gb-tools/
+
+src/gb-tools/target
+
+# src/users/
+
+src/users/target
+

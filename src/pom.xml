@@ -1100,12 +1100,7 @@
                 <artifactId>gb-fsm-plugin</artifactId>
                 <version>${gb.version}</version>
             </dependency>
-<!-- FSM IMPLEMENTATIONS -->        
-			<dependency>
-				<groupId>it.geosolutions</groupId>
-				<artifactId>gb-fsm-purejava</artifactId>
-				<version>${gb.version}</version>
-			</dependency>
+<!-- FSM IMPLEMENTATIONS -->
 			<dependency>
 				<groupId>it.geosolutions</groupId>
 				<artifactId>gb-fsm-native</artifactId>
@@ -1116,6 +1111,15 @@
 				<artifactId>gb-fsm-quartz</artifactId>
 				<version>${gb.version}</version>
 			</dependency>
+		<!-- DEPRECATED
+			Removed: 10 Feb 2011
+			By: Carlo
+			As requested: Simone
+			<dependency>
+				<groupId>it.geosolutions</groupId>
+				<artifactId>gb-fsm-purejava</artifactId>
+				<version>${gb.version}</version>
+			</dependency>-->
 			
 <!-- ALIAS REGISTRY -->
 			<dependency>

@@ -12,6 +12,8 @@ src/web/ftp*db
 .classpath
 .project
 .settings
+*.euml2
+*.umlproject
 EOF
 
 for pom in $(find src -name "pom.xml")

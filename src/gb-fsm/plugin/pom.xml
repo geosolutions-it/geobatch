@@ -55,7 +55,11 @@
   <modules>
 		<module>quartzmonitor</module>
 		<module>jnimonitor</module>
-		<module>javamonitor</module>
+		<!-- DEPRECATED
+		Removed: 10 Feb 2011
+		By: Carlo
+		As requested: Simone
+		<module>javamonitor</module>-->
   </modules>
   
 </project>
