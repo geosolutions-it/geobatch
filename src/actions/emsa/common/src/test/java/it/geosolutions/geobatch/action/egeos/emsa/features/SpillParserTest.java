@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.io.IOUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.postgis.PostgisNGDataStoreFactory;

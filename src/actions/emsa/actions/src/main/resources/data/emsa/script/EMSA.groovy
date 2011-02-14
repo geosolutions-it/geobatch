@@ -37,7 +37,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     /**
      * The physical folder where to extract emsa packages
      **/
-    def emsaExchangePhysicalDir = "/emsa/out/nfs/registered/";
+    def emsaExchangePhysicalDir = "C:/work/E-GEOS/EMSA/GEOBATCH_DATA_DIR/EMSA/EMSA_out_dir/registered/";
     //def emsaExchangePhysicalDir = "/home/carlo/work/data/emsa/out/";
     
     def readyFileName="PackagesReady.txt";
@@ -101,7 +101,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     File[] list=outDir.listFiles((FileFilter)filter);
     for (file in list){
         String inputFileName = Extract.extract(file.getAbsolutePath());
-//System.out.println("2FILE:"+inputFileName);
+		//System.out.println("2FILE:"+inputFileName);
     }
     
     // search for needed files
@@ -110,11 +110,29 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
                 new WildcardFileFilter("*_PCK.xml",IOCase.INSENSITIVE),
                 new WildcardFileFilter("*_PRO",IOCase.INSENSITIVE)));
     list=c.collect(outDir);
+	
+	EOPfile = null;
     for (file in list){
-        results.add(file.getAbsolutePath());
-//System.out.println("3FILE: "+file);
+	    if (!file.getAbsolutePath().contains("_EOP")) {
+			results.add(file.getAbsolutePath());
+		} else {
+			EOPfile = file;
+		}
     }
 
+	if (EOPfile != null) {
+		results.add(0, EOPfile.getAbsolutePath());
+	} else {
+		String message="::EMSAService : do not contain the needed \"" + readyFileName 
+							+ "\" file and the EOP package ... STOPPING!"
+
+        LOGGER.log(Level.SEVERE, message);
+        // ////
+        // fake event to avoid Failed Status!
+        results.add("DONE");
+        return results;
+	}
+	
     // forwarding some logging information to Flow Logger Listener
     listenerForwarder.setTask("::EMSAService : Processing event " + eventFilePath)
 
@@ -134,6 +152,8 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
        }
    }
 
+   System.out.println(" >>>>>> RESULTS >>>>>> " + results)
+   
     // ////
     // forwarding event to the next action
     return results;
