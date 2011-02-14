@@ -1711,7 +1711,10 @@
 		<module>gb-fsm</module>
         <module>gb-tools</module>
 		<module>file-catalog</module>
+<<<<<<< HEAD
 <!--		<module>gb-jms</module> -->
+=======
+>>>>>>> dd4f54f0670228125b3d24b3cdde65c8577d7887
 		<module>core</module>
 		<module>dao</module>
 		<module>gb-action-tools</module>
