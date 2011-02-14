@@ -224,7 +224,13 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                 listenerForwarder.progressing();
 
                 if (!currentAction.isFailIgnored()) {
-                    events.clear();
+                    if (events == null){
+                        throw new IllegalArgumentException("Action " + action.getClass().getSimpleName()
+                                + " left no event in queue.");
+                    }
+                    else {
+                        events.clear();
+                    }
                     // wrap the unhandled exception
                     throw new ActionException(currentAction, e.getMessage(), e);
                 } else {

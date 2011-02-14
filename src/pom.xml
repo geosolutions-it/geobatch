@@ -184,6 +184,19 @@
                 <module>deploy</module>
             </modules>
         </profile>
+        
+        <profile>
+            <id>jms</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-jms</module>
+            </modules>
+        </profile>
 <!--
         <profile>
             <id>gb-fs-catalog</id>
@@ -301,8 +314,6 @@
             </activation>
             <modules>
                 <module>gb-octave</module>
-                <module>gb-action-tools</module>
-                <module>gb-tools</module>
             </modules>
         </profile>
         <!-- this profile can be used instead of:
@@ -912,7 +923,7 @@
 <!-- CAMEL =============================================-->
 			<dependency>    
 			    <groupId>it.geosolutions</groupId>
-				<artifactId>gb-camel</artifactId>
+				<artifactId>gb-jms</artifactId>
 				<version>${gb.version}</version>
             </dependency>
             
@@ -1700,11 +1711,11 @@
 		<module>gb-fsm</module>
         <module>gb-tools</module>
 		<module>file-catalog</module>
-		<module>gb-camel</module>
+<!--		<module>gb-jms</module> -->
 		<module>core</module>
 		<module>dao</module>
 		<module>gb-action-tools</module>
-        <module>gb-octave</module>
+<!--        <module>gb-octave</module> -->
         <module>actions</module>
         <module>users</module>
         <module>gb-ftp-server</module>

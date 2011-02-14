@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+		
+		
+		<!-- Camel JMSProducer to be able to send messages to a remote Active MQ server -->
+		
+		<bean id="jms" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		    <property name="brokerURL" value="tcp://localhost:61611"/>
+		</bean>
+		
+		<camel:camelContext id="camel-client">
+		
+			<camel:template id="camelTemplate"/>
+			<!-- <camel:endpoint uri="jms:queue:fileSevice"/>-->
+			
+			<!-- Camel proxy for a given service, in this case the JMS queue In Camel 
+				2.0 , the proxy should be defined in camelContext. 
+				http://camel.apache.org/tutorial-jmsremoting.html#Tutorial-JmsRemoting-Preface 
+				http://camel.apache.org/spring-remoting.html
+			<camel:proxy id="fileServiceProxy"
+				serviceInterface="it.geosolutions.geobatch.camel.GBFlowService"
+				serviceUrl="jms:queue:fileSevice" /> -->
+				
+		</camel:camelContext>
+		
+</beans>
