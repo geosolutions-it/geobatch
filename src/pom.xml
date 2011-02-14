@@ -1696,7 +1696,6 @@
 		<module>gb-fsm</module>
         <module>gb-tools</module>
 		<module>file-catalog</module>
-		<module>gb-camel</module>
 		<module>core</module>
 		<module>dao</module>
 		<module>gb-action-tools</module>
