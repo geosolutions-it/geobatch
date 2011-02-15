@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.geobatch.org/gdal_translate"
+	xmlns="http://www.geobatch.org/gdal_translate">
+
+	<xsd:element name="GdalAddo">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>
+					converts raster data between different formats
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:all>
+				<xsd:element name="r" minOccurs="0" maxOccurs="1">
+					<xsd:simpleType>
+						<xsd:annotation>
+							<xsd:documentation>resampling algorithm
+						
+						    nearest (default),average,gauss,cubic,average_mp,average_magphase,mode 
+							</xsd:documentation>
+						</xsd:annotation>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="nearest"></xsd:enumeration>
+							<xsd:enumeration value="average"></xsd:enumeration>
+							<xsd:enumeration value="gauss"></xsd:enumeration>
+							<xsd:enumeration value="cubic"></xsd:enumeration>
+							<xsd:enumeration value="average_mp"></xsd:enumeration>
+							<xsd:enumeration value="average_magphase"></xsd:enumeration>
+							<xsd:enumeration value="mode"></xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="ro" type="xsd:boolean"
+					minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							open the dataset in read-only mode, in order to 
+							generate external overview (for GeoTIFF especially). 
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				
+				<xsd:element name="clean" type="xsd:boolean"
+					minOccurs="0" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							remove all overviews.  
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="filename" type="xsd:string" minOccurs="1"
+					maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							The file to build overviews for 
+							(or whose overviews must be removed). 
+    				</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="levels" type="xsd:string" minOccurs="0"
+								maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation>
+							A list of integral overview levels to build. 
+							Ignored with -clean option. 
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

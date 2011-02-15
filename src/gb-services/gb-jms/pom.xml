@@ -25,7 +25,7 @@
 	<artifactId>gb-jms</artifactId>
 	<packaging>jar</packaging>
 
-	<name>JMS Flow Manager component</name>
+	<name>JMS Flow Manager service</name>
 	<description>
         JMS Flow Manager component based on CAMEL
     </description>

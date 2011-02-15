@@ -81,6 +81,20 @@ public abstract class BasePersistentResource<C extends Configuration> extends Ba
         setConfiguration((C) config);
         if (configuration != null) {
             configuration.setDirty(false);
+            
+            // enforce ID equivalence
+            if(!this.getId().equals(configuration.getId())){
+                String message;
+                if (configuration.getId()!=null)
+                    message = "BasePersistentResource: The flow ID should be equals to the Flux file name: " +
+                    		"ID: "+configuration.getId()+" Flux file name: "+this.getId();
+                    else
+                        message = "BasePersistentResource: The flow ID should not be null. Flux file name: "+this.getId();
+
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe(message);
+                throw new IOException(message);
+            }
         } else {
             String message = "BasePersistentResource: applying load() with a null configuration";
             if (LOGGER.isLoggable(Level.SEVERE))

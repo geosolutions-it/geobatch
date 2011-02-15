@@ -134,9 +134,14 @@ public class JMSFlowManager implements AsyncProcessor {
         if (consumer.canConsumeAll(fsel)) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.info("JMSFlowManager: Can consume");
+            
+            // using the Flow manager task executor
             Future<Queue<FileSystemEvent>> future = parent.getExecutor().submit(consumer);
+
+            // waiting for the result            
             Queue<FileSystemEvent> result = future.get();
 
+            // building the response
             List<String> outList = new ArrayList<String>();
             for (FileSystemEvent fse : result) {
                 File f = fse.getSource();
@@ -178,7 +183,8 @@ public class JMSFlowManager implements AsyncProcessor {
                     LOGGER.info("JMSFlowManager: (" + exchange.getIn().getMessageId()
                             + ") STARTING PROCESSING");
                 }
-                // make the work
+                
+                // do the work
                 response = workOn(request);
             }
         } catch (Throwable t) {
@@ -239,6 +245,7 @@ public class JMSFlowManager implements AsyncProcessor {
         } catch (Throwable t) {
 //TODO            // exchange.getIn().setFault(true);
 //TODO            // exchange.setException(t);
+            t.printStackTrace();
         } finally {
             callback.done(true);
         }

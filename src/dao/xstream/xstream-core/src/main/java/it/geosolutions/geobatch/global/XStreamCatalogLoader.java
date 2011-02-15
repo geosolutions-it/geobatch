@@ -211,8 +211,8 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
 // TODO change this:
                 final FileBasedFlowManager flow = new FileBasedFlowManager();
                 flow.setId(FilenameUtils.getBaseName(o.getName()));
-                DAO catalogLoader = new XStreamFlowConfigurationDAO(dataDir.getAbsolutePath(), alias);
-                flow.setDAO(catalogLoader);
+                DAO flowLoader = new XStreamFlowConfigurationDAO(dataDir.getAbsolutePath(), alias);
+                flow.setDAO(flowLoader);
                 flow.load();
 // TODO ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // add to the catalog

@@ -24,7 +24,6 @@ package it.geosolutions.geobatch.geotiff.overview;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
@@ -39,14 +38,17 @@ import org.geotools.utils.progress.ProcessingEvent;
 import org.geotools.utils.progress.ProcessingEventListener;
 
 /**
- * Comments here ...
+ * Action to add overview to an input geotif image.
+ * NOTE: only one image is available.
  * 
  * @author Simone Giannechini, GeoSolutions
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
- * @version $GeoTIFFOverviewsEmbedder.java $ Revision: x.x $ 23/mar/07 11:42:25
+ * @version $GeoTIFFOverviewsEmbedder.java
+ * Revision: 0.1 $ 23/mar/07 11:42:25
+ * Revision: 0.2 $ 15/Feb/11 13:00:00
  */
-public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> implements
-        Action<FileSystemEvent> {
+public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 
     private GeoTiffOverviewsEmbedderConfiguration configuration;
 

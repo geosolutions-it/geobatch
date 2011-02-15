@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>geotiff_flow0</id>
+	<name>Prepare GeoTIFF and publish</name>
+	<description>Create overviews, retile the image and publish on GeoServer</description>
+
+	<workingDirectory>geotiff</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>geotiff/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<id>id</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+	
+    <EventConsumerConfiguration>
+		<id>geotiff_retile_overview_publish</id>
+		<name>dummy</name>
+		<description>dummy</description>
+
+		<listenerId>GeoTIFFConsumerLogger0</listenerId>
+        <listenerId>GeoTIFFCumulator0</listenerId>
+        
+		<workingDirectory>geotiff</workingDirectory>
+		<performBackup>false</performBackup>
+
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.tif.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+
+		<GeoTiffRetilerConfiguration>
+			<id>GeoTiffRetiler</id>
+			<description>Action to retile the geotif</description>
+			<name>GdalTranslate action</name>
+			
+			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
+			<listenerId>GeoTIFFActionLogger0</listenerId>
+			
+			<workingDirectory>geotiff</workingDirectory>
+			<serviceID>geoTiffRetilerService</serviceID>
+			
+			<tileH>256</tileH>
+			<tileW>256</tileW>
+			
+		</GeoTiffRetilerConfiguration>
+		
+		<GeoTiffOverviewsEmbedderConfiguration>
+			<id>GeoTiffOverviewsEmbedder</id>
+			<description>Action to add overview to the geotif</description>
+			<name>GdalTranslate action</name>
+			
+			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
+			<listenerId>GeoTIFFActionLogger0</listenerId>
+			
+			<workingDirectory>geotiff</workingDirectory>
+			<serviceID>geotiffOverviewsEmbedderService</serviceID>
+			
+			<downsampleStep>2</downsampleStep>
+			<scaleAlgorithm>Average</scaleAlgorithm>
+			<numSteps>15</numSteps>
+			<tileH>256</tileH>
+			<tileW>256</tileW>
+			
+			
+		</GeoTiffOverviewsEmbedderConfiguration>
+		
+		
+		<!--GeoServerActionConfiguration>
+            <serviceID>geotiffGeoServerGeneratorService</serviceID>
+			<id>geotiff</id>
+			<description>Action to ingest GeoTIFF on GeoServer</description>
+			<name>geotiff action</name>
+
+			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
+			<listenerId>GeoTIFFActionLogger0</listenerId>
+			
+			<workingDirectory>geotiff</workingDirectory>
+            <crs>EPSG:4326</crs>
+            <envelope/>
+            <dataTransferMethod>DIRECT</dataTransferMethod>
+            <geoserverPWD>geoserver</geoserverPWD>
+            <geoserverUID>admin</geoserverUID>
+            <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+            <wmsPath>/</wmsPath>
+            <defaultStyle>raster</defaultStyle>
+            <styles/>
+		</GeoServerActionConfiguration-->
+
+	</EventConsumerConfiguration>
+
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>GeoTIFFStatusActionLogger0</id>
+    	</StatusProgressListener>
+        
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>GeoTIFFActionLogger0</id>
+
+            <loggerName>GeoTIFFActionLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>GeoTIFFConsumerLogger0</id>
+
+            <loggerName>GeoTIFFConsumerLogger0</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>GeoTIFFCumulator0</id>
+        </CumulatingProgressListener>
+    </ListenerConfigurations>
+    
+</FlowConfiguration>

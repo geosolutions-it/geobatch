@@ -83,7 +83,6 @@ public class GeoTIFFFolderGeoServerConfigurator extends
 
             while (events.size() > 0) {
                 FileSystemEvent event = events.remove();
-                final String configId = configuration.getName();
 
                 // //
                 // data flow configuration and dataStore name must not be null.

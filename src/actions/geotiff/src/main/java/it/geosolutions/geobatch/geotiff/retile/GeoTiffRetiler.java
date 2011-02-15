@@ -23,10 +23,8 @@ package it.geosolutions.geobatch.geotiff.retile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +36,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.media.jai.RenderedOp;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -56,15 +55,15 @@ import org.opengis.parameter.ParameterValueGroup;
 import com.sun.media.jai.operator.ImageReadDescriptor;
 
 /**
- * Comments here ...
+ * ReTile the passed geotif image. NOTE: accept only one image per run
  * 
  * @author Simone Giannechini, GeoSolutions
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
- * @version $GeoTIFFOverviewsEmbedder.java $ Revision: x.x $ 23/mar/07 11:42:25
+ * @version $GeoTIFFOverviewsEmbedder.java Revision: 0.1 $ 23/mar/07 11:42:25 Revision: 0.2 $
+ *          15/Feb/11 14:40:00
  */
-@SuppressWarnings("deprecation")
-public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
-        Action<FileSystemEvent> {
+public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
 
     private GeoTiffRetilerConfiguration configuration;
 
@@ -75,8 +74,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
         this.configuration = configuration;
     }
 
-    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
-            throws ActionException {
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         try {
 
             // looking for file
@@ -94,7 +92,6 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
 
             final File tiledInputFile = new File(inputFile.getParent(), name + "_tiled."
                     + extension);
-            
 
             // //
             //
@@ -122,7 +119,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
                         + tiledInputFile.getAbsolutePath());
             }
             final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) format
-                    .getReader( inputFile, new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
+                    .getReader(inputFile, new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
                             Boolean.TRUE));
 
             // /////////////////////////////////////////////////////////////////////
@@ -159,7 +156,6 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
             wparams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
                     .setValue(wp);
 
-
             // /////////////////////////////////////////////////////////////////////
             //
             // ACQUIRING A WRITER AND PERFORMING A WRITE
@@ -167,8 +163,9 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
             // /////////////////////////////////////////////////////////////////////
             final AbstractGridCoverageWriter writer = (AbstractGridCoverageWriter) new GeoTiffWriter(
                     tiledInputFile);
-            writer.write(inCoverage, (GeneralParameterValue[]) wparams.values().toArray(
-                    new GeneralParameterValue[1]));
+            writer.write(inCoverage,
+                    (GeneralParameterValue[]) wparams.values()
+                            .toArray(new GeneralParameterValue[1]));
 
             // /////////////////////////////////////////////////////////////////////
             //
@@ -180,6 +177,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
                     .getProperty(ImageReadDescriptor.PROPERTY_NAME_IMAGE_READER);
             r.dispose();
             Object input = r.getInput();
+
             if (input instanceof ImageInputStream) {
                 ((ImageInputStream) input).close();
             }
@@ -189,14 +187,14 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
 
             // do we need to remove the input?
             if (!tiledInputFile.renameTo(inputFile)) {
-                Path.copyFile(tiledInputFile, inputFile);
-                Path.deleteFile(tiledInputFile);
+                FileUtils.copyFile(tiledInputFile, inputFile);
+                FileUtils.deleteQuietly(tiledInputFile);
             }
 
             return events;
         } catch (Exception t) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
             throw new ActionException(this, t.getMessage(), t);
         }
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<GdalTranslate>
+    <ot>Int16</ot>
+    <of>GTIFF</of>
+    <outsize>50% 50%</outsize>
+    <strict>true</strict>
+    <!--<scale>10 10</scale>-->
+    <co_params>
+    	<co>TILED=YES</co>
+    	<co>BLOCKXSIZE=64</co>
+    	<co>BLOCKYZISE=64</co>
+    </co_params>
+    <srcwin>0 0 2000 2000</srcwin>
+	<source>G:\data\ASAR_WSM_scaled.tif</source>
+	<destination>G:\work\geobatch.git\src\web\src\main\webapp\WEB-INF\data\geotiff_work\in\ASAR_WSM_scaled_retiled.tif</destination>
+</GdalTranslate>
