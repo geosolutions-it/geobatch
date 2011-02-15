@@ -22,9 +22,11 @@
 package it.geosolutions.geobatch.geotiff.retile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.tools.file.FileGarbageCollector;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +38,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.media.jai.RenderedOp;
 
+import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -76,23 +79,6 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
 
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         try {
-
-            // looking for file
-            if (events.size() != 1) {
-                throw new IllegalArgumentException("Wrong number of elements for this action: "
-                        + events.size());
-            }
-
-            // get the first event
-            final FileSystemEvent event = events.peek();
-            final File inputFile = event.getSource();
-            final String absolutePath = inputFile.getAbsolutePath();
-            final String name = FilenameUtils.getName(absolutePath);
-            final String extension = FilenameUtils.getExtension(absolutePath);
-
-            final File tiledInputFile = new File(inputFile.getParent(), name + "_tiled."
-                    + extension);
-
             // //
             //
             // data flow configuration and dataStore name must not be null.
@@ -103,6 +89,41 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                 throw new IllegalStateException("DataFlowConfig is null.");
             }
 
+            //
+            // look for a valid file that we can read
+            //
+            File inputFile = null;
+            String absolutePath = null;
+            String inputFileName =null;   
+            AbstractGridFormat format=null;
+            FileSystemEventType eventType=null;
+            FileSystemEvent event=null;
+            
+            while(events.size()>0){
+                event=events.remove();
+                inputFile = event.getSource();
+                absolutePath = inputFile.getAbsolutePath();
+                inputFileName = FilenameUtils.getName(absolutePath);
+                
+                // getting a format for the given input
+                format = (AbstractGridFormat) GridFormatFinder.findFormat(inputFile);
+                if (format != null && !( format instanceof UnknownFormat)) {
+                    eventType=event.getEventType();
+                    break;
+                }
+                // bad file
+                format=null;
+            }
+            event=null;
+            
+            // looking for file
+            if (format==null) {
+                throw new IllegalArgumentException("Unable to find a reader for the provided events: "
+                        + events);
+            }
+            final File tiledTiffFile = new File(inputFile.getParent(), inputFileName + "_tiled.tif");
+
+
             // /////////////////////////////////////////////////////////////////////
             //
             // ACQUIRING A READER
@@ -111,16 +132,9 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info("Acquiring a reader for the provided file...");
             }
-            // getting a reader for the given input
-            final AbstractGridFormat format = (AbstractGridFormat) GridFormatFinder
-                    .findFormat(inputFile);
-            if (format == null || format instanceof UnknownFormat) {
-                throw new IllegalArgumentException("Unable to find a reader for the file:"
-                        + tiledInputFile.getAbsolutePath());
-            }
+
             final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) format
-                    .getReader(inputFile, new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
-                            Boolean.TRUE));
+                    .getReader(inputFile, new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER,Boolean.TRUE));
 
             // /////////////////////////////////////////////////////////////////////
             //
@@ -161,11 +175,9 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
             // ACQUIRING A WRITER AND PERFORMING A WRITE
             //
             // /////////////////////////////////////////////////////////////////////
-            final AbstractGridCoverageWriter writer = (AbstractGridCoverageWriter) new GeoTiffWriter(
-                    tiledInputFile);
+            final AbstractGridCoverageWriter writer = (AbstractGridCoverageWriter) new GeoTiffWriter(tiledTiffFile);
             writer.write(inCoverage,
-                    (GeneralParameterValue[]) wparams.values()
-                            .toArray(new GeneralParameterValue[1]));
+                    (GeneralParameterValue[]) wparams.values().toArray(new GeneralParameterValue[1]));
 
             // /////////////////////////////////////////////////////////////////////
             //
@@ -185,11 +197,17 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
             writer.dispose();
             reader.dispose();
 
+            final String outputFileName=
+                FilenameUtils.getFullPath(absolutePath)+FilenameUtils.getBaseName(inputFileName)+".tif";
+            final File outputFile=new File(outputFileName);
             // do we need to remove the input?
-            if (!tiledInputFile.renameTo(inputFile)) {
-                FileUtils.copyFile(tiledInputFile, inputFile);
-                FileUtils.deleteQuietly(tiledInputFile);
-            }
+            FileUtils.copyFile(tiledTiffFile, outputFile);
+            FileUtils.deleteQuietly(tiledTiffFile);
+            
+            // set the output
+            events.clear();
+            
+            events.add(new FileSystemEvent(outputFile, eventType));
 
             return events;
         } catch (Exception t) {

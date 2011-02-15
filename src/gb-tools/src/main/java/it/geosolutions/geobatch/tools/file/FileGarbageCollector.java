@@ -19,7 +19,7 @@ public class FileGarbageCollector {
      * @return initialized instance of this singleton
      * @throws InterruptedException - if Unable to get the lock
      */
-    public FileCleaningTracker getFileGarbageCollector() throws InterruptedException{
+    public static FileCleaningTracker getFileCleaningTracker() throws InterruptedException{
         if (singleton==null){
             try{
                 lock.tryLock(LOCK_WAIT_TIME, TimeUnit.MILLISECONDS);
@@ -41,7 +41,7 @@ public class FileGarbageCollector {
         return singleton;
     }
 
-    private void build(FileCleaningTracker s){
+    private static void build(FileCleaningTracker s){
         s=new FileCleaningTracker();
     }
 }

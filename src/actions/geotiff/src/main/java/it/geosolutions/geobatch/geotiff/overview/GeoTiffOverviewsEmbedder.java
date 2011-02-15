@@ -115,7 +115,6 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                     public void exceptionOccurred(ExceptionEvent event) {
                         if (LOGGER.isLoggable(Level.SEVERE))
                             LOGGER.info(event.getMessage());
-
                     }
 
                     public void getNotification(ProcessingEvent event) {
@@ -132,6 +131,7 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 
             listenerForwarder.setProgress(100);
             listenerForwarder.completed();
+            
             return events;
         } catch (Exception t) {
             if (LOGGER.isLoggable(Level.SEVERE))
