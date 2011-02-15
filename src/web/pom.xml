@@ -220,6 +220,7 @@
 	</build>
 
 	<profiles>
+	
 		<profile>
 			<id>dao.jibx</id>
 			<dependencies>
@@ -229,7 +230,6 @@
 					<version>${version}</version>
 				</dependency>
 			</dependencies>
-
 		</profile>
 
 		<profile>
@@ -258,6 +258,42 @@
 				<all>true</all>
 			</properties>
 		</profile>
+		
+		<!-- GB-SERVICES================================================= -->
+		<!-- JMS ======================================================== -->
+		<profile>
+            <id>jms</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <dependencies>
+				<dependency>
+					<groupId>it.geosolutions</groupId>
+					<artifactId>gb-jms</artifactId>
+				</dependency>
+			</dependencies> 
+        </profile>
+        
+        <!-- Octave ======================================================== -->
+        <profile>
+            <id>octave</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <dependencies>
+				<dependency>
+					<groupId>it.geosolutions</groupId>
+					<artifactId>gb-octave</artifactId>
+				</dependency>
+			</dependencies>
+        </profile>
+				
 
 		<!-- ======================================================================== 
 			ACTIONS ======================================================================== 
@@ -534,26 +570,7 @@
 			<includes>data/**</includes> </artifactItem> </artifactItems> <overWriteReleases>true</overWriteReleases> 
 			<overWriteSnapshots>true</overWriteSnapshots> </configuration> </execution> 
 			</executions> </plugin> </plugins> </build> </profile> -->
-			
-		<!-- JMS ======================================================== -->
 		
-		<profile>
-			<id>jms</id>
-			<activation>
-				<property>
-					<name>all</name>
-					<value>true</value>
-				</property>
-			</activation>
-
-			<dependencies>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-jms</artifactId>
-				</dependency>
-			</dependencies>
-		</profile>
-
 		<!-- FreeMarker ================================================== -->
 
 		<profile>
@@ -878,24 +895,6 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
-
-		<!-- octave ================================================== -->
-		<profile>
-			<id>octave</id>
-			<activation>
-				<property>
-					<name>all</name>
-					<value>true</value>
-				</property>
-			</activation>
-
-			<dependencies>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-octave</artifactId>
-				</dependency>
-			</dependencies>
 		</profile>
 
 		<!-- GWC ============================================================ -->

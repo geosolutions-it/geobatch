@@ -20,7 +20,12 @@
         <allow.test.skip>true</allow.test.skip>
         <allow.test.failure.ignore>false</allow.test.failure.ignore>
         <extensive.tests>false</extensive.tests>
+        <!-- DEPRECATED
+			Removed: 15 Feb 2011
+			By: Carlo
+			As requested: Simone
         <path.native>/Windows/System32</path.native>
+        -->
     </properties>
 
     <!-- ===================================================================== -->
@@ -55,7 +60,13 @@
     <!-- ===================================================================== -->
     
     <modules>
+    
+		<!-- DEPRECATED
+		Removed: 15 Feb 2011
+		By: Carlo
+		As requested: Simone
         <module>deploy</module>
+        -->
         <module>module</module>
         <module>plugin</module>
     </modules>

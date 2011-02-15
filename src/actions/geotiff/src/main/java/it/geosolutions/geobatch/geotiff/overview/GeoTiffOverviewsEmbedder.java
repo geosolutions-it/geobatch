@@ -33,8 +33,6 @@ import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.media.jai.Interpolation;
-
 import org.geotools.utils.imageoverviews.OverviewsEmbedder;
 import org.geotools.utils.progress.ExceptionEvent;
 import org.geotools.utils.progress.ProcessingEvent;
@@ -61,8 +59,7 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> implem
         this.configuration = configuration;
     }
 
-    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
-            throws ActionException {
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
 
         listenerForwarder.setTask("config");
         listenerForwarder.started();
@@ -122,8 +119,8 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> implem
                     public void getNotification(ProcessingEvent event) {
                         if (LOGGER.isLoggable(Level.SEVERE))
                             LOGGER.info(event.getMessage());
-                        listenerForwarder.progressing((float) event.getPercentage(), event
-                                .getMessage());
+                        listenerForwarder.progressing((float) event.getPercentage(),
+                                event.getMessage());
                     }
                 });
             // run
@@ -135,8 +132,8 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> implem
             listenerForwarder.completed();
             return events;
         } catch (Exception t) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
             listenerForwarder.failed(t);
             return null;
         }

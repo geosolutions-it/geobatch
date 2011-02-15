@@ -28,7 +28,12 @@ package it.geosolutions.filesystemmonitor.monitor;
  *
  */
 public enum FileSystemMonitorType {
+    /* DEPRECATED
+    Removed: 15 Feb 2011
+    By: Carlo
+    As requested: Simone
     NATIVE,
+    */
     /* DEPRECATED
     Removed: 10 Feb 2011
     By: Carlo

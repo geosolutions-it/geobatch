@@ -28,7 +28,6 @@ import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEven
 import it.geosolutions.geobatch.flow.event.generator.FlowEventListener;
 import it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGenerator;
 import it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGeneratorService;
-import it.geosolutions.resources.TestData;
 
 import java.io.File;
 import java.io.IOException;
@@ -135,13 +134,13 @@ public class EventGeneratorTestCase implements FlowEventListener<FileSystemEvent
             e1.printStackTrace();
         }
         LOGGER.info(event.toString());
-        try {
+//        try {
             Assert.assertTrue(event.getSource().getAbsolutePath().equalsIgnoreCase(
                     TestData.file(this, "test").getAbsolutePath()));
-        } catch (IOException e) {
-            Assert.assertTrue("unable to create test", false);
-            return;
-        }
+//        } catch (IOException e) {
+//            Assert.assertTrue("unable to create test", false);
+//            return;
+//        }
         synchronized (this) {
             this.notify();
         }

@@ -30,7 +30,6 @@ import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfigurati
 import it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService;
-import it.geosolutions.resources.TestData;
 
 import java.io.File;
 import java.io.IOException;

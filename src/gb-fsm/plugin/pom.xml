@@ -29,7 +29,7 @@
     <url>https://svn.codehaus.org/geobatch/trunk//</url>
   </scm>
   <description>
-    FileSystemMonitor Plugins.
+    File System Monitor Plugins.
   </description>
 
 
@@ -54,7 +54,12 @@
   <!-- ===================================================================== -->
   <modules>
 		<module>quartzmonitor</module>
+		<!-- DEPRECATED
+		Removed: 15 Feb 2011
+		By: Carlo
+		As requested: Simone
 		<module>jnimonitor</module>
+		-->
 		<!-- DEPRECATED
 		Removed: 10 Feb 2011
 		By: Carlo

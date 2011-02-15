@@ -25,8 +25,8 @@
 
     <packaging>pom</packaging>
 
-    <name>FileSystemMonitor Core modules</name>
-    <description>FileSystemMonitor Core modules.</description>
+    <name>File System Monitor Core modules</name>
+    <description>File System Monitor Core modules</description>
 
     <url>http://www.geo-solutions.it/reports/module/</url>
     <scm>

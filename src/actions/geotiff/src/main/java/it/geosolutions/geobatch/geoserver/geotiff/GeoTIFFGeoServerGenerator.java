@@ -194,7 +194,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerConfiguratorAction<FileS
     /**
      * <B>TODO: REST calls here: restruct to use GS2 </B>
      */
-    public void send(final File inputDataDir, final File data, final String geoserverBaseURL,
+    private void send(final File inputDataDir, final File data, final String geoserverBaseURL,
             final String timeStamp, final String coverageStoreId, final String storeFilePrefix,
             final List<String> dataStyles, final String configId, final String defaultStyle,
             final Map<String, String> queryParams) throws MalformedURLException,

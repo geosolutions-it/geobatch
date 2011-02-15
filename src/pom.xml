@@ -152,25 +152,6 @@
                 </site>
             </distributionManagement>
         </profile>
-
-        <profile>
-            <id>dao.jibx</id>
-            <properties>
-                <dao.type>jibx</dao.type>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jibx</groupId>
-                    <artifactId>jibx-run</artifactId>
-                    <version>1.1.6</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.jibx</groupId>
-                    <artifactId>jibx-extras</artifactId>
-                    <version>1.1.6</version>
-                </dependency>
-            </dependencies>
-        </profile>
 		
         <!-- deploy libs -->
         <profile>
@@ -182,161 +163,6 @@
             </activation>
             <modules>
                 <module>deploy</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>jms</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>gb-jms</module>
-            </modules>
-        </profile>
-<!--
-        <profile>
-            <id>gb-fs-catalog</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>file-catalog</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>gb-fsm</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>gb-fsm</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>gb-ftp-server</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>gb-ftp-server</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>web</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>web</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>gb-core</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>core</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>gb-action-tools</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>gb-action-tools</module>
-            </modules>
-        </profile>        
-                
-        <profile>
-            <id>gb-tools</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>gb-tools</module>
-            </modules>
-        </profile>
-                -->
-        <!-- 		ACTIONS
-        <profile>
-            <id>actions</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>actions</module>
-            </modules>
-        </profile>
-         		-->
-<!-- octave -->
-        <profile>
-            <id>octave</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>gb-octave</module>
-            </modules>
-        </profile>
-        <!-- this profile can be used instead of:
-        -Pdao.xstream,metocs,nurc,octave
-        -->
-        <profile>
-            <id>sem</id>
-            <modules>
-				<module>gb-octave</module>
-				<module>gb-octave-fileinfileout</module>
-                <module>gb-action-tools</module>
-                <module>gb-tools</module>
-                <module>dao/xstream</module>
-				<module>actions/geotiff</module>
-                <module>actions/gb-geoserver</module>
-                <module>actions/imagemosaic</module>
-                <module>actions/shapefile</module>
-                <module>actions/gb-task-executor</module>
-                <module>actions/scripting</module>
-                <module>actions/splitting</module>
-                <module>actions/metocs/commons</module>
-                <module>actions/metocs/nurc-sem</module>
-                <module>actions/metocs/nurc-tda</module>
             </modules>
         </profile>
         
@@ -411,8 +237,8 @@
             <email>carlo.cancellieri@geo-solutions.it</email>
             <organization>GeoSolutions</organization>
             <roles>
-                <role>Java Developer</role>
-                <role>Project Member</role>
+                <role>Software Engineer</role>
+                <role>Project Member Committee (PMC) Member</role>
             </roles>
         </developer>
     </developers>
@@ -1112,11 +938,16 @@
                 <version>${gb.version}</version>
             </dependency>
 <!-- FSM IMPLEMENTATIONS -->
+		<!-- DEPRECATED
+			Removed: 15 Feb 2011
+			By: Carlo
+			As requested: Simone
 			<dependency>
 				<groupId>it.geosolutions</groupId>
 				<artifactId>gb-fsm-native</artifactId>
 				<version>${gb.version}</version>
 			</dependency>
+			-->
 			<dependency>
 				<groupId>it.geosolutions</groupId>
 				<artifactId>gb-fsm-quartz</artifactId>
@@ -1711,14 +1542,13 @@
 		<module>gb-fsm</module>
         <module>gb-tools</module>
 		<module>file-catalog</module>
-<!--		<module>gb-jms</module> -->
 		<module>core</module>
 		<module>dao</module>
 		<module>gb-action-tools</module>
-<!--        <module>gb-octave</module> -->
         <module>actions</module>
         <module>users</module>
         <module>gb-ftp-server</module>
+        <module>gb-services</module> <!-- optional services-->
         <module>web</module>
         <!-- other conditional modules are listed in the profiles section -->
     </modules>

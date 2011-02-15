@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =======================================================================    
+        Maven Project Configuration File                                        
+                                                                                
+        GeoSolutions GeoBatch Project                                                    
+            http://geobatch.codehaus.org
+                                                                                            
+        Version: $Id: pom.xml 329 2009-12-17 17:24:49Z dany111 $              
+     ======================================================================= -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                               http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>it.geosolutions</groupId>
+    <artifactId>gb-services</artifactId>
+    <version>0.9-SNAPSHOT</version>
+  </parent>
+  
+
+  <!-- =========================================================== -->
+  <!--     Module Description                                      -->
+  <!-- =========================================================== -->
+  <groupId>it.geosolutions</groupId>
+  <artifactId>gb-octave</artifactId>
+  <packaging>jar</packaging>
+  <name>GeoBatch library: Octave function executor</name>
+  <url>http://www.geo-solutions.it/maven_reports/gb/</url><!--<url>flowmanagers/</url>-->
+  
+  <scm>
+    <connection>
+      scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/<!--flowmanagers-->
+    </connection>
+    <url>http://svn.geotools.org/geotools/trunk/gt/modules/<!--flowmanagers--></url>
+  </scm>
+  
+  <description>
+    GeoSolutions GeoBatch flow managers - Octave function executor.
+  </description>
+
+  <licenses>
+    <license>
+      <name>Lesser General Public License (LGPL)</name>
+      <url>http://www.gnu.org/copyleft/lesser.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <!-- =========================================================== -->
+  <!--     Dependency Management                                   -->
+  <!-- =========================================================== -->
+  <dependencies>
+       <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>gb-fs-catalog</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>dk.ange.octave</groupId>
+            <artifactId>javaoctave</artifactId>
+        </dependency>
+        
+<!-- AliasRegistrar 
+		<dependency>
+		    <groupId>it.geosolutions</groupId>
+    		<artifactId>gb-alias-registry</artifactId>
+		</dependency>
+-->
+
+<!-- tools -->        
+        <dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-tools</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-action-tools</artifactId>
+		</dependency>
+		
+		<!-- ============================== -->
+        <!--     Platform                   -->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+  </dependencies>
+</project>

@@ -31,7 +31,6 @@ public class GeoTiffRetilerConfiguration extends ActionConfiguration implements 
 
     protected GeoTiffRetilerConfiguration(String id, String name, String description, boolean dirty) {
         super(id, name, description, dirty);
-        // TODO Auto-generated constructor stub
     }
 
     private long JAICapacity;
@@ -124,10 +123,10 @@ public class GeoTiffRetilerConfiguration extends ActionConfiguration implements 
         configuration.setCompressionRatio(compressionRatio);
         configuration.setCompressionScheme(compressionScheme);
         configuration.setJAICapacity(JAICapacity);
-        // configuration.setServiceID(serviceID);
+        configuration.setServiceID(serviceID);
         configuration.setTileH(tileH);
         configuration.setTileW(tileW);
         configuration.setWorkingDirectory(workingDirectory);
-        return null;
+        return configuration;
     }
 }

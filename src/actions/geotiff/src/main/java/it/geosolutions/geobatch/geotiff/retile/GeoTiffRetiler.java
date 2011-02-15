@@ -94,11 +94,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
 
             final File tiledInputFile = new File(inputFile.getParent(), name + "_tiled."
                     + extension);
-            // do we need to remove the input?
-            if (!inputFile.renameTo(tiledInputFile)) {
-                Path.copyFile(inputFile, tiledInputFile);
-                Path.deleteFile(inputFile);
-            }
+            
 
             // //
             //
@@ -120,13 +116,13 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
             }
             // getting a reader for the given input
             final AbstractGridFormat format = (AbstractGridFormat) GridFormatFinder
-                    .findFormat(tiledInputFile);
+                    .findFormat(inputFile);
             if (format == null || format instanceof UnknownFormat) {
                 throw new IllegalArgumentException("Unable to find a reader for the file:"
                         + tiledInputFile.getAbsolutePath());
             }
             final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) format
-                    .getReader(tiledInputFile, new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
+                    .getReader( inputFile, new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
                             Boolean.TRUE));
 
             // /////////////////////////////////////////////////////////////////////
@@ -163,8 +159,6 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
             wparams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
                     .setValue(wp);
 
-            // keep original name
-            final File outFile = event.getSource();
 
             // /////////////////////////////////////////////////////////////////////
             //
@@ -172,7 +166,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> implements
             //
             // /////////////////////////////////////////////////////////////////////
             final AbstractGridCoverageWriter writer = (AbstractGridCoverageWriter) new GeoTiffWriter(
-                    outFile);
+                    tiledInputFile);
             writer.write(inCoverage, (GeneralParameterValue[]) wparams.values().toArray(
                     new GeneralParameterValue[1]));
 

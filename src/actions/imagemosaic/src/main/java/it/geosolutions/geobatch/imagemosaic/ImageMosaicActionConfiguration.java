@@ -114,30 +114,11 @@ public class ImageMosaicActionConfiguration extends GeoServerActionConfiguration
     }
 
     @Override
-    public ImageMosaicActionConfiguration clone() { // throws
-        // CloneNotSupportedException
-        // {
-        // final ImageMosaicActionConfiguration configuration =
-        // new
-        // ImageMosaicActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+    public ImageMosaicActionConfiguration clone() { 
         final ImageMosaicActionConfiguration configuration = (ImageMosaicActionConfiguration) super
                 .clone();
 
-        // configuration.setCrs(getCrs());
-        // configuration.setDataTransferMethod(getDataTransferMethod());
-        // configuration.setDatatype(getDatatype());
-        // configuration.setDefaultNamespace(getDefaultNamespace());
-        // configuration.setDefaultNamespaceUri(getDefaultNamespaceUri());
-        // configuration.setDefaultStyle(getDefaultStyle());
-        // configuration.setEnvelope(getEnvelope());
-        // configuration.setGeoserverPWD(getGeoserverPWD());
-        // configuration.setGeoserverUID(getGeoserverUID());
-        // configuration.setGeoserverURL(getGeoserverURL());
-        // // configuration.setServiceID(getServiceID());
-        // configuration.setStoreFilePrefix(getStoreFilePrefix());
-        // configuration.setStyles(getStyles());
-        // configuration.setWmsPath(getWmsPath());
-        // configuration.setWorkingDirectory(getWorkingDirectory());
+
         configuration.setBackgroundValue(getBackgroundValue());
         configuration.setDatastorePropertiesPath(getDatastorePropertiesPath());
         configuration.setTimeRegex(getTimeRegex());
