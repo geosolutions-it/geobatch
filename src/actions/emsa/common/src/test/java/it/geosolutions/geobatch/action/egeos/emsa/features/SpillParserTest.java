@@ -18,7 +18,6 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.postgis.PostgisNGDataStoreFactory;
 import org.geotools.jdbc.JDBCDataStoreFactory;
-import org.springframework.core.io.ClassPathResource;
 
 /**
  * @author Administrator
