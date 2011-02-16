@@ -19,7 +19,7 @@ public class FileGarbageCollector {
      * @return initialized instance of this singleton
      * @throws InterruptedException - if Unable to get the lock
      */
-    public static FileCleaningTracker getFileCleaningTracker() throws InterruptedException{
+    public static FileCleaningTracker getFileCleaningTracker(){
         if (singleton==null){
             try{
                 lock.tryLock(LOCK_WAIT_TIME, TimeUnit.MILLISECONDS);
@@ -32,7 +32,6 @@ public class FileGarbageCollector {
                 if (LOGGER.isLoggable(Level.SEVERE)){
                     LOGGER.severe(message.toString());
                 }
-                throw ie;
             }
             finally{
                 lock.unlock();

@@ -25,16 +25,11 @@ package it.geosolutions.geobatch.tools.file;
 import it.geosolutions.geobatch.tools.Conf;
 import it.geosolutions.geobatch.tools.check.Objects;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.nio.channels.Channel;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -43,30 +38,26 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.io.FilenameUtils;
 
 /**
  * Assorted IO related utilities
  * 
  * @author Simone Giannecchini, GeoSolutions SAS
+ * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
+ * @version 0.2
  */
-public class IOUtils extends org.apache.commons.io.IOUtils {
+public final class IOUtils extends org.apache.commons.io.IOUtils {
 
     private final static Logger LOGGER = Logger.getLogger(IOUtils.class.toString());
 
-    /** Background to perform file deletions. */
-    private final static FileRemover FILE_CLEANER = new FileRemover();
-
-    public final static String FILE_SEPARATOR = System.getProperty("file.separator");
+    /**
+     * do not intantiate
+     */
+    private IOUtils() {
+    };
 
     /**
      * The max time the node will wait for, prior to stop to attempt for acquiring a lock on a
@@ -74,17 +65,8 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
      */
     public static final long MAX_WAITING_TIME_FOR_LOCK = 12 * 60 * 60 * 1000;// 12h
 
-    static {
-        FILE_CLEANER.setMaxAttempts(100);
-        FILE_CLEANER.setPeriod(30);
-        FILE_CLEANER.setPriority(1);
-        FILE_CLEANER.start();
-    }
-    
-    public static FileRemover getFileRemover(){
-        return FILE_CLEANER;
-    }
-    
+    public final static String FILE_SEPARATOR = System.getProperty("file.separator");
+
     /**
      * Copies the content of the source channel onto the destination channel.
      * 
@@ -178,46 +160,44 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
             channel.close();
     }
 
+    // /**
+    // * Get an input <code>FileChannel</code> for the provided <code>File</code>
+    // *
+    // * @param file
+    // * <code>File</code> for which we need to get an input <code>FileChannel</code>
+    // * @return a <code>FileChannel</code>
+    // * @throws IOException
+    // * in case something bad happens.
+    // */
+    // public static FileChannel getInputChannel(File source) throws IOException {
+    // Objects.notNull(source);
+    // if (!source.exists() || !source.canRead() || !source.isDirectory())
+    // throw new IllegalStateException("Source is not in a legal state.");
+    // FileChannel channel = null;
+    // while (channel == null) {
+    // try {
+    // channel = new FileInputStream(source).getChannel();
+    // } catch (Exception e) {
+    // channel = null;
+    // }
+    // }
+    // return channel;
+    // }
 
-
-//    /**
-//     * Get an input <code>FileChannel</code> for the provided <code>File</code>
-//     * 
-//     * @param file
-//     *            <code>File</code> for which we need to get an input <code>FileChannel</code>
-//     * @return a <code>FileChannel</code>
-//     * @throws IOException
-//     *             in case something bad happens.
-//     */
-//    public static FileChannel getInputChannel(File source) throws IOException {
-//        Objects.notNull(source);
-//        if (!source.exists() || !source.canRead() || !source.isDirectory())
-//            throw new IllegalStateException("Source is not in a legal state.");
-//        FileChannel channel = null;
-//        while (channel == null) {
-//            try {
-//                channel = new FileInputStream(source).getChannel();
-//            } catch (Exception e) {
-//                channel = null;
-//            }
-//        }
-//        return channel;
-//    }
-
-//    /**
-//     * Get an output <code>FileChannel</code> for the provided <code>File</code>
-//     * 
-//     * @param file
-//     *            <code>File</code> for which we need to get an output <code>FileChannel</code>
-//     * @return a <code>FileChannel</code>
-//     * @throws IOException
-//     *             in case something bad happens.
-//     */
-//    public static FileChannel getOuputChannel(File file) throws IOException {
-//        Objects.notNull(file);
-//        return new RandomAccessFile(file, "r").getChannel();
-//
-//    }
+    // /**
+    // * Get an output <code>FileChannel</code> for the provided <code>File</code>
+    // *
+    // * @param file
+    // * <code>File</code> for which we need to get an output <code>FileChannel</code>
+    // * @return a <code>FileChannel</code>
+    // * @throws IOException
+    // * in case something bad happens.
+    // */
+    // public static FileChannel getOuputChannel(File file) throws IOException {
+    // Objects.notNull(file);
+    // return new RandomAccessFile(file, "r").getChannel();
+    //
+    // }
 
     /**
      * This method is responsible for checking if the input file is still being written or if its
@@ -242,7 +222,7 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
      */
     public static boolean acquireLock(Object caller, File inputFile) throws InterruptedException,
             IOException {
-        return acquireLock(caller, inputFile, IOUtils.MAX_WAITING_TIME_FOR_LOCK);
+        return IOUtils.acquireLock(caller, inputFile, IOUtils.MAX_WAITING_TIME_FOR_LOCK);
     }
 
     /**
@@ -312,98 +292,6 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
     }
 
     /**
-     * Convert the input from the provided {@link Reader} into a {@link String}.
-     * 
-     * @param inputStream
-     *            the {@link Reader} to copy from.
-     * @return a {@link String} that contains the content of the provided {@link Reader}.
-     * @throws IOException
-     *             in case something bad happens.
-     */
-    public static String toString(StreamSource src) throws IOException {
-        Objects.notNull(src);
-        InputStream inputStream = src.getInputStream();
-        if (inputStream != null) {
-            return toString(inputStream);
-        } else {
-
-            final Reader r = src.getReader();
-            return toString(r);
-        }
-    }
-
-    /**
-     * Convert the input from the provided {@link Reader} into a {@link String}.
-     * 
-     * @param inputStream
-     *            the {@link Reader} to copy from.
-     * @return a {@link String} that contains the content of the provided {@link Reader}.
-     * @throws IOException
-     *             in case something bad happens.
-     */
-    public static String toString(final StreamSource src, final String ecoding) throws IOException {
-        Objects.notNull(src);
-        InputStream inputStream = src.getInputStream();
-        if (inputStream != null) {
-            return toString(inputStream, ecoding);
-        } else {
-
-            final Reader r = src.getReader();
-            return toString(r);
-        }
-    }
-
-    /**
-     * Inflate the provided {@link ZipFile} in the provided output directory.
-     * 
-     * @param archive
-     *            the {@link ZipFile} to inflate.
-     * @param outputDirectory
-     *            the directory where to inflate the archive.
-     * @throws IOException
-     *             in case something bad happens.
-     * @throws FileNotFoundException
-     *             in case something bad happens.
-     */
-    public static void inflate(ZipFile archive, File outputDirectory, String fileName)
-            throws IOException, FileNotFoundException {
-
-        final Enumeration<? extends ZipEntry> entries = archive.entries();
-        try {
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = (ZipEntry) entries.nextElement();
-
-                if (!entry.isDirectory()) {
-                    final String name = entry.getName();
-                    final String ext = FilenameUtils.getExtension(name);
-                    final InputStream in = new BufferedInputStream(archive.getInputStream(entry));
-                    final File outFile = new File(outputDirectory,
-                            fileName != null ? new StringBuilder(fileName).append(".").append(ext)
-                                    .toString() : name);
-                    final OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile));
-
-                    IOUtils.copyStream(in, out, true, true);
-
-                }
-            }
-        } finally {
-            try {
-                archive.close();
-            } catch (Throwable e) {
-                if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.isLoggable(Level.FINE);
-            }
-        }
-
-    }
-
-    /**
-     * Singleton
-     */
-    private IOUtils() {}
-
-
-    /**
      * Create a subDirectory having the actual date as name, within a specified destination
      * directory.
      * 
@@ -421,55 +309,6 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
         return dir;
     }
 
-
-
-    /**
-     * Get the contents of a {@link File} as a String using the specified character encoding.
-     * 
-     * @param file
-     *            {@link File} to read from
-     * @param encoding
-     *            IANA encoding
-     * @return a {@link String} containig the content of the {@link File} or
-     *         <code>null<code> if an error happens.
-     */
-    public static String toString(final File file, final String encoding) {
-        Objects.notNull(file);
-        if (!file.isFile() || !file.canRead() || !file.exists())
-            return null;
-        InputStream stream = null;
-        try {
-            if (encoding == null)
-                return toString(new FileInputStream(file));
-            else
-                return toString(new FileInputStream(file), encoding);
-        } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
-            return null;
-        } finally {
-            if (stream != null)
-                try {
-                    stream.close();
-                } catch (Throwable e) {
-                    if (LOGGER.isLoggable(Level.FINEST))
-                        LOGGER.log(Level.FINEST, e.getLocalizedMessage(), e);
-                }
-        }
-    }
-
-    /**
-     * Get the contents of a {@link File} as a String using the default character encoding.
-     * 
-     * @param file
-     *            {@link File} to read from
-     * @return a {@link String} containig the content of the {@link File} or
-     *         <code>null<code> if an error happens.
-     */
-    public static String toString(final File file) {
-        return toString(file, null);
-    }
-
     /**
      * This method is responsible for checking if the input file is still being written or if its
      * available for being parsed.
@@ -481,7 +320,7 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
      * {@link #ATOMIC_WAIT}.
      * 
      * <p>
-     * If after having waited for {@link #MAX_WAITING_TIME_FOR_LOCK} (which is read from the
+     * If after having waited for {@link MAX_WAITING_TIME_FOR_LOCK} (which is read from the
      * configuration or set to the default value of {@link #DEFAULT_WAITING_TIME}) we have not yet
      * acquired the channel we skip this file but we signal this situation.
      * 
@@ -495,16 +334,15 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
      */
     public static boolean acquireLock(Object caller, File inputFile, final long maxwait)
             throws InterruptedException, IOException {
-        
+
         if (!inputFile.exists())
             return false;// file not exists!
-        
-        if(inputFile.isDirectory()){
-            //return inputFile.setReadOnly();
+
+        if (inputFile.isDirectory()) {
+            // return inputFile.setReadOnly();
             return true;// cannot lock directory
         }
-        
-        
+
         // //
         //
         // Acquire an exclusive lock to wait for long
@@ -513,12 +351,12 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
         // //
         double sumWait = 0;
         while (true) {
-            FileOutputStream outStream=null;
+            FileOutputStream outStream = null;
             FileChannel channel = null;
             FileLock lock = null;
             try {
-                outStream=new FileOutputStream(inputFile,true);
-                
+                outStream = new FileOutputStream(inputFile, true);
+
                 // get a rw channel
                 channel = outStream.getChannel();
 
@@ -534,21 +372,21 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
             } catch (Exception e) {
                 LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
             } finally {
-                
+
                 org.apache.commons.io.IOUtils.closeQuietly(outStream);
-                
+
                 // release the lock
                 if (lock != null)
-                    try{
+                    try {
                         lock.release();
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         // eat me
                     }
-                
+
                 if (channel != null)
-                    try{
+                    try {
                         channel.close();
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         // eat me
                     }
             }

@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.IOUtils;
 import it.geosolutions.geobatch.tools.file.Path;
+import it.geosolutions.geobatch.tools.file.reader.TextReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,7 +117,7 @@ public class GWCConfigurator extends GeoWebCacheConfiguratorAction<FileSystemEve
                 throw new IllegalStateException("layer data file not found in fileset.");
             }
 
-            String dataString = IOUtils.toString(dataFile);
+            String dataString = TextReader.toString(dataFile);
             String[] layerData = dataString.split("&");
 
             String namespace = layerData[0].split("=")[1];

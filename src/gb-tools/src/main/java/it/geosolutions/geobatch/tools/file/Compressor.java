@@ -1,14 +1,20 @@
 package it.geosolutions.geobatch.tools.file;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FilenameUtils;
@@ -266,6 +272,49 @@ public final class Compressor {
 
         } else
             throw new IOException("One or more input parameters are null!");
+    }
+
+    /**
+     * Inflate the provided {@link ZipFile} in the provided output directory.
+     * 
+     * @param archive
+     *            the {@link ZipFile} to inflate.
+     * @param outputDirectory
+     *            the directory where to inflate the archive.
+     * @throws IOException
+     *             in case something bad happens.
+     * @throws FileNotFoundException
+     *             in case something bad happens.
+     */
+    public static void inflate(ZipFile archive, File outputDirectory, String fileName)
+            throws IOException, FileNotFoundException {
+    
+        final Enumeration<? extends ZipEntry> entries = archive.entries();
+        try {
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = (ZipEntry) entries.nextElement();
+    
+                if (!entry.isDirectory()) {
+                    final String name = entry.getName();
+                    final String ext = FilenameUtils.getExtension(name);
+                    final InputStream in = new BufferedInputStream(archive.getInputStream(entry));
+                    final File outFile = new File(outputDirectory,
+                            fileName != null ? new StringBuilder(fileName).append(".").append(ext)
+                                    .toString() : name);
+                    final OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile));
+    
+                    IOUtils.copyStream(in, out, true, true);
+                }
+            }
+        } finally {
+            try {
+                archive.close();
+            } catch (Throwable e) {
+                if (LOGGER.isLoggable(Level.FINE))
+                    LOGGER.isLoggable(Level.FINE);
+            }
+        }
+    
     }
 
 

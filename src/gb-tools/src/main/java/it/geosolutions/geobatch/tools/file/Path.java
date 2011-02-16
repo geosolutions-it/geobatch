@@ -213,7 +213,7 @@ public class Path {
         if (file.delete())
             return;
 
-        IOUtils.getFileRemover().addFile(file);
+        FileGarbageCollector.getFileCleaningTracker().track(file, new Object());
 
     }
 
