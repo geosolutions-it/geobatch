@@ -28,7 +28,7 @@ public class SpillParserTest extends TestCase {
 
     private static Logger LOGGER = Logger.getLogger(ShipParserTest.class.getName());
 
-    public void testShipParser() throws Exception {
+    public void testSpillParser() throws Exception {
         // connect to the store
         DataStore store = connect();
 

@@ -59,7 +59,7 @@ public class EOPSenderTest extends TestCase {
     static {
         URL tmpurl = null;
         try {
-             tmpurl = new URL("http://localhost:8080/ergorr/webservice");
+             tmpurl = new URL("http://localhost:8082/ergorr/webservice?wsdl");
         } catch (MalformedURLException ex) {
             LOGGER.error("Error initializing URL");
         }
@@ -72,54 +72,54 @@ public class EOPSenderTest extends TestCase {
 
         CSWConn conn = new CSWConn(serviceURL);
         
-        ServicesProcessor serviceProcessor = new ServicesProcessor("http://geoserver/wfs?SERVICE=wfs&amp;VERSION=1.1.1&amp;REQUEST=GetCapabilities", "http://geoserver/wcs?SERVICE=wcs&amp;VERSION=1.0.0&amp;REQUEST=GetCapabilities", "http://geoserver/wms?SERVICE=wms&amp;VERSION=1.1.0&amp;REQUEST=GetCapabilities");
-        assertEquals(3, serviceProcessor.size());
-        ServicesSender serviceSender = new ServicesSender(serviceProcessor); 
-        serviceSender.setServiceURL(serviceURL);
-        
-        serviceSender.run();
-        
-        ServiceRO service = ServicesProcessor.serviceRO("WFS", new URL("http://geoserver/wfs?SERVICE=wfs&amp;VERSION=1.1.1&amp;REQUEST=GetCapabilities"));
-        assertTrue("Service not in Registry", serviceSender.existsService(service));
-        
-        CollectionsProcessor collectionProcessor = new CollectionsProcessor("SAR:DATA");
-        CollectionsSender collectionsSender = new CollectionsSender(collectionProcessor);
-        collectionsSender.setServiceURL(serviceURL);
-        
-        assertNotNull("Collection not processed", collectionProcessor.getCollection("SAR:DATA"));
-        
-        CollectionRO sarData = collectionProcessor.getCollection("SAR:DATA");
-        sarData.setEnvelope(0.4567, -451144, 91.5629, 16.8238);
-        LinkedList<String> timeStamps = new LinkedList<String>();
-        timeStamps.add("2009-05-17T08:33:04.876");
-        sarData.setTimeStamp(timeStamps);
-        
-        collectionsSender.run();
-        
-        assertTrue("Collection not in Registry", collectionsSender.existsCollection(sarData));
-        
-        timeStamps.add("2010-02-19T18:12:05.234");
-        sarData.setTimeStamp(timeStamps);
-        
-        collectionsSender.updateCollection(sarData);
-        JAXBElement<ExtrinsicObjectType> pext = conn.getById(sarData.getURN());
-        assertNotNull("Collection not present into Registry", pext);
-        
-        ExtrinsicObjectType extobj = pext.getValue();
-        assertEquals(sarData.getURN(), extobj.getId());
-        assertEquals(sarData.getTypeName(), extobj.getObjectType());
-        assertEquals(2, extobj.getSlot().size());
-        
-        CollectionRO registrySarData = CollectionsProcessor.extobj2ro(extobj);
-        assertEquals(sarData.getEnvelope()[0], registrySarData.getEnvelope()[0]);
-        assertEquals(sarData.getEnvelope()[1], registrySarData.getEnvelope()[1]);
-        assertEquals(sarData.getEnvelope()[2], registrySarData.getEnvelope()[2]);
-        assertEquals(sarData.getEnvelope()[3], registrySarData.getEnvelope()[3]);
-        
-        assertEquals(sarData.getTimeStamps().size(), registrySarData.getTimeStamps().size());
-        
-        TransactionResponseType trt = conn.insert(sarData.getServiceAssociationXML("WCS"));
-        assertEquals(1, trt.getInsertResult().size());
+//        ServicesProcessor serviceProcessor = new ServicesProcessor("http://geoserver/wfs?SERVICE=wfs&amp;VERSION=1.1.1&amp;REQUEST=GetCapabilities", "http://geoserver/wcs?SERVICE=wcs&amp;VERSION=1.0.0&amp;REQUEST=GetCapabilities", "http://geoserver/wms?SERVICE=wms&amp;VERSION=1.1.0&amp;REQUEST=GetCapabilities");
+//        assertEquals(3, serviceProcessor.size());
+//        ServicesSender serviceSender = new ServicesSender(serviceProcessor); 
+//        serviceSender.setServiceURL(serviceURL);
+//        
+//        serviceSender.run();
+//        
+//        ServiceRO service = ServicesProcessor.serviceRO("WFS", new URL("http://geoserver/wfs?SERVICE=wfs&amp;VERSION=1.1.1&amp;REQUEST=GetCapabilities"));
+//        assertTrue("Service not in Registry", serviceSender.existsService(service));
+//        
+//        CollectionsProcessor collectionProcessor = new CollectionsProcessor("SAR:DATA");
+//        CollectionsSender collectionsSender = new CollectionsSender(collectionProcessor);
+//        collectionsSender.setServiceURL(serviceURL);
+//        
+//        assertNotNull("Collection not processed", collectionProcessor.getCollection("SAR:DATA"));
+//        
+//        CollectionRO sarData = collectionProcessor.getCollection("SAR:DATA");
+//        sarData.setEnvelope(0.4567, -451144, 91.5629, 16.8238);
+//        LinkedList<String> timeStamps = new LinkedList<String>();
+//        timeStamps.add("2009-05-17T08:33:04.876");
+//        sarData.setTimeStamp(timeStamps);
+//        
+//        collectionsSender.run();
+//        
+//        assertTrue("Collection not in Registry", collectionsSender.existsCollection(sarData));
+//        
+//        timeStamps.add("2010-02-19T18:12:05.234");
+//        sarData.setTimeStamp(timeStamps);
+//        
+//        collectionsSender.updateCollection(sarData);
+//        JAXBElement<ExtrinsicObjectType> pext = conn.getById(sarData.getURN());
+//        assertNotNull("Collection not present into Registry", pext);
+//        
+//        ExtrinsicObjectType extobj = pext.getValue();
+//        assertEquals(sarData.getURN(), extobj.getId());
+//        assertEquals(sarData.getTypeName(), extobj.getObjectType());
+//        assertEquals(2, extobj.getSlot().size());
+//        
+//        CollectionRO registrySarData = CollectionsProcessor.extobj2ro(extobj);
+//        assertEquals(sarData.getEnvelope()[0], registrySarData.getEnvelope()[0]);
+//        assertEquals(sarData.getEnvelope()[1], registrySarData.getEnvelope()[1]);
+//        assertEquals(sarData.getEnvelope()[2], registrySarData.getEnvelope()[2]);
+//        assertEquals(sarData.getEnvelope()[3], registrySarData.getEnvelope()[3]);
+//        
+//        assertEquals(sarData.getTimeStamps().size(), registrySarData.getTimeStamps().size());
+//        
+//        TransactionResponseType trt = conn.insert(sarData.getServiceAssociationXML("WCS"));
+//        assertEquals(1, trt.getInsertResult().size());
         
         EOProcessor EOProcessor = new EOProcessor(dir);
         EOProcessor.setGmlBaseURI("http://alfa.net/shared/");
