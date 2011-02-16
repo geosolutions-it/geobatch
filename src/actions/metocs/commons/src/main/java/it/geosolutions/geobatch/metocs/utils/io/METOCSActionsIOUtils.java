@@ -996,7 +996,10 @@ public class METOCSActionsIOUtils {
     }
 
     /**
-     * 
+     * For further information see:
+     *  - http://idlastro.gsfc.nasa.gov/idl_html_help/POLY_2D.html
+     *  - http://idlastro.gsfc.nasa.gov/idl_html_help/POLYWARP.html 
+     *  
      * @param userRaster
      * @param fileGrid
      * @param latData
@@ -1008,39 +1011,58 @@ public class METOCSActionsIOUtils {
             final Array latData, final int imageWidth, final int imageHeight, final int polyDegree,
             final WritableRaster data, final float fillValue, final boolean flipY) {
 
+		/**
+		 * Computing the necessary number of coefficients of the polynomial basing on the requested degree
+		 **/
         final int numCoeffs = (polyDegree + 1) * (polyDegree + 2) / 2;
 
         final int XOFFSET = 0;
         final int YOFFSET = 1;
 
-        final int stepX = 2;
-        final int stepY = 2;
+        /**
+		 * Setting up the X,Y step for samples:
+		 *  - In order to perofm the warping we need a number of source image samples.
+		 *    What we do here basically is to 
+		 **/
+        final double stepX = 2.0;
+        final double stepY = 2.0;
 
-        int numNeededPoints = 0;
-        for (int xi = 0; xi < imageWidth; xi += stepX) {
-            for (int yi = 0; yi < imageHeight; yi += stepY) {
-                numNeededPoints++;
-            }
-        }
+        int numNeededPoints = (int) (Math.ceil(imageWidth / stepX) * Math.ceil(imageHeight / stepY));
 
+        /**
+         * Source and destination matrices:
+         *  - Arrays have double dimension since they contain couple of X,Y (or Lon,Lat) values
+         *    [X0,Y0, X1,Y1, ... , Xn,Yn]
+         */
         float[] destCoords = new float[2 * numNeededPoints];
         float[] srcCoords = new float[2 * numNeededPoints];
+        
+        /**
+         * Image resolution
+         */
         double periodX = (bbox[2] - bbox[0]) / (imageWidth - 1);
         double periodY = (bbox[3] - bbox[1]) / (imageHeight - 1);
 
-        /*
+        /**
          * Copy source and destination coordinates into float arrays. The destination coordinates
-         * are scaled in order to gets values similar to source coordinates (values will be
+         * are scaled in order to get values similar to source coordinates (values will be
          * identical if all "real world" coordinates are grid indices multiplied by a constant).
-         */
+         **/
         int offset = 0;
         for (int yi = 0; yi < imageHeight; yi += stepY) {
             for (int xi = 0; xi < imageWidth; xi += stepX) {
-                srcCoords[offset] = xi;
+                /**
+                 * Filling source coords with X,Y grid position values...
+                 */
+            	srcCoords[offset] = xi;
                 srcCoords[offset + 1] = yi;
 
+                /**
+                 * Filling destination coords with corresponding Lon,Lat values 
+                 */
                 destCoords[offset] = (float) ((lonData.getFloat(lonData.getIndex().set(yi, xi)) - bbox[0]) / periodX);
-                // Flipping y
+                
+                // Flipping Y if needed
                 if (flipY) {
                     destCoords[offset + 1] = (float) ((bbox[3] - latData.getFloat(latData
                             .getIndex().set(yi, xi))) / periodY);
@@ -1053,9 +1075,22 @@ public class METOCSActionsIOUtils {
             }
         }
 
+        /**
+         * Filling matrix A[#points, #poly-coeffs] with Polynomial Warping destination points ...
+         */
         GMatrix A = new GMatrix(numNeededPoints, numCoeffs);
 
+        /**
+         * ... and filling vectors with X, Y source values which will be used to compute the
+         *     Polynomial Warping coefficients
+         */
+        GMatrix xVector = new GMatrix(numNeededPoints, 1);
+        GMatrix yVector = new GMatrix(numNeededPoints, 1);
+
         for (int coord = 0; coord < numNeededPoints; coord++) {
+            xVector.setElement(coord, 0, srcCoords[2 * coord + XOFFSET]);
+            yVector.setElement(coord, 0, srcCoords[2 * coord + YOFFSET]);
+
             int var = 0;
             for (int i = 0; i <= polyDegree; i++) {
                 for (int j = 0; j <= i; j++) {
@@ -1066,21 +1101,22 @@ public class METOCSActionsIOUtils {
             }
         }
 
+        /**
+         * AtAi == inverse (transpose-left(A) * A)
+         */
         GMatrix AtAi = new GMatrix(numCoeffs, numCoeffs);
-        GMatrix Ap = new GMatrix(numCoeffs, numNeededPoints);
-
         AtAi.mulTransposeLeft(A, A);
         AtAi.invert();
+        
+        /**
+         * Ap   == transpose-right(AtAi) * A
+         */
+        GMatrix Ap = new GMatrix(numCoeffs, numNeededPoints);
         Ap.mulTransposeRight(AtAi, A);
 
-        GMatrix xVector = new GMatrix(numNeededPoints, 1);
-        GMatrix yVector = new GMatrix(numNeededPoints, 1);
-
-        for (int idx = 0; idx < numNeededPoints; idx++) {
-            xVector.setElement(idx, 0, srcCoords[2 * idx + XOFFSET]);
-            yVector.setElement(idx, 0, srcCoords[2 * idx + YOFFSET]);
-        }
-
+        /**
+         * Computing Warp Polynomial coefficients
+         */
         GMatrix xCoeffsG = new GMatrix(numCoeffs, 1);
         GMatrix yCoeffsG = new GMatrix(numCoeffs, 1);
 
@@ -1091,10 +1127,14 @@ public class METOCSActionsIOUtils {
         float[] yCoeffs = new float[numCoeffs];
 
         for (int ii = 0; ii < numCoeffs; ii++) {
-            xCoeffs[ii] = new Double(xCoeffsG.getElement(ii, 0)).floatValue();
-            yCoeffs[ii] = new Double(yCoeffsG.getElement(ii, 0)).floatValue();
+            xCoeffs[ii] = (float) xCoeffsG.getElement(ii, 0);
+            yCoeffs[ii] = (float) yCoeffsG.getElement(ii, 0);
         }
 
+        /**
+         * Finally computing new X', Y' coords.
+         * Filling with fillValue points which does not fit on the destination grid.
+         */
         WritableRaster target = RasterFactory.createWritableRaster(data.getSampleModel(), null);
 
         for (int bi = 0; bi < data.getNumBands(); bi++) {
