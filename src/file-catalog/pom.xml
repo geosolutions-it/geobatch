@@ -164,18 +164,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-		<!-- DEPRECATED
-			Removed: 10-15 Feb 2011
-			By: Carlo
-			As requested: Simone
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-fsm-purejava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-fsm-native</artifactId>
-        </dependency>-->
         
         <dependency>
             <groupId>it.geosolutions</groupId>

@@ -49,12 +49,6 @@ import javax.media.jai.JAI;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.Category;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.io.CoverageAccess;
-import org.geotools.coverage.io.CoverageAccess.AccessType;
-import org.geotools.coverage.io.CoverageReadRequest;
-import org.geotools.coverage.io.CoverageResponse;
-import org.geotools.coverage.io.CoverageResponse.Status;
-import org.geotools.coverage.io.CoverageSource;
 import org.geotools.coverage.io.domain.RasterDatasetDomainManager.HorizontalDomain;
 import org.geotools.coverage.io.domain.RasterDatasetDomainManager.TemporalDomain;
 import org.geotools.coverage.io.driver.BaseFileDriver;
@@ -174,7 +168,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
             String baseTime = null;
             String endTime = null;
 
-            final BaseFileDriver driver = new HDF4Driver();
+            final DefaultFileDriver driver = new HDF4Driver();
             final File file = new File(inputFileName);
             final URL source = file.toURI().toURL();
             if (driver.canProcess(DriverOperation.CONNECT, source, null)) {

@@ -72,7 +72,7 @@ public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSys
      * @throws MalformedURLException
      * @throws FileNotFoundException
      */
-    public void send(final File inputDataDir, final File data, final String geoserverBaseURL,
+    private void send(final File inputDataDir, final File data, final String geoserverBaseURL,
             final String timeStamp, final String coverageStoreId, final String storeFilePrefix,
             final List<String> dataStyles, final String configId, final String defaultStyle,
             final Map<String, String> queryParams, String dataTransferMethod)
@@ -346,7 +346,7 @@ public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSys
 
     }
 
-    public void sendToGeoServer(File workingDir, FileSystemEvent event,
+    private void sendToGeoServer(File workingDir, FileSystemEvent event,
             String coverageStoreId, String storeFilePrefix, String configId)
             throws MalformedURLException, FileNotFoundException {
         LOGGER.info("Sending ArcGrid to GeoServer ... " + getConfiguration().getGeoserverURL());

@@ -194,12 +194,7 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
     }
 
     @Override
-    public GeoServerActionConfiguration clone() { // throws
-        // CloneNotSupportedException
-        // {
-        // final GeoServerActionConfiguration configuration =
-        // new
-        // GeoServerActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+    public GeoServerActionConfiguration clone() { 
         final GeoServerActionConfiguration configuration = (GeoServerActionConfiguration) super
                 .clone();
 

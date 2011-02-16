@@ -255,13 +255,20 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- GeoServer REST Manager ===========================================-->
+            <dependency> <!-- used by new geoserver action-->
+              <groupId>it.geosolutions</groupId>
+              <artifactId>geoserver-manager</artifactId>
+              <version>1.0</version>
+            </dependency>
+            
             <!-- Spring Framework ===========================================-->
 
             <dependency> <!-- used by: pending/gb-action-ais -->
-				<groupId>org.springframework</groupId>
-				<artifactId>spring</artifactId>
-				<version>2.5.6</version>
-			</dependency>
+              <groupId>org.springframework</groupId>
+              <artifactId>spring</artifactId>
+              <version>2.5.6</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -1113,10 +1120,10 @@
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-				<groupId>it.geosolutions.opensdi.lamma</groupId>
-				<artifactId>lamma-ws-su</artifactId>
-				<!--<version>${gb.version}</version>-->
-				<version>0.1-SNAPSHOT</version>
+              <groupId>it.geosolutions.opensdi.lamma</groupId>
+              <artifactId>lamma-ws-su</artifactId>
+              <!--<version>${gb.version}</version>-->
+              <version>0.1-SNAPSHOT</version>
             </dependency>
 						<!-- NURC::SAS -->
             <dependency>
