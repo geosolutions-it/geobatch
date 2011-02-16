@@ -1,6 +1,7 @@
 package it.geosolutions.geobatch.metocs.utils.io.rest;
 
 import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.geobatch.tools.file.reader.TextReader;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -142,7 +143,7 @@ public class PublishRestletResource extends Resource {
                     raf = new RandomAccessFile(inputFile, "r");
                     channel = raf.getChannel();
                     lock = channel.lock(0, Long.MAX_VALUE, true);
-                    response.setEntity(IOUtils.toString(inputFile), MediaType.TEXT_XML);
+                    response.setEntity(TextReader.toString(inputFile), MediaType.TEXT_XML);
                     return;
                 } catch (Throwable e) {
                 } finally {

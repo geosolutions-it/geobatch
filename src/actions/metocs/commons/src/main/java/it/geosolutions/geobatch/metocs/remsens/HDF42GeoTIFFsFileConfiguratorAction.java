@@ -49,12 +49,17 @@ import javax.media.jai.JAI;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.Category;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.io.CoverageAccess;
+import org.geotools.coverage.io.CoverageSource;
+import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geotools.coverage.io.domain.RasterDatasetDomainManager.HorizontalDomain;
 import org.geotools.coverage.io.domain.RasterDatasetDomainManager.TemporalDomain;
-import org.geotools.coverage.io.driver.BaseFileDriver;
+import org.geotools.coverage.io.driver.DefaultFileDriver;
 import org.geotools.coverage.io.driver.Driver.DriverOperation;
 import org.geotools.coverage.io.hdf4.HDF4Driver;
-import org.geotools.coverage.io.impl.DefaultCoverageReadRequest;
+import org.geotools.coverage.io.impl.CoverageReadRequest;
+import org.geotools.coverage.io.impl.CoverageResponse;
+import org.geotools.coverage.io.impl.CoverageResponse.Status;
 import org.geotools.coverage.io.impl.range.DefaultRangeType;
 import org.geotools.coverage.io.range.FieldType;
 import org.geotools.coverage.io.range.RangeType;
@@ -212,7 +217,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
                     // RANGE TYPE
                     final RangeType range = gridSource.getRangeType(null);
 
-                    final CoverageReadRequest readRequest = new DefaultCoverageReadRequest();
+                    final CoverageReadRequest readRequest = new CoverageReadRequest();
                     // //
                     //
                     // Setting up a limited range for the request.
