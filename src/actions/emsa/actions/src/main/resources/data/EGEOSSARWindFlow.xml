@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<id>E-GEOS-SARWindflow</id>
+	<id>EGEOSSARWindFlow</id>
 	<description>E-GEOS-SARWindflow</description>
 	<name>E-GEOS-SARWindflow</name>
 
-	<workingDirectory>EGEOSworkingDir/SARWind</workingDirectory>
+	<workingDirectory>/emsa/out/nfs/sarDerived</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventConsumerConfiguration>
         <listenerId>ConsumerLogger0</listenerId>
         <listenerId>Cumulator</listenerId>
 
-		<workingDirectory>EGEOSworkingDir/SARWind</workingDirectory>
+		<workingDirectory>/emsa/out/nfs/sarDerived</workingDirectory>
 		<performBackup>false</performBackup>
+		<preserveInput>true</preserveInput>
+		
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.nc.*</regex>
+			<regex>.*SAR_wnf\.nc.*</regex>
 			<id>r1</id>
 			<description>description</description>
 			<name>test</name>
@@ -26,7 +28,7 @@
 			<listenerId>StatusActionLogger0</listenerId>
             <listenerId>ActionLogger0</listenerId>
 
-			<workingDirectory>EGEOSworkingDir/SARWind</workingDirectory>
+			<workingDirectory>/emsa/out/nfs/sarDerived</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
@@ -41,7 +43,7 @@
 			<listenerId>StatusActionLogger0</listenerId>
             <listenerId>ActionLogger0</listenerId>
 
-			<workingDirectory>EGEOSworkingDir/SARWind</workingDirectory>
+			<workingDirectory>/emsa/out/nfs/sarDerived</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<timeUnStampedOutputDir>true</timeUnStampedOutputDir>
@@ -62,22 +64,22 @@
 			<name>ImageMosaicService</name>
 
 			<serviceID>ImageMosaicGeneratorService</serviceID>
-			<workingDirectory>EGEOSworkingDir/SARWind</workingDirectory>
+			<workingDirectory>/emsa/out/nfs/sarDerived</workingDirectory>
 
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
-			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverPWD>geoserver-e-geos_matera</geoserverPWD>
 			<geoserverUID>admin</geoserverUID>
-			<geoserverURL>http://ows-csn.e-geos.it/geoserver</geoserverURL>
+			<geoserverURL>http://ows-csn.e-geos.it/geoserver/</geoserverURL>
 			<wmsPath>/</wmsPath>
-			<defaultNamespace>geosolutions</defaultNamespace>
+			<defaultNamespace>emsa</defaultNamespace>
 			<defaultStyle>raster</defaultStyle>
 			<styles/>
 			<datastorePropertiesPath>EGEOSworkingDir/config/datastore.properties</datastorePropertiesPath>
 			<timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>
-			<elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>
-			<!-- runtimeRegex><![CDATA[(?<=_)(\\d{10})(?=_)]]></runtimeRegex -->
+			<!-- elevationRegex><![CDATA[(?<=_)(\d{4}\.\d{3})(?=_)]]></elevationRegex -->
+			<!-- runtimeRegex><![CDATA[(?<=_)(\d{10})(?=_)]]></runtimeRegex -->
 		</ImageMosaicActionConfiguration>
 		
 		<id>id</id>
@@ -86,11 +88,11 @@
 	</EventConsumerConfiguration>
 	
 	<EventGeneratorConfiguration>
-		<wildCard>*.*</wildCard>
+		<wildCard>*</wildCard>
 		<watchDirectory>EGEOSworkingDir/SARWind/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>EGEOSSARWindId</id>
+		<id>id</id>
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>test</name>

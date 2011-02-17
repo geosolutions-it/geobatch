@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<id>egeos_imagemosaic_flow</id>
+	<id>EGEOSProImagemosaicFlow</id>
 	<name>Prepare ImageMosaic and publish</name>
 	<description>Create indexes and publish on GeoServer</description>
 
@@ -28,7 +28,7 @@
         
 		<workingDirectory>EGEOSProImagemosaicWorkingDir/in</workingDirectory>
 		<performBackup>false</performBackup>
-        <preserveInput>true</preserveInput>
+	        <preserveInput>true</preserveInput>
 
 		<FileEventRule>
 			<optional>false</optional>
@@ -54,7 +54,7 @@
 			<styles/>
 			<datastorePropertiesPath>EGEOSProImagemosaicWorkingDir/datastore.properties</datastorePropertiesPath>
 			<timeRegex>[0-9]{8}T[0-9]{9}Z</timeRegex>
-			<!--<elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>-->
+			<!--<elevationRegex><![CDATA[(?<=_)(\d{4}\.\d{3})(?=_)]]></elevationRegex>-->
 			<serviceID>ImageMosaicGeneratorService</serviceID>
 			<id>ImageMosaicService</id>
 			<description>ImageMosaicService</description>
