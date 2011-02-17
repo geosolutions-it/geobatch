@@ -54,8 +54,8 @@ public class ShipParser {
             if (!Arrays.asList(store.getTypeNames()).contains(shipType.getTypeName())) {
                 store.createSchema(shipType);
             }
-            Node oilSpillNode = (Node) xpath.evaluate("/csn:Ship", doc, XPathConstants.NODE);
-            SimpleFeature ship = parseShip(shipType, xpath, oilSpillNode);
+            Node shipNode = (Node) xpath.evaluate("/csn:Ship", doc, XPathConstants.NODE);
+            SimpleFeature ship = parseShip(shipType, xpath, shipNode);
             FeatureStore fs = (FeatureStore) store.getFeatureSource(shipType.getTypeName());
             fs.addFeatures(DataUtilities.collection(ship));
         }

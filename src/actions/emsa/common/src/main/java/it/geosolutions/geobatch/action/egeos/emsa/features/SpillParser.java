@@ -51,12 +51,12 @@ public class SpillParser {
         doc.getDocumentElement().normalize();
 
         // build the oil spill and insert it
-        boolean warning = fXmlFile.getName().endsWith("OSW.xml");
+        boolean warning = fXmlFile.getName().contains("OSW");
         SimpleFeatureType oilSpillType = buildOilSpillFeatureType();
         if (!Arrays.asList(store.getTypeNames()).contains(oilSpillType.getTypeName())) {
             store.createSchema(oilSpillType);
         }
-        Node oilSpillNode = (Node) xpath.evaluate("/csn:OilSpill", doc, XPathConstants.NODE);
+        Node oilSpillNode = (Node) xpath.evaluate("OilSpill", doc, XPathConstants.NODE);
         SimpleFeature oilSpill = parseOilSpill(oilSpillType, xpath, oilSpillNode, warning);
         FeatureStore osfs = (FeatureStore) store.getFeatureSource(oilSpillType.getTypeName());
         List<FeatureId> ids = osfs.addFeatures(DataUtilities.collection(oilSpill));
@@ -71,7 +71,7 @@ public class SpillParser {
                 store.createSchema(oilSpillPolygonType);
             }
             final NodeList polygonNodes = (NodeList) xpath.evaluate(
-                    "/csn:OilSpill/csn:geometry/gml:Polygon", doc, XPathConstants.NODESET);
+                    "OilSpill/geometry/Polygon", doc, XPathConstants.NODESET);
             List<SimpleFeature> oilSpillPolygons = parseOilSpillPolygons(oilSpillPolygonType,
                     xpath, polygonNodes, oilSpillId);
             FeatureStore ospfs = (FeatureStore) store.getFeatureSource(oilSpillPolygonType
@@ -85,13 +85,13 @@ public class SpillParser {
         List<FeatureMapping> mappings = new ArrayList<FeatureMapping>();
         mappings
                 .add(new FeatureMapping(
-                        "gml:metaDataProperty/gml:GenericMetaData/csn:extension/csn:area",
+                        "metaDataProperty/GenericMetaData/extension/area",
                         "extension_area"));
         mappings.add(new FeatureMapping(
-                "gml:metaDataProperty/gml:GenericMetaData/csn:extension/csn:width",
+                "metaDataProperty/GenericMetaData/extension/width",
                 "extension_width"));
         mappings.add(new FeatureMapping(
-                "gml:metaDataProperty/gml:GenericMetaData/csn:extension/csn:length",
+                "metaDataProperty/GenericMetaData/extension/length",
                 "extension_length"));
         mappings.add(new PolygonMapping(".", "spillpolygon"));
 
@@ -108,29 +108,29 @@ public class SpillParser {
     private SimpleFeature parseOilSpill(SimpleFeatureType ft, XPath xpath,
             Node oilSpillNode, boolean warning) throws XPathExpressionException {
         List<FeatureMapping> mappings = new ArrayList<FeatureMapping>();
-        mappings.add(new FeatureMapping("csn:id", "oilspillid"));
-        mappings.add(new FeatureMapping("csn:eventid", "eventid"));
-        mappings.add(new FeatureMapping("csn:origin", "origin"));
-        mappings.add(new FeatureMapping("csn:timeStamp", "timestamp"));
-        mappings.add(new FeatureMapping("csn:dataSource", "datasource"));
-        mappings.add(new FeatureMapping("csn:extension/csn:area", "extension_area"));
-        mappings.add(new FeatureMapping("csn:extension/csn:length", "extension_length"));
-        mappings.add(new FeatureMapping("csn:extension/csn:width", "extension_width"));
-        mappings.add(new FeatureMapping("csn:extension/csn:alignedWithTrack",
+        mappings.add(new FeatureMapping("id", "oilspillid"));
+        mappings.add(new FeatureMapping("eventid", "eventid"));
+        mappings.add(new FeatureMapping("origin", "origin"));
+        mappings.add(new FeatureMapping("timeStamp", "timestamp"));
+        mappings.add(new FeatureMapping("dataSource", "datasource"));
+        mappings.add(new FeatureMapping("extension/area", "extension_area"));
+        mappings.add(new FeatureMapping("extension/length", "extension_length"));
+        mappings.add(new FeatureMapping("extension/width", "extension_width"));
+        mappings.add(new FeatureMapping("extension/alignedWithTrack",
                 "extension_alignedwithtrack"));
-        mappings.add(new FeatureMapping("csn:extension/csn:orientation", "extension_orientation"));
-        mappings.add(new FeatureMapping("csn:extension/csn:volume", "extension_volume"));
-        mappings.add(new FeatureMapping("csn:extension/csn:thickness", "extension_thickness"));
-        mappings.add(new FeatureMapping("csn:distanceFromCoast", "distance_from_coast"));
-        mappings.add(new FeatureMapping("csn:imageIdentifier", "imageid"));
-        mappings.add(new FeatureMapping("csn:classificationLevel", "classification_level"));
-        mappings.add(new FeatureMapping("csn:composition/csn:oilType", "composition_oiltype"));
+        mappings.add(new FeatureMapping("extension/orientation", "extension_orientation"));
+        mappings.add(new FeatureMapping("extension/volume", "extension_volume"));
+        mappings.add(new FeatureMapping("extension/thickness", "extension_thickness"));
+        mappings.add(new FeatureMapping("distanceFromCoast", "distance_from_coast"));
+        mappings.add(new FeatureMapping("imageIdentifier", "imageid"));
+        mappings.add(new FeatureMapping("classificationLevel", "classification_level"));
+        mappings.add(new FeatureMapping("composition/oilType", "composition_oiltype"));
         mappings
-                .add(new FeatureMapping("csn:composition/csn:oilSubType", "composition_oilsubtype"));
-        mappings.add(new FeatureMapping("csn:composition/csn:age", "composition_age"));
-        mappings.add(new FeatureMapping("csn:auxiliaryDataRef/csn:auxiliaryData/csn:dataKey",
+                .add(new FeatureMapping("composition/oilSubType", "composition_oilsubtype"));
+        mappings.add(new FeatureMapping("composition/age", "composition_age"));
+        mappings.add(new FeatureMapping("auxiliaryDataRef/auxiliaryData/dataKey",
                 "auxiliarydata_key"));
-        mappings.add(new FeatureMapping("csn:auxiliaryDataRef/csn:auxiliaryData/csn:dataReference",
+        mappings.add(new FeatureMapping("auxiliaryDataRef/auxiliaryData/dataReference",
                 "auxiliarydata_data_reference") {
             @Override
             public Object getValue(XPath xpath, Node root) throws XPathExpressionException {
@@ -139,44 +139,44 @@ public class SpillParser {
                 return result;
             }
         });
-        mappings.add(new FeatureMapping("csn:inSituInformation/csn:inSituValidation",
+        mappings.add(new FeatureMapping("inSituInformation/inSituValidation",
                 "insituinformation_validation"));
-        mappings.add(new FeatureMapping("csn:inSituInformation/csn:inSituValidationBody",
+        mappings.add(new FeatureMapping("inSituInformation/inSituValidationBody",
                 "insituinformation_body"));
-        mappings.add(new FeatureMapping("csn:inSituInformation/csn:notes",
+        mappings.add(new FeatureMapping("inSituInformation/notes",
                 "insituinformation_notes"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:meteoWind/csn:dataSource",
+        mappings.add(new FeatureMapping("meteoConditions/meteoWind/dataSource",
                 "mc_wind_datasource"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:meteoWind/csn:dataType",
+        mappings.add(new FeatureMapping("meteoConditions/meteoWind/dataType",
                 "mc_wind_datatype"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:meteoWind/csn:windIntensity",
+        mappings.add(new FeatureMapping("meteoConditions/meteoWind/windIntensity",
                 "mc_wind_intensity"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:meteoWind/csn:windDirection",
+        mappings.add(new FeatureMapping("meteoConditions/meteoWind/windDirection",
                 "mc_wind_direction"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:SARWind/csn:dataSource",
+        mappings.add(new FeatureMapping("meteoConditions/SARWind/dataSource",
                 "mc_swind_datasource"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:SARWind/csn:dataType",
+        mappings.add(new FeatureMapping("meteoConditions/SARWind/dataType",
                 "mc_swind_datatype"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:SARWind/csn:windIntensity",
+        mappings.add(new FeatureMapping("meteoConditions/SARWind/windIntensity",
                 "mc_swind_intensity"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:SARWind/csn:windDirection",
+        mappings.add(new FeatureMapping("meteoConditions/SARWind/windDirection",
                 "mc_swind_direction"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:sea/csn:dataSource",
+        mappings.add(new FeatureMapping("meteoConditions/sea/dataSource",
                 "mc_sea_datasource"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:sea/csn:dataType",
+        mappings.add(new FeatureMapping("meteoConditions/sea/dataType",
                 "mc_sea_datatype"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:sea/csn:waveLength",
+        mappings.add(new FeatureMapping("meteoConditions/sea/waveLength",
                 "mc_sea_wavelength"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:sea/csn:waveHeight",
+        mappings.add(new FeatureMapping("meteoConditions/sea/waveHeight",
                 "mc_sea_waveheight"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:sea/csn:waveDirection",
+        mappings.add(new FeatureMapping("meteoConditions/sea/waveDirection",
                 "mc_sea_wavedirection"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:sea/csn:currentIntensity",
+        mappings.add(new FeatureMapping("meteoConditions/sea/currentIntensity",
                 "mc_sea_currentintesity"));
-        mappings.add(new FeatureMapping("csn:meteoConditions/csn:sea/csn:currentDirection",
+        mappings.add(new FeatureMapping("meteoConditions/sea/currentDirection",
                 "mc_sea_currentdirection"));
-        mappings.add(new DirectPositionMapping("csn:center/gml:pos", "center"));
-        mappings.add(new PolygonArrayMapping("csn:geometry/gml:Polygon", "geometry"));
+        mappings.add(new DirectPositionMapping("center/pos", "center"));
+        mappings.add(new PolygonArrayMapping("geometry/Polygon", "geometry"));
         SimpleFeatureBuilder fb = new SimpleFeatureBuilder(ft);
         FeatureMapping.mapToFeature(fb, oilSpillNode, xpath, mappings);
         fb.set("warning", warning);

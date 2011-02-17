@@ -303,8 +303,8 @@ public class SARWindFileConfiguratorAction extends METOCSBaseConfiguratorAction 
 
         final Variable maskOriginalVar = ncGridFile.findVariable("mask");
         @SuppressWarnings("unused")
-        final DataType maskDataType = maskOriginalVar.getDataType();
-        final Array maskOriginalData = maskOriginalVar.read();
+        final DataType maskDataType = maskOriginalVar != null ? maskOriginalVar.getDataType() : null;
+        final Array maskOriginalData = maskDataType != null ? maskOriginalVar.read() : null;
 
         ncFileOut.create();
 
