@@ -27,17 +27,15 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.compress.compressors.CompressorException;
@@ -70,11 +68,12 @@ public final class Extractor {
      * @return The list of the extracted files, or null if an error occurred.
      * @throws IllegalArgumentException
      *             if the destination dir is not writeable.
+     * @deprecated use Extractor.unZip instead which support complex zip structure
      */
     public static List<File> unzipFlat(final File zipFile, final File destDir) {
-        if (!destDir.isDirectory())
-            throw new IllegalArgumentException("Not a directory '" + destDir.getAbsolutePath()
-                    + "'");
+        // if (!destDir.isDirectory())
+        // throw new IllegalArgumentException("Not a directory '" + destDir.getAbsolutePath()
+        // + "'");
 
         if (!destDir.canWrite())
             throw new IllegalArgumentException("Unwritable directory '" + destDir.getAbsolutePath()
@@ -107,76 +106,104 @@ public final class Extractor {
         }
     }
 
-    public static void unzip(String inputZip, String destinationDirectory) throws IOException, CompressorException {
-        int BUFFER = 2048;
-        List<String> zipFiles = new ArrayList<String>();
-        File sourceZipFile = new File(inputZip);
-        File unzipDestinationDirectory = new File(destinationDirectory);
-        unzipDestinationDirectory.mkdir();
+    /**
+     * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+     * 
+     * @param inputZipName
+     *            - the input zip file
+     * @param outputFileName
+     *            - a directory with this name containing zip files will be created
+     * 
+     * @throws IOException
+     * @throws CompressorException
+     */
+    public static void unZip(String inputZipName, String outputFileName) throws IOException,
+            CompressorException {
+        final int BUFFER = 2048;
+        File inputZipFile = new File(inputZipName);
+        File outputFile = new File(outputFileName);
+        // if (!outputFile.canWrite())
+        // throw new
+        // CompressorException("Unzip: Destination file is not writeable: "+outputFileName);
+        if (!outputFile.mkdirs()) {
+            throw new CompressorException("Unzip: Unable to create directory structure: "
+                    + outputFileName);
+        }
+        // File unzipDestinationDirectory = new File(destinationDirectory);
+        // unzipDestinationDirectory.mkdir();
+        ZipInputStream zipInputStream=null;
+        try {
+            // Open Zip file for reading
+            zipInputStream = new ZipInputStream(new FileInputStream(inputZipFile));
+        } catch (FileNotFoundException fnf) {
+            throw new CompressorException("Unzip: Unable to find the input zip file named: "
+                    + inputZipName);
+        }
+        // extract file if not a directory
+        BufferedInputStream bis = new BufferedInputStream(zipInputStream);
+        // grab a zip file entry
+        ZipEntry entry = null;
+        while ((entry = zipInputStream.getNextEntry()) != null) {
+            // Process each entry
 
-        ZipFile zipFile;
-        // Open Zip file for reading
-        zipFile = new ZipFile(sourceZipFile, ZipFile.OPEN_READ);
+            StringBuilder currentEntry = new StringBuilder(outputFileName);
+            currentEntry.append(File.separator).append(entry.getName());
 
-        // Create an enumeration of the entries in the zip file
-        Enumeration<? extends ZipEntry> zipFileEntries = zipFile.entries();
+            if (entry.isDirectory()) {
+                File currentFile = new File(currentEntry.toString());
 
-        // Process each entry
-        while (zipFileEntries.hasMoreElements()) {
-            // grab a zip file entry
-            ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
-
-            String currentEntry = entry.getName();
-
-            File destFile = new File(unzipDestinationDirectory, currentEntry);
-            destFile = new File(unzipDestinationDirectory, destFile.getName());
-            
-            // grab file's parent directory structure
-            File destinationParent = destFile.getParentFile();
-            // create the parent directory structure if needed
-            destinationParent.mkdirs();
-            
-
-            try {
-                if (currentEntry.endsWith(".zip")) { //TODO use tika!
-                    // recursion on inner zip 
-                    unzip(currentEntry, destFile.getAbsolutePath());
+                if (!currentFile.mkdirs()) {
+                    throw new CompressorException(
+                            "Unzip: Unable to create inner directory structure: " + currentEntry);
                 }
-                else if (entry.isDirectory()) {
-                    // TODO
-                }
-                else if (!entry.isDirectory()) {
-                    // extract file if not a directory
-                    BufferedInputStream is = new BufferedInputStream(zipFile.getInputStream(entry));
+
+            } else /* if (!entry.isDirectory()) */{
+                FileOutputStream fos = null;
+                BufferedOutputStream dest = null;
+                try {
                     int currentByte;
                     // establish buffer for writing file
                     byte data[] = new byte[BUFFER];
 
                     // write the current file to disk
-                    FileOutputStream fos = new FileOutputStream(destFile);
-                    BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
+                    fos = new FileOutputStream(currentEntry.toString());
+                    dest = new BufferedOutputStream(fos, BUFFER);
 
                     // read and write until last byte is encountered
-                    while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
+                    while ((currentByte = bis.read(data, 0, BUFFER)) != -1) {
                         dest.write(data, 0, currentByte);
                     }
-                    dest.flush();
-                    dest.close();
-                    is.close();
+                } catch (IOException ioe) {
+
+                } finally {
+                    try {
+                        if (dest != null) {
+                            dest.flush();
+                            dest.close();
+                        }
+                        if (fos != null)
+                            fos.close();
+                    } catch (IOException ioe) {
+                        throw new CompressorException("Unzip: unable to close the zipInputStream: "
+                                + ioe.getLocalizedMessage());
+                    }
                 }
-            } catch (IOException ioe) {
-                throw new CompressorException("Error during unZip: " + ioe.getLocalizedMessage());
             }
         }
-        zipFile.close();
-
-        for (Iterator<?> iter = zipFiles.iterator(); iter.hasNext();) {
-            String zipName = (String) iter.next();
-            unzip(zipName,
-                    destinationDirectory + File.separatorChar
-                            + zipName.substring(0, zipName.lastIndexOf(".zip")));
+        try {
+            if (zipInputStream!=null)
+                zipInputStream.close();
+        } catch (IOException ioe) {
+            throw new CompressorException("Unzip: unable to close the zipInputStream: "
+                    + ioe.getLocalizedMessage());
         }
-
+        try {
+            if (bis!=null)
+                bis.close();
+        } catch (IOException ioe) {
+            throw new CompressorException("Unzip: unable to close the Buffered zipInputStream: "
+                    + ioe.getLocalizedMessage());
+        }
     }
 
     /**

@@ -26,7 +26,6 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.tools.file.FileGarbageCollector;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +37,6 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.media.jai.RenderedOp;
 
-import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.grid.GridCoverage2D;
