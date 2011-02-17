@@ -762,8 +762,10 @@ public class GeoServerRESTHelper {
         String layer = URLEncoder.encode(layerName, "UTF-8");
         if (layer.contains("."))
             layer = layer + ".fake";
-        final URL geoserverREST_URL = new URL(new StringBuilder(geoserverBaseURL).append(
-                "/rest/layers/").append(layer).toString());
+        final URL geoserverREST_URL = new URL(new StringBuilder(geoserverBaseURL)
+            .append(!geoserverBaseURL.endsWith("/") ? "/" : "")
+            .append("rest/layers/")
+            .append(layer).toString());
 
         HttpURLConnection con = (HttpURLConnection) geoserverREST_URL.openConnection();
         con.setDoOutput(true);

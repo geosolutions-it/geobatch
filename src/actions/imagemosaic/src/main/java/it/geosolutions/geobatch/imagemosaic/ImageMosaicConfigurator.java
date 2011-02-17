@@ -74,6 +74,8 @@ import org.geotools.data.postgis.PostgisNGJNDIDataStoreFactory;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.gce.geotiff.GeoTiffReader;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
@@ -416,9 +418,9 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                                         // load the feature from the shapefile
                                         // and create JTS index
                                         it = features.features();
-                                        if (!it.hasNext())
+                                        /* if (!it.hasNext())
                                             throw new IllegalArgumentException(
-                                                    "The provided SimpleFeatureCollection  or empty, it's impossible to create an index!");
+                                                    "The provided SimpleFeatureCollection is empty, it's impossible to create an index!"); */
 
                                         String[] fileNames = inputDir.list(new SuffixFileFilter(
                                                 new String[] { ".tif", ".tiff" },
@@ -450,18 +452,6 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                                                         .getGeometryDescriptor().getLocalName();
                                                 ReferencedEnvelope bounds = featureSource
                                                         .getBounds();
-                                                WKTReader wktReader = new WKTReader();
-                                                Geometry the_geom = wktReader.read("POLYGON(("
-                                                        + bounds.getMinX() + " " + bounds.getMinY()
-                                                        + "," + bounds.getMinX() + " "
-                                                        + bounds.getMaxY() + "," + bounds.getMaxX()
-                                                        + " " + bounds.getMaxY() + ","
-                                                        + bounds.getMaxX() + " " + bounds.getMinY()
-                                                        + "," + bounds.getMinX() + " "
-                                                        + bounds.getMinY() + "))");
-                                                Integer SRID = CRS.lookupEpsgCode(bounds
-                                                        .getCoordinateReferenceSystem(), true);
-                                                the_geom.setSRID(SRID);
 
                                                 Properties ftProps = Utils
                                                         .loadPropertiesFromURL(DataUtilities
@@ -504,9 +494,26 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                                                     // create a new feature
                                                     final SimpleFeature feature = fw.next();
 
-                                                    // get attributes and copy them
-                                                    // over
+                                                    // get attributes and copy them over
 
+                                                    GeoTiffReader reader = new GeoTiffReader(new File(inputDir, granuleLocation));
+                                                    GeneralEnvelope originalEnvelope = reader.getOriginalEnvelope();
+                                                    
+                                                    ReferencedEnvelope bb = new ReferencedEnvelope(originalEnvelope);
+                                                    
+                                                    WKTReader wktReader = new WKTReader();
+                                                    Geometry the_geom = wktReader.read("POLYGON(("
+                                                            + bb.getMinX() + " " + bb.getMinY()
+                                                            + "," + bb.getMinX() + " "
+                                                            + bb.getMaxY() + "," + bb.getMaxX()
+                                                            + " " + bb.getMaxY() + ","
+                                                            + bb.getMaxX() + " " + bb.getMinY()
+                                                            + "," + bb.getMinX() + " "
+                                                            + bb.getMinY() + "))");
+                                                    Integer SRID = CRS.lookupEpsgCode(bb
+                                                            .getCoordinateReferenceSystem(), true);
+                                                    the_geom.setSRID(SRID);
+                                                    
                                                     feature.setAttribute(geometryPropertyName,
                                                             the_geom);
                                                     feature.setAttribute("location",
@@ -568,7 +575,8 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                                                 }
                                             }
                                         } finally {
-                                            fw.close();
+                                            if (fw != null)
+                                                fw.close();
                                         }
 
                                         File layerDescriptor = new File(inputDir,
@@ -690,7 +698,7 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
      */
     private boolean checkIfImageMosaicLayerExists(String coverageStoreId)
             throws ParserConfigurationException, IOException, TransformerException {
-        return GeoServerRESTHelper.checkLayerExistence(getConfiguration().getGeoserverURL(),
+        return GeoServerRESTHelper.checkLayerExistence(decurtSlash(getConfiguration().getGeoserverURL()),
                 getConfiguration().getGeoserverUID(), getConfiguration().getGeoserverPWD(),
                 coverageStoreId);
     }
@@ -719,7 +727,7 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
         queryParams.put("namespace", getConfiguration().getDefaultNamespace());
         queryParams.put("wmspath", getConfiguration().getWmsPath());
         final String[] layerResponse = GeoServerRESTHelper.sendCoverage(inputDir, inputDir,
-                getConfiguration().getGeoserverURL(), getConfiguration().getGeoserverUID(),
+                decurtSlash(getConfiguration().getGeoserverURL()), getConfiguration().getGeoserverUID(),
                 getConfiguration().getGeoserverPWD(), mosaicDescriptor.coverageStoreId,
                 mosaicDescriptor.coverageStoreId, queryParams, "", "EXTERNAL", "imagemosaic",
                 GEOSERVER_VERSION, getConfiguration().getStyles(), getConfiguration()
@@ -748,7 +756,7 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
             queryParams.put("USE_JAI_IMAGEREAD", "false");
             queryParams.put("SUGGESTED_TILE_SIZE", "512,512");
 
-            configureMosaic(queryParams, getConfiguration().getGeoserverURL(), getConfiguration()
+            configureMosaic(queryParams, decurtSlash(getConfiguration().getGeoserverURL()), getConfiguration()
                     .getGeoserverUID(), getConfiguration().getGeoserverPWD(), workspace,
                     coverageStore, coverageName);
 
@@ -784,6 +792,10 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                         FileSystemEventType.FILE_ADDED));
             }
         }
+    }
+
+    private static String decurtSlash(String geoserverURL) {
+        return !geoserverURL.endsWith("/") ? geoserverURL : geoserverURL.substring(0, geoserverURL.length()-1);
     }
 
     /**
@@ -825,7 +837,7 @@ public class ImageMosaicConfigurator extends ImageMosaicConfiguratorAction<FileS
                 String coverageStoreId = inputDir.getName();
 
                 LOGGER.info("Coverage Store ID: " + coverageStoreId);
-
+                
                 mosaicDescriptor = new ImageMosaicGranulesDescriptor(coverageStoreId, metocFields,
                         firstCvNameParts, lastCvNameParts);
             }

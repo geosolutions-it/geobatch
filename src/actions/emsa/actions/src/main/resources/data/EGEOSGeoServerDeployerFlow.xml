@@ -18,7 +18,7 @@
 		<name>test</name>
 	</EventGeneratorConfiguration>
 
-    <EventConsumerConfiguration>
+	<EventConsumerConfiguration>
 		<id>EGEOSGeoServerDeployer_config</id>
 		<name>EGEOSGeoServerDeployer_config</name>
 		<description>EGEOS GeoServer-Deployer Configuration</description>
@@ -77,7 +77,7 @@
 		
 	</EventConsumerConfiguration>
 
-    <ListenerConfigurations>
+	<ListenerConfigurations>
     	<StatusProgressListener>
     		<serviceID>statusListenerService</serviceID>
             <id>EGEOSActionStatusListener</id>

@@ -466,7 +466,9 @@ public class Utilities {
      */
     public static File createDirectory(File workingDir, String inputFileName) {
         File newDir = new File(workingDir, inputFileName);
-        if (newDir.mkdir())
+        if (!newDir.exists() && newDir.mkdir())
+            return newDir;
+        else if (newDir.exists())
             return newDir;
 
         return null;

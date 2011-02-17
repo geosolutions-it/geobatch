@@ -31,7 +31,7 @@ public class ShipParserTest extends TestCase {
         // connect to the store
         DataStore store = connect();
 
-        File directory = new ClassPath("testDS").getFile();
+        File directory = new ClassPathResource("testDS").getFile();
         File[] shipFiles = directory.listFiles(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {

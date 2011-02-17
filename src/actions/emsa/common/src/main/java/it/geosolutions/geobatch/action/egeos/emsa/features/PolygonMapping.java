@@ -31,37 +31,56 @@ public class PolygonMapping extends FeatureMapping {
 
     public Object getValue(XPath xpath, Node root) throws XPathExpressionException {
         GeometryFactory gf = new GeometryFactory();
-        String ordinates = (String) xpath.evaluate("gml:exterior/gml:LinearRing/gml:posList", root,
-                XPathConstants.STRING);
-        double[] doubles = parseRingOrdinates(ordinates);
-        LinearRing shell = gf.createLinearRing(new LiteCoordinateSequence(doubles));
+        try {
+            String ordinates = (String) xpath.evaluate("gml:exterior/gml:LinearRing/gml:posList", root,
+                    XPathConstants.STRING);
+            if (ordinates == null || ordinates.length() == 0) {
+                ordinates = (String) xpath.evaluate("exterior/LinearRing/posList", root,
+                        XPathConstants.STRING);
+            }
 
-        NodeList interiorNodes = (NodeList) xpath.evaluate("gml:interior/gml:LinearRing/gml:posList", root,
-                XPathConstants.NODESET);
-        LinearRing[] holes = new LinearRing[interiorNodes.getLength()];
-        for (int j = 0; j < holes.length; j++) {
-            doubles = parseRingOrdinates(interiorNodes.item(j).getTextContent());
-            holes[j] = gf.createLinearRing(new LiteCoordinateSequence(doubles));
+            double[] doubles = parseRingOrdinates(ordinates);
+            LinearRing shell = gf.createLinearRing(new LiteCoordinateSequence(doubles));
+
+            NodeList interiorNodes = (NodeList) xpath.evaluate("gml:interior/gml:LinearRing/gml:posList", root,
+                    XPathConstants.NODESET);
+            if (interiorNodes == null) {
+                interiorNodes = (NodeList) xpath.evaluate("interior/LinearRing/posList", root,
+                        XPathConstants.NODESET);
+            }
+            LinearRing[] holes = new LinearRing[interiorNodes.getLength()];
+            for (int j = 0; j < holes.length; j++) {
+                doubles = parseRingOrdinates(interiorNodes.item(j).getTextContent());
+                holes[j] = gf.createLinearRing(new LiteCoordinateSequence(doubles));
+            }
+
+            return gf.createPolygon(shell, holes);
+        } catch (Exception e) {
+            double[] doubles = new double[] {0, 0, 0, 0};
+            LinearRing shell = gf.createLinearRing(new LiteCoordinateSequence(doubles));
+            return gf.createPolygon(shell, new LinearRing[0]);
         }
-
-        return gf.createPolygon(shell, holes);
     }
 
     protected double[] parseRingOrdinates(String ordinates) {
         String[] strarr = Pattern.compile("[\\s\\n]+", Pattern.DOTALL).split(ordinates.trim());
         double[] doubles = new double[strarr.length];
-        for (int j = 0; j < strarr.length; j++) {
-            doubles[j] = Double.parseDouble(strarr[j]);
+        if (doubles.length >= 4) {
+            for (int j = 0; j < strarr.length; j++) {
+                doubles[j] = Double.parseDouble(strarr[j]);
+            }
+            // check if the ordinates form a closed ring, if not, fix it
+            if (doubles[0] != doubles[doubles.length - 2] || doubles[1] != doubles[doubles.length - 1]) {
+                double[] tmp = new double[doubles.length + 2];
+                System.arraycopy(doubles, 0, tmp, 0, doubles.length);
+                tmp[doubles.length] = doubles[0];
+                tmp[doubles.length + 1] = doubles[1];
+                doubles = tmp;
+            }
+        
+            return doubles;
         }
-        // check if the ordinates form a closed ring, if not, fix it
-        if (doubles[0] != doubles[doubles.length - 2] || doubles[1] != doubles[doubles.length - 1]) {
-            double[] tmp = new double[doubles.length + 2];
-            System.arraycopy(doubles, 0, tmp, 0, doubles.length);
-            tmp[doubles.length] = doubles[0];
-            tmp[doubles.length + 1] = doubles[1];
-            doubles = tmp;
-        }
-        return doubles;
+        return null;
     }
 
 }

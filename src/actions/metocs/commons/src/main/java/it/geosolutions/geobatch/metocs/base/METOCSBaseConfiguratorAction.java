@@ -208,8 +208,8 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
 
             if (metocsGridFiles.length != 1) {
                 if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Could not find any NCOM Grid file.");
-                throw new IOException("Could not find any NCOM Grid file.");
+                    LOGGER.severe("Could not find any NCOM Grid file. [metocsDatasetDirectory: "+metocsDatasetDirectory.getAbsolutePath()+"; metocsGridFiles.length:"+metocsGridFiles.length+"]");
+                throw new IOException("Could not find any NCOM Grid file. [metocsDatasetDirectory: "+metocsDatasetDirectory.getAbsolutePath()+"; metocsGridFiles.length:"+metocsGridFiles.length+"]");
             }
 
             ncGridFile = NetcdfFile.open(metocsGridFiles[0].getAbsolutePath());

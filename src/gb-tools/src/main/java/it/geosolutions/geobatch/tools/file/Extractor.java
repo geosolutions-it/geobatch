@@ -120,17 +120,15 @@ public final class Extractor {
     public static void unZip(String inputZipName, String outputFileName) throws IOException,
             CompressorException {
         final int BUFFER = 2048;
-        File inputZipFile = new File(inputZipName);
+        
+        
         File outputFile = new File(outputFileName);
-        // if (!outputFile.canWrite())
-        // throw new
-        // CompressorException("Unzip: Destination file is not writeable: "+outputFileName);
         if (!outputFile.mkdirs()) {
             throw new CompressorException("Unzip: Unable to create directory structure: "
                     + outputFileName);
         }
-        // File unzipDestinationDirectory = new File(destinationDirectory);
-        // unzipDestinationDirectory.mkdir();
+        
+        File inputZipFile = new File(inputZipName);
         ZipInputStream zipInputStream=null;
         try {
             // Open Zip file for reading
@@ -139,6 +137,7 @@ public final class Extractor {
             throw new CompressorException("Unzip: Unable to find the input zip file named: "
                     + inputZipName);
         }
+        
         // extract file if not a directory
         BufferedInputStream bis = new BufferedInputStream(zipInputStream);
         // grab a zip file entry
