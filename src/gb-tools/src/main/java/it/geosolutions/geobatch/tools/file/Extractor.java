@@ -40,6 +40,7 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.io.FilenameUtils;
 
 /*
  * COMMENTED OUT: require ant-1.7.jar
@@ -49,7 +50,7 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
  */
 
 /**
- * A Class container for Extracotrs methods.
+ * A Class container for Extractors methods.
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
@@ -121,7 +122,6 @@ public final class Extractor {
             CompressorException {
         final int BUFFER = 2048;
         
-        
         File outputFile = new File(outputFileName);
         if (!outputFile.mkdirs()) {
             throw new CompressorException("Unzip: Unable to create directory structure: "
@@ -146,46 +146,55 @@ public final class Extractor {
             // Process each entry
 
             StringBuilder currentEntry = new StringBuilder(outputFileName);
-            currentEntry.append(File.separator).append(entry.getName());
+//System.out.println("currentEntry "+currentEntry.toString());
 
-            if (entry.isDirectory()) {
-                File currentFile = new File(currentEntry.toString());
+            /*
+             * This is done to transform the file name using your
+             * currently Operating System Separator path.
+             */
+            currentEntry.
+                append(File.separator).
+                append(FilenameUtils.getPathNoEndSeparator(entry.getName()));
+            
+            File currentFile = new File(currentEntry.toString());
+            
+            if (!currentFile.exists())
+                currentFile.mkdirs();                
+                
+            currentEntry.
+                append(File.separator).
+                append(FilenameUtils.getName(entry.getName()));
+            
+//System.out.println("currentEntry "+currentEntry.toString());
+            
+            FileOutputStream fos = null;
+            BufferedOutputStream dest = null;
+            try {
+                int currentByte;
+                // establish buffer for writing file
+                byte data[] = new byte[BUFFER];
 
-                if (!currentFile.mkdirs()) {
-                    throw new CompressorException(
-                            "Unzip: Unable to create inner directory structure: " + currentEntry);
+                // write the current file to disk
+                fos = new FileOutputStream(currentEntry.toString());
+                dest = new BufferedOutputStream(fos, BUFFER);
+
+                // read and write until last byte is encountered
+                while ((currentByte = bis.read(data, 0, BUFFER)) != -1) {
+                    dest.write(data, 0, currentByte);
                 }
+            } catch (IOException ioe) {
 
-            } else /* if (!entry.isDirectory()) */{
-                FileOutputStream fos = null;
-                BufferedOutputStream dest = null;
+            } finally {
                 try {
-                    int currentByte;
-                    // establish buffer for writing file
-                    byte data[] = new byte[BUFFER];
-
-                    // write the current file to disk
-                    fos = new FileOutputStream(currentEntry.toString());
-                    dest = new BufferedOutputStream(fos, BUFFER);
-
-                    // read and write until last byte is encountered
-                    while ((currentByte = bis.read(data, 0, BUFFER)) != -1) {
-                        dest.write(data, 0, currentByte);
+                    if (dest != null) {
+                        dest.flush();
+                        dest.close();
                     }
+                    if (fos != null)
+                        fos.close();
                 } catch (IOException ioe) {
-
-                } finally {
-                    try {
-                        if (dest != null) {
-                            dest.flush();
-                            dest.close();
-                        }
-                        if (fos != null)
-                            fos.close();
-                    } catch (IOException ioe) {
-                        throw new CompressorException("Unzip: unable to close the zipInputStream: "
-                                + ioe.getLocalizedMessage());
-                    }
+                    throw new CompressorException("Unzip: unable to close the zipInputStream: "
+                            + ioe.getLocalizedMessage());
                 }
             }
         }
