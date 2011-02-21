@@ -21,12 +21,13 @@
  */
 package it.geosolutions.geobatch.tools.file;
 
-
 import it.geosolutions.geobatch.tools.Conf;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,22 +40,23 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+
 /*
  * COMMENTED OUT: require ant-1.7.jar
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.util.FileUtils;
-import org.apache.tools.bzip2.CBZip2InputStream;
-*/
+ import org.apache.tools.ant.BuildException;
+ import org.apache.tools.ant.util.FileUtils;
+ import org.apache.tools.bzip2.CBZip2InputStream;
+ */
 
 /**
  * A Class container for Extracotrs methods.
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  */
 public final class Extractor {
     private final static Logger LOGGER = Logger.getLogger(Extractor.class.toString());
-    
+
     /**
      * Unzips the files from a zipfile into a directory. All of the files will be put in a single
      * direcotry. If the zipfile contains a hierarchycal structure, it will be ignored.
@@ -66,11 +68,12 @@ public final class Extractor {
      * @return The list of the extracted files, or null if an error occurred.
      * @throws IllegalArgumentException
      *             if the destination dir is not writeable.
+     * @deprecated use Extractor.unZip instead which support complex zip structure
      */
     public static List<File> unzipFlat(final File zipFile, final File destDir) {
-        if (!destDir.isDirectory())
-            throw new IllegalArgumentException("Not a directory '" + destDir.getAbsolutePath()
-                    + "'");
+        // if (!destDir.isDirectory())
+        // throw new IllegalArgumentException("Not a directory '" + destDir.getAbsolutePath()
+        // + "'");
 
         if (!destDir.canWrite())
             throw new IllegalArgumentException("Unwritable directory '" + destDir.getAbsolutePath()
@@ -98,16 +101,116 @@ public final class Extractor {
             zipinputstream.close();
             return ret;
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Error unzipping file '" + zipFile.getAbsolutePath() + "'",e);
+            LOGGER.log(Level.WARNING, "Error unzipping file '" + zipFile.getAbsolutePath() + "'", e);
             return null;
         }
     }
-    
+
+    /**
+     * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+     * 
+     * @param inputZipName
+     *            - the input zip file
+     * @param outputFileName
+     *            - a directory with this name containing zip files will be created
+     * 
+     * @throws IOException
+     * @throws CompressorException
+     */
+    public static void unZip(String inputZipName, String outputFileName) throws IOException,
+            CompressorException {
+        final int BUFFER = 2048;
+        File inputZipFile = new File(inputZipName);
+        File outputFile = new File(outputFileName);
+        // if (!outputFile.canWrite())
+        // throw new
+        // CompressorException("Unzip: Destination file is not writeable: "+outputFileName);
+        if (!outputFile.mkdirs()) {
+            throw new CompressorException("Unzip: Unable to create directory structure: "
+                    + outputFileName);
+        }
+        // File unzipDestinationDirectory = new File(destinationDirectory);
+        // unzipDestinationDirectory.mkdir();
+        ZipInputStream zipInputStream=null;
+        try {
+            // Open Zip file for reading
+            zipInputStream = new ZipInputStream(new FileInputStream(inputZipFile));
+        } catch (FileNotFoundException fnf) {
+            throw new CompressorException("Unzip: Unable to find the input zip file named: "
+                    + inputZipName);
+        }
+        // extract file if not a directory
+        BufferedInputStream bis = new BufferedInputStream(zipInputStream);
+        // grab a zip file entry
+        ZipEntry entry = null;
+        while ((entry = zipInputStream.getNextEntry()) != null) {
+            // Process each entry
+
+            StringBuilder currentEntry = new StringBuilder(outputFileName);
+            currentEntry.append(File.separator).append(entry.getName());
+
+            if (entry.isDirectory()) {
+                File currentFile = new File(currentEntry.toString());
+
+                if (!currentFile.mkdirs()) {
+                    throw new CompressorException(
+                            "Unzip: Unable to create inner directory structure: " + currentEntry);
+                }
+
+            } else /* if (!entry.isDirectory()) */{
+                FileOutputStream fos = null;
+                BufferedOutputStream dest = null;
+                try {
+                    int currentByte;
+                    // establish buffer for writing file
+                    byte data[] = new byte[BUFFER];
+
+                    // write the current file to disk
+                    fos = new FileOutputStream(currentEntry.toString());
+                    dest = new BufferedOutputStream(fos, BUFFER);
+
+                    // read and write until last byte is encountered
+                    while ((currentByte = bis.read(data, 0, BUFFER)) != -1) {
+                        dest.write(data, 0, currentByte);
+                    }
+                } catch (IOException ioe) {
+
+                } finally {
+                    try {
+                        if (dest != null) {
+                            dest.flush();
+                            dest.close();
+                        }
+                        if (fos != null)
+                            fos.close();
+                    } catch (IOException ioe) {
+                        throw new CompressorException("Unzip: unable to close the zipInputStream: "
+                                + ioe.getLocalizedMessage());
+                    }
+                }
+            }
+        }
+        try {
+            if (zipInputStream!=null)
+                zipInputStream.close();
+        } catch (IOException ioe) {
+            throw new CompressorException("Unzip: unable to close the zipInputStream: "
+                    + ioe.getLocalizedMessage());
+        }
+        try {
+            if (bis!=null)
+                bis.close();
+        } catch (IOException ioe) {
+            throw new CompressorException("Unzip: unable to close the Buffered zipInputStream: "
+                    + ioe.getLocalizedMessage());
+        }
+    }
+
     /**
      * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
      * 
      */
-    public static void extractBz2(File in_file, File out_file) throws CompressorException{
+    public static void extractBz2(File in_file, File out_file) throws CompressorException {
         FileOutputStream out = null;
         BZip2CompressorInputStream zIn = null;
         FileInputStream fis = null;
@@ -116,15 +219,12 @@ public final class Extractor {
             out = new FileOutputStream(out_file);
             fis = new FileInputStream(in_file);
             bis = new BufferedInputStream(fis);
-/*            int b = bis.read();
-            if (b != 'B') {
-                throw new CompressorException("Invalid bz2 file: "+in_file.getAbsolutePath());
-            }
-            b = bis.read();
-            if (b != 'Z') {
-                throw new CompressorException("Invalid bz2 file: "+in_file.getAbsolutePath());
-            }
-            */
+            /*
+             * int b = bis.read(); if (b != 'B') { throw new
+             * CompressorException("Invalid bz2 file: "+in_file.getAbsolutePath()); } b =
+             * bis.read(); if (b != 'Z') { throw new
+             * CompressorException("Invalid bz2 file: "+in_file.getAbsolutePath()); }
+             */
             zIn = new BZip2CompressorInputStream(bis);
             byte[] buffer = new byte[Conf.getBufferSize()];
             int count = 0;
@@ -132,39 +232,33 @@ public final class Extractor {
                 out.write(buffer, 0, count);
                 count = zIn.read(buffer, 0, buffer.length);
             } while (count != -1);
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             String msg = "Problem expanding bzip2 " + ioe.getMessage();
-            throw new CompressorException(msg+in_file.getAbsolutePath());
-        }
-        finally {
+            throw new CompressorException(msg + in_file.getAbsolutePath());
+        } finally {
             try {
-                if (bis!=null)
+                if (bis != null)
                     bis.close();
-            }
-            catch (IOException ioe){
-                throw new CompressorException("Error closing stream: "+in_file.getAbsolutePath());
+            } catch (IOException ioe) {
+                throw new CompressorException("Error closing stream: " + in_file.getAbsolutePath());
             }
             try {
-                if (fis!=null)
+                if (fis != null)
                     fis.close();
-            }
-            catch (IOException ioe){
-                throw new CompressorException("Error closing stream: "+in_file.getAbsolutePath());
+            } catch (IOException ioe) {
+                throw new CompressorException("Error closing stream: " + in_file.getAbsolutePath());
             }
             try {
-                if (out!=null)
+                if (out != null)
                     out.close();
-            }
-            catch (IOException ioe){
-                throw new CompressorException("Error closing stream: "+in_file.getAbsolutePath());
+            } catch (IOException ioe) {
+                throw new CompressorException("Error closing stream: " + in_file.getAbsolutePath());
             }
             try {
-                if (zIn!=null)
+                if (zIn != null)
                     zIn.close();
-            }
-            catch (IOException ioe){
-                throw new CompressorException("Error closing stream: "+in_file.getAbsolutePath());
+            } catch (IOException ioe) {
+                throw new CompressorException("Error closing stream: " + in_file.getAbsolutePath());
             }
         }
     }
@@ -172,11 +266,13 @@ public final class Extractor {
     /**
      * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
      * 
-     * Extract a GZip file to a tar
-     * @param in_file the input bz2 file to extract
-     * @param out_file the output tar file to extract to
+     *         Extract a GZip file to a tar
+     * @param in_file
+     *            the input bz2 file to extract
+     * @param out_file
+     *            the output tar file to extract to
      */
-    public static void extractGzip(File in_file, File out_file) throws CompressorException{
+    public static void extractGzip(File in_file, File out_file) throws CompressorException {
         FileOutputStream out = null;
         GZIPInputStream zIn = null;
         FileInputStream fis = null;
@@ -184,44 +280,40 @@ public final class Extractor {
         try {
             out = new FileOutputStream(out_file);
             fis = new FileInputStream(in_file);
-            bis = new BufferedInputStream(fis,Conf.getBufferSize());
+            bis = new BufferedInputStream(fis, Conf.getBufferSize());
             zIn = new GZIPInputStream(bis);
             byte[] buffer = new byte[Conf.getBufferSize()];
             int count = 0;
-            while ((count = zIn.read(buffer, 0, Conf.getBufferSize()))!=-1){
+            while ((count = zIn.read(buffer, 0, Conf.getBufferSize())) != -1) {
                 out.write(buffer, 0, count);
             }
         } catch (IOException ioe) {
             String msg = "Problem uncompressing Gzip " + ioe.getMessage();
-            throw new CompressorException(msg+in_file.getAbsolutePath());
+            throw new CompressorException(msg + in_file.getAbsolutePath());
         } finally {
             try {
-                if (bis!=null)
+                if (bis != null)
                     bis.close();
-            }
-            catch (IOException ioe){
-                throw new CompressorException("Error closing stream: "+in_file.getAbsolutePath());
+            } catch (IOException ioe) {
+                throw new CompressorException("Error closing stream: " + in_file.getAbsolutePath());
             }
             try {
-                if (fis!=null)
+                if (fis != null)
                     fis.close();
-            }
-            catch (IOException ioe){
-                throw new CompressorException("Error closing stream: "+in_file.getAbsolutePath());
+            } catch (IOException ioe) {
+                throw new CompressorException("Error closing stream: " + in_file.getAbsolutePath());
             }
             try {
-                if (out!=null)
+                if (out != null)
                     out.close();
-            }
-            catch (IOException ioe){
-                throw new CompressorException("Error closing stream: "+in_file.getAbsolutePath());
+            } catch (IOException ioe) {
+                throw new CompressorException("Error closing stream: " + in_file.getAbsolutePath());
             }
             try {
-                if (zIn!=null)
+                if (zIn != null)
                     zIn.close();
-            }
-            catch (IOException ioe){
-                throw new CompressorException("Error closing stream: "+in_file.getAbsolutePath());
+            } catch (IOException ioe) {
+                throw new CompressorException("Error closing stream: " + in_file.getAbsolutePath());
             }
         }
     }
@@ -231,80 +323,50 @@ public final class Extractor {
      * 
      * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
      * 
-     * Extract a BZ2 file to a tar
-     * @param in_file the input bz2 file to extract
-     * @param out_file the output tar file to extract to
-     *
-    public static void extractBz2(File in_file, File out_file) throws BuildException{
-        FileOutputStream out = null;
-        BZip2InputStream zIn = null;
-        FileInputStream fis = null;
-        BufferedInputStream bis = null;
-        try {
-            out = new FileOutputStream(out_file);
-            fis = new FileInputStream(in_file);
-            bis = new BufferedInputStream(fis);
-            int b = bis.read();
-            if (b != 'B') {
-                throw new BuildException("Invalid bz2 file: "+in_file.getAbsolutePath());
-            }
-            b = bis.read();
-            if (b != 'Z') {
-                throw new BuildException("Invalid bz2 file: "+in_file.getAbsolutePath());
-            }
-            zIn = new CBZip2InputStream(bis);
-            byte[] buffer = new byte[Conf.getBufferSize()];
-            int count = 0;
-            do {
-                out.write(buffer, 0, count);
-                count = zIn.read(buffer, 0, buffer.length);
-            } while (count != -1);
-        } catch (IOException ioe) {
-            String msg = "Problem expanding bzip2 " + ioe.getMessage();
-            throw new BuildException(msg+in_file.getAbsolutePath());
-        } finally {
-            FileUtils.close(bis);
-            FileUtils.close(fis);
-            FileUtils.close(out);
-            FileUtils.close(zIn);
-        }
-    }
-    */
-    
+     *         Extract a BZ2 file to a tar
+     * @param in_file
+     *            the input bz2 file to extract
+     * @param out_file
+     *            the output tar file to extract to
+     * 
+     *            public static void extractBz2(File in_file, File out_file) throws BuildException{
+     *            FileOutputStream out = null; BZip2InputStream zIn = null; FileInputStream fis =
+     *            null; BufferedInputStream bis = null; try { out = new FileOutputStream(out_file);
+     *            fis = new FileInputStream(in_file); bis = new BufferedInputStream(fis); int b =
+     *            bis.read(); if (b != 'B') { throw new
+     *            BuildException("Invalid bz2 file: "+in_file.getAbsolutePath()); } b = bis.read();
+     *            if (b != 'Z') { throw new
+     *            BuildException("Invalid bz2 file: "+in_file.getAbsolutePath()); } zIn = new
+     *            CBZip2InputStream(bis); byte[] buffer = new byte[Conf.getBufferSize()]; int count
+     *            = 0; do { out.write(buffer, 0, count); count = zIn.read(buffer, 0, buffer.length);
+     *            } while (count != -1); } catch (IOException ioe) { String msg =
+     *            "Problem expanding bzip2 " + ioe.getMessage(); throw new
+     *            BuildException(msg+in_file.getAbsolutePath()); } finally { FileUtils.close(bis);
+     *            FileUtils.close(fis); FileUtils.close(out); FileUtils.close(zIn); } }
+     */
+
     /**
      * COMMENTED OUT: This method require ant-1.7.jar
      * 
      * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
      * 
-     * Extract a GZip file to a tar
-     * @param in_file the input bz2 file to extract
-     * @param out_file the output tar file to extract to
-     
-    public static void extractGzip(File in_file, File out_file) throws BuildException{
-        FileOutputStream out = null;
-        GZIPInputStream zIn = null;
-        FileInputStream fis = null;
-        BufferedInputStream bis = null;
-        try {
-            out = new FileOutputStream(out_file);
-            fis = new FileInputStream(in_file);
-            bis = new BufferedInputStream(fis,Conf.getBufferSize());
-            zIn = new GZIPInputStream(bis);
-            byte[] buffer = new byte[Conf.getBufferSize()];
-            int count = 0;
-            while ((count = zIn.read(buffer, 0, Conf.getBufferSize()))!=-1){
-                out.write(buffer, 0, count);
-            }
-        } catch (IOException ioe) {
-            String msg = "Problem uncompressing Gzip " + ioe.getMessage();
-            throw new BuildException(msg+in_file.getAbsolutePath());
-        } finally {
-            FileUtils.close(bis);
-            FileUtils.close(fis);
-            FileUtils.close(out);
-            FileUtils.close(zIn);
-        }
-    }
-    */
-    
+     *         Extract a GZip file to a tar
+     * @param in_file
+     *            the input bz2 file to extract
+     * @param out_file
+     *            the output tar file to extract to
+     * 
+     *            public static void extractGzip(File in_file, File out_file) throws BuildException{
+     *            FileOutputStream out = null; GZIPInputStream zIn = null; FileInputStream fis =
+     *            null; BufferedInputStream bis = null; try { out = new FileOutputStream(out_file);
+     *            fis = new FileInputStream(in_file); bis = new
+     *            BufferedInputStream(fis,Conf.getBufferSize()); zIn = new GZIPInputStream(bis);
+     *            byte[] buffer = new byte[Conf.getBufferSize()]; int count = 0; while ((count =
+     *            zIn.read(buffer, 0, Conf.getBufferSize()))!=-1){ out.write(buffer, 0, count); } }
+     *            catch (IOException ioe) { String msg = "Problem uncompressing Gzip " +
+     *            ioe.getMessage(); throw new BuildException(msg+in_file.getAbsolutePath()); }
+     *            finally { FileUtils.close(bis); FileUtils.close(fis); FileUtils.close(out);
+     *            FileUtils.close(zIn); } }
+     */
+
 }

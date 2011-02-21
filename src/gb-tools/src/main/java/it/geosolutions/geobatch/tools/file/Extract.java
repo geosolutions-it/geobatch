@@ -331,7 +331,7 @@ public final class Extract {
                     
                     // preparing path to extract to
                     end_name=getName(m);
-                    end_file=new File(end_name);
+                    //end_file=new File(end_name);
                     
     // TODO: if it is a zip file of a simple file???
     //see what is done for tar gz
@@ -340,7 +340,15 @@ public final class Extract {
 //                        end_file.mkdir();
                     
                     //run the unzip method
-                    Extractor.unzipFlat(in_file,end_file);
+//                    Extractor.unzipFlat(in_file,end_file);
+                    Extractor.unZip(in_name,end_name);
+                    
+                    if(LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.info("Zip file uncompressed to "+end_name);
+                    }
+                    
+                    // recursion
+                    end_name=extract(end_name);
                 break;
                 case NORMAL:
                     

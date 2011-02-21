@@ -5,7 +5,7 @@
  *
  * @author etj
  */
-class TestClassReload {
+class TestClassReload{
     final int version = 1
 }
 
