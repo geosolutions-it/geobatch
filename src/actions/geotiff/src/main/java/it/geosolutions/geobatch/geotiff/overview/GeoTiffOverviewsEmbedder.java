@@ -23,15 +23,26 @@
 package it.geosolutions.geobatch.geotiff.overview;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.geotools.utils.imageoverviews.OverviewsEmbedder;
 import org.geotools.utils.progress.ExceptionEvent;
 import org.geotools.utils.progress.ProcessingEvent;
@@ -42,7 +53,7 @@ import org.geotools.utils.progress.ProcessingEventListener;
  * NOTE: only one image is available.
  * 
  * @author Simone Giannechini, GeoSolutions
- * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  * @version $GeoTIFFOverviewsEmbedder.java
  * Revision: 0.1 $ 23/mar/07 11:42:25
@@ -63,17 +74,14 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
 
-        listenerForwarder.setTask("config");
-        listenerForwarder.started();
-
         try {
             // looking for file
-            if (events.size() != 1)
-                throw new IllegalArgumentException("Wrong number of elements for this action: "
+            if (events.size() == 0)
+                throw new IllegalArgumentException("GeoTiffOverviewsEmbedder: Wrong number of elements for this action: "
                         + events.size());
 
-            // get the first event
-            final FileSystemEvent event = events.peek();
+            listenerForwarder.setTask("config");
+            listenerForwarder.started();
 
             // //
             //
@@ -81,8 +89,8 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
             //
             // //
             if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
-                throw new IllegalStateException("DataFlowConfig is null.");
+                LOGGER.log(Level.SEVERE, "GeoTiffOverviewsEmbedder: DataFlowConfig is null.");
+                throw new IllegalStateException("GeoTiffOverviewsEmbedder: DataFlowConfig is null.");
             }
 
             // //
@@ -92,11 +100,11 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
             // //
             int downsampleStep = configuration.getDownsampleStep();
             if (downsampleStep <= 0)
-                throw new IllegalArgumentException("Illegal downsampleStep: " + downsampleStep);
-            final String inputFileName = event.getSource().getAbsolutePath();
+                throw new IllegalArgumentException("GeoTiffOverviewsEmbedder: Illegal downsampleStep: " + downsampleStep);
+            
             int numberOfSteps = configuration.getNumSteps();
             if (numberOfSteps <= 0)
-                throw new IllegalArgumentException("Illegal numberOfSteps: " + numberOfSteps);
+                throw new IllegalArgumentException("GeoTiffOverviewsEmbedder: Illegal numberOfSteps: " + numberOfSteps);
 
             final OverviewsEmbedder oe = new OverviewsEmbedder();
             oe.setDownsampleStep(downsampleStep);
@@ -105,41 +113,127 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
             oe.setScaleAlgorithm(configuration.getScaleAlgorithm());
             oe.setTileHeight(configuration.getTileH());
             oe.setTileWidth(configuration.getTileW());
-            oe.setSourcePath(inputFileName);
-            // oe.setTileCacheSize(configuration.getJAICapacity());
-
             // add logger/listener
             if (configuration.isLogNotification())
                 oe.addProcessingEventListener(new ProcessingEventListener() {
 
                     public void exceptionOccurred(ExceptionEvent event) {
-                        if (LOGGER.isLoggable(Level.SEVERE))
+                        if (LOGGER.isLoggable(Level.INFO))
                             LOGGER.info(event.getMessage());
                     }
 
                     public void getNotification(ProcessingEvent event) {
-                        if (LOGGER.isLoggable(Level.SEVERE))
+                        if (LOGGER.isLoggable(Level.INFO))
                             LOGGER.info(event.getMessage());
-                        listenerForwarder.progressing((float) event.getPercentage(),
-                                event.getMessage());
+                        listenerForwarder.progressing((float) event.getPercentage(),event.getMessage());
                     }
                 });
-            // run
 
-            listenerForwarder.progressing(0, "Embedding overviews");
-            oe.run();
+            // The return
+            Queue<FileSystemEvent> ret=new LinkedList<FileSystemEvent>();
+            
+            while (events.size()>0){
 
-            listenerForwarder.setProgress(100);
+                // run
+                listenerForwarder.progressing(0, "Embedding overviews");
+                
+                FileSystemEvent event=events.remove();
+                
+                File eventFile=event.getSource();
+                FileSystemEventType eventType=event.getEventType();
+                
+                if (eventFile.exists() && eventFile.canRead() && eventFile.canWrite()){
+                    /*
+                     *  If here:
+                     *          we can start retiler actions on the incoming file event
+                     */
+                    
+                    if (eventFile.isDirectory()){
+                        
+                        FileFilter filter=new RegexFileFilter(".+\\.[tT][iI][fF]([fF]?)");
+                        File [] fileList=eventFile.listFiles(filter);
+                        int size=fileList.length;
+                        for (int progress=0; progress<size; progress++){
+                            
+                            File inFile = fileList[progress];
+                            
+                            try {
+                                oe.setSourcePath(inFile.getAbsolutePath());
+                                oe.run();
+                            }
+                            catch (UnsupportedOperationException uoe){
+                                listenerForwarder.failed(uoe);
+                                if (LOGGER.isLoggable(Level.WARNING))
+                                    LOGGER.warning(uoe.getLocalizedMessage());
+                            }
+                            catch (IllegalArgumentException iae){
+                                listenerForwarder.failed(iae);
+                                if (LOGGER.isLoggable(Level.WARNING))
+                                    LOGGER.warning(iae.getLocalizedMessage());
+                            }
+                            finally {
+                                listenerForwarder.setProgress((progress*100)/size);
+                                listenerForwarder.progressing();
+                            }
+                        }
+                    }
+                    else {
+                        // file is not a directory
+                        try {
+                            oe.setSourcePath(eventFile.getAbsolutePath());
+                            oe.run();
+                        }
+                        catch (UnsupportedOperationException uoe){
+                            listenerForwarder.failed(uoe);
+                            if (LOGGER.isLoggable(Level.WARNING))
+                                LOGGER.warning(uoe.getLocalizedMessage());
+                        }
+                        catch (IllegalArgumentException iae){
+                            listenerForwarder.failed(iae);
+                            if (LOGGER.isLoggable(Level.WARNING))
+                                LOGGER.warning(iae.getLocalizedMessage());
+                        }
+                        finally {
+                            listenerForwarder.setProgress(100);
+                        }
+                    }
+
+                    // add the directory to the return
+                    ret.add(event);
+                }
+                else {
+                    String message="GeoTiffRetiler: The passed file event refers to a not existent " +
+                    "or not readable/writeable file! File: "+eventFile.getAbsolutePath();
+                    if (LOGGER.isLoggable(Level.WARNING))
+                        LOGGER.warning(message);
+                    listenerForwarder.failed(new IllegalArgumentException(message));
+                }
+            } // endwile
             listenerForwarder.completed();
             
-            return events;
-        } catch (Exception t) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-            listenerForwarder.failed(t);
-            return null;
+            // return
+            if (ret.size()>0){
+                events.clear();
+                return ret;
+            }
+            else {
+                /*
+                 * If here:
+                 *      we got an error
+                 *      no file are set to be returned
+                 *      the input queue is returned
+                 */
+                return events;
+            }
         }
-
+        catch (Exception t) {
+            String message="GeoTiffRetiler: "+t.getLocalizedMessage();
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, message, t);
+            ActionException exc=new ActionException(this, message, t);
+            listenerForwarder.failed(exc);
+            throw exc;
+        }
     }
 
     public ActionConfiguration getConfiguration() {
