@@ -266,7 +266,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                                     LOGGER.warning(iae.getLocalizedMessage());
                             }
                             finally {
-                                listenerForwarder.setProgress((progress*100)/size);
+                                listenerForwarder.setProgress((progress*100)/((size!=0)?size:1));
                                 listenerForwarder.progressing();
                             }
                         }
@@ -304,7 +304,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                                 LOGGER.warning(iae.getLocalizedMessage());
                         }
                         finally{
-                            listenerForwarder.setProgress((100)/events.size());
+                            listenerForwarder.setProgress((100)/((events.size()!=0)?events.size():1));
                             listenerForwarder.progressing();
                         }
                     }

@@ -144,7 +144,7 @@ public class ProParser {
      *            destination dir
      * @param seconds
      *            seconds to wait (maximum) for nfs propagate. If -1 no check is performed.
-     * @return
+     * @return the moved file 
      * @throws Exception
      */
     public static File copyTif(ProType obj, File destDir, final int seconds) throws Exception {

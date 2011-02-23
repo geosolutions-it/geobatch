@@ -24,7 +24,7 @@ import org.apache.tools.tar.TarInputStream;
 
 /**
  * @author Administrator
- * 
+ * @deprecated please use the gb-tools.Extract utilities
  */
 public class EMSAIOUtils {
 

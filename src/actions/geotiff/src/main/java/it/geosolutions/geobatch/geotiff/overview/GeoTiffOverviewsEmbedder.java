@@ -30,19 +30,13 @@ import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOCase;
-import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.geotools.utils.imageoverviews.OverviewsEmbedder;
 import org.geotools.utils.progress.ExceptionEvent;
 import org.geotools.utils.progress.ProcessingEvent;
@@ -172,7 +166,7 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                                     LOGGER.warning(iae.getLocalizedMessage());
                             }
                             finally {
-                                listenerForwarder.setProgress((progress*100)/size);
+                                listenerForwarder.setProgress((progress*100)/((size!=0)?size:1));
                                 listenerForwarder.progressing();
                             }
                         }
@@ -194,7 +188,7 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                                 LOGGER.warning(iae.getLocalizedMessage());
                         }
                         finally {
-                            listenerForwarder.setProgress(100);
+                            listenerForwarder.setProgress(100/((events.size()!=0)?events.size():1));
                         }
                     }
 
