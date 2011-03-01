@@ -33,12 +33,12 @@ import java.util.EventObject;
  * 
  * @author AlFa
  * 
- * @version $ ImageMosaicConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
+ * @version $ ImageMosaicService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
  */
-public abstract class ImageMosaicConfiguratorService<T extends EventObject, C extends ActionConfiguration>
+public abstract class ImageMosaicService<T extends EventObject, C extends ActionConfiguration>
         extends BaseService implements ActionService<T, C> {
 
-    public ImageMosaicConfiguratorService() {
+    public ImageMosaicService() {
         super(true);
     }
 

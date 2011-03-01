@@ -145,8 +145,8 @@ public class GeoTIFFFolderGeoServerConfigurator extends
                         Map<String, String> queryParams = new HashMap<String, String>();
                         queryParams.put("namespace", getConfiguration().getDefaultNamespace());
                         queryParams.put("wmspath", getConfiguration().getWmsPath());
-                        final String[] layerResponse = GeoServerRESTHelper.sendCoverage(inputDir,
-                                new File(inputDir, fileName), getConfiguration().getGeoserverURL(),
+                        final String[] layerResponse = GeoServerRESTHelper.sendCoverage(
+                                new File(inputDir, fileName), new File(inputDir, fileName),getConfiguration().getGeoserverURL(),
                                 getConfiguration().getGeoserverUID(), getConfiguration()
                                         .getGeoserverPWD(), coverageStoreId, coverageStoreId,
                                 queryParams, "", getConfiguration().getDataTransferMethod(),

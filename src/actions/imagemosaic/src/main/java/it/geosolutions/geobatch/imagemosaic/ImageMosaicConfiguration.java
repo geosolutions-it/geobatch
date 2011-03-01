@@ -24,9 +24,9 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
-public class ImageMosaicActionConfiguration extends GeoServerActionConfiguration {
+public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
-    protected ImageMosaicActionConfiguration(String id, String name, String description,
+    protected ImageMosaicConfiguration(String id, String name, String description,
             boolean dirty) {
         super(id, name, description, dirty);
     }
@@ -39,17 +39,107 @@ public class ImageMosaicActionConfiguration extends GeoServerActionConfiguration
 
     private String runtimeRegex;
 
-    private double backgroundValue;
+    private String backgroundValue;// NoData
+    
+//    <metadata>
+//    <entry key="timeDimEnabled">true</entry>
+//    <entry key="dirName">20101012T210000_wdi_20101012T210000_wdi</entry>
+//    <entry key="timePresentationMode">LIST</entry>
+//    </metadata>
+    private String timeDimEnabled;
+    
+    
+    private String dirName;
+    private String timePresentationMode;
+    
+    private String outputTransparentColor;
+    private String inputTransparentColor;
+    private boolean allowMultithreading;
+    private boolean useJaiImageRead;
+    private int tileSizeH;
+    private int tileSizeW;
 
-    public double getBackgroundValue() {
+    public String getTimeDimEnabled() {
+        return timeDimEnabled;
+    }
+
+    public void setTimeDimEnabled(String timeDimEnabled) {
+        this.timeDimEnabled = timeDimEnabled;
+    }
+
+    public String getDirName() {
+        return dirName;
+    }
+
+    public void setDirName(String dirName) {
+        this.dirName = dirName;
+    }
+
+    public String getTimePresentationMode() {
+        return timePresentationMode;
+    }
+
+    public void setTimePresentationMode(String timePresentationMode) {
+        this.timePresentationMode = timePresentationMode;
+    }
+
+    public String getOutputTransparentColor() {
+        return outputTransparentColor;
+    }
+
+    public void setOutputTransparentColor(String outputTransparentColor) {
+        this.outputTransparentColor = outputTransparentColor;
+    }
+
+    public String getInputTransparentColor() {
+        return inputTransparentColor;
+    }
+
+    public void setInputTransparentColor(String inputTransparentColor) {
+        this.inputTransparentColor = inputTransparentColor;
+    }
+
+    public boolean isAllowMultithreading() {
+        return allowMultithreading;
+    }
+
+    public void setAllowMultithreading(boolean allowMultithreading) {
+        this.allowMultithreading = allowMultithreading;
+    }
+
+    public boolean isUseJaiImageRead() {
+        return useJaiImageRead;
+    }
+
+    public void setUseJaiImageRead(boolean useJaiImageRead) {
+        this.useJaiImageRead = useJaiImageRead;
+    }
+
+    public int getTileSizeH() {
+        return tileSizeH;
+    }
+
+    public void setTileSizeH(int tileSizeH) {
+        this.tileSizeH = tileSizeH;
+    }
+
+    public int getTileSizeW() {
+        return tileSizeW;
+    }
+
+    public void setTileSizeW(int tileSizeW) {
+        this.tileSizeW = tileSizeW;
+    }
+
+    public String getBackgroundValue() {
         return backgroundValue;
     }
 
-    public void setBackgroundValue(double backgroundValue) {
+    public void setBackgroundValue(String backgroundValue) {
         this.backgroundValue = backgroundValue;
     }
 
-    public ImageMosaicActionConfiguration() {
+    public ImageMosaicConfiguration() {
         super();
     }
 
@@ -114,8 +204,8 @@ public class ImageMosaicActionConfiguration extends GeoServerActionConfiguration
     }
 
     @Override
-    public ImageMosaicActionConfiguration clone() { 
-        final ImageMosaicActionConfiguration configuration = (ImageMosaicActionConfiguration) super
+    public ImageMosaicConfiguration clone() { 
+        final ImageMosaicConfiguration configuration = (ImageMosaicConfiguration) super
                 .clone();
 
 

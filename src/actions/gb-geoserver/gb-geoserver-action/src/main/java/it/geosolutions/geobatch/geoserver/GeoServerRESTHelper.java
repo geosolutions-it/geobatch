@@ -58,6 +58,11 @@ import org.w3c.dom.Element;
 
 /**
  * @author Alessio Fabiani
+ * @author (r0.2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * 
+ * @version 0.2
+ * release: 0.1 date: 
+ * release: 0.2 date: 25/Feb/2011
  * 
  */
 public class GeoServerRESTHelper {
@@ -502,7 +507,7 @@ public class GeoServerRESTHelper {
      * @throws IOException
      * @throws TransformerException
      */
-    public static String[] send(final File inputDataDir, final File data,
+    public static String[] send(final File data, File datafile,
             final boolean isVectorialLayer, final String geoserverBaseURL,
             final String geoserverUID, final String geoserverPWD, final String originalStoreId,
             final String storeFilePrefix, final Map<String, String> queryParams,
@@ -511,11 +516,11 @@ public class GeoServerRESTHelper {
             throws ParserConfigurationException, IOException, TransformerException {
 
         if (isVectorialLayer)
-            return sendFeature(inputDataDir, data, geoserverBaseURL, geoserverUID, geoserverPWD,
+            return sendFeature(data, geoserverBaseURL, geoserverUID, geoserverPWD,
                     originalStoreId, storeFilePrefix, queryParams, queryString, dataTransferMethod,
                     type, geoserverVersion, dataStyles, defaultStyle);
         else
-            return sendCoverage(inputDataDir, data, geoserverBaseURL, geoserverUID, geoserverPWD,
+            return sendCoverage(data, datafile, geoserverBaseURL, geoserverUID, geoserverPWD,
                     originalStoreId, storeFilePrefix, queryParams, queryString, dataTransferMethod,
                     type, geoserverVersion, dataStyles, defaultStyle);
     }
@@ -650,7 +655,7 @@ public class GeoServerRESTHelper {
      * @throws IOException
      * @throws ParserConfigurationException
      */
-    public static String[] sendFeature(final File inputDataDir, final File data,
+    public static String[] sendFeature(final File data,
             final String geoserverBaseURL, final String geoserverUID, final String geoserverPWD,
             final String originalStoreId, final String storeFilePrefix,
             final Map<String, String> queryParams, final String queryString,
@@ -854,7 +859,9 @@ public class GeoServerRESTHelper {
      * @throws IOException
      * @throws TransformerException
      */
-    public static void sendCoverageConfiguration(final Map<String, String> configElements,
+    public static void sendCoverageConfiguration(
+            final Map<String, String> metadataElements,
+            final Map<String, String> configElements,
             final String geoserverBaseURL, final String geoserverUID, final String geoserverPWD,
             final String workspace, final String coverageStore, final String coverageName)
             throws ParserConfigurationException, IOException, TransformerException {
@@ -867,7 +874,7 @@ public class GeoServerRESTHelper {
         File file = null;
         FileInputStream inStream = null;
         try {
-            file = buildCoverageXMLConfiguration(configElements);
+            file = buildCoverageXMLConfiguration(metadataElements,configElements);
             inStream = new FileInputStream(file);
             final boolean send = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, inStream,
                     geoserverUID, geoserverPWD, null, "text/xml");
@@ -944,7 +951,9 @@ public class GeoServerRESTHelper {
      * @throws IOException
      * @throws TransformerException
      */
-    private static File buildCoverageXMLConfiguration(final Map<String, String> configElements)
+    private static File buildCoverageXMLConfiguration(
+            final Map<String, String> metadataElements,
+            final Map<String, String> configElements)
             throws ParserConfigurationException, IOException, TransformerException {
         final DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
@@ -955,16 +964,36 @@ public class GeoServerRESTHelper {
         Element root = doc.createElement("coverage");
         doc.appendChild(root);
 
-        Set<String> keys = configElements.keySet();
+        Set<String> keys = metadataElements.keySet();
         Element enabledElement = doc.createElement("enabled");
         root.appendChild(enabledElement);
         enabledElement.insertBefore(doc.createTextNode("true"), null);
+        
+        Element parametersElement = doc.createElement("metadata");
+        root.appendChild(parametersElement);
 
-        Element parametersElement = doc.createElement("parameters");
+        Element entry = doc.createElement("entry");
+        entry.setAttribute("key", "timeDimEnabled");
+        entry.appendChild(doc.createTextNode(metadataElements.get("timeDimEnabled")));
+        parametersElement.appendChild(entry);
+
+        // TODO remove 'dirName'
+        entry = doc.createElement("entry");
+        entry.setAttribute("key","dirName");
+        entry.appendChild(doc.createTextNode(metadataElements.get("dirName")));
+        parametersElement.appendChild(entry);
+        
+        entry = doc.createElement("entry");
+        entry.setAttribute("key","timePresentationMode");
+        entry.appendChild(doc.createTextNode(metadataElements.get("timePresentationMode")));
+        parametersElement.appendChild(entry);
+        
+        keys = configElements.keySet();
+        parametersElement = doc.createElement("parameters");
         root.appendChild(parametersElement);
 
         for (String key : keys) {
-            Element entry = doc.createElement("entry");
+            entry = doc.createElement("entry");
             parametersElement.appendChild(entry);
 
             Element string = doc.createElement("string");

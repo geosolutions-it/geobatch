@@ -90,6 +90,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
         
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("GeoTiffRetiler: is going to retile: "+inputFileName);
+        
             
         // getting a format for the given input
         format = (AbstractGridFormat) GridFormatFinder.findFormat(inFile);
@@ -191,18 +192,17 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
     
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         try {
-//            // //
-//            //
-//            // data flow configuration and dataStore name must not be null.
-//            //
-//            // //
-//            if (configuration == null) {
-//                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
-//                throw new ActionException(this,"GeoTiffRetiler: DataFlowConfig is null.");
-//            }
+            
+            if (configuration == null) {
+                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+                throw new ActionException(this,"GeoTiffRetiler: DataFlowConfig is null.");
+            }
             if (events.size()==0){
                 throw new ActionException(this, "GeoTiffRetiler: Unable to process an empty events queue.");
             }
+            
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("GeoTiffRetiler: Starting with processing...");
             
             listenerForwarder.started();
 

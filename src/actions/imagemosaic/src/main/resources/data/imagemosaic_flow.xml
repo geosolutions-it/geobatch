@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<id>imagemosaic_flow0</id>
+<!-- ID MUST be the same as file name -->
+	<id>imagemosaic_flow</id>
 	<name>Prepare ImageMosaic and publish</name>
 	<description>Create indexes and publish on GeoServer</description>
 
@@ -35,9 +36,28 @@
 			<geoserverPWD>geoserver</geoserverPWD>
 			<geoserverUID>admin</geoserverUID>
 			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
-			<wmsPath>/</wmsPath>
-			<defaultNamespace>nurc</defaultNamespace>
+			
+			<defaultNamespace>geosolutions</defaultNamespace>
 			<defaultStyle>raster</defaultStyle>
+			
+			<wmsPath>/</wmsPath>
+			
+			<defaultNamespace>geosolutions</defaultNamespace>
+			<defaultStyle>contrast</defaultStyle>
+			<backgroundValue>-9999</backgroundValue>
+			<outputTransparentColor></outputTransparentColor>
+			<inputTransparentColor></inputTransparentColor>
+			<allowMultithreading>true</allowMultithreading>
+			<useJaiImageRead>false</useJaiImageRead>
+			<tileSizeH>256</tileSizeH>
+			<tileSizeW>256</tileSizeW>
+			
+			<!-- METADATA -->			
+			<timeDimEnabled>true</timeDimEnabled>
+<!--		<dirName>DIR</dirName>-->
+<!-- LIST, CONTINOUS_INTERVAL, DISCRETE_INTERVAL -->
+			<timePresentationMode>LIST</timePresentationMode>
+			
 			<styles/>
 			<datastorePropertiesPath>imagemosaic_work/config/datastore.properties</datastorePropertiesPath>
 			<timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>

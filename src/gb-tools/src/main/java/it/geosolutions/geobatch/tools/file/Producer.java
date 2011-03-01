@@ -147,11 +147,14 @@ public abstract class Producer {
             }
             
         } catch (InterruptedException ie) {
-            LOGGER.log(Level.FINER, ie.getMessage(), ie);
+            if (LOGGER.isLoggable(Level.FINER))
+                LOGGER.log(Level.FINER, ie.getMessage(), ie);
         } catch (ExecutionException ee) {
-            LOGGER.log(Level.FINER, ee.getMessage(), ee);
+            if (LOGGER.isLoggable(Level.FINER))
+                LOGGER.log(Level.FINER, ee.getMessage(), ee);
         } catch (TimeoutException te) {
-            LOGGER.log(Level.FINER, te.getMessage(), te);
+            if (LOGGER.isLoggable(Level.FINER))
+                LOGGER.log(Level.FINER, te.getMessage(), te);
         }
         finally{
             // be sure the thread ends

@@ -72,7 +72,7 @@ public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSys
      * @throws MalformedURLException
      * @throws FileNotFoundException
      */
-    private void send(final File inputDataDir, final File data, final String geoserverBaseURL,
+    protected void send(final File inputDataDir, final File data, final String geoserverBaseURL,
             final String timeStamp, final String coverageStoreId, final String storeFilePrefix,
             final List<String> dataStyles, final String configId, final String defaultStyle,
             final Map<String, String> queryParams, String dataTransferMethod)

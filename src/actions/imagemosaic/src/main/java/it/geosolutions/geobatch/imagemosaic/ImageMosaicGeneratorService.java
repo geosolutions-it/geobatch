@@ -23,7 +23,6 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +31,7 @@ import java.util.logging.Logger;
  * 
  */
 public class ImageMosaicGeneratorService extends
-        ImageMosaicConfiguratorService<FileSystemEvent, ImageMosaicActionConfiguration> {
+        ImageMosaicService<FileSystemEvent, ImageMosaicConfiguration> {
 
     private final static Logger LOGGER = Logger.getLogger(ImageMosaicGeneratorService.class
             .toString());
@@ -44,10 +43,10 @@ public class ImageMosaicGeneratorService extends
      *            The data base action configuration
      * @return new JGSFLoDeSSSWANFileConfigurator()
      */
-    public ImageMosaicConfigurator createAction(ImageMosaicActionConfiguration configuration) {
+    public ImageMosaicAction createAction(ImageMosaicConfiguration configuration) {
         try {
-            return new ImageMosaicConfigurator(configuration);
-        } catch (IOException e) {
+            return new ImageMosaicAction(configuration);
+        } catch (Throwable e) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
             return null;
@@ -55,7 +54,7 @@ public class ImageMosaicGeneratorService extends
     }
 
     @Override
-    public boolean canCreateAction(ImageMosaicActionConfiguration configuration) {
+    public boolean canCreateAction(ImageMosaicConfiguration configuration) {
         final boolean superRetVal = super.canCreateAction(configuration);
         return superRetVal;
     }

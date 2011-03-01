@@ -479,6 +479,11 @@
                 <artifactId>gt-api</artifactId>
                 <version>${gt.version}</version>
             </dependency>
+	    <dependency>
+		<groupId>org.geotools</groupId>
+		<artifactId>gt-cql</artifactId>
+		<version>${gt.version}</version>
+	    </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-postgis</artifactId>

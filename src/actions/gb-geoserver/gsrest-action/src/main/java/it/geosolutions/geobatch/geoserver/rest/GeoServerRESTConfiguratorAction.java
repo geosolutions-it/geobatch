@@ -157,7 +157,7 @@ public class GeoServerRESTConfiguratorAction extends
 
                 listenerForwarder.progressing(10 + (50 / (events.size() == 0 ? 1 : events.size())),
                         "Sending");
-                final String[] returnedLayer = GeoServerRESTHelper.send(fileToSend, fileToSend,
+                final String[] returnedLayer = GeoServerRESTHelper.send(fileToSend, fileToSend, 
                         configuration.isVectorialLayer(), configuration.getGeoserverURL(),
                         configuration.getGeoserverUID(), configuration.getGeoserverPWD(),
                         configuration.getStoreId() != null ? configuration.getStoreId()

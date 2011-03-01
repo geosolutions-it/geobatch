@@ -34,6 +34,6 @@ public class ImageMosaicAliasRegistrar extends AliasRegistrar {
 
     public ImageMosaicAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-        registry.putAlias("ImageMosaicActionConfiguration", ImageMosaicActionConfiguration.class);
+        registry.putAlias("ImageMosaicActionConfiguration", ImageMosaicConfiguration.class);
     }
 }
