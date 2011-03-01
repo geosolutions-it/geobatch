@@ -1,6 +1,5 @@
 package it.geosolutions.geobatch.camel.test;
 
-
 import it.geosolutions.geobatch.camel.beans.JMSFlowRequest;
 import it.geosolutions.geobatch.camel.beans.JMSFlowResponse;
 
@@ -176,7 +175,7 @@ public class JMSClient {
         JMSFlowRequest fr = new JMSFlowRequest();
         fr.setFlowId("geotiff");
         List<String> files=new ArrayList<String>();
-        files.add("/home/carlo/work/data/geotiff/RID_.tif");//"/home/carlo/work/data/rep10workingdir/meteoam/elm/REELM_2010092000.tar"
+        files.add("/home/carlo/work/data/geotiff_bkp/hre.zip");
         fr.setFiles(files);
         Session s=getSession();
         if (s!=null){

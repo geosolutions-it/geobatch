@@ -38,7 +38,7 @@ import org.apache.commons.compress.compressors.CompressorException;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
-public class TarReader{
+public abstract class TarReader{
 
     
     /**

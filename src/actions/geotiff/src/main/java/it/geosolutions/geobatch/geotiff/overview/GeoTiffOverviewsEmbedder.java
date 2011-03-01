@@ -27,11 +27,13 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.tools.file.Collector;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,8 +85,10 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
             //
             // //
             if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "GeoTiffOverviewsEmbedder: DataFlowConfig is null.");
-                throw new IllegalStateException("GeoTiffOverviewsEmbedder: DataFlowConfig is null.");
+                String message="GeoTiffOverviewsEmbedder: DataFlowConfig is null.";
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.severe(message);
+                throw new IllegalStateException(message);
             }
 
             // //
@@ -145,11 +149,12 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                     if (eventFile.isDirectory()){
                         
                         FileFilter filter=new RegexFileFilter(".+\\.[tT][iI][fF]([fF]?)");
-                        File [] fileList=eventFile.listFiles(filter);
-                        int size=fileList.length;
+                        Collector collector=new Collector(filter);
+                        List<File> fileList=collector.collect(eventFile);
+                        int size=fileList.size();
                         for (int progress=0; progress<size; progress++){
                             
-                            File inFile = fileList[progress];
+                            File inFile = fileList.get(progress);
                             
                             try {
                                 oe.setSourcePath(inFile.getAbsolutePath());
