@@ -37,8 +37,12 @@ import java.util.EventObject;
 public abstract class GeoServerConfiguratorService<T extends EventObject, C extends ActionConfiguration>
         extends BaseService implements ActionService<T, C> {
 
-    public GeoServerConfiguratorService() {
-        super(true);
+//    public GeoServerConfiguratorService() {
+//        super(true);
+//    }
+
+    public GeoServerConfiguratorService(String id, String name, String description) {
+        super(id, name, description);
     }
 
     public boolean canCreateAction(C configuration) {

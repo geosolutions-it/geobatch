@@ -26,13 +26,8 @@ import it.geosolutions.geobatch.egeos.deployers.actions.EGEOSBaseDeployerConfigu
 
 public class EGEOSGeoServerDeployerConfiguration extends EGEOSBaseDeployerConfiguration {
 
-    public EGEOSGeoServerDeployerConfiguration(String id, String name, String description,
-            boolean dirty) {
-        super(id, name, description, dirty);
-    }
-
-    public EGEOSGeoServerDeployerConfiguration() {
-        super();
+    public EGEOSGeoServerDeployerConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     @Override

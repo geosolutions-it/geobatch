@@ -32,6 +32,10 @@ import java.util.logging.Logger;
 
 public class FileBasedEventConsumerService extends BaseService {
 
+    public FileBasedEventConsumerService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(FileBasedEventConsumerService.class
             .toString());
 

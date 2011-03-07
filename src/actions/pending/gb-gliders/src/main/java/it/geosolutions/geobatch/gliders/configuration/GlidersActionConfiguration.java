@@ -32,9 +32,8 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 public class GlidersActionConfiguration extends ActionConfiguration implements Configuration {
 
     protected GlidersActionConfiguration(String id, String name,
-			String description, boolean dirty) {
-		super(id, name, description, dirty);
-		// TODO Auto-generated constructor stub
+			String description) {
+		super(id, name, description);
 	}
     
     private String workingDirectory;
@@ -59,9 +58,6 @@ public class GlidersActionConfiguration extends ActionConfiguration implements C
     
     private Double simplyTollerance;
 
-    public GlidersActionConfiguration() {
-        super();
-    }
 
     /**
      * @return the workingDirectory

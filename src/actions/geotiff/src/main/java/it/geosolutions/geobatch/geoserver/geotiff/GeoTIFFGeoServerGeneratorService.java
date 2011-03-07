@@ -43,6 +43,10 @@ public class GeoTIFFGeoServerGeneratorService extends
     private final static Logger LOGGER = Logger.getLogger(GeoTIFFGeoServerGenerator.class
             .toString());
 
+    public GeoTIFFGeoServerGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     public GeoTIFFGeoServerGenerator createAction(GeoServerActionConfiguration configuration) {
         try {
             return new GeoTIFFGeoServerGenerator(configuration);

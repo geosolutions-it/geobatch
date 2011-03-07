@@ -40,9 +40,13 @@ public class TaskExecutorService extends BaseService implements
 
     private final static Logger LOGGER = Logger.getLogger(TaskExecutorService.class.toString());
 
-    private TaskExecutorService() {
-        super(true);
+    public TaskExecutorService(String id, String name, String description) {
+        super(id, name, description, true);
     }
+
+    // private TaskExecutorService() {
+    // super(true);
+    // }
 
     public boolean canCreateAction(TaskExecutorConfiguration configuration) {
         return true;

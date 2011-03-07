@@ -26,9 +26,8 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
 public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
-    protected ImageMosaicConfiguration(String id, String name, String description,
-            boolean dirty) {
-        super(id, name, description, dirty);
+    protected ImageMosaicConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     private String datastorePropertiesPath;
@@ -139,9 +138,9 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         this.backgroundValue = backgroundValue;
     }
 
-    public ImageMosaicConfiguration() {
-        super();
-    }
+//    public ImageMosaicConfiguration() {
+//        super();
+//    }
 
     /**
      * @param datastorePropertiesPath

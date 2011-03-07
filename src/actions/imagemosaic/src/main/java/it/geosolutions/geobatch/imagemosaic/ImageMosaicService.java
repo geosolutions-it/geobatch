@@ -38,12 +38,15 @@ import java.util.EventObject;
 public abstract class ImageMosaicService<T extends EventObject, C extends ActionConfiguration>
         extends BaseService implements ActionService<T, C> {
 
-    public ImageMosaicService() {
-        super(true);
+    public ImageMosaicService(String id, String name, String description) {
+        super(id, name, description);
     }
 
+//    public ImageMosaicService() {
+//        super(true);
+//    }
+
     public boolean canCreateAction(C configuration) {
-        // XXX ImPLEMENT ME
         return true;
     }
 

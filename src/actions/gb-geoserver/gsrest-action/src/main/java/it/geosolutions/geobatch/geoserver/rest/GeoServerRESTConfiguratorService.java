@@ -27,7 +27,6 @@ import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 import java.util.logging.Logger;
 
 /**
- * Comments here ...
  * 
  * @author AlFa
  * 
@@ -35,6 +34,11 @@ import java.util.logging.Logger;
  */
 public class GeoServerRESTConfiguratorService extends
         GeoServerConfiguratorService<FileSystemEvent, GeoServerRESTActionConfiguration> {
+    
+    public GeoServerRESTConfiguratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(GeoServerRESTConfiguratorService.class
             .toString());
 

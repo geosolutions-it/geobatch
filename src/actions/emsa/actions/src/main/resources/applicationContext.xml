@@ -5,30 +5,30 @@
         
 	<!-- Environment Initialization -->
 	<bean id="EMSAScriptingService" class="it.geosolutions.geobatch.action.egeos.emsa.EMSAService">
-		<property  name="id" value="EMSAScriptingService"/>
-    	<property name="description" value="EMSAScriptingService"/>
-    	<property name="name" value="EMSAScriptingService"/>
+		<constructor-arg type="String"><value>EMSAScriptingService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EMSAScriptingService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EMSAScriptingService</value></constructor-arg>
     </bean>	      
 
 
 
 	<!-- Environment Initialization -->
 	<bean id="EGEOSWebDeployerService" class="it.geosolutions.geobatch.egeos.deployers.services.EGEOSWebDeployerService">
-		<property name="id" value="EGEOSWebDeployerService"/>
-    	<property name="description" value="EGEOSWebDeployerService"/>
-    	<property name="name" value="EGEOSWebDeployerService"/>
+		<constructor-arg type="String"><value>EGEOSWebDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSWebDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSWebDeployerService</value></constructor-arg>
     </bean>
 
 	<bean id="EGEOSRegistryDeployerService" class="it.geosolutions.geobatch.egeos.deployers.services.EGEOSRegistryDeployerService">
-		<property name="id" value="EGEOSRegistryDeployerService"/>
-    	<property name="description" value="EGEOSRegistryDeployerService"/>
-    	<property name="name" value="EGEOSRegistryDeployerService"/>
+		<constructor-arg type="String"><value>EGEOSRegistryDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSRegistryDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSRegistryDeployerService</value></constructor-arg>
     </bean>
 
 	<bean id="EGEOSGeoServerDeployerService" class="it.geosolutions.geobatch.egeos.deployers.services.EGEOSGeoServerDeployerService">
-		<property name="id" value="EGEOSGeoServerDeployerService"/>
-    	<property name="description" value="EGEOSGeoServerDeployerService"/>
-    	<property name="name" value="EGEOSGeoServerDeployerService"/>
+		<constructor-arg type="String"><value>EGEOSGeoServerDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSGeoServerDeployerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSGeoServerDeployerService</value></constructor-arg>
     </bean>
 
 

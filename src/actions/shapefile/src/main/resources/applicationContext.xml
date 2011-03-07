@@ -5,15 +5,9 @@
 
 	<!-- Environment Initialization -->
 	<bean id="shapefileGeoServerGeneratorService" class="it.geosolutions.geobatch.geoserver.shapefile.ShapeFileGeneratorService">
-		<property  name="id">
-    		<value>shapefileGeoServerGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>shapefileGeoServerGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>shapefileGeoServerGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>shapefileGeoServerGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>shapefileGeoServerGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>shapefileGeoServerGeneratorService</value></constructor-arg>	
 	</bean>
 
     <bean id="ShapeFileRegistrar" class="it.geosolutions.geobatch.geoserver.shapefile.ShapeFileAliasRegistrar" lazy-init="false">

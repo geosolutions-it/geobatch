@@ -27,9 +27,9 @@ import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 
 public class EventGeneratorConfiguration extends BaseConfiguration implements Configuration {
 
-    public EventGeneratorConfiguration() {
-        super();
-    }
+//    public EventGeneratorConfiguration() {
+//        super();
+//    }
 
     public EventGeneratorConfiguration(String id, String name, String description, boolean dirty) {
         super(id, name, description, dirty);

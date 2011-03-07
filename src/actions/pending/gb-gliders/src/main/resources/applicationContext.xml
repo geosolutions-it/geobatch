@@ -5,15 +5,9 @@
 
 	<!-- Environment Initialization -->
 	<bean id="glidersfileGeneratorService" class="it.geosolutions.geobatch.gliders.GlidersFileGeneratorService" depends-on="gliderRegistrar">
-		<property  name="id">
-    		<value>glidersfileGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>glidersfileGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>glidersfileGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>glidersfileGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>glidersfileGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>glidersfileGeneratorService</value></constructor-arg>	
 	</bean>
 
     <bean id="gliderRegistrar" class="it.geosolutions.geobatch.gliders.GlidersAliasRegistrar" lazy-init="false">

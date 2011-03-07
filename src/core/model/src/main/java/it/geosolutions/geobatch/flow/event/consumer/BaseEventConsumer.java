@@ -21,8 +21,10 @@
  */
 package it.geosolutions.geobatch.flow.event.consumer;
 
+import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.catalog.impl.BaseResource;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
+import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import it.geosolutions.geobatch.flow.event.action.Action;
@@ -55,55 +57,58 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
     private static Counter counter = new Counter();
 
     /**
-     * @uml.property  name="creationTimestamp"
+     * @uml.property name="creationTimestamp"
      */
     private final Calendar creationTimestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
     /**
-     * @uml.property  name="eventConsumerStatus"
-     * @uml.associationEnd  multiplicity="(1 1)"
+     * @uml.property name="eventConsumerStatus"
+     * @uml.associationEnd multiplicity="(1 1)"
      */
     private volatile EventConsumerStatus eventConsumerStatus;
 
     /**
      * The MailBox
-     * @uml.property  name="eventsQueue"
+     * 
+     * @uml.property name="eventsQueue"
      */
     protected final Queue<XEO> eventsQueue = new LinkedList<XEO>();
 
     /**
-     * @uml.property  name="actions"
+     * @uml.property name="actions"
      */
     protected final List<Action<XEO>> actions = new ArrayList<Action<XEO>>();
 
     /**
-     * @uml.property  name="currentAction"
-     * @uml.associationEnd  
+     * @uml.property name="currentAction"
+     * @uml.associationEnd
      */
     protected volatile Action<XEO> currentAction = null;
 
     // private EventListenerList listeners = new EventListenerList();
     /**
-     * @uml.property  name="listenerForwarder"
-     * @uml.associationEnd  multiplicity="(1 1)" 
-     * inverse="this$0:it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer$EventConsumerListenerForwarder"
+     * @uml.property name="listenerForwarder"
+     * @uml.associationEnd multiplicity="(1 1)" inverse=
+     *                     "this$0:it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer$EventConsumerListenerForwarder"
      */
-    protected EventConsumerListenerForwarder listenerForwarder = new EventConsumerListenerForwarder();
+    final protected EventConsumerListenerForwarder listenerForwarder;
 
     /**
-     * @uml.property  name="pauseHandler"
-     * @uml.associationEnd  multiplicity="(1 1)"
+     * @uml.property name="pauseHandler"
+     * @uml.associationEnd multiplicity="(1 1)"
      */
     protected PauseHandler pauseHandler = new PauseHandler(false);
 
-    public BaseEventConsumer() {
-        super();
-        this.setStatus(EventConsumerStatus.IDLE);
-        this.setId(getClass().getSimpleName() + "_" + counter.getNext());
-    }
+//    public BaseEventConsumer() {
+//        super();
+//        this.setStatus(EventConsumerStatus.IDLE);
+//        this.setId(getClass().getSimpleName() + "_" + counter.getNext());
+//    }
+    
 
     public BaseEventConsumer(String id, String name, String description) {
         super(id, name, description);
+        this.listenerForwarder= new EventConsumerListenerForwarder(this);
         this.setStatus(EventConsumerStatus.IDLE);
     }
 
@@ -184,9 +189,9 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                 currentAction = action;
                 events = action.execute(events);
 
-                if (events == null){
-                    throw new IllegalArgumentException("Action " + action.getClass().getSimpleName()
-                            + " left no event in queue.");
+                if (events == null) {
+                    throw new IllegalArgumentException("Action "
+                            + action.getClass().getSimpleName() + " left no event in queue.");
                 }
                 if (events.isEmpty()) {
                     if (LOGGER.isLoggable(Level.WARNING)) {
@@ -215,8 +220,8 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
             } catch (Exception e) { // exception not handled by the Action
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, "Action threw an unhandled exception: "
-                            + e.getLocalizedMessage(), e);
+                    LOGGER.log(Level.SEVERE,
+                            "Action threw an unhandled exception: " + e.getLocalizedMessage(), e);
                 }
 
                 listenerForwarder.setTask("Action " + action.getClass().getSimpleName()
@@ -224,11 +229,10 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                 listenerForwarder.progressing();
 
                 if (!currentAction.isFailIgnored()) {
-                    if (events == null){
-                        throw new IllegalArgumentException("Action " + action.getClass().getSimpleName()
-                                + " left no event in queue.");
-                    }
-                    else {
+                    if (events == null) {
+                        throw new IllegalArgumentException("Action "
+                                + action.getClass().getSimpleName() + " left no event in queue.");
+                    } else {
                         events.clear();
                     }
                     // wrap the unhandled exception
@@ -306,7 +310,8 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
     }
 
     /**
-     * Add listener to this consumer. If hte listere is already registerd, it won't be added again.
+     * Add listener to this consumer. If the listener is already registered, it won't be added
+     * again.
      * 
      * @param fileListener
      *            Listener to add.
@@ -329,17 +334,20 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
         return listenerForwarder;
     }
 
-    public <PL extends IProgressListener> PL getProgressListener(Class<PL> clazz) {
+    public IProgressListener getProgressListener(Class<IProgressListener> clazz) {
         for (IProgressListener ipl : getListenerForwarder().getListeners()) {
             if (clazz.isAssignableFrom(ipl.getClass())) {
-                return (PL) ipl;
+                return ipl;
             }
         }
-
         return null;
     }
 
     protected class EventConsumerListenerForwarder extends ProgressListenerForwarder {
+
+        protected EventConsumerListenerForwarder(BaseIdentifiable owner) {
+            super(owner);
+        }
 
         public void fireStatusChanged(EventConsumerStatus olds, EventConsumerStatus news) {
             for (IProgressListener l : listeners) {

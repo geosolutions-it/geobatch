@@ -54,13 +54,13 @@ public class WMCActionConfiguration extends ActionConfiguration implements Confi
 
     private String outputDirectory;
 
-    public WMCActionConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
+    public WMCActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
-    public WMCActionConfiguration() {
-        super();
-    }
+//    public WMCActionConfiguration() {
+//        super();
+//    }
 
     /**
      * @return the workingDirectory
@@ -103,8 +103,8 @@ public class WMCActionConfiguration extends ActionConfiguration implements Confi
 
     @Override
     public ActionConfiguration clone() {
-        final WMCActionConfiguration configuration = new WMCActionConfiguration(getId(), getName(),
-                getDescription(), isDirty());
+        final WMCActionConfiguration configuration = new WMCActionConfiguration(getId(), getName()+"_cloned",
+                getDescription());
         configuration.setServiceID(getServiceID());
         configuration.setWorkingDirectory(workingDirectory);
         configuration.setBoundingBox(boundingBox);

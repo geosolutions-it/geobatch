@@ -21,6 +21,8 @@
  */
 package it.geosolutions.geobatch.flow.event;
 
+import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
+
 import java.util.EventListener;
 
 /**
@@ -88,5 +90,11 @@ public interface IProgressListener extends EventListener {
      * @uml.property  name="task"
      */
     void setTask(String currentTask);
+    
+    /**
+     * 
+     * @return the owner of the listener
+     */
+    public BaseIdentifiable getOwner();
 
 }

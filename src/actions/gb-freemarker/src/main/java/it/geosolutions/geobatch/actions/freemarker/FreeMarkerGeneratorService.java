@@ -36,11 +36,15 @@ import java.util.logging.Logger;
 public class FreeMarkerGeneratorService extends BaseService implements
         ActionService<EventObject, FreeMarkerConfiguration> {
 
+    public FreeMarkerGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(FreeMarkerGeneratorService.class.toString());
 
-    public FreeMarkerGeneratorService(){
-        super();
-    }
+//    public FreeMarkerGeneratorService(){
+//        super();
+//    }
     
     public FreeMarkerAction createAction(FreeMarkerConfiguration configuration) {
         try {

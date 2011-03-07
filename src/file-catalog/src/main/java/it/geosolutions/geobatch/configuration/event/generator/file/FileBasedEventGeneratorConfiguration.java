@@ -95,9 +95,9 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
     /**
      * Default Constructor.
      */
-    public FileBasedEventGeneratorConfiguration() {
-        super();
-    }
+//    public FileBasedEventGeneratorConfiguration() {
+//        super();
+//    }
 
     /**
      * 

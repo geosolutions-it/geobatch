@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.media.jai.operator.MosaicDescriptor;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -73,15 +74,22 @@ public abstract class ImageMosaicREST {
         } else {
             queryParams.put("MaxAllowedTiles", Integer.toString(Integer.MAX_VALUE));
         }
+        
         String noData;
-        if (mosaicDescriptor.getFirstCvNameParts().length >= 9) {
-            noData = mosaicDescriptor.getFirstCvNameParts()[8];
-        } else if (mosaicDescriptor.getFirstCvNameParts().length >= 8) {
-            noData = mosaicDescriptor.getFirstCvNameParts()[7];
-        } else {
-            // use default value from configuration?
-            noData = (config.getBackgroundValue() != null) ? config
+        if (mosaicDescriptor.getFirstCvNameParts()==null){
+            noData =(config.getBackgroundValue() != null) ? config
                     .getBackgroundValue() : "-1.0";
+        }
+        else {
+            if (mosaicDescriptor.getFirstCvNameParts().length >= 9) {
+                noData = mosaicDescriptor.getFirstCvNameParts()[8];
+            } else if (mosaicDescriptor.getFirstCvNameParts().length >= 8) {
+                noData = mosaicDescriptor.getFirstCvNameParts()[7];
+            } else {
+                // use default value from configuration?
+                noData = (config.getBackgroundValue() != null) ? config
+                        .getBackgroundValue() : "-1.0";
+            }
         }
 
         // Actually, the ImageMosaicConfiguration is contained in the
@@ -131,8 +139,25 @@ public abstract class ImageMosaicREST {
             GeoServerRESTHelper.sendCoverageConfiguration(metadataParams,queryParams, decurtSlash(config.getGeoserverURL()),
                     config.getGeoserverUID(), config.getGeoserverPWD(),workspace, mosaicDescriptor.getCoverageStoreId(), coverageName);
 
-            final File layerDescriptor = new File(inputDir, layer + ".layer");
-
+            File layerDescriptor = null;
+            
+            // generate a RETURN file and append it to the return queue
+            if ((layerDescriptor=setReturn(inputDir, layer + ".layer",layerResponse,mosaicDescriptor))!=null) {
+                layers.add(new FileSystemEvent(layerDescriptor, FileSystemEventType.FILE_ADDED));
+            }
+        }
+        else
+        {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE,
+                    "Bad response from the GeoServer:GeoServerRESTHelper.sendCoverage()");
+        }
+    }
+    
+    private static File setReturn(File inputDir, String outFileName, String[] layerResponse, ImageMosaicGranulesDescriptor mosaicDescriptor){
+        final File layerDescriptor = new File(inputDir, outFileName);
+        FileWriter outFile=null;
+        try {
             if (layerDescriptor.createNewFile()) {
                 PrintWriter out = null;
                 try {
@@ -159,16 +184,11 @@ public abstract class ImageMosaicREST {
                     outFile = null;
                     out = null;
                 }
-
-                layers.add(new FileSystemEvent(layerDescriptor, FileSystemEventType.FILE_ADDED));
             }
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "ImageMosaic:setReturn(): "+e.getMessage(), e);
         }
-        else
-        {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE,
-                    "Bad response from the GeoServer:GeoServerRESTHelper.sendCoverage()");
-        }
+        return layerDescriptor;
     }
 
     /**

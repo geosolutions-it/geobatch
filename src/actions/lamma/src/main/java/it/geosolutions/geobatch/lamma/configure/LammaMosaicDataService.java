@@ -37,28 +37,30 @@ import java.util.logging.Logger;
  * 
  */
 public class LammaMosaicDataService extends BaseService implements
-		ActionService<FileSystemEvent, LammaMosaicDataConfiguration> {
+        ActionService<FileSystemEvent, LammaMosaicDataConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(LammaMosaicDataService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(LammaMosaicDataService.class.toString());
 
-	/**
+    public LammaMosaicDataService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
+    /**
      * 
      */
-	public LammaMosaicDataAction createAction(
-			LammaMosaicDataConfiguration configuration) {
-		try {
-			return new LammaMosaicDataAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    public LammaMosaicDataAction createAction(LammaMosaicDataConfiguration configuration) {
+        try {
+            return new LammaMosaicDataAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	public boolean canCreateAction(LammaMosaicDataConfiguration configuration) {
-		// final boolean superRetVal = super.canCreateAction(configuration);
-		return true;
-	}
+    public boolean canCreateAction(LammaMosaicDataConfiguration configuration) {
+        // final boolean superRetVal = super.canCreateAction(configuration);
+        return true;
+    }
 
 }

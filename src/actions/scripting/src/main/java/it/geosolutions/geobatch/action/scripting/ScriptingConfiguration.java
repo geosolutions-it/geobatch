@@ -29,8 +29,8 @@ import java.util.Map;
 
 public class ScriptingConfiguration extends ActionConfiguration implements Configuration {
 
-    public ScriptingConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
+    public ScriptingConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     /**
@@ -50,9 +50,9 @@ public class ScriptingConfiguration extends ActionConfiguration implements Confi
      */
     private Map<String, String> properties = null;
 
-    public ScriptingConfiguration() {
-        super();
-    }
+//    public ScriptingConfiguration() {
+//        super();
+//    }
 
     public String getLanguage() {
         return language;

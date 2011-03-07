@@ -7,15 +7,9 @@
 	<!-- Environment Initialization -->
 	
 	<bean id="FreeMarkerGeneratorService" class="it.geosolutions.geobatch.actions.freemarker.FreeMarkerGeneratorService">
-		<property  name="id">
-    		<value>FreeMarkerGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>FreeMarkerGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>FreeMarkerGeneratorService</value>
-    	</property>
+		<constructor-arg type="String"><value>FreeMarkerGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>FreeMarkerGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>FreeMarkerGeneratorService</value></constructor-arg>
 	</bean>
 	
 	<bean id="FreeMarkerAliasRegistrar" class="it.geosolutions.geobatch.actions.freemarker.FreeMarkerAliasRegistrar" lazy-init="false">

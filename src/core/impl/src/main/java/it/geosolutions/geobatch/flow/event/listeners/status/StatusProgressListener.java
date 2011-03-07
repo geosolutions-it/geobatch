@@ -3,29 +3,16 @@
 
 package it.geosolutions.geobatch.flow.event.listeners.status;
 
+import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
-import java.util.List;
 
 /**
  * Remember the state of the event firer.
  * 
- * <P>
- * You can retrieve the info using
- * <LI>{@link #is}</LI>
- * <LI>{@link #is}</LI>
- * <LI>{@link #is}</LI>
- * <LI>{@link #is}</LI>
- * <LI>{@link #is}</LI>
- * <LI>{@link #is}</LI>
- * 
  * @author ETj <etj at geo-solutions.it>
+ * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
-public class StatusProgressListener extends ProgressListener<StatusProgressListenerConfiguration> {
-
-    /**
-     * @uml.property  name="source"
-     */
-    private Object source;
+public class StatusProgressListener extends ProgressListener {
 
     /**
      * @uml.property  name="started"
@@ -57,17 +44,17 @@ public class StatusProgressListener extends ProgressListener<StatusProgressListe
      */
     protected Throwable failException = null;
 
-    public StatusProgressListener(StatusProgressListenerConfiguration configuration) {
-        super(configuration);
+    public StatusProgressListener(StatusProgressListenerConfiguration configuration, BaseIdentifiable owner) {
+        super(configuration,owner);
     }
 
     /**
      * @param source
      * @uml.property  name="source"
      */
-    public void setSource(Object source) {
-        this.source = source;
-    }
+//    public void setSource(Object source) {
+//        this.source = source;
+//    }
 
     public void started() {
         started = true;
@@ -150,7 +137,11 @@ public class StatusProgressListener extends ProgressListener<StatusProgressListe
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder().append("Status of ").append(source).append('[');
+        StringBuilder sb = new StringBuilder()
+//            .append("Status of ")
+//            .append(source!=null?source:"ACTION")
+//            .append('[')
+            ;
 
         sb.append("Last task: '").append(getTask()).append("' ");
         sb.append(" at ").append(getProgress()).append("% ");

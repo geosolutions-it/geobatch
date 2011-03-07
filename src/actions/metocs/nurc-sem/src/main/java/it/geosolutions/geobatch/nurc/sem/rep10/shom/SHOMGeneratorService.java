@@ -36,6 +36,10 @@ import java.util.logging.Logger;
 public class SHOMGeneratorService extends BaseService implements
         ActionService<EventObject, SHOMConfiguration> {
 
+    public SHOMGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(SHOMGeneratorService.class.toString());
 
     public SHOMAction createAction(SHOMConfiguration configuration) {

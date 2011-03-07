@@ -100,7 +100,6 @@ public class JGSFLoDeSSSWANFileConfigurator extends MetocConfigurationAction<Fil
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
             FileSystemEvent event = events.remove();
-            final String configId = configuration.getName();
 
             // //
             // data flow configuration and dataStore name must not be null.

@@ -25,12 +25,10 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
 public class GeoServerRESTActionConfiguration extends GeoServerActionConfiguration {
 
-    public GeoServerRESTActionConfiguration(String id, String name, String description,
-            boolean dirty) {
-        super(id, name, description, dirty);
-        // TODO Auto-generated constructor stub
+    public GeoServerRESTActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
-
+    
     private String queryString;
 
     private String geoserverVersion;
@@ -41,12 +39,12 @@ public class GeoServerRESTActionConfiguration extends GeoServerActionConfigurati
 
     private Boolean vectorialLayer;
 
-    public GeoServerRESTActionConfiguration() {
-        super();
-    }
+//    public GeoServerRESTActionConfiguration() {
+//        super();
+//    }
 
     public GeoServerRESTActionConfiguration(GeoServerRESTActionConfiguration baseConfiguration) {
-        super();
+        super(baseConfiguration.getId(),baseConfiguration.getName(),baseConfiguration.getDescription());
 
         setCrs(baseConfiguration.getCrs());
         setDataTransferMethod(baseConfiguration.getDataTransferMethod());

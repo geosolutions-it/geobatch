@@ -32,51 +32,53 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  */
 @XStreamAlias("FreeMarker")
 @XStreamInclude(FreeMarkerConfiguration.class)
-public class FreeMarkerConfiguration extends ActionConfiguration implements Configuration{
+public class FreeMarkerConfiguration extends ActionConfiguration implements Configuration {
 
-    public FreeMarkerConfiguration() {
-        super();
+    public FreeMarkerConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
-    
-    public FreeMarkerConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
-    }
-    
+
     /**
      * 
      * @param id
      * @param name
      * @param description
      * @param dirty
-     * @param in the input template file
-     * @param out the output filtered (resulting) file
-     * @param r the root data model to use as root
+     * @param in
+     *            the input template file
+     * @param out
+     *            the output filtered (resulting) file
+     * @param r
+     *            the root data model to use as root
      */
     public FreeMarkerConfiguration(String id, String name, String description, boolean dirty,
-            String in, String out, Map<String,Object> r) {
-        super(id, name, description, dirty);
-        input=in;
-        output=out;
-        root=r;
+            String in, String out, Map<String, Object> r) {
+        super(id, name, description);
+        input = in;
+        output = out;
+        root = r;
     }
-    
+
     /**
      * 
-     * @param in the input template file
-     * @param out the output filtered (resulting) file
-     * @param r the root data model to use as root
+     * @param in
+     *            the input template file
+     * @param out
+     *            the output filtered (resulting) file
+     * @param r
+     *            the root data model to use as root
      */
-    public FreeMarkerConfiguration(String in, String out, Map<String,Object> r) {
-        super();
-        input=in;
-        output=out;
-        root=r;
-    }
-    
+//    public FreeMarkerConfiguration(String in, String out, Map<String, Object> r) {
+//        super();
+//        input = in;
+//        output = out;
+//        root = r;
+//    }
+
     // path where to find the template
     @XStreamAlias("input")
     private String input;
@@ -87,48 +89,48 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
 
     // Create a data-model
     @XStreamAlias("root")
-    private Map<String, Object> root=null;
-    
-    public void setInput(String s){
-        input=s;
+    private Map<String, Object> root = null;
+
+    public void setInput(String s) {
+        input = s;
     }
-    
-    public void setOutput(String s){
-        output=s;
+
+    public void setOutput(String s) {
+        output = s;
     }
-    
-    public void setRoot(Map<String,Object> m){
-        root=m;
+
+    public void setRoot(Map<String, Object> m) {
+        root = m;
     }
-    
+
     /**
      * @return the substitution data structure
      * @note this object can be null
      */
-    public Map<String, Object> getRoot(){
+    public Map<String, Object> getRoot() {
         return root;
     }
-    
+
     /**
      * return the template path
+     * 
      * @return the template path
-     * @note this object can be null anyway
-     * the templateIn should be always
-     * present into the configuration.
+     * @note this object can be null anyway the templateIn should be always present into the
+     *       configuration.
      */
-    public final String getInput(){
+    public final String getInput() {
         return input;
     }
-    
+
     /**
      * return the template path
+     * 
      * @return the template path
-     * @note this object can be null anyway
-     * the templateOut should be always
-     * present into the configuration.
+     * @note this object can be null anyway the templateOut should be always present into the
+     *       configuration.
      */
-    public final String getOutput(){
+    public final String getOutput() {
         return output;
     }
-    
+
 }

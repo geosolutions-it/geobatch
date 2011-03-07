@@ -45,6 +45,10 @@ public class FileBasedCatalogConfiguration extends BaseConfiguration implements
 
     // private List<FlowConfiguration> flowConfigurations;
 
+    public FileBasedCatalogConfiguration(String id, String name, String description, boolean dirty) {
+        super(id, name, description, dirty);
+    }
+
     /**
      * workingDirectory: this attribute represents the configuring directory for this flow. It can be relative to the catalog.xml directory or absolute. Attention: the configuring directory should be different from the one containing the configuration files.
      * @uml.property  name="workingDirectory"
@@ -54,9 +58,9 @@ public class FileBasedCatalogConfiguration extends BaseConfiguration implements
     /**
      * Default Constructor.
      */
-    public FileBasedCatalogConfiguration() {
-        super();
-    }
+//    public FileBasedCatalogConfiguration() {
+//        super();
+//    }
 
     /**
      * Getter for the workingDirectory

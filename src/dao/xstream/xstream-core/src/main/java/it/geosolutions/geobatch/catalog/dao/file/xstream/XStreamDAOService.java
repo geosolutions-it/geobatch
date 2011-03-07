@@ -37,16 +37,20 @@ public class XStreamDAOService<T extends Configuration> extends BaseService impl
 
     private final Alias alias;
 
-    public XStreamDAOService(Alias alias) {
-        super(true);
+    public XStreamDAOService(Alias alias, String id, String name, String description) {
+        super(id, name, description);
         this.alias = alias;
     }
+//    public XStreamDAOService(Alias alias) {
+//        super(true);
+//        this.alias = alias;
+//    }
 
-    public XStreamDAOService(String baseDirectory, Alias alias) {
-        super(true);
-        this.baseDirectory = baseDirectory;
-        this.alias = alias;
-    }
+//    public XStreamDAOService(String baseDirectory, Alias alias) {
+//        super(true);
+//        this.baseDirectory = baseDirectory;
+//        this.alias = alias;
+//    }
 
     public DAO createDAO(Class<T> clazz) {
         if (clazz.isAssignableFrom(FlowConfiguration.class))

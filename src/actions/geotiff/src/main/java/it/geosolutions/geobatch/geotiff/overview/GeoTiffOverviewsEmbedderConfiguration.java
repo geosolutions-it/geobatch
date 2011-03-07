@@ -32,9 +32,8 @@ import org.geotools.utils.CoverageToolsConstants;
 public class GeoTiffOverviewsEmbedderConfiguration extends ActionConfiguration implements
         Configuration {
 
-    public GeoTiffOverviewsEmbedderConfiguration(String id, String name, String description,
-            boolean dirty) {
-        super(id, name, description, dirty);
+    public GeoTiffOverviewsEmbedderConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     private long JAICapacity;
@@ -82,9 +81,9 @@ public class GeoTiffOverviewsEmbedderConfiguration extends ActionConfiguration i
 
     private String serviceID;
 
-    public GeoTiffOverviewsEmbedderConfiguration() {
-        super();
-    }
+//    public GeoTiffOverviewsEmbedderConfiguration() {
+//        super();
+//    }
 
     /**
      * @return the workingDirectory

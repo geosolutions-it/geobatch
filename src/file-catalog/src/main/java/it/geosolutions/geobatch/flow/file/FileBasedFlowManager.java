@@ -144,8 +144,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     /**
      * @throws IOException
      */
-    public FileBasedFlowManager() throws IOException {
-    }
+//    public FileBasedFlowManager() throws IOException {
+//    }
 
     /**
      * @param configuration
@@ -154,7 +154,12 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      */
     public FileBasedFlowManager(FileBasedFlowConfiguration configuration) throws IOException,
             NullPointerException {
+        super(configuration.getId(), configuration.getName(), configuration.getDescription());
         initialize(configuration);
+    }
+
+    public FileBasedFlowManager(String baseName, String name, String description) {
+        super(baseName, name, description);
     }
 
     /**

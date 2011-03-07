@@ -29,8 +29,8 @@ import org.geotools.utils.CoverageToolsConstants;
 
 public class GeoTiffRetilerConfiguration extends ActionConfiguration implements Configuration {
 
-    protected GeoTiffRetilerConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
+    protected GeoTiffRetilerConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     private long JAICapacity;
@@ -57,9 +57,9 @@ public class GeoTiffRetilerConfiguration extends ActionConfiguration implements 
 
     private String serviceID;
 
-    public GeoTiffRetilerConfiguration() {
-        super();
-    }
+//    public GeoTiffRetilerConfiguration() {
+//        super();
+//    }
 
     /**
      * @return the workingDirectory

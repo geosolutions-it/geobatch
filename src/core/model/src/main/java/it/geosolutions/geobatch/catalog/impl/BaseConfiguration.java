@@ -36,9 +36,9 @@ public class BaseConfiguration extends BaseIdentifiable implements Configuration
      */
     private boolean dirty;
 
-    public BaseConfiguration() {
-        super();
-    }
+//    public BaseConfiguration() {
+//        super();
+//    }
 
     public BaseConfiguration(String id, String name, String description) {
         super(id, name, description);

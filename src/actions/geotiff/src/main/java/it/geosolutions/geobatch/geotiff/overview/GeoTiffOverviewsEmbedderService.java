@@ -40,8 +40,12 @@ import java.util.logging.Logger;
 public class GeoTiffOverviewsEmbedderService extends BaseService implements
         ActionService<FileSystemEvent, GeoTiffOverviewsEmbedderConfiguration> {
 
-    private GeoTiffOverviewsEmbedderService() {
-        super(true);
+//    private GeoTiffOverviewsEmbedderService() {
+//        super(description, description, description, true);
+//    }
+
+    public GeoTiffOverviewsEmbedderService(String id, String name, String description) {
+        super(id, name, description);
     }
 
     private final static Logger LOGGER = Logger

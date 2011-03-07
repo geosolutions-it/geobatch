@@ -50,13 +50,8 @@ public class LammaContourBuilderConfiguration extends LammaBaseConfiguration {
 
 	private String defaultStyle;
 
-	public LammaContourBuilderConfiguration() {
-		super();
-	}
-
-	protected LammaContourBuilderConfiguration(String id, String name,
-			String description, boolean dirty) {
-		super(id, name, description, dirty);
+	protected LammaContourBuilderConfiguration(String id, String name,String description) {
+		super(id, name, description);
 	}
 
 	/**

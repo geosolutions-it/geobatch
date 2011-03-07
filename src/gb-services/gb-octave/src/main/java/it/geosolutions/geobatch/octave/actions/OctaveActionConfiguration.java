@@ -41,12 +41,12 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
     OctaveFunctionSheet.class})
 public class OctaveActionConfiguration extends ActionConfiguration {
     
-    public OctaveActionConfiguration(){
-        super();
-    }
+//    public OctaveActionConfiguration(){
+//        super();
+//    }
     
     public OctaveActionConfiguration(ActionConfiguration ac){
-        super(ac.getId(),ac.getName(),ac.getDescription(),ac.isDirty());
+        super(ac.getId(),ac.getName(),ac.getDescription());
     }
     /*
      * represents the file containing the Octave environment to execute

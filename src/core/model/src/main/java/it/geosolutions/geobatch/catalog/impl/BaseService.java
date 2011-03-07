@@ -31,17 +31,23 @@ public class BaseService extends BaseResource implements Service {
      */
     private boolean available;
 
-    public BaseService() {
-        super();
+//    public BaseService() {
+//        super();
+//        available = true;
+//    }
+    /**
+     * Constructor forcing initialization of: id ,name and description of this resource 
+     * @param id
+     * @param name
+     * @param description
+     */
+    public BaseService(String id, String name, String description) {
+        super(id, name, description);
         available = true;
     }
 
-    public BaseService(String id, String name, String description) {
+    public BaseService(String id, String name, String description, boolean available) {
         super(id, name, description);
-    }
-
-    public BaseService(boolean available) {
-        super();
         this.available = available;
     }
 

@@ -35,16 +35,19 @@
 	<bean id="XStreamFlowConfigurationDAOService"
 		class="it.geosolutions.geobatch.catalog.dao.file.xstream.XStreamDAOService">
 		<constructor-arg ref="alias" />
-
-		<property name="id">
-			<value>XStreamFlowConfigurationDAOService</value>
-		</property>
-		<property name="description">
-			<value>XStream based FlowConfigurationDAOService</value>
-		</property>
-		<property name="name">
-			<value>XStreamFlowConfigurationDAOService</value>
-		</property>
+ 		<constructor-arg type="String"><value>XStreamFlowConfigurationDAOService</value></constructor-arg>
+    	<constructor-arg type="String"><value>XStream based FlowConfigurationDAOService</value></constructor-arg>
+    	<constructor-arg type="String"><value>XStreamFlowConfigurationDAOService</value></constructor-arg>
+		
+<!--		<property name="id">-->
+<!--			<value>XStreamFlowConfigurationDAOService</value>-->
+<!--		</property>-->
+<!--		<property name="description">-->
+<!--			<value>XStream based FlowConfigurationDAOService</value>-->
+<!--		</property>-->
+<!--		<property name="name">-->
+<!--			<value>XStreamFlowConfigurationDAOService</value>-->
+<!--		</property>-->
 	</bean>
 
 </beans>

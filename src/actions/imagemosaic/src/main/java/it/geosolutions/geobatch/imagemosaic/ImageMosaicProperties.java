@@ -1,5 +1,9 @@
 package it.geosolutions.geobatch.imagemosaic;
 
+import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.global.CatalogHolder;
+import it.geosolutions.geobatch.tools.file.Path;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,9 +14,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.geotools.data.DataUtilities;
 
 public abstract class ImageMosaicProperties {
+    
+    private static final String CACHING_KEY="Caching";
     /**
      * Default logger
      */
@@ -98,6 +105,7 @@ public abstract class ImageMosaicProperties {
         // INDEXER
         // ////
         if (!indexer.exists()) {
+            
             FileWriter outFile = null;
             PrintWriter out = null;
             try {
@@ -105,7 +113,12 @@ public abstract class ImageMosaicProperties {
                 out = new PrintWriter(outFile);
                 
                 File baseDir=indexer.getParentFile();
+                
                 // Write text to file
+                // setting caching of file to false
+                out.println("Caching=false");
+                
+                
                 if (configuration.getTimeRegex() != null){
                     out.println("TimeAttribute=ingestion");
                     
@@ -156,8 +169,94 @@ public abstract class ImageMosaicProperties {
             }
             return getProperty(indexer);
         }
+        else {
+            // file -> indexer.properties
+            /**
+             * get the Caching property and set it to false
+             */
+            Properties indexerProps=getProperty(indexer);
+            String caching=indexerProps.getProperty(CACHING_KEY);
+            if (caching!=null){
+                if (caching.equals("true")){
+                    indexerProps.setProperty(CACHING_KEY, "false");
+                }
+            }
+            else {
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.warning(
+                           "ImageMosaicProperty:buildIndexer():Unable to get the "+CACHING_KEY
+                           +" property into the "+indexer.getAbsolutePath()+" file.");
+            }
+                
+            return indexerProps;
+        }
+    }
 
-        return null;
+    /**
+     * CHECKING FOR datastore.properties If the 'datastore.properties' do not exists into the
+     * baseDir, try to use the configured one. If not found a shape file will be used (done by the
+     * geoserver).
+     * 
+     * @param baseDir
+     *            the directory of the layer
+     * @return File (unchecked) datastore.properties if succes or null if some error occurred.
+     */
+    static File checkDataStore(ImageMosaicConfiguration configuration, File baseDir) {
+        final File datastore = new File(baseDir, "datastore.properties");
+        if (!datastore.exists()) {
+            if (configuration.getDatastorePropertiesPath() != null) {
+                File dsFile;
+                try {
+                    dsFile = Path.findLocation(
+                            configuration.getDatastorePropertiesPath(),
+                            new File(((FileBaseCatalog) CatalogHolder.getCatalog())
+                                    .getBaseDirectory()));
+                } catch (IOException e) {
+                    if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
+                        ImageMosaicAction.LOGGER.warning("ImageMosaicAction:checkDataStore() " + e.getMessage());
+                    }
+                    return null;
+                }
+                if (dsFile != null) {
+                    if (!dsFile.isDirectory()) {
+                        if (ImageMosaicAction.LOGGER.isLoggable(Level.INFO)) {
+                            ImageMosaicAction.LOGGER.info("ImageMosaicAction:checkDataStore() Configuration DataStore file found: '"
+                                    + dsFile.getAbsolutePath() + "'.");
+                        }
+                        try {
+                            FileUtils.copyFileToDirectory(dsFile, baseDir);
+                        } catch (IOException e) {
+                            if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING))
+                                ImageMosaicAction.LOGGER.warning("ImageMosaicAction:checkDataStore() "
+                                        + e.getMessage());
+                            return null;
+                        }
+                    } else {
+                        if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
+                            ImageMosaicAction.LOGGER.log(Level.WARNING,
+                                    "ImageMosaicAction:checkDataStore() DataStoreProperties file points to a directory! "
+                                            + dsFile.getAbsolutePath() + "'. Skipping event");
+                        }
+                        return null;
+                    }
+                } else {
+                    if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
+                        ImageMosaicAction.LOGGER.log(Level.WARNING,
+                                "ImageMosaicAction: DataStoreProperties file not found"
+                                        + configuration.getDatastorePropertiesPath()
+                                        + "'. Skipping event");
+                    }
+                    return null;
+                }
+            } else {
+                if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
+                    ImageMosaicAction.LOGGER.log(Level.WARNING,
+                            "ImageMosaicAction: DataStoreProperties file not configured "
+                                    + "nor found into destination dir. A shape file will be used.");
+                }
+            }
+        }
+        return datastore;
     }
 
 }

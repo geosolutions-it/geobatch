@@ -8,14 +8,8 @@
 
 	<!-- Environment Initialization -->
 	<bean id="geoServerRESTGeneratorService" class="it.geosolutions.geobatch.geoserver.rest.GeoServerRESTConfiguratorService">
-		<property  name="id">
-    		<value>geoServerRESTGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>geoServerRESTGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>geoServerRESTGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>geoServerRESTGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>geoServerRESTGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>geoServerRESTGeneratorService</value></constructor-arg>	
 	</bean>
 </beans>

@@ -42,6 +42,10 @@ public class HDF42GeoTIFFsGeneratorService extends
     private final static Logger LOGGER = Logger.getLogger(HDF42GeoTIFFsGeneratorService.class
             .toString());
 
+    public HDF42GeoTIFFsGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     /**
      * Action creator
      * 

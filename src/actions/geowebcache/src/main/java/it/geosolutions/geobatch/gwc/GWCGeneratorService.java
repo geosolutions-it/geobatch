@@ -35,6 +35,10 @@ import java.util.logging.Logger;
 public class GWCGeneratorService extends
         GeoWebCacheConfiguratorService<FileSystemEvent, GeoWebCacheActionConfiguration> {
 
+    public GWCGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(GWCGeneratorService.class.toString());
 
     /**

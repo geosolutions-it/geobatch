@@ -4,48 +4,21 @@
 
 	<!-- File based flow manager service-->
     <bean id="ftpUploadActionService" class="it.geosolutions.geobatch.ftp.client.upload.FTPUploadActionService">
-        <property name="available">
-            <value>true</value>
-        </property>
-        <property name="id">
-            <value>ftpUploadActionService</value>
-        </property>
-        <property name="description">
-            <value>ftpUploadActionService</value>
-        </property>
-        <property name="name">
-            <value>fsFlowManagerService</value>
-        </property>
+        <constructor-arg type="String"><value>ftpUploadActionService</value></constructor-arg>
+        <constructor-arg type="String"><value>ftpUploadActionService</value></constructor-arg>
+        <constructor-arg type="String"><value>fsFlowManagerService</value></constructor-arg>
     </bean>
     
     <bean id="ftpDownloadActionService" class="it.geosolutions.geobatch.ftp.client.download.FTPDownloadActionService">
-        <property name="available">
-            <value>true</value>
-        </property>
-        <property name="id">
-            <value>ftpDownloadActionService</value>
-        </property>
-        <property name="description">
-            <value>ftpDownloadActionService</value>
-        </property>
-        <property name="name">
-            <value>fsFlowManagerService</value>
-        </property>
+        <constructor-arg type="String"><value>ftpDownloadActionService</value></constructor-arg>
+        <constructor-arg type="String"><value>ftpDownloadActionService</value></constructor-arg>
+        <constructor-arg type="String"><value>fsFlowManagerService</value></constructor-arg>
     </bean>
     
     <bean id="ftpDeleteActionService" class="it.geosolutions.geobatch.ftp.client.delete.FTPDeleteActionService">
-        <property name="available">
-            <value>true</value>
-        </property>
-        <property name="id">
-            <value>ftpDeleteActionService</value>
-        </property>
-        <property name="description">
-            <value>ftpDeleteActionService</value>
-        </property>
-        <property name="name">
-            <value>fsFlowManagerService</value>
-        </property>
+        <constructor-arg type="String"><value>ftpDeleteActionService</value></constructor-arg>
+        <constructor-arg type="String"><value>ftpDeleteActionService</value></constructor-arg>
+        <constructor-arg type="String"><value>fsFlowManagerService</value></constructor-arg>
     </bean>
     
     <bean id="ftpSupportRegistrar" class="it.geosolutions.geobatch.ftp.client.FTPAliasRegistrar" lazy-init="false">

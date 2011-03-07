@@ -39,6 +39,10 @@ public class MERCATORGeneratorService extends
     private final static Logger LOGGER = Logger
             .getLogger(MERCATORGeneratorService.class.toString());
 
+    public MERCATORGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+    
     /**
      * Action creator
      * 

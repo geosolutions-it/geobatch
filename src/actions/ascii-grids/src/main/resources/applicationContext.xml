@@ -5,15 +5,9 @@
 
 	<!-- Environment Initialization -->
 	<bean id="asciiGeoServerGenerator" class="it.geosolutions.geobatch.geoserver.ascii.AsciiGeoServerGeneratorService">
-		<property  name="id">
-    		<value>asciiGeoServerGenerator</value>
-    	</property>
-    	<property name="description">
-    		<value>asciiGeoServerGenerator</value>
-    	</property>
-    	<property name="name">
-    		<value>asciiGeoServerGenerator</value>
-    	</property>	
+		<constructor-arg type="String"><value>asciiGeoServerGenerator</value></constructor-arg>
+    	<constructor-arg type="String"><value>asciiGeoServerGenerator</value></constructor-arg>
+    	<constructor-arg type="String"><value>asciiGeoServerGenerator</value></constructor-arg>	
 	</bean>
     
 

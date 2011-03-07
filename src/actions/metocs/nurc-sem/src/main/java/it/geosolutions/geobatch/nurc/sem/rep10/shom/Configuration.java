@@ -46,6 +46,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 @XStreamAlias("filter")
 @XStreamInclude(Configuration.class)
 public class Configuration extends ActionConfiguration {
+
     @XStreamOmitField
     private boolean initted=false;
     
@@ -71,12 +72,15 @@ public class Configuration extends ActionConfiguration {
     /**
      * Default constructor
      * @note this is never called by XStream
+     * @param id
+     * @param name
+     * @param description
      */
-    public Configuration() {
-        super();
+    public Configuration(String id, String name, String description) {
+        super(id, name, description);
         if (init())
             if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("Failed to initialize the configuration");
+              LOGGER.warning("Failed to initialize the configuration");
     }
     
     /**

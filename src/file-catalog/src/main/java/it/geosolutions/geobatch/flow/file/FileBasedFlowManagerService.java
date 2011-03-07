@@ -37,8 +37,12 @@ import org.geotools.data.DataAccessFactory.Param;
 public class FileBasedFlowManagerService extends BaseService implements
         FlowManagerService<FileSystemEvent, FileBasedFlowConfiguration> {
 
-    private FileBasedFlowManagerService() {
-        super(true);
+//    private FileBasedFlowManagerService() {
+//        super(true);
+//    }
+
+    public FileBasedFlowManagerService(String id, String name, String description) {
+        super(id, name, description);
     }
 
     public final static Param WORKING_DIR = new Param("WorkingDir", String.class, "WorkingDir", true);

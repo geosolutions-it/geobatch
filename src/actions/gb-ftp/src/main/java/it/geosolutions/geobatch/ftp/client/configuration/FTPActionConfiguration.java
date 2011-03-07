@@ -34,6 +34,10 @@ import org.springframework.beans.BeanUtils;
  */
 public class FTPActionConfiguration extends ActionConfiguration implements Configuration {
 
+    public FTPActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     public static final String DEFAULT_PORT = "21";
 
     public static final int defaultTimeout = 5000;
@@ -62,13 +66,6 @@ public class FTPActionConfiguration extends ActionConfiguration implements Confi
 
     public enum FTPConnectMode {
         ACTIVE, PASSIVE;
-    }
-
-    /**
-     * Default constructor
-     */
-    public FTPActionConfiguration() {
-        super();
     }
 
     /**
@@ -239,7 +236,7 @@ public class FTPActionConfiguration extends ActionConfiguration implements Confi
     @Override
     public FTPActionConfiguration clone() { // throws CloneNotSupportedException
         // {
-        final FTPActionConfiguration configuration = new FTPActionConfiguration();
+        final FTPActionConfiguration configuration = new FTPActionConfiguration(getId(),getName(),getDescription());
         BeanUtils.copyProperties(this, configuration);
         return configuration;
     }

@@ -155,12 +155,12 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      * @param keepFiles flag used to keep files in watchDirectory
      * when flow is started.
      */
-    public FileBasedEventGenerator(final OsType osType, final FileSystemMonitorType type,
-            final FileSystemEventType eventType, final File dir, final String wildcard,
-            final boolean keepFiles) {
-
-        initialize(osType, type, eventType, dir, wildcard, keepFiles);
-    }
+//    public FileBasedEventGenerator(final OsType osType, final FileSystemMonitorType type,
+//            final FileSystemEventType eventType, final File dir, final String wildcard,
+//            final boolean keepFiles) {
+//        
+//        initialize(osType, type, eventType, dir, wildcard, keepFiles);
+//    }
 
     /**
      * @param osType int OSType (0 - Undefined; 1 - Windows; 2 - Linux)
@@ -218,6 +218,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      */
     public FileBasedEventGenerator(FileBasedEventGeneratorConfiguration configuration)
             throws IOException , NullPointerException{
+        super(configuration.getId(), configuration.getName(), configuration.getDescription());
         // absolutize file
         final File notifyDir = Path.findLocation(configuration.getWorkingDirectory(), new File(
                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));

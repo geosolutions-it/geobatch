@@ -2,29 +2,24 @@
  */
 package it.geosolutions.geobatch.flow.event.listeners.logger;
 
+import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerService;
-import it.geosolutions.geobatch.flow.event.ProgressListener;
-import java.util.logging.Logger;
 
 /**
  * 
  * @author ETj <etj at geo-solutions.it>
+ * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public class LoggingProgressListenerService extends BaseService implements
-        ProgressListenerService<LoggingProgressListenerConfiguration> {
-    // implements Service<FileSystemEvent,
-    // GeoTiffOverviewsEmbedderConfiguration> {
+        ProgressListenerService<LoggingProgressListener,LoggingProgressListenerConfiguration> {
 
-    private LoggingProgressListenerService() {
+    public LoggingProgressListenerService(String id, String name, String description) {
+        super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(LoggingProgressListenerService.class
-            .toString());
-
-    public ProgressListener createProgressListener(
-            LoggingProgressListenerConfiguration configuration) {
-        LoggingProgressListener ret = new LoggingProgressListener(configuration);
-        return ret;
+    public LoggingProgressListener createProgressListener(
+            LoggingProgressListenerConfiguration configuration, BaseIdentifiable owner) {
+        return new LoggingProgressListener(configuration,owner);
     }
 }

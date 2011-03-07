@@ -91,6 +91,9 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("GeoTiffRetiler: is going to retile: "+inputFileName);
         
+        listenerForwarder.setTask("GeoTiffRetiler");
+        listenerForwarder.setTask("GeoTiffRetiler");
+        
             
         // getting a format for the given input
         format = (AbstractGridFormat) GridFormatFinder.findFormat(inFile);

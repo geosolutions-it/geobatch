@@ -1,11 +1,17 @@
 package it.geosolutions.geobatch.imagemosaic;
 
+import it.geosolutions.geobatch.tools.file.Collector;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.cli2.util.Comparators;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
@@ -83,18 +89,43 @@ final class ImageMosaicGranulesDescriptor {
     protected static ImageMosaicGranulesDescriptor buildDescriptor(File inputDir) {
         ImageMosaicGranulesDescriptor mosaicDescriptor = null;
 //TODO a better file filter
-        String[] fileNames = inputDir.list(new SuffixFileFilter(new String[]{ ".tif", ".tiff" },IOCase.INSENSITIVE));
-        List<String> fileNameList = Arrays.asList(fileNames);
+        //String[] fileNames = inputDir.list(new SuffixFileFilter(new String[]{ ".tif", ".tiff" },IOCase.INSENSITIVE));
+        Collector coll=new Collector(new SuffixFileFilter(new String[]{ ".tif", ".tiff" },IOCase.INSENSITIVE));
+        
+        List<File> fileNameList=null;
+        try {
+            fileNameList = coll.collect(inputDir);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("ImageMosaicGranulesDescriptor:buildDescriptor(): unable to collect files from the dir: "
+                        +inputDir.getAbsolutePath()+". Message:"+e.getLocalizedMessage());
+            return null;
+        }
+        
+        if (fileNameList==null){
+            if (LOGGER.isLoggable(Level.INFO)){
+                LOGGER.info(
+                        "ImageMosaicGranulesDescriptor:buildDescriptor(): unable to collect files from the dir: "
+                        +inputDir.getAbsolutePath());
+            }
+            return null;
+        }
+        
+//IMPORTANT
+//TODO check if the order is done by fileName or by date!!!
+        
+        // to get it ordered from the first to the last file (by Name)
         Collections.sort(fileNameList);
-        fileNames = fileNameList.toArray(new String[1]);
+        
+        //fileNames = fileNameList.toArray(new String[1]);
 
         // Store ID
         String coverageStoreId = inputDir.getName();
-
         //
-        if (fileNames != null && fileNames.length > 0) {
-            String[] firstCvNameParts = FilenameUtils.getBaseName(fileNames[0]).split("_");
-            String[] lastCvNameParts = FilenameUtils.getBaseName(fileNames[fileNames.length - 1]).split("_");
+        if (fileNameList.size() > 0) {
+            
+            String[] firstCvNameParts = FilenameUtils.getBaseName(fileNameList.get(0).getName()).split("_");
+            String[] lastCvNameParts = FilenameUtils.getBaseName(fileNameList.get(fileNameList.size()-1).getName()).split("_");
 
             if (firstCvNameParts != null && firstCvNameParts.length > 3) {
                 // Temp workaround to leverages on a coverageStoreId having the
@@ -111,8 +142,10 @@ final class ImageMosaicGranulesDescriptor {
                         .append(firstCvNameParts[7]).append("_") // TAU
                         .append(firstCvNameParts[8]) // NoDATA
                         .toString() : inputDir.getName();
-
-                LOGGER.info("Coverage Store ID: " + coverageStoreId);
+                
+                if (LOGGER.isLoggable(Level.INFO)){
+                    LOGGER.info("ImageMosaicGranulesDescriptor:buildDescriptor(): Coverage Store ID: " + coverageStoreId);
+                }
 
                 mosaicDescriptor = new ImageMosaicGranulesDescriptor(coverageStoreId, metocFields,
                         firstCvNameParts, lastCvNameParts);
@@ -126,7 +159,15 @@ final class ImageMosaicGranulesDescriptor {
         }
         else {
   //TODO
-            LOGGER.info("ERROR!"); 
+            if (LOGGER.isLoggable(Level.WARNING)){
+                LOGGER.warning(
+                    "ImageMosaicGranulesDescriptor:buildDescriptor(): The passed base dir is empty! Dir:"+inputDir.getAbsolutePath());
+            }
+            
+            mosaicDescriptor = new ImageMosaicGranulesDescriptor(coverageStoreId,
+                    coverageStoreId,
+                    null,
+                    null);
         }
         return mosaicDescriptor;
     }

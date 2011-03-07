@@ -94,8 +94,7 @@ public class ConsumerInfoController extends ConsumerAbstractController {
                         eventlist.add("Current action status: " + spl.toString());
                     } else {
                         // get any pl
-                        ProgressListener anypl = (ProgressListener) action
-                                .getProgressListener(ProgressListener.class);
+                        ProgressListener anypl = (ProgressListener) action.getProgressListener(ProgressListener.class);
                         if (anypl != null) {
                             eventlist.add("Current action task: " + anypl.getTask());
                             eventlist.add("Current action progress: " + anypl.getProgress() + "%");

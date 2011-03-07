@@ -98,9 +98,9 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
         this.eventConsumerConfiguration = eventConsumerConfiguration;
     }
 
-    public BaseFlowConfiguration() {
-        super();
-    }
+//    public BaseFlowConfiguration() {
+//        super();
+//    }
 
     /*
      * (non-Javadoc)

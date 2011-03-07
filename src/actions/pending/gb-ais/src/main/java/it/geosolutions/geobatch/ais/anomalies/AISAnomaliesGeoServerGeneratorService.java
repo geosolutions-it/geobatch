@@ -32,39 +32,40 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AISAnomaliesGeoServerGeneratorService
-		extends
-		GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
+public class AISAnomaliesGeoServerGeneratorService extends
+        GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(AISAnomaliesGeoServerGeneratorService.class.toString());
+    public AISAnomaliesGeoServerGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
 
-	private AISAnomaliesDAO aisAnomaliesDAO;
+    private final static Logger LOGGER = Logger
+            .getLogger(AISAnomaliesGeoServerGeneratorService.class.toString());
 
-	public void setAisAnomaliesDAO(AISAnomaliesDAO aisAnomaliesDAO) {
-		this.aisAnomaliesDAO = aisAnomaliesDAO;
-	}
+    private AISAnomaliesDAO aisAnomaliesDAO;
 
-	public AISAnomaliesDAO getAisAnomaliesDAO() {
-		return aisAnomaliesDAO;
-	}
+    public void setAisAnomaliesDAO(AISAnomaliesDAO aisAnomaliesDAO) {
+        this.aisAnomaliesDAO = aisAnomaliesDAO;
+    }
 
-	public Action<FileSystemEvent> createAction(
-			GeoServerActionConfiguration configuration) {
-		try {
-			return new AISAnomaliesGeoServerGenerator(configuration,
-					this.aisAnomaliesDAO);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.WARNING))
-				LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    public AISAnomaliesDAO getAisAnomaliesDAO() {
+        return aisAnomaliesDAO;
+    }
 
-	@Override
-	public boolean canCreateAction(GeoServerActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    public Action<FileSystemEvent> createAction(GeoServerActionConfiguration configuration) {
+        try {
+            return new AISAnomaliesGeoServerGenerator(configuration, this.aisAnomaliesDAO);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.WARNING))
+                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
+
+    @Override
+    public boolean canCreateAction(GeoServerActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

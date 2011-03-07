@@ -97,7 +97,7 @@ public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction<F
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                         + events.size());
             FileSystemEvent event = events.remove();
-            final String configId = configuration.getName();
+//            final String configId = configuration.getName();
 
             final boolean packComponents = configuration.isPackComponents();
 

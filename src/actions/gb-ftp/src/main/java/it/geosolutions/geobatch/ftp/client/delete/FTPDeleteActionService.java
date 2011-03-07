@@ -40,14 +40,18 @@ import java.util.logging.Logger;
 public class FTPDeleteActionService extends BaseService implements
         ActionService<FileSystemEvent, FTPActionConfiguration> {
 
+    public FTPDeleteActionService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(FTPDeleteActionService.class.toString());
 
     /**
      * The FTPDeleteActionServiceb default constructor.
      */
-    public FTPDeleteActionService() {
-        super(true);
-    }
+//    public FTPDeleteActionService() {
+//        super(true);
+//    }
 
     /**
      * Method to verify if the action creation is available.

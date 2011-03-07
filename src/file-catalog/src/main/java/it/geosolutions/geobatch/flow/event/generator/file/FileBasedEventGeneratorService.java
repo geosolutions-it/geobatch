@@ -44,6 +44,10 @@ import java.util.logging.Logger;
 public class FileBasedEventGeneratorService extends
         BaseEventGeneratorService<FileSystemEvent, FileBasedEventGeneratorConfiguration> {
 
+    public FileBasedEventGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(FileBasedEventGeneratorService.class
             .toString());
 
@@ -97,13 +101,7 @@ public class FileBasedEventGeneratorService extends
             }
             final boolean keepFiles = configuration.getKeepFiles();
 
-            return new FileBasedEventGenerator<FileSystemEvent>(
-                                    osType,
-                                    configuration.getMonitorType(),
-                                    eventType,
-                                    sensedDir,
-                                    configuration.getWildCard(),
-                                    keepFiles);
+            return new FileBasedEventGenerator<FileSystemEvent>(configuration);
             
         } catch (IOException ex) {
             if (LOGGER.isLoggable(Level.SEVERE))

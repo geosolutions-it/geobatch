@@ -36,11 +36,15 @@ import java.util.logging.Logger;
 public class WMCGeneratorService extends BaseService implements
         ActionService<FileSystemEvent, WMCActionConfiguration> {
 
+    public WMCGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(WMCGeneratorService.class.toString());
 
-    private WMCGeneratorService() {
-        super(true);
-    }
+//    private WMCGeneratorService() {
+//        super(true);
+//    }
 
     /**
      * Action creator

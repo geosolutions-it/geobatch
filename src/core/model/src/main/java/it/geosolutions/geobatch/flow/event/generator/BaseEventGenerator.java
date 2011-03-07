@@ -33,4 +33,8 @@ import java.util.EventObject;
 public abstract class BaseEventGenerator<EO extends EventObject> extends BaseIdentifiable implements
         EventGenerator<EO> {
 
+    public BaseEventGenerator(String id, String name, String description) {
+        super(id, name, description);
+    }
+
 }

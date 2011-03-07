@@ -36,8 +36,13 @@ import java.util.logging.Logger;
 public class JGSFLoDeSSSWANGeneratorService extends
         GeoServerConfiguratorService<FileSystemEvent, MetocActionConfiguration> {
 
+
     private final static Logger LOGGER = Logger.getLogger(JGSFLoDeSSSWANGeneratorService.class
             .toString());
+
+    public JGSFLoDeSSSWANGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
 
     /**
      * Action creator

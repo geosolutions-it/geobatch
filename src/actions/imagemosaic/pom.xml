@@ -126,7 +126,6 @@
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
-        
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-tools</artifactId>

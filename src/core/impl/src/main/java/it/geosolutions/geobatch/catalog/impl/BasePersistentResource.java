@@ -37,6 +37,10 @@ import java.util.logging.Logger;
  */
 public abstract class BasePersistentResource<C extends Configuration> extends BaseResource {
 
+    public BasePersistentResource(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(BasePersistentResource.class.toString());
 
     /**

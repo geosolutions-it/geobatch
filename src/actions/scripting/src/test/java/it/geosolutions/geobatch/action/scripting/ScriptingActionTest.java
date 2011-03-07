@@ -3,6 +3,7 @@
 
 package it.geosolutions.geobatch.action.scripting;
 
+import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 
 import java.io.File;
@@ -226,10 +227,15 @@ public class ScriptingActionTest extends Assert {
 
 class TestListener extends ProgressListener {
 
+
     private boolean started = false;
 
     private boolean paused = false;
 
+    protected TestListener(BaseIdentifiable caller) {
+        super(caller);
+    }
+    
     public void started() {
         started = true;
     }

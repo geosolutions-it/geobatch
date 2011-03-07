@@ -8,28 +8,30 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AISCoverageGeoServerGeneratorService
-		extends
-		GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
+public class AISCoverageGeoServerGeneratorService extends
+        GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(AISCoverageGeoServerGeneratorService.class.toString());
+    public AISCoverageGeoServerGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
 
-	public AISCoverageGeoServerGenerator createAction(
-			GeoServerActionConfiguration configuration) {
-		try {
-			return new AISCoverageGeoServerGenerator(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    private final static Logger LOGGER = Logger
+            .getLogger(AISCoverageGeoServerGeneratorService.class.toString());
 
-	@Override
-	public boolean canCreateAction(GeoServerActionConfiguration configuration) {
-		final boolean superRetVal = super.canCreateAction(configuration);
-		return superRetVal;
-	}
+    public AISCoverageGeoServerGenerator createAction(GeoServerActionConfiguration configuration) {
+        try {
+            return new AISCoverageGeoServerGenerator(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
+
+    @Override
+    public boolean canCreateAction(GeoServerActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
 
 }

@@ -52,6 +52,11 @@ import org.apache.commons.collections.MultiHashMap;
  * 
  */
 public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> implements Catalog {
+    
+    public BaseCatalog(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(BaseCatalog.class.getName());
 
     /**
@@ -83,8 +88,8 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
     /**
      * Default Constructor.
      */
-    public BaseCatalog() {
-    }
+//    public BaseCatalog() {
+//    }
 
     /*
      * (non-Javadoc)

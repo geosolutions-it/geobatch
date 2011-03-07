@@ -28,8 +28,8 @@ import java.util.List;
 
 public class GeoServerActionConfiguration extends ActionConfiguration implements Configuration {
 
-    public GeoServerActionConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
+    public GeoServerActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     private String workingDirectory;
@@ -62,9 +62,9 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
 
     private String dataTransferMethod;
 
-    public GeoServerActionConfiguration() {
-        super();
-    }
+//    public GeoServerActionConfiguration() {
+//        super();
+//    }
 
     /**
      * @return the workingDirectory
@@ -208,7 +208,7 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
         configuration.setGeoserverPWD(geoserverPWD);
         configuration.setGeoserverUID(geoserverUID);
         configuration.setGeoserverURL(geoserverURL);
-        // configuration.setServiceID(getServiceID());
+//        configuration.setServiceID(getServiceID());
         configuration.setStoreFilePrefix(storeFilePrefix);
         configuration.setStyles(styles);
         configuration.setWmsPath(wmsPath);

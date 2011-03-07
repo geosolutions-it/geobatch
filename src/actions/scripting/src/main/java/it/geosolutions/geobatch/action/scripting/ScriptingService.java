@@ -40,6 +40,10 @@ import javax.script.ScriptEngineManager;
 public class ScriptingService extends BaseService implements
         ActionService<FileSystemEvent, ScriptingConfiguration> {
 
+    public ScriptingService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(ScriptingService.class.toString());
 
     public ScriptingAction createAction(ScriptingConfiguration configuration) {

@@ -21,6 +21,8 @@
  */
 package it.geosolutions.geobatch.geoserver;
 
+import java.util.logging.Level;
+
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 
@@ -31,7 +33,8 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
 public class GeoServerAliasRegistrar extends AliasRegistrar {
 
     public GeoServerAliasRegistrar(AliasRegistry registry) {
-        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info(getClass().getSimpleName() + ": registering alias.");
         registry.putAlias("GeoServerActionConfiguration", GeoServerActionConfiguration.class);
     }
 }

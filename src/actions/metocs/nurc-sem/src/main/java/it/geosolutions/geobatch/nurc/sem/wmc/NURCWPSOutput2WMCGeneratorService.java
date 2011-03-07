@@ -39,6 +39,10 @@ public class NURCWPSOutput2WMCGeneratorService extends
     private final static Logger LOGGER = Logger.getLogger(NURCWPSOutput2WMCGeneratorService.class
             .toString());
 
+    public NURCWPSOutput2WMCGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+    
     /**
      * Action creator
      * 

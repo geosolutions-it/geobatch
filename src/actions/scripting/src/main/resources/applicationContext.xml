@@ -5,9 +5,13 @@
         
 	<!-- Environment Initialization -->
 	<bean id="scriptingService" class="it.geosolutions.geobatch.action.scripting.ScriptingService">
-		<property  name="id" value="scriptingService"/>
-    	<property name="description" value="scriptingService"/>
-    	<property name="name" value="scriptingService"/>
+<!--		<property  name="id" value="scriptingService"/>-->
+<!--    	<property name="description" value="scriptingService"/>-->
+<!--    	<property name="name" value="scriptingService"/>-->
+    	<constructor-arg type="String"><value>scriptingService</value></constructor-arg>
+    	<constructor-arg type="String"><value>scriptingService</value></constructor-arg>
+    	<constructor-arg type="String"><value>scriptingService</value></constructor-arg>
+    	
     </bean>	      
 
     <bean id="scriptingRegistrar" class="it.geosolutions.geobatch.action.ScriptingAliasRegistrar" lazy-init="false">

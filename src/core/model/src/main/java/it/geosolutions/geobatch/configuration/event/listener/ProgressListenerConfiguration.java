@@ -27,12 +27,12 @@ import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 
 public class ProgressListenerConfiguration extends BaseConfiguration implements Configuration {
 
-    public ProgressListenerConfiguration() {
-        super();
-    }
+//    public ProgressListenerConfiguration() {
+//        super();
+//    }
 
-    public ProgressListenerConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
+    public ProgressListenerConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
 }

@@ -32,6 +32,8 @@ import java.nio.channels.FileChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
+
 public class Path {
     private final static Logger LOGGER = Logger.getLogger(Path.class.toString());
 
@@ -340,4 +342,37 @@ public class Path {
 
     }
 
+    /**
+     * 
+     * @param source
+     * @param dest
+     * @param seconds to wait (maximum) for nfs propagate. If -1 no check is performed.
+     * @return
+     */
+    public static File copyFileOnNFS(File source, File dest, final int seconds){
+        try {
+            // copy the file
+            FileUtils.copyFile(source, dest);
+            if (seconds>0){
+                if (!FileUtils.waitFor(dest, seconds)){
+                    dest=null;
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.severe("ProParser.copyTif() : failed to propagate tif to->"+dest.getAbsolutePath());
+                } else if (LOGGER.isLoggable(Level.INFO)){
+                    LOGGER.info("ProParser.copyTif() : file: "+source.getAbsoluteFile()
+                            +" succesfully copied and propagated over nfs to: "+dest.getAbsolutePath());
+                }
+            }
+            else if (LOGGER.isLoggable(Level.INFO)){
+                LOGGER.info("ProParser.copyTif() : source file: "+source.getAbsoluteFile()
+                        +" succesfully copied to: "+dest.getAbsolutePath());
+            }
+        } catch (Exception e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("ProParser.copyTif() : failed to copy tif to->"+dest.getAbsolutePath()+
+                        "message is: "+e.getLocalizedMessage());
+            dest = null;
+        }
+        return dest;
+    }
 }

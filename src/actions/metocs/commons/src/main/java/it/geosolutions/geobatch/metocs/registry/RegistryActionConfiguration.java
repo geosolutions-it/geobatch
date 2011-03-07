@@ -34,8 +34,8 @@ import java.util.List;
  */
 public class RegistryActionConfiguration extends ActionConfiguration implements Configuration {
 
-    protected RegistryActionConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
+    protected RegistryActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     private String workingDirectory;
@@ -76,9 +76,6 @@ public class RegistryActionConfiguration extends ActionConfiguration implements 
 
     private String metocHarvesterXMLTemplatePath;
 
-    public RegistryActionConfiguration() {
-        super();
-    }
 
     /**
      * @return the workingDirectory
@@ -270,7 +267,7 @@ public class RegistryActionConfiguration extends ActionConfiguration implements 
     @Override
     public RegistryActionConfiguration clone() {
         final RegistryActionConfiguration configuration = new RegistryActionConfiguration(super
-                .getId(), super.getName(), super.getDescription(), super.isDirty());
+                .getId(), super.getName(), super.getDescription());
         configuration.setCrs(crs);
         configuration.setDataTransferMethod(dataTransferMethod);
         configuration.setDatatype(datatype);

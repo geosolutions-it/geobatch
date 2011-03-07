@@ -5,15 +5,9 @@
 
 	<!-- Environment Initialization -->
 	<bean id="TaskExecutorService" class="it.geosolutions.geobatch.task.TaskExecutorService">
-		<property  name="id">
-    		<value>TaskExecutorService</value>
-    	</property>
-    	<property name="description">
-    		<value>TaskExecutorService</value>
-    	</property>
-    	<property name="name">
-    		<value>TaskExecutorService</value>
-    	</property>
+		<constructor-arg type="String"><value>TaskExecutorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>TaskExecutorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>TaskExecutorService</value></constructor-arg>
     </bean>	     
 
     <bean id="TaskExecutorRegistrar" class="it.geosolutions.geobatch.task.TaskExecutorAliasRegistrar" lazy-init="false">

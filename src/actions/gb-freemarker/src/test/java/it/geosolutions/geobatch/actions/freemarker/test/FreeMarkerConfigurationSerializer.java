@@ -13,12 +13,9 @@ public class FreeMarkerConfigurationSerializer {
         XStream stream = new XStream();
         stream.processAnnotations(FreeMarkerConfiguration.class);
         
-        FreeMarkerConfiguration fmc=new FreeMarkerConfiguration();
-        fmc.setDescription("description");
+        FreeMarkerConfiguration fmc=new FreeMarkerConfiguration("ID","NAME","DESC");
         fmc.setDirty(false);
         fmc.setFailIgnored(false);
-        fmc.setId("id");
-        fmc.setName("name");
         fmc.setServiceID("serviceID");
         fmc.setWorkingDirectory("workingDirectory");
         fmc.setInput("TemplIn.xml");

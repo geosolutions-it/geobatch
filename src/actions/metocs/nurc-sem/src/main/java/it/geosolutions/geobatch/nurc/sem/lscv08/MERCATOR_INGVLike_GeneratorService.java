@@ -39,6 +39,10 @@ public class MERCATOR_INGVLike_GeneratorService extends
     private final static Logger LOGGER = Logger.getLogger(MERCATOR_INGVLike_GeneratorService.class
             .toString());
 
+    public MERCATOR_INGVLike_GeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+    
     /**
      * Action creator
      * 

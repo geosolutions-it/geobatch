@@ -121,12 +121,12 @@ public class TaskExecutorConfiguration extends ActionConfiguration implements Co
 
     private String xsl;
 
-    public TaskExecutorConfiguration() {
-        super();
-    }
+//    public TaskExecutorConfiguration() {
+//        super();
+//    }
 
-    protected TaskExecutorConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
+    protected TaskExecutorConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     public TaskExecutorConfiguration clone() { // throws

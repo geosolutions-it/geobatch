@@ -39,6 +39,10 @@ public class NetCDFCFGeodetic2GeoTIFFsGeneratorService extends
     private final static Logger LOGGER = Logger
             .getLogger(NetCDFCFGeodetic2GeoTIFFsGeneratorService.class.toString());
 
+    public NetCDFCFGeodetic2GeoTIFFsGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     /**
      * Action creator
      * 

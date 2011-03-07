@@ -65,15 +65,12 @@ public class FreeMarkerActionTest {
      */
     public static void main(String[] args) throws ActionException {
         
-        FreeMarkerConfiguration fmc=new FreeMarkerConfiguration();
+        FreeMarkerConfiguration fmc=new FreeMarkerConfiguration("ID","NAME","DESC");
         // SIMULATE THE XML FILE CONFIGURATION OF THE ACTION
-        fmc.setDescription("description");
         fmc.setDirty(false);
         fmc.setFailIgnored(false);
-        fmc.setId("id");
-        fmc.setName("name");
         fmc.setServiceID("serviceID");
-        fmc.setWorkingDirectory("/home/carlo/work/data/freemarker/");
+        fmc.setWorkingDirectory("data/freemarker/");
         fmc.setInput("test.xml");
         fmc.setOutput("test_out.xml");
         Map<String,Object> m=new HashMap<String, Object>();

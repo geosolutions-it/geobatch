@@ -120,6 +120,8 @@ public class FileBasedEventConsumer extends
     public FileBasedEventConsumer(FileBasedEventConsumerConfiguration configuration)
             throws InterruptedException, IOException {
 
+        super(configuration.getId(), configuration.getName(), configuration.getDescription());
+
         final File catalogFile = new File(
                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
 
@@ -171,15 +173,15 @@ public class FileBasedEventConsumer extends
      * 
      * @NOTE: CHECKME: is it really needed? will it not break flows that need scattered files?
      */
-    private boolean checkSamePath(String fullpath) {
-        for (FileSystemEvent event : eventsQueue) {
-            String existingFP = FilenameUtils.getFullPath(event.getSource().getAbsolutePath());
-            if (!fullpath.equals(existingFP)) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    private boolean checkSamePath(String fullpath) {
+//        for (FileSystemEvent event : eventsQueue) {
+//            String existingFP = FilenameUtils.getFullPath(event.getSource().getAbsolutePath());
+//            if (!fullpath.equals(existingFP)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     // ----------------------------------------------------------------------------
     /**
@@ -274,8 +276,7 @@ public class FileBasedEventConsumer extends
             final ProgressListenerService progressListenerService = CatalogHolder.getCatalog()
                     .getResource(serviceID, ProgressListenerService.class);
             if (progressListenerService != null) {
-                ProgressListener progressListener = progressListenerService
-                        .createProgressListener(plConfig);
+                ProgressListener progressListener = progressListenerService.createProgressListener(plConfig,this);
                 getListenerForwarder().addListener(progressListener);
             } else {
                 throw new IllegalArgumentException("Could not find '" + serviceID
@@ -304,8 +305,8 @@ public class FileBasedEventConsumer extends
         final List<Action<FileSystemEvent>> loadedActions = new ArrayList<Action<FileSystemEvent>>();
         for (ActionConfiguration actionConfig : configuration.getActions()) {
             final String actionServiceID = actionConfig.getServiceID();
-            final ActionService<FileSystemEvent, ActionConfiguration> actionService = CatalogHolder
-                    .getCatalog().getResource(actionServiceID, ActionService.class);
+            final ActionService<FileSystemEvent, ActionConfiguration> actionService = 
+                    CatalogHolder.getCatalog().getResource(actionServiceID, ActionService.class);
             if (actionService != null) {
                 Action<FileSystemEvent> action = actionService.createAction(actionConfig);
                 if (action == null) {
@@ -321,8 +322,7 @@ public class FileBasedEventConsumer extends
                             .getCatalog().getResource(listenerServiceID,
                                     ProgressListenerService.class);
                     if (progressListenerService != null) {
-                        ProgressListener progressListener = progressListenerService
-                                .createProgressListener(plConfig);
+                        ProgressListener progressListener = progressListenerService.createProgressListener(plConfig,this);
                         action.addListener(progressListener);
                     } else {
                         throw new IllegalArgumentException("Could not find '" + listenerServiceID
@@ -482,11 +482,11 @@ public class FileBasedEventConsumer extends
             // // Finally, run the Actions on the files
             getListenerForwarder().progressing(50, "Running actions");
 
-            try{ 
+            try {
                 this.applyActions(fileEventList);
                 this.setStatus(EventConsumerStatus.COMPLETED);
                 jobResultSuccessful = true;
-            } catch (ActionException ae){
+            } catch (ActionException ae) {
                 this.setStatus(EventConsumerStatus.FAILED);
                 throw ae;
             }

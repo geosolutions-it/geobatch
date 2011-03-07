@@ -37,6 +37,10 @@ import java.util.logging.Logger;
 public class SplittingService extends BaseService implements
         ActionService<FileSystemEvent, SplittingConfiguration> {
 
+    public SplittingService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(SplittingService.class.toString());
 
     public SplittingAction createAction(SplittingConfiguration configuration) {

@@ -25,18 +25,17 @@ package it.geosolutions.geobatch.catalog.impl;
 import it.geosolutions.geobatch.catalog.Resource;
 
 public class BaseResource extends BaseIdentifiable implements Resource {
-
-    public BaseResource() {
-        super();
-    }
-
+    /**
+     * Constructor forcing initialization of: id ,name and description of this resource 
+     * @param id
+     * @param name
+     * @param description
+     */
     public BaseResource(String id, String name, String description) {
         super(id, name, description);
     }
 
     public void dispose() {
-        // TODO Auto-generated method stub
-
     }
 
 }

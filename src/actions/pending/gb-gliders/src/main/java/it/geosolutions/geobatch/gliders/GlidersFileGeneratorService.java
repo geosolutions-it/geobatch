@@ -39,6 +39,10 @@ import java.util.logging.Logger;
 public class GlidersFileGeneratorService extends
         GlidersConfiguratorService<FileSystemEvent, GlidersActionConfiguration> {
 	
+    public GlidersFileGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(GlidersFileGeneratorService.class
             .toString());
 

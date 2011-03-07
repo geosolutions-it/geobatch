@@ -37,29 +37,31 @@ import java.util.logging.Logger;
  * 
  */
 public class LammaContourBuilderService extends BaseService implements
-		ActionService<FileSystemEvent, LammaContourBuilderConfiguration> {
+        ActionService<FileSystemEvent, LammaContourBuilderConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(LammaContourBuilderService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(LammaContourBuilderService.class
+            .toString());
 
-	/**
+    public LammaContourBuilderService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
+    /**
      * 
      */
-	public LammaContourBuilderActionDB createAction(
-			LammaContourBuilderConfiguration configuration) {
-		try {
-			return new LammaContourBuilderActionDB(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    public LammaContourBuilderActionDB createAction(LammaContourBuilderConfiguration configuration) {
+        try {
+            return new LammaContourBuilderActionDB(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	public boolean canCreateAction(
-			LammaContourBuilderConfiguration configuration) {
-		// final boolean superRetVal = super.canCreateAction(configuration);
-		return true;
-	}
+    public boolean canCreateAction(LammaContourBuilderConfiguration configuration) {
+        // final boolean superRetVal = super.canCreateAction(configuration);
+        return true;
+    }
 
 }

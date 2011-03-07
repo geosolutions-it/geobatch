@@ -26,14 +26,10 @@ import it.geosolutions.geobatch.egeos.deployers.actions.EGEOSBaseDeployerConfigu
 
 public class EGEOSRegistryDeployerConfiguration extends EGEOSBaseDeployerConfiguration {
 
-    public EGEOSRegistryDeployerConfiguration(String id, String name, String description,
-            boolean dirty) {
-        super(id, name, description, dirty);
+    public EGEOSRegistryDeployerConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
-    public EGEOSRegistryDeployerConfiguration() {
-        super();
-    }
 
     @Override
     public EGEOSRegistryDeployerConfiguration clone() {

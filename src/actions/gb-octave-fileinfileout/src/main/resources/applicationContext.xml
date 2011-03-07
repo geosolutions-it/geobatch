@@ -5,20 +5,13 @@
 
 		 
 	<!-- Environment Initialization -->
-	
 		
-		<!-- OctaveFreeMarkerGeneratorService -->
-		<bean id="OctaveFreeMarkerGeneratorService" class="it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMarkerGeneratorService">
-			<property  name="id">
-	    		<value>OctaveFreeMarkerGeneratorService</value>
-	    	</property>
-	    	<property name="description">
-	    		<value>OctaveFreeMarkerGeneratorService</value>
-	    	</property>
-	    	<property name="name">
-	    		<value>OctaveFreeMarkerGeneratorService</value>
-	    	</property>	
-		</bean>
+	<!-- OctaveFreeMarkerGeneratorService -->
+	<bean id="OctaveFreeMarkerGeneratorService" class="it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMarkerGeneratorService">
+		<constructor-arg type="String"><value>OctaveFreeMarkerGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>OctaveFreeMarkerGeneratorService</value></constructor-arg>	
+		<constructor-arg type="String"><value>OctaveFreeMarkerGeneratorService</value></constructor-arg>	
+	</bean>
 		
 	<bean id="OctaveFreeMarkerAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMarkerAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />

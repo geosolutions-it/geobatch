@@ -14,13 +14,8 @@ public abstract class LammaBaseConfiguration extends ActionConfiguration
 
 	private String lammaServiceURL;
 
-	public LammaBaseConfiguration() {
-		super();
-	}
-
-	public LammaBaseConfiguration(String id, String name, String description,
-			boolean dirty) {
-		super(id, name, description, dirty);
+	public LammaBaseConfiguration(String id, String name, String description) {
+		super(id, name, description);
 	}
 
 	/**

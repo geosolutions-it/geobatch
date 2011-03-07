@@ -40,14 +40,13 @@ import java.util.logging.Logger;
 public class GeoTiffRetilerService extends BaseService implements
         ActionService<FileSystemEvent, GeoTiffRetilerConfiguration> {
 
-    private GeoTiffRetilerService() {
-        super(true);
+    public GeoTiffRetilerService(String id, String name, String description) {
+        super(id, name, description);
     }
 
     private final static Logger LOGGER = Logger.getLogger(GeoTiffRetiler.class.toString());
 
     public boolean canCreateAction(GeoTiffRetilerConfiguration configuration) {
-        // XXX
         return true;
     }
 

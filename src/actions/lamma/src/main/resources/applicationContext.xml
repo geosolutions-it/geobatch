@@ -5,51 +5,27 @@
 
 	<!-- Environment Initialization -->
 	<bean id="LammaGribMetadataExtractorService" class="it.geosolutions.geobatch.lamma.extract.LammaGribMetadataExtractorService">
-		<property  name="id">
-    		<value>LammaGribMetadataExtractorService</value>
-    	</property>
-    	<property name="description">
-    		<value>LammaGribMetadataExtractorService</value>
-    	</property>
-    	<property name="name">
-    		<value>LammaGribMetadataExtractorService</value>
-    	</property>
+		<constructor-arg type="String"><value>LammaGribMetadataExtractorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>LammaGribMetadataExtractorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>LammaGribMetadataExtractorService</value></constructor-arg>
     </bean>
 
 	<bean id="LammaGribBuilderService" class="it.geosolutions.geobatch.lamma.build.LammaGribBuilderService">
-		<property  name="id">
-    		<value>LammaGribBuilderService</value>
-    	</property>
-    	<property name="description">
-    		<value>LammaGribBuilderService</value>
-    	</property>
-    	<property name="name">
-    		<value>LammaGribBuilderService</value>
-    	</property>
+		<constructor-arg type="String"><value>LammaGribBuilderService</value></constructor-arg>
+    	<constructor-arg type="String"><value>LammaGribBuilderService</value></constructor-arg>
+    	<constructor-arg type="String"><value>LammaGribBuilderService</value></constructor-arg>
     </bean>
 
 	<bean id="LammaMosaicDataService" class="it.geosolutions.geobatch.lamma.configure.LammaMosaicDataService">
-		<property  name="id">
-    		<value>LammaMosaicDataService</value>
-    	</property>
-    	<property name="description">
-    		<value>LammaMosaicDataService</value>
-    	</property>
-    	<property name="name">
-    		<value>LammaMosaicDataService</value>
-    	</property>
+		<constructor-arg type="String"><value>LammaMosaicDataService</value></constructor-arg>
+    	<constructor-arg type="String"><value>LammaMosaicDataService</value></constructor-arg>
+    	<constructor-arg type="String"><value>LammaMosaicDataService</value></constructor-arg>
     </bean>
     
     <bean id="LammaContourBuilderService" class="it.geosolutions.geobatch.lamma.build.LammaContourBuilderService">
-		<property  name="id">
-    		<value>LammaContourBuilderService</value>
-    	</property>
-    	<property name="description">
-    		<value>LammaContourBuilderService</value>
-    	</property>
-    	<property name="name">
-    		<value>LammaContourBuilderService</value>
-    	</property>
+		<constructor-arg type="String"><value>LammaContourBuilderService</value></constructor-arg>
+    	<constructor-arg type="String"><value>LammaContourBuilderService</value></constructor-arg>
+    	<constructor-arg type="String"><value>LammaContourBuilderService</value></constructor-arg>
     </bean>
     
 	<!-- Aliases Registrars -->

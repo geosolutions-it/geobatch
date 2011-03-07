@@ -30,19 +30,16 @@ import java.util.List;
 
 public class SplittingConfiguration extends ActionConfiguration implements Configuration {
 
-    public SplittingConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
-    }
-
     /**
      * Script params are stored as String serviceIDs, since it must be really dynamic and we don't
      * want to configure the Conf marshaller (e.g. XStream) with its details.
      */
     private List<String> serviceIDs = null;
-
-    public SplittingConfiguration() {
-        super();
+    
+    public SplittingConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
+
 
     public List<String> getServiceIDs() {
         return serviceIDs;

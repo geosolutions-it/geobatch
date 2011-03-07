@@ -41,6 +41,10 @@ import java.util.logging.Logger;
 public class CTDFileGeneratorService extends
         CTDConfiguratorService<FileSystemEvent, CTDActionConfiguration> {
 	
+    public CTDFileGeneratorService(String id, String name, String description, boolean available) {
+        super(id, name, description, available);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(CTDFileGeneratorService.class
             .toString());
 

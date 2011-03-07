@@ -23,10 +23,12 @@
 package it.geosolutions.geobatch.configuration.event.listener;
 
 import it.geosolutions.geobatch.catalog.Service;
+import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 
-public interface ProgressListenerService<PLC extends ProgressListenerConfiguration> extends Service {
-    public <T extends ProgressListener> T createProgressListener(PLC configuration);
+public interface ProgressListenerService<T extends ProgressListener, PLC extends ProgressListenerConfiguration> extends Service {
+    
+    public T createProgressListener(PLC configuration, BaseIdentifiable owner);   
 
     // public boolean canCreateProgressListener(PLC configuration);
 }

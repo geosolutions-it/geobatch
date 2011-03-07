@@ -39,10 +39,10 @@ public class ShapeFileConfiguration extends ActionConfiguration implements Confi
 
     private String namespace;
 
-    public ShapeFileConfiguration() {
-        super();
+    public ShapeFileConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
-
+    
     /**
      * @param namespace
      *            the namespace to set

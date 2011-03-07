@@ -28,7 +28,6 @@ import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConf
 import java.util.EventObject;
 
 /**
- * Comments here ...
  * 
  * @author Ivano Picco
  * 
@@ -36,5 +35,9 @@ import java.util.EventObject;
  */
 public abstract class BaseEventGeneratorService<EO extends EventObject, EGC extends EventGeneratorConfiguration>
         extends BaseService implements EventGeneratorService<EO, EGC> {
+
+    public BaseEventGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
 
 }

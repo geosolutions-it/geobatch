@@ -26,12 +26,8 @@ import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration;
 
 public class EGEOSBaseDeployerConfiguration extends ScriptingConfiguration {
 
-    public EGEOSBaseDeployerConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
-    }
-
-    public EGEOSBaseDeployerConfiguration() {
-        super();
+    public EGEOSBaseDeployerConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     @Override

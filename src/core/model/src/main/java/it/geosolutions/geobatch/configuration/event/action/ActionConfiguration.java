@@ -78,12 +78,16 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
         this.workingDirectory = workingDirectory;
     }
 
-    public ActionConfiguration() {
-        super();
-    }
+//    public ActionConfiguration() {
+//        super();
+//    }
 
-    public ActionConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
+//    public ActionConfiguration(String id, String name, String description, boolean dirty) {
+//        super(id, name, description, dirty);
+//    }
+    
+    public ActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     /**

@@ -181,7 +181,8 @@ public class ProParser {
         destName.append(destDir).append(File.separator)
                 .append(FilenameUtils.getBaseName(obj.imageFileName))// or -> obj.productID
                 .append("_").append(outDate).append(".tif");
-
+        
+//////////NOTICE: THIS FUNCTION IS IN GB-TOOLS->Path class/////////////////////////
         File dest = new File(destName.toString());
 
         try {
@@ -208,6 +209,7 @@ public class ProParser {
             dest = null;
         }
         return dest;
+        /////////////////////////////////////
     }
 
     // TODO JUnit tests

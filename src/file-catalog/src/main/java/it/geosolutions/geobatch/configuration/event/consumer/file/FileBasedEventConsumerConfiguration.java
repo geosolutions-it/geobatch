@@ -98,9 +98,9 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     /**
      * Default Constructor.
      */
-    public FileBasedEventConsumerConfiguration() {
-        super();
-    }
+//    public FileBasedEventConsumerConfiguration() {
+//        super();
+//    }
 
     /**
      * Getter for the consumer actions.

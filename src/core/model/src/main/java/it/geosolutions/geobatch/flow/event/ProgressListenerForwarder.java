@@ -21,6 +21,8 @@
  */
 package it.geosolutions.geobatch.flow.event;
 
+import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
+import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 import it.geosolutions.geobatch.misc.ListenerRegistry;
 
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ import org.geotools.resources.UnmodifiableArrayList;
  */
 public class ProgressListenerForwarder extends ProgressListener implements
         ListenerRegistry<IProgressListener> {
+
     protected final static Logger LOGGER = Logger.getLogger(ProgressListenerForwarder.class
             .toString());
 
@@ -47,6 +50,10 @@ public class ProgressListenerForwarder extends ProgressListener implements
      * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.flow.event.IProgressListener"
      */
     protected List<IProgressListener> listeners = new ArrayList<IProgressListener>();
+    
+    public ProgressListenerForwarder(BaseIdentifiable owner) {
+        super(owner);
+    }
 
     /**
      * A shortcut to set some info and call progressing();
@@ -107,6 +114,9 @@ public class ProgressListenerForwarder extends ProgressListener implements
         }
     }
 
+    /**
+     * Call progressing on all the handled 
+     */
     public void progressing() {
         for (IProgressListener l : listeners) {
             try {

@@ -40,6 +40,10 @@ public class RegistryHarvestingGeneratorService extends
     private final static Logger LOGGER = Logger.getLogger(RegistryHarvestingGeneratorService.class
             .toString());
 
+    public RegistryHarvestingGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     /**
      * Action creator
      * 

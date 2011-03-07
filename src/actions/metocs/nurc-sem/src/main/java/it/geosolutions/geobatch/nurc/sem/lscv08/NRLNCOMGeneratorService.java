@@ -38,6 +38,10 @@ public class NRLNCOMGeneratorService extends
 
     private final static Logger LOGGER = Logger.getLogger(NRLNCOMGeneratorService.class.toString());
 
+    public NRLNCOMGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+    
     /**
      * Action creator
      * 

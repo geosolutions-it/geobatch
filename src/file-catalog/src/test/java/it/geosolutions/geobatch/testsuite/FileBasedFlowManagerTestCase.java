@@ -95,31 +95,31 @@ public class FileBasedFlowManagerTestCase {
         // Create a fictitious EventGeneratorConfiguration configuration
         //
         // //
-        final FileBasedEventGeneratorConfiguration eventGeneratorConfiguration = new FileBasedEventGeneratorConfiguration();
-        eventGeneratorConfiguration.setId("id");
-        eventGeneratorConfiguration.setName("name");
-        eventGeneratorConfiguration.setDescription("description");
-        eventGeneratorConfiguration.setOsType(OsType.OS_UNDEFINED);
-        eventGeneratorConfiguration.setWorkingDirectory(TestData.file(this, ".").getAbsolutePath());
-
-        // //
-        //
-        // Create a fictitious EventGeneratorConfiguration configuration
-        //
-        // //
-        final FileBasedEventConsumerConfiguration eventConsumerConfiguration = new FileBasedEventConsumerConfiguration();
-        eventConsumerConfiguration.setId("fsEventConsumerConfiguration");
-        eventConsumerConfiguration.setName("fsEventConsumerConfiguration");
-        eventConsumerConfiguration.setDescription("fsEventConsumerConfiguration");
-        eventConsumerConfiguration.setWorkingDirectory(TestData.file(this, ".").getAbsolutePath());
-
-        final FileEventRule rule = new FileEventRule();
-        rule.setAcceptableNotifications(Arrays.asList(FileSystemEventType.FILE_ADDED));
-        rule.setActualOccurrencies(1);
-        rule.setId("tesRule");
-        rule.setOptional(false);
-        rule.setRegex(".*\\.txt");
-        eventConsumerConfiguration.setRules(Arrays.asList(rule));
+//        final FileBasedEventGeneratorConfiguration eventGeneratorConfiguration = new FileBasedEventGeneratorConfiguration();
+//        eventGeneratorConfiguration.setId("id");
+//        eventGeneratorConfiguration.setName("name");
+//        eventGeneratorConfiguration.setDescription("description");
+//        eventGeneratorConfiguration.setOsType(OsType.OS_UNDEFINED);
+//        eventGeneratorConfiguration.setWorkingDirectory(TestData.file(this, ".").getAbsolutePath());
+//
+//        // //
+//        //
+//        // Create a fictitious EventGeneratorConfiguration configuration
+//        //
+//        // //
+//        final FileBasedEventConsumerConfiguration eventConsumerConfiguration = new FileBasedEventConsumerConfiguration();
+//        eventConsumerConfiguration.setId("fsEventConsumerConfiguration");
+//        eventConsumerConfiguration.setName("fsEventConsumerConfiguration");
+//        eventConsumerConfiguration.setDescription("fsEventConsumerConfiguration");
+//        eventConsumerConfiguration.setWorkingDirectory(TestData.file(this, ".").getAbsolutePath());
+//
+//        final FileEventRule rule = new FileEventRule();
+//        rule.setAcceptableNotifications(Arrays.asList(FileSystemEventType.FILE_ADDED));
+//        rule.setActualOccurrencies(1);
+//        rule.setId("tesRule");
+//        rule.setOptional(false);
+//        rule.setRegex(".*\\.txt");
+//        eventConsumerConfiguration.setRules(Arrays.asList(rule));
         // eventConsumerConfiguration.setActions(Arrays.asList(new
         // BaseAction<FileSystemEvent>() {
         //
@@ -131,26 +131,26 @@ public class FileBasedFlowManagerTestCase {
         // }});
 
         // flow configuration
-        final FileBasedFlowConfiguration flowConfiguration = new FileBasedFlowConfiguration();
-        flowConfiguration.setId("id");
-        flowConfiguration.setName("name");
-        flowConfiguration.setDescription("description");
-        flowConfiguration.setWorkingDirectory(TestData.file(this, ".").getAbsolutePath());
-        flowConfiguration.setEventConsumerConfiguration(eventConsumerConfiguration);
-        flowConfiguration.setEventGeneratorConfiguration(eventGeneratorConfiguration);
+//        final FileBasedFlowConfiguration flowConfiguration = new FileBasedFlowConfiguration();
+//        flowConfiguration.setId("id");
+//        flowConfiguration.setName("name");
+//        flowConfiguration.setDescription("description");
+//        flowConfiguration.setWorkingDirectory(TestData.file(this, ".").getAbsolutePath());
+//        flowConfiguration.setEventConsumerConfiguration(eventConsumerConfiguration);
+//        flowConfiguration.setEventGeneratorConfiguration(eventGeneratorConfiguration);
 
         // //
         //
         // Check if we can create the needed EventGenerator and if so create it
         //
         // //
-        final boolean result = service.canCreateFlowManager(flowConfiguration);
-        Assert.assertTrue(result);
-
-        // create the event generator
-        final FileBasedFlowManager eg = service.createFlowManager(flowConfiguration);
-        Thread flowM = new Thread(eg);
-        flowM.start();
+//        final boolean result = service.canCreateFlowManager(flowConfiguration);
+//        Assert.assertTrue(result);
+//
+//        // create the event generator
+//        final FileBasedFlowManager eg = service.createFlowManager(flowConfiguration);
+//        Thread flowM = new Thread(eg);
+//        flowM.start();
 
         Thread.sleep(10000);
 

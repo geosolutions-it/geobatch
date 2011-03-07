@@ -38,6 +38,10 @@ import java.util.logging.Logger;
 public class EGEOSRegistryDeployerService extends BaseService implements
         ActionService<FileSystemEvent, EGEOSRegistryDeployerConfiguration> {
 
+    public EGEOSRegistryDeployerService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(EGEOSRegistryDeployerService.class
             .toString());
 

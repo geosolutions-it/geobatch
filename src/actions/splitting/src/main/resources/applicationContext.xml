@@ -5,9 +5,9 @@
         
 	<!-- Environment Initialization -->
 	<bean id="splittingService" class="it.geosolutions.geobatch.action.splitting.SplittingService">
-		<property  name="id" value="splittingService"/>
-    	<property name="description" value="splittingService"/>
-    	<property name="name" value="splittingService"/>
+		<constructor-arg type="String"><value>splittingService</value></constructor-arg>
+    	<constructor-arg type="String"><value>splittingService</value></constructor-arg>
+    	<constructor-arg type="String"><value>splittingService</value></constructor-arg>
     </bean>	      
 
     <bean id="splittingRegistrar" class="it.geosolutions.geobatch.action.SplittingAliasRegistrar" lazy-init="false">

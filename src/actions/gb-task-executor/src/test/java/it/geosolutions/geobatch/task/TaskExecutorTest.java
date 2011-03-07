@@ -38,12 +38,12 @@ public class TaskExecutorTest {
     @Test
     @Ignore
     public void testTaskExecution() throws Exception {
-        TaskExecutorConfiguration configuration = new TaskExecutorConfiguration();
+        TaskExecutorConfiguration configuration = new TaskExecutorConfiguration("ID","NAME","DESC");
         configuration.setExecutable("c:/Python26/python.exe");
-        configuration.setErrorFile("C:/errorlog.txt");
+        configuration.setErrorFile("errorlog.txt");
         configuration.setTimeOut(new Long(10000));
         final Map<String, String> variables = new HashMap<String, String>();
-        variables.put("GDAL_DATA", "C:\\Python26\\DLLs\\gdalwin32-1.6\\data");
+        variables.put("GDAL_DATA", "data");
         variables.put("PATH", "C:\\Python26");
         configuration.setVariables(variables);
         TaskExecutor executor = new TaskExecutor(configuration);

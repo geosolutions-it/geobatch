@@ -23,7 +23,9 @@ package it.geosolutions.geobatch.ftp.client.delete;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.ftp.client.FTPHelper;
+import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPBaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
@@ -40,8 +42,6 @@ import com.enterprisedt.net.ftp.FTPConnectMode;
 import com.enterprisedt.net.ftp.FTPFile;
 import com.enterprisedt.net.ftp.FTPTransferType;
 import com.enterprisedt.net.ftp.WriteMode;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
 
 /**
  * This class represent an extended FTP action to delete remote files or directory.

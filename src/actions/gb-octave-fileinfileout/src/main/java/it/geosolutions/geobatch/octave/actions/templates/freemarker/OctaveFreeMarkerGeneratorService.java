@@ -33,6 +33,10 @@ public class OctaveFreeMarkerGeneratorService
     extends BaseService 
     implements ActionService<FileSystemEvent, OctaveFreeMarkerConfiguration> {
 
+    public OctaveFreeMarkerGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     public boolean canCreateAction(final OctaveFreeMarkerConfiguration configuration)  {
         
         String base_dir=configuration.getWorkingDirectory();

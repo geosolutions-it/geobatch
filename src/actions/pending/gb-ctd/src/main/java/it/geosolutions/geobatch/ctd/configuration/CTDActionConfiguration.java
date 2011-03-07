@@ -36,8 +36,8 @@ public class CTDActionConfiguration
         implements Configuration {
 
     protected CTDActionConfiguration(String id, String name,
-			String description, boolean dirty) {
-		super(id, name, description, dirty);
+			String description) {
+		super(id, name, description);
 	}
     
     private String workingDirectory;
@@ -57,9 +57,9 @@ public class CTDActionConfiguration
     private String configId;
     
 
-    public CTDActionConfiguration() {
-        super();
-    }
+//    public CTDActionConfiguration() {
+//        super();
+//    }
 
     /**
      * @return the workingDirectory
@@ -135,7 +135,7 @@ public class CTDActionConfiguration
     @Override
     public ActionConfiguration clone() { // throws CloneNotSupportedException {
 		final CTDActionConfiguration configuration =
-			new CTDActionConfiguration(super.getId(),super.getName(),super.getDescription(),super.isDirty());
+			new CTDActionConfiguration(super.getId(),super.getName(),super.getDescription());
 
 		configuration.setDbPWD(dbPWD);
 		configuration.setDbUID(dbUID);

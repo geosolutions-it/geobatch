@@ -33,42 +33,35 @@ import org.apache.commons.beanutils.BeanUtils;
  * 
  * @author Alessio Fabiani, GeoSolutions
  */
-public class LammaGribMetadataExtractorConfiguration extends
-		LammaBaseConfiguration {
+public class LammaGribMetadataExtractorConfiguration extends LammaBaseConfiguration {
 
-	public LammaGribMetadataExtractorConfiguration() {
-		super();
-	}
+    protected LammaGribMetadataExtractorConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
 
-	protected LammaGribMetadataExtractorConfiguration(String id, String name,
-			String description, boolean dirty) {
-		super(id, name, description, dirty);
-	}
-
-	@Override
-	public LammaGribMetadataExtractorConfiguration clone() { // throws
-																// CloneNotSupportedException
-																// {
-		try {
-			return (LammaGribMetadataExtractorConfiguration) BeanUtils
-					.cloneBean(this);
-		} catch (IllegalAccessException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (InstantiationException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (InvocationTargetException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (NoSuchMethodException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		}
-	}
+    @Override
+    public LammaGribMetadataExtractorConfiguration clone() { // throws
+                                                             // CloneNotSupportedException
+                                                             // {
+        try {
+            return (LammaGribMetadataExtractorConfiguration) BeanUtils.cloneBean(this);
+        } catch (IllegalAccessException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (InstantiationException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (InvocationTargetException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (NoSuchMethodException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        }
+    }
 
 }

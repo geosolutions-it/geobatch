@@ -41,9 +41,19 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
      */
     private String description = "No description set.";
 
-    public BaseIdentifiable() {
+    /**
+     * A constructor which do not initialize the resource id
+     * @deprecated use the complete constructor
+     */
+    protected BaseIdentifiable() {
     }
 
+    /**
+     * Constructor forcing initialization of: id ,name and description of this resource 
+     * @param id
+     * @param name
+     * @param description
+     */
     public BaseIdentifiable(String id, String name, String description) {
         super();
         this.id = id;

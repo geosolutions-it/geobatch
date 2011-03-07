@@ -52,9 +52,9 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
     /**
      * Default Constructor.
      */
-    public FileBasedFlowConfiguration() {
-        super();
-    }
+//    public FileBasedFlowConfiguration() {
+//        super();
+//    }
 
     /**
      * 

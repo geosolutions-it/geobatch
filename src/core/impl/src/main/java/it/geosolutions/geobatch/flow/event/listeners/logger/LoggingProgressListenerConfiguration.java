@@ -11,6 +11,10 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
  */
 public class LoggingProgressListenerConfiguration extends ProgressListenerConfiguration {
 
+    public LoggingProgressListenerConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     /**
      * @uml.property  name="loggerName"
      */

@@ -35,38 +35,33 @@ import org.apache.commons.beanutils.BeanUtils;
  */
 public class LammaGribBuilderConfiguration extends LammaBaseConfiguration {
 
-	public LammaGribBuilderConfiguration() {
-		super();
-	}
+    protected LammaGribBuilderConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
 
-	protected LammaGribBuilderConfiguration(String id, String name,
-			String description, boolean dirty) {
-		super(id, name, description, dirty);
-	}
-
-	@Override
-	public LammaGribBuilderConfiguration clone() { // throws
-													// CloneNotSupportedException
-													// {
-		try {
-			return (LammaGribBuilderConfiguration) BeanUtils.cloneBean(this);
-		} catch (IllegalAccessException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (InstantiationException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (InvocationTargetException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		} catch (NoSuchMethodException e) {
-			final RuntimeException cns = new RuntimeException();
-			cns.initCause(e);
-			throw cns;
-		}
-	}
+    @Override
+    public LammaGribBuilderConfiguration clone() { // throws
+                                                   // CloneNotSupportedException
+                                                   // {
+        try {
+            return (LammaGribBuilderConfiguration) BeanUtils.cloneBean(this);
+        } catch (IllegalAccessException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (InstantiationException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (InvocationTargetException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        } catch (NoSuchMethodException e) {
+            final RuntimeException cns = new RuntimeException();
+            cns.initCause(e);
+            throw cns;
+        }
+    }
 
 }

@@ -13,29 +13,17 @@
 	<!-- Environment Initialization -->
 	<bean id="aisAnomaliesGeoServerGeneratorService"
 		class="it.geosolutions.geobatch.ais.anomalies.AISAnomaliesGeoServerGeneratorService">
-		<property name="id">
-			<value>aisAnomaliesGeoServerGeneratorService</value>
-		</property>
-		<property name="description">
-			<value>aisAnomaliesGeoServerGeneratorService</value>
-		</property>
-		<property name="name">
-			<value>aisAnomaliesGeoServerGeneratorService</value>
-		</property>
+		<constructor-arg type="String"><value>aisAnomaliesGeoServerGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>aisAnomaliesGeoServerGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>aisAnomaliesGeoServerGeneratorService</value></constructor-arg>
 		<property name="aisAnomaliesDAO" ref="aisAnomaliesDAO"/>
 	</bean>
 	
 	<bean id="aisCoverageGeoServerGeneratorService"
 		class="it.geosolutions.geobatch.ais.raster.AISCoverageGeoServerGeneratorService">
-		<property name="id">
-			<value>aisCoverageGeoServerGeneratorService</value>
-		</property>
-		<property name="description">
-			<value>aisCoverageGeoServerGeneratorService</value>
-		</property>
-		<property name="name">
-			<value>aisCoverageGeoServerGeneratorService</value>
-		</property>
+		<constructor-arg type="String"><value>aisCoverageGeoServerGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>aisCoverageGeoServerGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>aisCoverageGeoServerGeneratorService</value></constructor-arg>
 	</bean>
 	
 

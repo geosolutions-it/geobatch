@@ -13,6 +13,10 @@ public class SHOMConfiguration extends Configuration {
         return performBackup;
     }
     
+    public SHOMConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
+    
     public final String getType(){
         if (type!=null)
             return type;

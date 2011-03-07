@@ -19,21 +19,30 @@
     <!-- Stuff for geobatch service loading ================================ -->
 
     <bean id="loggingListenerService" class="it.geosolutions.geobatch.flow.event.listeners.logger.LoggingProgressListenerService">
-        <property name="id" value="loggingListenerService"/>
-        <property name="name" value="Logging ProgressListener Service"/>
-        <property name="description"><value> Istantiates ProgressListeners that will dump events on the system logger.</value></property>
+    <constructor-arg type="String"><value>loggingListenerService</value></constructor-arg>
+    <constructor-arg type="String"><value>Logging ProgressListener Service</value></constructor-arg>
+    <constructor-arg type="String"><value>Instantiates ProgressListeners that will dump events on the system logger</value></constructor-arg>
+<!--        <property name="id" value="loggingListenerService"/>-->
+<!--        <property name="name" value="Logging ProgressListener Service"/>-->
+<!--        <property name="description"><value> Instantiates ProgressListeners that will dump events on the system logger.</value></property>-->
     </bean>
 
     <bean id="cumulatingListenerService" class="it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListenerService">
-        <property name="id" value="cumulatingListenerService"/>
-        <property name="name" value="Cumulator ProgressListener Service"/>
-        <property name="description"><value> Istantiates ProgressListeners that will store all events received in an internal structure.</value></property>
+    <constructor-arg type="String"><value>cumulatingListenerService</value></constructor-arg>
+    <constructor-arg type="String"><value>Cumulator ProgressListener Service</value></constructor-arg>
+    <constructor-arg type="String"><value>Instantiates ProgressListeners that will store all events received in an internal structure</value></constructor-arg>
+<!--        <property name="id" value="cumulatingListenerService"/>-->
+<!--        <property name="name" value="Cumulator ProgressListener Service"/>-->
+<!--        <property name="description"><value> Instantiates ProgressListeners that will store all events received in an internal structure.</value></property>-->
     </bean>
 
     <bean id="statusListenerService" class="it.geosolutions.geobatch.flow.event.listeners.status.StatusProgressListenerService">
-        <property name="id" value="statusListenerService"/>
-        <property name="name" value="Status ProgressListener Service"/>
-        <property name="description"><value> Istantiates ProgressListeners that will hold the latest received events.</value></property>
+    <constructor-arg type="String"><value>statusListenerService</value></constructor-arg>
+    <constructor-arg type="String"><value>Status ProgressListener Service</value></constructor-arg>
+    <constructor-arg type="String"><value>Instantiates ProgressListeners that will hold the latest received events</value></constructor-arg>
+<!--        <property name="id" value="statusListenerService"/>-->
+<!--        <property name="name" value="Status ProgressListener Service"/>-->
+<!--        <property name="description"><value> Instantiates ProgressListeners that will hold the latest received events.</value></property>-->
     </bean>
 
 </beans>

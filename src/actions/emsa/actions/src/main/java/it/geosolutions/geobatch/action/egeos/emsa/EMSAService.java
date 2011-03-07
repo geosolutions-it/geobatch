@@ -42,6 +42,10 @@ import javax.script.ScriptEngineManager;
 public class EMSAService extends BaseService implements
         ActionService<FileSystemEvent, ScriptingConfiguration> {
 
+    public EMSAService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(EMSAService.class.toString());
 
     public ScriptingAction createAction(ScriptingConfiguration configuration) {

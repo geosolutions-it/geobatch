@@ -38,6 +38,10 @@ import java.util.logging.Logger;
 public class EGEOSGeoServerDeployerService extends BaseService implements
         ActionService<FileSystemEvent, EGEOSGeoServerDeployerConfiguration> {
 
+    public EGEOSGeoServerDeployerService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(EGEOSGeoServerDeployerService.class
             .toString());
 

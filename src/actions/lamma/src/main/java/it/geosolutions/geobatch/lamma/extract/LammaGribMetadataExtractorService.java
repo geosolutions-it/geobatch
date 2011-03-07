@@ -36,31 +36,33 @@ import java.util.logging.Logger;
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public class LammaGribMetadataExtractorService extends BaseService
-		implements
-		ActionService<FileSystemEvent, LammaGribMetadataExtractorConfiguration> {
+public class LammaGribMetadataExtractorService extends BaseService implements
+        ActionService<FileSystemEvent, LammaGribMetadataExtractorConfiguration> {
 
-	private final static Logger LOGGER = Logger
-			.getLogger(LammaGribMetadataExtractorService.class.toString());
+    private final static Logger LOGGER = Logger.getLogger(LammaGribMetadataExtractorService.class
+            .toString());
 
-	/**
+    public LammaGribMetadataExtractorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
+    /**
      * 
      */
-	public LammaGribMetadataExtractorAction createAction(
-			LammaGribMetadataExtractorConfiguration configuration) {
-		try {
-			return new LammaGribMetadataExtractorAction(configuration);
-		} catch (IOException e) {
-			if (LOGGER.isLoggable(Level.INFO))
-				LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
+    public LammaGribMetadataExtractorAction createAction(
+            LammaGribMetadataExtractorConfiguration configuration) {
+        try {
+            return new LammaGribMetadataExtractorAction(configuration);
+        } catch (IOException e) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
 
-	public boolean canCreateAction(
-			LammaGribMetadataExtractorConfiguration configuration) {
-		// final boolean superRetVal = super.canCreateAction(configuration);
-		return true;
-	}
+    public boolean canCreateAction(LammaGribMetadataExtractorConfiguration configuration) {
+        // final boolean superRetVal = super.canCreateAction(configuration);
+        return true;
+    }
 
 }

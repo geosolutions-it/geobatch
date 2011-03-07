@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<id>geotiff_flow0</id>
+	<id>geotiff</id>
 	<name>Prepare GeoTIFF and publish</name>
 	<description>Create overviews, retile the image and publish on GeoServer</description>
 
@@ -12,16 +12,16 @@
 		<watchDirectory>geotiff/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>id</id>
+		<id>geotiff_id</id>
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
-		<name>test</name>
+		<name>geotiff</name>
 	</EventGeneratorConfiguration>
 	
     <EventConsumerConfiguration>
 		<id>geotiff_retile_overview_publish</id>
-		<name>dummy</name>
-		<description>dummy</description>
+		<name>geotiffEventConsumer</name>
+		<description>geotiff EventConsumer</description>
 
 		<listenerId>GeoTIFFConsumerLogger0</listenerId>
         <listenerId>GeoTIFFCumulator0</listenerId>
@@ -32,10 +32,10 @@
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.tif.*</regex>
-			<id>r1</id>
+			<regex>.*\.*</regex>
+			<id>geotiff_r1</id>
 			<description>description</description>
-			<name>test</name>
+			<name>geotiff_rule_1</name>
 		</FileEventRule>
 
 		<GeoTiffRetilerConfiguration>

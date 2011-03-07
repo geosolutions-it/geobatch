@@ -31,8 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Comments here ...
- * 
  * @author
  * 
  * @version $ GeoTIFFFolderGeoServerConfiguratorService.java $ Revision: x.x $ 19/feb/07 16:16:13
@@ -42,6 +40,10 @@ public class GeoTIFFFolderGeoServerConfiguratorService extends
 
     private final static Logger LOGGER = Logger
             .getLogger(GeoTIFFFolderGeoServerConfiguratorService.class.toString());
+
+    public GeoTIFFFolderGeoServerConfiguratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
 
     public GeoTIFFFolderGeoServerConfigurator createAction(
             GeoServerActionConfiguration configuration) {

@@ -37,6 +37,10 @@ import java.util.logging.Logger;
 public class INGVGeneratorService extends BaseService implements
         ActionService<FileSystemEvent, MetocActionConfiguration> {
 
+    public INGVGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger.getLogger(INGVGeneratorService.class.toString());
 
     public boolean canCreateAction(MetocActionConfiguration configuration) {

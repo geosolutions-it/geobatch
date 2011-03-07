@@ -3,6 +3,7 @@
 
 package it.geosolutions.geobatch.flow.event.listeners.cumulator;
 
+import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,13 +19,7 @@ import java.util.TimeZone;
  * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class CumulatingProgressListener extends
-        ProgressListener<CumulatingProgressListenerConfiguration> {
-
-    /**
-     * @uml.property  name="source"
-     */
-    private Object source;
+public class CumulatingProgressListener extends ProgressListener {
 
     /**
      * @uml.property  name="messages"
@@ -38,16 +33,8 @@ public class CumulatingProgressListener extends
         DATEFORMAT.setTimeZone(TZ_UTC);
     }
 
-    public CumulatingProgressListener(CumulatingProgressListenerConfiguration configuration) {
-        super(configuration);
-    }
-
-    /**
-     * @param source
-     * @uml.property  name="source"
-     */
-    public void setSource(Object source) {
-        this.source = source;
+    public CumulatingProgressListener(CumulatingProgressListenerConfiguration configuration, BaseIdentifiable owner) {
+        super(configuration,owner);
     }
 
     /**
@@ -64,8 +51,8 @@ public class CumulatingProgressListener extends
         StringBuilder sb = new StringBuilder();
         sb.append(DATEFORMAT.format(now.getTime())).append(' ').append(msg).append(' ').append(
                 getProgress()).append("% --").append(getTask());
-        if (source != null) {
-            sb.append(" [").append(source.toString()).append(']');
+        if (getOwner() != null) {
+            sb.append(" [").append(getOwner().getName().toString()).append(']');
         }
         messages.add(sb.toString());
     }

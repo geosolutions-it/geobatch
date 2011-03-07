@@ -26,7 +26,6 @@ import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 
 import java.io.IOException;
-import java.util.EventObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,6 +38,10 @@ public class JGSFLoDeSSCOAMPSGeneratorService extends
 
     private final static Logger LOGGER = Logger.getLogger(JGSFLoDeSSCOAMPSGeneratorService.class
             .toString());
+    
+    public JGSFLoDeSSCOAMPSGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
 
     /**
      * Action creator

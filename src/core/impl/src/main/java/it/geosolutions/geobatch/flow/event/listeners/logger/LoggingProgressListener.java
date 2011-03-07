@@ -3,6 +3,7 @@
 
 package it.geosolutions.geobatch.flow.event.listeners.logger;
 
+import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 import java.util.logging.Logger;
 
@@ -10,56 +11,48 @@ import java.util.logging.Logger;
  * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class LoggingProgressListener extends ProgressListener<LoggingProgressListenerConfiguration> {
+public class LoggingProgressListener extends ProgressListener {
 
-    /**
-     * @uml.property  name="source"
-     */
-    private Object source;
 
-    public LoggingProgressListener(LoggingProgressListenerConfiguration configuration) {
-        super(configuration);
+    public LoggingProgressListener(LoggingProgressListenerConfiguration configuration, BaseIdentifiable owner) {
+        super(configuration,owner);
     }
-
-    /**
-     * @param source
-     * @uml.property  name="source"
-     */
-    public void setSource(Object source) {
-        this.source = source;
+    
+    public LoggingProgressListenerConfiguration getConfig(){
+        return (LoggingProgressListenerConfiguration) configuration;
     }
 
     private Logger getLogger() {
-        return Logger.getLogger(configuration.getLoggerName());
+        return Logger.getLogger(getConfig().getLoggerName());
     }
 
     public void started() {
-        getLogger().info("Started [" + source + "]");
+        getLogger().info("Started [" + getOwner().getName() + "]");
     }
 
     public void progressing() {
         getLogger()
-                .info("Progressing " + getProgress() + "% -- " + getTask() + " [" + source + "]");
+                .info("Progressing " + getProgress() + "% -- " + getTask() + " [" + getOwner().getName() + "]");
     }
 
     public void paused() {
-        getLogger().info("Paused " + getProgress() + "% -- " + getTask() + " [" + source + "]");
+        getLogger().info("Paused " + getProgress() + "% -- " + getTask() + " [" + getOwner().getName() + "]");
     }
 
     public void resumed() {
-        getLogger().info("Resumed " + getProgress() + "% -- " + getTask() + " [" + source + "]");
+        getLogger().info("Resumed " + getProgress() + "% -- " + getTask() + " [" + getOwner().getName() + "]");
     }
 
     public void completed() {
-        getLogger().info("Completed [" + source + "]");
+        getLogger().info("Completed [" + getOwner().getName() + "]");
     }
 
     public void failed(Throwable exception) {
-        getLogger().info("Failed " + getProgress() + "% -- " + getTask() + " [" + source + "]");
+        getLogger().info("Failed " + getProgress() + "% -- " + getTask() + " [" + getOwner().getName() + "]");
     }
 
     public void terminated() {
-        getLogger().info("Terminated " + getProgress() + "% -- " + getTask() + " [" + source + "]");
+        getLogger().info("Terminated " + getProgress() + "% -- " + getTask() + " [" + getOwner().getName() + "]");
     }
 
 }

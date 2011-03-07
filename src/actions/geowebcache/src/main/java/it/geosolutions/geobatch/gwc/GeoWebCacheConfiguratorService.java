@@ -31,12 +31,15 @@ import java.util.EventObject;
 public abstract class GeoWebCacheConfiguratorService<T extends EventObject, C extends ActionConfiguration>
         extends BaseService implements ActionService<T, C> {
 
-    public GeoWebCacheConfiguratorService() {
-        super(true);
+//    public GeoWebCacheConfiguratorService() {
+//        super(true);
+//    }
+
+    public GeoWebCacheConfiguratorService(String id, String name, String description) {
+        super(id, name, description);
     }
 
     public boolean canCreateAction(C configuration) {
-        // XXX ImPLEMENT ME
         return true;
     }
 

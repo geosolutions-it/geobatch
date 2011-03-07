@@ -35,17 +35,21 @@ public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog
     /**
      * Default Constructor.
      */
-    private FileBasedCatalogImpl() {
-        super();
-    }
+//    private FileBasedCatalogImpl() {
+//        super();
+//    }
 
     /**
      * 
      * @param baseDirectory
      */
-    private FileBasedCatalogImpl(String baseDirectory) {
-        super();
-        this.baseDirectory = baseDirectory;
+//    private FileBasedCatalogImpl(String baseDirectory) {
+//        super();
+//        this.baseDirectory = baseDirectory;
+//    }
+
+    public FileBasedCatalogImpl(String id, String name, String description) {
+        super(id, name, description);
     }
 
     /**

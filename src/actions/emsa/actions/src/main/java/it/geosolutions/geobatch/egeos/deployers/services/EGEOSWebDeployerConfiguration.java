@@ -26,13 +26,10 @@ import it.geosolutions.geobatch.egeos.deployers.actions.EGEOSBaseDeployerConfigu
 
 public class EGEOSWebDeployerConfiguration extends EGEOSBaseDeployerConfiguration {
 
-    public EGEOSWebDeployerConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
+    public EGEOSWebDeployerConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
-    public EGEOSWebDeployerConfiguration() {
-        super();
-    }
 
     @Override
     public EGEOSWebDeployerConfiguration clone() {

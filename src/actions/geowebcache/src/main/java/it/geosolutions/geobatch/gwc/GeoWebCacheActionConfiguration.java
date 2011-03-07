@@ -27,9 +27,8 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 public class GeoWebCacheActionConfiguration extends ActionConfiguration implements Configuration {
 
-    protected GeoWebCacheActionConfiguration(String id, String name, String description,
-            boolean dirty) {
-        super(id, name, description, dirty);
+    protected GeoWebCacheActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     private String gwcUrl;
@@ -59,10 +58,6 @@ public class GeoWebCacheActionConfiguration extends ActionConfiguration implemen
     private String gwcUser;
 
     private String gwcPassword;
-
-    public GeoWebCacheActionConfiguration() {
-        super();
-    }
 
     public String getWorkingDirectory() {
         return workingDirectory;

@@ -8,39 +8,21 @@
 	
     <!-- TDA fluxes  -->
 	<bean id="JGSFLoDeSSNCOMGeneratorService" class="it.geosolutions.geobatch.nurc.tda.jgsflodess.JGSFLoDeSSNCOMGeneratorService">
-		<property  name="id">
-    		<value>JGSFLoDeSSNCOMGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>JGSFLoDeSSNCOMGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>JGSFLoDeSSNCOMGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>JGSFLoDeSSNCOMGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>JGSFLoDeSSNCOMGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>JGSFLoDeSSNCOMGeneratorService</value></constructor-arg>	
 	</bean>
 	
 	<bean id="JGSFLoDeSSSWANGeneratorService" class="it.geosolutions.geobatch.nurc.tda.jgsflodess.JGSFLoDeSSSWANGeneratorService">
-		<property  name="id">
-    		<value>JGSFLoDeSSSWANGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>JGSFLoDeSSSWANGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>JGSFLoDeSSSWANGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>JGSFLoDeSSSWANGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>JGSFLoDeSSSWANGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>JGSFLoDeSSSWANGeneratorService</value></constructor-arg>	
 	</bean>
 	
 	<bean id="JGSFLoDeSSCOAMPSGeneratorService" class="it.geosolutions.geobatch.nurc.tda.jgsflodess.JGSFLoDeSSCOAMPSGeneratorService">
-		<property  name="id">
-    		<value>JGSFLoDeSSCOAMPSGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>JGSFLoDeSSCOAMPSGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>JGSFLoDeSSCOAMPSGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>JGSFLoDeSSCOAMPSGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>JGSFLoDeSSCOAMPSGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>JGSFLoDeSSCOAMPSGeneratorService</value></constructor-arg>	
 	</bean>
 	
 	<bean id="JGSFlossDessAliasRegistrar" class="it.geosolutions.geobatch.nurc.tda.NURCTDAActionsAliasRegistrar" lazy-init="false">

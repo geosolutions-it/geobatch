@@ -48,14 +48,24 @@ public abstract class BaseAction<XEO extends EventObject> extends BaseIdentifiab
      * @uml.property  name="listenerForwarder"
      * @uml.associationEnd  multiplicity="(1 1)"
      */
-    protected ProgressListenerForwarder listenerForwarder = new ProgressListenerForwarder();
+    final protected ProgressListenerForwarder listenerForwarder;
 
     /**
      * @uml.property  name="failIgnored"
      */
     protected boolean failIgnored = false;
+    
+    public BaseAction(String id, String name, String description) {
+        super(id, name, description);
+        listenerForwarder=new ProgressListenerForwarder(this);
+        failIgnored = false;
+    }
+
+
 
     public BaseAction(ActionConfiguration actionConfiguration) {
+        super(actionConfiguration.getId(), actionConfiguration.getName(), actionConfiguration.getDescription());
+        listenerForwarder=new ProgressListenerForwarder(this);
         failIgnored = actionConfiguration.isFailIgnored();
     }
 

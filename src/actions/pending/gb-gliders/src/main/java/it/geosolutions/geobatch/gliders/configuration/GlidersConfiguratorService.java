@@ -33,8 +33,12 @@ import java.util.EventObject;
 public abstract class GlidersConfiguratorService <T extends EventObject, C extends ActionConfiguration>
         extends BaseService implements ActionService<T, C> {
 
-    public GlidersConfiguratorService() {
-        super(true);
+//    public GlidersConfiguratorService() {
+//        super(true);
+//    }
+
+    public GlidersConfiguratorService(String id, String name, String description) {
+        super(id, name, description);
     }
 
     public boolean canCreateAction(C configuration) {

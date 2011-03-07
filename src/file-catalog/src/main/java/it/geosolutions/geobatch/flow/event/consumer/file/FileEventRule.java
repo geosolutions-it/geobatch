@@ -55,9 +55,9 @@ public class FileEventRule extends BaseConfiguration implements Cloneable {
      */
     private List<FileSystemEventType> acceptableNotifications;
 
-    public FileEventRule() {
-        super();
-    }
+//    public FileEventRule() {
+//        super();
+//    }
 
     public FileEventRule(String id, String name, String description, boolean dirty) {
         super(id, name, description, dirty);

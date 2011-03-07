@@ -38,8 +38,12 @@ public abstract class CTDConfiguratorService <EO extends EventObject, AC extends
         extends BaseService
         implements ActionService<EO, AC> {
 
-    public CTDConfiguratorService() {
-        super(true);
+//    public CTDConfiguratorService() {
+//        super(true);
+//    }
+
+    public CTDConfiguratorService(String id, String name, String description, boolean available) {
+        super(id, name, description, available);
     }
 
     public boolean canCreateAction(AC configuration) {

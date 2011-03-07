@@ -11,4 +11,8 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
  */
 public class StatusProgressListenerConfiguration extends ProgressListenerConfiguration {
 
+    public StatusProgressListenerConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
+
 }

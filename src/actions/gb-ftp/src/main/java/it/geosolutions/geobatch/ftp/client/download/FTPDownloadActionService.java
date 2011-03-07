@@ -40,15 +40,19 @@ import java.util.logging.Logger;
 public class FTPDownloadActionService extends BaseService implements
         ActionService<FileSystemEvent, FTPActionConfiguration> {
 
+    public FTPDownloadActionService(String id, String name, String description) {
+        super(id, name, description);
+    }
+
     private final static Logger LOGGER = Logger
             .getLogger(FTPDownloadActionService.class.toString());
 
     /**
      * The FTPDownloadActionService default constructor.
      */
-    public FTPDownloadActionService() {
-        super(true);
-    }
+//    public FTPDownloadActionService() {
+//        super(true);
+//    }
 
     /**
      * Method to verify if the action creation is available.

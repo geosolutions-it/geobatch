@@ -10,27 +10,15 @@
 	
 	<!-- E-GEOS DERIVED SAR PRODUCTS fluxes  -->	
 	<bean id="EGEOSSARWindGeneratorService" class="it.geosolutions.geobatch.egeos.wind.SARWindGeneratorService">
-		<property  name="id">
-    		<value>EGEOSSARWindGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>EGEOSSARWindGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>EGEOSSARWindGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>EGEOSSARWindGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSSARWindGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSSARWindGeneratorService</value></constructor-arg>	
 	</bean>
 
 	<bean id="EGEOSSARWaveGeneratorService" class="it.geosolutions.geobatch.egeos.wave.SARWaveGeneratorService">
-		<property  name="id">
-    		<value>EGEOSSARWaveGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>EGEOSSARWaveGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>EGEOSSARWaveGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>EGEOSSARWaveGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSSARWaveGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>EGEOSSARWaveGeneratorService</value></constructor-arg>	
 	</bean>
     
 </beans>

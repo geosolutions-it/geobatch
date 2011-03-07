@@ -8,87 +8,45 @@
 	
 	<!-- lscv08-SEM fluxes  -->	
 	<bean id="MERCATORGeneratorService" class="it.geosolutions.geobatch.nurc.sem.lscv08.MERCATORGeneratorService">
-		<property  name="id">
-    		<value>MERCATORGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>MERCATORGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>MERCATORGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>MERCATORGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>MERCATORGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>MERCATORGeneratorService</value></constructor-arg>	
 	</bean>
 	<bean id="MERCATOR_INGVLike_GeneratorService" class="it.geosolutions.geobatch.nurc.sem.lscv08.MERCATOR_INGVLike_GeneratorService">
-		<property  name="id">
-    		<value>MERCATOR_INGVLike_GeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>MERCATOR_INGVLike_GeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>MERCATOR_INGVLike_GeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>MERCATOR_INGVLike_GeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>MERCATOR_INGVLike_GeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>MERCATOR_INGVLike_GeneratorService</value></constructor-arg>	
 	</bean>
 
 	<bean id="NRLNCOMGeneratorService" class="it.geosolutions.geobatch.nurc.sem.lscv08.NRLNCOMGeneratorService">
-		<property  name="id">
-    		<value>NRLNCOMGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>NRLNCOMGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>NRLNCOMGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>NRLNCOMGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>NRLNCOMGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>NRLNCOMGeneratorService</value></constructor-arg>	
 	</bean>
 	
 	<bean id="INGVGeneratorService" class="it.geosolutions.geobatch.nurc.sem.lscv08.INGVGeneratorService">
-		<property  name="id">
-    		<value>IGNVGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>INGVGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>INGVGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>IGNVGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>INGVGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>INGVGeneratorService</value></constructor-arg>	
 	</bean>
 	
 	<bean id="NURCWPSOutput2WMCGeneratorService" class="it.geosolutions.geobatch.nurc.sem.wmc.NURCWPSOutput2WMCGeneratorService">
-		<property  name="id">
-    		<value>NURCWPSOutput2WMCGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>NURCWPSOutput2WMCGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>NURCWPSOutput2WMCGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>NURCWPSOutput2WMCGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>NURCWPSOutput2WMCGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>NURCWPSOutput2WMCGeneratorService</value></constructor-arg>	
 	</bean>
 
 	<bean id="WMCGeneratorService" class="it.geosolutions.geobatch.nurc.sem.wmc.WMCGeneratorService">
-		<property  name="id">
-    		<value>WMCGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>WMCGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>WMCGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>WMCGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>WMCGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>WMCGeneratorService</value></constructor-arg>	
 	</bean>
 	
 	<!-- SHOM -->
 	<bean id="SHOMGeneratorService" class="it.geosolutions.geobatch.nurc.sem.rep10.shom.SHOMGeneratorService">
-		<property  name="id">
-    		<value>SHOMGeneratorService</value>
-    	</property>
-    	<property name="description">
-    		<value>SHOMGeneratorService</value>
-    	</property>
-    	<property name="name">
-    		<value>SHOMGeneratorService</value>
-    	</property>	
+		<constructor-arg type="String"><value>SHOMGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>SHOMGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>SHOMGeneratorService</value></constructor-arg>	
 	</bean>
 		
 	<bean id="NURCSEMActionsAliasRegistrar" class="it.geosolutions.geobatch.nurc.sem.NURCSEMActionsAliasRegistrar" lazy-init="false">

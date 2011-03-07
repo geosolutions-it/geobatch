@@ -3,62 +3,61 @@
 
 package it.geosolutions.geobatch.flow.event;
 
+import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 
 /**
  * 
  * @author ETj <etj at geo-solutions.it>
+ * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
-public abstract class ProgressListener<PLC extends ProgressListenerConfiguration> implements
-        IProgressListener {
+public abstract class ProgressListener implements IProgressListener {
 
     /**
-     * @uml.property  name="configuration"
-     * @uml.associationEnd  
+     * @uml.property  name="source"
      */
-    protected PLC configuration;
-
+    private BaseIdentifiable owner;
+    
     /**
-     * @uml.property  name="currentTask"
+     * @uml.property name="configuration"
+     * @uml.associationEnd
      */
-    private String currentTask = null;
+    protected ProgressListenerConfiguration configuration;
 
     /**
-     * @uml.property  name="progress"
+     * @uml.property name="currentTask"
+     */
+    private String currentTask = "TASK";
+
+    /**
+     * @uml.property name="progress"
      */
     private float progress = 0;
 
-    protected ProgressListener(PLC configuration) {
+    protected ProgressListener(BaseIdentifiable caller) {
+        this.owner=caller;
+        this.configuration = null;
+    }
+    
+    protected ProgressListener(ProgressListenerConfiguration configuration, BaseIdentifiable caller) {
+        this.owner=caller;
         this.configuration = configuration;
     }
 
-    protected ProgressListener() {
+    /**
+     * owner must be set
+     */
+    @SuppressWarnings("unused")
+    private ProgressListener() {
     }
-
-    // public void started() {
-    // }
-    //
-    // public void progressing() {
-    // }
-    //
-    // public void paused() {
-    // }
-    //
-    // public void resumed() {
-    // }
-    //
-    // public void completed() {
-    // }
-    //
-    // public void failed(Throwable exception) {
-    // }
-    //
-    // public void terminated() {
-    // }
+    
+    public BaseIdentifiable getOwner(){
+        return owner;
+    }
 
     /**
      * @return
-     * @uml.property  name="progress"
+     * @uml.property name="progress"
      */
     public float getProgress() {
         return progress;
@@ -77,7 +76,8 @@ public abstract class ProgressListener<PLC extends ProgressListenerConfiguration
 
     /**
      * Used by the notifier.
-     * @uml.property  name="progress"
+     * 
+     * @uml.property name="progress"
      */
     public void setProgress(float progress) {
         this.progress = progress;

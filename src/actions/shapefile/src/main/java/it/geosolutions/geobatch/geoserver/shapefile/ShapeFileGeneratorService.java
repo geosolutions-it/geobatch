@@ -43,6 +43,10 @@ public class ShapeFileGeneratorService extends BaseService implements
     private final static Logger LOGGER = Logger.getLogger(ShapeFileGeneratorService.class
             .toString());
 
+    public ShapeFileGeneratorService(String id, String name, String description) {
+        super(id, name, description);
+    }
+    
     public ShapeFileConfigurator createAction(final ShapeFileConfiguration configuration) {
         try {
             return new ShapeFileConfigurator(configuration);

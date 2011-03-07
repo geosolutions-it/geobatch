@@ -26,8 +26,8 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 public class MetocActionConfiguration extends ActionConfiguration implements Configuration {
 
-    protected MetocActionConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
+    protected MetocActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     private boolean packComponents;
@@ -80,10 +80,6 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
      */
     public void setMetocHarvesterXMLTemplatePath(String metocHarvesterXMLTemplatePath) {
         this.metocHarvesterXMLTemplatePath = metocHarvesterXMLTemplatePath;
-    }
-
-    public MetocActionConfiguration() {
-        super();
     }
 
     /**
@@ -179,7 +175,7 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     @Override
     public MetocActionConfiguration clone() {
         final MetocActionConfiguration configuration = new MetocActionConfiguration(super.getId(),
-                super.getName(), super.getDescription(), super.isDirty());
+                super.getName(), super.getDescription());
         configuration.setCrs(crs);
         configuration.setFlipY(flipY);
         configuration.setEnvelope(envelope);
