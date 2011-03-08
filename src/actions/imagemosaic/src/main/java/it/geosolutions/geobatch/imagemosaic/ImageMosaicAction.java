@@ -19,7 +19,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
@@ -31,49 +30,24 @@ import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
-import it.geosolutions.geobatch.tools.time.TimeParser;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.media.jai.JAI;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.io.FilenameUtils;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DefaultTransaction;
-import org.geotools.data.FeatureWriter;
-import org.geotools.data.Transaction;
-import org.geotools.data.postgis.PostgisNGDataStoreFactory;
-import org.geotools.data.postgis.PostgisNGJNDIDataStoreFactory;
-import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.filter.text.ecql.ECQL;
-import org.geotools.gce.geotiff.GeoTiffReader;
-import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.Filter;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * An action which is able to create and update a layer into the GeoServer
@@ -88,6 +62,8 @@ import com.vividsolutions.jts.io.WKTReader;
 public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
         Action<FileSystemEvent> {
 
+    protected final static int WAIT = 10; // seconds to wait for nfs propagation
+    
     /**
      * Default logger
      */
@@ -124,7 +100,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
     }
 
     /**
-     * 
+     * Public or update an ImageMosaic layer on the specified GeoServer
      */
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
 
@@ -211,6 +187,20 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
                 }
                 // if the input exists
                 if (input.exists()) {
+                    /*
+                     * Try to extract file event
+                     * COMMENTED: where to put the baseDir of this layer?
+                     * TODO: discuss about this functionality
+                    try {
+                        input=new File(Extract.extract(input.getAbsolutePath()));
+                    }
+                    catch(Exception e){
+                        if (LOGGER.isLoggable(Level.WARNING))
+                            LOGGER.log(Level.WARNING,
+                                    "ImageMosaicAction:Extract: message: "+e.getLocalizedMessage());
+                        continue;
+                    }
+                    */
                     /**
                      * the file event points to an XML file...
                      * 
@@ -236,12 +226,28 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
 
                         // Perform tests on the base dir file
                         if (!baseDir.exists() || !baseDir.isDirectory()) {
-                            if (LOGGER.isLoggable(Level.SEVERE))
-                                LOGGER.log(Level.SEVERE, "ImageMosaicAction: Unexpected file '"
-                                        + baseDir.getAbsolutePath() + "'");
-                            continue;
-                        }
+                         // no base dir exists try to build a new one using addList()
+                            if (cmd.getAddFiles()!=null){
+                                List<File> addFiles=cmd.getAddFiles();
+                                if (addFiles.size()>0){
+                                    // try build the baseDir 
+                                    if (baseDir.mkdir()){
+                                        Path.copyListFileToNFS(cmd.getAddFiles(), cmd.getBaseDir(), WAIT);
+                                        // files are now into the baseDir and layer do not exists so
+                                        addFiles.clear();
 
+                                    }
+                                }
+                            }
+                            else {
+                                if (LOGGER.isLoggable(Level.SEVERE))
+                                    LOGGER.log(Level.SEVERE, "ImageMosaicAction: Unexpected not existent baseDir for this layer '"
+                                            + baseDir.getAbsolutePath() + "'. If you want to build a new layer try using an " +
+                            		"existent or writeable baseDir and append a list of file to use to the addFile list.");
+                                continue;
+                            }
+                        }
+                        
                         mosaicDescriptor = ImageMosaicGranulesDescriptor.buildDescriptor(baseDir);
 
                         if (mosaicDescriptor == null) {
@@ -345,7 +351,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
                                                     + ule.getLocalizedMessage());
                                 }
                                 // update
-                                if (!updateDataStore(mosaicProp, dataStoreProp, mosaicDescriptor,
+                                if (!ImageMosaicUpdater.updateDataStore(mosaicProp, dataStoreProp, mosaicDescriptor,
                                         cmd)) {
                                     continue;
                                 }
@@ -510,374 +516,5 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[" + "cfg:" + getConfiguration() + "]";
-    }
-
-    /**
-     * 
-     * @param files
-     * @param absolute
-     * @param key
-     *            optional list of string
-     * @return the query string if success, null otherwise.
-     * @throws NullPointerException
-     * @throws CQLException
-     */
-    private Filter getQuery(List<File> files, boolean absolute, String... key)
-            throws NullPointerException, CQLException {
-
-        if (files == null) { // Optional -> || key==null
-            throw new NullPointerException("getQuery(): The passed argument file list is null!");
-        }
-
-        // check the size
-        final int size = files.size();
-        if (size == 0) {
-            return null;
-        }
-        /**
-         * TODO probably we may want to change the query if the size is too big to list all of the
-         * file into it! Carlo 03 Mar 2011
-         */
-        // case fileLocation IN ('f1','f2',...,'fn')
-        if (key[0] == null) {
-            throw new NullPointerException(
-                    "getQuery(): The passed argument key list contains a null element!");
-        }
-        StringBuilder query = new StringBuilder(key[0] + " IN (");
-
-        if (absolute) {
-            for (int i = 0; i < size; i++) {
-                File file = files.get(i);
-                if (file.exists()) {
-                    query.append((i == 0) ? "'" : ",'");
-                    query.append(file.getAbsolutePath().replace("\\", "\\\\"));
-                    query.append("'");
-                }
-            }
-            query.append(")");
-        } else {
-            for (int i = 0; i < size; i++) {
-                File file = files.get(i);
-                if (file.exists()) {
-                    query.append((i == 0) ? "'" : ",'");
-                    query.append(file.getAbsolutePath().replace("\\", "\\\\"));
-                    query.append("'");
-                }
-            }
-            query.append(")");
-        }
-
-        // filter=ff.equals(ff.property(locationKey), ff.literal());
-        /**
-         * The "in predicate" was added in ECQL. (Have a look in the bnf
-         * http://docs.codehaus.org/display/GEOTOOLS/ECQL+Parser+Design#ECQLParserDesign-
-         * INPredicate) this is the rule for the falue list: <in value list> ::= <expression> {","
-         * <expression>}
-         * 
-         * Thus, you could write sentences like: Filter filter =
-         * ECQL.toFilter("length IN (4100001,4100002, 4100003 )"); or Filter filter =
-         * ECQL.toFilter("name IN ('one','two','three')"); other Filter filter =
-         * ECQL.toFilter("length IN ( (1+2), 3-4, [5*6] )");
-         */
-        return ECQL.toFilter(query.toString());
-    }
-
-    private void setFeature(File baseDir, File granule, String geometryName, SimpleFeature feature) {
-        // get attributes and copy them over
-        try {
-            GeoTiffReader reader = new GeoTiffReader(granule);
-            GeneralEnvelope originalEnvelope = reader.getOriginalEnvelope();
-
-            ReferencedEnvelope bb = new ReferencedEnvelope(originalEnvelope);
-
-            WKTReader wktReader = new WKTReader();
-            Geometry the_geom = wktReader.read("POLYGON((" + bb.getMinX() + " " + bb.getMinY()
-                    + "," + bb.getMinX() + " " + bb.getMaxY() + "," + bb.getMaxX() + " "
-                    + bb.getMaxY() + "," + bb.getMaxX() + " " + bb.getMinY() + "," + bb.getMinX()
-                    + " " + bb.getMinY() + "))");
-            Integer SRID = CRS.lookupEpsgCode(bb.getCoordinateReferenceSystem(), true);
-            the_geom.setSRID(SRID);
-
-            feature.setAttribute(geometryName, the_geom);
-            feature.setAttribute("location", granule);
-
-            final File indexer = new File(baseDir, "indexer.properties");
-            final Properties indexerProps = ImageMosaicProperties.getProperty(indexer);
-
-            if (indexerProps.getProperty("TimeAttribute") != null) {
-                // TODO move out of the cycle
-                final File timeregex = new File(baseDir, "timeregex.properties");
-                final Properties timeProps = ImageMosaicProperties.getProperty(timeregex);
-                final Pattern timePattern = Pattern.compile(timeProps.getProperty("regex"));
-                // TODO move out of the cycle
-                if (timePattern != null) {
-                    final Matcher matcher = timePattern.matcher(granule.getName());
-                    if (matcher.find()) {
-                        TimeParser timeParser = new TimeParser();
-                        List<Date> dates = timeParser.parse(matcher.group());
-                        if (dates != null && dates.size() > 0) {
-                            Calendar cal = Calendar.getInstance();
-                            cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-                            cal.setTime(dates.get(0));
-
-                            feature.setAttribute(indexerProps.getProperty("TimeAttribute"),
-                                    cal.getTime());
-                        }
-                    }
-                }
-            }
-
-            if (indexerProps.getProperty("ElevationAttribute") != null) {
-                // TODO move out of the cycle
-                final File elevationRegex = new File(baseDir, "elevationregex.properties");
-                final Properties elevProps = ImageMosaicProperties.getProperty(elevationRegex);
-                final Pattern elevPattern = Pattern.compile(elevProps.getProperty("regex"));
-                // TODO move out of the cycle
-                final Matcher matcher = elevPattern.matcher(granule.getName());
-                if (matcher.find()) {
-                    feature.setAttribute(indexerProps.getProperty("ElevationAttribute"),
-                            Double.valueOf(matcher.group()));
-                }
-            }
-
-            if (indexerProps.getProperty("RuntimeAttribute") != null) {
-                // TODO move out of the cycle
-                final File runtimeRegex = new File(baseDir, "runtimeregex.properties");
-                final Properties runtimeProps = ImageMosaicProperties.getProperty(runtimeRegex);
-                final Pattern runtimePattern = Pattern.compile(runtimeProps.getProperty("regex"));
-                // TODO move out of the cycle
-                final Matcher matcher = runtimePattern.matcher(granule.getName());
-                if (matcher.find()) {
-                    feature.setAttribute(indexerProps.getProperty("RuntimeAttribute"),
-                            Integer.valueOf(matcher.group()));
-                }
-            }
-        } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Update datastore
-     * 
-     * @param dataStore
-     * @param mosaicDescriptor
-     * @param cmd
-     * @param baseDir
-     * @return
-     * @throws IOException
-     * @throws Throwable
-     */
-    private boolean updateDataStore(Properties mosaicProp, Properties dataStoreProp,
-            ImageMosaicGranulesDescriptor mosaicDescriptor, ImageMosaicCommand cmd)
-            throws IllegalArgumentException, IOException, NullPointerException {
-        if (dataStoreProp == null) {
-            throw new IllegalArgumentException(
-                    "ImageMosaicAction::updateDataStore(): Unable to get datastore properties.");
-        }
-        if (mosaicProp == null) {
-            throw new IllegalArgumentException(
-                    "ImageMosaicAction::updateDataStore(): Unable to get mosaic properties.");
-        }
-
-        DataStore dataStore = null;
-
-        // TODO MOVE TO the top or better -> get from GeoTools api
-        final String ABSOLUTE_PATH_KEY = "AbsolutePath";
-        final String LOCATION_KEY = "LocationAttribute";
-        final int WAIT = 10; // seconds to wait for nfs propagation
-
-        try {
-            try {
-                // SPI
-                final String SPIClass = dataStoreProp.getProperty("SPI");
-                // create a datastore as instructed
-                final DataStoreFactorySpi spi = (DataStoreFactorySpi) Class.forName(SPIClass)
-                        .newInstance();
-                final Map<String, Serializable> params = Utils
-                        .createDataStoreParamsFromPropertiesFile(dataStoreProp, spi);
-
-                // special case for postgis
-                if (spi instanceof PostgisNGJNDIDataStoreFactory
-                        || spi instanceof PostgisNGDataStoreFactory) {
-                    dataStore = spi.createDataStore(params);
-                    if (dataStore == null) {
-                        throw new NullPointerException(
-                                "updateDataStore(): the required resource was not found or if insufficent parameters were given.");
-                    }
-                }
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException("updateDataStore(): " + e.getLocalizedMessage());
-            } catch (InstantiationException e) {
-                throw new IOException("updateDataStore(): " + e.getLocalizedMessage());
-            } catch (IllegalAccessException e) {
-                throw new IOException("updateDataStore(): " + e.getLocalizedMessage());
-            }
-
-            // the layer uses absolute path?
-            final boolean absolute;
-            if (mosaicProp.get(ABSOLUTE_PATH_KEY).equals("true")) {
-                absolute = true;
-                // no need to copy files
-            } else {
-                absolute = false;
-                // copy files to the baseDir
-                cmd.setAddFiles(ImageMosaicCommand.copyTo(cmd.getAddFiles(), cmd.getBaseDir(), WAIT));
-                /*
-                 * if we have some absolute path into delFile list we have to skip those files since
-                 * the layer is relative and acceptable (to deletion) passed path are to be relative
-                 */
-                List<File> files = null;
-                if ((files = cmd.getDelFiles()) != null) {
-                    for (File file : files) {
-                        if (file.isAbsolute()) {
-                            /*
-                             * this file can still be acceptable since it can be child of the layer
-                             * baseDir
-                             */
-                            final String path = file.getAbsolutePath();
-                            if (!path.contains(cmd.getBaseDir().getAbsolutePath())) {
-                                // the path is absolute AND the file is outside the layer baseDir!
-                                files.remove(file); // remove it
-                                // log as warning
-                                if (LOGGER.isLoggable(Level.WARNING)) {
-                                    LOGGER.warning("updateDataStore(): Layer specify a relative pattern for files but the "
-                                            + "incoming xml command file has an absolute AND outside the layer baseDir file into the "
-                                            + "delFile list! This file will NOT be removed from the layer: "
-                                            + file.getAbsolutePath());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            // the attribute key location
-            final String locationKey = (String) mosaicProp.get(LOCATION_KEY);
-
-            // final String[] typeNames = dataStore.getTypeNames();
-            // if (typeNames.length <= 0)
-            // throw new IllegalArgumentException(
-            // "ImageMosaicAction: Problems when opening the index, no typenames for the schema are defined");
-
-            Transaction transaction = null;
-            FeatureWriter<SimpleFeatureType, SimpleFeature> fw = null;
-            final String handle = "ImageMosaic:" + Thread.currentThread().getId();
-            final String store = mosaicDescriptor.getCoverageStoreId();
-
-            List<File> delList = cmd.getDelFiles();
-            Filter delFilter = null;
-            // query
-            try {
-                delFilter = getQuery(delList, absolute, locationKey);
-            } catch (NullPointerException npe) {
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.info("updateDataStore():" + npe);
-                }
-            } catch (CQLException cqle) {
-                throw new IllegalArgumentException(
-                        "updateDataStore(): Unable to build a query. Message: " + cqle);
-            }
-
-            if (delFilter != null) {
-                transaction = new DefaultTransaction(handle);
-                try {
-                    fw = dataStore.getFeatureWriter(store, delFilter, transaction);
-                    if (fw == null) {
-                        throw new NullPointerException(
-                                "UpdateDataStore(): The FeatureWriter is null, it's impossible to get a writer on the dataStore: "
-                                        + dataStore.toString());
-                    }
-                    // get the schema if this feature
-                    // final FeatureType schema = fw.getFeatureType();
-
-                    // TODO check needed??? final String geometryPropertyName =
-                    // schema.getGeometryDescriptor().getLocalName();
-
-                    while (fw.hasNext()) {
-                        fw.remove();
-                    }
-                    transaction.commit();
-                } catch (IOException ioe) {
-                    if (transaction != null)
-                        transaction.rollback();
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.severe("UpdateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
-                    }
-                    throw new IOException("UpdateDataStore(): " + ioe.getLocalizedMessage());
-                } finally {
-                    if (transaction != null) {
-                        transaction.close();
-                        transaction = null; // once closed you have to renew the reference
-                    }
-                    if (fw != null) {
-                        fw.close();
-                    }
-                }
-            }// if ! query error
-            else {
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.info("UpdateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
-                }
-            }
-
-            List<File> addList = cmd.getAddFiles();
-            Filter addFilter = null;
-            // calculate the query
-            try {
-                addFilter = getQuery(addList, absolute, locationKey);
-            } catch (NullPointerException npe) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("updateDataStore():" + npe);
-                }
-            } catch (CQLException cqle) {
-                throw new IllegalArgumentException(
-                        "updateDataStore(): Unable to build a query. Message: " + cqle);
-            }
-
-            // once closed you have to renew the reference
-            transaction = new DefaultTransaction(handle);
-            if (addFilter != null) {
-                try {
-                    fw = dataStore.getFeatureWriterAppend(store, transaction);
-                    for (File file : addList) {
-                        SimpleFeature feature = fw.next();
-                        // TODO setFeature();
-                        feature.setAttribute(locationKey,
-                                file.getAbsolutePath().replaceAll("\\", "\\\\"));
-                    }
-                } catch (IOException ioe) {
-                    transaction.rollback();
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.severe("updateDataStore(): unable to access to the datastore in append mode. Message: "
-                                + ioe.getLocalizedMessage());
-                    }
-                } finally {
-                    if (transaction != null) {
-                        transaction.close();
-                        transaction = null; // once closed you have to renew the reference
-                    }
-                    if (fw != null) {
-                        fw.close();
-                    }
-                }
-            }// if ! query error
-            else {
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.info("updateDataStore(): the ADD file list is not used to query datastore. Probably it is empty");
-                }
-            }
-//        } catch (Throwable e) {
-//
-//            if (LOGGER.isLoggable(Level.SEVERE)) {
-//                LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
-//            }
-//            return false;
-            
-        } finally {
-            if (dataStore != null)
-                dataStore.dispose();
-        }
-        return true;
     }
 }

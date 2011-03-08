@@ -22,28 +22,14 @@
 
 package it.geosolutions.geobatch.octave.test;
 
-import it.geosolutions.geobatch.octave.OctaveEnv;
-import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
-import it.geosolutions.geobatch.octave.OctaveFunctionFile;
-import it.geosolutions.geobatch.octave.OctaveFunctionSheet;
-import it.geosolutions.geobatch.octave.SerializableOctaveFile;
-import it.geosolutions.geobatch.octave.SerializableOctaveString;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-
+/**
+ * TODO
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ *
+ */
 public class SerializeConfiguration {
-    
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    /*
+    public static void serialize() throws IOException, ClassNotFoundException {
         XStream stream = new XStream();
 //        stream.processAnnotations(OctaveFunctionSheet.class);
 //        stream.processAnnotations(SerializableOctaveFile.class);
@@ -102,4 +88,5 @@ public class SerializeConfiguration {
         System.out.println("-------------------------------------");
         System.out.println(stream.fromXML(new FileReader(new File("/home/carlo/work/data/rep10workingdir/meteoam/nettuno2/sheet.xml"))));
     }
+    */
 }

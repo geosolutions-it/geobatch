@@ -21,16 +21,27 @@
  */
 package it.geosolutions.geobatch.actions.freemarker.test;
 
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.freemarker.FreeMarkerAction;
 import it.geosolutions.geobatch.actions.freemarker.FreeMarkerConfiguration;
 import it.geosolutions.geobatch.actions.freemarker.TemplateModelEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.thoughtworks.xstream.XStream;
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
@@ -63,14 +74,15 @@ public class FreeMarkerActionTest {
           </sheets>
         </octave>
      */
-    public static void main(String[] args) throws ActionException {
+    @Test
+    public void test() throws ActionException {
         
         FreeMarkerConfiguration fmc=new FreeMarkerConfiguration("ID","NAME","DESC");
         // SIMULATE THE XML FILE CONFIGURATION OF THE ACTION
         fmc.setDirty(false);
         fmc.setFailIgnored(false);
         fmc.setServiceID("serviceID");
-        fmc.setWorkingDirectory("data/freemarker/");
+        fmc.setWorkingDirectory("src/test/resources/data/");
         fmc.setInput("test.xml");
         fmc.setOutput("test_out.xml");
         Map<String,Object> m=new HashMap<String, Object>();
@@ -84,13 +96,38 @@ public class FreeMarkerActionTest {
         mev.put("FILE_IN", "in_test_file.dat");
         mev.put("FILE_OUT", "out_test_file.dat");
         
-        Queue<EventObject> q=new ArrayBlockingQueue(2);
+        Queue<EventObject> q=new ArrayBlockingQueue<EventObject>(2);
         
         q.add(new TemplateModelEvent(mev));
         
         FreeMarkerAction fma=new FreeMarkerAction(fmc);
         
-        fma.execute(q);
+        q=fma.execute(q);
+        try{
+            FileSystemEvent res=(FileSystemEvent)q.remove();
+            File out=res.getSource();
+            if (!out.exists())
+                Assert.fail("FAIL: unable to create output file");    
+//            FileInputStream fin=new FileInputStream(out);
+//            StringBuilder test=new StringBuilder();
+//            byte[] buf=new byte[1024];
+//            while (fin.read(buf)!=-1){
+//                //test.append((char[])buf);
+//            }
+//            fin.close();
+            
+//            System.out.print(test.toString());
+            
+        }
+        catch (ClassCastException cce){
+            Assert.fail("FAIL: "+cce.getLocalizedMessage());
+//        } catch (FileNotFoundException e) {
+//            Assert.fail("FAIL: "+e.getLocalizedMessage());
+//        } catch (IOException e) {
+//            Assert.fail("FAIL: "+e.getLocalizedMessage());
+        }
+
+        
         return;
     }
 }

@@ -322,7 +322,7 @@ public class FileBasedEventConsumer extends
                             .getCatalog().getResource(listenerServiceID,
                                     ProgressListenerService.class);
                     if (progressListenerService != null) {
-                        ProgressListener progressListener = progressListenerService.createProgressListener(plConfig,this);
+                        ProgressListener progressListener = progressListenerService.createProgressListener(plConfig,action);
                         action.addListener(progressListener);
                     } else {
                         throw new IllegalArgumentException("Could not find '" + listenerServiceID

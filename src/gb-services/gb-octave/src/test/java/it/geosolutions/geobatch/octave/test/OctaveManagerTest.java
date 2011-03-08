@@ -11,6 +11,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.junit.Test;
+
 import dk.ange.octave.type.OctaveObject;
 
 /**
@@ -20,28 +22,6 @@ import dk.ange.octave.type.OctaveObject;
  *
  */
 public class OctaveManagerTest {
-
-    /**
-     * @param args
-     * @throws Exception 
-     */
-    public static void main(String[] args) throws Exception {
-System.out.println("Starting multithreaded");
-        multithreaded();
-        Thread.sleep(5000);
-System.out.println("Starting runFromThread");        
-        runFromThread();
-        
-//        if (args.length>0){
-//            if (args[0].contains("m"))
-//                multithreaded();
-//            else
-//                runFromThread();
-//        }
-//        else
-//            runFromThread();
-        return;
-    }
     
     /**
      * This is an example on how you should use the octave
@@ -56,19 +36,15 @@ System.out.println("Starting runFromThread");
      * @see OctaveProcessScheduler
      * @see OctaveManager
      */
-    private static void runFromThread(){
+    @Test
+    public void runFromThread(){
         try {
 System.out.println("Starting");
 
 ExecutorService e=Executors.newFixedThreadPool(10);
-// can be null if you have called it 
-            OctaveConfiguration oc=OctaveConfiguration.getOctaveConfiguration("./",e);
+
 System.out.println("Starting the manager");            
-            Thread.sleep(5000);
-            
-      //      OctaveManager.getOctaveManager(oc,e);
-            
-     //       OctaveProcessScheduler.getOctaveProcessScheduler(e);
+            Thread.sleep(1000);
             
             OctaveEnv<OctaveExecutableSheet> oes=new OctaveEnv<OctaveExecutableSheet>();
             
@@ -90,7 +66,8 @@ System.out.println("rExiting");
         }
     }
     
-    private static void multithreaded(){
+    @Test
+    public void multithreaded(){
         try {
             ExecutorService e=Executors.newFixedThreadPool(10);
 System.out.println("Starting");
@@ -111,9 +88,9 @@ System.out.println("Getting results from Octave");
             task.get();
             manager.shutdown();
 System.out.println("Stopping the manager");            
-            Thread.sleep(5000);
+            Thread.sleep(1000);
             e.shutdown();
-            Thread.sleep(5000);
+            Thread.sleep(1000);
 System.out.println("mExiting");
         }catch (Exception e) {
             e.printStackTrace();

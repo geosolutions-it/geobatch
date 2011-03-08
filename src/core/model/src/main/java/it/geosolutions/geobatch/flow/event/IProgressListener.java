@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.flow.event;
 
-import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
+import it.geosolutions.geobatch.catalog.Identifiable;
 
 import java.util.EventListener;
 
@@ -95,6 +95,6 @@ public interface IProgressListener extends EventListener {
      * 
      * @return the owner of the listener
      */
-    public BaseIdentifiable getOwner();
+    public Identifiable getOwner();
 
 }

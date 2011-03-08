@@ -24,12 +24,10 @@ package it.geosolutions.geobatch.flow.event.consumer;
 import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.catalog.impl.BaseResource;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
-import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.misc.Counter;
 import it.geosolutions.geobatch.misc.PauseHandler;
 
 import java.util.ArrayList;
@@ -44,8 +42,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Comments here ...
- * 
  * @author Alessio Fabiani, GeoSolutions
  * @author Simone Giannecchini, GeoSolutions
  */
@@ -54,7 +50,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
     private static Logger LOGGER = Logger.getLogger(BaseEventConsumer.class.toString());
 
-    private static Counter counter = new Counter();
+//    private static Counter counter = new Counter();
 
     /**
      * @uml.property name="creationTimestamp"

@@ -97,15 +97,11 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
             
         // getting a format for the given input
         format = (AbstractGridFormat) GridFormatFinder.findFormat(inFile);
-        if (format != null && !( format instanceof UnknownFormat)) {
-            
-        }
-        
-        // looking for file
-        if (format==null) {
+        if (format == null || ( format instanceof UnknownFormat)) {
             throw new IllegalArgumentException(
                     "GeoTiffRetiler: Unable to find a reader for the provided file: "+inputFileName);
         }
+        
         final File tiledTiffFile = new File(inFile.getParent(), inputFileName + "_tiled.tif");
 
 

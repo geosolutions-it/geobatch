@@ -1,27 +1,22 @@
 package it.geosolutions.geobatch.imagemosaic;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-
 import com.sun.org.apache.xerces.internal.xs.XSException;
 import com.thoughtworks.xstream.InitializationException;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import com.thoughtworks.xstream.io.path.Path;
 
 /**
  * 
@@ -67,84 +62,7 @@ class ImageMosaicCommand implements Serializable {
         stream = new XStream();
         stream.processAnnotations(ImageMosaicCommand.class);
     }
-
-
-    /**
-     * Test to see the serialized bean
-     * 
-     * @param args
-     */
-    public static void main(String args[]) {
-        if (stream == null)
-            init();
-
-        List<File> addList = new ArrayList<File>();
-        addList.add(new File("file1"));
-        List<File> delList = new ArrayList<File>();
-        delList.add(new File("file3"));
-        ImageMosaicCommand cmd = new ImageMosaicCommand(new File("BASEDIR"), addList, delList);
-        System.out.println("-------------------------------------");
-
-        String sob = stream.toXML(cmd);
-        System.out.println(sob);
-
-        System.out.println("-------------------------------------");
-
-        System.out.println("-------------------------------------");
-        System.out.println(stream.fromXML(sob));
-        System.out.println("-------------------------------------");
-
-        System.out.println("-------------------------------------");
-        ImageMosaicCommand cmd2 = null;
-        try {
-            cmd2 = deserialize(new File("src/main/resources/serialized.xml"));
-        }
-        catch (XSException e) {
-            // LOGGER.log(Level.FINER, e.getMessage(), e);
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            // LOGGER.log(Level.FINER, e.getMessage(), e);
-            e.printStackTrace();
-        }
-        if (cmd2!=null)
-            System.out.println(cmd2.toString());
-
-        System.out.println("-------------------------------------");
-
-    }
     
-    /**
-     * Copy a list of files to a destination (which can be on nfs) waiting
-     * (at least) 'seconds' seconds for each file propagation.
-     * @param list
-     * @param baseDestDir
-     * @param seconds
-     * @return the resulting moved file list or null
-     */
-    public static List<File> copyTo(List<File> list, File baseDestDir, int seconds){
-        if (list==null){
-            return null;
-        }
-        final int size=list.size();
-        if (size==0){
-            return null;
-        }
-        
-        List<File> ret=new ArrayList<File>(size);
-        for (File file:list){
-            if (file!=null){
-                if (file.exists()){
-                    ret.add(
-                            it.geosolutions.geobatch.tools.file.Path.copyFileOnNFS(
-                                    file,
-                                    new File(baseDestDir,file.getName()),
-                                    seconds));
-                }
-            }
-        }
-        return ret;
-    }
-
     /**
      * Try to deserialize the command, return null if some goes wrong
      * 
@@ -162,21 +80,12 @@ class ImageMosaicCommand implements Serializable {
      */
     public static File serialize(ImageMosaicCommand cmd, String path)
         throws XSException, FileNotFoundException, SecurityException {
-//        try {
             final File outFile = new File(path);
             final FileOutputStream fos = new FileOutputStream(outFile);
             if (stream == null)
                 init();
             stream.toXML(cmd, fos);
             return outFile;
-//        } catch (XSException e) {
-//            // LOGGER.log(Level.FINER, e.getMessage(), e);
-//            e.printStackTrace();
-//        } catch (FileNotFoundException e) {
-//            // LOGGER.log(Level.FINER, e.getMessage(), e);
-//            e.printStackTrace();
-//        }
-//        return null;
     }
 
     /**

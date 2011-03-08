@@ -21,8 +21,7 @@
  */
 package it.geosolutions.geobatch.flow.event;
 
-import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
-import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
+import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.misc.ListenerRegistry;
 
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class ProgressListenerForwarder extends ProgressListener implements
      */
     protected List<IProgressListener> listeners = new ArrayList<IProgressListener>();
     
-    public ProgressListenerForwarder(BaseIdentifiable owner) {
+    public ProgressListenerForwarder(Identifiable owner) {
         super(owner);
     }
 

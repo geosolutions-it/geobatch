@@ -12,7 +12,6 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.geotools.data.DataUtilities;

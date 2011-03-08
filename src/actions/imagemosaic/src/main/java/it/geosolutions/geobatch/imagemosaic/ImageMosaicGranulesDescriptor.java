@@ -89,7 +89,6 @@ final class ImageMosaicGranulesDescriptor {
     protected static ImageMosaicGranulesDescriptor buildDescriptor(File inputDir) {
         ImageMosaicGranulesDescriptor mosaicDescriptor = null;
 //TODO a better file filter
-        //String[] fileNames = inputDir.list(new SuffixFileFilter(new String[]{ ".tif", ".tiff" },IOCase.INSENSITIVE));
         Collector coll=new Collector(new SuffixFileFilter(new String[]{ ".tif", ".tiff" },IOCase.INSENSITIVE));
         
         List<File> fileNameList=null;
@@ -111,9 +110,6 @@ final class ImageMosaicGranulesDescriptor {
             return null;
         }
         
-//IMPORTANT
-//TODO check if the order is done by fileName or by date!!!
-        
         // to get it ordered from the first to the last file (by Name)
         Collections.sort(fileNameList);
         
@@ -128,6 +124,7 @@ final class ImageMosaicGranulesDescriptor {
             String[] lastCvNameParts = FilenameUtils.getBaseName(fileNameList.get(fileNameList.size()-1).getName()).split("_");
 
             if (firstCvNameParts != null && firstCvNameParts.length > 3) {
+                // TODO:
                 // Temp workaround to leverages on a coverageStoreId having the
                 // same name of the coverage
                 // and the same name of the mosaic folder
@@ -158,7 +155,6 @@ final class ImageMosaicGranulesDescriptor {
             }
         }
         else {
-  //TODO
             if (LOGGER.isLoggable(Level.WARNING)){
                 LOGGER.warning(
                     "ImageMosaicGranulesDescriptor:buildDescriptor(): The passed base dir is empty! Dir:"+inputDir.getAbsolutePath());

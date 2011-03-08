@@ -19,7 +19,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geobatch.flow.event.action;
 
 import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;

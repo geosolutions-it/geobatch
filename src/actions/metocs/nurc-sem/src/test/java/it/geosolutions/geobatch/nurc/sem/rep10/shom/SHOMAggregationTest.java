@@ -1,23 +1,22 @@
 package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
-import java.io.File;
-import java.io.IOException;
+import org.junit.Test;
 
-import ucar.nc2.Group;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.Variable;
-import ucar.nc2.dataset.NetcdfDataset;
-import ucar.nc2.dataset.VariableDS;
-import ucar.nc2.ncml.Aggregation;
-import ucar.nc2.ncml.AggregationExisting;
-import ucar.nc2.util.DiskCache2;
-
+/**
+ * TODO
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ *
+ */
 public class SHOMAggregationTest {
-    
-  static String dir_name="/home/carlo/work/data/SHOMworkingdir/DATA/SHOM_MENOR4000_FORECAST_20100920T00Z/";
-
-  public static void main(String[] args) throws IOException{
-      
+  
+  /**
+   * TODO
+   */
+  @Test
+  public void test(){
+      /*
+      static String data_name="src/test/resources/data/SHOM_WW3-MENOR-4000M_20100919T00Z.zip";
+      File data= null;
       NetcdfDataset dataset=null;
       try {
           NetcdfDataset.initNetcdfFileCache(100,200,15*60); // on application startup
@@ -25,25 +24,26 @@ public class SHOMAggregationTest {
           
           Aggregation aggr=new AggregationExisting(dataset, "time", "days");
           
-          Aggregation.setPersistenceCache(new DiskCache2(dir_name, false, 1, -1));
+          data=new File(data_name);
+          String outdirName=Extract.extract(data.getAbsolutePath());
           
-          dataset.setAggregation(aggr);
+          Aggregation.setPersistenceCache(new DiskCache2(outdirName, false, 1, -1));
           
-          
-          File dir=new File(dir_name);
-          String []files=dir.list();
+          data=new File(outdirName);
+          Collector c=new Collector(new WildcardFileFilter("*.nc"));
+          List<File> files=c.collect(data);
           Group root=dataset.getRootGroup();
           System.out.println("Aggregating files:");
-          for (String f:files){
-              System.out.println("Aggregating: "+f);
+          for (File f:files){
+              System.out.println("Aggregating: "+f.getAbsolutePath());
               NetcdfFile ncf = null;
               try {
-                  ncf = NetcdfDataset.open(dir_name+f);
+                  ncf = NetcdfDataset.open(f.getAbsolutePath());
                   
-                  dataset.addGroup(ncf.getRootGroup(),root);
+                  dataset.addGroup(root,ncf.getRootGroup());
                   
                   for (Variable v:ncf.getVariables()){
-                      dataset.addVariable(root, new VariableDS(null,v,true));
+                      dataset.addVariable(ncf.getRootGroup(), new VariableDS(null,v,true));
                   }
                   
 //                  aggr.addDataset(new CrawlableDatasetFile(ncfile));
@@ -69,9 +69,18 @@ public class SHOMAggregationTest {
               System.out.println("AG_dimensions: "+var.getDimensionsString());
           }
       }
+      catch (Throwable t){
+          Assert.fail("FAIL: "+t.getLocalizedMessage());
+      }
       finally{
+          if (data!=null){
+              if (data.exists())
+                  FileUtils.deleteQuietly(data);
+          }
           if (dataset!=null)
               dataset.close();
-      }
+              
+      }    
+*/
 }
 }

@@ -29,6 +29,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -349,18 +351,18 @@ public class Path {
      * @param seconds to wait (maximum) for nfs propagate. If -1 no check is performed.
      * @return
      */
-    public static File copyFileOnNFS(File source, File dest, final int seconds){
+    public static File copyFileToNFS(File source, File dest, final int seconds){
         try {
             // copy the file
             FileUtils.copyFile(source, dest);
             if (seconds>0){
                 if (!FileUtils.waitFor(dest, seconds)){
-                    dest=null;
                     if (LOGGER.isLoggable(Level.SEVERE))
                         LOGGER.severe("ProParser.copyTif() : failed to propagate tif to->"+dest.getAbsolutePath());
+                    dest=null;
                 } else if (LOGGER.isLoggable(Level.INFO)){
                     LOGGER.info("ProParser.copyTif() : file: "+source.getAbsoluteFile()
-                            +" succesfully copied and propagated over nfs to: "+dest.getAbsolutePath());
+                            +" succesfully copied and propagated to: "+dest.getAbsolutePath());
                 }
             }
             else if (LOGGER.isLoggable(Level.INFO)){
@@ -374,5 +376,38 @@ public class Path {
             dest = null;
         }
         return dest;
+    }
+
+
+    /**
+     * Copy a list of files to a destination (which can be on nfs) waiting
+     * (at least) 'seconds' seconds for each file propagation.
+     * @param list
+     * @param baseDestDir
+     * @param seconds
+     * @return the resulting moved file list or null
+     */
+    public static List<File> copyListFileToNFS(List<File> list, File baseDestDir, int seconds){
+        if (list==null){
+            return null;
+        }
+        final int size=list.size();
+        if (size==0){
+            return null;
+        }
+        
+        List<File> ret=new ArrayList<File>(size);
+        for (File file:list){
+            if (file!=null){
+                if (file.exists()){
+                    ret.add(
+                            copyFileToNFS(
+                                    file,
+                                    new File(baseDestDir,file.getName()),
+                                    seconds));
+                }
+            }
+        }
+        return ret;
     }
 }
