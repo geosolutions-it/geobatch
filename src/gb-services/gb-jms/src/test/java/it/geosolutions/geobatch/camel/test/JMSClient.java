@@ -3,6 +3,7 @@ package it.geosolutions.geobatch.camel.test;
 import it.geosolutions.geobatch.camel.beans.JMSFlowRequest;
 import it.geosolutions.geobatch.camel.beans.JMSFlowResponse;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -19,9 +20,9 @@ import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.junit.Assert;
 
 public class JMSClient {
     private static Lock lock=new ReentrantLock();
@@ -45,6 +46,7 @@ public class JMSClient {
     private static Session session = null;
 
     private static Destination tempDest = null;
+
     private static MessageConsumer responseConsumer = null;
 
     static {
@@ -53,46 +55,116 @@ public class JMSClient {
         broker="tcp://localhost:61611";
         transacted = false;
     }
-    public static Session getSession() {
+    
+    protected static Session getSession() {
         if (initted && isOpen)
             return session;
         else
             return null;
     }
 
-    public static synchronized String getBroker() {
+    protected static MessageProducer getProducer() {
+        return producer;
+    }
+
+    protected static Destination getTempDest() {
+        return tempDest;
+    }
+
+    protected static synchronized String getBroker() {
         return broker;
     }
 
-    public static synchronized void setBroker(String broker) {
+    protected static synchronized void setBroker(String broker) {
         JMSClient.broker = broker;
     }
 
-    public static synchronized int getAckMode() {
+    protected static synchronized int getAckMode() {
         return ackMode;
     }
 
-    public static synchronized void setAckMode(int ackMode) {
+    protected static synchronized void setAckMode(int ackMode) {
         JMSClient.ackMode = ackMode;
     }
 
-    public static synchronized String getQueueName() {
+    protected static synchronized String getQueueName() {
         return queueName;
     }
 
-    public static void setqueueName(String clientQueueName) {
+    protected static void setqueueName(String clientQueueName) {
         JMSClient.queueName = clientQueueName;
     }
-
-    private JMSClient() {}
     
-    public static JMSClient getJMSClient(){
+    public static void main(String args[]){
+        if (args.length>=5){
+            call((String)args[0], args[1], args[2], args[3], args[4]);
+        }
+        else
+            System.out.println("Unable to run the client:\n" +
+            		"1- broker the broker address\n" +
+            		"2- inQueue the GeoBatch queue name (if null it is set to: fileService)\n" +
+            		"3- resQueue the temp jms queue\n" +
+            		"4- flowId the GeoBatch flow id\n" +
+            		"5- args the list of file to pass to the flow\n");
+    }
+    
+    /**
+     * 
+     * @param broker the broker address
+     * @param inQueue the GeoBatch queue name (if null it is set to: fileService)
+     * @param resQueue the temp jms queue
+     * @param flowId the GeoBatch flow id 
+     * @param args the list of file to pass to the flow
+     */
+    public static void call(String broker, String inQueue ,String resQueue ,String flowId ,String... args){
+        //init 
+        JMSClient.getJMSClient(broker,inQueue);
+        
+        Session s=JMSClient.getSession();
+        if (s!=null){
+            ObjectMessage objMessage;
+            try {
+                objMessage = s.createObjectMessage();
+                objMessage.setObject(JMSClient.buildRequest(flowId,args));
+                objMessage.setJMSReplyTo(JMSClient.getTempDest());
+                String correlationObjId = (resQueue!=null)?resQueue:createRandomString();
+                objMessage.setJMSCorrelationID(correlationObjId);
+                JMSClient.getProducer().send(objMessage);
+            } catch (JMSException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        else
+            System.out.println("Unable to get the session");
+    }
+    
+    public static JMSFlowRequest buildRequest(String flowId,String... args) throws JMSException {
+        JMSFlowRequest fr = new JMSFlowRequest();
+        fr.setFlowId(flowId);
+        List<String> files=new ArrayList<String>();
+        if (args.length>0){
+            for (int i=0; i<args.length; i++){
+                File file=new File(args[i]);
+                if (file.exists()){
+                    files.add(file.getAbsolutePath());
+                }
+                else {
+                    System.out.println("The file: "+file+" do not exists! skipping...");   
+                }
+            }
+        }
+        
+        fr.setFiles(files);
+        return fr;
+    }
+    
+    protected static JMSClient getJMSClient(String broker, String inQueue){
         if (singleton==null){
             if (lock.tryLock()){
                 try {
                 
                     if (singleton==null){
-                        initClient();
+                        initClient(broker, inQueue);
                     }
                 }
                 finally{
@@ -104,9 +176,16 @@ public class JMSClient {
     }
     
     // called once
-    private synchronized static void initClient(){
+    private synchronized static void initClient(String broker, String inQueue){
         if (isOpen)
             close();
+        if (broker!=null){
+            JMSClient.broker=broker;
+        }
+        if (inQueue!=null){
+            JMSClient.queueName=inQueue;
+        }
+        
         singleton=new JMSClient();
         connectionFactory = new ActiveMQConnectionFactory(broker);
         listener=new JMSMessageListener();
@@ -114,7 +193,7 @@ public class JMSClient {
         initted=true;
     }
     
-    public synchronized static void open(){
+    protected synchronized static void open(){
         try {
             connection = connectionFactory.createConnection();
             connection.start();
@@ -147,7 +226,7 @@ public class JMSClient {
         }
     }
     
-    public synchronized static void close(){
+    protected synchronized static void close(){
         try {
             if (initted && isOpen){
                 session.close();
@@ -156,57 +235,6 @@ public class JMSClient {
         } catch (JMSException e) {
             e.printStackTrace();
         }
-    }
-
-    private static String createRandomString() {
-        Random random = new Random(System.currentTimeMillis());
-        long randomLong = random.nextLong();
-        return Long.toHexString(randomLong);
-    }
-    
-        
-    public static void main(String[] args) throws JMSException {
-        
-        new JMSClient();
-        
-        //init
-        JMSClient.getJMSClient();
-        
-        JMSFlowRequest fr = new JMSFlowRequest();
-        fr.setFlowId("geotiff");
-        List<String> files=new ArrayList<String>();
-        files.add("/home/carlo/work/data/geotiff_bkp/hre.zip");
-        fr.setFiles(files);
-        Session s=getSession();
-        if (s!=null){
-            ObjectMessage objMessage=getSession().createObjectMessage();
-            objMessage.setObject(fr);
-            objMessage.setJMSReplyTo(tempDest);
-            String correlationObjId = createRandomString();
-            objMessage.setJMSCorrelationID(correlationObjId);
-            producer.send(objMessage);
-            
-            //Now create the actual message you want to send
-            TextMessage txtMessage = session.createTextMessage();
-            txtMessage.setText("MyProtocolMessage");
-    
-            //Set the reply to field to the temp queue you created above, this is the queue the server
-            //will respond to
-            txtMessage.setJMSReplyTo(tempDest);
-    
-            //Set a correlation ID so when you get a response you know which sent message the response is for
-            //If there is never more than one outstanding message to the server then the
-            //same correlation ID can be used for all the messages...if there is more than one outstanding
-            //message to the server you would presumably want to associate the correlation ID with this
-            //message somehow...a Map works good
-            String correlationId = createRandomString();
-            txtMessage.setJMSCorrelationID(correlationId);
-            producer.send(txtMessage);
-        }
-        else
-            System.out.println("Unable to get the session");
-
-        //System.exit(0);
     }
     
     private static class JMSMessageListener implements MessageListener {
@@ -225,14 +253,21 @@ public class JMSClient {
                     for (String msg : response.getResponses())
                         System.out.println("Message_"+(++i)+": "+msg);
                 }
-                else
+                else {
                     System.out.println("Wrong responses type recived");
+                }
             } catch (JMSException e) {
-                //Handle the exception appropriately
-    //            System.out.println("Exception: "+e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }
     }
+    
+    private static String createRandomString() {
+        Random random = new Random(System.currentTimeMillis());
+        long randomLong = random.nextLong();
+        return Long.toHexString(randomLong);
+    }
+    
+    private JMSClient() {}
 
 }

@@ -398,7 +398,7 @@ public class FileBasedEventConsumer extends
             //
             // Cycling on all the input events
             //
-            final Queue<FileSystemEvent> fileEventList = new LinkedList<FileSystemEvent>();
+            Queue<FileSystemEvent> fileEventList = new LinkedList<FileSystemEvent>();
             int numProcessedFiles = 0;
             for (FileSystemEvent event : this.eventsQueue) {
                 if (LOGGER.isLoggable(Level.INFO))
@@ -483,7 +483,7 @@ public class FileBasedEventConsumer extends
             getListenerForwarder().progressing(50, "Running actions");
 
             try {
-                this.applyActions(fileEventList);
+                fileEventList=this.applyActions(fileEventList);
                 this.setStatus(EventConsumerStatus.COMPLETED);
                 jobResultSuccessful = true;
             } catch (ActionException ae) {

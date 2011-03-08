@@ -66,13 +66,13 @@ public class ProgressListenerForwarder extends ProgressListener implements
     public void completed() {
         for (IProgressListener l : listeners) {
             if (LOGGER.isLoggable(Level.FINE))
-                LOGGER.fine(getClass().getSimpleName() + " FORWARDING completed message to "
+                LOGGER.fine("ProgressListenerForwarder: "+getClass().getSimpleName() + " FORWARDING completed message to "
                         + l.getClass().getSimpleName());
             try {
                 l.setProgress(100f); // forcing 100% progress
                 l.completed();
             } catch (Exception e) {
-                LOGGER.warning("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.warning("ProgressListenerForwarder: Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
@@ -85,30 +85,30 @@ public class ProgressListenerForwarder extends ProgressListener implements
                             + exception + ") to " + l.getClass().getSimpleName());
                 l.failed(exception);
             } catch (Exception e) {
-                LOGGER.warning("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.warning("ProgressListenerForwarder: Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
 
     @Override
     public float getProgress() {
-        throw new UnsupportedOperationException("Forwarder does not hold a status");
+        throw new UnsupportedOperationException("ProgressListenerForwarder: Forwarder does not hold a status");
     }
 
     @Override
     public String getTask() {
-        throw new UnsupportedOperationException("Forwarder does not hold a status");
+        throw new UnsupportedOperationException("ProgressListenerForwarder: Forwarder does not hold a status");
     }
 
     public void paused() {
         for (IProgressListener l : listeners) {
             try {
                 if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine(getClass().getSimpleName() + " FORWARDING paused message to "
+                    LOGGER.fine("ProgressListenerForwarder: "+getClass().getSimpleName() + " FORWARDING paused message to "
                             + l.getClass().getSimpleName());
                 l.paused();
             } catch (Exception e) {
-                LOGGER.warning("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.warning("ProgressListenerForwarder: Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
@@ -120,11 +120,11 @@ public class ProgressListenerForwarder extends ProgressListener implements
         for (IProgressListener l : listeners) {
             try {
                 if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine(getClass().getSimpleName() + " FORWARDING progressing message to "
+                    LOGGER.fine("ProgressListenerForwarder: "+getClass().getSimpleName() + " FORWARDING progressing message to "
                             + l.getClass().getSimpleName());
                 l.progressing();
             } catch (Exception e) {
-                LOGGER.warning("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.warning("ProgressListenerForwarder: Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
@@ -133,7 +133,7 @@ public class ProgressListenerForwarder extends ProgressListener implements
         for (IProgressListener l : listeners) {
             try {
                 if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine(getClass().getSimpleName() + " FORWARDING resumed message to "
+                    LOGGER.fine("ProgressListenerForwarder: "+getClass().getSimpleName() + " FORWARDING resumed message to "
                             + l.getClass().getSimpleName());
                 l.resumed();
             } catch (Exception e) {
@@ -147,11 +147,11 @@ public class ProgressListenerForwarder extends ProgressListener implements
         for (IProgressListener l : listeners) {
             try {
                 if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine(getClass().getSimpleName() + " FORWARDING setProgress message to "
+                    LOGGER.fine("ProgressListenerForwarder: "+getClass().getSimpleName() + " FORWARDING setProgress message to "
                             + l.getClass().getSimpleName());
                 l.setProgress(progress);
             } catch (Exception e) {
-                LOGGER.warning("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.warning("ProgressListenerForwarder: Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
@@ -160,12 +160,12 @@ public class ProgressListenerForwarder extends ProgressListener implements
     public void setTask(String currentTask) {
         for (IProgressListener l : listeners) {
             if (LOGGER.isLoggable(Level.FINE))
-                LOGGER.fine(getClass().getSimpleName() + " FORWARDING setTask message to "
+                LOGGER.fine("ProgressListenerForwarder: "+getClass().getSimpleName() + " FORWARDING setTask message to "
                         + l.getClass().getSimpleName());
             try {
                 l.setTask(currentTask);
             } catch (Exception e) {
-                LOGGER.warning("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.warning("ProgressListenerForwarder: Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
@@ -173,12 +173,12 @@ public class ProgressListenerForwarder extends ProgressListener implements
     public void started() {
         for (IProgressListener l : listeners) {
             if (LOGGER.isLoggable(Level.FINE))
-                LOGGER.fine(getClass().getSimpleName() + " FORWARDING started message to "
+                LOGGER.fine("ProgressListenerForwarder: "+getClass().getSimpleName() + " FORWARDING started message to "
                         + l.getClass().getSimpleName());
             try {
                 l.started();
             } catch (Exception e) {
-                LOGGER.warning("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.warning("ProgressListenerForwarder: Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
