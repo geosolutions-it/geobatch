@@ -3,12 +3,17 @@
 	<id>geotiff</id>
 	<name>Prepare GeoTIFF and publish</name>
 	<description>Create overviews, retile the image and publish on GeoServer</description>
-
+	
 	<workingDirectory>geotiff</workingDirectory>
 	<autorun>true</autorun>
 	
+	<corePoolSize>10</corePoolSize>
+	<maximumPoolSize>30</maximumPoolSize>
+	<keepAliveTime>15</keepAliveTime> <!--seconds-->
+	<workQueueSize>100</workQueueSize>
+	
 	<EventGeneratorConfiguration>
-		<wildCard>*.*</wildCard>
+		<wildCard>*</wildCard>
 		<watchDirectory>geotiff/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
@@ -24,15 +29,18 @@
 		<description>geotiff EventConsumer</description>
 
 		<listenerId>GeoTIFFConsumerLogger0</listenerId>
-        <listenerId>GeoTIFFCumulator0</listenerId>
+		<listenerId>GeoTIFFCumulator0</listenerId>
         
 		<workingDirectory>geotiff</workingDirectory>
-		<performBackup>false</performBackup>
+		
+		<performBackup>true</performBackup>
+		
+		<preserveInput>false</preserveInput>
 
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.*</regex>
+			<regex>.+</regex>
 			<id>geotiff_r1</id>
 			<description>description</description>
 			<name>geotiff_rule_1</name>
@@ -100,7 +108,7 @@
 
     <ListenerConfigurations>
     	<StatusProgressListener>
-    		<serviceID>statusListenerService</serviceID>
+	    <serviceID>statusListenerService</serviceID>
             <id>GeoTIFFStatusActionLogger0</id>
     	</StatusProgressListener>
         

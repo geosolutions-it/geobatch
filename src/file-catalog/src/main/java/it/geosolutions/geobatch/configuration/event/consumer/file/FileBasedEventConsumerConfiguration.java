@@ -85,22 +85,13 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration"
      */
     protected List<ProgressListenerConfiguration> listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
-
-    protected FileBasedEventConsumerConfiguration(String id, String name, String description,
-            boolean dirty) {
-        super(id, name, description, dirty);
-    }
-
-    protected FileBasedEventConsumerConfiguration(String id, String name, String description) {
-        super(id, name, description);
-    }
-
+    
     /**
      * Default Constructor.
      */
-//    public FileBasedEventConsumerConfiguration() {
-//        super();
-//    }
+    protected FileBasedEventConsumerConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
 
     /**
      * Getter for the consumer actions.
@@ -191,20 +182,10 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     }
     
     public List<String> getListenerIds() {
-        // synchronized(this) {
-        // if(listenerIds == null) { // this may happen when loading via XStream
-        // listenerIds = new ArrayList<String>();
-        // }
-        // }
         return listenerIds;
     }
 
     public void setListenerId(List<String> ids) {
-        // synchronized(this) {
-        // if(listenerIds == null) { // this may happen when loading via XStream
-        // listenerIds = new ArrayList<String>();
-        // }
-        // }
         this.listenerIds = ids;
     }
 
@@ -235,7 +216,8 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
 
         // clone object
         final FileBasedEventConsumerConfiguration object = new FileBasedEventConsumerConfiguration(
-                super.getId(), super.getName(), super.getDescription(), super.isDirty());
+                super.getId(), super.getName(), super.getDescription());
+        object.setDirty(super.isDirty());
         object.setPerformBackup(performBackup);
         object.setPreserveInput(preserveInput);
         object.setWorkingDirectory(workingDirectory);

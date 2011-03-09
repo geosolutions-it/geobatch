@@ -32,6 +32,7 @@ import java.util.List;
 
 /**
  * @author Alessio Fabiani, GeoSolutions
+ * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
 public abstract class BaseFlowConfiguration extends BaseConfiguration implements FlowConfiguration {
@@ -97,10 +98,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
         this.eventGeneratorConfiguration = eventGeneratorConfiguration;
         this.eventConsumerConfiguration = eventConsumerConfiguration;
     }
-
-//    public BaseFlowConfiguration() {
-//        super();
-//    }
 
     /*
      * (non-Javadoc)

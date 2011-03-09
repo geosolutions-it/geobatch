@@ -102,8 +102,15 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                     "GeoTiffRetiler: Unable to find a reader for the provided file: "+inputFileName);
         }
         
-        final File tiledTiffFile = new File(inFile.getParent(), inputFileName + "_tiled.tif");
-
+        final File tiledTiffFile = new File(configuration.getWorkingDirectory(), inputFileName + "_tiled.tif");
+        
+        if (!tiledTiffFile.createNewFile() || !tiledTiffFile.canWrite()){
+            String message="GeoTiffRetiler: Unable to write to: "+tiledTiffFile.getAbsolutePath();
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe(message);
+                throw new IllegalArgumentException(message);
+            }   
+        }
 
         // /////////////////////////////////////////////////////////////////////
         //
@@ -179,8 +186,12 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
         writer.dispose();
         reader.dispose();
 
+        String extension=FilenameUtils.getExtension(inputFileName);
+        if (!extension.contains("tif")){
+            extension="tif";
+        }
         final String outputFileName=
-            FilenameUtils.getFullPath(absolutePath)+FilenameUtils.getBaseName(inputFileName)+".tif";
+            FilenameUtils.getFullPath(absolutePath)+FilenameUtils.getBaseName(inputFileName)+"."+extension;
         final File outputFile=new File(outputFileName);
         // do we need to remove the input?
         FileUtils.copyFile(tiledTiffFile, outputFile);
