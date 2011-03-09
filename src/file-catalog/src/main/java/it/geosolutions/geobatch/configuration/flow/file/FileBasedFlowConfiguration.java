@@ -34,6 +34,8 @@ import it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration;
  * @author Simone Giannecchini, GeoSolutions
  * @author Alessio Fabiani, GeoSolutions
  * @author Ivano Picco
+ * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * 
  */
 public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
 
@@ -48,13 +50,6 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
      * @uml.property  name="autorun"
      */
     private boolean autorun = false;
-
-    /**
-     * Default Constructor.
-     */
-//    public FileBasedFlowConfiguration() {
-//        super();
-//    }
 
     /**
      * 

@@ -4,6 +4,7 @@ import it.geosolutions.geobatch.camel.beans.JMSFlowRequest;
 import it.geosolutions.geobatch.camel.beans.JMSFlowResponse;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -22,7 +23,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.junit.Assert;
+import org.apache.commons.io.FileUtils;
 
 public class JMSClient {
     private static Lock lock=new ReentrantLock();
@@ -55,6 +56,35 @@ public class JMSClient {
         broker="tcp://localhost:61611";
         transacted = false;
     }
+    
+    private static Object lockObj=new Object();
+    
+    /**
+     * 
+     * @param exitNow wait if false
+     * notify if true
+     * @return
+     */
+    private static boolean exit(boolean exitNow){
+        if (!exitNow){
+            synchronized (lockObj) {
+                try {
+                    lockObj.wait();
+                } catch (InterruptedException e) {
+                    System.out.println(e.getMessage());
+                }
+                return true;
+            }
+        }
+        else {
+            synchronized (lockObj) {
+                lockObj.notify();
+            }
+        }
+        return false;
+    }
+    
+    
     
     protected static Session getSession() {
         if (initted && isOpen)
@@ -95,17 +125,52 @@ public class JMSClient {
         JMSClient.queueName = clientQueueName;
     }
     
+    /**
+     * @param args
+     * try:
+     *  tcp://localhost:61611 fileSevice res geotiff src/test/resources/data/
+     *  tcp://localhost:61611 fileSevice res geotiff src/test/resources/data/sample.tif
+     */
     public static void main(String args[]){
-        if (args.length>=5){
-            call((String)args[0], args[1], args[2], args[3], args[4]);
+        try{
+            if (args.length>=5){
+                File file=new File(args[4]);
+                if (file.exists()){
+                    
+                    try {
+                        if (file.isDirectory()){
+                            File fileBkp=new File(file.getCanonicalPath()+"_bkp");
+                            FileUtils.copyDirectory(file,fileBkp);
+                            call((String)args[0], args[1], args[2], args[3], args[4]);
+                        }
+                        else{
+                            File fileBkp=new File(args[4]+"_bkp");
+                            FileUtils.copyFile(file,fileBkp);
+                            call((String)args[0], args[1], args[2], args[3], args[4]);
+                        }
+                    } catch (IOException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                
+                
+            }
+            else
+                System.out.println("Unable to run the client:\n" +
+                		"1- broker the broker address\n" +
+                		"2- inQueue the GeoBatch queue name (if null it is set to: fileService)\n" +
+                		"3- resQueue the temp jms queue\n" +
+                		"4- flowId the GeoBatch flow id\n" +
+                		"5- args the list of file to pass to the flow\n");
+        }catch (Throwable t){
+            t.printStackTrace();
         }
-        else
-            System.out.println("Unable to run the client:\n" +
-            		"1- broker the broker address\n" +
-            		"2- inQueue the GeoBatch queue name (if null it is set to: fileService)\n" +
-            		"3- resQueue the temp jms queue\n" +
-            		"4- flowId the GeoBatch flow id\n" +
-            		"5- args the list of file to pass to the flow\n");
+        finally{
+            //wait here
+            while(exit(false)){
+                System.exit(1);
+            }
+        }
     }
     
     /**
@@ -134,8 +199,9 @@ public class JMSClient {
                 System.out.println(e.getMessage());
             }
         }
-        else
+        else {
             System.out.println("Unable to get the session");
+        }
     }
     
     public static JMSFlowRequest buildRequest(String flowId,String... args) throws JMSException {
@@ -258,6 +324,10 @@ public class JMSClient {
                 }
             } catch (JMSException e) {
                 e.printStackTrace();
+            }
+            finally{
+                // exit NOW
+                exit(true);
             }
         }
     }

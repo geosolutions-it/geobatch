@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.geotiff.retile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
@@ -52,7 +53,14 @@ public class GeoTiffRetilerService extends BaseService implements
 
     public GeoTiffRetiler createAction(GeoTiffRetilerConfiguration configuration) {
         try {
-            return new GeoTiffRetiler(configuration);
+            // absolutize working dir
+            String wd=Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd!=null){
+                configuration.setWorkingDirectory(wd);
+                return new GeoTiffRetiler(configuration);
+            }
+            else
+                return null;
         } catch (IOException e) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);

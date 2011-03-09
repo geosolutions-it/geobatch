@@ -23,8 +23,10 @@
 package it.geosolutions.geobatch.geotiff.overview;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
+import it.geosolutions.geobatch.geotiff.retile.GeoTiffRetiler;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -58,7 +60,14 @@ public class GeoTiffOverviewsEmbedderService extends BaseService implements
 
     public GeoTiffOverviewsEmbedder createAction(GeoTiffOverviewsEmbedderConfiguration configuration) {
         try {
-            return new GeoTiffOverviewsEmbedder(configuration);
+            // absolutize working dir
+            String wd=Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd!=null){
+                configuration.setWorkingDirectory(wd);
+                return new GeoTiffOverviewsEmbedder(configuration);
+            }
+            else
+                return null;
         } catch (IOException e) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);

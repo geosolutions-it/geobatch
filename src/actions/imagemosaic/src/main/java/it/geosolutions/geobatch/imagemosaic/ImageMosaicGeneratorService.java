@@ -22,6 +22,7 @@
 package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,7 +50,14 @@ public class ImageMosaicGeneratorService extends
      */
     public ImageMosaicAction createAction(ImageMosaicConfiguration configuration) {
         try {
-            return new ImageMosaicAction(configuration);
+            // absolutize working dir
+            String wd=Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd!=null){
+                configuration.setWorkingDirectory(wd);
+                return new ImageMosaicAction(configuration);
+            }
+            else
+                return null;
         } catch (Throwable e) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
