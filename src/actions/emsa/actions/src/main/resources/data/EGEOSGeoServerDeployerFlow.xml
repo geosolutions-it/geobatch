@@ -18,7 +18,7 @@
 		<name>test</name>
 	</EventGeneratorConfiguration>
 
-	<EventConsumerConfiguration>
+    <EventConsumerConfiguration>
 		<id>EGEOSGeoServerDeployer_config</id>
 		<name>EGEOSGeoServerDeployer_config</name>
 		<description>EGEOS GeoServer-Deployer Configuration</description>
@@ -36,7 +36,7 @@
 			<regex>((.*\.xml)|(.*_PRO))</regex>
 			<id>r1</id>
 			<description>description</description>
-			<name>test</name>
+			<name>rule</name>
 		</FileEventRule>
 
 		<EGEOSGeoServerDeployerConfiguration>
@@ -44,16 +44,67 @@
 			<description>EGEOS GeoServer-Deployer Configuration</description>
 			<name>EGEOSGeoServerDeployerConfiguration</name>
 			
+			<workingDirectory>EGEOSworkingDir/GeoServerDeployer</workingDirectory>	
+			
 			<listenerId>EGEOSActionLoggerListener</listenerId>
 			<listenerId>EGEOSActionStatusListener</listenerId>
 						
 			<serviceID>EGEOSGeoServerDeployerService</serviceID>
 
             <language>groovy</language>
-            <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EGEOSGeoServerDeployer.groovy</scriptFile>
-<!-- <scriptFile>/home/carlo/work/data/emsa/script/EGEOSGeoServerDeployer.groovy</scriptFile>-->
+<!--<scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EGEOSGeoServerDeployer.groovy</scriptFile>-->
+<scriptFile>/home/carlo/work/data/emsa/script/EGEOSGeoServerDeployer.groovy</scriptFile>
 
-		    <properties/>
+			<properties>
+				  <!-- Where to put output folder(s) -->
+				  <entry>
+				    <string>OutputDataDir</string>
+				    <!--
+				    /emsa/out/nfs/sarImages/
+				    /home/carlo/work/data/emsa/sarImages
+				    /media/bigdisk/emsa/sarImages/
+				    -->
+				    <string>/media/bigdisk/emsa/sarImages/</string>
+				  </entry>
+				  
+				  <!-- GEOTIFF Retiler -->
+				  <!-- <entry>
+				    <string>PrjFileName</string> -->
+				    <!--relative to the working dir-->
+				    <!-- <string>data.prj</string>
+				  </entry> -->
+				  <!-- GEOTIFF Retiler config-->
+				  <entry>
+				    <string>reTileH</string>
+				    <int>512</int>
+				  </entry>
+				  <entry>
+				    <string>reTileW</string>
+				    <int>512</int>
+				  </entry>
+				  <!-- GEOTIFF Overview config-->
+				  <entry>
+				    <string>downsampleStep</string>
+				    <int>2</int>
+				  </entry>
+				  <entry>
+				    <string>scaleAlgorithm</string>
+				    <string>Nearest</string>
+				  </entry>
+				  <entry>
+				    <string>numSteps</string>
+				    <int>10</int>
+				  </entry>
+				  <entry>
+				    <string>ovTileH</string>
+				    <int>512</int>
+				  </entry>
+				  <entry>
+				    <string>ovTileW</string>
+				    <int>512</int>
+				  </entry>
+				  
+			</properties>
             
 		</EGEOSGeoServerDeployerConfiguration>
 		
@@ -77,7 +128,7 @@
 		
 	</EventConsumerConfiguration>
 
-	<ListenerConfigurations>
+    <ListenerConfigurations>
     	<StatusProgressListener>
     		<serviceID>statusListenerService</serviceID>
             <id>EGEOSActionStatusListener</id>

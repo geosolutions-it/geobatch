@@ -102,7 +102,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     File[] list=outDir.listFiles((FileFilter)filter);
     for (file in list){
         String inputFileName = Extract.extract(file.getAbsolutePath());
-		//System.out.println("2FILE:"+inputFileName);
+//System.out.println("FILE:"+inputFileName);
     }
     
     // search for needed files
@@ -132,8 +132,8 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
         // fake event to avoid Failed Status!
         results.add("DONE");
         return results;
-	}
-	
+    }
+
     // forwarding some logging information to Flow Logger Listener
     listenerForwarder.setTask("::EMSAService : Processing event " + eventFilePath)
 
@@ -153,7 +153,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
        }
    }
 
-   System.out.println(" >>>>>> RESULTS >>>>>> " + results)
+//   System.out.println(" >>>>>> RESULTS >>>>>> " + results)
    
     // ////
     // forwarding event to the next action

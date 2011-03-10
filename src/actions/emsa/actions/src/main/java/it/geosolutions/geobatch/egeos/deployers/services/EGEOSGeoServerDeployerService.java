@@ -22,9 +22,11 @@
 package it.geosolutions.geobatch.egeos.deployers.services;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.egeos.deployers.actions.EGEOSDeployerBaseAction;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
+import it.geosolutions.geobatch.geotiff.overview.GeoTiffOverviewsEmbedder;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -47,7 +49,14 @@ public class EGEOSGeoServerDeployerService extends BaseService implements
 
     public EGEOSDeployerBaseAction createAction(EGEOSGeoServerDeployerConfiguration configuration) {
         try {
-            return new EGEOSDeployerBaseAction(configuration);
+            // absolutize working dir
+            String wd=Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd!=null){
+                configuration.setWorkingDirectory(wd);
+                return new EGEOSDeployerBaseAction(configuration);
+            }
+            else
+                return null;
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error occurred creating EGEOSGeoServerDeployer Action... "
                     + e.getLocalizedMessage(), e);
