@@ -347,9 +347,9 @@ public class Path {
     /**
      * 
      * @param source
-     * @param dest
+     * @param dest 
      * @param seconds to wait (maximum) for nfs propagate. If -1 no check is performed.
-     * @return
+     * @return the copied file if success, null if not.
      */
     public static File copyFileToNFS(File source, File dest, final int seconds){
         try {
@@ -358,21 +358,21 @@ public class Path {
             if (seconds>0){
                 if (!FileUtils.waitFor(dest, seconds)){
                     if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe("ProParser.copyTif() : failed to propagate tif to->"+dest.getAbsolutePath());
+                        LOGGER.severe("Path:copyFileToNFS() : failed to propagate file to->"+dest.getAbsolutePath());
                     dest=null;
                 } else if (LOGGER.isLoggable(Level.INFO)){
-                    LOGGER.info("ProParser.copyTif() : file: "+source.getAbsoluteFile()
+                    LOGGER.info("Path:copyFileToNFS() : file: "+source.getAbsoluteFile()
                             +" succesfully copied and propagated to: "+dest.getAbsolutePath());
                 }
             }
             else if (LOGGER.isLoggable(Level.INFO)){
-                LOGGER.info("ProParser.copyTif() : source file: "+source.getAbsoluteFile()
+                LOGGER.info("Path:copyFileToNFS() : source file: "+source.getAbsoluteFile()
                         +" succesfully copied to: "+dest.getAbsolutePath());
             }
         } catch (Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("ProParser.copyTif() : failed to copy tif to->"+dest.getAbsolutePath()+
-                        "message is: "+e.getLocalizedMessage());
+                LOGGER.severe("Path:copyFileToNFS() : failed to copy file."+
+                        "\n\tThe message is: "+e.getLocalizedMessage());
             dest = null;
         }
         return dest;
@@ -388,11 +388,28 @@ public class Path {
      * @return the resulting moved file list or null
      */
     public static List<File> copyListFileToNFS(List<File> list, File baseDestDir, int seconds){
+        // list
         if (list==null){
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using a NULL list");
             return null;
         }
         final int size=list.size();
         if (size==0){
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using an empty list");
+            return null;
+        }
+        // baseDestDir
+        if (baseDestDir==null){
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using a NULL baseDestDir");
+            return null;
+        }
+        else if (!baseDestDir.isDirectory() || !baseDestDir.canWrite()){
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using a not " +
+                        "writeable directory as baseDestDir: "+baseDestDir.getAbsolutePath());
             return null;
         }
         
@@ -400,11 +417,13 @@ public class Path {
         for (File file:list){
             if (file!=null){
                 if (file.exists()){
-                    ret.add(
-                            copyFileToNFS(
-                                    file,
-                                    new File(baseDestDir,file.getName()),
-                                    seconds));
+                    File dest=copyFileToNFS(
+                            file,
+                            new File(baseDestDir,file.getName()),
+                            seconds);
+                    if (dest!=null){
+                        ret.add(dest);
+                    }
                 }
             }
         }

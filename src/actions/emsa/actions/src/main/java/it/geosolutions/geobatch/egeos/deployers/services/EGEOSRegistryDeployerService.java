@@ -22,6 +22,7 @@
 package it.geosolutions.geobatch.egeos.deployers.services;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.egeos.deployers.actions.EGEOSDeployerBaseAction;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
@@ -47,7 +48,14 @@ public class EGEOSRegistryDeployerService extends BaseService implements
 
     public EGEOSDeployerBaseAction createAction(EGEOSRegistryDeployerConfiguration configuration) {
         try {
-            return new EGEOSDeployerBaseAction(configuration);
+            // absolutize working dir
+            String wd=Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd!=null){
+                configuration.setWorkingDirectory(wd);
+                return new EGEOSDeployerBaseAction(configuration);
+            }
+            else
+                return null;
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error occurred creating EGEOSRegistryDeployer Action... "
                     + e.getLocalizedMessage(), e);
