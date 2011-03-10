@@ -57,7 +57,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     /* ----------------------------------------------------------------- */
     // Main Input Variables: must be configured
     /** Registry URL **/
-    def registryURL = "http://csw-csn.e-geos.it/ergorr/webservice?wsdl";
+    def registryURL = "http://10.20.2.4/ergorr/webservice?wsdl";
     /** Web Service URL 
      *  - IMPORTANT: DON'T FORGET THE '/' AT THE END OF 'httpdServiceURL'
      **/
@@ -137,64 +137,65 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
             eoSender.setCollections("SAR:DATA");
             try {
                 eoSender.run();
+			} catch (IllegalStateException e) {
+                // sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
+            }
 
 				// search for other packages
 				Collector c=new Collector(new WildcardFileFilter("*_PCK.xml",IOCase.INSENSITIVE));
 				list=c.collect(pkgDir.getParentFile());
 				
-				for (file in list){
-				
+				for (file in list) {
+					//println (" ************************************************************************************** " + pkg.getPackageType());
+
 					eoProcessor = new EOProcessor(file.getParentFile());
 					eoProcessor.setGmlBaseURI(httpdServiceURL + file.getParentFile().getName());
         
-					println("::EGEOSRegistryDeployer : eoProcessor.setGmlBaseURI("+httpdServiceURL + file.getParentFile().getName()+")");
+					//println("::EGEOSRegistryDeployer : eoProcessor.setGmlBaseURI("+httpdServiceURL + file.getParentFile().getName()+")");
         
 					pkg = eoProcessor.parsePackage();
 
 					if (pkg.getPackageType().equals("SAR_DERIVED")) {
-						ShipProcessor dsProcessor = new ShipProcessor(file.getParentFile());
-						dsProcessor.setGmlBaseURI(httpdServiceURL + file.getParentFile().getName());
-
-						DERSender derSender = new DERSender(dsProcessor);
-						derSender.setServiceURL(serviceURL);
-						derSender.setCollections("VESSEL:DETECTION");
 						try {
+							ShipProcessor dsProcessor = new ShipProcessor(file.getParentFile());
+							dsProcessor.setGmlBaseURI(httpdServiceURL + file.getParentFile().getName());
+
+							DERSender derSender = new DERSender(dsProcessor);
+							derSender.setServiceURL(serviceURL);
+							derSender.setCollections("VESSEL:DETECTION");
 							derSender.run();
-						} catch (IllegalStateException e) {
-							sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
+						} catch (Exception e) {
+							//sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
 						}
 
-						SarDerivedProcessor sdfProcessor = new SarDerivedProcessor(file.getParentFile());
-						sdfProcessor.setGmlBaseURI(httpdServiceURL + file.getParentFile().getName());
-
-						derSender = new DERSender(sdfProcessor);
-						derSender.setServiceURL(serviceURL);
-						derSender.setCollections("WIND", "WAVE");
 						try {
+							SarDerivedProcessor sdfProcessor = new SarDerivedProcessor(file.getParentFile());
+							sdfProcessor.setGmlBaseURI(httpdServiceURL + file.getParentFile().getName());
+
+							derSender = new DERSender(sdfProcessor);
+							derSender.setServiceURL(serviceURL);
+							derSender.setCollections("WIND", "WAVE");
 							derSender.run();
-						} catch (IllegalStateException e) {
-							sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
+						} catch (Exception e) {
+							//sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
 						}
-					} else if (pkg.getPackageType().equals("OS_NOTIFICATION") ||
-						pkg.getPackageType().equals("OS_WARNING")) {
-						OilSpillProcessor osProcessor = new OilSpillProcessor(file.getParentFile());
-						osProcessor.setBaseGMLURL(httpdServiceURL + file.getParentFile().getName());
+					} else 
+						if (pkg.getPackageType().equals("OS_NOTIFICATION") || pkg.getPackageType().equals("OS_WARNING")) {
 
-						OilSpillSender osSender = new OilSpillSender(osProcessor);
-						osSender.setServiceURL(serviceURL);
-						osSender.setCollections("OIL:SPILL:WARNING", "OIL:SPILL:NOTIFICATION");
-						try {
+						try{
+							OilSpillProcessor osProcessor = new OilSpillProcessor(file.getParentFile());
+							osProcessor.setBaseGMLURL(httpdServiceURL + file.getParentFile().getName());
+
+							OilSpillSender osSender = new OilSpillSender(osProcessor);
+							osSender.setServiceURL(serviceURL);
+							osSender.setCollections("OIL:SPILL:WARNING", "OIL:SPILL:NOTIFICATION");
 							osSender.run();
-						} catch (IllegalStateException e) {
-							sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
+						} catch (Exception e) {
+							//sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
 						}
-					}					
+					}
 				}
-
-			} catch (IllegalStateException e) {
-                sendError(listenerForwarder, "::EGEOSRegistryDeployer : OK: Caught proper IllegalStateException", e);
-            }
-
+			
         }
 
         // ////
@@ -320,4 +321,4 @@ void initializeRR(URL serviceURL, CSWConn conn, String wfsGetCapabilities, Strin
         }
     }
 
-		}
+}

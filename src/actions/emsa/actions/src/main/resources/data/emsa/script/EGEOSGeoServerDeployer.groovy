@@ -19,7 +19,6 @@ import it.geosolutions.geobatch.flow.event.action.ActionException
 import it.geosolutions.geobatch.action.egeos.emsa.PackageType
 import it.geosolutions.geobatch.action.egeos.emsa.EMSAIOUtils
 
-
 import java.util.Queue;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
@@ -62,7 +61,8 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
 		def port 			= 5432
 		def user 			= "postgres"
 		def passwd 		= "postgres_matera"
-
+		
+		def SARNetCDFdestDir=new File("/emsa/out/nfs/sarDerived/");
 
     try {
         listenerForwarder.started();
@@ -77,12 +77,9 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
         //
         // ////////////////////////////////////////////////////////////////////
         Map props = configuration.getProperties();
-			
-	//def ImageIODir=new File("/emsa/out/nfs/sarImages/");
-	//def ImageIODir=new File("/home/carlo/work/data/emsa/sarImages");
-	//"/media/bigdisk/emsa/sarImages/");
+
 	File ImageIODir=new File(props.get("OutputDataDir"));
-        
+
         final String filePrefix = FilenameUtils.getBaseName(inputFileName);
         
         final String fileSuffix = FilenameUtils.getExtension(inputFileName);
@@ -93,10 +90,10 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
 	// ////
 	File pkgDir=null;
         if (fileSuffix.equalsIgnoreCase("xml")) {
-	  pkgDir= new File(inputFileName).getParentFile();   
+		pkgDir= new File(inputFileName).getParentFile();   
         }
         else
-	  pkgDir= new File(inputFileName);
+		pkgDir= new File(inputFileName);
 
         // ////
         // forwarding some logging information to Flow Logger Listener
@@ -110,8 +107,6 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
         // ////
         // getting package type
         // ////
-        //PackageType type = utils.getPackageTypeFromName(FilenameUtils.getBaseName(pkgDir.getName()));
-
 //println("File name is: "+pkgDir.getName());
 
         PackageType type = utils.getPackageTypeFromName(pkgDir.getName());
@@ -125,7 +120,6 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
         DataStore store = connect(database, dbtype, host, port, user, passwd);
         listenerForwarder.setTask("::EGEOSGeoServerDeployer : online store ")
         if (type != null) {
-
             if (type == PackageType.DER) {
                 // deploy Ship Detections...
                 File[] shipFiles = pkgDir.listFiles(new ShipDetectionNameFilter());
@@ -141,7 +135,13 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
                 File[] ncDerivedFiles = pkgDir.listFiles(new NetCDFNameFilter());
 
                 for (File ncFile : ncDerivedFiles) {
-                    results.add(ncFile.getAbsolutePath());
+					File destNcFile = new File(SARNetCDFdestDir, ncFile.getName());
+					if (destNcFile.exists()) {
+						if (destNcFile.delete()) {
+							FileUtils.copyFileToDirectory(ncFile, SARNetCDFdestDir, true)
+							results.add(destNcFile.getAbsolutePath());
+						}
+					}
                 }
             } else if (type == PackageType.OSW || type == PackageType.OSN) {
                 // deploy Oil Spills...
@@ -153,9 +153,7 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
                 }
 
                 store.dispose();
-            } else 
-
-            if (type == PackageType.PRO) {
+            } else if (type == PackageType.PRO) {
 //println("PRO: ");
 
 		// retile
@@ -180,53 +178,55 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
 		Queue queue=new LinkedList();
 		
                 File[] proFiles = pkgDir.listFiles((FilenameFilter)new WildcardFileFilter("*.xml"));
-				if (proFiles!=null){
-					List addList = new ArrayList();
-					for (File proXmlFile : proFiles) {
-						File dest=ProParser.copyTif(ProParser.parse(proXmlFile),ImageIODir,120);
-						if (dest!=null){
-						  // add file to the list
-						  queue.add(new FileSystemEvent(dest,FileSystemEventType.FILE_ADDED));
-					// apply retile
-						  listenerForwarder.setTask("::EGEOSGeoServerDeployer :  sending file:" + dest+ " to overview and retiling...");
-						  queue=retiler.execute(queue);
-						  listenerForwarder.setTask("::EGEOSGeoServerDeployer : Retiler executed");
-					// apply overview
-						  queue=overview.execute(queue);
-						  listenerForwarder.setTask("::EGEOSGeoServerDeployer : Oeverview executed");
-						  
-					// get the output
-						  if (queue.size()>0){
-						    FileSystemEvent event=queue.peek();
-						    dest=event.getSource();
-						    addList.add(dest);
-						  }
-						  else {
-						    String message="::EGEOSGeoServerDeployer : problem the output event queue do not contain files!";
-						    sendError(listenerForwarder, message, new NullPointerException(message));
-						  }
-						}
-						else {
-						    String message="EGEOSGeoServerDeployer: Unable to move gif file";
-						    sendError(listenerForwarder, message, new NullPointerException(message));
-						}
-					}
-					// create in memory ImageMosaicCommand object
-					ImageMosaicCommand cmd=new ImageMosaicCommand(ImageIODir, addList, null);
-//println("FILE_PRO_XML_CMD: "+configuration.getWorkingDirectory()+"pro_imagemosaic_cmd.xml");
-					// sterialize the ImageMosaicCommand object
-					File dest=ImageMosaicCommand.serialize(cmd, configuration.getWorkingDirectory()+"pro_imagemosaic_cmd.xml");
-					// add the serialized file to the queue
-					results.add(dest.getAbsolutePath());
+		if (proFiles!=null){
+			List addList = new ArrayList();
+			for (File proXmlFile : proFiles) {
+				File dest=ProParser.copyTif(ProParser.parse(proXmlFile),ImageIODir,120);
+				if (dest!=null){
+				  // add file to the list
+				  queue.add(new FileSystemEvent(dest,FileSystemEventType.FILE_ADDED));
+			// apply retile
+				  listenerForwarder.setTask("::EGEOSGeoServerDeployer :  sending file:" + dest+ " to overview and retiling...");
+				  queue=retiler.execute(queue);
+				  listenerForwarder.setTask("::EGEOSGeoServerDeployer : Retiler executed");
+			// apply overview
+				  queue=overview.execute(queue);
+				  listenerForwarder.setTask("::EGEOSGeoServerDeployer : Oeverview executed");
+				  
+			// get the output
+				  if (queue.size()>0){
+				    FileSystemEvent event=queue.peek();
+				    dest=event.getSource();
+				    addList.add(dest);
+				  }
+				  else {
+				    String message="::EGEOSGeoServerDeployer : problem the output event queue do not contain files!";
+				    sendError(listenerForwarder, message, new NullPointerException(message));
+				  }
 				}
+				else {
+				    String message="EGEOSGeoServerDeployer: Unable to move gif file";
+				    sendError(listenerForwarder, message, new NullPointerException(message));
+				}
+			}
+			// create in memory ImageMosaicCommand object
+			ImageMosaicCommand cmd=new ImageMosaicCommand(ImageIODir, addList, null);
+//println("FILE_PRO_XML_CMD: "+configuration.getWorkingDirectory()+"pro_imagemosaic_cmd.xml");
+			// sterialize the ImageMosaicCommand object
+			File dest=ImageMosaicCommand.serialize(cmd, 
+			configuration.getWorkingDirectory()+"pro_imagemosaic_cmd.xml");
+			// add the serialized file to the queue
+			results.add(dest.getAbsolutePath());
+		}
             }
         }
-
-        // ////
-        // forwarding event to the next action
-        // ////
-        // fake event to avoid Failed Status!
-        results.add("DONE");
+	else {
+	        // ////
+	        // forwarding event to the next action
+	        // ////
+	        // fake event to avoid Failed Status!
+        	results.add("DONE");
+	}
         return results;
     } catch (Exception cause) {
         sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
