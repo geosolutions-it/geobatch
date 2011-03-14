@@ -1,3 +1,5 @@
+import java.io.File;
+
 /** 
  * Java Imports ...
  **/
@@ -181,7 +183,9 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
 		if (proFiles!=null){
 			List addList = new ArrayList();
 			for (File proXmlFile : proFiles) {
-				File dest=ProParser.copyTif(ProParser.parse(proXmlFile),ImageIODir,120);
+				File dest=ProParser.copyTif(ProParser.parse(proXmlFile),
+                                                            new File(configuration.getWorkingDirectory()+File.separator)
+                                                            ,120);
 				if (dest!=null){
 				  // add file to the list
 				  queue.add(new FileSystemEvent(dest,FileSystemEventType.FILE_ADDED));
@@ -214,7 +218,7 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
 //println("FILE_PRO_XML_CMD: "+configuration.getWorkingDirectory()+"pro_imagemosaic_cmd.xml");
 			// sterialize the ImageMosaicCommand object
 			File dest=ImageMosaicCommand.serialize(cmd, 
-			configuration.getWorkingDirectory()+"pro_imagemosaic_cmd.xml");
+			configuration.getWorkingDirectory()+File.separator+"pro_imagemosaic_cmd.xml");
 			// add the serialized file to the queue
 			results.add(dest.getAbsolutePath());
 		}

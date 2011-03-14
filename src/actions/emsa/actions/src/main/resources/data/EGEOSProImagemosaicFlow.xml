@@ -95,14 +95,14 @@
                         <outputTransparentColor>000000</outputTransparentColor>
                         <inputTransparentColor>FFFFFF</inputTransparentColor>
                         <allowMultithreading>true</allowMultithreading>
-                        <useJaiImageRead>true</useJaiImageRead>
-                        <tileSizeH>512</tileSizeH>
-                        <tileSizeW>512</tileSizeW>
+                        <useJaiImageRead>false</useJaiImageRead>
+                        <tileSizeH>256</tileSizeH>
+                        <tileSizeW>256</tileSizeW>
 
                         <timeDimEnabled>true</timeDimEnabled>
 <!--                    <dirName>DIR</dirName>-->
-<!-- LIST, CONTINOUS_INTERVAL, DISCRETE_INTERVAL -->
-                        <timePresentationMode>CONTINOUS_INTERVAL</timePresentationMode>
+			<!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
+                        <timePresentationMode>CONTINUOUS_INTERVAL</timePresentationMode>
 			
 			<styles/>
 			<datastorePropertiesPath>EGEOSProImagemosaicWorkingDir/datastore.properties</datastorePropertiesPath>

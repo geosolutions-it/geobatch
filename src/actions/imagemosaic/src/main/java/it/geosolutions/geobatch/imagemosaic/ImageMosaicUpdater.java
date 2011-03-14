@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,6 +51,11 @@ import com.vividsolutions.jts.io.WKTReader;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 abstract class ImageMosaicUpdater {
+
+    /**
+     * Default logger
+     */
+    protected final static Logger LOGGER = Logger.getLogger(ImageMosaicAction.class.toString());
 
     /**
      * 
@@ -205,8 +211,8 @@ abstract class ImageMosaicUpdater {
                     }
                 }
             } catch (Throwable e) {
-                if (ImageMosaicAction.LOGGER.isLoggable(Level.SEVERE))
-                    ImageMosaicAction.LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
             }
         }
 
@@ -240,30 +246,22 @@ abstract class ImageMosaicUpdater {
             final String LOCATION_KEY = "LocationAttribute";
     
             try {
-                try {
-                    // SPI
-                    final String SPIClass = dataStoreProp.getProperty("SPI");
-                    // create a datastore as instructed
-                    final DataStoreFactorySpi spi = (DataStoreFactorySpi) Class.forName(SPIClass)
-                            .newInstance();
-                    final Map<String, Serializable> params = Utils
-                            .createDataStoreParamsFromPropertiesFile(dataStoreProp, spi);
-    
-                    // special case for postgis
-                    if (spi instanceof PostgisNGJNDIDataStoreFactory
-                            || spi instanceof PostgisNGDataStoreFactory) {
-                        dataStore = spi.createDataStore(params);
-                        if (dataStore == null) {
-                            throw new NullPointerException(
-                                    "updateDataStore(): the required resource was not found or if insufficent parameters were given.");
-                        }
+                // SPI
+                final String SPIClass = dataStoreProp.getProperty("SPI");
+                // create a datastore as instructed
+                final DataStoreFactorySpi spi = (DataStoreFactorySpi) Class.forName(SPIClass)
+                        .newInstance();
+                final Map<String, Serializable> params = Utils
+                        .createDataStoreParamsFromPropertiesFile(dataStoreProp, spi);
+
+                // special case for postgis
+                if (spi instanceof PostgisNGJNDIDataStoreFactory
+                        || spi instanceof PostgisNGDataStoreFactory) {
+                    dataStore = spi.createDataStore(params);
+                    if (dataStore == null) {
+                        throw new NullPointerException(
+                                "updateDataStore(): the required resource was not found or if insufficent parameters were given.");
                     }
-                } catch (ClassNotFoundException e) {
-                    throw new IllegalArgumentException("updateDataStore(): " + e.getLocalizedMessage());
-                } catch (InstantiationException e) {
-                    throw new IOException("updateDataStore(): " + e.getLocalizedMessage());
-                } catch (IllegalAccessException e) {
-                    throw new IOException("updateDataStore(): " + e.getLocalizedMessage());
                 }
     
                 // the layer uses absolute path?
@@ -290,8 +288,8 @@ abstract class ImageMosaicUpdater {
                                     // the path is absolute AND the file is outside the layer baseDir!
                                     files.remove(file); // remove it
                                     // log as warning
-                                    if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
-                                        ImageMosaicAction.LOGGER.warning("updateDataStore(): Layer specify a relative pattern for files but the "
+                                    if (LOGGER.isLoggable(Level.WARNING)) {
+                                        LOGGER.warning("updateDataStore(): Layer specify a relative pattern for files but the "
                                                 + "incoming xml command file has an absolute AND outside the layer baseDir file into the "
                                                 + "delFile list! This file will NOT be removed from the layer: "
                                                 + file.getAbsolutePath());
@@ -309,7 +307,7 @@ abstract class ImageMosaicUpdater {
                 // throw new IllegalArgumentException(
                 // "ImageMosaicAction: Problems when opening the index, no typenames for the schema are defined");
     
-                Transaction transaction = null;
+                
                 FeatureWriter<SimpleFeatureType, SimpleFeature> fw = null;
                 final String handle = "ImageMosaic:" + Thread.currentThread().getId();
                 final String store = mosaicDescriptor.getCoverageStoreId();
@@ -320,17 +318,21 @@ abstract class ImageMosaicUpdater {
                 try {
                     delFilter = getQuery(delList, absolute, locationKey);
                 } catch (NullPointerException npe) {
-                    if (ImageMosaicAction.LOGGER.isLoggable(Level.INFO)) {
-                        ImageMosaicAction.LOGGER.info("updateDataStore():" + npe);
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.info("updateDataStore():" + npe);
                     }
                 } catch (CQLException cqle) {
                     throw new IllegalArgumentException(
                             "updateDataStore(): Unable to build a query. Message: " + cqle);
                 }
-    
+                
+                Transaction transaction = null;
                 if (delFilter != null) {
-                    transaction = new DefaultTransaction(handle);
+
                     try {
+                        // once closed you have to renew the reference
+                        if (transaction == null)
+                            transaction = new DefaultTransaction(handle);
                         fw = dataStore.getFeatureWriter(store, delFilter, transaction);
                         if (fw == null) {
                             throw new NullPointerException(
@@ -350,22 +352,22 @@ abstract class ImageMosaicUpdater {
                     } catch (IOException ioe) {
                         if (transaction != null)
                             transaction.rollback();
-                        if (ImageMosaicAction.LOGGER.isLoggable(Level.SEVERE)) {
-                            ImageMosaicAction.LOGGER.severe("UpdateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe("UpdateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
                         }
                         throw new IOException("UpdateDataStore(): " + ioe.getLocalizedMessage());
                     } catch (RuntimeException re) {
                         if (transaction != null)
                             transaction.rollback();
-                        if (ImageMosaicAction.LOGGER.isLoggable(Level.SEVERE)) {
-                            ImageMosaicAction.LOGGER.severe("UpdateDataStore(): problem with connection: "+re.getLocalizedMessage());
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe("UpdateDataStore(): problem with connection: "+re.getLocalizedMessage());
                         }
                         throw new IOException("UpdateDataStore(): " + re.getLocalizedMessage());
                     } finally {
                         if (transaction != null) {
                             transaction.commit();
-    //                        transaction.close();
-    //                        transaction = null; // once closed you have to renew the reference
+                            transaction.close();
+                            transaction = null; // once closed you have to renew the reference
                         }
                         if (fw != null) {
                             fw.close();
@@ -374,8 +376,8 @@ abstract class ImageMosaicUpdater {
                     }
                 }// if ! query error
                 else {
-                    if (ImageMosaicAction.LOGGER.isLoggable(Level.INFO)) {
-                        ImageMosaicAction.LOGGER.info("UpdateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.info("UpdateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
                     }
                 }
     
@@ -385,22 +387,24 @@ abstract class ImageMosaicUpdater {
                 try {
                     addFilter = getQuery(addList, absolute, locationKey);
                 } catch (NullPointerException npe) {
-                    if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
-                        ImageMosaicAction.LOGGER.warning("updateDataStore():" + npe);
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("updateDataStore():" + npe);
                     }
                 } catch (CQLException cqle) {
                     throw new IllegalArgumentException(
                             "updateDataStore(): Unable to build a query. Message: " + cqle);
                 }
-                // once closed you have to renew the reference
-                if (transaction == null)
-                    transaction = new DefaultTransaction(handle);
+
                 /*
                  * CHECK IF ADD FILES ARE ALREADY INTO THE LAYER
                  */
                 if (addFilter != null) {
                     FeatureReader<SimpleFeatureType, SimpleFeature> fr=null;
                     try {
+                        // once closed you have to renew the reference
+                        if (transaction == null)
+                            transaction = new DefaultTransaction(handle);
+                        
                         // get the schema if this feature
                         final SimpleFeatureType schema = dataStore.getSchema(store); 
                         /*
@@ -424,8 +428,8 @@ abstract class ImageMosaicUpdater {
                                 if (absolute){
                                     File added=new File(cmd.getBaseDir(),path);
                                     cmd.getAddFiles().remove(added);
-                                    if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
-                                        ImageMosaicAction.LOGGER.warning("UpdateDataStore(): the file: "+path+
+                                    if (LOGGER.isLoggable(Level.WARNING)) {
+                                        LOGGER.warning("UpdateDataStore(): the file: "+path+
                                                 " is removed from the addFiles list because it is already present into the layer");
                                     }
                                 }
@@ -436,8 +440,8 @@ abstract class ImageMosaicUpdater {
                                         File file=it.next();
                                         if (file.getName().equals(path)){
                                             it.remove();
-                                            if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
-                                                ImageMosaicAction.LOGGER.warning("UpdateDataStore(): the file: "+path+
+                                            if (LOGGER.isLoggable(Level.WARNING)) {
+                                                LOGGER.warning("UpdateDataStore(): the file: "+path+
                                                 " is removed from the addFiles list because it is already present into the layer");
                                             }
                                         }
@@ -448,23 +452,23 @@ abstract class ImageMosaicUpdater {
                     } catch (IOException ioe) {
                         if (transaction != null)
                             transaction.rollback();
-                        if (ImageMosaicAction.LOGGER.isLoggable(Level.SEVERE)) {
-                            ImageMosaicAction.LOGGER.severe("updateDataStore(): unable to access to the datastore in append mode. Message: "
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe("updateDataStore(): unable to access to the datastore in append mode. Message: "
                                     + ioe.getLocalizedMessage());
                         }
                     } catch (RuntimeException re) {
                         String message="UpdateDataStore(): problem with connection: "+re.getLocalizedMessage();
                         if (transaction != null)
                             transaction.rollback();
-                        if (ImageMosaicAction.LOGGER.isLoggable(Level.SEVERE)) {
-                            ImageMosaicAction.LOGGER.severe(message);
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe(message);
                         }
                         throw new IOException(message);
                     } finally {
                         if (transaction != null) {
                             transaction.commit();
-    //                        transaction.close();
-    //                        transaction = null; // once closed you have to renew the reference
+                            transaction.close();
+                            transaction = null; // once closed you have to renew the reference
                         }
                         if (fr != null) {
                             fr.close();
@@ -473,8 +477,8 @@ abstract class ImageMosaicUpdater {
                     }
                 }// if ! query error
                 else {
-                    if (ImageMosaicAction.LOGGER.isLoggable(Level.INFO)) {
-                        ImageMosaicAction.LOGGER.info("updateDataStore(): the ADD file list is not used to query datastore. Probably it is empty");
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.info("updateDataStore(): the ADD file list is not used to query datastore. Probably it is empty");
                     }
                 }
                 addFilter = null;
@@ -488,18 +492,19 @@ abstract class ImageMosaicUpdater {
                 }
                 if (cmd.getAddFiles()==null){
                     String message="UpdateDataStore(): problem with copy copyTo files. addFiles list is null here";
-                    if (ImageMosaicAction.LOGGER.isLoggable(Level.SEVERE)) {
-                        ImageMosaicAction.LOGGER.severe(message);
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.severe(message);
                     }
                     throw new IOException(message);
                 }
                 else if (cmd.getAddFiles().size() > 0){
-                    // once closed you have to renew the reference
-    //                transaction = new DefaultTransaction(handle);
                     /*
                      * ADD FILES TO THE LAYER
                      */
                     try {
+                        // once closed you have to renew the reference
+                        if (transaction == null)
+                            transaction = new DefaultTransaction(handle);
                         fw = dataStore.getFeatureWriterAppend(store, transaction);
                         if (fw == null) {
                             throw new NullPointerException(
@@ -522,15 +527,15 @@ abstract class ImageMosaicUpdater {
                         }
                     } catch (IOException ioe) {
                         transaction.rollback();
-                        if (ImageMosaicAction.LOGGER.isLoggable(Level.SEVERE)) {
-                            ImageMosaicAction.LOGGER.severe("updateDataStore(): unable to access to the datastore in append mode. Message: "
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe("updateDataStore(): unable to access to the datastore in append mode. Message: "
                                     + ioe.getLocalizedMessage());
                         }
                     } catch (RuntimeException re) {
                         if (transaction != null)
                             transaction.rollback();
-                        if (ImageMosaicAction.LOGGER.isLoggable(Level.SEVERE)) {
-                            ImageMosaicAction.LOGGER.severe("UpdateDataStore(): problem with connection: "+re.getLocalizedMessage());
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe("UpdateDataStore(): problem with connection: "+re.getLocalizedMessage());
                         }
                         throw new IOException("UpdateDataStore(): " + re.getLocalizedMessage());
                     } finally {
@@ -545,14 +550,16 @@ abstract class ImageMosaicUpdater {
                     }
                 } // addFiles size > 0
                 
-    //        } catch (Throwable e) {
-    //
-    //            if (LOGGER.isLoggable(Level.SEVERE)) {
-    //                LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
-    //            }
-    //            return false;
+            } catch (Throwable e) {
+    
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
+                }
+                
+                return false;
                 
             } finally {
+                
                 if (dataStore != null)
                     dataStore.dispose();
             }

@@ -5,7 +5,6 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,12 +12,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.media.jai.operator.MosaicDescriptor;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -54,7 +51,6 @@ public abstract class ImageMosaicREST {
                 Collection<FileSystemEvent> layers)
                     throws ParserConfigurationException, IOException, TransformerException 
     {
-        FileWriter outFile;
 
         // ////////////////////////////////////////////////////////////////////
         //
@@ -107,7 +103,7 @@ public abstract class ImageMosaicREST {
         queryParams.put("USE_JAI_IMAGEREAD", config.isUseJaiImageRead() ? "true"
                 : "false");
         if (config.getTileSizeH() < 1 || config.getTileSizeW() < 1) {
-            queryParams.put("SUGGESTED_TILE_SIZE", "512,512");
+            queryParams.put("SUGGESTED_TILE_SIZE", "256,256");
         } else
             queryParams.put("SUGGESTED_TILE_SIZE", config.getTileSizeH() + ","
                     + config.getTileSizeW());
