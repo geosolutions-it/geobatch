@@ -66,6 +66,7 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
 		
 		def SARNetCDFdestDir=new File("/emsa/out/nfs/sarDerived/");
 
+	DataStore store=null;
     try {
         listenerForwarder.started();
         // ////
@@ -119,7 +120,7 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
         // Update GeoServer DataStore...
         // ////
         // connect to the store
-        DataStore store = connect(database, dbtype, host, port, user, passwd);
+        store = connect(database, dbtype, host, port, user, passwd);
         listenerForwarder.setTask("::EGEOSGeoServerDeployer : online store ")
         if (type != null) {
             if (type == PackageType.DER) {
@@ -232,8 +233,12 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
         	results.add("DONE");
 	}
         return results;
-    } catch (Exception cause) {
+    } catch (Throwable cause) {
         sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
+    } finally {
+	if (store!=null)
+	  store.dispose();
+	store=null;
     }
 }
 

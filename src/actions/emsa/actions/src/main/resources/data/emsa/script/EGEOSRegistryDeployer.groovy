@@ -69,6 +69,7 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     def wmsGetCapabilities = "http://ows-csn.e-geos.it/geoserver/wms?SERVICE=wms&amp;VERSION=1.1.0&amp;REQUEST=GetCapabilities";
 
     try {
+println (" **********************************REGISTRY DEPLOYER*********************************** ");
         listenerForwarder.started();
         // ////
         // Instatiate EMSA Utilities

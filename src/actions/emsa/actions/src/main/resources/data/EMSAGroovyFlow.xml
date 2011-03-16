@@ -17,7 +17,7 @@
 		<id>id</id>
     <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
-		<name>test</name>
+		<name>EMSAGroovyFlow</name>
 	</EventGeneratorConfiguration>
 
     <EventConsumerConfiguration>
@@ -26,7 +26,7 @@
 		<description>EMSA Groovy Configuration Script</description>
 
 		<listenerId>EMSAConsumerLoggerListener</listenerId>
-        <listenerId>EMSACumulatorListener</listenerId>
+	        <listenerId>EMSACumulatorListener</listenerId>
         
 		<workingDirectory>EMSAWorkingDir</workingDirectory>
 		<performBackup>false</performBackup>
@@ -38,7 +38,7 @@
 			<regex>.+</regex>
 			<id>r1</id>
 			<description>description</description>
-			<name>test</name>
+			<name>EMSAGroovyFlow</name>
 		</FileEventRule>
 <!--Actions List-->
 		<ScriptingConfiguration>

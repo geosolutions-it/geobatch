@@ -30,10 +30,16 @@ public abstract class ImageMosaicREST {
      */
     public final static String GEOSERVER_VERSION = "2.x";
 
-    
+    /**
+     * recursively remove ending slashes
+     * @param geoserverURL
+     * @return
+     */
     protected static String decurtSlash(String geoserverURL) {
-        return !geoserverURL.endsWith("/") ? geoserverURL : geoserverURL.substring(0,
-                geoserverURL.length() - 1);
+        if (geoserverURL.endsWith("/")){
+            geoserverURL=decurtSlash(geoserverURL.substring(0,geoserverURL.length() - 1));
+        }
+        return geoserverURL;
     }
     
     /**
@@ -260,6 +266,25 @@ public abstract class ImageMosaicREST {
 
         ret &= GeoServerRESTHelper.putContent(restUrl, "<LayerConfig><DefaultStyle>" + conf.getDefaultStyle()
                 + "</DefaultStyle></LayerConfig>", conf.getGeoserverUID(), conf.getGeoserverPWD());
+        return ret;
+    }
+
+    /**
+     * @throws MalformedURLException 
+     * 
+     */
+    public static boolean reloadCatalog(ImageMosaicConfiguration conf) throws MalformedURLException {
+        boolean ret = true;
+        URL geoserverREST_URL = new URL(decurtSlash(conf.getGeoserverURL()) + "/rest/reload");
+        
+        LOGGER.info("ImageMosaicREST::reloadCatalog():postTextFileTo URL: "+geoserverREST_URL.toString());
+        
+        if (GeoServerRESTHelper.postTextFileTo(geoserverREST_URL, null, conf.getGeoserverUID(), conf.getGeoserverPWD(), null)) {
+            LOGGER.info("ImageMosaicREST::reloadCatalog(): GeoServer Catalog successfully reloaded!");
+        } else {
+            LOGGER.warning("ImageMosaicREST::reloadCatalog(): Error occurred while trying to reload GeoServer Catalog!");
+            ret = false;
+        }
         return ret;
     }
 

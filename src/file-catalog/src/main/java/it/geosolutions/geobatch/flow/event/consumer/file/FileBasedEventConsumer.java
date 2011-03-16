@@ -173,15 +173,15 @@ public class FileBasedEventConsumer extends
      * 
      * @NOTE: CHECKME: is it really needed? will it not break flows that need scattered files?
      */
-//    private boolean checkSamePath(String fullpath) {
-//        for (FileSystemEvent event : eventsQueue) {
-//            String existingFP = FilenameUtils.getFullPath(event.getSource().getAbsolutePath());
-//            if (!fullpath.equals(existingFP)) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
+    // private boolean checkSamePath(String fullpath) {
+    // for (FileSystemEvent event : eventsQueue) {
+    // String existingFP = FilenameUtils.getFullPath(event.getSource().getAbsolutePath());
+    // if (!fullpath.equals(existingFP)) {
+    // return false;
+    // }
+    // }
+    // return true;
+    // }
 
     // ----------------------------------------------------------------------------
     /**
@@ -276,7 +276,8 @@ public class FileBasedEventConsumer extends
             final ProgressListenerService progressListenerService = CatalogHolder.getCatalog()
                     .getResource(serviceID, ProgressListenerService.class);
             if (progressListenerService != null) {
-                ProgressListener progressListener = progressListenerService.createProgressListener(plConfig,this);
+                ProgressListener progressListener = progressListenerService.createProgressListener(
+                        plConfig, this);
                 getListenerForwarder().addListener(progressListener);
             } else {
                 throw new IllegalArgumentException("Could not find '" + serviceID
@@ -305,13 +306,14 @@ public class FileBasedEventConsumer extends
         final List<Action<FileSystemEvent>> loadedActions = new ArrayList<Action<FileSystemEvent>>();
         for (ActionConfiguration actionConfig : configuration.getActions()) {
             final String actionServiceID = actionConfig.getServiceID();
-            final ActionService<FileSystemEvent, ActionConfiguration> actionService = 
-                    CatalogHolder.getCatalog().getResource(actionServiceID, ActionService.class);
+            final ActionService<FileSystemEvent, ActionConfiguration> actionService = CatalogHolder
+                    .getCatalog().getResource(actionServiceID, ActionService.class);
             if (actionService != null) {
                 Action<FileSystemEvent> action = actionService.createAction(actionConfig);
                 if (action == null) {
-                    throw new IllegalArgumentException("Action could not be created for config "
-                            + actionConfig);
+                    throw new IllegalArgumentException(
+                            "FileBasedEventConsumer::initialize(): Action could not be created for config "
+                                    + actionConfig);
                 }
 
                 // attach listeners to actions
@@ -322,7 +324,8 @@ public class FileBasedEventConsumer extends
                             .getCatalog().getResource(listenerServiceID,
                                     ProgressListenerService.class);
                     if (progressListenerService != null) {
-                        ProgressListener progressListener = progressListenerService.createProgressListener(plConfig,action);
+                        ProgressListener progressListener = progressListenerService
+                                .createProgressListener(plConfig, action);
                         action.addListener(progressListener);
                     } else {
                         throw new IllegalArgumentException("Could not find '" + listenerServiceID
@@ -483,7 +486,7 @@ public class FileBasedEventConsumer extends
             getListenerForwarder().progressing(50, "Running actions");
 
             try {
-                fileEventList=this.applyActions(fileEventList);
+                fileEventList = this.applyActions(fileEventList);
                 this.setStatus(EventConsumerStatus.COMPLETED);
                 jobResultSuccessful = true;
             } catch (ActionException ae) {

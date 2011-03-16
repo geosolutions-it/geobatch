@@ -1,10 +1,11 @@
 package it.geosolutions.geobatch.tools;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import it.geosolutions.geobatch.tools.file.Collector;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.IOCase;
@@ -22,30 +23,27 @@ public class CollectorTests {
                 FileFilterUtils.or(
                         new WildcardFileFilter("*_PCK.xml",IOCase.INSENSITIVE),
                         new WildcardFileFilter("*_PRO",IOCase.INSENSITIVE)));
-        try {
-            File location=new File(path);
-            
-            System.out.println("Location: "+location.getAbsoluteFile());
-            
-            assertNotNull(location);
-            
-            assertTrue(location.exists());
-            
-            List<File> list=c.collect(location);
 
-            assertNotNull(list);
-            
-            System.out.println("Number of files..."+list.size());
-            
-            for (File f : list){
-                System.out.println("FILE: "+f.getAbsolutePath());
-            }
+        File location=new File(path);
+        
+        System.out.println("Location: "+location.getAbsoluteFile());
+        
+        assertNotNull(location);
+        
+        assertTrue(location.exists());
+        
+        List<File> list=c.collect(location);
 
-            assertEquals("Wrong number of files...", FILES_IN_TEST, list.size());
-            
-        } catch (IOException e) {
-            System.err.println("ERROR: "+e.getLocalizedMessage());
+        assertNotNull(list);
+        
+        System.out.println("Number of files..."+list.size());
+        
+        for (File f : list){
+            System.out.println("FILE: "+f.getAbsolutePath());
         }
+
+        assertEquals("Wrong number of files...", FILES_IN_TEST, list.size());
+            
     }
 
 }

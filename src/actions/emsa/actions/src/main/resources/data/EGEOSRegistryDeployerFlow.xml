@@ -15,7 +15,7 @@
 		<id>id</id>
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
-		<name>test</name>
+		<name>EGEOSRegistryDeployer</name>
 	</EventGeneratorConfiguration>
 
     <EventConsumerConfiguration>
@@ -33,17 +33,18 @@
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.xml.*</regex>
+			<regex>.*\.xml</regex>
 			<id>r1</id>
 			<description>description</description>
-			<name>test</name>
+			<name>EGEOSRegistryDeployer</name>
 		</FileEventRule>
 
 		<EGEOSRegistryDeployerConfiguration>
 			<id>EGEOSRegistryDeployerConfiguration</id>
 			<description>EGEOS Registry-Deployer Configuration</description>
 			<name>EGEOSRegistryDeployerConfiguration</name>
-			
+			<workingDirectory>EGEOSworkingDir/RegistryDeployer/in</workingDirectory>
+				
 			<listenerId>EGEOSActionLoggerListener</listenerId>
 			<listenerId>EGEOSActionStatusListener</listenerId>
 						

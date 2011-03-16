@@ -488,14 +488,22 @@ abstract class ImageMosaicUpdater {
                  * and replace addFiles list with the new copied file list
                  */
                 if (!absolute){
-                    cmd.setAddFiles(Path.copyListFileToNFS(cmd.getAddFiles(), cmd.getBaseDir(), ImageMosaicAction.WAIT));
+                    cmd.setAddFiles(Path.copyListFileToNFS(cmd.getAddFiles(), cmd.getBaseDir(), false, ImageMosaicAction.WAIT));
                 }
+                
                 if (cmd.getAddFiles()==null){
                     String message="UpdateDataStore(): problem with copy copyTo files. addFiles list is null here";
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.severe(message);
                     }
                     throw new IOException(message);
+                }
+                else if (cmd.getAddFiles().size() == 0){
+                    String message="UpdateDataStore(): no more images to add to the layer were found, please check the command.";
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning(message);
+                    }
+                    return false;
                 }
                 else if (cmd.getAddFiles().size() > 0){
                     /*
@@ -553,15 +561,28 @@ abstract class ImageMosaicUpdater {
             } catch (Throwable e) {
     
                 if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
+                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(),e);
                 }
                 
                 return false;
                 
             } finally {
                 
-                if (dataStore != null)
-                    dataStore.dispose();
+                if (dataStore != null){
+                    try{
+                        dataStore.dispose();
+                    }
+                    catch (Throwable t){
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(),t);
+                        }
+                        return false;
+                        /*
+                         * TODO: check is this formally correct?
+                         * if the datastore failed to be disposed...
+                         */
+                    }
+                }
             }
             return true;
         }

@@ -343,17 +343,22 @@ public class GeoServerRESTHelper {
                 });
             }
 
-            InputStreamReader inReq = new InputStreamReader(inputStream);
+            InputStreamReader inReq = null;
             OutputStreamWriter outReq = new OutputStreamWriter(con.getOutputStream());
-            char[] buffer = new char[1024];
-            int len;
+            if (inputStream != null) {
+                inReq = new InputStreamReader(inputStream);
+                char[] buffer = new char[1024];
+                int len;
 
-            while ((len = inReq.read(buffer)) >= 0)
-                outReq.write(buffer, 0, len);
-
+                while ((len = inReq.read(buffer)) >= 0)
+                    outReq.write(buffer, 0, len);
+            } else {
+                outReq.write("");
+            }
             outReq.flush();
             outReq.close();
-            inReq.close();
+            if (inReq != null)
+                inReq.close();
 
             final int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -385,9 +390,8 @@ public class GeoServerRESTHelper {
         } catch (IOException e) {
             LOGGER.info("HTTP ERROR: " + e.getLocalizedMessage());
             res = false;
-        } finally {
-            return res;
-        }
+        } 
+        return res;
     }
 
     public static boolean postTextFileTo(URL geoserverREST_URL, InputStream inputStream,

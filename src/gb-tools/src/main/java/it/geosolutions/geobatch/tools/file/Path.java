@@ -44,44 +44,35 @@ public class Path {
      * PLACED INTO FileBasedCatalogConfiguration
      * 
      * Obtaining the Absolute path of the working dir
-     * @param working_dir the relative (or absolute) path to absolutize
+     * 
+     * @param working_dir
+     *            the relative (or absolute) path to absolutize
      * @note it should be a sub-dir of ...
-* @TODO open a ticket to get getBaseDirectory() into Catalog interface
-     
-    public static String absolutize(String working_dir) /*throws FileNotFoundException { 
-        FileBaseCatalog c=(FileBaseCatalog) CatalogHolder.getCatalog();
-        File fo=null;
-        try {
-            fo=findLocation(working_dir,new File(c.getBaseDirectory()));
-        }catch (IOException ioe){
-            return null;
-        }
-        
-        if (fo!=null){
-            return fo.toString();
-        }
-        else {
-//TODO LOG            throw new FileNotFoundException("Unable to locate the working dir");
-//            throw new FileNotFoundException();
-            return null;
-        }
-    }
-*/
+     * @TODO open a ticket to get getBaseDirectory() into Catalog interface
+     * 
+     *       public static String absolutize(String working_dir) /*throws FileNotFoundException {
+     *       FileBaseCatalog c=(FileBaseCatalog) CatalogHolder.getCatalog(); File fo=null; try {
+     *       fo=findLocation(working_dir,new File(c.getBaseDirectory())); }catch (IOException ioe){
+     *       return null; }
+     * 
+     *       if (fo!=null){ return fo.toString(); } else { //TODO LOG throw new
+     *       FileNotFoundException("Unable to locate the working dir"); // throw new
+     *       FileNotFoundException(); return null; } }
+     */
     /**
      * @note can return null
      * @param location
-     * @param directory 
+     * @param directory
      * @return
      * @throws IOException
      */
     public static File findLocation(String location, File directory) throws IOException {
-        if (location!=null){
+        if (location != null) {
             // trim spaces
             location = location.trim();
-        }
-        else
+        } else
             return null;
-        
+
         // first to an existance check
         File file = new File(location);
 
@@ -89,7 +80,7 @@ public class Path {
             return file;
         } else {
             // try a relative url
-            if (directory!=null)
+            if (directory != null)
                 file = new File(directory, location);
 
             if (file.exists()) {
@@ -99,7 +90,6 @@ public class Path {
 
         return null;
     }
-
 
     /*
      * (non-Javadoc)
@@ -137,7 +127,6 @@ public class Path {
 
         return null;
     }
-    
 
     /*
      * (non-Javadoc)
@@ -178,7 +167,7 @@ public class Path {
 
         return null;
     }
-    
+
     /**
      * Empty the specified directory. The method can work recursively.
      * 
@@ -217,31 +206,18 @@ public class Path {
         return deleteItself ? sourceDirectory.delete() : true;
     }
 
-
-
     /**
-     * Delete the specified File.
-     * 
-     * @param sourceDirectory
-     *            the directory to delete files from.
-     * @param filter
-     *            the {@link FilenameFilter} to use for selecting files to delete.
-     * @param recursive
-     *            boolean that specifies if we want to delete files recursively or not.
-     * @return
+     * Delete asynchronously the specified File.
      */
-    public static void deleteFile(File file) {
+    public static Object deleteFile(File file) {
         Objects.notNull(file);
         if (!file.exists() || !file.canRead() || !file.isFile())
             throw new IllegalStateException("Source is not in a legal state.");
 
-        if (file.delete())
-            return;
-
-        FileGarbageCollector.getFileCleaningTracker().track(file, new Object());
-
+        Object obj=new Object();
+        FileGarbageCollector.getFileCleaningTracker().track(file, obj);
+        return obj;
     }
-
 
     /**
      * Copy the input file onto the output file using a default buffer size.
@@ -345,83 +321,134 @@ public class Path {
     }
 
     /**
+     * Copy a file (preserving data) to a destination (which can be on nfs) waiting (at least)
+     * 'seconds' seconds for its propagation.
      * 
      * @param source
-     * @param dest 
-     * @param seconds to wait (maximum) for nfs propagate. If -1 no check is performed.
+     * @param dest
+     * @param overwrite
+     *            if false and destination exists() do not overwrite the file
+     * @param seconds
+     *            to wait (maximum) for nfs propagate. If -1 no check is performed.
      * @return the copied file if success, null if not.
      */
-    public static File copyFileToNFS(File source, File dest, final int seconds){
+    public static File copyFileToNFS(File source, File dest, boolean overwrite, final int seconds) {
+        if (source != null && dest != null) {
+            if (dest.exists()) {
+                if (!overwrite) {   
+                    if (LOGGER.isLoggable(Level.WARNING))
+                        LOGGER.warning("Path:copyFileToNFS(): failed to propagate file to: \'"
+                                + dest.getAbsolutePath()
+                                + "\' destination exists! (overwrite is set to \'" + overwrite + "\').");
+                    return null;
+                }
+            }
+            return copyFileToNFS(source, dest, seconds);
+            
+        } else {
+            // NullPointerException - if source or destination is null
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("Path:copyFileToNFS() : source or destination is null.");
+            return null;
+        }
+    }
+
+    /**
+     * Copy a file (preserving data) to a destination (which can be on nfs) waiting (at least)
+     * 'seconds' seconds for its propagation.
+     * 
+     * @param source
+     * @param dest
+     * @param seconds
+     *            to wait (maximum) for nfs propagate. If -1 no check is performed.
+     * @return the copied file if success, null if not.
+     */
+    public static File copyFileToNFS(File source, File dest, final int seconds) {
         try {
             // copy the file
             FileUtils.copyFile(source, dest);
-            if (seconds>0){
-                if (!FileUtils.waitFor(dest, seconds)){
+            if (seconds > 0) {
+                if (!FileUtils.waitFor(dest, seconds)) {
                     if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe("Path:copyFileToNFS() : failed to propagate file to->"+dest.getAbsolutePath());
-                    dest=null;
-                } else if (LOGGER.isLoggable(Level.INFO)){
-                    LOGGER.info("Path:copyFileToNFS() : file: "+source.getAbsoluteFile()
-                            +" succesfully copied and propagated to: "+dest.getAbsolutePath());
+                        LOGGER.severe("Path:copyFileToNFS() : failed to propagate file to: "
+                                + dest.getAbsolutePath());
+                    dest = null;
+                } else if (LOGGER.isLoggable(Level.INFO)) {
+                    LOGGER.info("Path:copyFileToNFS() : file: \'" + source.getAbsoluteFile()
+                            + "\' succesfully copied and propagated to: " + dest.getAbsolutePath());
                 }
+            } else if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info("Path:copyFileToNFS() : source file: \'" + source.getAbsoluteFile()
+                        + "\' succesfully copied to: " + dest.getAbsolutePath());
             }
-            else if (LOGGER.isLoggable(Level.INFO)){
-                LOGGER.info("Path:copyFileToNFS() : source file: "+source.getAbsoluteFile()
-                        +" succesfully copied to: "+dest.getAbsolutePath());
-            }
+        } catch (NullPointerException e) {
+            // NullPointerException - if source or destination is null
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.severe("Path:copyFileToNFS() : source or destination is null."
+                        + "\n\tThe message is: " + e.getLocalizedMessage());
+            dest = null;
+        } catch (IOException e) {
+            /*
+             * IOException - if source or destination is invalid IOException - if an IO error occurs
+             * during copying
+             */
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE,
+                        "Path:copyFileToNFS() : \n\tThe message is: " + e.getLocalizedMessage(), e);
+            dest = null;
         } catch (Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Path:copyFileToNFS() : failed to copy file."+
-                        "\n\tThe message is: "+e.getLocalizedMessage());
+                LOGGER.severe("Path:copyFileToNFS() : failed to copy file."
+                        + "\n\tThe message is: " + e.getLocalizedMessage());
             dest = null;
         }
         return dest;
     }
 
-
     /**
-     * Copy a list of files to a destination (which can be on nfs) waiting
-     * (at least) 'seconds' seconds for each file propagation.
+     * Copy a list of files (preserving data) to a destination (which can be on nfs) waiting (at
+     * least) 'seconds' seconds for each file propagation.
+     * 
      * @param list
      * @param baseDestDir
+     * @param overwrite
+     *            if false and destination exists() do not overwrite the file
      * @param seconds
      * @return the resulting moved file list or null
      */
-    public static List<File> copyListFileToNFS(List<File> list, File baseDestDir, int seconds){
+    public static List<File> copyListFileToNFS(List<File> list, File baseDestDir,
+            boolean overwrite, int seconds) {
         // list
-        if (list==null){
+        if (list == null) {
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using a NULL list");
             return null;
         }
-        final int size=list.size();
-        if (size==0){
+        final int size = list.size();
+        if (size == 0) {
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using an empty list");
             return null;
         }
         // baseDestDir
-        if (baseDestDir==null){
+        if (baseDestDir == null) {
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using a NULL baseDestDir");
             return null;
-        }
-        else if (!baseDestDir.isDirectory() || !baseDestDir.canWrite()){
+        } else if (!baseDestDir.isDirectory() || !baseDestDir.canWrite()) {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using a not " +
-                        "writeable directory as baseDestDir: "+baseDestDir.getAbsolutePath());
+                LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using a not "
+                        + "writeable directory as baseDestDir: " + baseDestDir.getAbsolutePath());
             return null;
         }
-        
-        List<File> ret=new ArrayList<File>(size);
-        for (File file:list){
-            if (file!=null){
-                if (file.exists()){
-                    File dest=copyFileToNFS(
-                            file,
-                            new File(baseDestDir,file.getName()),
-                            seconds);
-                    if (dest!=null){
+
+        List<File> ret = new ArrayList<File>(size);
+        for (File file : list) {
+            if (file != null) {
+                if (file.exists()) {
+                    File dest = copyFileToNFS(file, new File(baseDestDir, file.getName()),
+                            overwrite, seconds);
+                    if (dest != null) {
                         ret.add(dest);
                     }
                 }

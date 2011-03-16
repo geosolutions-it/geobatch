@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,10 +16,13 @@ import javax.xml.xpath.XPathFactory;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
+import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
+import org.geotools.data.Transaction;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.CRS;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.identity.FeatureId;
@@ -42,10 +47,14 @@ public class SpillParser {
         xpath.setNamespaceContext(ctx);
     }
 
+    private final static  Logger LOGGER = Logging.getLogger(SpillParser.class);
+
     @SuppressWarnings("unchecked")
     public void parseOilSpill(DataStore store, XPath xpath, File fXmlFile) throws Exception {
         // parse the document into a dom
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        dbFactory.setNamespaceAware(false);
+        
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(fXmlFile);
         doc.getDocumentElement().normalize();
@@ -74,9 +83,31 @@ public class SpillParser {
                     "OilSpill/geometry/Polygon", doc, XPathConstants.NODESET);
             List<SimpleFeature> oilSpillPolygons = parseOilSpillPolygons(oilSpillPolygonType,
                     xpath, polygonNodes, oilSpillId);
+            
+
+            Transaction t = new DefaultTransaction("OilSpill_transaction"+Thread.currentThread().getId());
             FeatureStore ospfs = (FeatureStore) store.getFeatureSource(oilSpillPolygonType
                     .getTypeName());
-            ospfs.addFeatures(DataUtilities.collection(oilSpillPolygons));
+            ospfs.setTransaction(t);
+            try{
+                ospfs.addFeatures(DataUtilities.collection(oilSpillPolygons));
+                t.commit();
+            } catch (Exception e) {
+                if(LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+                if (t!=null)
+                    t.rollback();
+            } finally {
+                if (t!=null){
+                    try{
+                        t.close();
+                    }
+                    catch (Throwable tr){
+                        if(LOGGER.isLoggable(Level.SEVERE))
+                            LOGGER.log(Level.SEVERE,tr.getLocalizedMessage(),tr);
+                    }
+                }
+            }    
         }
     }
 

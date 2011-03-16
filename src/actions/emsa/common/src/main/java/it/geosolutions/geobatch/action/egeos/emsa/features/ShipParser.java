@@ -6,6 +6,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,10 +18,13 @@ import javax.xml.xpath.XPathFactory;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
+import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureStore;
+import org.geotools.data.Transaction;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.CRS;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.w3c.dom.Document;
@@ -28,6 +33,7 @@ import org.w3c.dom.Node;
 import com.vividsolutions.jts.geom.Point;
 
 public class ShipParser {
+    private final static  Logger LOGGER = Logging.getLogger(ShipParser.class);
 
     // build the xpath extractor
     public final static XPath xpath = XPathFactory.newInstance().newXPath();
@@ -56,14 +62,34 @@ public class ShipParser {
             }
             Node shipNode = (Node) xpath.evaluate("/csn:Ship", doc, XPathConstants.NODE);
             SimpleFeature ship = parseShip(shipType, xpath, shipNode);
+            
+            Transaction t = new DefaultTransaction("ship_transaction"+Thread.currentThread().getId());
             FeatureStore fs = (FeatureStore) store.getFeatureSource(shipType.getTypeName());
-            fs.addFeatures(DataUtilities.collection(ship));
+            fs.setTransaction(t);
+            try{
+                fs.addFeatures(DataUtilities.collection(ship));
+                t.commit();
+            } catch (Exception e) {
+                if(LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);                
+                t.rollback();
+            } finally {
+                if (t!=null){
+                    try{
+                        t.close();
+                    }
+                    catch (Throwable tr){
+                        if(LOGGER.isLoggable(Level.SEVERE))
+                            LOGGER.log(Level.SEVERE,tr.getLocalizedMessage(),tr);
+                    }
+                }
+            }
+
+            
         }
         catch(Exception e){
-            e.printStackTrace();
-        }
-        finally{
-            
+            if(LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
         }
     }
 
