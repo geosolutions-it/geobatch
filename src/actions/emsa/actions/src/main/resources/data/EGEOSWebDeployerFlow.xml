@@ -13,9 +13,9 @@
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>id</id>
-        <serviceID>fsEventGeneratorService</serviceID>
+	        <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
-		<name>test</name>
+		<name>EGEOSWebDeployer</name>
 	</EventGeneratorConfiguration>
 
     <EventConsumerConfiguration>
@@ -36,14 +36,15 @@
 			<regex>((.*\.xml)|(.*\_PRO))</regex>
 			<id>r1</id>
 			<description>description</description>
-			<name>test</name>
+			<name>EGEOSWebDeployer</name>
 		</FileEventRule>
 
 		<EGEOSWebDeployerConfiguration>
 			<id>EGEOSWebDeployerConfiguration</id>
 			<description>EGEOS Web-Deployer Configuration</description>
 			<name>EGEOSWebDeployerConfiguration</name>
-			
+			<workingDirectory>EGEOSworkingDir/WebDeployer</workingDirectory>
+
 			<listenerId>EGEOSActionLoggerListener</listenerId>
 			<listenerId>EGEOSActionStatusListener</listenerId>
 						
