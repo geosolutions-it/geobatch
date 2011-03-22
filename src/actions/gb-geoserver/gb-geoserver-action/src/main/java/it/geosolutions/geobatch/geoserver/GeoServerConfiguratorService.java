@@ -23,7 +23,6 @@ package it.geosolutions.geobatch.geoserver;
 
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.util.EventObject;
 
@@ -35,18 +34,13 @@ import java.util.EventObject;
  * @version $ GeoServerConfiguratorService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
  */
 public abstract class GeoServerConfiguratorService<T extends EventObject, C extends ActionConfiguration>
-        extends BaseService implements ActionService<T, C> {
-
-//    public GeoServerConfiguratorService() {
-//        super(true);
-//    }
+        extends BaseService {
 
     public GeoServerConfiguratorService(String id, String name, String description) {
         super(id, name, description);
     }
 
     public boolean canCreateAction(C configuration) {
-        // XXX ImPLEMENT ME
         return true;
     }
 

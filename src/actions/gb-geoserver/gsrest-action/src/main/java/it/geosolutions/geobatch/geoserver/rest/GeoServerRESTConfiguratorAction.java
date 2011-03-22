@@ -25,7 +25,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
+import it.geosolutions.geobatch.geoserver.GeoServerAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
@@ -48,7 +48,7 @@ import org.apache.commons.io.FilenameUtils;
  */
 
 public class GeoServerRESTConfiguratorAction extends
-        GeoServerConfiguratorAction<FileSystemEvent> {
+        GeoServerAction<FileSystemEvent> {
 
     /**
      * Default logger

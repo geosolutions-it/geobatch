@@ -19,15 +19,28 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.metocs;
+package it.geosolutions.geobatch.metocs.commons;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.logging.Logger;
 
 public class MetocActionConfiguration extends ActionConfiguration implements Configuration {
 
     protected MetocActionConfiguration(String id, String name, String description) {
         super(id, name, description);
+        
+        
+        // //
+        // initialize params...
+        // //
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+        
     }
 
     private boolean packComponents;
@@ -43,14 +56,45 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     private String envelope;
 
     private String storeFilePrefix;
-
-    private String configId;
-
+    
     private String metocDictionaryPath;
 
     private String metocHarvesterXMLTemplatePath;
     
     private String cruiseName;
+
+    /**
+     * Default logger
+     */
+    protected final static Logger LOGGER = 
+                            Logger.getLogger(MetocActionConfiguration.class.toString());
+
+    protected final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddmm_HHH");
+
+    public static final long startTime;
+
+    static {
+        GregorianCalendar calendar = new GregorianCalendar(1980, 00, 01, 00, 00, 00);
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+        startTime = calendar.getTimeInMillis();
+    }
+
+    /**
+     * @param queryParams
+     * @return
+     */
+    protected static String getQueryString(Map<String, String> queryParams) {
+        StringBuilder queryString = new StringBuilder();
+
+        if (queryParams != null)
+            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+                if (queryString.length() > 0)
+                    queryString.append("&");
+                queryString.append(entry.getKey()).append("=").append(entry.getValue());
+            }
+
+        return queryString.toString();
+    }
 
     /**
      * @return the metocDictionaryPath
@@ -148,15 +192,6 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
     public void setCruiseName(String cruiseName) {
         this.cruiseName = cruiseName;
     }
-
-    public String getConfigId() {
-        return configId;
-    }
-
-    public void setConfigId(String configId) {
-        this.configId = configId;
-    }
-
     /**
      * @param timeUnStampedOutputDir
      *            the timeUnStampedOutputDir to set
@@ -174,19 +209,31 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
 
     @Override
     public MetocActionConfiguration clone() {
+        return copy(this);
+    }
+    
+    /**
+     * copy into returned object src
+     * @param src
+     * @return
+     */
+    protected MetocActionConfiguration copy(MetocActionConfiguration src) {
+        
         final MetocActionConfiguration configuration = new MetocActionConfiguration(super.getId(),
                 super.getName(), super.getDescription());
-        configuration.setCrs(crs);
-        configuration.setFlipY(flipY);
-        configuration.setEnvelope(envelope);
-        configuration.setServiceID(getServiceID());
-        configuration.setStoreFilePrefix(storeFilePrefix);
-        configuration.setWorkingDirectory(workingDirectory);
-        configuration.setMetocDictionaryPath(metocDictionaryPath);
-        configuration.setMetocHarvesterXMLTemplatePath(metocHarvesterXMLTemplatePath);
-        configuration.setPackComponents(packComponents);
-        configuration.setTimeUnStampedOutputDir(timeUnStampedOutputDir);
-        configuration.setCruiseName(cruiseName);
+
+        configuration.setCrs(src.crs);
+        configuration.setFlipY(src.flipY);
+        configuration.setEnvelope(src.envelope);
+        configuration.setServiceID(src.getServiceID());
+        configuration.setStoreFilePrefix(src.storeFilePrefix);
+        configuration.setWorkingDirectory(src.workingDirectory);
+        configuration.setMetocDictionaryPath(src.metocDictionaryPath);
+        configuration.setMetocHarvesterXMLTemplatePath(src.metocHarvesterXMLTemplatePath);
+        configuration.setPackComponents(src.packComponents);
+        configuration.setTimeUnStampedOutputDir(src.timeUnStampedOutputDir);
+        configuration.setCruiseName(src.cruiseName);
+
         return configuration;
     }
 

@@ -22,7 +22,7 @@
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
+import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 
@@ -46,9 +46,9 @@ import ucar.nc2.NetcdfFileWriteable;
  * Public class to transform lscv08::MERCATOR Model
  * 
  */
-public class MERCATOR_INGVLike_FileConfiguratorAction extends INGVFileConfiguratorAction {
+public class MERCATORINGVLikeAction extends INGVAction {
 
-    protected MERCATOR_INGVLike_FileConfiguratorAction(MetocActionConfiguration configuration)
+    protected MERCATORINGVLikeAction(MetocActionConfiguration configuration)
             throws IOException {
         super(configuration);
     }
@@ -84,11 +84,11 @@ public class MERCATOR_INGVLike_FileConfiguratorAction extends INGVFileConfigurat
                 double originalSecs = timeOriginalData
                         .getDouble(timeOriginalData.getIndex().set(t));
                 timeOrigin = originalSecs + (timeOriginDate.getTime() / 1000); 
-                seconds =  timeOrigin - (startTime / 1000);
+                seconds =  timeOrigin - (MetocActionConfiguration.startTime / 1000);
             } else {
                 long originalSecs = timeOriginalData.getLong(timeOriginalData.getIndex().set(t));
                 timeOrigin = originalSecs + (timeOriginDate.getTime() / 1000); 
-                seconds =  timeOrigin - (startTime / 1000);
+                seconds =  timeOrigin - (MetocActionConfiguration.startTime / 1000);
             }
             timeData.setDouble(timeData.getIndex().set(t), seconds);
             timeOriginDate.setTime((long)(timeOrigin * 1000));

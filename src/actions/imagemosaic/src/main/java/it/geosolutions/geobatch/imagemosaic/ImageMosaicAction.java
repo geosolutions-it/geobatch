@@ -57,8 +57,7 @@ import org.apache.commons.io.FilenameUtils;
  *          ImageMosaicAction.java $ Revision: 0.2 $ 25/feb/11 09:00:00
  */
 
-public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
-        Action<FileSystemEvent> {
+public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Action<FileSystemEvent> {
 
     protected final static int WAIT = 10; // seconds to wait for nfs propagation
 
@@ -305,8 +304,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
                                 List<File> addFiles = cmd.getAddFiles();
                                 if (addFiles.size() > 0) {
                                     // copy files from the addFile list to the baseDir (do not
-                                    // preventing
-                                    // overwrite)
+                                    // preventing overwrite)
                                     List<File> addedFiles = Path.copyListFileToNFS(
                                             cmd.getAddFiles(), cmd.getBaseDir(), true, WAIT);
                                     if (addedFiles.size() == 0) {

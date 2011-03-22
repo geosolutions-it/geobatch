@@ -567,7 +567,7 @@ public class GeoServerRESTHelper {
                         "/rest/folders/").append(coverageStoreId).append("/layers/").append(
                         layerName).append("/file.").append(type).append(suffix).toString());
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("GeoServerConfiguratorAction sending binary content to ... "
+                    LOGGER.info("GeoServerAction sending binary content to ... "
                             + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, new FileInputStream(
                         data), geoserverUID, geoserverPWD);
@@ -576,7 +576,7 @@ public class GeoServerRESTHelper {
                         "/rest/folders/").append(coverageStoreId).append("/layers/").append(
                         layerName).append("/url.").append(type).append(queryString).toString());
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("GeoServerConfiguratorAction sending data "
+                    LOGGER.info("GeoServerAction sending data "
                             + data.toURL().toExternalForm() + " to ... " + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
                         .toExternalForm(), geoserverUID, geoserverPWD);
@@ -585,7 +585,7 @@ public class GeoServerRESTHelper {
                         "/rest/folders/").append(coverageStoreId).append("/layers/").append(
                         layerName).append("/external.").append(type).append(queryString).toString());
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("GeoServerConfiguratorAction sending PATH "
+                    LOGGER.info("GeoServerAction sending PATH "
                             + data.toURL().toExternalForm() + " to ... " + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
                         .toExternalForm(), geoserverUID, geoserverPWD);
@@ -597,7 +597,7 @@ public class GeoServerRESTHelper {
                         "/coveragestores/").append(coverageStoreId).append("/file.").append(type)
                         .append(suffix).toString());
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("GeoServerConfiguratorAction sending binary content to ... "
+                    LOGGER.info("GeoServerAction sending binary content to ... "
                             + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, new FileInputStream(
                         data), geoserverUID, geoserverPWD, layer, null);
@@ -607,7 +607,7 @@ public class GeoServerRESTHelper {
                         "/coveragestores/").append(coverageStoreId).append("/url.").append(type)
                         .append(suffix).toString());
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("GeoServerConfiguratorAction sending data "
+                    LOGGER.info("GeoServerAction sending data "
                             + data.toURL().toExternalForm() + " to ... " + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
                         .toExternalForm(), geoserverUID, geoserverPWD, layer, null);
@@ -617,7 +617,7 @@ public class GeoServerRESTHelper {
                         "/coveragestores/").append(coverageStoreId).append("/external.").append(
                         type).append(suffix).toString());
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("GeoServerConfiguratorAction sending PATH "
+                    LOGGER.info("GeoServerAction sending PATH "
                             + data.toURL().toExternalForm() + " to ... " + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
                         .toExternalForm(), geoserverUID, geoserverPWD, layer, null);
@@ -627,7 +627,7 @@ public class GeoServerRESTHelper {
         if (sent) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER
-                        .info("GeoServerConfiguratorAction: coverage SUCCESSFULLY sent to GeoServer!");
+                        .info("GeoServerAction: coverage SUCCESSFULLY sent to GeoServer!");
             configureLayer(queryParams, defaultStyle, geoserverBaseURL, geoserverUID, geoserverPWD,
                     layerName);
             // if (defaultStyle != null && defaultStyle.trim().length()>0)
@@ -637,7 +637,7 @@ public class GeoServerRESTHelper {
         } else {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER
-                        .info("GeoServerConfiguratorAction: coverage was NOT sent to GeoServer due to connection errors!");
+                        .info("GeoServerAction: coverage was NOT sent to GeoServer due to connection errors!");
             return null;
         }
     }
@@ -714,7 +714,7 @@ public class GeoServerRESTHelper {
         if (sent) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER
-                        .info("GeoServerConfiguratorAction: coverage SUCCESSFULLY sent to GeoServer!");
+                        .info("GeoServerAction: coverage SUCCESSFULLY sent to GeoServer!");
 
             configureLayer(queryParams, defaultStyle, geoserverBaseURL, geoserverUID, geoserverPWD,
                     layerName);
@@ -726,7 +726,7 @@ public class GeoServerRESTHelper {
         } else {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER
-                        .info("GeoServerConfiguratorAction: FeatureType was NOT sent to GeoServer due to connection errors!");
+                        .info("GeoServerAction: FeatureType was NOT sent to GeoServer due to connection errors!");
             return null;
         }
     }
@@ -830,7 +830,7 @@ public class GeoServerRESTHelper {
                     geoserverUID, geoserverPWD, null, "text/xml");
             if (send)
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("GeoServerConfiguratorAction: Layer SUCCESSFULLY configured!");
+                    LOGGER.info("GeoServerAction: Layer SUCCESSFULLY configured!");
         } finally {
             if (file != null) {
                 try {
@@ -884,7 +884,7 @@ public class GeoServerRESTHelper {
                     geoserverUID, geoserverPWD, null, "text/xml");
             if (send)
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("GeoServerConfiguratorAction: Coverage SUCCESSFULLY configured!");
+                    LOGGER.info("GeoServerAction: Coverage SUCCESSFULLY configured!");
         } finally {
             if (file != null) {
                 try {

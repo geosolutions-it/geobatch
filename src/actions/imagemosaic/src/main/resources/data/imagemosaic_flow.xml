@@ -55,7 +55,7 @@
 			<!-- METADATA -->			
 			<timeDimEnabled>true</timeDimEnabled>
 <!--		<dirName>DIR</dirName>-->
-<!-- LIST, CONTINOUS_INTERVAL, DISCRETE_INTERVAL -->
+<!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
 			<timePresentationMode>LIST</timePresentationMode>
 			
 			<styles/>

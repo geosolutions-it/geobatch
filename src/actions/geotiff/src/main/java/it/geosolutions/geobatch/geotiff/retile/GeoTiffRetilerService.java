@@ -48,24 +48,34 @@ public class GeoTiffRetilerService extends BaseService implements
     private final static Logger LOGGER = Logger.getLogger(GeoTiffRetiler.class.toString());
 
     public boolean canCreateAction(GeoTiffRetilerConfiguration configuration) {
-        return true;
+        try {
+            // absolutize working dir
+            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd != null) {
+                configuration.setWorkingDirectory(wd);
+                return true;
+            } else {
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.log(
+                            Level.WARNING,
+                            "GeoTiffRetilerService::canCreateAction(): "
+                                    + "unable to create action, it's not possible to get an absolute working dir.");
+            }
+        } catch (Throwable e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        }
+        return false;
     }
 
     public GeoTiffRetiler createAction(GeoTiffRetilerConfiguration configuration) {
         try {
-            // absolutize working dir
-            String wd=Path.getAbsolutePath(configuration.getWorkingDirectory());
-            if (wd!=null){
-                configuration.setWorkingDirectory(wd);
-                return new GeoTiffRetiler(configuration);
-            }
-            else
-                return null;
+            return new GeoTiffRetiler(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-            return null;
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
         }
+        return null;
     }
 
 }

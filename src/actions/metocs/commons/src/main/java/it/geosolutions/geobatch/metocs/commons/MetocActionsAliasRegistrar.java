@@ -22,7 +22,6 @@
 
 package it.geosolutions.geobatch.metocs.commons;
 
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.registry.RegistryActionConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
@@ -32,11 +31,13 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  * 
  * @author afabiani <alessio.fabiani at geo-solutions.it>
  */
-public class METOCSActionsAliasRegistrar extends AliasRegistrar {
+public class MetocActionsAliasRegistrar extends AliasRegistrar {
 
-    public METOCSActionsAliasRegistrar(AliasRegistry registry) {
+    public MetocActionsAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+        
         registry.putAlias("MetocActionConfiguration", MetocActionConfiguration.class);
+        
         registry.putAlias("RegistryActionConfiguration", RegistryActionConfiguration.class);
     }
 }

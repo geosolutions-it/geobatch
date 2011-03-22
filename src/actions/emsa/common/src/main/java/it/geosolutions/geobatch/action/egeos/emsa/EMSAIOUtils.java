@@ -3,24 +3,10 @@
  */
 package it.geosolutions.geobatch.action.egeos.emsa;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.ExecTask;
-import org.apache.tools.tar.TarEntry;
-import org.apache.tools.tar.TarInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.logging.Logger;
 
 /**
  * @author Administrator
@@ -39,7 +25,7 @@ public class EMSAIOUtils {
      * @param destBaseDir
      * @return
      * @throws IOException
-     */
+     
     public static File unZip(final File inputFile, final File destBaseDir) throws IOException {
         final File tmpDestDir = createTodayDirectory(destBaseDir, FilenameUtils
                 .getBaseName(inputFile.getName()));
@@ -84,13 +70,13 @@ public class EMSAIOUtils {
 
         return tmpDestDir;
     }
-
+*/
     /***************************************************************************************
      * 
      * @param destBaseDir
      * @return
      * @throws IOException
-     */
+     
     public static File unTar(final File inputFile, final File destBaseDir) throws IOException {
         final File tmpDestDir = createTodayDirectory(destBaseDir, FilenameUtils
                 .getBaseName(inputFile.getName()));
@@ -139,6 +125,7 @@ public class EMSAIOUtils {
 
         return tmpDestDir;
     }
+    */
 //
 //    /**
 //     * 
@@ -180,7 +167,8 @@ public class EMSAIOUtils {
      * Calling tar -xzf from command line
      * 
      * @return
-     */
+     * @deprecated use gb-tools
+     
     public static File unTarGzTaskExec(final File inputFile, final File destDir) throws IOException {
         final File tmpDestDir = createTodayDirectory(destDir, FilenameUtils.getBaseName(inputFile
                 .getName()));
@@ -214,7 +202,8 @@ public class EMSAIOUtils {
 
         return tmpDestDir;
     }
-
+*/
+    
     /**
      * @param len
      * @param stream
@@ -234,40 +223,5 @@ public class EMSAIOUtils {
             ioe.initCause(e);
             throw ioe;
         }
-    }
-
-    /**
-     * Create a subDirectory having the actual date as name, within a specified destination
-     * directory.
-     * 
-     * @param destDir
-     *            the destination directory where to build the "today" directory.
-     * @param inputFileName
-     * @return the created directory.
-     */
-    public final static File createTodayDirectory(File destDir, String inputFileName) {
-        return createTodayDirectory(destDir, inputFileName, false);
-    }
-
-    /**
-     * Create a subDirectory having the actual date as name, within a specified destination
-     * directory.
-     * 
-     * @param destDir
-     *            the destination directory where to build the "today" directory.
-     * @param inputFileName
-     * @return the created directory.
-     */
-    public final static File createTodayDirectory(File destDir, String inputFileName,
-            final boolean withTime) {
-        final SimpleDateFormat SDF = withTime ? new SimpleDateFormat("yyyy_MM_dd_hhmmsss")
-                : new SimpleDateFormat("yyyy_MM_dd");
-        final String newPath = (new StringBuffer(destDir.getAbsolutePath().trim()).append(
-                File.separatorChar).append(SDF.format(new Date())).append("_")
-                .append(inputFileName)).toString();
-        File dir = new File(newPath);
-        if (!dir.exists())
-            dir.mkdir();
-        return dir;
     }
 }

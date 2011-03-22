@@ -22,8 +22,9 @@
 package it.geosolutions.geobatch.egeos.wave;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
+import it.geosolutions.geobatch.catalog.impl.BaseService;
+import it.geosolutions.geobatch.flow.event.action.ActionService;
+import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -33,25 +34,24 @@ import java.util.logging.Logger;
  * Public class to generate E-GEOS::SAR Wave Derived Products Services
  * 
  */
-public class SARWaveGeneratorService extends
-        GeoServerConfiguratorService<FileSystemEvent, MetocActionConfiguration> {
+public class SARWaveGeneratorService extends BaseService implements ActionService<FileSystemEvent, MetocActionConfiguration> {
 
+    private final static Logger LOGGER = Logger.getLogger(SARWaveGeneratorService.class.toString());
+    
     public SARWaveGeneratorService(String id, String name, String description) {
         super(id, name, description);
     }
-
-    private final static Logger LOGGER = Logger.getLogger(SARWaveGeneratorService.class.toString());
 
     /**
      * Action creator
      * 
      * @param configuration
      *            The data base action configuration
-     * @return new SARWaveFileConfiguratorAction()
+     * @return new SARWaveAction()
      */
-    public SARWaveFileConfiguratorAction createAction(MetocActionConfiguration configuration) {
+    public SARWaveAction createAction(MetocActionConfiguration configuration) {
         try {
-            return new SARWaveFileConfiguratorAction(configuration);
+            return new SARWaveAction(configuration);
         } catch (IOException e) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
@@ -59,10 +59,8 @@ public class SARWaveGeneratorService extends
         }
     }
 
-    @Override
     public boolean canCreateAction(MetocActionConfiguration configuration) {
-        final boolean superRetVal = super.canCreateAction(configuration);
-        return superRetVal;
+        return true;
     }
 
 }

@@ -27,7 +27,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
+import it.geosolutions.geobatch.geoserver.GeoServerAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
@@ -59,7 +59,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
  * @version $ GeoTIFFFolderGeoServerConfigurator.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
 public class GeoTIFFFolderGeoServerConfigurator extends
-        GeoServerConfiguratorAction<FileSystemEvent> {
+        GeoServerAction<FileSystemEvent> {
 
     public final static String GEOSERVER_VERSION = "2.X";
 

@@ -21,13 +21,14 @@
  */
 package it.geosolutions.geobatch.nurc.tda.jgsflodess;
 
+import freemarker.template.Configuration;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
-import it.geosolutions.geobatch.metocs.MetocConfigurationAction;
+import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
 import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
@@ -54,6 +55,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.TimeZone;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.media.jai.JAI;
 import javax.media.jai.RasterFactory;
@@ -75,11 +77,16 @@ import ucar.nc2.Variable;
  * Public class to insert NetCDF data file (gliders measurements) into DB
  * 
  */
-public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction<FileSystemEvent> {
+public class JGSFLoDeSSCOAMPSFileConfigurator extends BaseAction<FileSystemEvent> {
+    
+    private final static Logger LOGGER = Logger.getLogger(JGSFLoDeSSCOAMPSFileConfigurator.class.toString());
 
+    private final MetocActionConfiguration configuration;
+    
     protected JGSFLoDeSSCOAMPSFileConfigurator(MetocActionConfiguration configuration)
             throws IOException {
         super(configuration);
+        this.configuration=configuration;
     }
 
     /**
@@ -101,13 +108,6 @@ public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction<F
 
             final boolean packComponents = configuration.isPackComponents();
 
-            // //
-            // data flow configuration and dataStore name must not be null.
-            // //
-            if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
-                throw new IllegalStateException("DataFlowConfig is null.");
-            }
             // ////////////////////////////////////////////////////////////////////
             //
             // Initializing input variables
@@ -130,7 +130,7 @@ public class JGSFLoDeSSCOAMPSFileConfigurator extends MetocConfigurationAction<F
             String inputFileName = event.getSource().getAbsolutePath();
             final String filePrefix = FilenameUtils.getBaseName(inputFileName);
             final String fileSuffix = FilenameUtils.getExtension(inputFileName);
-            final String fileNameFilter = getConfiguration().getStoreFilePrefix();
+            final String fileNameFilter = configuration.getStoreFilePrefix();
 
             String baseFileName = null;
 

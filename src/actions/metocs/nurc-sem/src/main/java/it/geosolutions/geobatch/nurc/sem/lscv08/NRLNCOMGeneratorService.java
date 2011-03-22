@@ -22,8 +22,9 @@
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
+import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -47,22 +48,38 @@ public class NRLNCOMGeneratorService extends
      * 
      * @param configuration
      *            The data base action configuration
-     * @return new NRLNCOMFileConfiguratorAction()
+     * @return new NRLNCOMAction()
      */
-    public NRLNCOMFileConfiguratorAction createAction(MetocActionConfiguration configuration) {
+    public NRLNCOMAction createAction(MetocActionConfiguration configuration) {
         try {
-            return new NRLNCOMFileConfiguratorAction(configuration);
+            return new NRLNCOMAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-            return null;
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
         }
+        return null;
     }
 
     @Override
     public boolean canCreateAction(MetocActionConfiguration configuration) {
-        final boolean superRetVal = super.canCreateAction(configuration);
-        return superRetVal;
+        try {
+            // absolutize working dir
+            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd != null) {
+                configuration.setWorkingDirectory(wd);
+                return true;
+            } else {
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.log(
+                            Level.WARNING,
+                            "NRLNCOMGeneratorService::canCreateAction(): "
+                                    + "unable to create action, it's not possible to get an absolute working dir.");
+            }
+        } catch (Throwable e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        }
+        return false;
     }
 
 }

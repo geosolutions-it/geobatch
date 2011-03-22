@@ -21,8 +21,9 @@
  */
 package it.geosolutions.geobatch.metocs.base;
 
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
+import it.geosolutions.geobatch.catalog.impl.BaseService;
+import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
 import java.util.EventObject;
@@ -33,8 +34,8 @@ import java.util.logging.Logger;
  * Public class to generate NetCDF_CF-2-GeoTIFFs Services
  * 
  */
-public class NetCDFCFGeodetic2GeoTIFFsGeneratorService extends
-        GeoServerConfiguratorService<EventObject, MetocActionConfiguration> {
+public class NetCDFCFGeodetic2GeoTIFFsGeneratorService extends BaseService implements
+        ActionService<EventObject, NetCDFCFGeodetic2GeoTIFFsConfiguration> {
 
     private final static Logger LOGGER = Logger
             .getLogger(NetCDFCFGeodetic2GeoTIFFsGeneratorService.class.toString());
@@ -50,20 +51,36 @@ public class NetCDFCFGeodetic2GeoTIFFsGeneratorService extends
      *            The data base action configuration
      * @return new JGSFLoDeSSSWANFileConfigurator()
      */
-    public NetCDFCFGeodetic2GeoTIFFsFileAction createAction(MetocActionConfiguration configuration) {
+    public NetCDFCFGeodetic2GeoTIFFsFileAction createAction(
+            NetCDFCFGeodetic2GeoTIFFsConfiguration configuration) {
         try {
             return new NetCDFCFGeodetic2GeoTIFFsFileAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-            return null;
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
+        return null;
     }
 
-    @Override
-    public boolean canCreateAction(MetocActionConfiguration configuration) {
-        final boolean superRetVal = super.canCreateAction(configuration);
-        return superRetVal;
+    public boolean canCreateAction(NetCDFCFGeodetic2GeoTIFFsConfiguration configuration) {
+        try {
+            // absolutize working dir
+            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd != null) {
+                configuration.setWorkingDirectory(wd);
+                return true;
+            } else {
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.log(
+                            Level.WARNING,
+                            "NetCDFCFGeodetic2GeoTIFFsFileAction::canCreateAction(): "
+                                    + "unable to create action, it's not possible to get an absolute working dir.");
+            }
+        } catch (Throwable e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        }
+        return false;
     }
 
 }

@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.geoserver.geotiff;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
@@ -58,8 +59,24 @@ public class GeoTIFFGeoServerGeneratorService extends
     }
 
     public boolean canCreateAction(GeoServerActionConfiguration configuration) {
-        final boolean superRetVal = super.canCreateAction(configuration);
-        return superRetVal;
+        try {
+            // absolutize working dir
+            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd != null) {
+                configuration.setWorkingDirectory(wd);
+                return true;
+            } else {
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.log(
+                            Level.WARNING,
+                            "GeoTIFFGeoServerGeneratorService::canCreateAction(): "
+                                    + "unable to create action, it's not possible to get an absolute working dir.");
+            }
+        } catch (Throwable e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        }
+        return false;
     }
 
 }

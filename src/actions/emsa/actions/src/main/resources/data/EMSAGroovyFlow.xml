@@ -49,7 +49,7 @@
 			<listenerId>EMSAActionLoggerListener</listenerId>
 			<listenerId>EMSAActionStatusListener</listenerId>
 						
-			<serviceID>EMSAScriptingService</serviceID>
+			<serviceID>scriptingService</serviceID>
 
             <language>groovy</language>
             <scriptFile>/home/tomcat/GEOBATCH_DATA_DIR/EMSA/EMSA.groovy</scriptFile>

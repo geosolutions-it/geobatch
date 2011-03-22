@@ -27,11 +27,13 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
  * @note: on 28 Feb 2011 discussion: carlo: do we need to clean this bean from Xstream specific
  *        methods and annotations? simone: leave it here since this class is actually used only by
  *        geobatch
+ * @note: This is public to make it usable from other packages
+ * @see metoc actions
  */
 
 @XStreamInclude(ImageMosaicCommand.class)
 @XStreamAlias("ImageMosaic")
-class ImageMosaicCommand implements Serializable {
+public class ImageMosaicCommand implements Serializable {
 
     /**
      * Serial version id

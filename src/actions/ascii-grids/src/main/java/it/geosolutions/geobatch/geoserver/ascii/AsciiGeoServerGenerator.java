@@ -26,7 +26,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
+import it.geosolutions.geobatch.geoserver.GeoServerAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
@@ -51,7 +51,7 @@ import org.geotools.gce.arcgrid.ArcGridReader;
  * @author fabiania
  * 
  */
-public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSystemEvent> {
+public class AsciiGeoServerGenerator extends GeoServerAction<FileSystemEvent> {
 
     protected AsciiGeoServerGenerator(GeoServerActionConfiguration configuration)
             throws IOException {
@@ -114,7 +114,7 @@ public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSys
 
         if (sent) {
             LOGGER
-                    .info("ArcGrid GeoServerConfiguratorAction: coverage SUCCESSFULLY sent to GeoServer!");
+                    .info("ArcGrid GeoServerAction: coverage SUCCESSFULLY sent to GeoServer!");
 
             // //
             // Storing SLDs
@@ -136,10 +136,10 @@ public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSys
                             .getGeoserverUID(), getConfiguration().getGeoserverPWD());
 
                     LOGGER
-                            .info("ArcGrid GeoServerConfiguratorAction: SLD SUCCESSFULLY sent to GeoServer!");
+                            .info("ArcGrid GeoServerAction: SLD SUCCESSFULLY sent to GeoServer!");
                 } else {
                     LOGGER
-                            .info("ArcGrid GeoServerConfiguratorAction: SLD was NOT sent to GeoServer!");
+                            .info("ArcGrid GeoServerAction: SLD was NOT sent to GeoServer!");
                     sldsCreatedOK = false;
                 }
             }
@@ -156,7 +156,7 @@ public class AsciiGeoServerGenerator extends GeoServerConfiguratorAction<FileSys
             }
         } else {
             LOGGER
-                    .info("ArcGrid GeoServerConfiguratorAction: coverage was NOT sent to GeoServer due to connection errors!");
+                    .info("ArcGrid GeoServerAction: coverage was NOT sent to GeoServer due to connection errors!");
         }
     }
 

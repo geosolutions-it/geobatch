@@ -26,7 +26,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
+import it.geosolutions.geobatch.geoserver.GeoServerAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
@@ -88,7 +88,7 @@ import ucar.nc2.Variable;
  * 
  */
 public class NURCWPSOutput2WMCFileAction extends
-        GeoServerConfiguratorAction<FileSystemEvent> {
+        GeoServerAction<FileSystemEvent> {
 
     /**
      * GeoTIFF Writer Default Params

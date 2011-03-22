@@ -19,11 +19,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.egeos.wave;
+package it.geosolutions.geobatch.egeos.wind;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
-import it.geosolutions.geobatch.metocs.base.METOCSBaseConfiguratorAction;
+import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
+import it.geosolutions.geobatch.metocs.commons.MetocBaseAction;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBException;
 
@@ -60,14 +61,16 @@ import ucar.nc2.Variable;
 
 /**
  * 
- * Public class to transform E-GEOS::SARWave Derived Data
+ * Public class to transform E-GEOS::SARWind Derived Data
  * 
  */
-public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction {
+public class SARWindAction extends MetocBaseAction {
+    
+    private final static Logger LOGGER = Logger.getLogger(SARWindAction.class.getName());
 
     private Attribute referenceTime;
 
-    protected SARWaveFileConfiguratorAction(MetocActionConfiguration configuration)
+    protected SARWindAction(MetocActionConfiguration configuration)
             throws IOException {
         super(configuration);
     }
@@ -76,8 +79,8 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
     protected File unzipMetocArchive(FileSystemEvent event, String fileSuffix, File outDir,
             File tempFile) throws IOException {
         return ("zip".equalsIgnoreCase(fileSuffix) || "tar".equalsIgnoreCase(fileSuffix)) ? Utilities
-                .decompress("E-GEOS_SARWave", event.getSource(), tempFile)
-                : Utilities.createTodayPrefixedDirectory("E-GEOS_SARWave", outDir);
+                .decompress("E-GEOS_SARWind", event.getSource(), tempFile)
+                : Utilities.createTodayPrefixedDirectory("E-GEOS_SARWind", outDir);
     }
 
     @Override
@@ -87,8 +90,6 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
         final Dimension ra_size = ncGridFile.findDimension("ra_size");
 
         final Dimension az_size = ncGridFile.findDimension("az_size");
-
-        // final Dimension n_partitions = ncGridFile.findDimension("n_partitions");
 
         // input VARIABLES
         final Variable lonOriginalVar = ncGridFile.findVariable("longitude");
@@ -139,7 +140,7 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
             // writing bin data ...
             writingDataSets(ra_size, az_size, null, null, false, lonOriginalData, latOriginalData,
                     null, noData, null, latDataType, lonDataType);
-        } else {
+        } else{
             if (ncFileIn != null)
                 ncFileIn.close();
             
@@ -149,6 +150,7 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
             if (outputFile != null)
                 outputFile.delete();
         }
+
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,7 +181,7 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
                 long ncMillis = Long.parseLong(referenceTime.getStringValue().substring(
                         referenceTime.getStringValue().indexOf(".") + 1)) / 1000;
 
-                millisFromStartDate = (timeInMillis + ncMillis) - startTime;
+                millisFromStartDate = (timeInMillis + ncMillis) - MetocActionConfiguration.startTime;
             } catch (ParseException e) {
                 throw new IllegalArgumentException("Unable to parse time origin");
             }
@@ -202,7 +204,7 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
 
     @Override
     protected void createOutputFile(File outDir, String inputFileName) throws IOException {
-        outputFile = new File(outDir, "EGEOS-SARWave-T" + new Date().getTime()
+        outputFile = new File(outDir, "EGEOS-SARWind-T" + new Date().getTime()
                 + FilenameUtils.getBaseName(inputFileName).replaceAll("-", "") + ".nc");
         ncFileOut = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath());
     }
@@ -219,10 +221,6 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
         final List<Dimension> outDimensions = METOCSActionsIOUtils
                 .createNetCDFCFGeodeticDimensions(ncFileOut, true, 1, false, 0,
                         METOCSActionsIOUtils.UP, true, nLat, true, nLon);
-
-        // Adding Wave Partitions dimension
-        // outDimensions.add(1, ncFileOut.addDimension(n_partitions.getName(),
-        // n_partitions.getLength()));
 
         double noData = Double.NaN;
 
@@ -249,7 +247,7 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
             final Variable var = (Variable) obj;
             final String varName = var.getName();
             if (!varName.equalsIgnoreCase("longitude") && !varName.equalsIgnoreCase("latitude")
-                    && !varName.equalsIgnoreCase("valid")) {
+                    && !varName.equalsIgnoreCase("mask")) {
 
                 if (foundVariables.get(varName) == null) {
                     String longName = null;
@@ -257,12 +255,10 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
                     String uom = null;
 
                     for (MetocElementType m : metocDictionary.getMetoc()) {
-                        if ((varName.equalsIgnoreCase("Hs") && m.getName().equals(
-                                "sea surface swell wave significant height"))
-                                || (varName.equalsIgnoreCase("Wl") && m.getName().equals(
-                                        "dominant wave length"))
-                                || (varName.equalsIgnoreCase("Dirmet") && m.getName().equals(
-                                        "sea surface swell wave to direction"))) {
+                        if ((varName.equalsIgnoreCase("wind_speed") && m.getName().equals(
+                                "wind speed"))
+                                || (varName.equalsIgnoreCase("wind_direction") && m.getName()
+                                        .equals("wind direction"))) {
                             longName = m.getName();
                             briefName = m.getBrief();
                             uom = m.getDefaultUom();
@@ -287,9 +283,12 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
     protected int normalizingTimes(Array timeOriginalData, Dimension timeDim, Date timeOriginDate)
             throws ParseException, NumberFormatException {
         long timeInMillis = timeOriginDate.getTime();
+
         long ncMillis = Long.parseLong(referenceTime.getStringValue().substring(
                 referenceTime.getStringValue().indexOf(".") + 1)) / 1000;
+
         timeOriginDate.setTime(timeInMillis + ncMillis);
+
         final int TAU = 0;
 
         return TAU;
@@ -301,19 +300,15 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
             Array depthOriginalData, double noData, Array timeOriginalData, DataType latDataType,
             DataType lonDataType) throws IOException, InvalidRangeException {
 
-        double[] bbox = new double[] { 
-                envelope.getLowerCorner().getOrdinate(0),
-                envelope.getLowerCorner().getOrdinate(1), 
-                envelope.getUpperCorner().getOrdinate(0),
-                envelope.getUpperCorner().getOrdinate(1) 
-        };
+        double[] bbox = new double[] { envelope.getLowerCorner().getOrdinate(0),
+                envelope.getLowerCorner().getOrdinate(1), envelope.getUpperCorner().getOrdinate(0),
+                envelope.getUpperCorner().getOrdinate(1) };
 
-        final Variable maskOriginalVar = ncGridFile.findVariable("valid");
+        final Variable maskOriginalVar = ncGridFile.findVariable("mask");
         @SuppressWarnings("unused")
-        final DataType maskDataType = maskOriginalVar.getDataType();
-        final Array maskOriginalData = maskOriginalVar.read();
+        final DataType maskDataType = maskOriginalVar != null ? maskOriginalVar.getDataType() : null;
+        final Array maskOriginalData = maskDataType != null ? maskOriginalVar.read() : null;
 
-        // writing bin data ...
         ncFileOut.create();
 
         // writing time Variable data
@@ -342,58 +337,32 @@ public class SARWaveFileConfiguratorAction extends METOCSBaseConfiguratorAction 
             // defining the SampleModel data type
             // //
             final SampleModel outSampleModel = Utilities.getSampleModel(var.getDataType(), ra_size
-                    .getLength(), az_size.getLength(), /* n_partitions.getLength() */1);
+                    .getLength(), az_size.getLength(), 1);
 
             Array originalVarArray = var.read();
 
-            for (int partition = /* n_partitions.getLength() */1 - 1; partition >= 0; partition--) {
-                WritableRaster userRaster = Raster.createWritableRaster(outSampleModel, null);
+            WritableRaster userRaster = Raster.createWritableRaster(outSampleModel, null);
 
-                Index varIndex = originalVarArray.getIndex();
-                Index maskIndex = maskOriginalData != null ? maskOriginalData.getIndex() : null;
+            METOCSActionsIOUtils.write2DData(userRaster, var, originalVarArray, false, true,
+                    new int[] { az_size.getLength(), ra_size.getLength() }, false,
+                    maskOriginalData, false);
 
-                for (int yPos = 0; yPos < az_size.getLength(); yPos++) {
-                    for (int xPos = 0; xPos < ra_size.getLength(); xPos++) {
-                        float sVal = originalVarArray.getFloat(varIndex.set(yPos, xPos, partition));
-                        if (maskOriginalData != null) {
-                            int validByte = 1;
-                            if (maskOriginalData.getByte(maskIndex.set(yPos, xPos)) != validByte) {
-                                sVal = Float.NaN;
-                            }
-                        }
-                        // Flipping y
-                        boolean flipY = false;
-                        int newYpos = yPos;
-                        // Flipping y
-                        if (flipY) {
-                            newYpos = az_size.getLength() - yPos - 1;
-                        }
-                        userRaster.setSample(xPos, newYpos, 0, sVal); // setSample(
-                        // x, y,
-                        // band,
-                        // value )
-                    }
-                }
+            // Resampling to a Regular Grid ...
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("Resampling to a Regular Grid ...");
+            userRaster = METOCSActionsIOUtils.warping(bbox, lonOriginalData, latOriginalData,
+                    ra_size.getLength(), az_size.getLength(), 2, userRaster, (float) noData, false);
 
-                // Resampling to a Regular Grid ...
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("Resampling to a Regular Grid ...");
-                userRaster = METOCSActionsIOUtils.warping(bbox, lonOriginalData, latOriginalData,
-                        ra_size.getLength(), az_size.getLength(), 2, userRaster, (float) noData,
-                        false);
+            final Variable outVar = ncFileOut.findVariable(foundVariableBriefNames.get(varName));
+            final Array outVarData = outVar.read();
 
-                final Variable outVar = ncFileOut
-                        .findVariable(foundVariableBriefNames.get(varName));
-                final Array outVarData = outVar.read();
+            for (int y = 0; y < az_size.getLength(); y++)
+                for (int x = 0; x < ra_size.getLength(); x++)
+                    outVarData.setFloat(outVarData.getIndex().set(0, y, x), userRaster
+                            .getSampleFloat(x, y, 0));
 
-                for (int y = 0; y < az_size.getLength(); y++)
-                    for (int x = 0; x < ra_size.getLength(); x++) {
-                        outVarData.setFloat(outVarData.getIndex().set(0/* , partition */, y, x),
-                                userRaster.getSampleFloat(x, y, partition));
-                    }
-
-                ncFileOut.write(foundVariableBriefNames.get(varName), outVarData);
-            }
+            ncFileOut.write(foundVariableBriefNames.get(varName), outVarData);
         }
     }
+
 }

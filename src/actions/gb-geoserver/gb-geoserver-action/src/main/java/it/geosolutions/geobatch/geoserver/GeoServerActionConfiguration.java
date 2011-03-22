@@ -62,10 +62,6 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
 
     private String dataTransferMethod;
 
-//    public GeoServerActionConfiguration() {
-//        super();
-//    }
-
     /**
      * @return the workingDirectory
      */

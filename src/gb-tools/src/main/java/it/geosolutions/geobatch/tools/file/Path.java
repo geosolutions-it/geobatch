@@ -29,7 +29,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -455,5 +457,40 @@ public class Path {
             }
         }
         return ret;
+    }
+
+    /**
+     * Create a subDirectory having the actual date as name, within a specified destination
+     * directory.
+     * 
+     * @param destDir
+     *            the destination directory where to build the "today" directory.
+     * @param inputFileName
+     * @return the created directory.
+     */
+    public final static File createTodayDirectory(File destDir, String inputFileName,
+            final boolean withTime) {
+        final SimpleDateFormat SDF = withTime ? new SimpleDateFormat("yyyy_MM_dd_hhmmsss")
+                : new SimpleDateFormat("yyyy_MM_dd");
+        final String newPath = (new StringBuffer(destDir.getAbsolutePath().trim()).append(
+                File.separatorChar).append(SDF.format(new Date())).append("_")
+                .append(inputFileName)).toString();
+        File dir = new File(newPath);
+        if (!dir.exists())
+            dir.mkdir();
+        return dir;
+    }
+
+    /**
+     * Create a subDirectory having the actual date as name, within a specified destination
+     * directory.
+     * 
+     * @param destDir
+     *            the destination directory where to build the "today" directory.
+     * @param inputFileName
+     * @return the created directory.
+     */
+    public final static File createTodayDirectory(File destDir, String inputFileName) {
+        return createTodayDirectory(destDir, inputFileName, false);
     }
 }

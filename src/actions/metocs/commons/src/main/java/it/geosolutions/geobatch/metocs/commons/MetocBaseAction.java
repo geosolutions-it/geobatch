@@ -19,15 +19,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.metocs.base;
+package it.geosolutions.geobatch.metocs.commons;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
-import it.geosolutions.geobatch.metocs.MetocConfigurationAction;
 import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
@@ -48,6 +47,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.TimeZone;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.media.jai.JAI;
 import javax.xml.bind.JAXBContext;
@@ -71,12 +71,30 @@ import ucar.nc2.Variable;
  * @author Alessio Fabiani, GeoSolutions S.A.S.
  * 
  */
-public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAction<FileSystemEvent>  {
+public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
+    private final static Logger LOGGER = Logger.getLogger(MetocBaseAction.class.toString());
 
-    public METOCSBaseConfiguratorAction(MetocActionConfiguration configuration) {
-        super(configuration);
+    private final MetocActionConfiguration configuration;
+
+    public MetocBaseAction(MetocActionConfiguration configuration) {
+        super(configuration.getId(), configuration.getName(), configuration.getDescription());
+        this.configuration = configuration;
+
+        // //
+        //
+        // get required parameters
+        //
+        // //
+        if ((configuration.getMetocDictionaryPath() == null)
+                || "".equals(configuration.getMetocHarvesterXMLTemplatePath())) {
+            LOGGER.log(Level.SEVERE,
+                    "MetcoDictionaryPath || MetocHarvesterXMLTemplatePath is null.");
+            throw new IllegalStateException(
+                    "MetcoDictionaryPath || MetocHarvesterXMLTemplatePath is null.");
+        }
+
         final String cruise = configuration.getCruiseName();
-        if (cruise != null && cruise.trim().length() > 0){
+        if (cruise != null && cruise.trim().length() > 0) {
             cruiseName = cruise.trim();
         }
     }
@@ -88,7 +106,7 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
     protected NetcdfFile ncFileIn = null;
 
     protected File outputFile = null;
-    
+
     protected String cruiseName = "lscv08";
 
     protected Map<String, Variable> foundVariables = new HashMap<String, Variable>();
@@ -106,28 +124,20 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
     /**
 	 * 
 	 */
-    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
-            throws ActionException {
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
 
         if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("Starting with processing...");
+            LOGGER.info("MetocBaseAction:execute(): Starting with processing...");
         try {
             // looking for file
             if (events.size() != 1)
-                throw new IllegalArgumentException("Wrong number of elements for this action: "
+                throw new IllegalArgumentException("MetocBaseAction:execute(): Wrong number of elements for this action: "
                         + events.size());
-            
+
             FileSystemEvent event = events.remove();
             @SuppressWarnings("unused")
-            final String configId = configuration.getName();
+            final String configId = getName();
 
-            // //
-            // data flow configuration and dataStore name must not be null.
-            // //
-            if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
-                throw new IllegalStateException("DataFlowConfig is null.");
-            }
             // ////////////////////////////////////////////////////////////////////
             //
             // Initializing input variables
@@ -142,15 +152,17 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
             //
             // ////////////////////////////////////////////////////////////////////
             if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "GeoServerDataDirectory is null or does not exist.");
-                throw new IllegalStateException("GeoServerDataDirectory is null or does not exist.");
+                String message="GeoServerDataDirectory is null or does not exist.";
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE, message);
+                throw new IllegalStateException(message);
             }
 
             // ... BUSINESS LOGIC ... //
             String inputFileName = event.getSource().getAbsolutePath();
             final String filePrefix = FilenameUtils.getBaseName(inputFileName);
             final String fileSuffix = FilenameUtils.getExtension(inputFileName);
-            final String fileNameFilter = getConfiguration().getStoreFilePrefix();
+            final String fileNameFilter = configuration.getStoreFilePrefix();
 
             String baseFileName = null;
 
@@ -168,15 +180,23 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
             }
 
             if (baseFileName == null) {
-                LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
-                throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE, "MetocBaseAction:execute(): Unexpected file '" + inputFileName + "'");
+                throw new IllegalStateException("MetocBaseAction:execute(): Unexpected file '" + inputFileName + "'");
             }
 
             inputFileName = FilenameUtils.getName(inputFileName);
 
-            final File outDir = Utilities.createTodayDirectory(workingDir, FilenameUtils
-                    .getBaseName(inputFileName));
+            final File outDir = Utilities.createTodayDirectory(workingDir,
+                    FilenameUtils.getBaseName(inputFileName));
 
+            if (outDir==null){
+                String message="MetocBaseAction:execute(): Unexpected error: output dir is null";
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE, message);
+                throw new IllegalStateException(message);
+            }
+            
             // decompress input file into a temp directory
             final File tempFile = File.createTempFile(inputFileName, ".tmp", outDir);
             final File metocsDatasetDirectory = unzipMetocArchive(event, fileSuffix, outDir,
@@ -208,8 +228,13 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
 
             if (metocsGridFiles.length != 1) {
                 if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Could not find any NCOM Grid file. [metocsDatasetDirectory: "+metocsDatasetDirectory.getAbsolutePath()+"; metocsGridFiles.length:"+metocsGridFiles.length+"]");
-                throw new IOException("Could not find any NCOM Grid file. [metocsDatasetDirectory: "+metocsDatasetDirectory.getAbsolutePath()+"; metocsGridFiles.length:"+metocsGridFiles.length+"]");
+                    LOGGER.severe("Could not find any NCOM Grid file. [metocsDatasetDirectory: "
+                            + metocsDatasetDirectory.getAbsolutePath()
+                            + "; metocsGridFiles.length:" + metocsGridFiles.length + "]");
+                throw new IOException(
+                        "Could not find any NCOM Grid file. [metocsDatasetDirectory: "
+                                + metocsDatasetDirectory.getAbsolutePath()
+                                + "; metocsGridFiles.length:" + metocsGridFiles.length + "]");
             }
 
             ncGridFile = NetcdfFile.open(metocsGridFiles[0].getAbsolutePath());
@@ -217,8 +242,7 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
             writeDownNetCDF(outDir, inputFileName);
 
             // ... setting up the appropriate event for the next action
-            events.add(new FileSystemEvent(outputFile,
-                    FileSystemEventType.FILE_ADDED));
+            events.add(new FileSystemEvent(outputFile, FileSystemEventType.FILE_ADDED));
             return events;
         } catch (Throwable t) {
             LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
@@ -322,8 +346,8 @@ public abstract class METOCSBaseConfiguratorAction extends MetocConfigurationAct
      * @return
      * @throws IOException
      */
-    protected abstract File unzipMetocArchive(FileSystemEvent event,
-            final String fileSuffix, final File outDir, final File tempFile) throws IOException;
+    protected abstract File unzipMetocArchive(FileSystemEvent event, final String fileSuffix,
+            final File outDir, final File tempFile) throws IOException;
 
     /**
      * 

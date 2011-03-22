@@ -309,12 +309,20 @@ public class FileBasedEventConsumer extends
             final ActionService<FileSystemEvent, ActionConfiguration> actionService = CatalogHolder
                     .getCatalog().getResource(actionServiceID, ActionService.class);
             if (actionService != null) {
-                Action<FileSystemEvent> action = actionService.createAction(actionConfig);
-                if (action == null) {
+                Action<FileSystemEvent> action =null;
+                if (actionService.canCreateAction(actionConfig)){
+                    action = actionService.createAction(actionConfig);
+                    if (action == null) {
+                        throw new IllegalArgumentException(
+                                "FileBasedEventConsumer::initialize(): Action could not be instantiated for config "
+                                        + actionConfig);
+                    }
+                }
+                else
                     throw new IllegalArgumentException(
                             "FileBasedEventConsumer::initialize(): Action could not be created for config "
                                     + actionConfig);
-                }
+                
 
                 // attach listeners to actions
                 for (ProgressListenerConfiguration plConfig : actionConfig

@@ -410,8 +410,13 @@ public class Utilities {
                 File.separatorChar).append(SDF.format(new Date())).append("_")
                 .append(inputFileName)).toString();
         File dir = new File(newPath);
-        if (!dir.exists())
-            dir.mkdir();
+        if (!dir.exists()){
+            if (dir.mkdirs()){
+                return dir;
+            }
+            else
+                return null;
+        }
         return dir;
     }
 
@@ -430,9 +435,15 @@ public class Utilities {
                 File.separatorChar).append(prefix).append(File.separatorChar).append(SDF_HMS
                 .format(new Date()))).toString();
         File dir = new File(newPath);
-        if (!dir.exists())
-            dir.mkdirs();
+        if (!dir.exists()){
+            if (dir.mkdirs()){
+                return dir;
+            }
+            else
+                return null;
+        }
         return dir;
+        
     }
 
     public static int getDataType(final DataType varDataType) {
@@ -466,12 +477,14 @@ public class Utilities {
      */
     public static File createDirectory(File workingDir, String inputFileName) {
         File newDir = new File(workingDir, inputFileName);
-        if (!newDir.exists() && newDir.mkdir())
-            return newDir;
-        else if (newDir.exists())
-            return newDir;
-
-        return null;
+        if (!newDir.exists()){
+            if (newDir.mkdirs()){
+                return newDir;
+            }
+            else
+                return null;
+        }
+        return newDir;
     }
     
     /**

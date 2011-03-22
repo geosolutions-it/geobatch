@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  * 
  * @author AlFa
  * 
- * @version $ GeoServerConfiguratorAction.java $ Revision: 0.1 $ 12/feb/07 12:07:06
+ * @version $ GeoServerAction.java $ Revision: 0.1 $ 12/feb/07 12:07:06
  */
 
 public abstract class RegistryConfiguratorAction extends BaseAction<FileSystemEvent>

@@ -85,12 +85,6 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      */
     private final List<CatalogListener> listeners = new CopyOnWriteArrayList<CatalogListener>();
 
-    /**
-     * Default Constructor.
-     */
-//    public BaseCatalog() {
-//    }
-
     /*
      * (non-Javadoc)
      * 

@@ -4,14 +4,14 @@
 	<description>E-GEOS-SARWindflow</description>
 	<name>E-GEOS-SARWindflow</name>
 
-	<workingDirectory>/emsa/out/nfs/sarDerived</workingDirectory>
+	<workingDirectory>EGEOSworkingDir/SARWind/</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventConsumerConfiguration>
-        <listenerId>ConsumerLogger0</listenerId>
-        <listenerId>Cumulator</listenerId>
+	        <listenerId>ConsumerLogger0</listenerId>
+        	<listenerId>Cumulator</listenerId>
 
-		<workingDirectory>/emsa/out/nfs/sarDerived</workingDirectory>
+		<workingDirectory>EGEOSworkingDir/SARWind/</workingDirectory>
 		<performBackup>false</performBackup>
 		<preserveInput>true</preserveInput>
 		
@@ -19,52 +19,56 @@
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
 			<regex>.*SAR_wnf\.nc.*</regex>
-			<id>r1</id>
-			<description>description</description>
-			<name>test</name>
+			<id>EGEOSSARWind_r1</id>
+			<description>EGEOSSARWind rule</description>
+			<name>EGEOSSARWind</name>
 		</FileEventRule>
 
 		<MetocActionConfiguration>
 			<listenerId>StatusActionLogger0</listenerId>
-            <listenerId>ActionLogger0</listenerId>
+		        <listenerId>ActionLogger0</listenerId>
 
-			<workingDirectory>/emsa/out/nfs/sarDerived</workingDirectory>
+			<workingDirectory>EGEOSworkingDir/SARWind/</workingDirectory>
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
 			<metocHarvesterXMLTemplatePath>registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
-			<serviceID>EGEOSSARWindGeneratorService</serviceID>
-			<id>a1</id>
-			<description>description1</description>
-			<name>test</name>
+			<serviceID>SARWindGeneratorService</serviceID>
+			<id>EGEOSSARWind_a1</id>
+			<description>EGEOSSARWind</description>
+			<name>EGEOSSARWind_a1</name>
 		</MetocActionConfiguration>
 		
-		<MetocActionConfiguration>
+<!--		<MetocActionConfiguration>-->
+		<NetcdfGeodetic2GeoTiff>
 			<listenerId>StatusActionLogger0</listenerId>
-            <listenerId>ActionLogger0</listenerId>
+		        <listenerId>ActionLogger0</listenerId>
 
-			<workingDirectory>/emsa/out/nfs/sarDerived</workingDirectory>
+			<workingDirectory>EGEOSworkingDir/SARWind/</workingDirectory>
+			<layerParentDirectory>/emsa/out/nfs/sarDerived/</layerParentDirectory>
+
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<timeUnStampedOutputDir>true</timeUnStampedOutputDir>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
 			<metocHarvesterXMLTemplatePath>registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
-			<serviceID>NetCDFCFGeodetic2GeoTIFFsGeneratorService</serviceID>
-			<id>a2</id>
-			<description>description2</description>
-			<name>test2</name>
-		</MetocActionConfiguration>
+<!--			<serviceID>NetCDFCFGeodetic2GeoTIFFsGeneratorService</serviceID>-->
+			<id>EGEOSSARWind_a2</id>
+			<description>EGEOSSARWind NetCDFCFGeodetic2GeoTIFFs</description>
+			<name>EGEOSSARWind_a2</name>
+		</NetcdfGeodetic2GeoTiff>
+<!--		</MetocActionConfiguration>-->
 
 		<ImageMosaicActionConfiguration>
 			<listenerId>StatusActionLogger0</listenerId>
-            <listenerId>ActionLogger0</listenerId>
+		        <listenerId>ActionLogger0</listenerId>
 
 			<id>ImageMosaicService</id>
-			<description>ImageMosaicService</description>
-			<name>ImageMosaicService</name>
+			<description>EGEOSSARWind ImageMosaicService</description>
+			<name>EGEOSSARWind_ImageMosaicService</name>
 
 			<serviceID>ImageMosaicGeneratorService</serviceID>
-			<workingDirectory>/emsa/out/nfs/sarDerived</workingDirectory>
+			<workingDirectory>EGEOSworkingDir/SARWind/</workingDirectory>
 
 			<crs>EPSG:4326</crs>
 			<envelope/>
@@ -81,13 +85,13 @@
                         <inputTransparentColor>FFFFFF</inputTransparentColor>
                         <allowMultithreading>true</allowMultithreading>
                         <useJaiImageRead>true</useJaiImageRead>
-                        <tileSizeH>512</tileSizeH>
-                        <tileSizeW>512</tileSizeW>
+                        <tileSizeH>256</tileSizeH>
+                        <tileSizeW>256</tileSizeW>
 
                         <timeDimEnabled>true</timeDimEnabled>
 <!--                    <dirName>DIR</dirName>-->
-			<!-- LIST, CONTINOUS_INTERVAL, DISCRETE_INTERVAL -->
-                        <timePresentationMode>CONTINOUS_INTERVAL</timePresentationMode>
+			<!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
+                        <timePresentationMode>CONTINUOUS_INTERVAL</timePresentationMode>
 
 			
 			<styles/>
@@ -97,9 +101,9 @@
 			<!-- runtimeRegex><![CDATA[(?<=_)(\d{10})(?=_)]]></runtimeRegex -->
 		</ImageMosaicActionConfiguration>
 		
-		<id>id</id>
-		<description>description</description>
-		<name>test</name>
+		<id>EGEOSSARWind_id</id>
+		<description>EGEOSSARWind flow</description>
+		<name>EGEOSSARWind</name>
 	</EventConsumerConfiguration>
 	
 	<EventGeneratorConfiguration>
@@ -109,14 +113,14 @@
 		<eventType>FILE_ADDED</eventType>
 		<id>id</id>
         <serviceID>fsEventGeneratorService</serviceID>
-		<description>description</description>
-		<name>test</name>
+		<description>EGEOSSARWind event generator</description>
+		<name>EGEOSSARWind_EG</name>
 	</EventGeneratorConfiguration>
 
     <ListenerConfigurations>
     	<StatusProgressListener>
-    		<serviceID>statusListenerService</serviceID>
-            <id>StatusActionLogger0</id>
+		<serviceID>statusListenerService</serviceID>
+        	<id>StatusActionLogger0</id>
     	</StatusProgressListener>
     	
         <LoggingProgressListener>

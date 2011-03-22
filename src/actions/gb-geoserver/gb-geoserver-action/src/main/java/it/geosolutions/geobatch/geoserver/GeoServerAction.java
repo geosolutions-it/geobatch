@@ -39,14 +39,14 @@ import java.util.logging.Logger;
  * 
  * @author AlFa
  * 
- * @version $ GeoServerConfiguratorAction.java $ Revision: 0.1 $ 12/feb/07 12:07:06
+ * @version $ GeoServerAction.java $ Revision: 0.1 $ 12/feb/07 12:07:06
  */
 
-public abstract class GeoServerConfiguratorAction<T extends EventObject> extends BaseAction<T> {
+public abstract class GeoServerAction<T extends EventObject> extends BaseAction<T> {
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(GeoServerConfiguratorAction.class
+    protected final static Logger LOGGER = Logger.getLogger(GeoServerAction.class
             .toString());
 
     protected final GeoServerActionConfiguration configuration;
@@ -57,14 +57,9 @@ public abstract class GeoServerConfiguratorAction<T extends EventObject> extends
      * 
      * @throws IOException
      */
-    public GeoServerConfiguratorAction(GeoServerActionConfiguration configuration) {
+    public GeoServerAction(GeoServerActionConfiguration configuration) {
         super(configuration);
         this.configuration = configuration;
-        // //
-        //
-        // get required parameters
-        //
-        // //
 
         if ((configuration.getGeoserverURL() == null) || "".equals(configuration.getGeoserverURL())) {
             LOGGER.log(Level.SEVERE, "GeoServerURL is null.");

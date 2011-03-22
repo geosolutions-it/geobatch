@@ -22,8 +22,8 @@
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
-import it.geosolutions.geobatch.metocs.base.METOCSBaseConfiguratorAction;
+import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
+import it.geosolutions.geobatch.metocs.commons.MetocBaseAction;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
@@ -60,7 +60,7 @@ import ucar.nc2.Variable;
  * Public class to transform lscv08::INGV Model
  * 
  */
-public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction{
+public class INGVAction extends MetocBaseAction {
 
     private static String[] depthNames = new String[] { "depth", "deptht", "depthu", "depthv",
             "depthw" };
@@ -81,7 +81,7 @@ public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction{
 
     private int nDepths;
 
-    protected INGVFileConfiguratorAction(MetocActionConfiguration configuration) throws IOException {
+    protected INGVAction(MetocActionConfiguration configuration) throws IOException {
         super(configuration);
     }
 
@@ -217,13 +217,13 @@ public class INGVFileConfiguratorAction extends METOCSBaseConfiguratorAction{
             if (timeDataType == DataType.FLOAT || timeDataType == DataType.DOUBLE) {
                 double originalSecs = timeOriginalData
                         .getDouble(timeOriginalData.getIndex().set(t));
-                seconds = originalSecs + (timeOriginDate.getTime() / 1000) - (startTime / 1000);
+                seconds = originalSecs + (timeOriginDate.getTime() / 1000) - (MetocActionConfiguration.startTime / 1000);
                 if (t == 0) {
                     TAU = (int) (originalSecs / 3600);
                 }
             } else {
                 long originalSecs = timeOriginalData.getLong(timeOriginalData.getIndex().set(t));
-                seconds = originalSecs + (timeOriginDate.getTime() / 1000) - (startTime / 1000);
+                seconds = originalSecs + (timeOriginDate.getTime() / 1000) - (MetocActionConfiguration.startTime / 1000);
                 if (t == 0) {
                     TAU = (int) (originalSecs / 3600);
                 }

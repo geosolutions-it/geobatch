@@ -25,7 +25,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
+import it.geosolutions.geobatch.geoserver.GeoServerAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
@@ -53,7 +53,7 @@ import org.geotools.gce.geotiff.GeoTiffReader;
  * 
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
-public class GeoTIFFGeoServerGenerator extends GeoServerConfiguratorAction<FileSystemEvent> {
+public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> {
 
     public final static String GEOSERVER_VERSION = "1.7.X";
 
@@ -254,13 +254,13 @@ public class GeoTIFFGeoServerGenerator extends GeoServerConfiguratorAction<FileS
         if (sent) {
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER
-                        .info("GeoTIFF GeoServerConfiguratorAction: coverage SUCCESSFULLY sent to GeoServer!");
+                        .info("GeoTIFF GeoServerAction: coverage SUCCESSFULLY sent to GeoServer!");
             }
             boolean sldSent = configureStyles(layerName);
         } else {
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER
-                        .info("GeoTIFF GeoServerConfiguratorAction: coverage was NOT sent to GeoServer due to connection errors!");
+                        .info("GeoTIFF GeoServerAction: coverage was NOT sent to GeoServer due to connection errors!");
             }
         }
     }

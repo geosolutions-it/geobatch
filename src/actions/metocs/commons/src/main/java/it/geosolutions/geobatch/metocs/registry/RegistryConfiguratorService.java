@@ -38,10 +38,6 @@ import java.util.EventObject;
 public abstract class RegistryConfiguratorService<T extends EventObject, C extends ActionConfiguration>
         extends BaseService implements ActionService<T, C> {
 
-//    public RegistryConfiguratorService() {
-//        super(true);
-//    }
-
     public RegistryConfiguratorService(String id, String name, String description) {
         super(id, name, description);
     }

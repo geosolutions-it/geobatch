@@ -23,7 +23,7 @@ package it.geosolutions.geobatch.nurc.sem.lscv08;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
+import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -48,11 +48,11 @@ public class MERCATORGeneratorService extends
      * 
      * @param configuration
      *            The data base action configuration
-     * @return new MERCATORFileConfiguratorAction()
+     * @return new MERCATORAction()
      */
-    public MERCATORFileConfiguratorAction createAction(MetocActionConfiguration configuration) {
+    public MERCATORAction createAction(MetocActionConfiguration configuration) {
         try {
-            return new MERCATORFileConfiguratorAction(configuration);
+            return new MERCATORAction(configuration);
         } catch (IOException e) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);

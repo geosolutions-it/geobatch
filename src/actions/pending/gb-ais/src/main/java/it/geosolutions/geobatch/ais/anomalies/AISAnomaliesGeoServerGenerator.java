@@ -28,7 +28,7 @@ import it.geosolutions.geobatch.ais.dao.DAOException;
 import it.geosolutions.geobatch.ais.model.AISAnomalies;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
+import it.geosolutions.geobatch.geoserver.GeoServerAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Extractor;
 import it.geosolutions.geobatch.tools.file.Path;
@@ -59,7 +59,7 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import com.vividsolutions.jts.geom.Point;
 
 public class AISAnomaliesGeoServerGenerator extends
-		GeoServerConfiguratorAction<FileSystemEvent> {
+		GeoServerAction<FileSystemEvent> {
 
 	private AISAnomaliesDAO aisAnomaliesDAO;
 

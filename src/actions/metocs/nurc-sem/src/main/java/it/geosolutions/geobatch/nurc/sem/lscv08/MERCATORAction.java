@@ -22,8 +22,8 @@
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
-import it.geosolutions.geobatch.metocs.base.METOCSBaseConfiguratorAction;
+import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
+import it.geosolutions.geobatch.metocs.commons.MetocBaseAction;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
@@ -61,13 +61,13 @@ import ucar.nc2.Variable;
  * Public class to transform lscv08::MERCATOR Model
  * 
  */
-public class MERCATORFileConfiguratorAction extends METOCSBaseConfiguratorAction {
+public class MERCATORAction extends MetocBaseAction {
 
     private Attribute referenceTime;
 
     private Attribute forecastDate;
 
-    protected MERCATORFileConfiguratorAction(MetocActionConfiguration configuration)
+    protected MERCATORAction(MetocActionConfiguration configuration)
             throws IOException {
         super(configuration);
     }
@@ -252,7 +252,7 @@ public class MERCATORFileConfiguratorAction extends METOCSBaseConfiguratorAction
                     calendar.setTime(startDate);
                     calendar.add(GregorianCalendar.DATE, numDay);
 
-                    millisFromStartDate = calendar.getTimeInMillis() - startTime;
+                    millisFromStartDate = calendar.getTimeInMillis() - MetocActionConfiguration.startTime;
                 }
             } else
                 throw new IllegalArgumentException("Unable to find forecast day");

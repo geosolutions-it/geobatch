@@ -22,8 +22,9 @@
 package it.geosolutions.geobatch.egeos.wind;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
+import it.geosolutions.geobatch.catalog.impl.BaseService;
+import it.geosolutions.geobatch.flow.event.action.ActionService;
+import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -33,8 +34,7 @@ import java.util.logging.Logger;
  * Public class to generate E-GEOS::SAR Wind Derived Products Services
  * 
  */
-public class SARWindGeneratorService extends
-        GeoServerConfiguratorService<FileSystemEvent, MetocActionConfiguration> {
+public class SARWindGeneratorService extends BaseService implements ActionService<FileSystemEvent, MetocActionConfiguration> {
 
     public SARWindGeneratorService(String id, String name, String description) {
         super(id, name, description);
@@ -49,9 +49,9 @@ public class SARWindGeneratorService extends
      *            The data base action configuration
      * @return new SARWindFileConfiguratorAction()
      */
-    public SARWindFileConfiguratorAction createAction(MetocActionConfiguration configuration) {
+    public SARWindAction createAction(MetocActionConfiguration configuration) {
         try {
-            return new SARWindFileConfiguratorAction(configuration);
+            return new SARWindAction(configuration);
         } catch (IOException e) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
@@ -59,10 +59,21 @@ public class SARWindGeneratorService extends
         }
     }
 
-    @Override
     public boolean canCreateAction(MetocActionConfiguration configuration) {
-        final boolean superRetVal = super.canCreateAction(configuration);
-        return superRetVal;
+        return true;
     }
+
+//    @Override
+//    public boolean canCreateAction(MetocActionConfiguration configuration) {
+//        final boolean superRetVal = super.canCreateAction(configuration);
+//        if (configuration.getServiceId()==null){
+//            return true; //try to use 
+//        }
+//        else if (this.getClass().getName().endsWith(configuration.getServiceID())){
+//            return true;
+//        }
+//        else
+//            return false;
+//    }
 
 }

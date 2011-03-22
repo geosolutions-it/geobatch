@@ -83,10 +83,18 @@ final class ImageMosaicGranulesDescriptor {
 
         List<File> fileNameList = coll.collect(inputDir);
         if (cmd.getAddFiles() != null) {
-            fileNameList.addAll(cmd.getAddFiles());
+            for (File file:cmd.getAddFiles()){
+                if (!fileNameList.contains(file)){
+                    fileNameList.add(file);
+                }
+            }
         }
         if (cmd.getDelFiles() != null) {
-            fileNameList.removeAll(cmd.getDelFiles());
+            for (File file:cmd.getDelFiles()){
+                if (!fileNameList.contains(file)){
+                    fileNameList.remove(file);
+                }
+            }
         }
 
         if (fileNameList == null) {

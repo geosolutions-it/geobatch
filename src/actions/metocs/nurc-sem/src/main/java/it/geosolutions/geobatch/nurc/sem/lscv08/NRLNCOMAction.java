@@ -22,8 +22,8 @@
 package it.geosolutions.geobatch.nurc.sem.lscv08;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.metocs.MetocActionConfiguration;
-import it.geosolutions.geobatch.metocs.base.METOCSBaseConfiguratorAction;
+import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
+import it.geosolutions.geobatch.metocs.commons.MetocBaseAction;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
@@ -58,7 +58,7 @@ import ucar.nc2.Variable;
  * Public class to transform lscv08::NRL_NCOM Model
  * 
  */
-public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction {
+public class NRLNCOMAction extends MetocBaseAction {
 
     public static final long NCOMstartTime;
 
@@ -70,7 +70,7 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
 
     private Array time1Data;
 
-    protected NRLNCOMFileConfiguratorAction(MetocActionConfiguration configuration)
+    protected NRLNCOMAction(MetocActionConfiguration configuration)
             throws IOException {
         super(configuration);
     }
@@ -187,7 +187,7 @@ public class NRLNCOMFileConfiguratorAction extends METOCSBaseConfiguratorAction 
                 TAU = (int) ((timeValue * 3600 * 1000) + NCOMstartTime - timeOriginDate.getTime());
             }
             // adding time offset
-            timeValue = (NCOMstartTime - startTime) + (timeValue * 3600000);
+            timeValue = (NCOMstartTime - MetocActionConfiguration.startTime) + (timeValue * 3600000);
             // converting back to seconds and storing to data
             time1Data.setLong(time1Data.getIndex().set(t), timeValue / 1000);
         }

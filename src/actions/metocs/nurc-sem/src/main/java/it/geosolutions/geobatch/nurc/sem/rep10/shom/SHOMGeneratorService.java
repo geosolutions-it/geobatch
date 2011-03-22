@@ -21,6 +21,7 @@
  */
 package it.geosolutions.geobatch.nurc.sem.rep10.shom;
 
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
@@ -46,14 +47,31 @@ public class SHOMGeneratorService extends BaseService implements
         try {
             return new SHOMAction(configuration);
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
             return null;
         }
     }
 
     public boolean canCreateAction(SHOMConfiguration configuration) {
-        return true;
+        try {
+            // absolutize working dir
+            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd != null) {
+                configuration.setWorkingDirectory(wd);
+                return true;
+            } else {
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.log(
+                            Level.WARNING,
+                            "SHOMGeneratorService::canCreateAction(): "
+                                    + "unable to create action, it's not possible to get an absolute working dir.");
+            }
+        } catch (Throwable e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        }
+        return false;
     }
 
 }

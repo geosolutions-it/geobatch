@@ -26,7 +26,7 @@ import org.springframework.core.io.ClassPathResource;
  */
 public class SpillParserTest extends TestCase {
 
-    private static Logger LOGGER = Logger.getLogger(ShipParserTest.class.getName());
+    private static Logger LOGGER = Logger.getLogger(SpillParserTest.class.getName());
 
     public void testSpillParser() throws Exception {
         // connect to the store

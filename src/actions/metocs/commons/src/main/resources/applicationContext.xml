@@ -3,7 +3,6 @@
 
 <beans default-init-method="init" default-destroy-method="dispose">
 
-		 
 	<!-- Environment Initialization -->
 	
 	<bean id="NetCDFCFGeodetic2GeoTIFFsGeneratorService" class="it.geosolutions.geobatch.metocs.base.NetCDFCFGeodetic2GeoTIFFsGeneratorService">
@@ -31,7 +30,11 @@
     	<constructor-arg type="String"><value>OSTIA2GeoTIFFsGeneratorService</value></constructor-arg>	
 	</bean>
 	
-	<bean id="NURCActionsAliasRegistrar" class="it.geosolutions.geobatch.metocs.commons.METOCSActionsAliasRegistrar" lazy-init="false">
+	<bean id="MetocActionsAliasRegistrar" class="it.geosolutions.geobatch.metocs.commons.MetocActionsAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+    
+    <bean id="NetcdfGeodetic2GeoTIFFAliasRegistrar" class="it.geosolutions.geobatch.metocs.base.NetCDFCFGeodetic2GeoTIFFsAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
 

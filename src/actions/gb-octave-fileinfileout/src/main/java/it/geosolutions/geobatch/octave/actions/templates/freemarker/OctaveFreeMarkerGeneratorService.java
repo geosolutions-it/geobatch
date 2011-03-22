@@ -26,32 +26,44 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
-import it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMarkerAction;
-import it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMarkerConfiguration;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class OctaveFreeMarkerGeneratorService
     extends BaseService 
     implements ActionService<FileSystemEvent, OctaveFreeMarkerConfiguration> {
 
+    protected final static Logger LOGGER = Logger.getLogger(OctaveFreeMarkerGeneratorService.class
+            .toString());
+    
     public OctaveFreeMarkerGeneratorService(String id, String name, String description) {
         super(id, name, description);
     }
 
     public boolean canCreateAction(final OctaveFreeMarkerConfiguration configuration)  {
-        
-        String base_dir=configuration.getWorkingDirectory();
-        base_dir=Path.getAbsolutePath(base_dir);
-        if (base_dir!=null){
-            configuration.setWorkingDirectory(base_dir);
-            // NOW THE WORKING DIR IS AN ABSOLUTE PATH
+        try {
+            // absolutize working dir
+            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd != null) {
+                configuration.setWorkingDirectory(wd);
+                return true;
+            } else {
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.log(
+                            Level.WARNING,
+                            "OctaveFreeMarkerGeneratorService::canCreateAction(): "
+                                    + "unable to create action, it's not possible to get an absolute working dir.");
+            }
+        } catch (Throwable e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
         }
-        else
-            return false;
+        return false;
         
 //TODO check if the m file is present and is readable
 //TODO check if the sheet (execute) file is present and is readable
         
-        return true;
     }
 
 

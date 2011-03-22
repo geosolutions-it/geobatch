@@ -26,7 +26,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorAction;
+import it.geosolutions.geobatch.geoserver.GeoServerAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
 import it.geosolutions.geobatch.tools.file.Path;
@@ -80,7 +80,7 @@ import org.opengis.temporal.TemporalGeometricPrimitive;
  * their basic metadata.
  */
 public class HDF42GeoTIFFsFileConfiguratorAction extends
-        GeoServerConfiguratorAction<FileSystemEvent> {
+        GeoServerAction<FileSystemEvent> {
 
     /**
      * GeoTIFF Writer Default Params

@@ -26,7 +26,6 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
-import it.geosolutions.geobatch.geotiff.retile.GeoTiffRetiler;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -42,9 +41,9 @@ import java.util.logging.Logger;
 public class GeoTiffOverviewsEmbedderService extends BaseService implements
         ActionService<FileSystemEvent, GeoTiffOverviewsEmbedderConfiguration> {
 
-//    private GeoTiffOverviewsEmbedderService() {
-//        super(description, description, description, true);
-//    }
+    // private GeoTiffOverviewsEmbedderService() {
+    // super(description, description, description, true);
+    // }
 
     public GeoTiffOverviewsEmbedderService(String id, String name, String description) {
         super(id, name, description);
@@ -54,25 +53,34 @@ public class GeoTiffOverviewsEmbedderService extends BaseService implements
             .getLogger(GeoTiffOverviewsEmbedder.class.toString());
 
     public boolean canCreateAction(GeoTiffOverviewsEmbedderConfiguration configuration) {
-        // XXX
-        return true;
+        try {
+            // absolutize working dir
+            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd != null) {
+                configuration.setWorkingDirectory(wd);
+                return true;
+            } else {
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.log(
+                            Level.WARNING,
+                            "GeoTiffOverviewsEmbedderService::canCreateAction(): "
+                                    + "unable to create action, it's not possible to get an absolute working dir.");
+            }
+        } catch (Throwable e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+        }
+        return false;
     }
 
     public GeoTiffOverviewsEmbedder createAction(GeoTiffOverviewsEmbedderConfiguration configuration) {
         try {
-            // absolutize working dir
-            String wd=Path.getAbsolutePath(configuration.getWorkingDirectory());
-            if (wd!=null){
-                configuration.setWorkingDirectory(wd);
-                return new GeoTiffOverviewsEmbedder(configuration);
-            }
-            else
-                return null;
+            return new GeoTiffOverviewsEmbedder(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
-            return null;
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
         }
+        return null;
     }
 
 }

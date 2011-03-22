@@ -21,11 +21,9 @@
  */
 package it.geosolutions.geobatch.action.egeos.emsa;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.action.scripting.ScriptingAction;
 import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
-import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -39,8 +37,7 @@ import javax.script.ScriptEngineManager;
  * 
  * @author etj
  */
-public class EMSAService extends BaseService implements
-        ActionService<FileSystemEvent, ScriptingConfiguration> {
+public class EMSAService extends BaseService {
 
     public EMSAService(String id, String name, String description) {
         super(id, name, description);
