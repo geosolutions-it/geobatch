@@ -39,7 +39,6 @@
 			<name>EGEOSSARWind_a1</name>
 		</MetocActionConfiguration>
 		
-<!--		<MetocActionConfiguration>-->
 		<NetcdfGeodetic2GeoTiff>
 			<listenerId>StatusActionLogger0</listenerId>
 		        <listenerId>ActionLogger0</listenerId>
@@ -52,12 +51,11 @@
 			<timeUnStampedOutputDir>true</timeUnStampedOutputDir>
 			<metocDictionaryPath>registry_work/config/NURC-2010/Super-Ensemble/metoc-dictionary.xml</metocDictionaryPath>
 			<metocHarvesterXMLTemplatePath>registry_work/config/NURC-2010/Super-Ensemble/Nurc-Cim_Schema/2010_07_13/example/iso-models-template.xml</metocHarvesterXMLTemplatePath>
-<!--			<serviceID>NetCDFCFGeodetic2GeoTIFFsGeneratorService</serviceID>-->
+			<serviceID>NetCDFCFGeodetic2GeoTIFFsGeneratorService</serviceID>
 			<id>EGEOSSARWind_a2</id>
 			<description>EGEOSSARWind NetCDFCFGeodetic2GeoTIFFs</description>
 			<name>EGEOSSARWind_a2</name>
 		</NetcdfGeodetic2GeoTiff>
-<!--		</MetocActionConfiguration>-->
 
 		<ImageMosaicActionConfiguration>
 			<listenerId>StatusActionLogger0</listenerId>
@@ -81,10 +79,8 @@
 			<defaultStyle>raster</defaultStyle>
 			
 			<backgroundValue>0</backgroundValue>
-                        <outputTransparentColor>000000</outputTransparentColor>
-                        <inputTransparentColor>FFFFFF</inputTransparentColor>
                         <allowMultithreading>true</allowMultithreading>
-                        <useJaiImageRead>true</useJaiImageRead>
+                        <useJaiImageRead>false</useJaiImageRead>
                         <tileSizeH>256</tileSizeH>
                         <tileSizeW>256</tileSizeW>
 
@@ -111,8 +107,8 @@
 		<watchDirectory>EGEOSworkingDir/SARWind/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>id</id>
-        <serviceID>fsEventGeneratorService</serviceID>
+		<id>SARWind_EventGenerator_id</id>
+	        <serviceID>fsEventGeneratorService</serviceID>
 		<description>EGEOSSARWind event generator</description>
 		<name>EGEOSSARWind_EG</name>
 	</EventGeneratorConfiguration>
