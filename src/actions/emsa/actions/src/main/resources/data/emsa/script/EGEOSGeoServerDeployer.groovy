@@ -68,6 +68,7 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
 
 	DataStore store=null;
     try {
+println (" **********************************GeoServer DEPLOYER*********************************** ");
         listenerForwarder.started();
         // ////
         // Instatiate EMSA Utilities
@@ -87,7 +88,8 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
         
         final String fileSuffix = FilenameUtils.getExtension(inputFileName);
         
-//println("Input file name is: "+inputFileName);
+println("Input file name is: "+inputFileName);
+
         // ////
 	// getting package directory
 	// ////
@@ -110,52 +112,89 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
         // ////
         // getting package type
         // ////
-//println("File name is: "+pkgDir.getName());
+println("File name is: "+pkgDir.getName());
 
         PackageType type = utils.getPackageTypeFromName(pkgDir.getName());
         
-//println("Type is: "+type);
+println("Type is: "+type);
 
-        // ////
-        // Update GeoServer DataStore...
-        // ////
-        // connect to the store
-        store = connect(database, dbtype, host, port, user, passwd);
-        listenerForwarder.setTask("::EGEOSGeoServerDeployer : online store ")
         if (type != null) {
             if (type == PackageType.DER) {
+
                 // deploy Ship Detections...
-                File[] shipFiles = pkgDir.listFiles(new ShipDetectionNameFilter());
+		try {
+		        // ////
+        		// Update GeoServer DataStore...
+	        	// ////
+	        	// connect to the store
+		        store = connect(database, dbtype, host, port, user, passwd);
 
-                ShipParser shipParser = new ShipParser();
-                for (File shipFile : shipFiles) {
-                    shipParser.parseShip(store, ShipParser.xpath, shipFile);
-                }
+        		listenerForwarder.setTask("::EGEOSGeoServerDeployer : deploy Ship detections ")
 
-                store.dispose();
+	                ShipParser shipParser = new ShipParser();
+
+	                File[] shipFiles = pkgDir.listFiles(new ShipDetectionNameFilter());
+        	        for (File shipFile : shipFiles) {
+                	    shipParser.parseShip(store, ShipParser.xpath, shipFile);
+	                }
+		    } catch (Throwable cause) {
+        		sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
+		    } finally {
+			try{
+				if (store!=null)
+				  store.dispose();
+			} catch (Throwable cause){
+				// nothing
+			}
+			store=null;
+		    }
 
                 // Forwarding Wind and Wave to GeoBatch METOC Actions...
                 File[] ncDerivedFiles = pkgDir.listFiles(new NetCDFNameFilter());
 
                 for (File ncFile : ncDerivedFiles) {
-					File destNcFile = new File(SARNetCDFdestDir, ncFile.getName());
-					if (destNcFile.exists()) {
-						if (destNcFile.delete()) {
-							FileUtils.copyFileToDirectory(ncFile, SARNetCDFdestDir, true)
-							results.add(destNcFile.getAbsolutePath());
-						}
-					}
+//			File destNcFile = new File(SARNetCDFdestDir, ncFile.getName());
+
+println("Input NetCDF SAR file name is: "+ncFile.getAbsolutePath());
+//println("Input NetCDF SAR file name is: "+destNcFile.getAbsolutePath());
+
+			if (ncFile.exists()) {
+//				if (destNcFile.delete()) {
+//					FileUtils.copyFileToDirectory(ncFile, SARNetCDFdestDir, true)
+println("Input NetCDF SAR file name is: "+ncFile.getAbsolutePath());
+
+					results.add(ncFile.getAbsolutePath());
+//				}
+			}
                 }
             } else if (type == PackageType.OSW || type == PackageType.OSN) {
-                // deploy Oil Spills...
-                File[] spillFiles = pkgDir.listFiles(new OilSpillNameFilter());
+		try {
+	        	// ////
+        		// Update GeoServer DataStore...
+		        // ////
+        		// connect to the store
+		        store = connect(database, dbtype, host, port, user, passwd);
 
-                SpillParser spillParser = new SpillParser();
-                for (File spillFile : spillFiles) {
-                    spillParser.parseOilSpill(store, SpillParser.xpath, spillFile);
-                }
+        		listenerForwarder.setTask("::EGEOSGeoServerDeployer : deploy OilSpill detections ")
 
-                store.dispose();
+                	// deploy Oil Spills...
+        	        File[] spillFiles = pkgDir.listFiles(new OilSpillNameFilter());
+
+	                SpillParser spillParser = new SpillParser();
+                	for (File spillFile : spillFiles) {
+        	            spillParser.parseOilSpill(store, SpillParser.xpath, spillFile);
+	                }
+		    } catch (Throwable cause) {
+        		sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
+		    } finally {
+			try{
+				if (store!=null)
+				  store.dispose();
+			} catch (Throwable cause){
+				// nothing
+			}
+			store=null;
+		    }
             } else if (type == PackageType.PRO) {
 //println("PRO: ");
 

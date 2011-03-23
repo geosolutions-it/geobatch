@@ -454,8 +454,8 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
                                         METOCSActionsIOUtils.HEIGHT_DIM);
 
                         /*
-                         * Creating a new ImageMosaicCommand to add a layer using
-                         * this geotiff (variable)
+                         * Creating a new ImageMosaicCommand to add a layer using this geotiff
+                         * (variable)
                          */
                         List<File> addList = new ArrayList<File>();
                         ImageMosaicCommand cmd = new ImageMosaicCommand(new File(
@@ -544,25 +544,31 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
 
             return events;
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-            JAI.getDefaultInstance().getTileCache().flush();
-            return null;
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(
+                        Level.SEVERE,
+                        "NetCDFCFGeodetic2GeoTIFFsFileAction::execute(): "
+                                + t.getLocalizedMessage(), t);
         } finally {
             try {
                 if (ncFileIn != null) {
                     ncFileIn.close();
                 }
-
-                if (inputFile != null && inputFile.exists()) {
-                    inputFile.delete();
-                }
+                /*
+                 * Carlo ? why delete a file here ? this is not a good idea!
+                 */
+                // if (inputFile != null && inputFile.exists()) {
+                // inputFile.delete();
+                // }
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
-            } finally {
-                JAI.getDefaultInstance().getTileCache().flush();
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(
+                            Level.SEVERE,
+                            "NetCDFCFGeodetic2GeoTIFFsFileAction::execute(): "
+                                    + e.getLocalizedMessage(), e);
             }
         }
+        return null;
     }
 
     /**

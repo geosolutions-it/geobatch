@@ -81,10 +81,8 @@
 			<defaultStyle>raster</defaultStyle>
 			
 			<backgroundValue>0</backgroundValue>
-                        <outputTransparentColor>000000</outputTransparentColor>
-                        <inputTransparentColor>FFFFFF</inputTransparentColor>
                         <allowMultithreading>true</allowMultithreading>
-                        <useJaiImageRead>true</useJaiImageRead>
+                        <useJaiImageRead>false</useJaiImageRead>
                         <tileSizeH>256</tileSizeH>
                         <tileSizeW>256</tileSizeW>
 
