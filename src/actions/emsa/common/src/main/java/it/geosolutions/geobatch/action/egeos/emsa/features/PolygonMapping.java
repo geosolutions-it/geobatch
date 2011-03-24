@@ -62,6 +62,13 @@ public class PolygonMapping extends FeatureMapping {
         }
     }
 
+    /**
+     * NOTE:
+     *      THIS IS PROBABLY SPECIFIC FOR EMSA
+     *      
+     * @param ordinates
+     * @return
+     */
     protected double[] parseRingOrdinates(String ordinates) {
         String[] strarr = Pattern.compile("[\\s\\n]+", Pattern.DOTALL).split(ordinates.trim());
         double[] doubles = new double[strarr.length];
@@ -73,8 +80,17 @@ public class PolygonMapping extends FeatureMapping {
             if (doubles[0] != doubles[doubles.length - 2] || doubles[1] != doubles[doubles.length - 1]) {
                 double[] tmp = new double[doubles.length + 2];
                 System.arraycopy(doubles, 0, tmp, 0, doubles.length);
-                tmp[doubles.length] = doubles[0];
-                tmp[doubles.length + 1] = doubles[1];
+                /*
+                 *      Here we suppose that data is stored in the format:
+                 *      - Lat Lon
+                 *      
+                 * NOTE:
+                 *      THIS IS PROBABLY SPECIFIC FOR 'EMSA'
+                 * 
+                 *      Take a look into the xml files located into DER packages
+                 */
+                tmp[doubles.length] = doubles[1];
+                tmp[doubles.length + 1] = doubles[0];
                 doubles = tmp;
             }
         

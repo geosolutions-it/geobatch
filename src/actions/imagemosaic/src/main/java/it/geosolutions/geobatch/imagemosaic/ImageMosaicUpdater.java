@@ -353,10 +353,10 @@ abstract class ImageMosaicUpdater {
                 } catch (IOException ioe) {
                     if (transaction != null)
                         transaction.rollback();
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.severe("UpdateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.warning("UpdateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
                     }
-                    throw new IOException("UpdateDataStore(): " + ioe.getLocalizedMessage());
+                    return false;
                 } catch (RuntimeException re) {
                     if (transaction != null)
                         transaction.rollback();
@@ -450,6 +450,11 @@ abstract class ImageMosaicUpdater {
                                 }
                             }
                         }
+                        else {
+                            if (LOGGER.isLoggable(Level.SEVERE)) {
+                                LOGGER.severe("UpdateDataStore(): problem getting the next feature: it is null!");
+                            }
+                        }
                     }
                 } catch (IOException ioe) {
                     if (transaction != null)
@@ -496,11 +501,11 @@ abstract class ImageMosaicUpdater {
             }
 
             if (cmd.getAddFiles() == null) {
-                String message = "UpdateDataStore(): problem with copy copyTo files. addFiles list is null here";
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.severe(message);
+                String message = "UpdateDataStore(): addFiles list is null Here.";
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning(message);
                 }
-                throw new IOException(message);
+                return false;
             } else if (cmd.getAddFiles().size() == 0) {
                 String message = "UpdateDataStore(): no more images to add to the layer were found, please check the command.";
                 if (LOGGER.isLoggable(Level.WARNING)) {

@@ -11,6 +11,9 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 /**
  * Parses a gml:DirectPosition2D into a Point
  * 
+ * NOTE:
+ *      THIS IS PROBABLY SPECIFIC FOR EMSA
+ * 
  * @author Andrea Aime
  */
 public class DirectPositionMapping extends FeatureMapping {
@@ -25,13 +28,23 @@ public class DirectPositionMapping extends FeatureMapping {
 
     @Override
     public Object getValue(XPath xpath, Node root) throws XPathExpressionException {
-        String value = (String) super.getValue(xpath, root);
+        final String value = (String) super.getValue(xpath, root);
         if (value == null || "".equals(value.trim())) {
             return null;
         }
 
-        String[] xy = value.split("\\s+");
-        return new GeometryFactory().createPoint(new Coordinate(Double.parseDouble(xy[0]), Double
-                .parseDouble(xy[1])));
+        final String[] xy = value.split("\\s+");
+        
+        /*
+         *      Here we suppose that data is stored in the format:
+         *      - Lat Lon
+         *      
+         * NOTE:
+         *      THIS IS PROBABLY SPECIFIC FOR EMSA
+         * 
+         *      Take a look into the xml files located into DER packages
+         */
+        return new GeometryFactory().createPoint(new Coordinate(Double.parseDouble(xy[1]), Double
+                .parseDouble(xy[0])));
     }
 }

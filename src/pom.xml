@@ -566,8 +566,8 @@
             <!-- imageio-ext ================================================-->
 
             <dependency>
-				<groupId>it.geosolutions.imageio-ext</groupId>
-				<artifactId>imageio-ext-tiff</artifactId>
+		<groupId>it.geosolutions.imageio-ext</groupId>
+		<artifactId>imageio-ext-tiff</artifactId>
                 <version>${imageio-ext.version}</version>
             </dependency>
             <dependency>
@@ -614,7 +614,7 @@
             <dependency>
                 <groupId>com.vividsolutions</groupId>
                 <artifactId>jts</artifactId>
-                <version>1.9</version>
+                <version>1.11</version>
             </dependency>
             <dependency>
                 <groupId>org.wkb4j</groupId>
@@ -624,10 +624,10 @@
             
             <!-- NetCDF ========================================================-->
             <dependency>
-				<groupId>essi-unidata</groupId>
-				<artifactId>netcdf-java</artifactId>
-				<version>4.0.41</version>
-			</dependency>
+		    <groupId>essi-unidata</groupId>
+		    <artifactId>netcdf-java</artifactId>
+		    <version>4.0.41</version>
+	    </dependency>
 
             <!-- XML ========================
             ================================-->

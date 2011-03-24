@@ -203,6 +203,7 @@ println("Input NetCDF SAR file name is: "+ncFile.getAbsolutePath());
 		      new GeoTiffRetilerConfiguration(configuration.getId(),"EMSA_retiler",configuration.getDescription());
 		retilerConfig.setTileH(props.get("reTileH"));
 		retilerConfig.setTileW(props.get("reTileW"));
+		retilerConfig.setWorkingDirectory(configuration.getWorkingDirectory());
 		GeoTiffRetiler retiler=new GeoTiffRetiler(retilerConfig);
 		
 		// overview
@@ -214,7 +215,8 @@ println("Input NetCDF SAR file name is: "+ncFile.getAbsolutePath());
 		overviewConfig.setScaleAlgorithm(props.get("scaleAlgorithm"));
 		overviewConfig.setDownsampleStep(props.get("downsampleStep"));
 		overviewConfig.setNumSteps(props.get("numSteps"));
-		
+		overviewConfig.setWorkingDirectory(configuration.getWorkingDirectory());
+
 		GeoTiffOverviewsEmbedder overview=new GeoTiffOverviewsEmbedder(overviewConfig);
 		
 		Queue queue=new LinkedList();
