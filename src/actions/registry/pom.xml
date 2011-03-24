@@ -49,62 +49,16 @@
             <groupId>be.kzen.ergorr</groupId>
             <artifactId>ErgoRR-client</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <exclusions>
+				<exclusion>
+					<groupId>org.postgis</groupId>
+					<artifactId>postgis</artifactId>		
+				</exclusion>
+            </exclusions>
         </dependency>
 		</dependencies>
 
-    <profiles>
-        <profile>
-            <id>dao.jibx</id>
-            <!--<activation>...</activation>-->
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jibx</groupId>
-                        <artifactId>maven-jibx-plugin</artifactId>
-                        <version>1.1.6</version>
-                        <configuration>
-                            <verbose>true</verbose>
-                            <directory>src/main/resources/jibx</directory>
-                            <includes>
-                                <includes>binding.xml</includes>
-                            </includes>
-                            <verbose>true</verbose>
-                            <multi-module>true</multi-module>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>bind</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-            <!--
-            <modules>...</modules>
-            <repositories>...</repositories>
-            <pluginRepositories>...</pluginRepositories>
-             -->
-            <dependencies>
-                <dependency>
-                    <groupId>org.jibx</groupId>
-                    <artifactId>jibx-run</artifactId>
-                    <version>1.1.6</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.jibx</groupId>
-                    <artifactId>jibx-extras</artifactId>
-                    <version>1.1.6</version>
-                </dependency>
-            </dependencies>
-            <!--
-            <reporting>...</reporting>
-            <dependencyManagement>...</dependencyManagement>
-            <distributionManagement>...</distributionManagement>
--->
-        </profile>
-
+	<profiles>
         <profile>
             <id>e-geos</id>
             <modules>

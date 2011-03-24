@@ -69,6 +69,11 @@
             <groupId>it.geosolutions</groupId>
 			<artifactId>gb-octave</artifactId>
         </dependency>
+        
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-action-octave-fileinfileout</artifactId>
+		</dependency>
 <!-- SHOM -->
         <!-- FreeMarker -->
         <dependency>
