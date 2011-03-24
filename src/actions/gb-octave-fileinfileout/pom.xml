@@ -58,6 +58,7 @@
 			<groupId>it.geosolutions</groupId>
 			<artifactId>gb-core-impl</artifactId>
 		</dependency>
+		
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-fs-catalog</artifactId>
@@ -85,14 +86,14 @@
 				</dependency>
 	         -->
 	         
-         <dependency>
-			<groupId>it.geosolutions</groupId>
-            <artifactId>gb-action-tools</artifactId>
-		</dependency>
-		
 		<dependency>
 			<groupId>it.geosolutions</groupId>
-            <artifactId>gb-octave</artifactId>
+			<artifactId>gb-action-tools</artifactId>
+		</dependency>
+		  		
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-octave</artifactId>
 		</dependency>
 		
 		<!-- ============================== -->

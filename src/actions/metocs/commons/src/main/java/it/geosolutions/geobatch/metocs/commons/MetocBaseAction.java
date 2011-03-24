@@ -31,25 +31,18 @@ import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
 import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
 import it.geosolutions.geobatch.tools.file.Path;
-import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.media.jai.JAI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -58,11 +51,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.geotools.geometry.GeneralEnvelope;
 
 import ucar.ma2.Array;
-import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Dimension;
-import ucar.nc2.NetcdfFile;
-import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
 /**
@@ -99,14 +89,6 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
         }
     }
 
-    protected NetcdfFile ncGridFile = null;
-
-    protected NetcdfFileWriteable ncFileOut = null;
-
-    protected NetcdfFile ncFileIn = null;
-
-    protected File outputFile = null;
-
     protected String cruiseName = "lscv08";
 
     protected Map<String, Variable> foundVariables = new HashMap<String, Variable>();
@@ -131,8 +113,9 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
         try {
             // looking for file
             if (events.size() != 1)
-                throw new IllegalArgumentException("MetocBaseAction:execute(): Wrong number of elements for this action: "
-                        + events.size());
+                throw new IllegalArgumentException(
+                        "MetocBaseAction:execute(): Wrong number of elements for this action: "
+                                + events.size());
 
             FileSystemEvent event = events.remove();
             @SuppressWarnings("unused")
@@ -152,118 +135,62 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
             //
             // ////////////////////////////////////////////////////////////////////
             if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                String message="GeoServerDataDirectory is null or does not exist.";
+                String message = "GeoServerDataDirectory is null or does not exist.";
                 if (LOGGER.isLoggable(Level.SEVERE))
                     LOGGER.log(Level.SEVERE, message);
                 throw new IllegalStateException(message);
             }
 
             // ... BUSINESS LOGIC ... //
-            String inputFileName = event.getSource().getAbsolutePath();
-            final String filePrefix = FilenameUtils.getBaseName(inputFileName);
+            File inputFile = event.getSource();
+            String inputFileName = inputFile.getAbsolutePath();
             final String fileSuffix = FilenameUtils.getExtension(inputFileName);
             final String fileNameFilter = configuration.getStoreFilePrefix();
 
-            String baseFileName = null;
-
             if (fileNameFilter != null) {
-                if ((filePrefix.equals(fileNameFilter) || filePrefix.matches(fileNameFilter))
-                        && ("zip".equalsIgnoreCase(fileSuffix)
-                                || "tar".equalsIgnoreCase(fileSuffix) || "nc"
-                                .equalsIgnoreCase(fileSuffix))) {
-                    // etj: are we missing something here?
-                    baseFileName = filePrefix;
+                if (!inputFile.getName().matches(fileNameFilter)) {
+                    final String message = "MetocBaseAction:execute(): Unexpected file '"
+                            + inputFileName + "'.\nThis action expects 'one' NetCDF file using \'"
+                            + fileNameFilter + "\' as name filter (String.matches()).";
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.log(Level.SEVERE, message);
+                    throw new IllegalStateException(message);
                 }
-            } else if ("zip".equalsIgnoreCase(fileSuffix) || "tar".equalsIgnoreCase(fileSuffix)
-                    || "nc".equalsIgnoreCase(fileSuffix)) {
-                baseFileName = filePrefix;
+            } else {
+                if (!"nc".equalsIgnoreCase(fileSuffix) && !"netcdf".equalsIgnoreCase(fileSuffix)) {
+                    final String message = "MetocBaseAction:execute(): Unexpected file '"
+                            + inputFileName
+                            + "'.\n"
+                            + "This action expects 'one' NetCDF file using \'.nc\' or \'.netcdf\' extension.";
+                    if (LOGGER.isLoggable(Level.SEVERE))
+                        LOGGER.log(Level.SEVERE, message);
+                    throw new IllegalStateException(message);
+                }
             }
-
-            if (baseFileName == null) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, "MetocBaseAction:execute(): Unexpected file '" + inputFileName + "'");
-                throw new IllegalStateException("MetocBaseAction:execute(): Unexpected file '" + inputFileName + "'");
-            }
-
-            inputFileName = FilenameUtils.getName(inputFileName);
 
             final File outDir = Utilities.createTodayDirectory(workingDir,
                     FilenameUtils.getBaseName(inputFileName));
 
-            if (outDir==null){
-                String message="MetocBaseAction:execute(): Unexpected error: output dir is null";
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, message);
-                throw new IllegalStateException(message);
-            }
-            
-            // decompress input file into a temp directory
-            final File tempFile = File.createTempFile(inputFileName, ".tmp", outDir);
-            final File metocsDatasetDirectory = unzipMetocArchive(event, fileSuffix, outDir,
-                    tempFile);
-
-            // move the file if it's not an archive
-            if (!("zip".equalsIgnoreCase(fileSuffix) || "tar".equalsIgnoreCase(fileSuffix)))
-                event.getSource().renameTo(new File(metocsDatasetDirectory, inputFileName));
-
-            tempFile.delete();
-
-            // ////
-            // STEP 1: Looking for grid NetCDF files
-            // - The files are already NetCDF-CF and regular. The time has to be
-            // translated.
-            // ////
-            File[] metocsGridFiles = metocsDatasetDirectory.listFiles(new FilenameFilter() {
-
-                public boolean accept(File dir, String name) {
-                    if (FilenameUtils.getExtension(name).equalsIgnoreCase("nc")
-                            || FilenameUtils.getExtension(name).equalsIgnoreCase("netcdf")) {
-                        return true;
-                    }
-
-                    return false;
+            if (inputFile.isFile() && inputFile.canRead()) {
+                if (FilenameUtils.getExtension(inputFileName).equalsIgnoreCase("nc")
+                        || FilenameUtils.getExtension(inputFileName).equalsIgnoreCase("netcdf")) {
+                    
                 }
-
-            });
-
-            if (metocsGridFiles.length != 1) {
+                //
+                File outputFile = writeDownNetCDF(outDir, inputFileName);
+                // ... setting up the appropriate event for the next action
+                events.add(new FileSystemEvent(outputFile, FileSystemEventType.FILE_ADDED));
+            } else {
                 if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Could not find any NCOM Grid file. [metocsDatasetDirectory: "
-                            + metocsDatasetDirectory.getAbsolutePath()
-                            + "; metocsGridFiles.length:" + metocsGridFiles.length + "]");
-                throw new IOException(
-                        "Could not find any NCOM Grid file. [metocsDatasetDirectory: "
-                                + metocsDatasetDirectory.getAbsolutePath()
-                                + "; metocsGridFiles.length:" + metocsGridFiles.length + "]");
+                    LOGGER.log(Level.SEVERE, "MetocBaseAction:execute(): "
+                            + "the input file is not a non-directory file or it is not readable.");
             }
 
-            ncGridFile = NetcdfFile.open(metocsGridFiles[0].getAbsolutePath());
-
-            writeDownNetCDF(outDir, inputFileName);
-
-            // ... setting up the appropriate event for the next action
-            events.add(new FileSystemEvent(outputFile, FileSystemEventType.FILE_ADDED));
-            return events;
         } catch (Throwable t) {
             LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-            JAI.getDefaultInstance().getTileCache().flush();
-            return null;
-        } finally {
-            try {
-                if (ncGridFile != null) {
-                    ncGridFile.close();
-                }
-
-                if (ncFileOut != null) {
-                    ncFileOut.close();
-                }
-            } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
-            } finally {
-                JAI.getDefaultInstance().getTileCache().flush();
-            }
         }
+        
+        return events;
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,20 +199,6 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
     //
     // ////////////////////////////////////////////////////////////////////////////////////////////
 
-    /**
-     * @param noData
-     * @param fromSdf
-     * @param timeOriginDate
-     * @param TAU
-     */
-    protected void settingNCGlobalAttributes(double noData, final Date timeOriginDate, int TAU) {
-        final SimpleDateFormat fromSdf = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
-        fromSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-
-        ncFileOut.addGlobalAttribute("base_time", fromSdf.format(timeOriginDate));
-        ncFileOut.addGlobalAttribute("tau", TAU);
-        ncFileOut.addGlobalAttribute("nodata", noData);
-    }
 
     /**
      * @param lon_dim
@@ -320,13 +233,7 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
                 new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
         metocDictionary = (Metocs) um.unmarshal(new FileReader(metocDictionaryFile));
     }
-
-    /**
-     * 
-     */
-    protected void copyNCGlobalAttrs() {
-        NetCDFConverterUtilities.copyGlobalAttributes(ncFileOut, ncFileIn.getGlobalAttributes());
-    }
+    
 
     /**
      * @throws IOException
@@ -335,74 +242,8 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
      * @throws ParseException
      * 
      */
-    protected abstract void writeDownNetCDF(File outDir, String inputFileName) throws IOException,
-            InvalidRangeException, JAXBException, ParseException;
+    protected abstract File writeDownNetCDF(File outDir, String inputFileName) throws IOException,
+            InvalidRangeException, ParseException, JAXBException;
+    
 
-    /**
-     * @param event
-     * @param fileSuffix
-     * @param outDir
-     * @param tempFile
-     * @return
-     * @throws IOException
-     */
-    protected abstract File unzipMetocArchive(FileSystemEvent event, final String fileSuffix,
-            final File outDir, final File tempFile) throws IOException;
-
-    /**
-     * 
-     * @param outDir
-     * @param inputFileName
-     * @throws IOException
-     */
-    protected abstract void createOutputFile(File outDir, String inputFileName) throws IOException;
-
-    /**
-     * 
-     * @throws UnsupportedEncodingException
-     */
-    protected abstract void fillVariablesMaps() throws UnsupportedEncodingException;
-
-    /**
-     * 
-     * @param hasDepth
-     * @param nLat
-     * @param nLon
-     * @param nTimes
-     * @param nDepths
-     * @param depthName
-     * @return
-     */
-    protected abstract double definingOutputVariables(boolean hasDepth, final int nLat,
-            final int nLon, final int nTimes, int nDepths, String depthName);
-
-    /**
-     * 
-     * @param TAU
-     * @return
-     * @throws ParseException
-     * @throws NumberFormatException
-     */
-    protected abstract int normalizingTimes(final Array timeOriginalData, final Dimension timeDim,
-            final Date timeOriginDate) throws ParseException, NumberFormatException;
-
-    /**
-     * @param lon_dim
-     * @param lat_dim
-     * @param depth_dim
-     * @param time_dim
-     * @param hasDepth
-     * @param lonOriginalData
-     * @param latOriginalData
-     * @param depthOriginalData
-     * @param noData
-     * @param timeOriginalData
-     * @throws IOException
-     * @throws InvalidRangeException
-     */
-    protected abstract void writingDataSets(final Dimension lon_dim, final Dimension lat_dim,
-            final Dimension depth_dim, final Dimension time_dim, boolean hasDepth,
-            final Array lonOriginalData, final Array latOriginalData,
-            final Array depthOriginalData, double noData, Array timeOriginalData,
-            DataType latDataType, DataType lonDataType) throws IOException, InvalidRangeException;
 }

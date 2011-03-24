@@ -48,8 +48,6 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.media.jai.JAI;
-
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.geometry.GeneralEnvelope;
 

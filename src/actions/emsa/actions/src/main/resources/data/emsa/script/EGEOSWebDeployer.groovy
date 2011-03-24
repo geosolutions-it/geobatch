@@ -1,3 +1,8 @@
+import java.io.File;
+
+import java.io.File;
+import java.io.IOException;
+
 /** 
  * Java Imports ...
  **/
@@ -87,14 +92,23 @@ println("SUFFIX:"+fileSuffix);
         // ////
         // creating sub-folder if not exists...
         File pkgOutputDataDir = utils.createInputDataDirIfNotExists(
-												listenerForwarder,
-												httpdPhysicalBaseDir + "/" + pkgDir.getName());
+						listenerForwarder,
+                                                httpdPhysicalBaseDir + "/" + pkgDir.getName());
 
-println("WEBDeployer:copy "+pkgDir.getAbsolutePath());
-println("WEBDeployer:to "+pkgOutputDataDir.getAbsolutePath());
+println("WEBDeployer:copy dir: "+pkgDir.getAbsolutePath());
+println("WEBDeployer:to: "+pkgOutputDataDir.getAbsolutePath());
 
         if (pkgOutputDataDir != null && pkgOutputDataDir.exists() && pkgOutputDataDir.isDirectory()) {
-            FileUtils.copyDirectory(pkgDir, pkgOutputDataDir, true);
+            for (File file : pkgDir.listFiles()){
+                if (it.geosolutions.geobatch.tools.file.IOUtils.acquireLock(this, file, 10000)){
+println("WEBDeployer:copy file: "+file.getAbsolutePath());
+                    File dest=new File(pkgOutputDataDir.getAbsolutePath()+File.separator+file.getName());
+println("WEBDeployer:to "+dest.getAbsolutePath());
+                    it.geosolutions.geobatch.tools.file.Path.copyFileToNFS(file,dest,10000);
+                }
+            }
+            
+//            FileUtils.copyDirectory(pkgDir, pkgOutputDataDir, true);
         }
 
         // ////

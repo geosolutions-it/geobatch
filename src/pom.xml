@@ -759,10 +759,10 @@
             </dependency>
 
 <!-- CAMEL =============================================-->
-			<dependency>    
-			    <groupId>it.geosolutions</groupId>
-				<artifactId>gb-jms</artifactId>
-				<version>${gb.version}</version>
+	    <dependency>
+		  <groupId>it.geosolutions</groupId>
+		  <artifactId>gb-jms</artifactId>
+		  <version>${gb.version}</version>
             </dependency>
             
             <dependency>
@@ -1551,16 +1551,16 @@
     <!--     Modules for the build in approximate dependency order   -->
     <!-- =========================================================== -->
     <modules>
-		<module>gb-fsm</module>
+	<module>gb-fsm</module>
         <module>gb-tools</module>
-		<module>file-catalog</module>
-		<module>core</module>
-		<module>dao</module>
-		<module>gb-action-tools</module>
+	<module>file-catalog</module>
+	<module>core</module>
+	<module>dao</module>
+	<module>gb-action-tools</module>
+	<module>gb-services</module> <!-- optional services-->
+	<module>users</module>
+	<module>gb-ftp-server</module>
         <module>actions</module>
-        <module>users</module>
-        <module>gb-ftp-server</module>
-        <module>gb-services</module> <!-- optional services-->
         <module>web</module>
         <!-- other conditional modules are listed in the profiles section -->
     </modules>

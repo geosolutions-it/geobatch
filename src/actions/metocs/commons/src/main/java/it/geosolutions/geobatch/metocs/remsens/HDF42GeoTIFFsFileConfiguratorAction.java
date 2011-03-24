@@ -49,20 +49,20 @@ import javax.media.jai.JAI;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.Category;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.io.CoverageAccess;
-import org.geotools.coverage.io.CoverageSource;
-import org.geotools.coverage.io.CoverageAccess.AccessType;
-import org.geotools.coverage.io.domain.RasterDatasetDomainManager.HorizontalDomain;
-import org.geotools.coverage.io.domain.RasterDatasetDomainManager.TemporalDomain;
-import org.geotools.coverage.io.driver.DefaultFileDriver;
-import org.geotools.coverage.io.driver.Driver.DriverOperation;
+//import org.geotools.coverage.io.CoverageAccess;
+//import org.geotools.coverage.io.CoverageSource;
+//import org.geotools.coverage.io.CoverageAccess.AccessType;
+//import org.geotools.coverage.io.domain.RasterDatasetDomainManager.HorizontalDomain;
+//import org.geotools.coverage.io.domain.RasterDatasetDomainManager.TemporalDomain;
+//import org.geotools.coverage.io.driver.DefaultFileDriver;
+//import org.geotools.coverage.io.driver.Driver.DriverOperation;
 import org.geotools.coverage.io.hdf4.HDF4Driver;
-import org.geotools.coverage.io.impl.CoverageReadRequest;
-import org.geotools.coverage.io.impl.CoverageResponse;
-import org.geotools.coverage.io.impl.CoverageResponse.Status;
-import org.geotools.coverage.io.impl.range.DefaultRangeType;
-import org.geotools.coverage.io.range.FieldType;
-import org.geotools.coverage.io.range.RangeType;
+//import org.geotools.coverage.io.impl.CoverageReadRequest;
+//import org.geotools.coverage.io.impl.CoverageResponse;
+//import org.geotools.coverage.io.impl.CoverageResponse.Status;
+//import org.geotools.coverage.io.impl.range.DefaultRangeType;
+//import org.geotools.coverage.io.range.FieldType;
+//import org.geotools.coverage.io.range.RangeType;
 import org.geotools.coverage.processing.Operations;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
@@ -112,6 +112,10 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
 
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("Starting with processing...");
+        
+        throw new ActionException(this,"NOT IMPLEMENTED");
+    }
+        /*
         try {
             // looking for file
             if (events.size() != 1)
@@ -349,5 +353,5 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
         return coverageName.toString();
 
     }
-
+*/
 }

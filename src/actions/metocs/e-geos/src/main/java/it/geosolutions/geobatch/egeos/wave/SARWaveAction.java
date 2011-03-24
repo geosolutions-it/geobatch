@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.egeos.wave;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
 import it.geosolutions.geobatch.metocs.commons.MetocBaseAction;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
@@ -56,6 +55,7 @@ import ucar.ma2.Index;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
+import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
@@ -68,6 +68,10 @@ public class SARWaveAction extends MetocBaseAction {
 
     private final static Logger LOGGER = Logger.getLogger(SARWaveAction.class.getName());
 
+    private NetcdfFileWriteable ncFileOut = null;
+
+    private NetcdfFile ncFileIn = null;
+
     private Attribute referenceTime;
 
     protected SARWaveAction(MetocActionConfiguration configuration) throws IOException {
@@ -75,82 +79,96 @@ public class SARWaveAction extends MetocBaseAction {
     }
 
     @Override
-    protected File unzipMetocArchive(FileSystemEvent event, String fileSuffix, File outDir,
-            File tempFile) throws IOException {
-        return ("zip".equalsIgnoreCase(fileSuffix) || "tar".equalsIgnoreCase(fileSuffix)) ? Utilities
-                .decompress("E-GEOS_SARWave", event.getSource(), tempFile) : Utilities
-                .createTodayPrefixedDirectory("E-GEOS_SARWave", outDir);
-    }
+    protected File writeDownNetCDF(File outDir, String inputFileName) throws IOException,
+            InvalidRangeException, ParseException, JAXBException {
 
-    @Override
-    protected void writeDownNetCDF(File outDir, String inputFileName) throws IOException,
-            InvalidRangeException, JAXBException, ParseException {
-        // input dimensions
-        final Dimension ra_size = ncGridFile.findDimension("ra_size");
+        File outputFile = null;
+        
+        try {
+            ncFileIn = NetcdfFile.open(inputFileName);
 
-        final Dimension az_size = ncGridFile.findDimension("az_size");
+            // input dimensions
+            final Dimension ra_size = ncFileIn.findDimension("ra_size");
 
-        // final Dimension n_partitions = ncGridFile.findDimension("n_partitions");
+            final Dimension az_size = ncFileIn.findDimension("az_size");
 
-        // input VARIABLES
-        final Variable lonOriginalVar = ncGridFile.findVariable("longitude");
-        final DataType lonDataType = lonOriginalVar.getDataType();
+            // final Dimension n_partitions = ncFileIn.findDimension("n_partitions");
 
-        final Variable latOriginalVar = ncGridFile.findVariable("latitude");
-        final DataType latDataType = latOriginalVar.getDataType();
+            // input VARIABLES
+            final Variable lonOriginalVar = ncFileIn.findVariable("longitude");
+            final DataType lonDataType = lonOriginalVar.getDataType();
 
-        final Array lonOriginalData = lonOriginalVar.read();
-        final Array latOriginalData = latOriginalVar.read();
+            final Variable latOriginalVar = ncFileIn.findVariable("latitude");
+            final DataType latDataType = latOriginalVar.getDataType();
 
-        // building envelope
-        buildEnvelope(ra_size, az_size, lonOriginalData, latOriginalData);
+            final Array lonOriginalData = lonOriginalVar.read();
+            final Array latOriginalData = latOriginalVar.read();
 
-        // ////
-        // ... create the output file data structure
-        // ////
-        createOutputFile(outDir, inputFileName);
+            // building envelope
+            buildEnvelope(ra_size, az_size, lonOriginalData, latOriginalData);
 
-        // copying NetCDF input file global attributes
-        // copyNCGlobalAttrs();
+            // the output
+            outputFile = createOutputFile(outDir, inputFileName);
+            // ////
+            // ... create the output file data structure
+            // ////
+            ncFileOut = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath());
 
-        // Grabbing the Variables Dictionary
-        getMetocsDictionary();
+            // copying NetCDF input file global attributes
+            NetCDFConverterUtilities.copyGlobalAttributes(ncFileOut,
+                    ncFileIn.getGlobalAttributes());
 
-        // finding specific model variables
-        fillVariablesMaps();
+            // Grabbing the Variables Dictionary
+            getMetocsDictionary();
 
-        if (foundVariables != null && foundVariables.size() > 0) {
-            // defining the file header and structure
-            double noData = definingOutputVariables(false, az_size.getLength(),
-                    ra_size.getLength(), 1, 0, METOCSActionsIOUtils.UP);
+            // finding specific model variables
+            fillVariablesMaps();
 
-            // normalizingTimes
-            // MERCATOR OCEAN MODEL Global Attributes
-            referenceTime = ncGridFile.findGlobalAttributeIgnoreCase("SOURCE_ACQUISITION_UTC_TIME");
-            // e.g. 20100902211637.870628
-            final SimpleDateFormat toSdf = new SimpleDateFormat("yyyyMMddHHmmss");
-            toSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            final Date timeOriginDate = toSdf.parse(referenceTime.getStringValue().trim()
-                    .toLowerCase());
+            if (foundVariables != null && foundVariables.size() > 0) {
+                // defining the file header and structure
+                double noData = definingOutputVariables(false, az_size.getLength(),
+                        ra_size.getLength(), 1, 0, METOCSActionsIOUtils.UP);
 
-            final int TAU = normalizingTimes(null, null, timeOriginDate);
+                // normalizingTimes
+                // MERCATOR OCEAN MODEL Global Attributes
+                referenceTime = ncFileIn
+                        .findGlobalAttributeIgnoreCase("SOURCE_ACQUISITION_UTC_TIME");
+                // e.g. 20100902211637.870628
+                final SimpleDateFormat toSdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                toSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                final Date timeOriginDate = toSdf.parse(referenceTime.getStringValue().trim()
+                        .toLowerCase());
 
-            // Setting up global Attributes ...
-            settingNCGlobalAttributes(noData, timeOriginDate, TAU);
+                final int TAU = normalizingTimes(null, null, timeOriginDate);
 
-            // writing bin data ...
-            writingDataSets(ra_size, az_size, null, null, false, lonOriginalData, latOriginalData,
-                    null, noData, null, latDataType, lonDataType);
-        } else {
-            if (ncFileIn != null)
-                ncFileIn.close();
+                // Setting up global Attributes ...
+                final SimpleDateFormat fromSdf = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
+                fromSdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 
-            if (ncFileOut != null)
-                ncFileOut.close();
+                ncFileOut.addGlobalAttribute("base_time", fromSdf.format(timeOriginDate));
+                ncFileOut.addGlobalAttribute("tau", TAU);
+                ncFileOut.addGlobalAttribute("nodata", noData);
 
-            if (outputFile != null)
-                outputFile.delete();
+                // writing bin data ...
+                writingDataSets(ra_size, az_size, null, null, false, lonOriginalData,
+                        latOriginalData, null, noData, null, latDataType, lonDataType);
+            }
+        } finally {
+            try {
+                if (ncFileIn != null) {
+                    ncFileIn.close();
+                }
+
+                if (ncFileOut != null) {
+                    ncFileOut.close();
+                }
+            } catch (IOException e) {
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+            }
         }
+
+        return outputFile;
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,15 +221,13 @@ public class SARWaveAction extends MetocBaseAction {
         }
     }
 
-    @Override
-    protected void createOutputFile(File outDir, String inputFileName) throws IOException {
-        outputFile = new File(outDir, "EGEOS-SARWave-T" + new Date().getTime()
+    private File createOutputFile(File outDir, String inputFileName) throws IOException {
+        File outputFile = new File(outDir, "EGEOS-SARWave-T" + new Date().getTime()
                 + FilenameUtils.getBaseName(inputFileName).replaceAll("-", "") + ".nc");
-        ncFileOut = NetcdfFileWriteable.createNew(outputFile.getAbsolutePath());
+        return outputFile;
     }
 
-    @Override
-    protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon, int nTimes,
+    private double definingOutputVariables(boolean hasDepth, int nLat, int nLon, int nTimes,
             int nDepths, String depthName) {
         /**
          * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean
@@ -246,9 +262,8 @@ public class SARWaveAction extends MetocBaseAction {
         return noData;
     }
 
-    @Override
-    protected void fillVariablesMaps() throws UnsupportedEncodingException {
-        for (Object obj : ncGridFile.getVariables()) {
+    private void fillVariablesMaps() throws UnsupportedEncodingException {
+        for (Object obj : ncFileIn.getVariables()) {
             final Variable var = (Variable) obj;
             final String varName = var.getName();
             if (!varName.equalsIgnoreCase("longitude") && !varName.equalsIgnoreCase("latitude")
@@ -286,8 +301,7 @@ public class SARWaveAction extends MetocBaseAction {
         }
     }
 
-    @Override
-    protected int normalizingTimes(Array timeOriginalData, Dimension timeDim, Date timeOriginDate)
+    private int normalizingTimes(Array timeOriginalData, Dimension timeDim, Date timeOriginDate)
             throws ParseException, NumberFormatException {
         long timeInMillis = timeOriginDate.getTime();
         long ncMillis = Long.parseLong(referenceTime.getStringValue().substring(
@@ -298,8 +312,7 @@ public class SARWaveAction extends MetocBaseAction {
         return TAU;
     }
 
-    @Override
-    protected void writingDataSets(Dimension ra_size, Dimension az_size, Dimension depthDim,
+    private void writingDataSets(Dimension ra_size, Dimension az_size, Dimension depthDim,
             Dimension timeDim, boolean hasDepth, Array lonOriginalData, Array latOriginalData,
             Array depthOriginalData, double noData, Array timeOriginalData, DataType latDataType,
             DataType lonDataType) throws IOException, InvalidRangeException {
@@ -308,9 +321,8 @@ public class SARWaveAction extends MetocBaseAction {
                 envelope.getLowerCorner().getOrdinate(1), envelope.getUpperCorner().getOrdinate(0),
                 envelope.getUpperCorner().getOrdinate(1) };
 
-        final Variable maskOriginalVar = ncGridFile.findVariable("valid");
-        @SuppressWarnings("unused")
-        final DataType maskDataType = maskOriginalVar.getDataType();
+        final Variable maskOriginalVar = ncFileIn.findVariable("valid");
+        
         final Array maskOriginalData = maskOriginalVar.read();
 
         // writing bin data ...
