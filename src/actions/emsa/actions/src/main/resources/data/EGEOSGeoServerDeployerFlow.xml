@@ -76,11 +76,11 @@
 				  <!-- GEOTIFF Retiler config-->
 				  <entry>
 				    <string>reTileH</string>
-				    <int>512</int>
+				    <int>256</int>
 				  </entry>
 				  <entry>
 				    <string>reTileW</string>
-				    <int>512</int>
+				    <int>256</int>
 				  </entry>
 				  <!-- GEOTIFF Overview config-->
 				  <entry>
@@ -97,11 +97,11 @@
 				  </entry>
 				  <entry>
 				    <string>ovTileH</string>
-				    <int>512</int>
+				    <int>256</int>
 				  </entry>
 				  <entry>
 				    <string>ovTileW</string>
-				    <int>512</int>
+				    <int>256</int>
 				  </entry>
 				  
 			</properties>

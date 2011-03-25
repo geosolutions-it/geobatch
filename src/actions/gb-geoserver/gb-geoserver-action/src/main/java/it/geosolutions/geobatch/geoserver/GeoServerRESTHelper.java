@@ -60,10 +60,23 @@ import org.w3c.dom.Element;
  * @author Alessio Fabiani
  * @author (r0.2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
- * @version 0.2 release: 0.1 date: release: 0.2 date: 25/Feb/2011
+ * @version 0.2 date: 25/Feb/2011
  * 
  */
 public class GeoServerRESTHelper {
+    
+    static public final String CRS="crs";
+    
+    static public final String NATIVE_MINX="nminx";
+    static public final String NATIVE_MAXX="nmaxx";
+    static public final String NATIVE_MINY="nminy";
+    static public final String NATIVE_MAXY="nmaxy";
+
+    static public final String LATLON_MINX="llminx";
+    static public final String LATLON_MAXX="llmaxx";
+    static public final String LATLON_MINY="llminy";
+    static public final String LATLON_MAXY="llmaxx";
+    
     /**
      *
      */
@@ -121,7 +134,7 @@ public class GeoServerRESTHelper {
                 InputStreamReader is = new InputStreamReader(con.getInputStream());
                 String response = readIs(is);
                 is.close();
-                final String name = extractName(response);
+                
                 extractContent(response, returnedLayerName);
                 // if (returnedLayerName!=null && returnedLayerName.length>0)
                 // returnedLayerName[0]=name;
@@ -216,7 +229,7 @@ public class GeoServerRESTHelper {
                 InputStreamReader is = new InputStreamReader(con.getInputStream());
                 String response = readIs(is);
                 is.close();
-                final String name = extractName(response);
+
                 extractContent(response, returnedLayerName);
 
                 if (LOGGER.isLoggable(Level.INFO))
@@ -301,8 +314,6 @@ public class GeoServerRESTHelper {
                 InputStreamReader is = new InputStreamReader(con.getInputStream());
                 String response = readIs(is);
                 is.close();
-                final String name = extractName(response);
-
                 extractContent(response, returnedLayerName);
                 // if (returnedLayerName!=null && returnedLayerName.length>0)
                 // returnedLayerName[0]=name;
@@ -531,7 +542,6 @@ public class GeoServerRESTHelper {
                 input.append(inCh, 0, r);
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.log(Level.SEVERE,
                         "GeoServerRESTHelper::readIs(): " + e.getLocalizedMessage(), e);
@@ -919,7 +929,8 @@ public class GeoServerRESTHelper {
      * @throws IOException
      * @throws TransformerException
      */
-    public static void sendCoverageConfiguration(final Map<String, String> metadataElements,
+    public static void sendCoverageConfiguration(final Map<String, String> coverageElements,
+            final Map<String, String> metadataElements,
             final Map<String, String> configElements, final String geoserverBaseURL,
             final String geoserverUID, final String geoserverPWD, final String workspace,
             final String coverageStore, final String coverageName)
@@ -933,7 +944,7 @@ public class GeoServerRESTHelper {
         File file = null;
         FileInputStream inStream = null;
         try {
-            file = buildCoverageXMLConfiguration(metadataElements, configElements);
+            file = buildCoverageXMLConfiguration(coverageElements, metadataElements, configElements);
             inStream = new FileInputStream(file);
             final boolean send = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, inStream,
                     geoserverUID, geoserverPWD, null, "text/xml");
@@ -1017,7 +1028,8 @@ public class GeoServerRESTHelper {
      * @throws IOException
      * @throws TransformerException
      */
-    private static File buildCoverageXMLConfiguration(final Map<String, String> metadataElements,
+    private static File buildCoverageXMLConfiguration(final Map<String, String> coverageElements,
+            final Map<String, String> metadataElements,
             final Map<String, String> configElements) throws ParserConfigurationException,
             IOException, TransformerException {
         final DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
@@ -1028,12 +1040,89 @@ public class GeoServerRESTHelper {
         Document doc = parser.newDocument();
         Element root = doc.createElement("coverage");
         doc.appendChild(root);
+                
+        /* 
+         * <coverage>
+         * ...
+         * <nativeBoundingBox>
+            <minx>15.685019493103</minx>
+            <maxx>20.8090171813965</maxx>
+            <miny>39.5162200927734</miny>
+            <maxy>43.3198089599609</maxy>
+            <crs>EPSG:4326</crs>
+           </nativeBoundingBox>
+           <latLonBoundingBox>
+            <minx>15.685019493103</minx>
+            <maxx>20.8090171813965</maxx>
+            <miny>39.5162200927734</miny>
+            <maxy>43.3198089599609</maxy>
+            <crs>EPSG:4326</crs>
+           </latLonBoundingBox>
+           ...
+           </coverage>
+        */
+        Element nativeBB = doc.createElement("nativeBoundingBox");
+        root.appendChild(nativeBB);
+        
+        Element minx= doc.createElement("minx");
+        nativeBB.appendChild(minx);
+        minx.insertBefore(doc.createTextNode(coverageElements.get(NATIVE_MINX)), null);
+        
+        Element maxx= doc.createElement("maxx");
+        nativeBB.appendChild(maxx);
+        maxx.insertBefore(doc.createTextNode(coverageElements.get(NATIVE_MAXX)), null);
+        
+        Element miny= doc.createElement("miny");
+        nativeBB.appendChild(miny);
+        miny.insertBefore(doc.createTextNode(coverageElements.get(NATIVE_MINY)), null);
+        
+        Element maxy= doc.createElement("maxy");
+        nativeBB.appendChild(maxy);
+        maxy.insertBefore(doc.createTextNode(coverageElements.get(NATIVE_MAXY)), null);
+        
+        Element crs= doc.createElement("crs");
+        nativeBB.appendChild(crs);
+        crs.insertBefore(doc.createTextNode(coverageElements.get(CRS)), null);
+        
+        
+        Element latLonBB = doc.createElement("latLonBoundingBox");
+        root.appendChild(latLonBB);
+        
+        Element minx2= doc.createElement("minx");
+        latLonBB.appendChild(minx2);
+        minx2.insertBefore(doc.createTextNode(coverageElements.get(LATLON_MINX)), null);
+        
+        Element maxx2= doc.createElement("maxx");
+        latLonBB.appendChild(maxx2);
+        maxx2.insertBefore(doc.createTextNode(coverageElements.get(LATLON_MAXX)), null);
+        
+        Element miny2= doc.createElement("miny");
+        latLonBB.appendChild(miny2);
+        miny2.insertBefore(doc.createTextNode(coverageElements.get(LATLON_MINY)), null);
+        
+        Element maxy2= doc.createElement("maxy");
+        latLonBB.appendChild(maxy2);
+        maxy2.insertBefore(doc.createTextNode(coverageElements.get(LATLON_MAXX)), null);
 
+        Element crs2= doc.createElement("crs");
+        latLonBB.appendChild(crs2);
+        crs2.insertBefore(doc.createTextNode(coverageElements.get(CRS)), null);
+        
+
+        /* 
+         * <coverage>
+         * ...
+         * <enabled>true</enabled>
+         * ...
+         * </coverage>
+         */
         Set<String> keys = metadataElements.keySet();
         Element enabledElement = doc.createElement("enabled");
         root.appendChild(enabledElement);
         enabledElement.insertBefore(doc.createTextNode("true"), null);
-
+        
+        // METADATA
+        
         Element parametersElement = doc.createElement("metadata");
         root.appendChild(parametersElement);
 

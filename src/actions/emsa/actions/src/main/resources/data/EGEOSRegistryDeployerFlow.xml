@@ -24,7 +24,7 @@
 		<description>EGEOS Registry-Deployer Configuration</description>
 
 		<listenerId>EGEOSConsumerLoggerListener</listenerId>
-        <listenerId>EGEOSCumulatorListener</listenerId>
+	        <listenerId>EGEOSCumulatorListener</listenerId>
         
 		<workingDirectory>EGEOSworkingDir/RegistryDeployer</workingDirectory>
 		<performBackup>false</performBackup>

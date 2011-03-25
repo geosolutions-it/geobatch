@@ -170,7 +170,6 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
             LOGGER.info("NetCDFCFGeodetic2GeoTIFFsFileAction::execute(): Starting with processing...");
 
         NetcdfFile ncFileIn = null;
-        File inputFile = null;
         try {
             // looking for file
             if (events.size() != 1)
@@ -552,12 +551,6 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
                 if (ncFileIn != null) {
                     ncFileIn.close();
                 }
-                /*
-                 * Carlo ? why delete a file here ? this is not a good idea!
-                 */
-                // if (inputFile != null && inputFile.exists()) {
-                // inputFile.delete();
-                // }
             } catch (IOException e) {
                 if (LOGGER.isLoggable(Level.SEVERE))
                     LOGGER.log(

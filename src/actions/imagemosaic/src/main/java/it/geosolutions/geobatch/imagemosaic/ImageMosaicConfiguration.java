@@ -30,6 +30,12 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         super(id, name, description);
     }
 
+    /**
+     * Try to use COARDS file name convention to parse
+     * file name. This is used to get ImageMosaicGranulesDescription info
+     */
+    private boolean COARDS;
+    
     private String datastorePropertiesPath;
 
     private String timeRegex;
@@ -39,8 +45,27 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     private String runtimeRegex;
 
     private String backgroundValue;// NoData
+
+    private Double NativeMinBoundingBoxX;// BoundingBox
+
+    private Double NativeMinBoundingBoxY;// BoundingBox
+
+    private Double NativeMaxBoundingBoxX;// BoundingBox
+
+    private Double NativeMaxBoundingBoxY;// BoundingBox
     
-//    <metadata>
+    private Double latLonMinBoundingBoxX;// BoundingBox
+
+    private Double latLonMinBoundingBoxY;// BoundingBox
+
+    private Double latLonMaxBoundingBoxX;// BoundingBox
+
+    private Double latLonMaxBoundingBoxY;// BoundingBox
+
+    
+    
+
+    //    <metadata>
 //    <entry key="timeDimEnabled">true</entry>
 //    <entry key="dirName">20101012T210000_wdi_20101012T210000_wdi</entry>
 //    <entry key="timePresentationMode">LIST</entry>
@@ -58,6 +83,79 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     private int tileSizeH;
     private int tileSizeW;
 
+    public boolean isCOARDS() {
+        return COARDS;
+    }
+
+    public void setCOARDS(boolean cOARDS) {
+        COARDS = cOARDS;
+    }    
+    
+    public Double getNativeMinBoundingBoxX() {
+        return NativeMinBoundingBoxX;
+    }
+
+    public void setNativeMinBoundingBoxX(Double nativeMinBoundingBoxX) {
+        NativeMinBoundingBoxX = nativeMinBoundingBoxX;
+    }
+
+    public Double getNativeMinBoundingBoxY() {
+        return NativeMinBoundingBoxY;
+    }
+
+    public void setNativeMinBoundingBoxY(Double nativeMinBoundingBoxY) {
+        NativeMinBoundingBoxY = nativeMinBoundingBoxY;
+    }
+
+    public Double getNativeMaxBoundingBoxX() {
+        return NativeMaxBoundingBoxX;
+    }
+
+    public void setNativeMaxBoundingBoxX(Double nativeMaxBoundingBoxX) {
+        NativeMaxBoundingBoxX = nativeMaxBoundingBoxX;
+    }
+
+    public Double getNativeMaxBoundingBoxY() {
+        return NativeMaxBoundingBoxY;
+    }
+
+    public void setNativeMaxBoundingBoxY(Double nativeMaxBoundingBoxY) {
+        NativeMaxBoundingBoxY = nativeMaxBoundingBoxY;
+    }
+
+    public Double getLatLonMinBoundingBoxX() {
+        return latLonMinBoundingBoxX;
+    }
+
+    public void setLatLonMinBoundingBoxX(Double latLonMinBoundingBoxX) {
+        this.latLonMinBoundingBoxX = latLonMinBoundingBoxX;
+    }
+
+    public Double getLatLonMinBoundingBoxY() {
+        return latLonMinBoundingBoxY;
+    }
+
+    public void setLatLonMinBoundingBoxY(Double latLonMinBoundingBoxY) {
+        this.latLonMinBoundingBoxY = latLonMinBoundingBoxY;
+    }
+
+    public Double getLatLonMaxBoundingBoxX() {
+        return latLonMaxBoundingBoxX;
+    }
+
+    public void setLatLonMaxBoundingBoxX(Double latLonMaxBoundingBoxX) {
+        this.latLonMaxBoundingBoxX = latLonMaxBoundingBoxX;
+    }
+
+    public Double getLatLonMaxBoundingBoxY() {
+        return latLonMaxBoundingBoxY;
+    }
+
+    public void setLatLonMaxBoundingBoxY(Double latLonMaxBoundingBoxY) {
+        this.latLonMaxBoundingBoxY = latLonMaxBoundingBoxY;
+    }
+
+    
     public String getTimeDimEnabled() {
         return timeDimEnabled;
     }
@@ -138,10 +236,6 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         this.backgroundValue = backgroundValue;
     }
 
-//    public ImageMosaicConfiguration() {
-//        super();
-//    }
-
     /**
      * @param datastorePropertiesPath
      *            the datastorePropertiesPath to set
@@ -207,13 +301,40 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         final ImageMosaicConfiguration configuration = (ImageMosaicConfiguration) super
                 .clone();
 
-
         configuration.setBackgroundValue(getBackgroundValue());
+        configuration.setAllowMultithreading(isAllowMultithreading());
+        configuration.setBackgroundValue(getBackgroundValue());
+        configuration.setCOARDS(isCOARDS());
+        configuration.setConfigId(getConfigId());
+        configuration.setCrs(getCrs());
+        
         configuration.setDatastorePropertiesPath(getDatastorePropertiesPath());
-        configuration.setTimeRegex(getTimeRegex());
+        //super.clone configuration.setDataTransferMethod(getDataTransferMethod());
+        //super.clone configuration.setDatatype(getDatatype());
+        
         configuration.setElevationRegex(getElevationRegex());
+        configuration.setInputTransparentColor(getInputTransparentColor());
+        configuration.setLatLonMaxBoundingBoxX(getLatLonMaxBoundingBoxX());
+        configuration.setLatLonMaxBoundingBoxY(getLatLonMaxBoundingBoxY());
+        configuration.setLatLonMinBoundingBoxX(getLatLonMinBoundingBoxX());
+        configuration.setLatLonMinBoundingBoxY(getLatLonMinBoundingBoxY());
+        configuration.setListenerId(getListenerIds());
+        configuration.setNativeMaxBoundingBoxX(getNativeMaxBoundingBoxX());
+        configuration.setNativeMaxBoundingBoxY(getNativeMaxBoundingBoxY());
+        configuration.setNativeMinBoundingBoxX(getNativeMinBoundingBoxX());
+        configuration.setNativeMinBoundingBoxY(getNativeMinBoundingBoxY());
+        configuration.setOutputTransparentColor(getOutputTransparentColor());
         configuration.setRuntimeRegex(getRuntimeRegex());
-
+        configuration.setServiceID(getServiceID()); // unused but formally correct clone
+        //super.clone configuration.setStoreFilePrefix(storeFilePrefix)
+        configuration.setTileSizeH(getTileSizeH());
+        configuration.setTileSizeW(getTileSizeW());
+        configuration.setTimeDimEnabled(getTimeDimEnabled());
+        configuration.setTimePresentationMode(getTimePresentationMode());
+        configuration.setTimeRegex(getTimeRegex());
+        configuration.setUseJaiImageRead(isUseJaiImageRead());
+        configuration.setWorkingDirectory(getWorkingDirectory());
+        
         return configuration;
     }
 

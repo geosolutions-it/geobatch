@@ -36,6 +36,19 @@ final class ImageMosaicGranulesDescriptor {
 
     private String[] lastCvNameParts = null;
 
+    // FROM COARDS
+    private Double noData;// NoData
+
+    private Double maxZ;// Max Z
+
+    private Double minZ;// Min Z
+
+    private String baseTime;// Base Time
+
+    private String forecastTime; // Forecast Time
+
+    private Integer TAU;// TAU
+
     /**
      * @param coverageStoreId
      * @param metocFields
@@ -48,6 +61,73 @@ final class ImageMosaicGranulesDescriptor {
         this.metocFields = metocFields;
         this.firstCvNameParts = firstCvNameParts;
         this.lastCvNameParts = lastCvNameParts;
+    }
+
+    public void setCoverageStoreId(String coverageStoreId) {
+        this.coverageStoreId = coverageStoreId;
+    }
+
+    private ImageMosaicGranulesDescriptor() {
+    };
+
+    public Double getNoData() {
+        return noData;
+    }
+
+    public void setNoData(Double noData) {
+        this.noData = noData;
+    }
+
+    public Double getMaxZ() {
+        return maxZ;
+    }
+
+    public void setMaxZ(Double maxZ) {
+        this.maxZ = maxZ;
+    }
+
+    public Double getMinZ() {
+        return minZ;
+    }
+
+    public void setMinZ(Double minZ) {
+        this.minZ = minZ;
+    }
+
+    public Integer getTAU() {
+        return TAU;
+    }
+
+    public void setTAU(Integer tAU) {
+        TAU = tAU;
+    }
+
+    public void setMetocFields(String metocFields) {
+        this.metocFields = metocFields;
+    }
+
+    public void setFirstCvNameParts(String[] firstCvNameParts) {
+        this.firstCvNameParts = firstCvNameParts;
+    }
+
+    public void setLastCvNameParts(String[] lastCvNameParts) {
+        this.lastCvNameParts = lastCvNameParts;
+    }
+
+    public String getBaseTime() {
+        return baseTime;
+    }
+
+    public void setBaseTime(String baseTime) {
+        this.baseTime = baseTime;
+    }
+
+    public String getForecastTime() {
+        return forecastTime;
+    }
+
+    public void setForecastTime(String forecastTime) {
+        this.forecastTime = forecastTime;
     }
 
     /**
@@ -78,20 +158,22 @@ final class ImageMosaicGranulesDescriptor {
         return lastCvNameParts;
     }
 
-    protected static ImageMosaicGranulesDescriptor buildDescriptor(ImageMosaicCommand cmd) {
+    protected static ImageMosaicGranulesDescriptor buildDescriptor(ImageMosaicCommand cmd,
+            ImageMosaicConfiguration config) {
         File inputDir = cmd.getBaseDir();
 
         List<File> fileNameList = coll.collect(inputDir);
+
         if (cmd.getAddFiles() != null) {
-            for (File file:cmd.getAddFiles()){
-                if (!fileNameList.contains(file)){
+            for (File file : cmd.getAddFiles()) {
+                if (!fileNameList.contains(file)) {
                     fileNameList.add(file);
                 }
             }
         }
         if (cmd.getDelFiles() != null) {
-            for (File file:cmd.getDelFiles()){
-                if (!fileNameList.contains(file)){
+            for (File file : cmd.getDelFiles()) {
+                if (!fileNameList.contains(file)) {
                     fileNameList.remove(file);
                 }
             }
@@ -105,7 +187,7 @@ final class ImageMosaicGranulesDescriptor {
             return null;
         }
 
-        return buildDescriptor(inputDir, fileNameList);
+        return buildDescriptor(inputDir, fileNameList, config);
     }
 
     /**
@@ -115,12 +197,12 @@ final class ImageMosaicGranulesDescriptor {
      * @param mosaicDescriptor
      * @return
      */
-    protected static ImageMosaicGranulesDescriptor buildDescriptor(File inputDir) {
+    protected static ImageMosaicGranulesDescriptor buildDescriptor(File inputDir,
+            ImageMosaicConfiguration config) {
 
         List<File> fileNameList = null;
 
         fileNameList = coll.collect(inputDir);
-
 
         if (fileNameList == null) {
             if (LOGGER.isLoggable(Level.INFO)) {
@@ -130,7 +212,7 @@ final class ImageMosaicGranulesDescriptor {
             return null;
         }
 
-        return buildDescriptor(inputDir, fileNameList);
+        return buildDescriptor(inputDir, fileNameList, config);
     }
 
     /**
@@ -142,67 +224,130 @@ final class ImageMosaicGranulesDescriptor {
      * @return
      */
     private static ImageMosaicGranulesDescriptor buildDescriptor(File inputDir,
-            List<File> fileNameList) {
+            List<File> fileNameList, ImageMosaicConfiguration config) {
 
         ImageMosaicGranulesDescriptor mosaicDescriptor = null;
 
-        // to get it ordered from the first to the last file (by Name)
-        Collections.sort(fileNameList, new Comparator<File>() {
-            public int compare(File o1, File o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-
-        // fileNames = fileNameList.toArray(new String[1]);
-
         // Store ID
-        String coverageStoreId = inputDir.getName();
+        final String coverageStoreId = inputDir.getName();
+
         //
         if (fileNameList.size() > 0) {
 
-            String[] firstCvNameParts = FilenameUtils.getBaseName(fileNameList.get(0).getName())
-                    .split("_");
-            String[] lastCvNameParts = FilenameUtils.getBaseName(
-                    fileNameList.get(fileNameList.size() - 1).getName()).split("_");
-
-            if (firstCvNameParts != null && firstCvNameParts.length > 3) {
-                // TODO:
-                // Temp workaround to leverages on a coverageStoreId having the
-                // same name of the coverage
-                // and the same name of the mosaic folder
-                String metocFields = firstCvNameParts.length == 9
-                        && firstCvNameParts.length == lastCvNameParts.length ? new StringBuilder()
-                        .append(firstCvNameParts[0]).append("_").append(firstCvNameParts[1])
-                        .append("_").append(firstCvNameParts[2]).append("_")
-                        .append(firstCvNameParts[3]).append("_") // Min Z
-                        .append(lastCvNameParts[3]).append("_") // Max Z
-                        .append(firstCvNameParts[5]).append("_") // Base Time
-                        .append(lastCvNameParts[6]).append("_") // Forecast Time
-                        .append(firstCvNameParts[7]).append("_") // TAU
-                        .append(firstCvNameParts[8]) // NoDATA
-                        .toString() : inputDir.getName();
-
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.info("ImageMosaicGranulesDescriptor:buildDescriptor(): Coverage Store ID: "
-                            + coverageStoreId);
+            // to get it ordered from the first to the last file (by Name)
+            Collections.sort(fileNameList, new Comparator<File>() {
+                public int compare(File o1, File o2) {
+                    return o1.getName().compareTo(o2.getName());
                 }
+            });
 
-                mosaicDescriptor = new ImageMosaicGranulesDescriptor(coverageStoreId, metocFields,
-                        firstCvNameParts, lastCvNameParts);
-            } else {
-                mosaicDescriptor = new ImageMosaicGranulesDescriptor(coverageStoreId,
-                        coverageStoreId, firstCvNameParts, lastCvNameParts);
+            final File firstFile = fileNameList.get(0);
+            final String[] firstCvNameParts = FilenameUtils.getBaseName(firstFile.getName()).split(
+                    "_");
+
+            final File lastFile = fileNameList.get(fileNameList.size() - 1);
+            final String[] lastCvNameParts = FilenameUtils.getBaseName(lastFile.getName()).split(
+                    "_");
+
+            if (config.isCOARDS()) {
+                mosaicDescriptor = buildCOARDS(coverageStoreId, firstCvNameParts, lastCvNameParts);
+                if (mosaicDescriptor != null) {
+                    return mosaicDescriptor;
+                } else {
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.log(
+                                Level.WARNING,
+                                "ImageMosaicGranulesDescriptor:buildDescriptor(): Unable to use COARDS naming convention for file: "
+                                        + firstFile.getAbsolutePath()
+                                        + "\nLet's use default configuration parameters.");
+                    }
+                }
             }
+            return new ImageMosaicGranulesDescriptor(coverageStoreId, coverageStoreId,
+                    firstCvNameParts, lastCvNameParts);
+
         } else {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("ImageMosaicGranulesDescriptor:buildDescriptor(): The passed base dir is empty! Dir:"
                         + inputDir.getAbsolutePath());
             }
 
-            mosaicDescriptor = new ImageMosaicGranulesDescriptor(coverageStoreId, coverageStoreId,
-                    null, null);
+            return new ImageMosaicGranulesDescriptor(coverageStoreId, coverageStoreId, null, null);
         }
-        return mosaicDescriptor;
+    }
+
+    /**
+     * This method should implement the COARDS file name recognition and update the
+     * ImageMosaicGranulesDescriptor members
+     * 
+     * @param coverageID
+     * @param firstCvNameParts
+     * @param lastCvNameParts
+     * @return
+     */
+    private static ImageMosaicGranulesDescriptor buildCOARDS(final String coverageID,
+            final String[] firstCvNameParts, final String[] lastCvNameParts) {
+        ImageMosaicGranulesDescriptor mosaicDescriptor = null;
+        if (firstCvNameParts != null && firstCvNameParts.length > 3) {
+
+            mosaicDescriptor = new ImageMosaicGranulesDescriptor();
+            mosaicDescriptor.setCoverageStoreId(coverageID);
+            mosaicDescriptor.setFirstCvNameParts(firstCvNameParts);
+            mosaicDescriptor.setLastCvNameParts(lastCvNameParts);
+
+            // TODO:
+            // Temp workaround to leverages on a coverageStoreId having the
+            // same name of the coverage
+            // and the same name of the mosaic folder
+            if (firstCvNameParts.length >= 8 && firstCvNameParts.length == lastCvNameParts.length) {
+                try {
+                    StringBuilder fields = new StringBuilder().append(firstCvNameParts[0])
+                            .append("_").append(firstCvNameParts[1]).append("_")
+                            .append(firstCvNameParts[2]).append("_");
+
+                    double val = Double.parseDouble(firstCvNameParts[3]);
+                    fields.append(val).append("_"); // Min Z
+                    mosaicDescriptor.setMinZ(val);
+
+                    val = Double.parseDouble(lastCvNameParts[3]);
+                    fields.append(val).append("_"); // Max Z
+                    mosaicDescriptor.setMaxZ(val);
+
+                    fields.append(firstCvNameParts[5]).append("_"); // Base Time
+                    mosaicDescriptor.setBaseTime(firstCvNameParts[5]);
+
+                    fields.append(lastCvNameParts[6]).append("_"); // Forecast Time
+                    mosaicDescriptor.setForecastTime(firstCvNameParts[6]);
+
+                    if (firstCvNameParts.length == 9) {
+                        int intVal = Integer.parseInt(firstCvNameParts[7]);
+                        fields.append(intVal).append("_"); // TAU
+                        mosaicDescriptor.setTAU(intVal);
+
+                        val = Double.parseDouble(firstCvNameParts[8]);
+                        fields.append(val); // NoDATA
+                        mosaicDescriptor.setNoData(val);
+                    } else { // firstCvNameParts.length == 8
+                        val = Double.parseDouble(firstCvNameParts[7]);
+                        fields.append(val); // NoDATA
+                        mosaicDescriptor.setNoData(val);
+                    }
+
+                    mosaicDescriptor.setMetocFields(fields.toString());
+
+                    return mosaicDescriptor;
+
+                } catch (NumberFormatException nfe) {
+                    // if the string does not contain a parsable float.
+                    if (LOGGER.isLoggable(Level.WARNING)) {
+                        LOGGER.log(Level.WARNING, "ImageMosaicGranulesDescriptor:buildCOARDS(): "
+                                + "\nSome of the name parts don't contain a parsable number: "
+                                + nfe.getLocalizedMessage(), nfe);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }

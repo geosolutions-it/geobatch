@@ -212,7 +212,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                          */
                         baseDir = cmd.getBaseDir();
 
-                        mosaicDescriptor = ImageMosaicGranulesDescriptor.buildDescriptor(cmd);
+                        mosaicDescriptor = ImageMosaicGranulesDescriptor.buildDescriptor(cmd, configuration);
 
                         if (mosaicDescriptor == null) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
@@ -389,25 +389,25 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                                     if (LOGGER.isLoggable(Level.INFO)) {
                                         LOGGER.info("ImageMosaicAction: reloading GeoServer Catalog!");
                                     }
-                                    // reloading GeoServer Catalog
-                                    if (ImageMosaicREST.reloadCatalog(configuration)){
-                                        // SUCCESS update the Catalog
-                                        if (LOGGER.isLoggable(Level.INFO)) {
-                                            LOGGER.info("ImageMosaicAction: reloading GeoServer Catalog!");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (LOGGER.isLoggable(Level.WARNING)) {
-                                            LOGGER.warning("ImageMosaicAction: GeoServer Catalog reloading failed.");
-                                        }
-                                        continue;
-                                    }
+//                                    // reloading GeoServer Catalog
+//                                    if (ImageMosaicREST.reloadCatalog(configuration)){
+//                                        // SUCCESS update the Catalog
+//                                        if (LOGGER.isLoggable(Level.INFO)) {
+//                                            LOGGER.info("ImageMosaicAction: reloading GeoServer Catalog!");
+//                                        }
+//                                    }
+//                                    else
+//                                    {
+//                                        if (LOGGER.isLoggable(Level.WARNING)) {
+//                                            LOGGER.warning("ImageMosaicAction: GeoServer Catalog reloading failed.");
+//                                        }
+//                                        continue;
+//                                    }
                                 }
                                 else { 
                                     if (LOGGER.isLoggable(Level.WARNING)) {
-                                        LOGGER.warning("ImageMosaicAction: The command: "
-                                                + cmd.toString() + " failed.");
+                                        LOGGER.warning("ImageMosaicAction: The following command FAILED:\n"
+                                                + cmd.toString()+"\n");
                                     }
                                     continue;
                                 }
@@ -435,7 +435,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                          */
                         baseDir = input;
 
-                        mosaicDescriptor = ImageMosaicGranulesDescriptor.buildDescriptor(baseDir);
+                        mosaicDescriptor = ImageMosaicGranulesDescriptor.buildDescriptor(baseDir, configuration);
 
                         if (mosaicDescriptor == null) {
                             if (LOGGER.isLoggable(Level.WARNING)) {

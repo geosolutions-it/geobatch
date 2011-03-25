@@ -112,10 +112,10 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
 
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("Starting with processing...");
-        
+
         throw new ActionException(this,"NOT IMPLEMENTED");
     }
-        /*
+    /*
         try {
             // looking for file
             if (events.size() != 1)
@@ -309,7 +309,6 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
             JAI.getDefaultInstance().getTileCache().flush();
         }
     }
-
     private final static String getUom(final FieldType ft) {
         final String uom = ft.getUnitOfMeasure().toString();
         if (ft != null)
