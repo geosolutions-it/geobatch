@@ -177,10 +177,14 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
         // add myself as listener
         fsListener = new GBEventListener();
 
-        if (wildCard!=null)
+        if (wildcard!=null)
             this.wildCard = wildcard;
-        else
+        else{
             this.wildCard = "*";
+            if(LOGGER.isLoggable(Level.FINE)){
+                LOGGER.fine("Provided wild card is null, using default ( * )");
+            }
+        }
         
         if (eventType!=null)
             this.acceptedEvent = eventType;
@@ -200,6 +204,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             params.put(FileSystemMonitorSPI.SOURCE, watchDirectory);
             if (this.wildCard != null)
                 params.put(FileSystemMonitorSPI.WILDCARD, wildCard);
+            params.put(FileSystemMonitorSPI.TYPE, acceptedEvent);
             this.fsMonitor = FSMSPIFinder.getMonitor(params, osType,type);
 
             this.fsMonitor.addListener(fsListener);

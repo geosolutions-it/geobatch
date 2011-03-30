@@ -325,6 +325,7 @@ abstract class ImageMosaicUpdater {
                             if (!path.contains(cmd.getBaseDir().getAbsolutePath())) {
                                 // the path is absolute AND the file is outside the layer baseDir!
                                 files.remove(file); // remove it
+// TODO move into a recoverable path to rollback!
                                 // log as warning
                                 if (LOGGER.isLoggable(Level.WARNING)) {
                                     LOGGER.warning("ImageMosaicAction::updateDataStore(): Layer specify a relative pattern for files but the "
@@ -400,6 +401,7 @@ abstract class ImageMosaicUpdater {
                 } catch (IOException ioe) {
                     if (transaction != null)
                         transaction.rollback();
+// TODO recover removed file to rollback!
                     if (LOGGER.isLoggable(Level.WARNING)) {
                         LOGGER.warning("UpdateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
                     }
@@ -407,6 +409,7 @@ abstract class ImageMosaicUpdater {
                 } catch (RuntimeException re) {
                     if (transaction != null)
                         transaction.rollback();
+// TODO recover removed file to rollback!
                     if (LOGGER.isLoggable(Level.SEVERE)) {
                         LOGGER.log(Level.SEVERE,
                                 "ImageMosaicAction::updateDataStore(): problem with connection: "
@@ -573,9 +576,11 @@ abstract class ImageMosaicUpdater {
              * copy purged addFiles list of files to the baseDir and replace addFiles list with the
              * new copied file list
              */
+            // store copied file for rollback purpose
+            List<File> addedFile=null;
             if (!absolute) {
-                cmd.setAddFiles(Path.copyListFileToNFS(cmd.getAddFiles(), cmd.getBaseDir(), false,
-                        ImageMosaicAction.WAIT));
+                addedFile=Path.copyListFileToNFS(cmd.getAddFiles(), cmd.getBaseDir(), false,
+                        ImageMosaicAction.WAIT);
             }
 
             if (cmd.getAddFiles() == null) {
@@ -603,6 +608,17 @@ abstract class ImageMosaicUpdater {
                         fw = dataStore.getFeatureWriterAppend(store, transaction);
                     } catch (IOException ioe) {
                         try {
+                            if (LOGGER.isLoggable(Level.SEVERE))
+                                LOGGER.severe("ImageMosaicAction:updateDataStore(): unable to update the new layer, removing copied files...");
+                            // if fails rollback the copied files
+                            if (addedFile!=null){
+                                for (File file : addedFile){
+                                    if (LOGGER.isLoggable(Level.WARNING))
+                                        LOGGER.warning("ImageMosaicAction: DELETING -> "+file.getAbsolutePath());
+                                    // this is done since addedFiles are copied not moved
+                                    file.delete();
+                                }
+                            }
                             if (transaction != null) {
                                 transaction.rollback();
                                 transaction.close();
@@ -651,6 +667,17 @@ abstract class ImageMosaicUpdater {
 
                 } catch (RuntimeException re) {
                     try {
+                        if (LOGGER.isLoggable(Level.SEVERE))
+                            LOGGER.severe("ImageMosaicAction:updateDataStore(): unable to update the new layer, removing copied files...");
+                        // if fails rollback the copied files
+                        if (addedFile!=null){
+                            for (File file : addedFile){
+                                if (LOGGER.isLoggable(Level.WARNING))
+                                    LOGGER.warning("ImageMosaicAction: DELETING -> "+file.getAbsolutePath());
+                                // this is done since addedFiles are copied not moved
+                                file.delete();
+                            }
+                        }
                         if (transaction != null) {
                             transaction.rollback();
                             transaction.close();

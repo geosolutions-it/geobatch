@@ -280,14 +280,15 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
                                     continue;
                                 }
                             }
-
+                            
+                            // store addeddFiles for rollback purposes
+                            List<File> addedFiles = null;
                             // no base dir exists try to build a new one using addList()
                             if (cmd.getAddFiles() != null) {
-                                List<File> addFiles = cmd.getAddFiles();
-                                if (addFiles.size() > 0) {
+                                if (cmd.getAddFiles().size() > 0) {
                                     // copy files from the addFile list to the baseDir (do not
                                     // preventing overwrite)
-                                    List<File> addedFiles = Path.copyListFileToNFS(
+                                    addedFiles=Path.copyListFileToNFS(
                                             cmd.getAddFiles(), cmd.getBaseDir(), true, WAIT);
                                     if (addedFiles == null || addedFiles.size() == 0) {
                                         // no file where transfer to the destination dir
@@ -297,7 +298,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
                                         continue;
                                     }
                                     // files are now into the baseDir and layer do not exists so
-                                    addFiles.clear();
+                                    cmd.getAddFiles().clear();
                                 }
                                 // Already checked else {
                                 // if (LOGGER.isLoggable(Level.WARNING))
@@ -308,6 +309,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
                                 // "existent or writeable baseDir and append a list of file to use to the addFile list.");
                                 // continue;
                                 // }
+//TODO!!!!
                                 if (cmd.getDelFiles() != null) {
                                     if (LOGGER.isLoggable(Level.WARNING))
                                         LOGGER.warning("ImageMosaicAction: unable to delete files from a not existent layer,"
@@ -317,9 +319,27 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
                                 }
                             }
 
-                            // layer do not exists
-                            ImageMosaicREST.createNewImageMosaicLayer(baseDir, mosaicDescriptor,
-                                    configuration, layers);
+                            // layer do not exists so try to create a new one
+                            if (!ImageMosaicREST.createNewImageMosaicLayer(baseDir, mosaicDescriptor,
+                                    configuration, layers)){
+                                if (LOGGER.isLoggable(Level.SEVERE))
+                                    LOGGER.severe("ImageMosaicAction: unable to create a new layer, removing copied files...");
+                                // if fails rollback the copied files
+                                if (addedFiles!=null){
+                                    for (File file : addedFiles){
+                                        if (LOGGER.isLoggable(Level.WARNING))
+                                            LOGGER.warning("ImageMosaicAction: DELETING -> "+file.getAbsolutePath());
+                                        file.delete();
+                                    }
+                                    addedFiles.clear();
+                                    addedFiles=null;
+                                }
+                                
+                                /*
+                                 * TODO recover deleted files
+                                 * do we need this? (here we create a new layer)
+                                 */
+                            }
                             /*
                              * TODO HERE WE HAVE A 'cmd' COMMAND FILE WHICH MAY HAVE GETADDFILE OR
                              * GETDELFILE !=NULL USING THOSE LIST WE MAY: DEL ->LOG WARNING--- ADD

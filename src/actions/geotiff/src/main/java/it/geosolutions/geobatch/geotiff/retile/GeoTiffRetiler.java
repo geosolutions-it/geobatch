@@ -26,6 +26,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.geotiff.GeotiffUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -103,18 +104,23 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
         }
 
         final File tiledTiffFile = new File(configuration.getWorkingDirectory(), inputFileName
-                + "_tiled.tif");
+                + "_" + Thread.currentThread().getId() + "_tiled.tif");
+
         try {
-            if (tiledTiffFile.exists() && !tiledTiffFile.canWrite()) {
-                final String message = "GeoTiffRetiler::reTile(): Unable to over-write the temporary file called: "
-                        + tiledTiffFile.getAbsolutePath()+"\nCheck permissions.";
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.severe(message);
+            if (tiledTiffFile.exists()) {
+                // file already exists
+                // check write permission
+                if (!tiledTiffFile.canWrite()) {
+                    final String message = "GeoTiffRetiler::reTile(): Unable to over-write the temporary file called: "
+                            + tiledTiffFile.getAbsolutePath() + "\nCheck permissions.";
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.severe(message);
+                    }
+                    throw new IllegalArgumentException(message);
                 }
-                throw new IllegalArgumentException(message);
             } else if (!tiledTiffFile.createNewFile()) {
                 final String message = "GeoTiffRetiler::reTile(): Unable to create temporary file called: "
-                    + tiledTiffFile.getAbsolutePath();
+                        + tiledTiffFile.getAbsolutePath();
                 if (LOGGER.isLoggable(Level.SEVERE)) {
                     LOGGER.severe(message);
                 }
@@ -131,8 +137,13 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
             }
 
             // can throw UnsupportedOperationsException
-            reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
-                    Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+
+//TODO format???
+reader = GeotiffUtils.getReader(inFile, new Hints(
+        Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+
+// reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
+// Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
             if (reader == null) {
                 final IOException ioe = new IOException(
                         "GeoTiffRetiler::reTile(): Unable to find a reader for the provided file: "

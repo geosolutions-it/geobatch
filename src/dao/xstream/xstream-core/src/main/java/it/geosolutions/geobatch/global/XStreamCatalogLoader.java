@@ -44,6 +44,8 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.geotools.coverage.grid.io.imageio.geotiff.GeoTiffMetadata2CRSAdapter;
+import org.geotools.factory.Hints;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -148,6 +150,16 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
         System.out.println("- GEOBATCH_DATA_DIR: " + dataDir.getAbsolutePath());
         System.out.println("----------------------------------");
 
+// TODO WORKAROUND
+// to make geotiff retiler work in multithread 
+//
+//try{
+//    Class clazz=Class.forName("org.geotools.coverage.grid.io.imageio.geotiff.GeoTiffMetadata2CRSAdapter");
+//    final GeoTiffMetadata2CRSAdapter o= new GeoTiffMetadata2CRSAdapter(new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE)); 
+//} catch (Exception e) {
+//    // eat me
+//}
+        
         // //
         //
         // force loading all alias registerers

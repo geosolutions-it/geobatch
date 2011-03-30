@@ -17,7 +17,7 @@
 		<watchDirectory>/emsa/in/ftp</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<!-- when dir is modified -->
-		<eventType>DIR_MODIFIED</eventType>
+		<eventType>FILE_ADDED</eventType>
 		<monitorType>DEFAULT</monitorType>
 		<id>id</id>
     <serviceID>fsEventGeneratorService</serviceID>
@@ -40,8 +40,8 @@
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.+</regex>
-			<id>r1</id>
+			<regex>PackagesReady.txt</regex>
+			<id>EMSAGroovyFlow_rule_1</id>
 			<description>description</description>
 			<name>EMSAGroovyFlow</name>
 		</FileEventRule>

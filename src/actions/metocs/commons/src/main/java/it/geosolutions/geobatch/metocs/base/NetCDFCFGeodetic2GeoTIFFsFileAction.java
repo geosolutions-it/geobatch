@@ -224,26 +224,32 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
             File workingDir = new File(configuration.getWorkingDirectory());
             if (configuration.getLayerParentDirectory() != null) {
                 File layerParDir = new File(configuration.getLayerParentDirectory());
-                if (layerParDir.exists() && layerParDir.canWrite() && layerParDir.isDirectory()) {
+                if (layerParDir.exists() && layerParDir.isDirectory() && layerParDir.canWrite()) {
                     layerDir = layerParDir;
-                    if (layerDir != null && LOGGER.isLoggable(Level.INFO))
-                        LOGGER.log(Level.INFO, "execute(): layerDir: " + layerDir.getAbsolutePath());
+                } else if (layerParDir.mkdirs()) {
+                    layerDir = layerParDir;
                 }
+                if (layerDir != null && LOGGER.isLoggable(Level.INFO))
+                    LOGGER.log(Level.INFO, "NetCDFCFGeodetic2GeoTIFF::execute(): layerDir: "
+                            + layerDir.getAbsolutePath());
                 layerParDir = null;
             }
             // if outDir is not a good dir let's use the working dir
             if (layerDir == null) {
                 if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING, "execute(): unable to get a writeable layerDir dir: "
-                            + "going to use the working dir:");
+                    LOGGER.log(Level.WARNING,
+                            "NetCDFCFGeodetic2GeoTIFF::execute(): unable to get a writeable layerDir dir: "
+                                    + "going to use the working dir:");
                 layerDir = (!configuration.isTimeUnStampedOutputDir() ? Utilities
                         .createTodayDirectory(workingDir, inputFileName) : Utilities
                         .createDirectory(workingDir, inputFileName));
                 if (layerDir != null) {
                     if (LOGGER.isLoggable(Level.INFO))
-                        LOGGER.log(Level.INFO, "execute(): layerDir: " + layerDir.getAbsolutePath());
+                        LOGGER.log(Level.INFO, "NetCDFCFGeodetic2GeoTIFF::execute(): layerDir: "
+                                + layerDir.getAbsolutePath());
                 } else {
-                    throw new ActionException(this, "execute(): unable to get a writeable layerDir");
+                    throw new ActionException(this,
+                            "NetCDFCFGeodetic2GeoTIFF::execute(): unable to get a writeable layerDir");
                 }
 
             }
@@ -260,10 +266,11 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
             if ((baseTimeAttr = ncFileIn.findGlobalAttribute("base_time")) == null)
                 if ((baseTimeAttr = ncFileIn.getRootGroup().findAttribute("base_time")) == null) {
                     if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.log(Level.SEVERE,
-                                "execute(): Unable to find \'base_time\' global variable in the source file");
+                        LOGGER.log(
+                                Level.SEVERE,
+                                "NetCDFCFGeodetic2GeoTIFF::execute(): Unable to find \'base_time\' global variable in the source file");
                     throw new Exception(
-                            "execute(): Unable to find \'base_time\' global variable in the source file");
+                            "NetCDFCFGeodetic2GeoTIFF::execute(): Unable to find \'base_time\' global variable in the source file");
                 }
             final String baseTime = baseTimeAttr.getStringValue();
             baseTimeAttr = null;
@@ -276,7 +283,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
                 if ((tauAttr = ncFileIn.getRootGroup().findAttribute("tau")) == null) {
                     if (LOGGER.isLoggable(Level.SEVERE))
                         LOGGER.log(Level.SEVERE,
-                                "Unable to find \'tau\' global variable in the source file");
+                                "NetCDFCFGeodetic2GeoTIFF::execute(): Unable to find \'tau\' global variable in the source file");
                     throw new Exception("Unable to find \'tau\' global variable in the source file");
                 }
             // TODO check -> if tauAttr.getNumericValue()==NULL
@@ -292,9 +299,9 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
                 if ((nodataAttr = ncFileIn.getRootGroup().findAttribute("nodata")) == null) {
                     if (LOGGER.isLoggable(Level.SEVERE))
                         LOGGER.log(Level.SEVERE,
-                                "Unable to find \'nodata\' global variable in the source file");
+                                "NetCDFCFGeodetic2GeoTIFF::execute(): Unable to find \'nodata\' global variable in the source file");
                     throw new Exception(
-                            "Unable to find \'nodata\' global variable in the source file");
+                            "NetCDFCFGeodetic2GeoTIFF::execute(): Unable to find \'nodata\' global variable in the source file");
                 }
             // TODO check -> if nodataAttr.getNumericValue()==NULL
             final double noData = nodataAttr.getNumericValue().doubleValue();
@@ -506,7 +513,8 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
                         File command = null;
                         try {
                             command = ImageMosaicCommand.serialize(cmd, workingDir + File.separator
-                                    + varName + IMAGEMOSAIC_COMMAND_FILE);
+                                    + varName + "_" + Thread.currentThread().getId() + "_"
+                                    + IMAGEMOSAIC_COMMAND_FILE);
 
                         } catch (Throwable t) {
                             if (LOGGER.isLoggable(Level.SEVERE))

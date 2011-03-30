@@ -58,8 +58,9 @@ public List execute(ScriptingConfiguration configuration, String eventFilePath, 
     FileFilter filter=FileFilterUtils.or(
 				FileFilterUtils.nameFileFilter(readyFileName),
 				new WildcardFileFilter("*_EOP.tgz",IOCase.SENSITIVE));
-				
-    File inDir=new File(eventFilePath);
+    // recived something/PackagesReady.txt
+    File inDir=new File(eventFilePath).getParentFile(); // should be something/
+    
     File[] readyFile=inDir.listFiles((FileFilter)filter);
 //DEBUG
 //int i=0;
