@@ -4,6 +4,11 @@
 	<name>E-GEOS GeoServer-Deployer Flow</name>
 	<description>E-GEOS GeoServer-Deployer Flow</description>
 
+        <corePoolSize>2</corePoolSize>
+        <maximumPoolSize>2</maximumPoolSize>
+        <keepAliveTime>86400</keepAliveTime> <!--seconds-->
+        <workQueueSize>100</workQueueSize>
+
 	<workingDirectory>EGEOSworkingDir/GeoServerDeployer</workingDirectory>
 	<autorun>true</autorun>
 
@@ -58,7 +63,7 @@
 			<properties>
 				  <!-- Where to put output folder(s) -->
 				  <entry>
-				    <string>OutputDataDir</string>
+				    <string>sarImagesDataDir</string>
 				    <!--
 				    /emsa/out/nfs/sarImages/
 				    /home/carlo/work/data/emsa/sarImages
@@ -66,13 +71,19 @@
 				    -->
 				    <string>/emsa/out/nfs/sarImages/</string>
 				  </entry>
+				  <entry>
+                                    <string>sarDerivedDataDir</string>
+                                    <string>/emsa/out/nfs/sarDerived/</string>
+                                  </entry>
+
+				  <!-- CONNECTION PROPERTIES -->
+				  <entry>
+                                    <string>dataStoreProp</string>
+				    <!--relative to the working dir-->
+                                    <string>config/datastore.properties</string>
+                                  </entry>
 				  
 				  <!-- GEOTIFF Retiler -->
-				  <!-- <entry>
-				    <string>PrjFileName</string> -->
-				    <!--relative to the working dir-->
-				    <!-- <string>data.prj</string>
-				  </entry> -->
 				  <!-- GEOTIFF Retiler config-->
 				  <entry>
 				    <string>reTileH</string>
@@ -113,6 +124,8 @@
 			<description>EMSA Splitting Action</description>
 			<name>EMSASplit</name>
 			
+			<workingDirectory>EGEOSworkingDir/</workingDirectory>
+
 			<listenerId>EGEOSActionLoggerListener</listenerId>
 			<listenerId>EGEOSActionStatusListener</listenerId>
 						

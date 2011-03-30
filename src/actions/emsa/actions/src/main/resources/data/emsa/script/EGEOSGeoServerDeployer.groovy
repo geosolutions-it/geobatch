@@ -1,8 +1,4 @@
-import java.io.File;
 
-/** 
- * Java Imports ...
- **/
 import it.geosolutions.geobatch.egeos.deployers.services.EGEOSRegistryDeployerConfiguration
 import it.geosolutions.geobatch.egeos.deployers.actions.EGEOSDeployerBaseAction
 
@@ -43,38 +39,29 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.geotools.data.DataStore;
+import it.geosolutions.geobatch.imagemosaic.Utils;
+
+import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataStoreFinder;
+import org.geotools.data.DataStore;
 import org.geotools.data.postgis.PostgisNGDataStoreFactory;
-import org.geotools.jdbc.JDBCDataStoreFactory;
+import org.geotools.data.postgis.PostgisNGJNDIDataStoreFactory;
 
 /** 
  * Script Main "execute" function
  **/
 /* ----------------------------------------------------------------- */
 public List execute(ScriptingConfiguration configuration, String inputFileName, ProgressListenerForwarder listenerForwarder) throws Exception {
-		/* ----------------------------------------------------------------- */
-		// Main Input Variables: must be configured 
 
-		/** DataStore properties **/
-		def database 	= "egeos"
-		def dbtype 		= "postgis"
-		def host 			= "10.20.2.4"
-		def port 			= 5432
-		def user 			= "postgres"
-		def passwd 		= "postgres_matera"
-		
-		def SARNetCDFdestDir=new File("/emsa/out/nfs/sarDerived/");
-
-	DataStore store=null;
+    DataStore store=null;
     try {
-println (" **********************************GeoServer DEPLOYER*********************************** ");
+        println (" **********************************GeoServer DEPLOYER*********************************** ");
         listenerForwarder.started();
         // ////
         // Instatiate EMSA Utilities
         // ////
         utils = new EMSAUtils();
-				
+
         // ////////////////////////////////////////////////////////////////////
         //
         // Initializing input variables from Flow configuration
@@ -82,23 +69,31 @@ println (" **********************************GeoServer DEPLOYER*****************
         // ////////////////////////////////////////////////////////////////////
         Map props = configuration.getProperties();
 
-	File ImageIODir=new File(props.get("OutputDataDir"));
+        File ImageIODir=new File(props.get("sarImagesDataDir"));
 
         final String filePrefix = FilenameUtils.getBaseName(inputFileName);
-        
+
         final String fileSuffix = FilenameUtils.getExtension(inputFileName);
-        
-println("Input file name is: "+inputFileName);
+
+        File SARNetCDFdestDir=new File(props.get("sarDerivedDataDir"));
+
+        // datastore.properties
+        // config/datastore.properties
+        File dataStorePropFile=new File(configuration.getWorkingDirectory()+ File.separator + props.get("dataStoreProp"));
+        //it.geosolutions.geobatch.imagemosaic.Utils
+        dataStoreProp = Utils.loadPropertiesFromURL(dataStorePropFile.toURL());
+
+        println("Input file name is: "+inputFileName);
 
         // ////
-	// getting package directory
-	// ////
-	File pkgDir=null;
+        // getting package directory
+        // ////
+        File pkgDir=null;
         if (fileSuffix.equalsIgnoreCase("xml")) {
-		pkgDir= new File(inputFileName).getParentFile();   
+            pkgDir= new File(inputFileName).getParentFile();
         }
         else
-		pkgDir= new File(inputFileName);
+	  pkgDir= new File(inputFileName);
 
         // ////
         // forwarding some logging information to Flow Logger Listener
@@ -112,174 +107,174 @@ println("Input file name is: "+inputFileName);
         // ////
         // getting package type
         // ////
-println("File name is: "+pkgDir.getName());
+        println("File name is: "+pkgDir.getName());
 
         PackageType type = utils.getPackageTypeFromName(pkgDir.getName());
-        
-println("Type is: "+type);
+
+        println("Type is: "+type);
 
         if (type != null) {
             if (type == PackageType.DER) {
 
                 // deploy Ship Detections...
-		try {
-		        // ////
-        		// Update GeoServer DataStore...
-	        	// ////
-	        	// connect to the store
-		        store = connect(database, dbtype, host, port, user, passwd);
+                try {
+                    // ////
+                    // Update GeoServer DataStore...
+                    // ////
+                    // connect to the store
+                    store = connect(dataStoreProp);
 
-        		listenerForwarder.setTask("::EGEOSGeoServerDeployer : deploy Ship detections ")
+                    listenerForwarder.setTask("::EGEOSGeoServerDeployer : deploy Ship detections ")
 
-	                ShipParser shipParser = new ShipParser();
+                    ShipParser shipParser = new ShipParser();
 
-	                File[] shipFiles = pkgDir.listFiles(new ShipDetectionNameFilter());
-        	        for (File shipFile : shipFiles) {
-                	    shipParser.parseShip(store, ShipParser.xpath, shipFile);
-	                }
-		    } catch (Throwable cause) {
-        		sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
-		    } finally {
-			try{
-				if (store!=null)
-				  store.dispose();
-			} catch (Throwable cause){
-				// nothing
-			}
-			store=null;
-		    }
+                    File[] shipFiles = pkgDir.listFiles(new ShipDetectionNameFilter());
+                    for (File shipFile : shipFiles) {
+                        shipParser.parseShip(store, ShipParser.xpath, shipFile);
+                    }
+                } catch (Throwable cause) {
+                    sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
+                } finally {
+                    try{
+                        if (store!=null)
+                            store.dispose();
+                    } catch (Throwable cause){
+                        // nothing
+                    }
+                    store=null;
+                }
 
                 // Forwarding Wind and Wave to GeoBatch METOC Actions...
                 File[] ncDerivedFiles = pkgDir.listFiles(new NetCDFNameFilter());
 
                 for (File ncFile : ncDerivedFiles) {
-//			File destNcFile = new File(SARNetCDFdestDir, ncFile.getName());
+                    //			File destNcFile = new File(SARNetCDFdestDir, ncFile.getName());
 
-println("Input NetCDF SAR file name is: "+ncFile.getAbsolutePath());
-//println("Input NetCDF SAR file name is: "+destNcFile.getAbsolutePath());
+                    println("Input NetCDF SAR file name is: "+ncFile.getAbsolutePath());
+                    //println("Input NetCDF SAR file name is: "+destNcFile.getAbsolutePath());
 
-			if (ncFile.exists()) {
-//				if (destNcFile.delete()) {
-//					FileUtils.copyFileToDirectory(ncFile, SARNetCDFdestDir, true)
-println("Input NetCDF SAR file name is: "+ncFile.getAbsolutePath());
+                    if (ncFile.exists()) {
+                        //				if (destNcFile.delete()) {
+                        //					FileUtils.copyFileToDirectory(ncFile, SARNetCDFdestDir, true)
+                        println("Input NetCDF SAR file name is: "+ncFile.getAbsolutePath());
 
-					results.add(ncFile.getAbsolutePath());
-//				}
-			}
+                        results.add(ncFile.getAbsolutePath());
+                        //				}
+                    }
                 }
             } else if (type == PackageType.OSW || type == PackageType.OSN) {
-		try {
-	        	// ////
-        		// Update GeoServer DataStore...
-		        // ////
-        		// connect to the store
-		        store = connect(database, dbtype, host, port, user, passwd);
+                try {
+                    // ////
+                    // Update GeoServer DataStore...
+                    // ////
+                    // connect to the store
+                    store = connect(dataStoreProp);
 
-        		listenerForwarder.setTask("::EGEOSGeoServerDeployer : deploy OilSpill detections ")
+                    listenerForwarder.setTask("::EGEOSGeoServerDeployer : deploy OilSpill detections ")
 
-                	// deploy Oil Spills...
-        	        File[] spillFiles = pkgDir.listFiles(new OilSpillNameFilter());
+                    // deploy Oil Spills...
+                    File[] spillFiles = pkgDir.listFiles(new OilSpillNameFilter());
 
-	                SpillParser spillParser = new SpillParser();
-                	for (File spillFile : spillFiles) {
-        	            spillParser.parseOilSpill(store, SpillParser.xpath, spillFile);
-	                }
-		    } catch (Throwable cause) {
-        		sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
-		    } finally {
-			try{
-				if (store!=null)
-				  store.dispose();
-			} catch (Throwable cause){
-				// nothing
-			}
-			store=null;
-		    }
+                    SpillParser spillParser = new SpillParser();
+                    for (File spillFile : spillFiles) {
+                        spillParser.parseOilSpill(store, SpillParser.xpath, spillFile);
+                    }
+                } catch (Throwable cause) {
+                    sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
+                } finally {
+                    try{
+                        if (store!=null)
+                            store.dispose();
+                    } catch (Throwable cause){
+                        // nothing
+                    }
+                    store=null;
+                }
             } else if (type == PackageType.PRO) {
-//println("PRO: ");
+                //println("PRO: ");
 
-		// retile
-		GeoTiffRetilerConfiguration retilerConfig=
-		      new GeoTiffRetilerConfiguration(configuration.getId(),"EMSA_retiler",configuration.getDescription());
-		retilerConfig.setTileH(props.get("reTileH"));
-		retilerConfig.setTileW(props.get("reTileW"));
-		retilerConfig.setWorkingDirectory(configuration.getWorkingDirectory());
-		GeoTiffRetiler retiler=new GeoTiffRetiler(retilerConfig);
-		
-		// overview
-		GeoTiffOverviewsEmbedderConfiguration overviewConfig=
-		      new GeoTiffOverviewsEmbedderConfiguration(configuration.getId(),"EMSA_overview",configuration.getDescription());
-					    
-		overviewConfig.setTileH(props.get("ovTileH"));
-		overviewConfig.setTileW(props.get("ovTileW"));
-		overviewConfig.setScaleAlgorithm(props.get("scaleAlgorithm"));
-		overviewConfig.setDownsampleStep(props.get("downsampleStep"));
-		overviewConfig.setNumSteps(props.get("numSteps"));
-		overviewConfig.setWorkingDirectory(configuration.getWorkingDirectory());
+                // retile
+                GeoTiffRetilerConfiguration retilerConfig=
+                new GeoTiffRetilerConfiguration(configuration.getId(),"EMSA_retiler",configuration.getDescription());
+                retilerConfig.setTileH(props.get("reTileH"));
+                retilerConfig.setTileW(props.get("reTileW"));
+                retilerConfig.setWorkingDirectory(configuration.getWorkingDirectory());
+                GeoTiffRetiler retiler=new GeoTiffRetiler(retilerConfig);
 
-		GeoTiffOverviewsEmbedder overview=new GeoTiffOverviewsEmbedder(overviewConfig);
-		
-		Queue queue=new LinkedList();
-		
+                // overview
+                GeoTiffOverviewsEmbedderConfiguration overviewConfig=
+                new GeoTiffOverviewsEmbedderConfiguration(configuration.getId(),"EMSA_overview",configuration.getDescription());
+
+                overviewConfig.setTileH(props.get("ovTileH"));
+                overviewConfig.setTileW(props.get("ovTileW"));
+                overviewConfig.setScaleAlgorithm(props.get("scaleAlgorithm"));
+                overviewConfig.setDownsampleStep(props.get("downsampleStep"));
+                overviewConfig.setNumSteps(props.get("numSteps"));
+                overviewConfig.setWorkingDirectory(configuration.getWorkingDirectory());
+
+                GeoTiffOverviewsEmbedder overview=new GeoTiffOverviewsEmbedder(overviewConfig);
+
+                Queue queue=new LinkedList();
+
                 File[] proFiles = pkgDir.listFiles((FilenameFilter)new WildcardFileFilter("*.xml"));
-		if (proFiles!=null){
-			List addList = new ArrayList();
-			for (File proXmlFile : proFiles) {
-				File dest=ProParser.copyTif(ProParser.parse(proXmlFile),
-                                                            new File(configuration.getWorkingDirectory()+File.separator)
-                                                            ,120);
-				if (dest!=null){
-				  // add file to the list
-				  queue.add(new FileSystemEvent(dest,FileSystemEventType.FILE_ADDED));
-			// apply retile
-				  listenerForwarder.setTask("::EGEOSGeoServerDeployer :  sending file:" + dest+ " to overview and retiling...");
-				  queue=retiler.execute(queue);
-				  listenerForwarder.setTask("::EGEOSGeoServerDeployer : Retiler executed");
-			// apply overview
-				  queue=overview.execute(queue);
-				  listenerForwarder.setTask("::EGEOSGeoServerDeployer : Oeverview executed");
-				  
-			// get the output
-				  if (queue.size()>0){
-				    FileSystemEvent event=queue.peek();
-				    dest=event.getSource();
-				    addList.add(dest);
-				  }
-				  else {
-				    String message="::EGEOSGeoServerDeployer : problem the output event queue do not contain files!";
-				    sendError(listenerForwarder, message, new NullPointerException(message));
-				  }
-				}
-				else {
-				    String message="EGEOSGeoServerDeployer: Unable to move gif file";
-				    sendError(listenerForwarder, message, new NullPointerException(message));
-				}
-			}
-			// create in memory ImageMosaicCommand object
-			ImageMosaicCommand cmd=new ImageMosaicCommand(ImageIODir, addList, null);
-//println("FILE_PRO_XML_CMD: "+configuration.getWorkingDirectory()+"pro_imagemosaic_cmd.xml");
-			// sterialize the ImageMosaicCommand object
-			File dest=ImageMosaicCommand.serialize(cmd, 
-			configuration.getWorkingDirectory()+File.separator+"pro_imagemosaic_cmd.xml");
-			// add the serialized file to the queue
-			results.add(dest.getAbsolutePath());
-		}
+                if (proFiles!=null){
+                    List addList = new ArrayList();
+                    for (File proXmlFile : proFiles) {
+                        File dest=ProParser.copyTif(ProParser.parse(proXmlFile),
+                        new File(configuration.getWorkingDirectory()+File.separator)
+                        ,120);
+                        if (dest!=null){
+                            // add file to the list
+                            queue.add(new FileSystemEvent(dest,FileSystemEventType.FILE_ADDED));
+                            // apply retile
+                            listenerForwarder.setTask("::EGEOSGeoServerDeployer :  sending file:" + dest+ " to overview and retiling...");
+                            queue=retiler.execute(queue);
+                            listenerForwarder.setTask("::EGEOSGeoServerDeployer : Retiler executed");
+                            // apply overview
+                            queue=overview.execute(queue);
+                            listenerForwarder.setTask("::EGEOSGeoServerDeployer : Oeverview executed");
+
+                            // get the output
+                            if (queue.size()>0){
+                                FileSystemEvent event=queue.peek();
+                                dest=event.getSource();
+                                addList.add(dest);
+                            }
+                            else {
+                                String message="::EGEOSGeoServerDeployer : problem the output event queue do not contain files!";
+                                sendError(listenerForwarder, message, new NullPointerException(message));
+                            }
+                        }
+                        else {
+                            String message="EGEOSGeoServerDeployer: Unable to move gif file";
+                            sendError(listenerForwarder, message, new NullPointerException(message));
+                        }
+                    }
+                    // create in memory ImageMosaicCommand object
+                    ImageMosaicCommand cmd=new ImageMosaicCommand(ImageIODir, addList, null);
+                    //println("FILE_PRO_XML_CMD: "+configuration.getWorkingDirectory()+"pro_imagemosaic_cmd.xml");
+                    // sterialize the ImageMosaicCommand object
+                    File dest=ImageMosaicCommand.serialize(cmd,
+                    configuration.getWorkingDirectory()+File.separator+"pro_imagemosaic_cmd.xml");
+                    // add the serialized file to the queue
+                    results.add(dest.getAbsolutePath());
+                }
             }
         }
-	else {
-	        // ////
-	        // forwarding event to the next action
-	        // ////
-	        // fake event to avoid Failed Status!
-        	results.add("DONE");
-	}
+        else {
+            // ////
+            // forwarding event to the next action
+            // ////
+            // fake event to avoid Failed Status!
+            results.add("DONE");
+        }
         return results;
     } catch (Throwable cause) {
         sendError(listenerForwarder, cause.getLocalizedMessage(), cause);
     } finally {
-	if (store!=null)
-	  store.dispose();
-	store=null;
+        if (store!=null)
+        store.dispose();
+        store=null;
     }
 }
 
@@ -311,33 +306,28 @@ void sendError(final ProgressListenerForwarder listenerForwarder, final String m
     throw theCause;
 }
 
-/**
- * DS connect:
- * - database
- * - dbtype
- * - host
- * - port
- * - user
- * - passwd
- */
-private DataStore connect(
-            String database,
-            String dbtype,
-            String host,
-            int port,
-            String user,
-            String passwd)
-    throws IOException 
-    {
-    Map params = new HashMap();
-    params.put(JDBCDataStoreFactory.DATABASE.key, database);
-    params.put(JDBCDataStoreFactory.DBTYPE.key,   dbtype);
-    params.put(JDBCDataStoreFactory.HOST.key,     host);
-    params.put(JDBCDataStoreFactory.PORT.key,     port);
-    params.put(JDBCDataStoreFactory.USER.key,     user);
-    params.put(JDBCDataStoreFactory.PASSWD.key,   passwd);
-    // important as there are some chars that need escaping
-    params.put(PostgisNGDataStoreFactory.PREPARED_STATEMENTS.key, Boolean.TRUE);
 
-    return DataStoreFinder.getDataStore(params);
+private DataStore connect(Properties dataStoreProp) throws IOException {
+    // SPI
+    final String SPIClass = dataStoreProp.getProperty("SPI");
+    // create a datastore as instructed
+    final DataStoreFactorySpi spi = (DataStoreFactorySpi) Class.forName(SPIClass)
+    .newInstance();
+    final Map<String, Serializable> params = Utils.createDataStoreParamsFromPropertiesFile(
+    dataStoreProp, spi);
+
+    dataStore = spi.createDataStore(params);
+
+    if (dataStore == null) {
+        final String message="EGEOSGeoServerDeployer::connect(): "
+        + "the required resource was not found or if insufficent parameters were given.";
+        if (LOGGER.isLoggable(Level.SEVERE)) {
+            LOGGER.log(Level.SEVERE,message)
+        }
+        throw new IOException(message);
+    }
+
+    return dataStore;
 }
+
+

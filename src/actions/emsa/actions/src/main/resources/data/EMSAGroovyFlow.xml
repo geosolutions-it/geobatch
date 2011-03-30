@@ -4,6 +4,11 @@
 	<name>EMSAMainFlow-Scripting</name>
 	<description>EMSA Main Flow - Scripting</description>
 
+        <corePoolSize>3</corePoolSize>
+        <maximumPoolSize>3</maximumPoolSize>
+        <keepAliveTime>86400</keepAliveTime> <!--seconds-->
+        <workQueueSize>50</workQueueSize>
+
 	<workingDirectory>EMSAWorkingDir</workingDirectory>
 	<autorun>true</autorun>
 

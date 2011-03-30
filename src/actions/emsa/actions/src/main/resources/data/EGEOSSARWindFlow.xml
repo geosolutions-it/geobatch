@@ -68,6 +68,24 @@
 			<serviceID>ImageMosaicGeneratorService</serviceID>
 			<workingDirectory>EGEOSworkingDir/SARWind/</workingDirectory>
 
+                        <COARDS>false</COARDS>
+
+                        <NativeMinBoundingBoxX>-15</NativeMinBoundingBoxX>
+
+                        <NativeMinBoundingBoxY>28</NativeMinBoundingBoxY>
+
+                        <NativeMaxBoundingBoxX>38</NativeMaxBoundingBoxX>
+
+                        <NativeMaxBoundingBoxY>46</NativeMaxBoundingBoxY>
+
+                        <latLonMinBoundingBoxX>-15</latLonMinBoundingBoxX>
+
+                        <latLonMinBoundingBoxY>28</latLonMinBoundingBoxY>
+
+                        <latLonMaxBoundingBoxX>38</latLonMaxBoundingBoxX>
+
+                        <latLonMaxBoundingBoxY>46</latLonMaxBoundingBoxY>
+
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
