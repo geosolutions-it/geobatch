@@ -255,7 +255,7 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
                     //println("FILE_PRO_XML_CMD: "+configuration.getWorkingDirectory()+"pro_imagemosaic_cmd.xml");
                     // sterialize the ImageMosaicCommand object
                     File dest=ImageMosaicCommand.serialize(cmd,
-                    configuration.getWorkingDirectory()+File.separator+"pro_imagemosaic_cmd.xml");
+                    configuration.getWorkingDirectory()+File.separator+Thread.currentThread().getId()+ "_"+"pro_imagemosaic_cmd.xml");
                     // add the serialized file to the queue
                     results.add(dest.getAbsolutePath());
                 }
