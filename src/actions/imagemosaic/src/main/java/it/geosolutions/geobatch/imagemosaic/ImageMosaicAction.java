@@ -23,12 +23,10 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
-import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
@@ -57,7 +55,8 @@ import org.apache.commons.io.FilenameUtils;
  *          ImageMosaicAction.java $ Revision: 0.2 $ 25/feb/11 09:00:00
  */
 
-public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Action<FileSystemEvent> {
+public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
+        Action<FileSystemEvent> {
 
     protected final static int WAIT = 10; // seconds to wait for nfs propagation
 
@@ -80,16 +79,19 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
         // //
         // data flow configuration and dataStore name must not be null.
         // //
-        String message = null;
+        
         if (configuration == null) {
-            message = "ImageMosaicAction: DataFlowConfig is null.";
+            final String message = "ImageMosaicAction: DataFlowConfig is null.";
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, message);
+            throw new IllegalStateException(message);
         } else if ((configuration.getGeoserverURL() == null)) {
-            message = "GeoServerURL is null.";
+            final String message = "GeoServerURL is null.";
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, message);
+            throw new IllegalStateException(message);
         } else if ("".equals(configuration.getGeoserverURL())) {
-            message = "GeoServerURL is empty.";
-        }
-
-        if (message != null) {
+            final String message = "GeoServerURL is empty.";
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.log(Level.SEVERE, message);
             throw new IllegalStateException(message);
@@ -112,29 +114,6 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                 throw new IllegalArgumentException(
                         "ImageMosaicAction: Wrong number of elements for this action: "
                                 + events.size());
-
-            // data flow configuration must not be null.
-            String message = null; // message should ever be null!
-            if (configuration == null) {
-                message = "ImageMosaicAction: DataFlowConfig is null.";
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, message);
-                throw new IllegalStateException(message);
-            }
-
-            // working dir
-            final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
-                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-            if ((workingDir == null)) {
-                message = "ImageMosaicAction: GeoServer working Dir is null.";
-            } else if (!workingDir.exists() || !workingDir.isDirectory()) {
-                message = "ImageMosaicAction: GeoServer working Dir does not exist.";
-            }
-            if (message != null) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, message);
-                throw new IllegalStateException(message);
-            }
 
             /*
              * If here: we can execute the action
@@ -212,7 +191,8 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                          */
                         baseDir = cmd.getBaseDir();
 
-                        mosaicDescriptor = ImageMosaicGranulesDescriptor.buildDescriptor(cmd, configuration);
+                        mosaicDescriptor = ImageMosaicGranulesDescriptor.buildDescriptor(cmd,
+                                configuration);
 
                         if (mosaicDescriptor == null) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
@@ -241,12 +221,14 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                             throw pce;
                         } catch (IOException ioe) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
-                                LOGGER.warning("ImageMosaicAction: " + ioe.getLocalizedMessage());
+                                LOGGER.log(Level.WARNING,
+                                        "ImageMosaicAction: " + ioe.getLocalizedMessage(), ioe);
                             }
                             continue;
                         } catch (TransformerException te) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
-                                LOGGER.warning("ImageMosaicAction: " + te.getLocalizedMessage());
+                                LOGGER.log(Level.WARNING,
+                                        "ImageMosaicAction: " + te.getLocalizedMessage(), te);
                             }
                             continue;
                         }
@@ -285,7 +267,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                                         if (LOGGER.isLoggable(Level.WARNING))
                                             LOGGER.warning("ImageMosaicAction: Unexpected not existent baseDir for this layer '"
                                                     + baseDir.getAbsolutePath()
-                                                    + "'. If you want to build a new layer try using an "
+                                                    + "'.\n If you want to build a new layer try using an "
                                                     + "existent or writeable baseDir and append a list of file to use to the addFile list.");
                                         continue;
                                     }
@@ -293,7 +275,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                                     if (LOGGER.isLoggable(Level.WARNING))
                                         LOGGER.warning("ImageMosaicAction: Unexpected not existent baseDir for this layer '"
                                                 + baseDir.getAbsolutePath()
-                                                + "'. If you want to build a new layer try using an "
+                                                + "'.\n If you want to build a new layer try using an "
                                                 + "existent or writeable baseDir and append a list of file to use to the addFile list.");
                                     continue;
                                 }
@@ -307,10 +289,11 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                                     // preventing overwrite)
                                     List<File> addedFiles = Path.copyListFileToNFS(
                                             cmd.getAddFiles(), cmd.getBaseDir(), true, WAIT);
-                                    if (addedFiles.size() == 0) {
+                                    if (addedFiles == null || addedFiles.size() == 0) {
                                         // no file where transfer to the destination dir
                                         if (LOGGER.isLoggable(Level.WARNING))
-                                            LOGGER.warning("ImageMosaicAction: no file were transfer to the destination dir, check your command.");
+                                            LOGGER.warning("ImageMosaicAction: no file were transfer to the destination dir,"
+                                                    + " check your command.");
                                         continue;
                                     }
                                     // files are now into the baseDir and layer do not exists so
@@ -355,9 +338,8 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                                 try {
                                     dataStoreProp = ImageMosaicProperties.getProperty(datastore);
                                 } catch (UnsatisfiedLinkError ule) {
-                                    throw new IllegalArgumentException(
-                                            "Unable to 'ImageMosaicProperties::getProperty()': "
-                                                    + ule.getLocalizedMessage());
+                                    // unrecoverable error
+                                    throw ule;
                                 }
 
                                 /**
@@ -378,36 +360,36 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                                 try {
                                     mosaicProp = ImageMosaicProperties.getProperty(mosaicPropFile);
                                 } catch (UnsatisfiedLinkError ule) {
-                                    throw new IllegalArgumentException(
-                                            "Unable to 'ImageMosaicProperties::getProperty()': "
-                                                    + ule.getLocalizedMessage());
+                                    // unrecoverable error
+                                    throw ule;
                                 }
-                                
+
                                 // update
-                                if (ImageMosaicUpdater.updateDataStore(mosaicProp, dataStoreProp,mosaicDescriptor, cmd)) {
+                                if (ImageMosaicUpdater.updateDataStore(mosaicProp, dataStoreProp,
+                                        mosaicDescriptor, cmd)) {
                                     // SUCCESS update the store
                                     if (LOGGER.isLoggable(Level.INFO)) {
-                                        LOGGER.info("ImageMosaicAction: reloading GeoServer Catalog!");
+                                        LOGGER.info("ImageMosaicAction: reset GeoServer Cache");
                                     }
-//                                    // reloading GeoServer Catalog
-//                                    if (ImageMosaicREST.reloadCatalog(configuration)){
-//                                        // SUCCESS update the Catalog
-//                                        if (LOGGER.isLoggable(Level.INFO)) {
-//                                            LOGGER.info("ImageMosaicAction: reloading GeoServer Catalog!");
-//                                        }
-//                                    }
-//                                    else
-//                                    {
-//                                        if (LOGGER.isLoggable(Level.WARNING)) {
-//                                            LOGGER.warning("ImageMosaicAction: GeoServer Catalog reloading failed.");
-//                                        }
-//                                        continue;
-//                                    }
-                                }
-                                else { 
+                                    // clear GeoServer cached readers
+                                    if (ImageMosaicREST.resetGeoserver(
+                                            configuration.getGeoserverURL(),
+                                            configuration.getGeoserverUID(),
+                                            configuration.getGeoserverPWD())) {
+                                        // SUCCESS update the Catalog
+                                        if (LOGGER.isLoggable(Level.INFO)) {
+                                            LOGGER.info("ImageMosaicAction: reset DONE");
+                                        }
+                                    } else {
+                                        if (LOGGER.isLoggable(Level.WARNING)) {
+                                            LOGGER.warning("ImageMosaicAction: GeoServer failed to reset cached readers.");
+                                        }
+                                        continue;
+                                    }
+                                } else {
                                     if (LOGGER.isLoggable(Level.WARNING)) {
                                         LOGGER.warning("ImageMosaicAction: The following command FAILED:\n"
-                                                + cmd.toString()+"\n");
+                                                + cmd.toString() + "\n");
                                     }
                                     continue;
                                 }
@@ -435,7 +417,8 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                          */
                         baseDir = input;
 
-                        mosaicDescriptor = ImageMosaicGranulesDescriptor.buildDescriptor(baseDir, configuration);
+                        mosaicDescriptor = ImageMosaicGranulesDescriptor.buildDescriptor(baseDir,
+                                configuration);
 
                         if (mosaicDescriptor == null) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
@@ -461,12 +444,14 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements Ac
                             throw pce;
                         } catch (IOException ioe) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
-                                LOGGER.warning("ImageMosaicAction: " + ioe.getLocalizedMessage());
+                                LOGGER.log(Level.WARNING,
+                                        "ImageMosaicAction: " + ioe.getLocalizedMessage(), ioe);
                             }
                             continue;
                         } catch (TransformerException te) {
                             if (LOGGER.isLoggable(Level.WARNING)) {
-                                LOGGER.warning("ImageMosaicAction: " + te.getLocalizedMessage());
+                                LOGGER.log(Level.WARNING,
+                                        "ImageMosaicAction: " + te.getLocalizedMessage(), te);
                             }
                             continue;
                         }

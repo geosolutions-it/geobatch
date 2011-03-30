@@ -22,11 +22,15 @@
 
 package it.geosolutions.geobatch.imagemosaic;
 
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
+import java.io.File;
 import java.util.EventObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Comments here ...
@@ -37,16 +41,54 @@ import java.util.EventObject;
  */
 public abstract class ImageMosaicService<T extends EventObject, C extends ActionConfiguration>
         extends BaseService implements ActionService<T, C> {
+    protected final static Logger LOGGER = Logger.getLogger(ImageMosaicService.class.toString());
 
     public ImageMosaicService(String id, String name, String description) {
         super(id, name, description);
     }
 
-//    public ImageMosaicService() {
-//        super(true);
-//    }
+    // public ImageMosaicService() {
+    // super(true);
+    // }
 
     public boolean canCreateAction(C configuration) {
+        // data flow configuration must not be null.
+
+        if (configuration == null) {
+            final String message = "ImageMosaicService::canCreateAction():  Cannot create the ImageMosaicAction:  Configuration is null.";
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, message);
+            return false;
+        }
+
+        try {
+            // absolutize working dir
+            final String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd != null) {
+                configuration.setWorkingDirectory(wd);
+            } else {
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(
+                            Level.SEVERE,
+                            "ImageMosaicService::canCreateAction(): "
+                                    + "unable to create action, it's not possible to get an absolute working dir.");
+            }
+        } catch (Throwable e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            return false;
+        }
+
+        final File workingDir = new File(configuration.getWorkingDirectory());
+
+        if (!workingDir.exists() || !workingDir.isDirectory()) {
+            final String message = "ImageMosaicService::canCreateAction(): Cannot create the ImageMosaicAction: "
+                    + "GeoServer working Dir does not exist.";
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, message);
+            return false;
+        }
+
         return true;
     }
 
