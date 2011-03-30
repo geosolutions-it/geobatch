@@ -140,7 +140,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     public ThreadPoolExecutor getExecutor() {
         return executor;
     }
-    
+
     /**
      * @param configuration
      *            the fileBasedFlowConfiguration to use in initialization
@@ -169,21 +169,22 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         String baseDir = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
 
         if (baseDir == null)
-            throw new NullPointerException("FileBasedFlowManager:initialize(): Base Working dir is null");
+            throw new NullPointerException(
+                    "FileBasedFlowManager:initialize(): Base Working dir is null");
 
         this.workingDirectory = Path.findLocation(configuration.getWorkingDirectory(), new File(
                 baseDir));
 
         if (workingDirectory == null)
-            throw new IllegalArgumentException(
-                    new StringBuilder("FileBasedFlowManager:initialize(): Working dir is invalid: ")
-                    .append('>').append(baseDir).append("< ").append('>')
+            throw new IllegalArgumentException(new StringBuilder(
+                    "FileBasedFlowManager:initialize(): Working dir is invalid: ").append('>')
+                    .append(baseDir).append("< ").append('>')
                     .append(configuration.getWorkingDirectory()).append("< ").toString());
-        
+
         if (!workingDirectory.canWrite() || !workingDirectory.isDirectory())
-            throw new IllegalArgumentException(
-                    new StringBuilder("FileBasedFlowManager:initialize(): Working dir is invalid: ")
-                    .append('>').append(baseDir).append("< ").append('>')
+            throw new IllegalArgumentException(new StringBuilder(
+                    "FileBasedFlowManager:initialize(): Working dir is invalid: ").append('>')
+                    .append(baseDir).append("< ").append('>')
                     .append(configuration.getWorkingDirectory()).append("< ").toString());
 
         this.autorun = configuration.isAutorun();
@@ -198,13 +199,14 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                 .getKeepAliveTime() : 15;
 
         final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueSize);
-        
+
         this.executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAlive,
                 TimeUnit.SECONDS, queue);
 
         if (this.autorun) {
             if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("FileBasedFlowManagerinitialize(): Automatic Flow Startup for '" + getName() + "'");
+                LOGGER.info("FileBasedFlowManagerinitialize(): Automatic Flow Startup for '"
+                        + getName() + "'");
             this.resume();
         }
     }
@@ -241,13 +243,15 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      */
     public void dispose(FileBasedEventConsumer fbec) {
         if (!eventConsumers.contains(fbec)) {
-            throw new IllegalArgumentException("FileBasedFlowManager:dispose(): This flow is not managing " + fbec);
+            throw new IllegalArgumentException(
+                    "FileBasedFlowManager:dispose(): This flow is not managing " + fbec);
         }
 
         if (fbec.getStatus() != EventConsumerStatus.COMPLETED
                 && fbec.getStatus() != EventConsumerStatus.FAILED) {
             if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("FileBasedFlowManager:dispose(): Disposing uncompleted consumer " + fbec);
+                LOGGER.warning("FileBasedFlowManager:dispose(): Disposing uncompleted consumer "
+                        + fbec);
         }
 
         synchronized (eventConsumers) {
@@ -290,8 +294,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                         break;
                     }
                 } catch (InterruptedException e) {
-                    String message="FileBasedFlowManager:run(): Error on dispatcher initialization: "
-                        + e.getLocalizedMessage();
+                    final String message = "FileBasedFlowManager:run(): Error on dispatcher initialization: "
+                            + e.getLocalizedMessage();
                     LOGGER.severe(message);
                     throw new RuntimeException(message);
                 }
@@ -313,13 +317,12 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                             try {
                                 createGenerator();
                             } catch (Throwable t) {
-                                String message="FileBasedFlowManager:run(): Error on FS-Monitor initialization: "
-                                    + t.getLocalizedMessage();
-                                LOGGER.log(Level.SEVERE,message, t);
+                                String message = "FileBasedFlowManager:run(): Error on FS-Monitor initialization: "
+                                        + t.getLocalizedMessage();
+                                LOGGER.log(Level.SEVERE, message, t);
                                 throw new RuntimeException(message);
                             }
-                        }
-                        else {
+                        } else {
                             eventGenerator.start();
                         }
                     }
@@ -330,7 +333,10 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                         break;
                     }
                 } catch (InterruptedException e) {
-                    LOGGER.severe("FileBasedFlowManager:run(): FlowManager cycle exception: " + e.getLocalizedMessage());
+                    LOGGER.log(
+                            Level.SEVERE,
+                            "FileBasedFlowManager:run(): FlowManager cycle exception: "
+                                    + e.getLocalizedMessage(), e);
                     throw new RuntimeException(e);
                 }
             }
@@ -342,22 +348,24 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                 .getEventGeneratorConfiguration();
         final String serviceID = generatorConfig.getServiceID();
         if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("EventGeneratorCreationServiceID: " + serviceID);
+            LOGGER.info("FileBasedFlowManager:createGenerator(): EventGeneratorCreationServiceID: "
+                    + serviceID);
         final EventGeneratorService<FileSystemEvent, EventGeneratorConfiguration> generatorService = CatalogHolder
                 .getCatalog().getResource(serviceID, EventGeneratorService.class);
         if (generatorService != null) {
             if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("EventGeneratorService found");
+                LOGGER.info("FileBasedFlowManager:createGenerator(): EventGeneratorService found");
             eventGenerator = generatorService.createEventGenerator(generatorConfig);
             if (eventGenerator != null) {
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("FileSystemEventGenerator created");
+                    LOGGER.info("FileBasedFlowManager:createGenerator(): FileSystemEventGenerator created");
                 eventGenerator.addListener(new GeneratorListener());
                 eventGenerator.start();
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("FileSystemEventGenerator started");
+                    LOGGER.info("FileBasedFlowManager:createGenerator(): FileSystemEventGenerator started");
             } else {
-                throw new RuntimeException("FileBasedFlowManager:initialize(): Error on EventGenerator creations");
+                throw new RuntimeException(
+                        "FileBasedFlowManager:createGenerator(): Error on EventGenerator creations");
             }
         }
         // LOGGER.info("EventGeneratorCreationEnd");
@@ -369,17 +377,23 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @see it.geosolutions.geobatch.catalog.FlowManager#start()
      */
     public synchronized void resume() {
+
         if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("FileBasedFlowManager: Resuming: " + this.getId());
+            LOGGER.info("FileBasedFlowManager::resume(): RESUMING ->" + this.getId());
 
         if (!started) {
             executor.execute(this);
             this.started = true;
             this.paused = false;
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("FileBasedFlowManager::resume(): STARTED ->" + this.getId());
         } else if (!isRunning()) {
             this.paused = false;
             this.notify();
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("FileBasedFlowManager::resume(): RESUMED ->" + this.getId());
         }
+
     }
 
     /**
@@ -393,13 +407,12 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      */
     public synchronized boolean pause() {
         if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("FileBasedFlowManager: Pausing: " + this.getId());
+            LOGGER.info("FileBasedFlowManager::pause(): PAUSING -> " + this.getId());
 
         if (isRunning()) {
             this.paused = true;
             this.notify();
         }
-
         return true;
     }
 
@@ -553,8 +566,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                     + " is not in an EXECUTING state.");
 
         if (!eventConsumers.contains(consumer))
-            throw new IllegalArgumentException("FileBasedFlowManager:execute(): Consumer " + consumer
-                    + " is not handled by the current flowmanager.");
+            throw new IllegalArgumentException("FileBasedFlowManager:execute(): Consumer "
+                    + consumer + " is not handled by the current flowmanager.");
         try {
             return this.executor.submit(consumer);
         } catch (Throwable t) {
@@ -614,7 +627,8 @@ final class EventDispatcher extends Thread {
      * Default Constructor
      */
     public EventDispatcher(FileBasedFlowManager fm, BlockingQueue<FileSystemEvent> eventMailBox) {
-        super(new StringBuilder("FileBasedFlowManager:EventDispatcher: EventDispatcherThread-").append(fm.getId()).toString());
+        super(new StringBuilder("FileBasedFlowManager:EventDispatcher: EventDispatcherThread-")
+                .append(fm.getId()).toString());
 
         this.eventMailBox = eventMailBox;
         this.fm = fm;
@@ -657,7 +671,8 @@ final class EventDispatcher extends Thread {
                 }
 
                 if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine("FileBasedFlowManager:EventDispatcher:run() processing incoming event " + event);
+                    LOGGER.fine("FileBasedFlowManager:EventDispatcher:run() processing incoming event "
+                            + event);
 
                 // //
                 // is there any BaseEventConsumer waiting for this particular
@@ -668,7 +683,8 @@ final class EventDispatcher extends Thread {
                 for (FileBasedEventConsumer consumer : fm.getEventConsumers()) {
 
                     if (LOGGER.isLoggable(Level.FINE))
-                        LOGGER.fine("FileBasedFlowManager:EventDispatcher:run() Checking consumer " + consumer + " for " + event);
+                        LOGGER.fine("FileBasedFlowManager:EventDispatcher:run() Checking consumer "
+                                + consumer + " for " + event);
 
                     if (consumer.consume(event)) {
                         // //
@@ -678,14 +694,15 @@ final class EventDispatcher extends Thread {
                         // //
                         if (consumer.getStatus() == EventConsumerStatus.EXECUTING) {
                             if (LOGGER.isLoggable(Level.FINE))
-                                LOGGER.fine("FileBasedFlowManager:EventDispatcher:run()"+ 
-                                        event + " was the last needed event for " + consumer);
+                                LOGGER.fine("FileBasedFlowManager:EventDispatcher:run()" + event
+                                        + " was the last needed event for " + consumer);
 
                             // are we executing? If we are, let's trigger a
                             // thread!
                             fm.execute(consumer);
                         } else if (LOGGER.isLoggable(Level.FINE))
-                            LOGGER.fine("FileBasedFlowManager:EventDispatcher:run()"+ event + " was consumed by " + consumer);
+                            LOGGER.fine("FileBasedFlowManager:EventDispatcher:run()" + event
+                                    + " was consumed by " + consumer);
 
                         // event served
                         eventServed = true;
@@ -716,13 +733,13 @@ final class EventDispatcher extends Thread {
                         // //
                         if (brandNewConsumer.getStatus() != EventConsumerStatus.EXECUTING) {
                             if (LOGGER.isLoggable(Level.FINE))
-                                LOGGER.fine("FileBasedFlowManager:EventDispatcher:run()"+brandNewConsumer 
-                                        + " created on event " + event);
+                                LOGGER.fine("FileBasedFlowManager:EventDispatcher:run()"
+                                        + brandNewConsumer + " created on event " + event);
                             fm.add(brandNewConsumer);
                         } else {
                             if (LOGGER.isLoggable(Level.FINE))
-                                LOGGER.fine("FileBasedFlowManager:EventDispatcher:run()"+event
-                                        + " was the only needed event for "+ brandNewConsumer);
+                                LOGGER.fine("FileBasedFlowManager:EventDispatcher:run()" + event
+                                        + " was the only needed event for " + brandNewConsumer);
 
                             fm.add(brandNewConsumer);
                             // etj: shouldn't we call
@@ -733,15 +750,17 @@ final class EventDispatcher extends Thread {
 
                         eventServed = true;
                     } else
-                        LOGGER.warning("FileBasedFlowManager:EventDispatcher:run() No consumer could serve " + 
-                                event + " (neither "+ brandNewConsumer + " could)");
+                        LOGGER.warning("FileBasedFlowManager:EventDispatcher:run() No consumer could serve "
+                                + event + " (neither " + brandNewConsumer + " could)");
                 }
             }
         } catch (InterruptedException e) { // may be thrown by the "stop" button
             // on web interface
-            LOGGER.log(Level.SEVERE,"FileBasedFlowManager:EventDispatcher:run(): "+e.getLocalizedMessage(), e);
+            LOGGER.log(Level.SEVERE,
+                    "FileBasedFlowManager:EventDispatcher:run(): " + e.getLocalizedMessage(), e);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE,"FileBasedFlowManager:EventDispatcher:run(): "+e.getLocalizedMessage(), e);
+            LOGGER.log(Level.SEVERE,
+                    "FileBasedFlowManager:EventDispatcher:run(): " + e.getLocalizedMessage(), e);
         }
 
     }

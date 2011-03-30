@@ -216,7 +216,7 @@ public class Path {
         if (!file.exists() || !file.canRead() || !file.isFile())
             throw new IllegalStateException("Source is not in a legal state.");
 
-        Object obj=new Object();
+        Object obj = new Object();
         FileGarbageCollector.getFileCleaningTracker().track(file, obj);
         return obj;
     }
@@ -337,16 +337,17 @@ public class Path {
     public static File copyFileToNFS(File source, File dest, boolean overwrite, final int seconds) {
         if (source != null && dest != null) {
             if (dest.exists()) {
-                if (!overwrite) {   
+                if (!overwrite) {
                     if (LOGGER.isLoggable(Level.WARNING))
                         LOGGER.warning("Path:copyFileToNFS(): failed to propagate file to: \'"
                                 + dest.getAbsolutePath()
-                                + "\' destination exists! (overwrite is set to \'" + overwrite + "\').");
+                                + "\' destination exists! (overwrite is set to \'" + overwrite
+                                + "\').");
                     return null;
                 }
             }
             return copyFileToNFS(source, dest, seconds);
-            
+
         } else {
             // NullPointerException - if source or destination is null
             if (LOGGER.isLoggable(Level.SEVERE))
@@ -453,6 +454,10 @@ public class Path {
                     if (dest != null) {
                         ret.add(dest);
                     }
+                } else {
+                    if (LOGGER.isLoggable(Level.WARNING))
+                        LOGGER.warning("Path:copyListFileToNFS() : + SKIPPING file:\n"
+                                + file.getAbsolutePath()+"\nUnable to copy a not existent file.");
                 }
             }
         }
@@ -472,12 +477,15 @@ public class Path {
             final boolean withTime) {
         final SimpleDateFormat SDF = withTime ? new SimpleDateFormat("yyyy_MM_dd_hhmmsss")
                 : new SimpleDateFormat("yyyy_MM_dd");
-        final String newPath = (new StringBuffer(destDir.getAbsolutePath().trim()).append(
-                File.separatorChar).append(SDF.format(new Date())).append("_")
+        final String newPath = (new StringBuffer(destDir.getAbsolutePath().trim())
+                .append(File.separatorChar).append(SDF.format(new Date())).append("_")
                 .append(inputFileName)).toString();
         File dir = new File(newPath);
-        if (!dir.exists())
-            dir.mkdir();
+        if (!dir.exists()){
+            if (!dir.mkdirs()){
+                return null;
+            }   
+        }
         return dir;
     }
 

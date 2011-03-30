@@ -419,7 +419,7 @@ public class GeoServerRESTHelper {
                 // returnedLayerName[0]=name;
                 if (LOGGER.isLoggable(Level.FINE))
                     LOGGER.log(Level.FINE, "HTTP CREATED: " + response);
-                else
+                else if (LOGGER.isLoggable(Level.INFO))
                     LOGGER.info("HTTP CREATED: " + name);
                 res = true;
             } else {
@@ -461,7 +461,7 @@ public class GeoServerRESTHelper {
     //
     // ////////////////////////////////////////////////////////////////////////
 
-    private static String extractName(final String response) {
+    public static String extractName(final String response) {
         String name = "";
         if (response != null && response.trim().length() > 0) {
             final int indexOfNameStart = response.indexOf("<name>");
@@ -532,7 +532,7 @@ public class GeoServerRESTHelper {
      * @param is
      * @return
      */
-    private static String readIs(InputStreamReader is) {
+    public static String readIs(InputStreamReader is) {
         char[] inCh = new char[1024];
         StringBuffer input = new StringBuffer();
         int r;

@@ -44,7 +44,7 @@ public class OctaveFreeMarkerGeneratorService
     public boolean canCreateAction(final OctaveFreeMarkerConfiguration configuration)  {
         try {
             // absolutize working dir
-            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            final String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
             if (wd != null) {
                 configuration.setWorkingDirectory(wd);
                 return true;

@@ -133,6 +133,8 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
     @Override
     public ActionConfiguration clone() {
         ActionConfiguration bc = (ActionConfiguration) super.clone();
+        
+        setWorkingDirectory(bc.getWorkingDirectory());
 
         bc.listenerIds = listenerIds == null ? new ArrayList<String>() : new ArrayList<String>(
                 listenerIds);

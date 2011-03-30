@@ -309,20 +309,27 @@ public class FileBasedEventConsumer extends
             final ActionService<FileSystemEvent, ActionConfiguration> actionService = CatalogHolder
                     .getCatalog().getResource(actionServiceID, ActionService.class);
             if (actionService != null) {
-                Action<FileSystemEvent> action =null;
-                if (actionService.canCreateAction(actionConfig)){
+                Action<FileSystemEvent> action = null;
+                if (actionService.canCreateAction(actionConfig)) {
                     action = actionService.createAction(actionConfig);
                     if (action == null) {
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe("FileBasedEventConsumer::initialize(): Unable to load the action using the service "
+                                    + actionServiceID);
+                        }
                         throw new IllegalArgumentException(
                                 "FileBasedEventConsumer::initialize(): Action could not be instantiated for config "
                                         + actionConfig);
                     }
-                }
-                else
+                } else {
+                    if (LOGGER.isLoggable(Level.SEVERE)) {
+                        LOGGER.severe("FileBasedEventConsumer::initialize(): Cannot create the action using the service "
+                                + actionServiceID + " check the configuration.");
+                    }
                     throw new IllegalArgumentException(
                             "FileBasedEventConsumer::initialize(): Action could not be created for config "
                                     + actionConfig);
-                
+                }
 
                 // attach listeners to actions
                 for (ProgressListenerConfiguration plConfig : actionConfig
@@ -336,24 +343,32 @@ public class FileBasedEventConsumer extends
                                 .createProgressListener(plConfig, action);
                         action.addListener(progressListener);
                     } else {
-                        throw new IllegalArgumentException("Could not find '" + listenerServiceID
-                                + "' listener," + " declared in " + actionConfig.getId()
-                                + " action configuration," + " in " + configuration.getId()
-                                + " consumer");
+                        final String message="FileBasedEventConsumer::initialize(): Could not find '" + listenerServiceID
+                        + "' listener," + " declared in " + actionConfig.getId()
+                        + " action configuration," + " in " + configuration.getId()
+                        + " consumer";
+                        if (LOGGER.isLoggable(Level.SEVERE)) {
+                            LOGGER.severe(message);
+                        }
+                        throw new IllegalArgumentException(message);
                     }
                 }
 
                 loadedActions.add(action);
             } else {
-                throw new IllegalArgumentException("ActionService not found '" + actionServiceID
-                        + "' for ActionConfig '" + actionConfig.getName() + "'");
+                final String message="FileBasedEventConsumer::initialize(): ActionService not found '" + actionServiceID
+                + "' for ActionConfig '" + actionConfig.getName() + "'";
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.severe(message);
+                }
+                throw new IllegalArgumentException(message);
             }
         }
         super.addActions(loadedActions);
 
         if (loadedActions.isEmpty()) {
             if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(getClass().getSimpleName() + " initialized with "
+                LOGGER.info("FileBasedEventConsumer::initialize(): "+getClass().getSimpleName() + " initialized with "
                         + mandatoryRules.size() + " mandatory rules, " + optionalRules.size()
                         + " optional rules, " + loadedActions.size() + " actions");
             }
@@ -397,14 +412,14 @@ public class FileBasedEventConsumer extends
             final File currentRunDirectory = new File(this.workingDir, timeStamp);
             if (configuration.isPerformBackup() || !configuration.isPreserveInput())
                 if (!currentRunDirectory.exists() && !currentRunDirectory.mkdirs())
-                    throw new IllegalStateException("Could not create consumer backup directory!");
+                    throw new IllegalStateException("FileBasedEventConsumer::call(): Could not create consumer backup directory!");
 
             // create backup dir. Creation is deferred until first usage
             getListenerForwarder().progressing(20, "Creating backup dir");
             final File backupDirectory = new File(currentRunDirectory, "backup");
             if (configuration.isPerformBackup())
                 if (!backupDirectory.exists() && !backupDirectory.mkdirs())
-                    throw new IllegalStateException("Could not create consumer backup directory!");
+                    throw new IllegalStateException("FileBasedEventConsumer::call(): Could not create consumer backup directory!");
 
             //
             // Cycling on all the input events
@@ -413,7 +428,7 @@ public class FileBasedEventConsumer extends
             int numProcessedFiles = 0;
             for (FileSystemEvent event : this.eventsQueue) {
                 if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("FileBasedEventConsumer [" + Thread.currentThread().getName()
+                    LOGGER.info("FileBasedEventConsumer::call(): [" + Thread.currentThread().getName()
                             + "]: new element retrieved from the MailBox.");
 
                 // get info for the input file event
@@ -469,13 +484,16 @@ public class FileBasedEventConsumer extends
                         fileEventList.offer(event);
 
                     }
-
-                    LOGGER.info("FileBasedEventConsumer [" + Thread.currentThread().getName()
+                    if (LOGGER.isLoggable(Level.INFO)){
+                        LOGGER.info("FileBasedEventConsumer::call():  [" + Thread.currentThread().getName()
                             + "]: accepted file " + sourceDataFile);
+                    }
                 } else {
-                    LOGGER.severe(new StringBuilder("FileBasedEventConsumer [")
-                            .append(Thread.currentThread().getName())
-                            .append("]: could not lock file ").append(sourceDataFile).toString());
+                    if (LOGGER.isLoggable(Level.SEVERE)){
+                        LOGGER.severe(new StringBuilder("FileBasedEventConsumer::call(): [")
+                                .append(Thread.currentThread().getName())
+                                .append("]: could not lock file ").append(sourceDataFile).toString());
+                    }
 
                     // TODO: lock not acquired: what else?
                 }
@@ -487,8 +505,10 @@ public class FileBasedEventConsumer extends
             // done due to some error, set eventConsumerStatus to Finished or
             // Failure. (etj: ???)
             // //
-            LOGGER.info("FileBasedEventConsumer [" + Thread.currentThread().getName()
+            if (LOGGER.isLoggable(Level.INFO)){
+                LOGGER.info("FileBasedEventConsumer::call(): [" + Thread.currentThread().getName()
                     + "]: new element processed.");
+            }
 
             // // Finally, run the Actions on the files
             getListenerForwarder().progressing(50, "Running actions");
@@ -537,7 +557,8 @@ public class FileBasedEventConsumer extends
 
         } finally {
             getListenerForwarder().progressing(100, "Running actions");
-            LOGGER.info(Thread.currentThread().getName() + " DONE!");
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info(Thread.currentThread().getName() + " DONE!");
             this.dispose();
 
             if (jobResultSuccessful && exceptionOccurred == null)
