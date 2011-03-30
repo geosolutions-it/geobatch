@@ -75,280 +75,353 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
         super(configuration);
         this.configuration = configuration;
     }
-    
-    private File reTile(File inFile) throws IOException, IllegalArgumentException, UnsupportedOperationException{
+
+    private File reTile(File inFile) throws IOException {
         //
         // look for a valid file that we can read
         //
-        String absolutePath = null;
-        String inputFileName =null;   
-        
-        AbstractGridFormat format=null;
-        
-        absolutePath = inFile.getAbsolutePath();
-        inputFileName = FilenameUtils.getName(absolutePath);
-        
+
+        AbstractGridFormat format = null;
+        AbstractGridCoverage2DReader reader = null;
+        GridCoverage2D inCoverage = null;
+        AbstractGridCoverageWriter writer = null;
+
+        final String absolutePath = inFile.getAbsolutePath();
+        final String inputFileName = FilenameUtils.getName(absolutePath);
+
         if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("GeoTiffRetiler: is going to retile: "+inputFileName);
-        
+            LOGGER.info("GeoTiffRetiler: is going to retile: " + inputFileName);
+
         listenerForwarder.setTask("GeoTiffRetiler");
-        
-        
-            
+
         // getting a format for the given input
         format = (AbstractGridFormat) GridFormatFinder.findFormat(inFile);
-        if (format == null || ( format instanceof UnknownFormat)) {
+        if (format == null || (format instanceof UnknownFormat)) {
             throw new IllegalArgumentException(
-                    "GeoTiffRetiler: Unable to find a reader for the provided file: "+inputFileName);
+                    "GeoTiffRetiler::reTile(): Unable to find the GridFormat for the provided file: "
+                            + inputFileName);
         }
-        
-        final File tiledTiffFile = new File(configuration.getWorkingDirectory(), inputFileName + "_tiled.tif");
-        
-        if (!tiledTiffFile.createNewFile() || !tiledTiffFile.canWrite()){
-            String message="GeoTiffRetiler: Unable to write to: "+tiledTiffFile.getAbsolutePath();
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(message);
+
+        final File tiledTiffFile = new File(configuration.getWorkingDirectory(), inputFileName
+                + "_tiled.tif");
+        try {
+            if (tiledTiffFile.exists() && !tiledTiffFile.canWrite()) {
+                final String message = "GeoTiffRetiler::reTile(): Unable to over-write the temporary file called: "
+                        + tiledTiffFile.getAbsolutePath()+"\nCheck permissions.";
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.severe(message);
+                }
                 throw new IllegalArgumentException(message);
-            }   
+            } else if (!tiledTiffFile.createNewFile()) {
+                final String message = "GeoTiffRetiler::reTile(): Unable to create temporary file called: "
+                    + tiledTiffFile.getAbsolutePath();
+                if (LOGGER.isLoggable(Level.SEVERE)) {
+                    LOGGER.severe(message);
+                }
+                throw new IllegalArgumentException(message);
+            }
+
+            // /////////////////////////////////////////////////////////////////////
+            //
+            // ACQUIRING A READER
+            //
+            // /////////////////////////////////////////////////////////////////////
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info("GeoTiffRetiler: Acquiring a reader for the provided file...");
+            }
+
+            // can throw UnsupportedOperationsException
+            reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
+                    Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+            if (reader == null) {
+                final IOException ioe = new IOException(
+                        "GeoTiffRetiler::reTile(): Unable to find a reader for the provided file: "
+                                + inputFileName);
+                throw ioe;
+            }
+
+            // /////////////////////////////////////////////////////////////////////
+            //
+            // ACQUIRING A COVERAGE
+            //
+            // /////////////////////////////////////////////////////////////////////
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info("GeoTiffRetiler::reTile(): Acquiring a coverage provided file...");
+            }
+            inCoverage = (GridCoverage2D) reader.read(null);
+            if (inCoverage == null) {
+                final IOException ioe = new IOException("");
+                throw ioe;
+            }
+            // /////////////////////////////////////////////////////////////////////
+            //
+            // PREPARING A WRITE
+            //
+            // /////////////////////////////////////////////////////////////////////
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info("GeoTiffRetiler::reTile(): Writing down the file in the decoded directory...");
+            }
+            final double compressionRatio = configuration.getCompressionRatio();
+            final String compressionType = configuration.getCompressionScheme();
+
+            final GeoTiffFormat wformat = new GeoTiffFormat();
+            final GeoTiffWriteParams wp = new GeoTiffWriteParams();
+            if (!Double.isNaN(compressionRatio) && compressionType != null) {
+                wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
+                wp.setCompressionType(compressionType);
+                wp.setCompressionQuality((float) compressionRatio);
+            }
+            wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
+            wp.setTiling(configuration.getTileW(), configuration.getTileH());
+            final ParameterValueGroup wparams = wformat.getWriteParameters();
+            wparams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
+                    .setValue(wp);
+
+            // /////////////////////////////////////////////////////////////////////
+            //
+            // ACQUIRING A WRITER AND PERFORMING A WRITE
+            //
+            // /////////////////////////////////////////////////////////////////////
+            writer = (AbstractGridCoverageWriter) new GeoTiffWriter(tiledTiffFile);
+            writer.write(inCoverage,
+                    (GeneralParameterValue[]) wparams.values()
+                            .toArray(new GeneralParameterValue[1]));
+
+        } finally {
+            // /////////////////////////////////////////////////////////////////////
+            //
+            // PERFORMING FINAL CLEAN UP AFTER THE WRITE PROCESS
+            //
+            // /////////////////////////////////////////////////////////////////////
+            if (reader != null) {
+                try {
+                    reader.dispose();
+                } catch (Exception e) {
+                    if (LOGGER.isLoggable(Level.WARNING))
+                        LOGGER.log(Level.WARNING,
+                                "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                }
+
+            }
+
+            if (writer != null) {
+                try {
+                    writer.dispose();
+                } catch (Exception e) {
+                    if (LOGGER.isLoggable(Level.WARNING))
+                        LOGGER.log(Level.WARNING,
+                                "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                }
+
+            }
+
+            if (inCoverage != null) {
+                final RenderedOp initImage = (RenderedOp) inCoverage.getRenderedImage();
+                ImageReader r = (ImageReader) initImage
+                        .getProperty(ImageReadDescriptor.PROPERTY_NAME_IMAGE_READER);
+                try {
+                    r.dispose();
+                } catch (Exception e) {
+                    if (LOGGER.isLoggable(Level.WARNING))
+                        LOGGER.log(Level.WARNING,
+                                "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                }
+
+                Object input = r.getInput();
+                if (input instanceof ImageInputStream) {
+
+                    try {
+                        ((ImageInputStream) input).close();
+                    } catch (Exception e) {
+                        if (LOGGER.isLoggable(Level.WARNING))
+                            LOGGER.log(Level.WARNING,
+                                    "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                    }
+                }
+
+                try {
+                    initImage.dispose();
+                } catch (Exception e) {
+                    if (LOGGER.isLoggable(Level.WARNING))
+                        LOGGER.log(Level.WARNING,
+                                "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                }
+
+            }
         }
 
-        // /////////////////////////////////////////////////////////////////////
-        //
-        // ACQUIRING A READER
-        //
-        // /////////////////////////////////////////////////////////////////////
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info("GeoTiffRetiler: Acquiring a reader for the provided file...");
+        String extension = FilenameUtils.getExtension(inputFileName);
+        if (!extension.contains("tif")) {
+            extension = "tif";
         }
-        
-        // can throw UnsupportedOperationsException
-        final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) format
-                .getReader(inFile, new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER,Boolean.TRUE));
-        
-        // /////////////////////////////////////////////////////////////////////
-        //
-        // ACQUIRING A COVERAGE
-        //
-        // /////////////////////////////////////////////////////////////////////
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info("GeoTiffRetiler: Acquiring a coverage provided file...");
-        }
-        final GridCoverage2D inCoverage = (GridCoverage2D) reader.read(null);
-
-        // /////////////////////////////////////////////////////////////////////
-        //
-        // PREPARING A WRITE
-        //
-        // /////////////////////////////////////////////////////////////////////
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.info("GeoTiffRetiler: Writing down the file in the decoded directory...");
-        }
-        final double compressionRatio = configuration.getCompressionRatio();
-        final String compressionType = configuration.getCompressionScheme();
-
-        final GeoTiffFormat wformat = new GeoTiffFormat();
-        final GeoTiffWriteParams wp = new GeoTiffWriteParams();
-        if (!Double.isNaN(compressionRatio) && compressionType != null) {
-            wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
-            wp.setCompressionType(compressionType);
-            wp.setCompressionQuality((float) compressionRatio);
-        }
-        wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
-        wp.setTiling(configuration.getTileW(), configuration.getTileH());
-        final ParameterValueGroup wparams = wformat.getWriteParameters();
-        wparams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
-                .setValue(wp);
-
-        // /////////////////////////////////////////////////////////////////////
-        //
-        // ACQUIRING A WRITER AND PERFORMING A WRITE
-        //
-        // /////////////////////////////////////////////////////////////////////
-        final AbstractGridCoverageWriter writer = (AbstractGridCoverageWriter) new GeoTiffWriter(tiledTiffFile);
-        writer.write(inCoverage,
-                (GeneralParameterValue[]) wparams.values().toArray(new GeneralParameterValue[1]));
-
-        // /////////////////////////////////////////////////////////////////////
-        //
-        // PERFORMING FINAL CLEAN UP AFTER THE WRITE PROCESS
-        //
-        // /////////////////////////////////////////////////////////////////////
-        final RenderedOp initImage = (RenderedOp) inCoverage.getRenderedImage();
-        ImageReader r = (ImageReader) initImage
-                .getProperty(ImageReadDescriptor.PROPERTY_NAME_IMAGE_READER);
-        r.dispose();
-        Object input = r.getInput();
-
-        if (input instanceof ImageInputStream) {
-            ((ImageInputStream) input).close();
-        }
-        initImage.dispose();
-        writer.dispose();
-        reader.dispose();
-
-        String extension=FilenameUtils.getExtension(inputFileName);
-        if (!extension.contains("tif")){
-            extension="tif";
-        }
-        final String outputFileName=
-            FilenameUtils.getFullPath(absolutePath)+FilenameUtils.getBaseName(inputFileName)+"."+extension;
-        final File outputFile=new File(outputFileName);
+        final String outputFileName = FilenameUtils.getFullPath(absolutePath)
+                + FilenameUtils.getBaseName(inputFileName) + "." + extension;
+        final File outputFile = new File(outputFileName);
         // do we need to remove the input?
         FileUtils.copyFile(tiledTiffFile, outputFile);
         FileUtils.deleteQuietly(tiledTiffFile);
-        
+
         return outputFile;
     }
-    
+
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         try {
-            
+
             if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
-                throw new ActionException(this,"GeoTiffRetiler: DataFlowConfig is null.");
+                final String message = "GeoTiffRetiler::execute(): DataFlowConfig is null.";
+                if (LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE, message);
+                throw new ActionException(this, message);
             }
-            if (events.size()==0){
-                throw new ActionException(this, "GeoTiffRetiler: Unable to process an empty events queue.");
+            if (events.size() == 0) {
+                throw new ActionException(this,
+                        "GeoTiffRetiler::execute(): Unable to process an empty events queue.");
             }
-            
+
             if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("GeoTiffRetiler: Starting with processing...");
-            
+                LOGGER.info("GeoTiffRetiler::execute(): Starting with processing...");
+
             listenerForwarder.started();
 
             // The return
-            Queue<FileSystemEvent> ret=new LinkedList<FileSystemEvent>();
-            
-            while (events.size()>0){
-                
-                FileSystemEvent event=events.remove();
-                
-                File eventFile=event.getSource();
-                FileSystemEventType eventType=event.getEventType();
-                
-                if (eventFile.exists() && eventFile.canRead() && eventFile.canWrite()){
+            Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
+
+            while (events.size() > 0) {
+
+                FileSystemEvent event = events.remove();
+
+                File eventFile = event.getSource();
+                FileSystemEventType eventType = event.getEventType();
+
+                if (eventFile.exists() && eventFile.canRead() && eventFile.canWrite()) {
                     /*
-                     *  If here:
-                     *          we can start retiler actions on the incoming file event
+                     * If here: we can start retiler actions on the incoming file event
                      */
-                    
-                    if (eventFile.isDirectory()){
-                        
-                        File [] fileList=eventFile.listFiles();
-                        int size=fileList.length;
-                        for (int progress=0; progress<size; progress++){
-                            
+
+                    if (eventFile.isDirectory()) {
+
+                        File[] fileList = eventFile.listFiles();
+                        int size = fileList.length;
+                        for (int progress = 0; progress < size; progress++) {
+
                             File inFile = fileList[progress];
-                            
+
                             try {
-                                
+
                                 reTile(inFile);
-                                
+
                                 // set the output
                                 /*
-                                 * COMMENTED OUT 21 Feb 2011:
-                                 * simone: If the event represents a Dir we have to return
-                                 * a Dir. Do not matter failing files.
+                                 * COMMENTED OUT 21 Feb 2011: simone: If the event represents a Dir
+                                 * we have to return a Dir. Do not matter failing files.
                                  * 
-                                 * calo: we may also want to check if 
-                                 * a file is already tiled!
+                                 * calo: we may also want to check if a file is already tiled!
                                  * 
-                                File outputFile=reTile(inFile);  
-                                if (outputFile!=null){
-                                    //TODO: here we use the same event for each file in the
-                                    ret.add(new FileSystemEvent(outputFile, eventType));
-                                }
+                                 * File outputFile=reTile(inFile); if (outputFile!=null){ //TODO:
+                                 * here we use the same event for each file in the ret.add(new
+                                 * FileSystemEvent(outputFile, eventType)); }
                                  */
-                            }
-                            catch (UnsupportedOperationException uoe){
+                            } catch (UnsupportedOperationException uoe) {
                                 listenerForwarder.failed(uoe);
                                 if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.warning(uoe.getLocalizedMessage());
-                            }
-                            catch (IOException ioe){
+                                    LOGGER.log(
+                                            Level.WARNING,
+                                            "GeoTiffRetiler::execute(): "
+                                                    + uoe.getLocalizedMessage(), uoe);
+                                continue;
+                            } catch (IOException ioe) {
                                 listenerForwarder.failed(ioe);
                                 if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.warning(ioe.getLocalizedMessage());
-                            }
-                            catch (IllegalArgumentException iae){
+                                    LOGGER.log(
+                                            Level.WARNING,
+                                            "GeoTiffRetiler::execute(): "
+                                                    + ioe.getLocalizedMessage(), ioe);
+                                continue;
+                            } catch (IllegalArgumentException iae) {
                                 listenerForwarder.failed(iae);
                                 if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.warning(iae.getLocalizedMessage());
-                            }
-                            finally {
-                                listenerForwarder.setProgress((progress*100)/((size!=0)?size:1));
+                                    LOGGER.log(
+                                            Level.WARNING,
+                                            "GeoTiffRetiler::execute(): "
+                                                    + iae.getLocalizedMessage(), iae);
+                                continue;
+                            } finally {
+                                listenerForwarder.setProgress((progress * 100)
+                                        / ((size != 0) ? size : 1));
                                 listenerForwarder.progressing();
                             }
                         }
 
                         // add the directory to the return
                         ret.add(event);
-                    }
-                    else {
+                    } else {
                         // file is not a directory
-                        File outFile=null;
+                        File outFile = null;
                         try {
-                            outFile=reTile(eventFile);
-                            if (outFile!=null){
+                            outFile = reTile(eventFile);
+                            if (outFile != null) {
                                 listenerForwarder.setProgress(100);
                                 ret.add(new FileSystemEvent(outFile, eventType));
-                            }
-                            else {
+                            } else {
                                 ret.add(new FileSystemEvent(eventFile, eventType));
-                                throw new NullPointerException("GeoTiffRetiler: retiler failed to return the output file"); 
+                                throw new NullPointerException(
+                                        "GeoTiffRetiler: retiler failed to return the output file");
                             }
-                        }
-                        catch (UnsupportedOperationException uoe){
+                        } catch (UnsupportedOperationException uoe) {
                             listenerForwarder.failed(uoe);
                             if (LOGGER.isLoggable(Level.WARNING))
-                                LOGGER.warning(uoe.getLocalizedMessage());
-                        }
-                        catch (IOException ioe){
+                                LOGGER.log(Level.WARNING,
+                                        "GeoTiffRetiler::execute(): " + uoe.getLocalizedMessage(),
+                                        uoe);
+                            continue;
+                        } catch (IOException ioe) {
                             listenerForwarder.failed(ioe);
                             if (LOGGER.isLoggable(Level.WARNING))
-                                LOGGER.warning(ioe.getLocalizedMessage());
-                        }
-                        catch (IllegalArgumentException iae){
+                                LOGGER.log(Level.WARNING,
+                                        "GeoTiffRetiler::execute(): " + ioe.getLocalizedMessage(),
+                                        ioe);
+                            continue;
+                        } catch (IllegalArgumentException iae) {
                             listenerForwarder.failed(iae);
                             if (LOGGER.isLoggable(Level.WARNING))
-                                LOGGER.warning(iae.getLocalizedMessage());
-                        }
-                        finally{
-                            listenerForwarder.setProgress((100)/((events.size()!=0)?events.size():1));
+                                LOGGER.log(Level.WARNING,
+                                        "GeoTiffRetiler::execute(): " + iae.getLocalizedMessage(),
+                                        iae);
+                            continue;
+                        } finally {
+                            listenerForwarder.setProgress((100) / ((events.size() != 0) ? events
+                                    .size() : 1));
                             listenerForwarder.progressing();
                         }
                     }
-                }
-                else {
-                    String message="GeoTiffRetiler: The passed file event refers to a not existent " +
-                    "or not readable/writeable file! File: "+eventFile.getAbsolutePath();
+                } else {
+                    final String message = "GeoTiffRetiler::execute(): The passed file event refers to a not existent "
+                            + "or not readable/writeable file! File: "
+                            + eventFile.getAbsolutePath();
                     if (LOGGER.isLoggable(Level.WARNING))
                         LOGGER.warning(message);
-                    listenerForwarder.failed(new IllegalArgumentException(message));
+                    final IllegalArgumentException iae = new IllegalArgumentException(message);
+                    listenerForwarder.failed(iae);
                 }
             } // endwile
             listenerForwarder.completed();
-            
+
             // return
-            if (ret.size()>0){
+            if (ret.size() > 0) {
                 events.clear();
                 return ret;
-            }
-            else {
+            } else {
                 /*
-                 * If here:
-                 *      we got an error
-                 *      no file are set to be returned
-                 *      the input queue is returned
+                 * If here: we got an error no file are set to be returned the input queue is
+                 * returned
                  */
                 return events;
             }
-        }
-        catch (Exception t) {
-            String message="GeoTiffRetiler: "+t.getLocalizedMessage();
+        } catch (Exception t) {
+            String message = "GeoTiffRetiler::execute(): " + t.getLocalizedMessage();
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.log(Level.SEVERE, message, t);
-            ActionException exc=new ActionException(this, message, t);
+            final ActionException exc = new ActionException(this, message, t);
             listenerForwarder.failed(exc);
             throw exc;
         }

@@ -73,7 +73,7 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
         try {
             // looking for file
             if (events.size() == 0)
-                throw new IllegalArgumentException("GeoTiffOverviewsEmbedder: Wrong number of elements for this action: "
+                throw new IllegalArgumentException("GeoTiffOverviewsEmbedder::execute(): Wrong number of elements for this action: "
                         + events.size());
 
             listenerForwarder.setTask("config");
@@ -85,7 +85,7 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
             //
             // //
             if (configuration == null) {
-                String message="GeoTiffOverviewsEmbedder: DataFlowConfig is null.";
+                final String message="GeoTiffOverviewsEmbedder::execute(): DataFlowConfig is null.";
                 if (LOGGER.isLoggable(Level.SEVERE))
                     LOGGER.severe(message);
                 throw new IllegalStateException(message);
@@ -96,13 +96,13 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
             // check the configuration and prepare the overviews embedder
             //
             // //
-            int downsampleStep = configuration.getDownsampleStep();
+            final int downsampleStep = configuration.getDownsampleStep();
             if (downsampleStep <= 0)
-                throw new IllegalArgumentException("GeoTiffOverviewsEmbedder: Illegal downsampleStep: " + downsampleStep);
+                throw new IllegalArgumentException("GeoTiffOverviewsEmbedder::execute(): Illegal downsampleStep: " + downsampleStep);
             
             int numberOfSteps = configuration.getNumSteps();
             if (numberOfSteps <= 0)
-                throw new IllegalArgumentException("GeoTiffOverviewsEmbedder: Illegal numberOfSteps: " + numberOfSteps);
+                throw new IllegalArgumentException("GeoTiffOverviewsEmbedder::execute(): Illegal numberOfSteps: " + numberOfSteps);
 
             final OverviewsEmbedder oe = new OverviewsEmbedder();
             oe.setDownsampleStep(downsampleStep);
@@ -111,18 +111,23 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
             oe.setScaleAlgorithm(configuration.getScaleAlgorithm());
             oe.setTileHeight(configuration.getTileH());
             oe.setTileWidth(configuration.getTileW());
+            
+            /*
+             * TODO check this is formally wrong!
+             * this should be done into the configuration.
+             */
             // add logger/listener
             if (configuration.isLogNotification())
                 oe.addProcessingEventListener(new ProcessingEventListener() {
 
                     public void exceptionOccurred(ExceptionEvent event) {
                         if (LOGGER.isLoggable(Level.INFO))
-                            LOGGER.info(event.getMessage());
+                            LOGGER.info("GeoTiffOverviewsEmbedder::execute(): "+event.getMessage());
                     }
 
                     public void getNotification(ProcessingEvent event) {
                         if (LOGGER.isLoggable(Level.INFO))
-                            LOGGER.info(event.getMessage());
+                            LOGGER.info("GeoTiffOverviewsEmbedder::execute(): "+event.getMessage());
                         listenerForwarder.progressing((float) event.getPercentage(),event.getMessage());
                     }
                 });
@@ -135,10 +140,9 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                 // run
                 listenerForwarder.progressing(0, "Embedding overviews");
                 
-                FileSystemEvent event=events.remove();
+                final FileSystemEvent event=events.remove();
                 
-                File eventFile=event.getSource();
-                FileSystemEventType eventType=event.getEventType();
+                final File eventFile=event.getSource();
                 
                 if (eventFile.exists() && eventFile.canRead() && eventFile.canWrite()){
                     /*
@@ -148,13 +152,13 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                     
                     if (eventFile.isDirectory()){
                         
-                        FileFilter filter=new RegexFileFilter(".+\\.[tT][iI][fF]([fF]?)");
-                        Collector collector=new Collector(filter);
-                        List<File> fileList=collector.collect(eventFile);
+                        final FileFilter filter=new RegexFileFilter(".+\\.[tT][iI][fF]([fF]?)");
+                        final Collector collector=new Collector(filter);
+                        final List<File> fileList=collector.collect(eventFile);
                         int size=fileList.size();
                         for (int progress=0; progress<size; progress++){
                             
-                            File inFile = fileList.get(progress);
+                            final File inFile = fileList.get(progress);
                             
                             try {
                                 oe.setSourcePath(inFile.getAbsolutePath());
@@ -163,12 +167,12 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                             catch (UnsupportedOperationException uoe){
                                 listenerForwarder.failed(uoe);
                                 if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.warning(uoe.getLocalizedMessage());
+                                    LOGGER.log(Level.WARNING,"GeoTiffOverviewsEmbedder::execute(): "+uoe.getLocalizedMessage(),uoe);
                             }
                             catch (IllegalArgumentException iae){
                                 listenerForwarder.failed(iae);
                                 if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.warning(iae.getLocalizedMessage());
+                                    LOGGER.log(Level.WARNING,"GeoTiffOverviewsEmbedder::execute(): "+iae.getLocalizedMessage(),iae);
                             }
                             finally {
                                 listenerForwarder.setProgress((progress*100)/((size!=0)?size:1));
@@ -185,12 +189,12 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                         catch (UnsupportedOperationException uoe){
                             listenerForwarder.failed(uoe);
                             if (LOGGER.isLoggable(Level.WARNING))
-                                LOGGER.warning(uoe.getLocalizedMessage());
+                                LOGGER.log(Level.WARNING,"GeoTiffOverviewsEmbedder::execute(): "+uoe.getLocalizedMessage(),uoe);
                         }
                         catch (IllegalArgumentException iae){
                             listenerForwarder.failed(iae);
                             if (LOGGER.isLoggable(Level.WARNING))
-                                LOGGER.warning(iae.getLocalizedMessage());
+                                LOGGER.log(Level.WARNING,"GeoTiffOverviewsEmbedder::execute(): "+iae.getLocalizedMessage(),iae);
                         }
                         finally {
                             listenerForwarder.setProgress(100/((events.size()!=0)?events.size():1));
@@ -201,7 +205,7 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                     ret.add(event);
                 }
                 else {
-                    String message="GeoTiffRetiler: The passed file event refers to a not existent " +
+                    final String message="GeoTiffOverviewsEmbedder::execute(): The passed file event refers to a not existent " +
                     "or not readable/writeable file! File: "+eventFile.getAbsolutePath();
                     if (LOGGER.isLoggable(Level.WARNING))
                         LOGGER.warning(message);
@@ -226,10 +230,10 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
             }
         }
         catch (Exception t) {
-            String message="GeoTiffRetiler: "+t.getLocalizedMessage();
+            final String message="GeoTiffOverviewsEmbedder::execute(): "+t.getLocalizedMessage();
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.log(Level.SEVERE, message, t);
-            ActionException exc=new ActionException(this, message, t);
+            final ActionException exc=new ActionException(this, message, t);
             listenerForwarder.failed(exc);
             throw exc;
         }
