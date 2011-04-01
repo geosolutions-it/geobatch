@@ -188,7 +188,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         final int maximumPoolSize = configuration.getMaximumPoolSize() > 0 ? configuration
                 .getMaximumPoolSize() : 30;
         final long keepAlive = configuration.getKeepAliveTime() > 0 ? configuration
-                .getKeepAliveTime() : 15;
+                .getKeepAliveTime() : 150; //seconds
 
         final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueSize);
 
