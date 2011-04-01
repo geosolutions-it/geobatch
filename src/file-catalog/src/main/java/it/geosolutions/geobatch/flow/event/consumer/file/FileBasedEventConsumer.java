@@ -95,20 +95,13 @@ public class FileBasedEventConsumer extends
      */
     private final List<FileEventRule> optionalRules = new ArrayList<FileEventRule>();
 
-    /**
-     * @uml.property name="workingDir"
-     */
+    
     private File workingDir;
 
-    /**
-     * @uml.property name="configuration"
-     * @uml.associationEnd
-     */
+    
     private FileBasedEventConsumerConfiguration configuration;
 
-    /**
-     * @uml.property name="canceled"
-     */
+    
     private volatile boolean canceled;
 
     /**

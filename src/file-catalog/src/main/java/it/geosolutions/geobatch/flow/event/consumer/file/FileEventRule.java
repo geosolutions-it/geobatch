@@ -30,29 +30,19 @@ import java.util.List;
 
 public class FileEventRule extends BaseConfiguration implements Cloneable {
 
-    /**
-     * @uml.property  name="regex"
-     */
+    
     private String regex;
 
-    /**
-     * @uml.property  name="originalOccurrencies"
-     */
+    
     private int originalOccurrencies;
 
-    /**
-     * @uml.property  name="actualOccurrencies"
-     */
+    
     private int actualOccurrencies;
 
-    /**
-     * @uml.property  name="optional"
-     */
+    
     private boolean optional;
 
-    /**
-     * @uml.property  name="acceptableNotifications"
-     */
+    
     private List<FileSystemEventType> acceptableNotifications;
 
 //    public FileEventRule() {

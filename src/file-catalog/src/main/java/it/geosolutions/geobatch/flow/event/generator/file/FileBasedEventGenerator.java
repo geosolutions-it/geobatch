@@ -73,10 +73,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      */
     private boolean keepFiles;
 
-    /**
-     * @uml.property  name="acceptedEvent"
-     * @uml.associationEnd  
-     */
+    
     private FileSystemEventType acceptedEvent;
 
     /**
@@ -85,16 +82,10 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      */
     private String wildCard;
 
-    /**
-     * @uml.property  name="listeners"
-     * @uml.associationEnd  multiplicity="(1 1)"
-     */
+    
     private EventListenerList listeners = new EventListenerList();
 
-    /**
-     * @uml.property  name="fsListener"
-     * @uml.associationEnd  
-     */
+    
     private FileSystemListener fsListener; // a GBEventListener thread instance
     
     /**
@@ -201,10 +192,17 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
         if (this.watchDirectory.isDirectory() && this.watchDirectory.exists() && this.watchDirectory.canRead()) {
             
             final Map<String, Object> params = new HashMap<String, Object>();
+            
+            // the watched directory
             params.put(FileSystemMonitorSPI.SOURCE, watchDirectory);
+            
+            // the wildcard to filter file (DirectoryWalker)
             if (this.wildCard != null)
                 params.put(FileSystemMonitorSPI.WILDCARD, wildCard);
+            
+            // the event type to filter
             params.put(FileSystemMonitorSPI.TYPE, acceptedEvent);
+            
             this.fsMonitor = FSMSPIFinder.getMonitor(params, osType,type);
 
             this.fsMonitor.addListener(fsListener);

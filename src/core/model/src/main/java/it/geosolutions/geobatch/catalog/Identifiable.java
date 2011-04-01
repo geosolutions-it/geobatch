@@ -27,9 +27,7 @@ package it.geosolutions.geobatch.catalog;
  */
 public interface Identifiable {
 
-    /**
-     * @uml.property  name="description"
-     */
+    
     public abstract String getDescription();
 
     /**
@@ -56,9 +54,7 @@ public interface Identifiable {
      */
     public abstract void setName(String name);
 
-    /**
-     * @uml.property  name="description"
-     */
+    
     public abstract void setDescription(String description);
 
 }

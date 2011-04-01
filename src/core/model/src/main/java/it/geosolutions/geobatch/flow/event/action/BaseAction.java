@@ -43,15 +43,10 @@ public abstract class BaseAction<XEO extends EventObject> extends BaseIdentifiab
 
     private final static Logger LOGGER = Logger.getLogger(BaseAction.class.toString());
 
-    /**
-     * @uml.property  name="listenerForwarder"
-     * @uml.associationEnd  multiplicity="(1 1)"
-     */
+    
     final protected ProgressListenerForwarder listenerForwarder;
 
-    /**
-     * @uml.property  name="failIgnored"
-     */
+    
     protected boolean failIgnored = false;
     
     public BaseAction(String id, String name, String description) {

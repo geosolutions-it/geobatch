@@ -26,9 +26,7 @@ import it.geosolutions.geobatch.catalog.Service;
 
 public class BaseService extends BaseResource implements Service {
 
-    /**
-     * @uml.property  name="available"
-     */
+    
     private boolean available;
 
 //    public BaseService() {

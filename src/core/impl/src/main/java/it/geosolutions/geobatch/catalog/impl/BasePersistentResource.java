@@ -43,21 +43,13 @@ public abstract class BasePersistentResource<C extends Configuration> extends Ba
 
     private final static Logger LOGGER = Logger.getLogger(BasePersistentResource.class.toString());
 
-    /**
-     * @uml.property name="configuration"
-     * @uml.associationEnd
-     */
+    
     private C configuration;
 
-    /**
-     * @uml.property name="dao"
-     * @uml.associationEnd
-     */
+    
     private DAO dao;
 
-    /**
-     * @uml.property name="removed"
-     */
+    
     private boolean removed;
 
     public C getConfiguration() {

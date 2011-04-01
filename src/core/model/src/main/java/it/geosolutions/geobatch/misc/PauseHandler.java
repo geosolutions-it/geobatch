@@ -14,19 +14,13 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class PauseHandler {
 
-    /**
-     * @uml.property  name="lock"
-     */
+    
     final Lock lock = new ReentrantLock();
 
-    /**
-     * @uml.property  name="pause"
-     */
+    
     final Condition pause = lock.newCondition();
 
-    /**
-     * @uml.property  name="isPaused"
-     */
+    
     private boolean isPaused;
 
     // private AtomicBoolean isPaused = new AtomicBoolean(false);

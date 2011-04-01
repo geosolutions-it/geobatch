@@ -22,9 +22,8 @@
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemListener;
-import it.geosolutions.geobatch.tools.file.IOUtils;
-
 import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -39,93 +38,101 @@ import javax.swing.event.EventListenerList;
  * 
  * @author (v1) Simone Giannecchini
  * @author (v2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  */
 public class GBEventNotifier implements Runnable {
 
     /** Default Logger **/
     private final static Logger LOGGER = Logger.getLogger(GBEventNotifier.class.toString());
-    
-    /**
-     * @uml.property  name="lockWaitThreshold"
-     */
-    private long lockWaitThreshold = IOUtils.MAX_WAITING_TIME_FOR_LOCK;
 
-    /**
-     * @uml.property  name="lockInputFiles"
-     */
-    private boolean lockInputFiles;
     
+    // private long lockWaitThreshold = IOUtils.MAX_WAITING_TIME_FOR_LOCK;
+
+    
+    // private boolean lockInputFiles;
+
     public final static ExecutorService threadPool = Executors.newCachedThreadPool();
+
     
-    /**
-     * @uml.property  name="listeners"
-     * @uml.associationEnd  multiplicity="(1 1)"
-     */
-    private EventListenerList listeners =null;
-    
+    private EventListenerList listeners = null;
+
     // queue of events to pass to the listener list
     /**
-     * @uml.property  name="eventQueue"
-     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.filesystemmonitor.monitor.FileSystemEvent"
+     * @uml.property name="eventQueue"
+     * @uml.associationEnd multiplicity="(0 -1)"
+     *                     elementType="it.geosolutions.filesystemmonitor.monitor.FileSystemEvent"
      */
-    private BlockingQueue<FileSystemEvent> eventQueue=new ArrayBlockingQueue<FileSystemEvent>(100); //TODO change
+    private BlockingQueue<FileSystemEvent> eventQueue = new ArrayBlockingQueue<FileSystemEvent>(100); // TODO
+                                                                                                      // change
+
     // the stop element
-    private static FileSystemEvent STOP=new FileSystemEvent(new File(""), null);
-    
+    private static FileSystemEvent STOP = new FileSystemEvent(new File(""), null);
+
     // set true to end the thread
-    /**
-     * @uml.property  name="stop"
-     */
-    private boolean stop;
     
+    private boolean stop;
+
+    // used to filter the the type of events to be notified
+    private FileSystemEventType eventFilter;
+
     /**
-     * used to check the status of this event consumer
-     * if this method return true thread is stopped and 
+     * used to check the status of this event consumer if this method return true thread is stopped
+     * and
+     * 
      * @return
      */
-    public boolean isStopped(){
+    public boolean isStopped() {
         return stop;
     }
-    
+
     /**
      * used to start the consumer
      */
-    public void start(){
-        if (this.isStopped()){
+    public void start() {
+        if (this.isStopped()) {
             if (LOGGER.isLoggable(Level.INFO))
                 LOGGER.info("Starting the event consumer...");
             threadPool.execute(this);
-            stop=false;
-        }
-        else
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("The event consumer is already started");
+            stop = false;
+        } else if (LOGGER.isLoggable(Level.WARNING))
+            LOGGER.warning("The event consumer is already started");
     }
 
     /**
      * used to stop the event consumer
      */
-    public void stop(){
+    public void stop() {
         try {
             eventQueue.put(STOP);
         } catch (InterruptedException e) {
             if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning(e.getLocalizedMessage());
-        }
-        finally {
-            stop=true;
+                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+        } finally {
+            stop = true;
         }
     }
-    
+
     /**
      * Default Constructor
      */
-    public GBEventNotifier(boolean lockInputFiles, long maxLockingWait, EventListenerList list){
-        this.lockInputFiles=lockInputFiles;
-        this.lockWaitThreshold=maxLockingWait;
-        this.stop=true; //still not started
-        this.listeners=list;
+    // public GBEventNotifier(boolean lockInputFiles, long maxLockingWait, EventListenerList list){
+    // // this.lockInputFiles=lockInputFiles;
+    // // this.lockWaitThreshold=maxLockingWait;
+    // this.stop=true; //still not started
+    // this.listeners=list;
+    // // handle the event
+    // this.start();
+    // }
+
+    /**
+     * Default Constructor
+     */
+    public GBEventNotifier(EventListenerList list, FileSystemEventType type) {
+        // this.lockInputFiles=lockInputFiles;
+        // this.lockWaitThreshold=maxLockingWait;
+        this.stop = true; // still not started
+        this.listeners = list;
+        this.eventFilter = type;
         // handle the event
         this.start();
     }
@@ -133,42 +140,28 @@ public class GBEventNotifier implements Runnable {
     // ----------------------------------------------- UTILITY METHODS
 
     /**
-     * Sending an event by putting it inside the Swing dispatching thred. This might be useless
-     * in command line app but it is important in GUi apps. I might change this though.
+     * Sending an event by putting it inside the Swing dispatching thred. This might be useless in
+     * command line app but it is important in GUi apps. I might change this though.
      * 
      * @param event
      */
     private void notifyAll(final FileSystemEvent event) {
-        
-/*
-        FileSystemEventType notified= event.getNotification();
-        
-        if (// if file event is NOT FILE_REMOVED and NOT DIR_REMOVED
-            (notified!= FileSystemEventType.DIR_REMOVED &&
-                notified!=FileSystemEventType.FILE_REMOVED) ){
-            // deal with locking of input files
-            if (lockInputFiles) {
-                final File source = event.getSource();
-                try {
-                    //java.nio.channels.FileLock
-                    //org.apache.commons.io.FileUtils.
-                    IOUtils.acquireLock(this, source, lockWaitThreshold);
-                } catch (InterruptedException e) {
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-                    return;
-                } catch (IOException e) {
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-                    return;
-                }
-            }
-        }
-*/
-        final Object[] listenersArray = listeners.getListenerList();//return a not-null array
+
         /*
-         * Process the listeners last to first, 
-         * notifying those that are interested in this event
+         * FileSystemEventType notified= event.getNotification();
+         * 
+         * if (// if file event is NOT FILE_REMOVED and NOT DIR_REMOVED (notified!=
+         * FileSystemEventType.DIR_REMOVED && notified!=FileSystemEventType.FILE_REMOVED) ){ // deal
+         * with locking of input files if (lockInputFiles) { final File source = event.getSource();
+         * try { //java.nio.channels.FileLock //org.apache.commons.io.FileUtils.
+         * IOUtils.acquireLock(this, source, lockWaitThreshold); } catch (InterruptedException e) {
+         * if (LOGGER.isLoggable(Level.SEVERE)) LOGGER.log(Level.SEVERE, e.getLocalizedMessage(),
+         * e); return; } catch (IOException e) { if (LOGGER.isLoggable(Level.SEVERE))
+         * LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e); return; } } }
+         */
+        final Object[] listenersArray = listeners.getListenerList();// return a not-null array
+        /*
+         * Process the listeners last to first, notifying those that are interested in this event
          */
         final int length = listenersArray.length;
         for (int i = length - 2; i >= 0; i -= 2) {
@@ -180,37 +173,49 @@ public class GBEventNotifier implements Runnable {
     }
 
     /**
-     * Use this method to add events to this consumer
+     * /**
+     * Use this method to add events to this consumer the event will be filtered using the
+     * FileSystemEventType specified into the EventGeneratorConfiguration.
      * 
-     * @param o - The FileSystemEvent to add
+     * @param file
+     * @param type
      */
-    public void newEvent(FileSystemEvent o){
-        if (!eventQueue.offer(o))
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("GBEventNotifier: Unable to offer a new object to the eventQueue");
+    protected void notifyEvent(final File file, final FileSystemEventType type) {
+        if (type == eventFilter) {
+            if (!eventQueue.offer(new FileSystemEvent(file, type)))
+                if (LOGGER.isLoggable(Level.WARNING))
+                    LOGGER.warning("GBEventNotifier: Unable to offer a new object to the eventQueue");
+        } else if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("GBEventNotifier: FILTERED -> event of type \'" + type.toString()
+                    + "\' on file \'" + file.getAbsolutePath() + "\'");
+        }
     }
-    
+
     /**
      * Never call this method manually
      */
     public void run() {
         try {
-            FileSystemEvent event=null;
-            while ((event=eventQueue.take())!=STOP && !stop){
+            FileSystemEvent event = null;
+            while ((event = eventQueue.take()) != STOP && !stop) {
                 // send event
                 notifyAll(event);
             }
             // clean
             eventQueue.clear();
-        }
-        catch (UnsupportedOperationException uoe){
+        } catch (InterruptedException uoe) {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, new StringBuilder("Caught an UnsupportedOperationException: ")
-                    .append(uoe.getLocalizedMessage()).toString(), uoe);
+                LOGGER.log(Level.SEVERE, "GBEventNotifier: " + uoe.getLocalizedMessage(), uoe);
+        } catch (UnsupportedOperationException uoe) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(
+                        Level.SEVERE,
+                        "GBEventNotifier: Caught an UnsupportedOperationException: "
+                                + uoe.getLocalizedMessage(), uoe);
         } catch (Throwable e) {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, new StringBuilder("Caught an IOException: ")
-                    .append(e.getLocalizedMessage()).toString(), e);
+                LOGGER.log(Level.SEVERE,
+                        "GBEventNotifier: Caught an IOException: " + e.getLocalizedMessage(), e);
         }
 
     }

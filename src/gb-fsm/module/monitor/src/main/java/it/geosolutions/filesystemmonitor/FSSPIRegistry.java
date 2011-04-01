@@ -53,10 +53,7 @@ class FSSPIRegistry implements ApplicationContextAware, InitializingBean {
 
     private final static Logger LOGGER = Logger.getLogger(FSSPIRegistry.class.toString());
 
-    /**
-     * @uml.property  name="applicationContext"
-     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI"
-     */
+    
     private ApplicationContext applicationContext = null;
 
     /**

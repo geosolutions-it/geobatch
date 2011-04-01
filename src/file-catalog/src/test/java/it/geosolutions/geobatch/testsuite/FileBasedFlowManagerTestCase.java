@@ -52,15 +52,10 @@ public class FileBasedFlowManagerTestCase {
     private final static Logger LOGGER = Logger.getLogger(FileBasedFlowManagerTestCase.class
             .toString());
 
-    /**
-     * @uml.property  name="context"
-     * @uml.associationEnd  
-     */
+    
     private ClassPathXmlApplicationContext context;
 
-    /**
-     * @uml.property  name="caughtEvent"
-     */
+    
     private boolean caughtEvent;
 
     /**

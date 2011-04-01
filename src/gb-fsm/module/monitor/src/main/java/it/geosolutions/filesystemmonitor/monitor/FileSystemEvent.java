@@ -35,14 +35,10 @@ public class FileSystemEvent extends EventObject {
      */
     private static final long serialVersionUID = 7915893220009824087L;
 
-    /**
-     * @uml.property  name="eventType"
-     */
+    
     private final FileSystemEventType eventType;
 
-    /**
-     * @uml.property  name="timestamp"
-     */
+    
     private final long timestamp;
 
     public FileSystemEvent(File source, FileSystemEventType eventType) {

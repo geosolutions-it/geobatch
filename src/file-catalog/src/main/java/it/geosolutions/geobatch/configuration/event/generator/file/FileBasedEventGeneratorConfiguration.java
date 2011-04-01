@@ -51,10 +51,7 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
     private FileSystemEventType eventType;
     
 
-    /**
-     * @uml.property  name="monitorType"
-     * @uml.associationEnd  
-     */
+    
     private FileSystemMonitorType monitorType;
 
     /**

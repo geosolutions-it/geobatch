@@ -52,15 +52,10 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
 //    private static Counter counter = new Counter();
 
-    /**
-     * @uml.property name="creationTimestamp"
-     */
+    
     private final Calendar creationTimestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-    /**
-     * @uml.property name="eventConsumerStatus"
-     * @uml.associationEnd multiplicity="(1 1)"
-     */
+    
     private volatile EventConsumerStatus eventConsumerStatus;
 
     /**
@@ -70,15 +65,10 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
      */
     protected final Queue<XEO> eventsQueue = new LinkedList<XEO>();
 
-    /**
-     * @uml.property name="actions"
-     */
+    
     protected final List<Action<XEO>> actions = new ArrayList<Action<XEO>>();
 
-    /**
-     * @uml.property name="currentAction"
-     * @uml.associationEnd
-     */
+    
     protected volatile Action<XEO> currentAction = null;
 
     // private EventListenerList listeners = new EventListenerList();
@@ -89,10 +79,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
      */
     final protected EventConsumerListenerForwarder listenerForwarder;
 
-    /**
-     * @uml.property name="pauseHandler"
-     * @uml.associationEnd multiplicity="(1 1)"
-     */
+    
     protected PauseHandler pauseHandler = new PauseHandler(false);
 
 //    public BaseEventConsumer() {

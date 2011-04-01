@@ -15,9 +15,7 @@ public class LoggingProgressListenerConfiguration extends ProgressListenerConfig
         super(id, name, description);
     }
 
-    /**
-     * @uml.property  name="loggerName"
-     */
+    
     protected String loggerName;
 
     /**

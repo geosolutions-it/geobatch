@@ -19,7 +19,7 @@
 		<!-- when dir is modified -->
 		<eventType>FILE_ADDED</eventType>
 		<monitorType>DEFAULT</monitorType>
-		<id>id</id>
+		<id>EMSAEventGenerator_id</id>
     <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>EMSAGroovyFlow</name>
@@ -42,7 +42,7 @@
 			<originalOccurrencies>1</originalOccurrencies>
 			<regex>PackagesReady.txt</regex>
 			<id>EMSAGroovyFlow_rule_1</id>
-			<description>description</description>
+			<description>EMSA rule</description>
 			<name>EMSAGroovyFlow</name>
 		</FileEventRule>
 <!--Actions List-->

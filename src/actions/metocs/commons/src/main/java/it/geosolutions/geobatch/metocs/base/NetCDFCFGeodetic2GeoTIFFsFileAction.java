@@ -513,8 +513,8 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
                         File command = null;
                         try {
                             command = ImageMosaicCommand.serialize(cmd, workingDir + File.separator
-                                    + varName + "_" + Thread.currentThread().getId() + "_"
-                                    + IMAGEMOSAIC_COMMAND_FILE);
+                                    + inputFileName + "_" + varName + "_"
+                                    + Thread.currentThread().getId() + IMAGEMOSAIC_COMMAND_FILE);
 
                         } catch (Throwable t) {
                             if (LOGGER.isLoggable(Level.SEVERE))

@@ -26,14 +26,10 @@ import it.geosolutions.geobatch.catalog.Configuration;
 
 public class BaseConfiguration extends BaseIdentifiable implements Configuration, Cloneable {
 
-    /**
-     * @uml.property  name="serviceID"
-     */
+    
     private String serviceID;
 
-    /**
-     * @uml.property  name="dirty"
-     */
+    
     private boolean dirty;
 
 //    public BaseConfiguration() {

@@ -31,25 +31,16 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
  */
 public abstract class ProgressListener implements IProgressListener {
 
-    /**
-     * @uml.property  name="source"
-     */
+    
     private Identifiable owner;
     
-    /**
-     * @uml.property name="configuration"
-     * @uml.associationEnd
-     */
+    
     protected ProgressListenerConfiguration configuration;
 
-    /**
-     * @uml.property name="currentTask"
-     */
+    
     private String currentTask = "TASK";
 
-    /**
-     * @uml.property name="progress"
-     */
+    
     private float progress = 0;
 
     protected ProgressListener(Identifiable caller) {

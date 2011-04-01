@@ -41,10 +41,7 @@ import java.util.TimeZone;
  */
 public class CumulatingProgressListener extends ProgressListener {
 
-    /**
-     * @uml.property  name="messages"
-     * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.String"
-     */
+    
     private List<String> messages = new ArrayList<String>();
 
     private static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");

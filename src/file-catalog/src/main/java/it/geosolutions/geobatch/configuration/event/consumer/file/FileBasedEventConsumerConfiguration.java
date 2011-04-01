@@ -68,9 +68,7 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      */
     private boolean performBackup;
 
-    /**
-     * @uml.property  name="preserveInput"
-     */
+    
     private boolean preserveInput;
 
     /**

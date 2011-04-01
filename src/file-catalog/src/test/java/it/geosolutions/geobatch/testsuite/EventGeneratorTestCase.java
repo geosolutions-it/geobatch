@@ -48,15 +48,10 @@ public class EventGeneratorTestCase implements FlowEventListener<FileSystemEvent
 
     private final static Logger LOGGER = Logger.getLogger(EventGeneratorTestCase.class.toString());
 
-    /**
-     * @uml.property  name="context"
-     * @uml.associationEnd  
-     */
+    
     private ClassPathXmlApplicationContext context;
 
-    /**
-     * @uml.property  name="caughtEvent"
-     */
+    
     private boolean caughtEvent;
 
     /**

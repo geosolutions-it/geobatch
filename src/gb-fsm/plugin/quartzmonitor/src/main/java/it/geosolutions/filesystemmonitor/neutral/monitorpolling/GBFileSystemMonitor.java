@@ -21,8 +21,10 @@
  */
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemListener;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitor;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -45,70 +47,44 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
     private final static Logger LOGGER = Logger.getLogger(GBFileSystemMonitor.class.toString());
 
     // JOB
-    /**
-     * @uml.property  name="jobName"
-     */
+    
     String jobName=null;
-    /**
-     * @uml.property  name="jobGroup"
-     */
+    
     String jobGroup=null;
-    /**
-     * @uml.property  name="jobDetail"
-     * @uml.associationEnd  multiplicity="(1 1)"
-     */
+    
     JobDetail jobDetail=null;
-    /**
-     * @uml.property  name="jdm"
-     * @uml.associationEnd  multiplicity="(1 1)"
-     */
+    
     JobDataMap jdm=null;
     
     // TRIGGER
-    /**
-     * @uml.property  name="trigger"
-     * @uml.associationEnd  multiplicity="(1 1)"
-     */
+    
     Trigger trigger=null;
-    /**
-     * @uml.property  name="triggerName"
-     */
+    
     String triggerName=null;
     
     /*
      * status (means isPaused() or !isPaused()
      * do not regard start() or stop() status
      */
-    /**
-     * @uml.property  name="pause"
-     */
+    
     private boolean pause=false;
     
     // the stateful GBFileSystemMonitorJob job
-    /**
-     * @uml.property  name="fsm"
-     * @uml.associationEnd  multiplicity="(1 1)"
-     */
-    private GBFileSystemMonitorJob fsm=null;
+    
+//    private GBFileSystemMonitorJob fsm=null;
 
     /*
      * The list of reveled events. this is used to detach
      * the poller thread job from the event delivery 
      */
-    /**
-     * @uml.property  name="listeners"
-     * @uml.associationEnd  
-     */
+    
     private EventListenerList listeners = new EventListenerList();
     
     /*
      *  the event consumer, this is used
      *  to pass events to the events listener list
      */
-    /**
-     * @uml.property  name="consumer"
-     * @uml.associationEnd  
-     */
+    
     GBEventNotifier consumer=null;
     
     /*
@@ -149,15 +125,15 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
                         sched=StdSchedulerFactory.getDefaultScheduler();
                     } catch (SchedulerException e) {
                         if (LOGGER.isLoggable(Level.SEVERE))
-                            LOGGER.severe(e.getMessage());
+                            LOGGER.log(Level.SEVERE,e.getMessage(),e);
                         throw e;
                     }
                 }
             }
             catch(InterruptedException ie){
                 if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("SchedulerException - unable to get the lock on the scheduler.\n"
-                            +ie.getLocalizedMessage());
+                    LOGGER.log(Level.SEVERE,"SchedulerException - unable to get the lock on the scheduler.\n"
+                            +ie.getLocalizedMessage(),ie);
                 throw ie;
             }
             finally{
@@ -169,12 +145,13 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
     
     public GBFileSystemMonitor(final String path,
                                 final String wildcard,
+                                final FileSystemEventType type,
                                 final long pollingInterval,
                                 final boolean lockInputFiles,
                                 final long maxLockingWait)
         throws SchedulerException, NullPointerException 
         {
-        fsm=new GBFileSystemMonitorJob();
+//        fsm=new GBFileSystemMonitorJob();
         
         /*
          * Discussed on 17 01 2011 with
@@ -206,13 +183,15 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
         
         jobDetail=new JobDetail(jobName, jobGroup, GBFileSystemMonitorJob.class);
 
-        consumer=new GBEventNotifier(lockInputFiles, maxLockingWait, listeners);
+        //consumer=new GBEventNotifier(lockInputFiles, maxLockingWait, listeners);
+        consumer=new GBEventNotifier(listeners,type);
         
         // setting the JobDataMap to initialize the job 
         jdm=jobDetail.getJobDataMap();
         if (jdm!=null){
-            jdm.put(GBFileSystemMonitorJob.ROOT_PATH_KEY, path);
-            jdm.put(GBFileSystemMonitorJob.WILDCARD_KEY, wildcard);
+            jdm.put(FileSystemMonitorSPI.SOURCE, path);
+            jdm.put(FileSystemMonitorSPI.WILDCARD, wildcard);
+            // jdm.put(FileSystemMonitorSPI.TYPE, type); // this is only used by the notifier
             jdm.put(GBFileSystemMonitorJob.WAITING_LOCK_TIME_KEY, maxLockingWait);
             jdm.put(GBFileSystemMonitorJob.EVENT_NOTIFIER_KEY, consumer);
         }
@@ -279,7 +258,7 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
                 getScheduler().getContext().put(FS_JOBS_NUM_KEY,--numJob);
             }
             else
-                throw new SchedulerException("The job is already stopped or the scheduler is down");
+                throw new SchedulerException("GBFileSystemMonitor: The job is already stopped or the scheduler is down");
         } catch (SchedulerException e) {
             if (LOGGER.isLoggable(Level.SEVERE))
                 LOGGER.severe(e.getLocalizedMessage());
@@ -298,13 +277,13 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
                 getScheduler().pauseJob(jobName, jobGroup);
             }
             else
-                throw new SchedulerException("The job is already paused or the scheduler is down");
+                throw new SchedulerException("GBFileSystemMonitor: The job is already paused or the scheduler is down");
         } catch (SchedulerException e) {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(e.getLocalizedMessage());
+                LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
         } catch (InterruptedException e) {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(e.getLocalizedMessage());
+                LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
         }
     }
 
@@ -382,10 +361,10 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
             
         } catch (SchedulerException e) {
             if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("Unable to stop the scheduler: "+e.getLocalizedMessage());
+                LOGGER.warning("GBFileSystemMonitor: Unable to stop the scheduler: "+e.getLocalizedMessage());
         } catch (InterruptedException e) {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(e.getLocalizedMessage());
+                LOGGER.log(Level.SEVERE,"GBFileSystemMonitor: "+e.getLocalizedMessage(),e);
         }
     }
 
@@ -413,11 +392,11 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
                 listeners.add(FileSystemListener.class, fileListener);
             }
             else
-                throw new NullPointerException("Unable to add a NULL listener");
+                throw new NullPointerException("GBFileSystemMonitor: Unable to add a NULL listener");
         }
         catch (Throwable t){
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("GBFileSystemMonitor: Error adding a listener.\n"+t.getLocalizedMessage());
+                LOGGER.log(Level.SEVERE,"GBFileSystemMonitor: Error adding a listener.\n"+t.getLocalizedMessage(),t);
         }
     }
     
@@ -429,8 +408,8 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
         }
         catch(Throwable t){
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("GBFileSystemMonitor: Unable to remove the listener: "+fileListener
-                        +" message:\n"+t.getLocalizedMessage());
+                LOGGER.log(Level.SEVERE,"GBFileSystemMonitor: Unable to remove the listener: "+fileListener
+                        +" message:\n"+t.getLocalizedMessage(),t);
         }
     }
 

@@ -37,16 +37,10 @@ import java.util.List;
  */
 public abstract class BaseFlowConfiguration extends BaseConfiguration implements FlowConfiguration {
 
-    /**
-     * @uml.property  name="eventGeneratorConfiguration"
-     * @uml.associationEnd  
-     */
+    
     private EventGeneratorConfiguration eventGeneratorConfiguration;
 
-    /**
-     * @uml.property  name="eventConsumerConfiguration"
-     * @uml.associationEnd  
-     */
+    
     private EventConsumerConfiguration eventConsumerConfiguration;
 
     /**
@@ -55,24 +49,16 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
      */
     private List<ProgressListenerConfiguration> progressListenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
 
-    /**
-     * @uml.property  name="corePoolSize"
-     */
+    
     private int corePoolSize;
 
-    /**
-     * @uml.property  name="maximumPoolSize"
-     */
+    
     private int maximumPoolSize;
 
-    /**
-     * @uml.property  name="keepAliveTime"
-     */
+    
     private long keepAliveTime;
 
-    /**
-     * @uml.property  name="workQueueSize"
-     */
+    
     private int workQueueSize;
 
     /**

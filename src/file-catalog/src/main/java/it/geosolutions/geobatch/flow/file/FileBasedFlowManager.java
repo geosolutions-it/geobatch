@@ -47,6 +47,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -64,14 +65,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     /** Default Logger **/
     private final static Logger LOGGER = Logger.getLogger(FlowManager.class.toString());
 
-    /**
-     * @uml.property name="autorun"
-     */
     private boolean autorun = false;
 
-    /**
-     * @uml.property name="workingDirectory"
-     */
     private File workingDirectory;
 
     /**
@@ -132,9 +127,6 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      */
     private final List<FileBasedEventConsumer> eventConsumers = new ArrayList<FileBasedEventConsumer>();
 
-    /**
-     * @uml.property name="executor"
-     */
     private ThreadPoolExecutor executor;
 
     public ThreadPoolExecutor getExecutor() {
@@ -561,16 +553,55 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      *             if the consumer is not in the {@link #eventConsumers} list of this FlowManager.
      */
     Future<Queue<FileSystemEvent>> execute(FileBasedEventConsumer consumer) {
-        if (consumer.getStatus() != EventConsumerStatus.EXECUTING)
-            throw new IllegalStateException("FileBasedFlowManager:execute(): Consumer " + consumer
-                    + " is not in an EXECUTING state.");
+        if (consumer.getStatus() != EventConsumerStatus.EXECUTING) {
+            final String message = "FileBasedFlowManager:execute(): Consumer " + consumer
+                    + " is not in an EXECUTING state.";
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, message);
+            throw new IllegalStateException(message);
+        }
 
-        if (!eventConsumers.contains(consumer))
-            throw new IllegalArgumentException("FileBasedFlowManager:execute(): Consumer "
-                    + consumer + " is not handled by the current flowmanager.");
+        if (!eventConsumers.contains(consumer)) {
+            final String message = "FileBasedFlowManager:execute(): Consumer " + consumer
+                    + " is not handled by the current flow manager.";
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, message);
+            throw new IllegalArgumentException(message);
+        }
         try {
             return this.executor.submit(consumer);
+        } catch (RejectedExecutionException r) {
+            /*
+             * + "Will be rejected when the Executor has been shut down, and also " +
+             * "when the Executor uses finite bounds for both maximum threads and " +
+             * "work queue capacity, and is saturated." +
+             * " In either case, the execute method invokes the "
+             */
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(
+                        Level.SEVERE,
+                        "FileBasedFlowManager:execute(): Unable to submit the consumer (id:"
+                                + consumer.getId() + ") to the flow manager (id:" + this.getId()
+                                + ") queue.\nMessage is:" + r.getLocalizedMessage()
+                                + "\nThread pool executor info:"
+                                + "\nMaximum allowed number of threads: "
+                                + executor.getMaximumPoolSize()
+                                + "\nWorking Queue size: "
+                                + executor.getQueue().size()
+                                + "\nWorking Queue remaining capacity: "
+                                + executor.getQueue().remainingCapacity()
+                                + "\nCurrent number of threads: " + executor.getPoolSize()
+                                + "\nApproximate number of threads that are actively executing : "
+                                + executor.getActiveCount() + "\nCore number of threads: "
+                                + executor.getCorePoolSize() + "\nKeepAliveTime [secs]: "
+                                + executor.getKeepAliveTime(TimeUnit.SECONDS), r);
+            throw new RuntimeException(r);
         } catch (Throwable t) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE,
+                        "FileBasedFlowManager:execute(): Unable to submit the consumer (id:"
+                                + consumer.getId() + ") to the flow manager (id:" + this.getId()
+                                + ") queue.\nMessage is:" + t.getLocalizedMessage(), t);
             throw new RuntimeException(t);
         }
     }
@@ -579,8 +610,18 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         try {
             eventMailBox.put(event);
         } catch (NullPointerException npe) {
-            throw new RuntimeException(npe);
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(
+                        Level.SEVERE,
+                        "FileBasedFlowManager:postEvent(): Unable to add a null event to the flow manager (id:"
+                                + this.getId() + ") eventMailBox.\nMessage is:"
+                                + npe.getLocalizedMessage(), npe);
+            throw npe;
         } catch (InterruptedException e) {
+            if (LOGGER.isLoggable(Level.SEVERE))
+                LOGGER.log(Level.SEVERE, "FileBasedFlowManager:postEvent(): Unable to add event ["
+                        + event.toString() + "] to the flow manager (id:" + this.getId()
+                        + ") eventMailBox.\nMessage is:" + e.getLocalizedMessage(), e);
             throw new RuntimeException(e);
         }
     }

@@ -37,20 +37,13 @@ import java.util.List;
  */
 public abstract class ActionConfiguration extends BaseConfiguration implements Cloneable {
 
-    /**
-     * @uml.property  name="listenerIds"
-     */
+    
     private List<String> listenerIds = null;
 
-    /**
-     * @uml.property  name="listenerConfigurations"
-     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration"
-     */
+    
     private List<ProgressListenerConfiguration> listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
 
-    /**
-     * @uml.property  name="failIgnored"
-     */
+    
     private boolean failIgnored = false;
     
     /**

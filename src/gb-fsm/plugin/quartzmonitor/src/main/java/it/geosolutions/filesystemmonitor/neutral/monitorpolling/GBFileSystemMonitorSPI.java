@@ -22,6 +22,7 @@
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
 import it.geosolutions.filesystemmonitor.OsType;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 
@@ -30,14 +31,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
     private final static Logger LOGGER = Logger.getLogger(GBFileSystemMonitorSPI.class.toString());
 
     public final static long DEFAULT_POLLING_INTERVAL = 1000; // milliseconds
+
     public final static long DEFAULT_MAX_LOOKING_INTERVAL = 10000; // milliseconds
-    
-    private final static String INTERVAL_KEY= "interval";
+
+    private final static String INTERVAL_KEY = "interval";
 
     public boolean canWatch(OsType osType) {
         return true;
@@ -57,45 +58,56 @@ public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
 
         // wildcard
         String wildcard = null;
-        try{
+
+        // event type
+        FileSystemEventType type = null;
+
+        try {
             Object element = configuration.get(INTERVAL_KEY);
             if (element != null && element.getClass().isAssignableFrom(Long.class))
                 interval = (Long) element;
-    
+
             element = configuration.get(SOURCE);
             if (element != null && element.getClass().isAssignableFrom(File.class))
                 file = (File) element;
-    
+
             element = configuration.get(WILDCARD);
             if (element != null && element.getClass().isAssignableFrom(String.class))
                 wildcard = (String) element;
-        }
-        catch (NullPointerException npe){
+
+            element = configuration.get(TYPE);
+            if (element != null && element.getClass().isAssignableFrom(FileSystemEventType.class))
+                type = (FileSystemEventType) element;
+        } catch (NullPointerException npe) {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Exception during FileSystemWatcher instantiation: "+npe.getLocalizedMessage());
+                LOGGER.log(
+                        Level.SEVERE,
+                        "Exception during FileSystemWatcher instantiation: "
+                                + npe.getLocalizedMessage(), npe);
         }
         // checks
         if (!file.exists() || !file.canRead())
             return null;
-        try{
-            if (wildcard != null){
-                if (interval!=null){
+        try {
+            if (wildcard != null) {
+                if (interval != null) {
                     if (interval != null && interval > 0)
-                        return new GBFileSystemMonitor(
-                                file.getAbsolutePath(), wildcard, interval, true, DEFAULT_MAX_LOOKING_INTERVAL);
+                        return new GBFileSystemMonitor(file.getAbsolutePath(), wildcard, type,
+                                interval, true, DEFAULT_MAX_LOOKING_INTERVAL);
                     else
-                        return new GBFileSystemMonitor(
-                                file.getAbsolutePath(), wildcard, DEFAULT_POLLING_INTERVAL, true, DEFAULT_MAX_LOOKING_INTERVAL);
-                }
-                else {
-                        return new GBFileSystemMonitor(
-                                file.getAbsolutePath(), wildcard, DEFAULT_POLLING_INTERVAL, true, DEFAULT_MAX_LOOKING_INTERVAL);
+                        return new GBFileSystemMonitor(file.getAbsolutePath(), wildcard, type,
+                                DEFAULT_POLLING_INTERVAL, true, DEFAULT_MAX_LOOKING_INTERVAL);
+                } else {
+                    return new GBFileSystemMonitor(file.getAbsolutePath(), wildcard, type,
+                            DEFAULT_POLLING_INTERVAL, true, DEFAULT_MAX_LOOKING_INTERVAL);
                 }
             }
-        }
-        catch (Exception e){
+        } catch (Throwable e) {
             if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Exception during FileSystemWatcher instantiation: "+e.getLocalizedMessage());
+                LOGGER.log(
+                        Level.SEVERE,
+                        "Exception during FileSystemWatcher instantiation: "
+                                + e.getLocalizedMessage(), e);
         }
 
         return null;
@@ -106,4 +118,3 @@ public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
     }
 
 }
-

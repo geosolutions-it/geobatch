@@ -33,47 +33,30 @@ import it.geosolutions.geobatch.flow.event.ProgressListener;
  */
 public class StatusProgressListener extends ProgressListener {
 
-    /**
-     * @uml.property  name="started"
-     */
     protected boolean started = false;
 
-    /**
-     * @uml.property  name="paused"
-     */
     protected boolean paused = false;
 
-    /**
-     * @uml.property  name="failed"
-     */
     protected boolean failed = false;
 
-    /**
-     * @uml.property  name="completed"
-     */
     protected boolean completed = false;
 
-    /**
-     * @uml.property  name="terminated"
-     */
     protected boolean terminated = false;
 
-    /**
-     * @uml.property  name="failException"
-     */
     protected Throwable failException = null;
 
-    public StatusProgressListener(StatusProgressListenerConfiguration configuration, Identifiable owner) {
-        super(configuration,owner);
+    public StatusProgressListener(StatusProgressListenerConfiguration configuration,
+            Identifiable owner) {
+        super(configuration, owner);
     }
 
     /**
      * @param source
-     * @uml.property  name="source"
+     * @uml.property name="source"
      */
-//    public void setSource(Object source) {
-//        this.source = source;
-//    }
+    // public void setSource(Object source) {
+    // this.source = source;
+    // }
 
     public void started() {
         started = true;
@@ -81,7 +64,7 @@ public class StatusProgressListener extends ProgressListener {
 
     /**
      * @return
-     * @uml.property  name="started"
+     * @uml.property name="started"
      */
     public boolean isStarted() {
         return started;
@@ -99,7 +82,7 @@ public class StatusProgressListener extends ProgressListener {
 
     /**
      * @return
-     * @uml.property  name="paused"
+     * @uml.property name="paused"
      */
     public boolean isPaused() {
         return paused;
@@ -115,7 +98,7 @@ public class StatusProgressListener extends ProgressListener {
 
     /**
      * @return
-     * @uml.property  name="completed"
+     * @uml.property name="completed"
      */
     public boolean isCompleted() {
         return completed;
@@ -128,7 +111,7 @@ public class StatusProgressListener extends ProgressListener {
 
     /**
      * @return
-     * @uml.property  name="failed"
+     * @uml.property name="failed"
      */
     public boolean isFailed() {
         return failed;
@@ -136,7 +119,7 @@ public class StatusProgressListener extends ProgressListener {
 
     /**
      * @return
-     * @uml.property  name="failException"
+     * @uml.property name="failException"
      */
     public Throwable getFailException() {
         return failException;
@@ -148,7 +131,7 @@ public class StatusProgressListener extends ProgressListener {
 
     /**
      * @return
-     * @uml.property  name="terminated"
+     * @uml.property name="terminated"
      */
     public boolean isTerminated() {
         return terminated;
@@ -157,10 +140,10 @@ public class StatusProgressListener extends ProgressListener {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder()
-//            .append("Status of ")
-//            .append(source!=null?source:"ACTION")
-//            .append('[')
-            ;
+        // .append("Status of ")
+        // .append(source!=null?source:"ACTION")
+        // .append('[')
+        ;
 
         sb.append("Last task: '").append(getTask()).append("' ");
         sb.append(" at ").append(getProgress()).append("% ");

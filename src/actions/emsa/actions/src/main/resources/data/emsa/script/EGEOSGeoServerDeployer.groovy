@@ -255,7 +255,10 @@ public List execute(ScriptingConfiguration configuration, String inputFileName, 
                     //println("FILE_PRO_XML_CMD: "+configuration.getWorkingDirectory()+"pro_imagemosaic_cmd.xml");
                     // sterialize the ImageMosaicCommand object
                     File dest=ImageMosaicCommand.serialize(cmd,
-                    configuration.getWorkingDirectory()+File.separator+Thread.currentThread().getId()+ "_"+"pro_imagemosaic_cmd.xml");
+		      configuration.getWorkingDirectory()+File.separator+
+		      pkgDir.getName()+"_"+
+		      Thread.currentThread().getId()+"_"+
+		      "pro_imagemosaic_cmd.xml");
                     // add the serialized file to the queue
                     results.add(dest.getAbsolutePath());
                 }
@@ -308,6 +311,7 @@ void sendError(final ProgressListenerForwarder listenerForwarder, final String m
 
 
 private DataStore connect(Properties dataStoreProp) throws IOException {
+    // TODO TESTS
     // SPI
     final String SPIClass = dataStoreProp.getProperty("SPI");
     // create a datastore as instructed
@@ -315,6 +319,10 @@ private DataStore connect(Properties dataStoreProp) throws IOException {
     .newInstance();
     final Map<String, Serializable> params = Utils.createDataStoreParamsFromPropertiesFile(
     dataStoreProp, spi);
+
+
+    // important as there are some chars that need escaping
+    // params.put(PostgisNGDataStoreFactory.PREPARED_STATEMENTS.key, Boolean.TRUE);
 
     dataStore = spi.createDataStore(params);
 

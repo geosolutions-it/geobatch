@@ -40,38 +40,22 @@ public interface FlowManager<EO extends EventObject, FC extends FlowConfiguratio
      */
     public void setName(String name);
 
-    /**
-     *
-     */
     public boolean isRunning();
 
-    /**
-     *
-     */
     public void reset();
 
-    /**
-     *
-     */
     public void dispose();
 
-    /**
-     * Output Directory
-     * @uml.property  name="workingDirectory"
-     */
     public File getWorkingDirectory();
 
-    /**
-     * Output Directory
-     * @uml.property  name="workingDirectory"
-     */
+    
     public void setWorkingDirectory(File workingDir);
 
     public EventGenerator<EO> getEventGenerator();
 
     public void setEventGenerator(EventGenerator<EO> eventGenerator);
 
-    public List<? extends EventConsumer> getEventConsumers();
+    public List<? extends EventConsumer<EO,?>> getEventConsumers();
 
     /**
      * Post an event to the flow

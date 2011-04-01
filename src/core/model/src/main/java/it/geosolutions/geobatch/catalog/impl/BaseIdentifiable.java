@@ -26,19 +26,13 @@ import it.geosolutions.geobatch.catalog.Identifiable;
 
 public abstract class BaseIdentifiable implements Identifiable, Cloneable {
 
-    /**
-     * @uml.property  name="id"
-     */
+    
     private String id;
 
-    /**
-     * @uml.property  name="name"
-     */
+    
     private String name;
 
-    /**
-     * @uml.property  name="description"
-     */
+    
     private String description = "No description set.";
 
     /**

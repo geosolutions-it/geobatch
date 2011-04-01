@@ -1,5 +1,6 @@
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 import static org.junit.Assert.fail;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 
 import org.junit.Test;
 import org.quartz.JobDetail;
@@ -14,8 +15,8 @@ public class GBFSMQuartzTest {
     @Test
     public final void testGBFileSystemMonitorJob() {
         JobDetail jd=new JobDetail("NAME", GBFileSystemMonitorJob.class);
-        jd.getJobDataMap().put(GBFileSystemMonitorJob.ROOT_PATH_KEY, "src/test/resources/data");
-        jd.getJobDataMap().put(GBFileSystemMonitorJob.WILDCARD_KEY, ".*");
+        jd.getJobDataMap().put(FileSystemMonitorSPI.SOURCE, "src/test/resources/data");
+        jd.getJobDataMap().put(FileSystemMonitorSPI.WILDCARD, ".*");
         
         final Scheduler sched;
         try {
@@ -26,7 +27,5 @@ public class GBFSMQuartzTest {
         } catch (SchedulerException e) {
             fail(e.getMessage());
         }
-        
     }
-
 }
