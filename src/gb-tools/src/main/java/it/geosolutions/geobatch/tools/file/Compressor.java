@@ -32,8 +32,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -42,7 +43,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 
 public final class Compressor {
-    private final static Logger LOGGER = Logger.getLogger(Compressor.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Compressor.class.toString());
 
     /**
      * Zip all the files in the input directory which starts with the provided prefix.
@@ -105,7 +106,7 @@ public final class Compressor {
             // Complete the ZIP file
             out.close();
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            LOGGER.error(e.getLocalizedMessage(), e);
             return null;
         }
 
@@ -162,8 +163,8 @@ public final class Compressor {
                 return outZipFile;
 
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage(), e);
                 return null;
             } finally {
                 if (out != null)
@@ -222,8 +223,8 @@ public final class Compressor {
                 }
 
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage(), e);
                 if (out != null)
                     out.close();
             } finally {
@@ -282,8 +283,8 @@ public final class Compressor {
 
 
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage(), e);
                 if (out != null)
                     out.close();
             } finally {
@@ -331,8 +332,8 @@ public final class Compressor {
             try {
                 archive.close();
             } catch (Throwable e) {
-                if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.isLoggable(Level.FINE);
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.error("Compressor::inflate(): unable to close archive.\nMessage is: "+e.getMessage(),e);
             }
         }
     

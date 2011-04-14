@@ -40,8 +40,9 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -62,7 +63,7 @@ import ucar.nc2.Variable;
  * 
  */
 public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
-    private final static Logger LOGGER = Logger.getLogger(MetocBaseAction.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(MetocBaseAction.class.toString());
 
     private final MetocActionConfiguration configuration;
 
@@ -77,8 +78,7 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
         // //
         if ((configuration.getMetocDictionaryPath() == null)
                 || "".equals(configuration.getMetocHarvesterXMLTemplatePath())) {
-            LOGGER.log(Level.SEVERE,
-                    "MetcoDictionaryPath || MetocHarvesterXMLTemplatePath is null.");
+            LOGGER.error("MetcoDictionaryPath || MetocHarvesterXMLTemplatePath is null.");
             throw new IllegalStateException(
                     "MetcoDictionaryPath || MetocHarvesterXMLTemplatePath is null.");
         }
@@ -108,7 +108,7 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
 	 */
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("MetocBaseAction:execute(): Starting with processing...");
         try {
             // looking for file
@@ -136,8 +136,8 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
             // ////////////////////////////////////////////////////////////////////
             if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
                 String message = "GeoServerDataDirectory is null or does not exist.";
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, message);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
                 throw new IllegalStateException(message);
             }
 
@@ -152,8 +152,8 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
                     final String message = "MetocBaseAction:execute(): Unexpected file '"
                             + inputFileName + "'.\nThis action expects 'one' NetCDF file using \'"
                             + fileNameFilter + "\' as name filter (String.matches()).";
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.log(Level.SEVERE, message);
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(message);
                     throw new IllegalStateException(message);
                 }
             } else {
@@ -162,8 +162,8 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
                             + inputFileName
                             + "'.\n"
                             + "This action expects 'one' NetCDF file using \'.nc\' or \'.netcdf\' extension.";
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.log(Level.SEVERE, message);
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(message);
                     throw new IllegalStateException(message);
                 }
             }
@@ -181,13 +181,13 @@ public abstract class MetocBaseAction extends BaseAction<FileSystemEvent> {
                 // ... setting up the appropriate event for the next action
                 events.add(new FileSystemEvent(outputFile, FileSystemEventType.FILE_ADDED));
             } else {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, "MetocBaseAction:execute(): "
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("MetocBaseAction:execute(): "
                             + "the input file is not a non-directory file or it is not readable.");
             }
 
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            LOGGER.error(t.getLocalizedMessage(), t);
         }
         
         return events;

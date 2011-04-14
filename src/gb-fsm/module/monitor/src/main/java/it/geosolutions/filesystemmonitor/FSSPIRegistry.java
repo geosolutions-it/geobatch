@@ -29,8 +29,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -51,7 +52,7 @@ class FSSPIRegistry implements ApplicationContextAware, InitializingBean {
             SUGGESTED_OS_TYPE = OsType.OS_UNDEFINED;
     }
 
-    private final static Logger LOGGER = Logger.getLogger(FSSPIRegistry.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FSSPIRegistry.class.toString());
 
     
     private ApplicationContext applicationContext = null;
@@ -68,8 +69,8 @@ class FSSPIRegistry implements ApplicationContextAware, InitializingBean {
 
     FileSystemMonitor getMonitor(final Map<String, ?> config, final OsType osType, final FileSystemMonitorType type) {
         if (applicationContext == null) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Underlying applicationContext is null!");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Underlying applicationContext is null!");
             return null;
         }
         FileSystemMonitorSPI monitorSPI = null;
@@ -87,7 +88,7 @@ class FSSPIRegistry implements ApplicationContextAware, InitializingBean {
             }
         }
         if (ret != null){
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("Creating an instance of: "+monitorSPI.getClass());
             return ret.createInstance(config);
         }

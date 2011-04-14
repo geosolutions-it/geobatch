@@ -41,7 +41,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Queue;
-import java.util.logging.Level;
+
 
 import org.apache.commons.io.FilenameUtils;
 import org.codehaus.jettison.json.JSONObject;
@@ -82,12 +82,12 @@ public class GWCConfigurator extends GeoWebCacheConfiguratorAction<FileSystemEve
             // ///////////////////////////////////
 
             if (workingDir == null) {
-                LOGGER.log(Level.SEVERE, "Working directory is null.");
+                LOGGER.error("Working directory is null.");
                 throw new IllegalStateException("Working directory is null.");
             }
 
             if (!workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "Working directory does not exist ("
+                LOGGER.error("Working directory does not exist ("
                         + workingDir.getAbsolutePath() + ").");
                 throw new IllegalStateException("Working directory does not exist ("
                         + workingDir.getAbsolutePath() + ").");
@@ -113,7 +113,7 @@ public class GWCConfigurator extends GeoWebCacheConfiguratorAction<FileSystemEve
             }
 
             if (dataFile == null) {
-                LOGGER.log(Level.SEVERE, "layer data file not found in fileset.");
+                LOGGER.error("layer data file not found in fileset.");
                 throw new IllegalStateException("layer data file not found in fileset.");
             }
 
@@ -162,7 +162,7 @@ public class GWCConfigurator extends GeoWebCacheConfiguratorAction<FileSystemEve
             return events;
 
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to
+            LOGGER.error(t.getLocalizedMessage(), t); // no need to
             // log:
             // rethrowing
             listenerForwarder.failed(t);
@@ -202,7 +202,7 @@ public class GWCConfigurator extends GeoWebCacheConfiguratorAction<FileSystemEve
                         + "/coveragestores/" + store + "/coverages/" + layerName + ".json");
 
                 if (response.getStatus().isSuccess()) {
-                    LOGGER.log(Level.INFO, "Client succes !");
+                    LOGGER.info("Client succes !");
                     return response.getEntity().getText();
                 } else {
                     throw new Exception("Client failure! an unexpected status was returned: "
@@ -320,8 +320,8 @@ public class GWCConfigurator extends GeoWebCacheConfiguratorAction<FileSystemEve
                 InputStreamReader is = new InputStreamReader(con.getInputStream());
                 String response = IOUtils.toString(is);
                 is.close();
-                if (LOGGER.isLoggable(Level.FINE)) {
-                    LOGGER.log(Level.FINE, "HTTP CREATED: " + response);
+                if (LOGGER.isTraceEnabled()){
+                    LOGGER.trace("HTTP CREATED: " + response);
                 } else {
                     final String name = extractName(response);
                     LOGGER.info("HTTP CREATED: " + name);

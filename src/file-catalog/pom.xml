@@ -150,10 +150,6 @@
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
         </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -179,6 +175,17 @@
      	<dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-tools</artifactId>
+        </dependency>
+        		<!-- ============================== -->
+        <!-- 		logging					-->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
         </dependency>
    
     </dependencies>

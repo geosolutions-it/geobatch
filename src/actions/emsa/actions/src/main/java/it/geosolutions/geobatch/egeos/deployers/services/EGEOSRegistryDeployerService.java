@@ -28,8 +28,9 @@ import it.geosolutions.geobatch.egeos.deployers.actions.EGEOSDeployerBaseAction;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates an Action from a scripting language.
@@ -43,7 +44,7 @@ public class EGEOSRegistryDeployerService extends BaseService implements
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(EGEOSRegistryDeployerService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(EGEOSRegistryDeployerService.class
             .toString());
 
     public EGEOSDeployerBaseAction createAction(EGEOSRegistryDeployerConfiguration configuration) {
@@ -57,7 +58,7 @@ public class EGEOSRegistryDeployerService extends BaseService implements
             else
                 return null;
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error occurred creating EGEOSRegistryDeployer Action... "
+            LOGGER.error("Error occurred creating EGEOSRegistryDeployer Action... "
                     + e.getLocalizedMessage(), e);
         }
 

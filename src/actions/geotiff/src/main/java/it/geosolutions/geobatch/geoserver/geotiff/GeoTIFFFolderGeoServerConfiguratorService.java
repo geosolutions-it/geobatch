@@ -27,8 +27,9 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author
@@ -38,8 +39,7 @@ import java.util.logging.Logger;
 public class GeoTIFFFolderGeoServerConfiguratorService extends
         GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
 
-    private final static Logger LOGGER = Logger
-            .getLogger(GeoTIFFFolderGeoServerConfiguratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeoTIFFFolderGeoServerConfiguratorService.class.toString());
 
     public GeoTIFFFolderGeoServerConfiguratorService(String id, String name, String description) {
         super(id, name, description);
@@ -50,8 +50,8 @@ public class GeoTIFFFolderGeoServerConfiguratorService extends
         try {
             return new GeoTIFFFolderGeoServerConfigurator(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

@@ -33,7 +33,7 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerSer
 public class StatusProgressListenerService extends BaseService 
     implements ProgressListenerService<StatusProgressListener,StatusProgressListenerConfiguration> {
 
-//    private final static Logger LOGGER = Logger.getLogger(StatusProgressListenerService.class
+//    private final static Logger LOGGER = LoggerFactory.getLogger(StatusProgressListenerService.class
 //            .toString());
     
     /**

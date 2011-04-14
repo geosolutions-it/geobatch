@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.logging.Level;
 
 import javax.media.jai.JAI;
 
@@ -58,8 +57,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
  * 
  * @version $ GeoTIFFFolderGeoServerConfigurator.java $ Revision: x.x $ 23/mar/07 11:42:25
  */
-public class GeoTIFFFolderGeoServerConfigurator extends
-        GeoServerAction<FileSystemEvent> {
+public class GeoTIFFFolderGeoServerConfigurator extends GeoServerAction<FileSystemEvent> {
 
     public final static String GEOSERVER_VERSION = "2.X";
 
@@ -68,9 +66,8 @@ public class GeoTIFFFolderGeoServerConfigurator extends
         super(configuration);
     }
 
-    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
-            throws ActionException {
-        if (LOGGER.isLoggable(Level.INFO))
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Starting with processing...");
 
         try {
@@ -88,7 +85,7 @@ public class GeoTIFFFolderGeoServerConfigurator extends
                 // data flow configuration and dataStore name must not be null.
                 // //
                 if (configuration == null) {
-                    LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+                    LOGGER.error("DataFlowConfig is null.");
                     throw new IllegalStateException("DataFlowConfig is null.");
                 }
                 // ////////////////////////////////////////////////////////////////////
@@ -106,7 +103,7 @@ public class GeoTIFFFolderGeoServerConfigurator extends
                 //
                 // ////////////////////////////////////////////////////////////////////
                 if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                    LOGGER.log(Level.SEVERE, "GeoServerDataDirectory is null or does not exist.");
+                    LOGGER.error("GeoServerDataDirectory is null or does not exist.");
                     throw new IllegalStateException(
                             "GeoServerDataDirectory is null or does not exist.");
                 }
@@ -115,9 +112,7 @@ public class GeoTIFFFolderGeoServerConfigurator extends
                 File inputDir = new File(event.getSource().getAbsolutePath());
 
                 if (inputDir == null || !inputDir.exists() || !inputDir.isDirectory()) {
-                    LOGGER
-                            .log(Level.SEVERE, "Unexpected file '" + inputDir.getAbsolutePath()
-                                    + "'");
+                    LOGGER.error("Unexpected file '" + inputDir.getAbsolutePath() + "'");
                     throw new IllegalStateException("Unexpected file '"
                             + inputDir.getAbsolutePath() + "'");
                 }
@@ -145,12 +140,13 @@ public class GeoTIFFFolderGeoServerConfigurator extends
                         Map<String, String> queryParams = new HashMap<String, String>();
                         queryParams.put("namespace", getConfiguration().getDefaultNamespace());
                         queryParams.put("wmspath", getConfiguration().getWmsPath());
-                        final String[] layerResponse = GeoServerRESTHelper.sendCoverage(
-                                new File(inputDir, fileName), new File(inputDir, fileName),getConfiguration().getGeoserverURL(),
-                                getConfiguration().getGeoserverUID(), getConfiguration()
-                                        .getGeoserverPWD(), coverageStoreId, coverageStoreId,
-                                queryParams, "", getConfiguration().getDataTransferMethod(),
-                                "geotiff", GEOSERVER_VERSION, getConfiguration().getStyles(),
+                        final String[] layerResponse = GeoServerRESTHelper.sendCoverage(new File(
+                                inputDir, fileName), new File(inputDir, fileName),
+                                getConfiguration().getGeoserverURL(), getConfiguration()
+                                        .getGeoserverUID(), getConfiguration().getGeoserverPWD(),
+                                coverageStoreId, coverageStoreId, queryParams, "",
+                                getConfiguration().getDataTransferMethod(), "geotiff",
+                                GEOSERVER_VERSION, getConfiguration().getStyles(),
                                 getConfiguration().getDefaultStyle());
 
                         if (layerResponse != null && layerResponse.length > 2) {
@@ -174,11 +170,9 @@ public class GeoTIFFFolderGeoServerConfigurator extends
                                             + FilenameUtils.getName(new File(inputDir, fileName)
                                                     .getAbsolutePath()));
                                 } catch (IOException e) {
-                                    LOGGER
-                                            .log(
-                                                    Level.SEVERE,
-                                                    "Error occurred while writing indexer.properties file!",
-                                                    e);
+                                    LOGGER.error(
+                                            "Error occurred while writing indexer.properties file!",
+                                            e);
                                 } finally {
                                     if (out != null) {
                                         out.flush();
@@ -201,7 +195,7 @@ public class GeoTIFFFolderGeoServerConfigurator extends
             events.addAll(layers);
             return events;
         } catch (Exception t) {
-            // LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // not
+            // LOGGER.error(t.getLocalizedMessage(), t); // not
             // logging since we are rethrowing
             JAI.getDefaultInstance().getTileCache().flush();
             throw new ActionException(this, t.getMessage(), t);

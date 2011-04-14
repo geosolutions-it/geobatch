@@ -24,15 +24,16 @@ package it.geosolutions.geobatch.tools.file;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.FileCleaningTracker;
 
-public class FileGarbageCollector {
-    private static Logger LOGGER=Logger.getAnonymousLogger(FileGarbageCollector.class.toString());
-    private static int LOCK_WAIT_TIME=1000;
-    private static Lock lock =new ReentrantLock();
+public final class FileGarbageCollector {
+    private static final Logger LOGGER=LoggerFactory.getLogger(FileGarbageCollector.class);
+    private static final int LOCK_WAIT_TIME=1000;
+    private static final Lock lock =new ReentrantLock();
     private static FileCleaningTracker singleton=null;
     
     /**
@@ -50,8 +51,8 @@ public class FileGarbageCollector {
                 StringBuilder message=new StringBuilder("Unable to get lock on the ");
                 message.append(FileGarbageCollector.class.toString());
                 message.append(" message: "+ie.getLocalizedMessage());
-                if (LOGGER.isLoggable(Level.SEVERE)){
-                    LOGGER.severe(message.toString());
+                if (LOGGER.isErrorEnabled()){
+                    LOGGER.error(message.toString());
                 }
             }
             finally{

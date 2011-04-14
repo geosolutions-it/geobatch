@@ -13,8 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,7 +54,7 @@ abstract class ImageMosaicUpdater {
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(ImageMosaicAction.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicAction.class.toString());
 
     /**
      * 
@@ -95,8 +96,8 @@ abstract class ImageMosaicUpdater {
                     query.append((i == 0) ? "'" : ",'");
                     query.append(file.getAbsolutePath().replaceAll("\\", "\\\\"));
                     query.append("'");
-                } else if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("ImageMosaicAction::getQuery(): Unable to use the following "
+                } else if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("ImageMosaicAction::getQuery(): Unable to use the following "
                             + "file to build the query, it does not exists.\nFile"
                             + file.getAbsolutePath());
                 }
@@ -109,8 +110,8 @@ abstract class ImageMosaicUpdater {
                     query.append((i == 0) ? "'" : ",'");
                     query.append(file.getName());
                     query.append("'");
-                } else if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("ImageMosaicAction::getQuery(): Unable to use the following "
+                } else if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("ImageMosaicAction::getQuery(): Unable to use the following "
                             + "file to build the query, it does not exists.\nFile"
                             + file.getAbsolutePath());
                 }
@@ -222,8 +223,8 @@ abstract class ImageMosaicUpdater {
             return true;
 
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
             return false;
         }
 
@@ -241,16 +242,14 @@ abstract class ImageMosaicUpdater {
     protected static boolean updateDataStore(Properties mosaicProp, Properties dataStoreProp,
             ImageMosaicGranulesDescriptor mosaicDescriptor, ImageMosaicCommand cmd) {
         if (dataStoreProp == null) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                        "ImageMosaicAction::updateDataStore(): Unable to get datastore properties.");
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("ImageMosaicAction::updateDataStore(): Unable to get datastore properties.");
             }
             return false;
         }
         if (mosaicProp == null) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                        "ImageMosaicAction::updateDataStore(): Unable to get mosaic properties.");
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("ImageMosaicAction::updateDataStore(): Unable to get mosaic properties.");
             }
             return false;
         }
@@ -275,28 +274,23 @@ abstract class ImageMosaicUpdater {
                 dataStore = spi.createDataStore(params);
 
             } catch (IOException ioe) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(
-                            Level.SEVERE,
-                            "ImageMosaicAction::updateDataStore(): "
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("ImageMosaicAction::updateDataStore(): "
                                     + "problems setting up (creating or connecting) the datasource. The message is: "
                                     + ioe.getLocalizedMessage(), ioe);
                 }
                 return false;
             } catch (ClassNotFoundException cnfe) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE,
-                            "ImageMosaicAction::updateDataStore(): " + cnfe.getLocalizedMessage(),
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("ImageMosaicAction::updateDataStore(): " + cnfe.getLocalizedMessage(),
                             cnfe);
                 }
                 return false;
             }
 
             if (dataStore == null) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(
-                            Level.SEVERE,
-                            "ImageMosaicAction::updateDataStore(): "
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("ImageMosaicAction::updateDataStore(): "
                                     + "the required resource was not found or if insufficent parameters were given.");
                 }
                 return false;
@@ -327,8 +321,8 @@ abstract class ImageMosaicUpdater {
                                 files.remove(file); // remove it
 // TODO move into a recoverable path to rollback!
                                 // log as warning
-                                if (LOGGER.isLoggable(Level.WARNING)) {
-                                    LOGGER.warning("ImageMosaicAction::updateDataStore(): Layer specify a relative pattern for files but the "
+                                if (LOGGER.isWarnEnabled()) {
+                                    LOGGER.warn("ImageMosaicAction::updateDataStore(): Layer specify a relative pattern for files but the "
                                             + "incoming xml command file has an absolute AND outside the layer baseDir file into the "
                                             + "delFile list! This file will NOT be removed from the layer: "
                                             + file.getAbsolutePath());
@@ -356,16 +350,13 @@ abstract class ImageMosaicUpdater {
             try {
                 delFilter = getQuery(delList, absolute, locationKey);
             } catch (NullPointerException npe) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(
-                            Level.WARNING,
-                            "ImageMosaicAction::updateDataStore(): The command contain a null delFile list.\nSKIPPING deletion list."
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("ImageMosaicAction::updateDataStore(): The command contain a null delFile list.\nSKIPPING deletion list."
                                     + npe.getLocalizedMessage());
                 }
             } catch (CQLException cqle) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE,
-                            "ImageMosaicAction::updateDataStore(): Unable to build a query. Message: "
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("ImageMosaicAction::updateDataStore(): Unable to build a query. Message: "
                                     + cqle.getLocalizedMessage(), cqle);
                 }
                 return false;
@@ -380,10 +371,8 @@ abstract class ImageMosaicUpdater {
                         transaction = new DefaultTransaction(handle);
                     fw = dataStore.getFeatureWriter(store, delFilter, transaction);
                     if (fw == null) {
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(
-                                    Level.SEVERE,
-                                    "ImageMosaicAction::updateDataStore(): The FeatureWriter is null, it's impossible to get a writer on the dataStore: "
+                        if (LOGGER.isErrorEnabled()) {
+                            LOGGER.error("ImageMosaicAction::updateDataStore(): The FeatureWriter is null, it's impossible to get a writer on the dataStore: "
                                             + dataStore.toString());
                         }
                         return false;
@@ -402,17 +391,16 @@ abstract class ImageMosaicUpdater {
                     if (transaction != null)
                         transaction.rollback();
 // TODO recover removed file to rollback!
-                    if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("UpdateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
+                    if (LOGGER.isWarnEnabled()) {
+                        LOGGER.warn("UpdateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
                     }
                     return false;
                 } catch (RuntimeException re) {
                     if (transaction != null)
                         transaction.rollback();
 // TODO recover removed file to rollback!
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE,
-                                "ImageMosaicAction::updateDataStore(): problem with connection: "
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("ImageMosaicAction::updateDataStore(): problem with connection: "
                                         + re.getLocalizedMessage(), re);
                     }
                     return false;
@@ -429,7 +417,7 @@ abstract class ImageMosaicUpdater {
                 }
             }// if ! query error
             else {
-                if (LOGGER.isLoggable(Level.INFO)) {
+                if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("ImageMosaicAction::updateDataStore(): the DEL file list is not used to query datastore. Probably it is empty");
                 }
             }
@@ -440,15 +428,14 @@ abstract class ImageMosaicUpdater {
             try {
                 addFilter = getQuery(addList, absolute, locationKey);
             } catch (NullPointerException npe) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING,
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn(
                             "ImageMosaicAction::updateDataStore():" + npe.getLocalizedMessage(),
                             npe);
                 }
             } catch (CQLException cqle) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE,
-                            "ImageMosaicAction::updateDataStore(): Unable to build a query. Message: "
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("ImageMosaicAction::updateDataStore(): Unable to build a query. Message: "
                                     + cqle, cqle);
                 }
                 return false;
@@ -473,10 +460,8 @@ abstract class ImageMosaicUpdater {
                     Query q = new Query(schema.getTypeName(), addFilter);
                     fr = dataStore.getFeatureReader(q, transaction);
                     if (fr == null) {
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(
-                                    Level.SEVERE,
-                                    "ImageMosaicAction::updateDataStore(): The FeatureReader is null, it's impossible to get a reader on the dataStore: "
+                        if (LOGGER.isErrorEnabled()) {
+                            LOGGER.error("ImageMosaicAction::updateDataStore(): The FeatureReader is null, it's impossible to get a reader on the dataStore: "
                                             + dataStore.toString());
                         }
                         return false;
@@ -490,8 +475,8 @@ abstract class ImageMosaicUpdater {
                             if (absolute) {
                                 File added = new File(cmd.getBaseDir(), path);
                                 cmd.getAddFiles().remove(added);
-                                if (LOGGER.isLoggable(Level.WARNING)) {
-                                    LOGGER.warning("ImageMosaicAction::updateDataStore(): the file: "
+                                if (LOGGER.isWarnEnabled()) {
+                                    LOGGER.warn("ImageMosaicAction::updateDataStore(): the file: "
                                             + path
                                             + " is removed from the addFiles list because it is already present into the layer");
                                 }
@@ -502,8 +487,8 @@ abstract class ImageMosaicUpdater {
                                     File file = it.next();
                                     if (file.getName().equals(path)) {
                                         it.remove();
-                                        if (LOGGER.isLoggable(Level.WARNING)) {
-                                            LOGGER.warning("ImageMosaicAction::updateDataStore(): the file: "
+                                        if (LOGGER.isWarnEnabled()) {
+                                            LOGGER.warn("ImageMosaicAction::updateDataStore(): the file: "
                                                     + path
                                                     + " is removed from the addFiles list because it is already present into the layer");
                                         }
@@ -511,8 +496,8 @@ abstract class ImageMosaicUpdater {
                                 }
                             }
                         } else {
-                            if (LOGGER.isLoggable(Level.SEVERE)) {
-                                LOGGER.severe("UpdateDataStore(): problem getting the next feature: it is null!");
+                            if (LOGGER.isErrorEnabled()) {
+                                LOGGER.error("UpdateDataStore(): problem getting the next feature: it is null!");
                             }
                         }
                     }
@@ -524,15 +509,14 @@ abstract class ImageMosaicUpdater {
                             transaction = null;
                         }
                     } catch (Throwable t) {
-                        if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.log(Level.WARNING,
+                        if (LOGGER.isWarnEnabled()) {
+                            LOGGER.warn(
                                     "ImageMosaicAction::updateDataStore(): problem closing transaction: "
                                             + t.getLocalizedMessage(), t);
                         }
                     }
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE,
-                                "ImageMosaicAction::updateDataStore(): unable to access to the datastore in append mode. Message: "
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("ImageMosaicAction::updateDataStore(): unable to access to the datastore in append mode. Message: "
                                         + ioe.getLocalizedMessage(), ioe);
                     }
                     return false;
@@ -541,8 +525,8 @@ abstract class ImageMosaicUpdater {
                             + re.getLocalizedMessage();
                     if (transaction != null)
                         transaction.rollback();
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.log(Level.SEVERE, message, re);
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error(message, re);
                     }
                     return false;
                 } finally {
@@ -557,8 +541,8 @@ abstract class ImageMosaicUpdater {
                             fr = null;
                         }
                     } catch (Throwable t) {
-                        if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.log(Level.WARNING,
+                        if (LOGGER.isWarnEnabled()) {
+                            LOGGER.warn(
                                     "ImageMosaicAction::updateDataStore(): problem closing transaction: "
                                             + t.getLocalizedMessage(), t);
                         }
@@ -566,7 +550,7 @@ abstract class ImageMosaicUpdater {
                 }
             }// if ! query error
             else {
-                if (LOGGER.isLoggable(Level.INFO)) {
+                if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("ImageMosaicAction::updateDataStore(): the ADD file list is not used to query datastore. Probably it is empty");
                 }
             }
@@ -586,14 +570,14 @@ abstract class ImageMosaicUpdater {
             if (cmd.getAddFiles() == null) {
                 final String message = "UpdateDataStore(): addFiles list is null Here.";
 
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning(message);
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn(message);
                 }
                 return false;
             } else if (cmd.getAddFiles().size() == 0) {
                 final String message = "ImageMosaicAction::updateDataStore(): no more images to add to the layer were found, please check the command.";
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning(message);
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn(message);
                 }
                 return false;
             } else if (cmd.getAddFiles().size() > 0) {
@@ -608,13 +592,13 @@ abstract class ImageMosaicUpdater {
                         fw = dataStore.getFeatureWriterAppend(store, transaction);
                     } catch (IOException ioe) {
                         try {
-                            if (LOGGER.isLoggable(Level.SEVERE))
-                                LOGGER.severe("ImageMosaicAction:updateDataStore(): unable to update the new layer, removing copied files...");
+                            if (LOGGER.isErrorEnabled())
+                                LOGGER.error("ImageMosaicAction:updateDataStore(): unable to update the new layer, removing copied files...");
                             // if fails rollback the copied files
                             if (addedFile!=null){
                                 for (File file : addedFile){
-                                    if (LOGGER.isLoggable(Level.WARNING))
-                                        LOGGER.warning("ImageMosaicAction: DELETING -> "+file.getAbsolutePath());
+                                    if (LOGGER.isWarnEnabled())
+                                        LOGGER.warn("ImageMosaicAction: DELETING -> "+file.getAbsolutePath());
                                     // this is done since addedFiles are copied not moved
                                     file.delete();
                                 }
@@ -625,23 +609,21 @@ abstract class ImageMosaicUpdater {
                                 transaction = null;
                             }
                         } catch (Throwable t) {
-                            if (LOGGER.isLoggable(Level.WARNING)) {
-                                LOGGER.log(Level.WARNING,
+                            if (LOGGER.isWarnEnabled()) {
+                                LOGGER.warn(
                                         "ImageMosaicAction::updateDataStore(): problem closing transaction: "
                                                 + t.getLocalizedMessage(), t);
                             }
                         }
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.severe("ImageMosaicAction::updateDataStore(): unable to access to the datastore in append mode. Message: "
+                        if (LOGGER.isErrorEnabled()) {
+                            LOGGER.error("ImageMosaicAction::updateDataStore(): unable to access to the datastore in append mode. Message: "
                                     + ioe.getLocalizedMessage());
                         }
                         return false;
                     }
                     if (fw == null) {
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.log(
-                                    Level.SEVERE,
-                                    "ImageMosaicAction::updateDataStore(): The FeatureWriter is null, it's impossible"
+                        if (LOGGER.isErrorEnabled()) {
+                            LOGGER.error("ImageMosaicAction::updateDataStore(): The FeatureWriter is null, it's impossible"
                                             + " to get a writer on the dataStore: "
                                             + dataStore.toString());
                         }
@@ -667,13 +649,13 @@ abstract class ImageMosaicUpdater {
 
                 } catch (RuntimeException re) {
                     try {
-                        if (LOGGER.isLoggable(Level.SEVERE))
-                            LOGGER.severe("ImageMosaicAction:updateDataStore(): unable to update the new layer, removing copied files...");
+                        if (LOGGER.isErrorEnabled())
+                            LOGGER.error("ImageMosaicAction:updateDataStore(): unable to update the new layer, removing copied files...");
                         // if fails rollback the copied files
                         if (addedFile!=null){
                             for (File file : addedFile){
-                                if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.warning("ImageMosaicAction: DELETING -> "+file.getAbsolutePath());
+                                if (LOGGER.isWarnEnabled())
+                                    LOGGER.warn("ImageMosaicAction: DELETING -> "+file.getAbsolutePath());
                                 // this is done since addedFiles are copied not moved
                                 file.delete();
                             }
@@ -684,14 +666,14 @@ abstract class ImageMosaicUpdater {
                             transaction = null;
                         }
                     } catch (Throwable t) {
-                        if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.log(Level.WARNING,
+                        if (LOGGER.isWarnEnabled()) {
+                            LOGGER.warn(
                                     "ImageMosaicAction::updateDataStore(): problem closing transaction: "
                                             + t.getLocalizedMessage(), t);
                         }
                     }
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.severe("ImageMosaicAction::updateDataStore(): problem with connection: "
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("ImageMosaicAction::updateDataStore(): problem with connection: "
                                 + re.getLocalizedMessage());
                     }
                     return false;
@@ -706,8 +688,8 @@ abstract class ImageMosaicUpdater {
                             fw.close();
                         }
                     } catch (Throwable t) {
-                        if (LOGGER.isLoggable(Level.WARNING)) {
-                            LOGGER.log(Level.WARNING,
+                        if (LOGGER.isWarnEnabled()) {
+                            LOGGER.warn(
                                     "ImageMosaicAction::updateDataStore(): problem closing transaction: "
                                             + t.getLocalizedMessage(), t);
                         }
@@ -717,8 +699,8 @@ abstract class ImageMosaicUpdater {
 
         } catch (Throwable e) {
 
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error(e.getLocalizedMessage(), e);
             }
 
             return false;
@@ -729,8 +711,8 @@ abstract class ImageMosaicUpdater {
                     dataStore.dispose();
                 }
             } catch (Throwable t) {
-                if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.log(Level.WARNING,
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn(
                             "ImageMosaicAction::updateDataStore(): " + t.getLocalizedMessage(), t);
                 }
                 /*

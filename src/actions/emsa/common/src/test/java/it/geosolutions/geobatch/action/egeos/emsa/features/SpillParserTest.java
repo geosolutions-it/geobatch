@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
@@ -26,7 +27,7 @@ import org.springframework.core.io.ClassPathResource;
  */
 public class SpillParserTest extends TestCase {
 
-    private static Logger LOGGER = Logger.getLogger(SpillParserTest.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(SpillParserTest.class.getName());
 
     public void testSpillParser() throws Exception {
         // connect to the store

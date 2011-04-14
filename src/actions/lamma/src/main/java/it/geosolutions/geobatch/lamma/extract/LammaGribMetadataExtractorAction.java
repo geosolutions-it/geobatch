@@ -37,10 +37,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Comments here ...
@@ -49,7 +49,7 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class LammaGribMetadataExtractorAction extends LammaBaseAction {
 
-	protected final static Logger LOGGER = Logger
+	protected final static Logger LOGGER = LoggerFactory
 			.getLogger(LammaGribMetadataExtractorAction.class.toString());
 	protected final LammaGribMetadataExtractorConfiguration configuration;
 
@@ -160,8 +160,8 @@ public class LammaGribMetadataExtractorAction extends LammaBaseAction {
 
 			return events;
 		} catch (Throwable t) {
-			if (LOGGER.isLoggable(Level.SEVERE)) {
-				LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+			if (LOGGER.isErrorEnabled()){
+				LOGGER.error(t.getLocalizedMessage(), t);
 			}
 			// Logging to ESB ...
 			logMessage.setMessage("[ERROR] " + t.getLocalizedMessage());
@@ -231,7 +231,7 @@ public class LammaGribMetadataExtractorAction extends LammaBaseAction {
 			out.println("forecastTime=" + record.getRawForecastTime());
 			out.println("level=" + record.getRawLevel());
 		} catch (IOException e) {
-			LOGGER.severe(e.getLocalizedMessage());
+			LOGGER.error(e.getLocalizedMessage());
 		} finally {
 			if (out != null)
 				out.close();
@@ -240,7 +240,7 @@ public class LammaGribMetadataExtractorAction extends LammaBaseAction {
 				try {
 					outW.close();
 				} catch (IOException e) {
-					LOGGER.severe(e.getLocalizedMessage());
+					LOGGER.error(e.getLocalizedMessage());
 				}
 		}
 
@@ -269,7 +269,7 @@ public class LammaGribMetadataExtractorAction extends LammaBaseAction {
 			out.println("  <destination></destination>");
 			out.println("</Wgrib>");
 		} catch (IOException e) {
-			LOGGER.severe(e.getLocalizedMessage());
+			LOGGER.error(e.getLocalizedMessage());
 		} finally {
 			if (out != null)
 				out.close();
@@ -278,7 +278,7 @@ public class LammaGribMetadataExtractorAction extends LammaBaseAction {
 				try {
 					outW.close();
 				} catch (IOException e) {
-					LOGGER.severe(e.getLocalizedMessage());
+					LOGGER.error(e.getLocalizedMessage());
 				}
 		}
 

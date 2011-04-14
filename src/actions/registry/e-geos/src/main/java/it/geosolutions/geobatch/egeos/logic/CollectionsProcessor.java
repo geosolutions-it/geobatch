@@ -27,7 +27,10 @@ import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 import be.kzen.ergorr.model.gml.EnvelopeType;
 import be.kzen.ergorr.model.rim.ExtrinsicObjectType;
@@ -41,8 +44,7 @@ import be.kzen.ergorr.model.wrs.WrsValueListType;
  */
 public class CollectionsProcessor {
 
-    @SuppressWarnings("unused")
-    private final static Logger LOGGER = Logger.getLogger(CollectionsProcessor.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CollectionsProcessor.class);
 
     private List<CollectionRO> collections = new LinkedList<CollectionRO>();
 

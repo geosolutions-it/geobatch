@@ -13,7 +13,8 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.kzen.ergorr.interfaces.soap.csw.ServiceExceptionReport;
 import be.kzen.ergorr.model.csw.TransactionResponseType;
@@ -26,7 +27,7 @@ import be.kzen.ergorr.model.wrs.WrsExtrinsicObjectType;
  */
 public class CollectionsSender {
 
-    private final static Logger LOGGER = Logger.getLogger(CollectionsSender.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CollectionsSender.class);
 
     private URL serviceURL;
 

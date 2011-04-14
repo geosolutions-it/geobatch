@@ -55,7 +55,7 @@ public class FlowManagerFormController extends SimpleFormController {
          * by a parameter, eg. request.getParameter(�primaryKey�)
          */
         // backingObject.setAvailableDescriptors(catalog.getFlowManagers(FileBasedCatalogConfiguration.class));
-        logger.info("Returning backing object");
+//        logger.info("Returning backing object");
 
         return backingObject;
     }
@@ -105,7 +105,7 @@ public class FlowManagerFormController extends SimpleFormController {
         // catalog.add(fm);
         // catalog.getResourceThreadPool().execute((FileBasedFlowManagerImpl)
         // fm);
-        logger.info("Form data successfully submitted");
+//        logger.info("Form data successfully submitted");
 
         return new ModelAndView(getSuccessView());
     }

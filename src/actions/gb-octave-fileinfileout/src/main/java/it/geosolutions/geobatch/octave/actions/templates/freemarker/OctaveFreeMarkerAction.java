@@ -38,15 +38,16 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import dk.ange.octave.exception.OctaveEvalException;
 
 
 public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
        
-    private final static Logger LOGGER = Logger.getLogger(OctaveFreeMarkerAction.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(OctaveFreeMarkerAction.class.toString());
     
     private final OctaveFreeMarkerConfiguration config;
     
@@ -82,7 +83,7 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
     public Queue<FileSystemEvent> load(Queue<FileSystemEvent> events, OctaveEnv<OctaveExecutableSheet> env)
             throws ActionException {
         try {
-            if(LOGGER.isLoggable(Level.INFO))
+            if(LOGGER.isInfoEnabled())
                 LOGGER.info("Running FileInFileOut script...");
             
             FileSystemEvent ev=events.remove();
@@ -124,7 +125,7 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
                 Map<String, Object> root=config.getRoot();
                 if (root!=null){
 //                  root.put(config.FUNCTION_KEY, getFunction());
-                    if(LOGGER.isLoggable(Level.INFO)){
+                    if(LOGGER.isInfoEnabled()){
                         LOGGER.info(
                                 "Preprocessing functions on arguents: \nFile_in: "+in_name
                                 +" \nFile_out: "+out_name);
@@ -132,7 +133,7 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
                     root.put(config.IN_FILE_KEY, in_name);
                     root.put(config.OUT_FILE_KEY, out_name);
                     StringBuilder sb=new StringBuilder(Path.getAbsolutePath(config.getWorkingDirectory())+File.separator);
-                    if(LOGGER.isLoggable(Level.INFO)){
+                    if(LOGGER.isInfoEnabled()){
                         LOGGER.info(
                                 "WorkingDir: "+sb.toString());
                     }

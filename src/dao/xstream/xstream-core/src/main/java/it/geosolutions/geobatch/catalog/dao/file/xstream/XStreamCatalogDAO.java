@@ -32,8 +32,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -45,7 +46,7 @@ import com.thoughtworks.xstream.XStream;
 public class XStreamCatalogDAO extends XStreamDAO<CatalogConfiguration> implements
         CatalogConfigurationDAO {
 
-    public final static Logger LOGGER = Logger.getLogger(XStreamCatalogDAO.class.toString());
+    public final static Logger LOGGER = LoggerFactory.getLogger(XStreamCatalogDAO.class.toString());
 
     public XStreamCatalogDAO(String directory, Alias alias) {
         super(directory, alias);
@@ -69,7 +70,7 @@ public class XStreamCatalogDAO extends XStreamDAO<CatalogConfiguration> implemen
                         .fromXML(inStream);
                 if (obj.getWorkingDirectory() == null)
                     obj.setWorkingDirectory(getBaseDirectory());
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("XStreamCatalogDAO:: FOUND " + id + ">" + obj + "<");
                 return obj;
 

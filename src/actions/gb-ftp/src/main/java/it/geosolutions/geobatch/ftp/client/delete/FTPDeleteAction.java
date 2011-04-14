@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Level;
+
 
 import com.enterprisedt.net.ftp.FTPConnectMode;
 import com.enterprisedt.net.ftp.FTPFile;
@@ -138,7 +138,7 @@ public class FTPDeleteAction extends FTPBaseAction<FileSystemEvent> {
                 // /////////////////////////////////////////
 
             }
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Deleting file from FtpServer ... " + configuration.getFtpserverHost());
 
             }
@@ -212,12 +212,12 @@ public class FTPDeleteAction extends FTPBaseAction<FileSystemEvent> {
             // i.e. "ok" var should be useless
 
             if (ok) {
-                if (LOGGER.isLoggable(Level.INFO)) {
+                if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("FTPDeleteAction: file SUCCESSFULLY deleted from FtpServer!");
                 }
                 listenerForwarder.completed();
             } else {
-                if (LOGGER.isLoggable(Level.INFO)) {
+                if (LOGGER.isInfoEnabled()) {
                     LOGGER
                             .info("FTPDeleteAction: file was NOT deleted from FtpServer due to connection errors!");
                 }
@@ -227,8 +227,8 @@ public class FTPDeleteAction extends FTPBaseAction<FileSystemEvent> {
             return events;
 
         } catch (Exception ex) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // not
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error(t.getLocalizedMessage(), t); // not
             // logging rethrown exception
             listenerForwarder.failed(ex);
             throw new ActionException(this, ex.getMessage(), ex); // wrap

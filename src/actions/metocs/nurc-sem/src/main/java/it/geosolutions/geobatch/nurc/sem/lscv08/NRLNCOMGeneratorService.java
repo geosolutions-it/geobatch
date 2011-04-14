@@ -27,8 +27,9 @@ import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Public class to generate lscv08::NRL_NCOM Model Services
@@ -37,7 +38,7 @@ import java.util.logging.Logger;
 public class NRLNCOMGeneratorService extends
         GeoServerConfiguratorService<FileSystemEvent, MetocActionConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(NRLNCOMGeneratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(NRLNCOMGeneratorService.class.toString());
 
     public NRLNCOMGeneratorService(String id, String name, String description) {
         super(id, name, description);
@@ -54,8 +55,8 @@ public class NRLNCOMGeneratorService extends
         try {
             return new NRLNCOMAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return null;
     }
@@ -69,15 +70,13 @@ public class NRLNCOMGeneratorService extends
                 configuration.setWorkingDirectory(wd);
                 return true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(
-                            Level.WARNING,
-                            "NRLNCOMGeneratorService::canCreateAction(): "
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("NRLNCOMGeneratorService::canCreateAction(): "
                                     + "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return false;
     }

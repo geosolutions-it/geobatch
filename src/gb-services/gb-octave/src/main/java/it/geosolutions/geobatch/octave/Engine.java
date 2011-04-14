@@ -28,8 +28,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import dk.ange.octave.OctaveEngine;
 import dk.ange.octave.OctaveEngineFactory;
@@ -45,7 +46,7 @@ import dk.ange.octave.type.OctaveObject;
  */
 public class Engine{
     
-    private final static Logger LOGGER = Logger.getLogger(Engine.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Engine.class.toString());
 
     private Lock lock=null;
     
@@ -93,13 +94,13 @@ public class Engine{
             try{
                 lock.tryLock(OctaveConfiguration.getTimeToWait(), TimeUnit.SECONDS);
                 if (engine==null){
-                    if (LOGGER.isLoggable(Level.INFO))
+                    if (LOGGER.isInfoEnabled())
                         LOGGER.info("Starting octave engine");
                     engine=new OctaveEngineFactory().getScriptEngine();
                 }
             }catch (InterruptedException ie){
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(ie.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(ie.getLocalizedMessage());
                 throw ie;
             }
             finally{
@@ -114,15 +115,15 @@ public class Engine{
             try{
                 lock.tryLock(OctaveConfiguration.getTimeToWait(), TimeUnit.SECONDS);
                 if (engine!=null) {
-                    if (LOGGER.isLoggable(Level.INFO))
+                    if (LOGGER.isInfoEnabled())
                         LOGGER.info("Stopping octave engine");
                     engine.close();
                     engine=null;
                 }
                 
             }catch (InterruptedException ie){
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(ie.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(ie.getLocalizedMessage());
             }
             finally{
                 lock.unlock();
@@ -145,8 +146,8 @@ public class Engine{
                     throw new OctaveEvalException(
                             "Unable to use this engine, try to run start() before use it");
             }catch (InterruptedException ie){
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(ie.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(ie.getLocalizedMessage());
             }
             finally{
                 lock.unlock();
@@ -206,15 +207,15 @@ if (sheet.getDefinitions().size()==2){
  * use a sheet to set octave environment variable without executing commands:
  * f.e.: A=zeros(1:10);
  */
-                if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.finer("Octave sheet do not contains commands...");
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Octave sheet do not contains commands...");
                 return -1;
             }
             
             // put definitions into octave environment
             if (sheet.hasDefinitions()){
-                if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.finer("Octave transferring definitions to Octave environment...");
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Octave transferring definitions to Octave environment...");
                 this.put(sheet.getDefinitions());
 /*
  * USEFUL FOR DEBUG
@@ -228,8 +229,8 @@ if (sheet.getDefinitions().size()==2){
             
             // run commands
             while (index<oc.size()){
-                if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine("Octave extracting new command to execute...");
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Octave extracting new command to execute...");
                 
                 // extract
                 OctaveCommand comm=oc.get(index++);
@@ -240,8 +241,8 @@ if (sheet.getDefinitions().size()==2){
                         String command=comm.getCommand();
                         // check command string
                         if (command.equalsIgnoreCase("")){
-                            if (LOGGER.isLoggable(Level.WARNING))
-                                LOGGER.warning("Octave cannot execute an empty or a \'quit\' command...");
+                            if (LOGGER.isWarnEnabled())
+                                LOGGER.warn("Octave cannot execute an empty or a \'quit\' command...");
                             continue;
                         }
                         else if  (command.equalsIgnoreCase("quit")){
@@ -251,7 +252,7 @@ if (sheet.getDefinitions().size()==2){
                         }
                         else {
                             // evaluate commands (f.e.: source files)                        
-                            if (LOGGER.isLoggable(Level.INFO)){
+                            if (LOGGER.isInfoEnabled()){
                                 LOGGER.info(
                                         "Octave process is running command: \""+command+
                                         "\" from sheet: "+sheet.getName());
@@ -282,23 +283,23 @@ if (sheet.getDefinitions().size()==2){
              * into the (local to java) engine env
              */
             if (sheet.hasReturns()){
-                if (LOGGER.isLoggable(Level.FINER))
-                    LOGGER.finer(
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace(
                         "Extracting returning values");
                 env.addAll(this.get(sheet.getReturns()));
             }
             
             // clear sheet environment
             if (clear && sheet.hasDefinitions()){
-                if (LOGGER.isLoggable(Level.FINER))
-                    LOGGER.finer(
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace(
                         "Clear definitions from the Octave transferring definitions to Octave environment...");
                 this.clear(sheet.getDefinitions());
             }
             
         }catch (InterruptedException ie){
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(ie.getLocalizedMessage());
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(ie.getLocalizedMessage());
         }
         finally{
             load.decrementAndGet();
@@ -340,8 +341,8 @@ if (sheet.getDefinitions().size()==2){
             if (engine==null)
                 init();
             lock.tryLock(OctaveConfiguration.getTimeToWait(), TimeUnit.SECONDS);
-            if (LOGGER.isLoggable(Level.FINER))
-                LOGGER.finer(
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace(
                     "Checking existance of function \""+_f+"\" in the octaev environment...");
             /**
              * Built-in Function: exist (function)
@@ -354,8 +355,8 @@ if (sheet.getDefinitions().size()==2){
             r=engine.get(OctaveDouble.class,"ret");
         }
         catch (InterruptedException ie){
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(ie.getLocalizedMessage());
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(ie.getLocalizedMessage());
             return false;
         }
         finally{
@@ -363,24 +364,24 @@ if (sheet.getDefinitions().size()==2){
         }
         if (r!=null){
             if (r.get(1)==1){
-                if (LOGGER.isLoggable(Level.FINER))
-                    LOGGER.finer("Checked function is a variable");
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Checked function is a variable");
                 return false;
             }
             else if (r.get(1)==2){
-                if (LOGGER.isLoggable(Level.FINER))
-                    LOGGER.finer("Checked function exists");
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Checked function exists");
                 return true;
             }
             else {
-                if (LOGGER.isLoggable(Level.FINER))
-                    LOGGER.finer("Checked function NOT exists");
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Checked function NOT exists");
                 return false;
             }
         }
         else {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Unable to get returning value from octave engine.");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Unable to get returning value from octave engine.");
             return false;
         }
     }
@@ -410,8 +411,8 @@ if (sheet.getDefinitions().size()==2){
             this.eval("clear \'"+def.getName()+"\';");
         }
         catch (InterruptedException ie){
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(ie.getLocalizedMessage());
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(ie.getLocalizedMessage());
         }
         finally{
             lock.unlock();
@@ -446,8 +447,8 @@ if (sheet.getDefinitions().size()==2){
             }
         }
         catch (InterruptedException ie){
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(ie.getLocalizedMessage());
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(ie.getLocalizedMessage());
         }
         finally{
             lock.unlock();
@@ -475,8 +476,8 @@ if (sheet.getDefinitions().size()==2){
             }
         }
         catch (InterruptedException ie){
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(ie.getLocalizedMessage());
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(ie.getLocalizedMessage());
         }
         finally{
             lock.unlock();

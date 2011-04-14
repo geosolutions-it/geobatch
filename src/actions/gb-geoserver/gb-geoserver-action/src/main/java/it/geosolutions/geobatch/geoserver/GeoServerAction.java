@@ -31,8 +31,10 @@ import java.net.URL;
 import java.util.EventObject;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  * Comments here ...
@@ -46,7 +48,7 @@ public abstract class GeoServerAction<T extends EventObject> extends BaseAction<
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(GeoServerAction.class
+    protected final static Logger LOGGER = LoggerFactory.getLogger(GeoServerAction.class
             .toString());
 
     protected final GeoServerActionConfiguration configuration;
@@ -62,7 +64,7 @@ public abstract class GeoServerAction<T extends EventObject> extends BaseAction<
         this.configuration = configuration;
 
         if ((configuration.getGeoserverURL() == null) || "".equals(configuration.getGeoserverURL())) {
-            LOGGER.log(Level.SEVERE, "GeoServerURL is null.");
+            LOGGER.error("GeoServerURL is null.");
             throw new IllegalStateException("GeoServerURL is null.");
         }
 
@@ -134,7 +136,7 @@ public abstract class GeoServerAction<T extends EventObject> extends BaseAction<
 
                 LOGGER.info("added style " + styleName + " for layer " + layerName);
             } else {
-                LOGGER.warning("error adding style " + styleName + " for layer " + layerName);
+                LOGGER.warn("error adding style " + styleName + " for layer " + layerName);
                 ret = false;
             }
         }

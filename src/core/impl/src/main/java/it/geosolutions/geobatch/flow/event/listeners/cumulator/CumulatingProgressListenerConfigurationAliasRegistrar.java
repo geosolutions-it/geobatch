@@ -24,7 +24,7 @@ package it.geosolutions.geobatch.flow.event.listeners.cumulator;
 
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
-import java.util.logging.Level;
+
 
 /**
  * Register XStream aliases for the relevant services we ship in this class.
@@ -39,7 +39,7 @@ public class CumulatingProgressListenerConfigurationAliasRegistrar extends Alias
      *            The alias registry.
      */
     public CumulatingProgressListenerConfigurationAliasRegistrar(AliasRegistry registry) {
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info(getClass().getSimpleName() + ": registering alias.");
 
         registry.putAlias("CumulatingProgressListener",

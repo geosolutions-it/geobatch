@@ -6,7 +6,8 @@ package it.geosolutions.geobatch.action.egeos.emsa;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Administrator
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class EMSAIOUtils {
 
-    protected final static Logger LOGGER = Logger.getLogger(EMSAIOUtils.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(EMSAIOUtils.class.toString());
 
     private EMSAIOUtils() {
 

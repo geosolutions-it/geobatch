@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Level;
+
 
 import com.enterprisedt.net.ftp.FTPConnectMode;
 import com.enterprisedt.net.ftp.FTPTransferType;
@@ -141,7 +141,7 @@ public class FTPUploadAction extends FTPBaseAction<FileSystemEvent> {
             //
             // ////////////////////////////////////////////////////////////////////
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("Sending file to FtpServer ... " + ftpserverHost);
 
             // boolean sent = false;
@@ -210,20 +210,20 @@ public class FTPUploadAction extends FTPBaseAction<FileSystemEvent> {
             }
 
             // if (sent)
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("FTPUploadAction: file SUCCESSFULLY sent to FtpServer!");
             // else
-            // if (LOGGER.isLoggable(Level.INFO))
+            // if (LOGGER.isInfoEnabled())
             // LOGGER.info("FTPUploadAction: file was NOT sent to FtpServer due to connection errors!");
 
             listenerForwarder.completed();
             return events;
 
         } catch (Exception ex) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex); // not
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error(ex.getLocalizedMessage(), ex); // not
             // logging rethrown exception
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER
                         .info("FTPUploadAction: file was NOT sent to FtpServer due to connection errors: "
                                 + ex.getMessage());

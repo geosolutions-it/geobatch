@@ -27,8 +27,9 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Alessio Fabiani, GeoSolutions
@@ -42,15 +43,15 @@ public class AsciiGeoServerGeneratorService extends
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(AsciiGeoServerGeneratorService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(AsciiGeoServerGeneratorService.class
             .getName());
 
     public AsciiGeoServerGenerator createAction(GeoServerActionConfiguration configuration) {
         try {
             return new AsciiGeoServerGenerator(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
             return null;
         }
     }

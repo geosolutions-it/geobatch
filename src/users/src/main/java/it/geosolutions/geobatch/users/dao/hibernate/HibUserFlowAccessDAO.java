@@ -30,7 +30,8 @@ import it.geosolutions.geobatch.users.model.UserFlowAccess;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -47,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class HibUserFlowAccessDAO extends DAOAbstractSpring<UserFlowAccess, String> implements
         UserFlowAccessDAO {
 
-    private final static Logger LOGGER = Logger.getLogger(HibUserFlowAccessDAO.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(HibUserFlowAccessDAO.class.getName());
 
     public HibUserFlowAccessDAO() {
         super(UserFlowAccess.class);

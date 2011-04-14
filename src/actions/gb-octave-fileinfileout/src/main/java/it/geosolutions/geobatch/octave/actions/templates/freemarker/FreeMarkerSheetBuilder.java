@@ -35,8 +35,9 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
@@ -46,7 +47,7 @@ import dk.ange.octave.exception.OctaveParseException;
 import freemarker.template.TemplateException;
 
 public class FreeMarkerSheetBuilder extends SheetBuilder {
-    private final static Logger LOGGER = Logger.getLogger(FreeMarkerSheetBuilder.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerSheetBuilder.class.toString());
     
     private OctaveFreeMarkerConfiguration conf=null;
     
@@ -78,7 +79,7 @@ public class FreeMarkerSheetBuilder extends SheetBuilder {
             //XStreamException - if the object cannot be serialized
             String message="FreeMarkerSheetBuilder: XStreamException - the object cannot be serialized.\n"
                 +xse.getLocalizedMessage();
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info(message);
             throw new OctaveParseException(message);
         }
@@ -99,7 +100,7 @@ public class FreeMarkerSheetBuilder extends SheetBuilder {
             //TemplateException if an exception occurs during template processing
             String message="FreeMarkerSheetBuilder: XTemplateException - an exception occurs during template processing.\n"
                 +te.getLocalizedMessage();
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info(message);
             throw new OctaveParseException(message);
         }
@@ -107,7 +108,7 @@ public class FreeMarkerSheetBuilder extends SheetBuilder {
             //IOException if an I/O exception occurs during writing to the writer.
             String message="FreeMarkerSheetBuilder: IOException - I/O exception occurs during writing to the writer.\n"
                 +ioe.getLocalizedMessage();
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info(message);
             throw new OctaveParseException(message);
         }
@@ -124,11 +125,11 @@ public class FreeMarkerSheetBuilder extends SheetBuilder {
             //XStreamException - if the object cannot be deserialized
             String message="FreeMarkerSheetBuilder: XStreamException - the object cannot be deserialized.\n"
                 +xse.getLocalizedMessage();
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info(message);
             throw new OctaveParseException(message);
         } catch (IOException e) {
-            LOGGER.log(Level.FINER, e.getMessage(), e);
+            LOGGER.trace(e.getMessage(), e);
         }
         finally{
             
@@ -136,7 +137,7 @@ public class FreeMarkerSheetBuilder extends SheetBuilder {
                 if (is!=null)
                     is.close();
             } catch (IOException e) {
-                LOGGER.log(Level.FINER, e.getMessage(), e);
+                LOGGER.trace(e.getMessage(), e);
             }            
         }
         return null;

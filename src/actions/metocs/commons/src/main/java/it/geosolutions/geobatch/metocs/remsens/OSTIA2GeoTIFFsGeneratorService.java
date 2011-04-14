@@ -26,8 +26,9 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.metocs.registry.RegistryConfiguratorService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -39,7 +40,7 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 public class OSTIA2GeoTIFFsGeneratorService extends
         RegistryConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(OSTIA2GeoTIFFsGeneratorService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(OSTIA2GeoTIFFsGeneratorService.class
             .toString());
 
     public OSTIA2GeoTIFFsGeneratorService(String id, String name, String description) {
@@ -57,16 +58,16 @@ public class OSTIA2GeoTIFFsGeneratorService extends
         try {
             return new OSTIA2GeoTIFFsFileConfiguratorAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         } catch (NoSuchAuthorityCodeException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         } catch (FactoryException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

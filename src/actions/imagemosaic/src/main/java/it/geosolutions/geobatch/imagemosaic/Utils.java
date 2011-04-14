@@ -13,8 +13,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -31,8 +32,7 @@ public class Utils {
     /**
      * Logger.
      */
-    private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(Utils.class
-            .toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Utils.class);
 
     /**
      * Checks that a {@link File} is a real file, exists and is readable.
@@ -44,7 +44,7 @@ public class Utils {
      *         <code>false </code> otherwise.
      */
     public static boolean checkFileReadable(final File file) {
-        if (LOGGER.isLoggable(Level.FINE)) {
+        if (LOGGER.isTraceEnabled()){
             final StringBuilder builder = new StringBuilder();
             builder.append("Checking file:").append(
                     FilenameUtils.getFullPath(file.getAbsolutePath())).append("\n");
@@ -52,7 +52,7 @@ public class Utils {
             builder.append("isHidden:").append(file.isHidden()).append("\n");
             builder.append("isFile").append(file.isFile()).append("\n");
             builder.append("canWrite").append(file.canWrite()).append("\n");
-            LOGGER.fine(builder.toString());
+            LOGGER.trace(builder.toString());
         }
         if (!file.exists() || !file.canRead() || !file.isFile())
             return false;
@@ -73,12 +73,12 @@ public class Utils {
             stream = new BufferedInputStream(openStream);
             properties.load(stream);
         } catch (FileNotFoundException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
             return null;
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
             return null;
         } finally {
 

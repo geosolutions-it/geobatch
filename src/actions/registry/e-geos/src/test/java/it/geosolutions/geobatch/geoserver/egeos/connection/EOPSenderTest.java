@@ -21,38 +21,27 @@
 package it.geosolutions.geobatch.geoserver.egeos.connection;
 
 import it.geosolutions.geobatch.egeos.connection.CSWConn;
-import it.geosolutions.geobatch.egeos.connection.CollectionsSender;
 import it.geosolutions.geobatch.egeos.connection.EOPSender;
-import it.geosolutions.geobatch.egeos.connection.ServicesSender;
-import it.geosolutions.geobatch.egeos.logic.CollectionsProcessor;
 import it.geosolutions.geobatch.egeos.logic.EOProcessor;
-import it.geosolutions.geobatch.egeos.logic.ServicesProcessor;
-import it.geosolutions.geobatch.egeos.types.dest.CollectionRO;
 import it.geosolutions.geobatch.egeos.types.dest.PlatformRO;
 import it.geosolutions.geobatch.egeos.types.dest.SARProductRO;
-import it.geosolutions.geobatch.egeos.types.dest.ServiceRO;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.LinkedList;
-
-import javax.xml.bind.JAXBElement;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
-
-import be.kzen.ergorr.model.csw.TransactionResponseType;
-import be.kzen.ergorr.model.rim.ExtrinsicObjectType;
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
 public class EOPSenderTest extends TestCase {
-    private final static Logger LOGGER = Logger.getLogger(EOPSenderTest.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(EOPSenderTest.class);
 
     private static final URL serviceURL;
 

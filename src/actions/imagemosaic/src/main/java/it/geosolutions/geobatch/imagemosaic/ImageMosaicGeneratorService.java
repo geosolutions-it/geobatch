@@ -24,8 +24,9 @@ package it.geosolutions.geobatch.imagemosaic;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Public class to generate JGSFLoDeSS Services
@@ -38,7 +39,7 @@ public class ImageMosaicGeneratorService extends
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(ImageMosaicGeneratorService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicGeneratorService.class
             .toString());
 
     /**
@@ -59,8 +60,8 @@ public class ImageMosaicGeneratorService extends
             else
                 return null;
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }
@@ -74,13 +75,13 @@ public class ImageMosaicGeneratorService extends
                 configuration.setWorkingDirectory(wd);
                 return true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING,"ImageMosaicGeneratorService::canCreateAction(): " +
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("ImageMosaicGeneratorService::canCreateAction(): " +
                                 "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return false;
     }

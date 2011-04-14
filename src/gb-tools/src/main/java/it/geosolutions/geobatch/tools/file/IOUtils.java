@@ -38,8 +38,9 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Assorted IO related utilities
@@ -51,7 +52,7 @@ import java.util.logging.Logger;
  */
 public final class IOUtils extends org.apache.commons.io.IOUtils {
 
-    private final static Logger LOGGER = Logger.getLogger(IOUtils.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(IOUtils.class.toString());
 
     /**
      * do not intantiate
@@ -140,8 +141,8 @@ public final class IOUtils extends org.apache.commons.io.IOUtils {
                 try {
                     lock.release();
                 } catch (Throwable t) {
-                    if (LOGGER.isLoggable(Level.INFO))
-                        LOGGER.log(Level.INFO, t.getLocalizedMessage(), t);
+                    if (LOGGER.isInfoEnabled())
+                        LOGGER.info(t.getLocalizedMessage(), t);
                 }
             }
 
@@ -370,7 +371,7 @@ public final class IOUtils extends org.apache.commons.io.IOUtils {
                 // File is already locked in this thread or virtual machine
                 LOGGER.info("File is already locked in this thread or virtual machine");
             } catch (Exception e) {
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+                LOGGER.info(e.getLocalizedMessage(), e);
             } finally {
 
                 org.apache.commons.io.IOUtils.closeQuietly(outStream);

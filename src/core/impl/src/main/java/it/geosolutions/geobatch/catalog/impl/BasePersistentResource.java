@@ -26,8 +26,9 @@ import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.dao.DAO;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -37,11 +38,11 @@ import java.util.logging.Logger;
  */
 public abstract class BasePersistentResource<C extends Configuration> extends BaseResource {
 
-    public BasePersistentResource(String id, String name, String description) {
+    public BasePersistentResource(final String id, final String name, final String description) {
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(BasePersistentResource.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(BasePersistentResource.class.toString());
 
     
     private C configuration;
@@ -65,9 +66,9 @@ public abstract class BasePersistentResource<C extends Configuration> extends Ba
             if (configuration.isDirty()) {
                 configuration = (C) dao.persist(configuration);
             } else {
-                String message = "BasePersistentResource: applying persist() with a null configuration";
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(message);
+                final String message = "BasePersistentResource: applying persist() using a null configuration";
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
                 throw new IOException(message);
             }
     }
@@ -80,21 +81,21 @@ public abstract class BasePersistentResource<C extends Configuration> extends Ba
             
             // enforce ID equivalence
             if(!this.getId().equals(configuration.getId())){
-                String message;
+                final String message;
                 if (configuration.getId()!=null)
                     message = "BasePersistentResource: The flow ID should be equals to the Flux file name: " +
                     		"ID: "+configuration.getId()+" Flux file name: "+this.getId();
                     else
                         message = "BasePersistentResource: The flow ID should not be null. Flux file name: "+this.getId();
 
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(message);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
                 throw new IOException(message);
             }
         } else {
-            String message = "BasePersistentResource: applying load() with a null configuration";
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
+            final String message = "BasePersistentResource: applying load() with a null configuration";
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             throw new IOException(message);
         }
     }

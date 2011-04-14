@@ -34,7 +34,8 @@ import it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.Assert;
 
@@ -49,7 +50,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class FileBasedFlowManagerTestCase {
 
-    private final static Logger LOGGER = Logger.getLogger(FileBasedFlowManagerTestCase.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(FileBasedFlowManagerTestCase.class
             .toString());
 
     
@@ -121,7 +122,7 @@ public class FileBasedFlowManagerTestCase {
         //
         // public FileSystemEvent process(
         // FileSystemEvent event) {
-        // FileBasedFlowManagerTestCase.this.LOGGER.log(Level.INFO,event.toString());
+        // FileBasedFlowManagerTestCase.this.LOGGER.info(event.toString());
         // return event;
         // }});
 

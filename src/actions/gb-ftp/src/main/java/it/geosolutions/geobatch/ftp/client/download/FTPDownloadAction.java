@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.ftp.client.download;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.ftp.client.FTPHelper;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPBaseAction;
@@ -35,13 +36,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Level;
 
 import com.enterprisedt.net.ftp.FTPConnectMode;
 import com.enterprisedt.net.ftp.FTPFile;
 import com.enterprisedt.net.ftp.FTPTransferType;
 import com.enterprisedt.net.ftp.WriteMode;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
 
 /**
  * This class represent an extended FTP action to download remote files or directory.
@@ -137,7 +136,7 @@ public class FTPDownloadAction extends FTPBaseAction<FileSystemEvent> {
             //
             // /////////////////////////////////////////
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("Downloading file from FtpServer ... " + ftpserverHost);
 
             boolean sent = false;
@@ -205,12 +204,12 @@ public class FTPDownloadAction extends FTPBaseAction<FileSystemEvent> {
             // TODO: remove the "sent" var and trap errors via try/catch
 
             if (sent) {
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("FTPDownloadAction: file SUCCESSFULLY downloaded from FtpServer!");
 
                 listenerForwarder.completed();
             } else {
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER
                             .info("FTPDownloadAction: file was NOT downloaded from FtpServer due to connection errors!");
 
@@ -220,8 +219,8 @@ public class FTPDownloadAction extends FTPBaseAction<FileSystemEvent> {
             return events;
 
         } catch (Exception ex) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex); // not
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error(ex.getLocalizedMessage(), ex); // not
             // logging rethrown exception
             listenerForwarder.failed(ex);
             throw new ActionException(this, ex.getMessage(), ex); // wrap

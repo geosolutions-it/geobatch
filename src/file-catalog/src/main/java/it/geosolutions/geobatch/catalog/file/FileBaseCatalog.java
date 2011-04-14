@@ -33,14 +33,12 @@ public interface FileBaseCatalog extends Catalog {
     /**
      * Getter for the base directory.
      * @return  baseDirectory
-     * @uml.property  name="baseDirectory"
      */
     public String getBaseDirectory();
 
     /**
      * Setter for the base directory.
      * @param  baseDirectory
-     * @uml.property  name="baseDirectory"
      */
     public void setBaseDirectory(String baseDirectory);
 

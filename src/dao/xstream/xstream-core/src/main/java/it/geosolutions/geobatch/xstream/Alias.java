@@ -25,8 +25,9 @@ import com.thoughtworks.xstream.XStream;
 
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO: We need to have one (or more) XML file and to bind aliases dynamically.
@@ -35,7 +36,7 @@ import java.util.logging.Logger;
  */
 public class Alias {
 
-    private final static Logger LOGGER = Logger.getLogger(Alias.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Alias.class.getName());
 
     private AliasRegistry aliasRegistry;
 
@@ -49,7 +50,7 @@ public class Alias {
 
     public void setAliases(XStream xstream) {
 
-        if (LOGGER.isLoggable(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Setting aliases.");
         }
         xstream

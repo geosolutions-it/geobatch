@@ -24,14 +24,15 @@ package it.geosolutions.geobatch.octave;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import dk.ange.octave.type.OctaveObject;
 
 public class OctaveExecutor implements Callable<List<OctaveObject>> {
     
-    private final static Logger LOGGER = Logger.getLogger(OctaveExecutor.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(OctaveExecutor.class.toString());
     
     /**
      * Octave Environment
@@ -67,26 +68,26 @@ public class OctaveExecutor implements Callable<List<OctaveObject>> {
             // extract next ExecutableSheet
             es=env.pop();
             try {
-                if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine("Octave extracted a new OctaveExecutableSheet");
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Octave extracted a new OctaveExecutableSheet");
                 /*
                  * Execute the 
                  */
                 exit=eng.exec(es, true);
 
-                if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine("Octave extecuted sheet with exit status: "
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Octave extecuted sheet with exit status: "
                         +((exit>=0)?"GOOD":"BED"));
                 
             }
             catch (Exception e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Octave throws an exception: "+e.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Octave throws an exception: "+e.getLocalizedMessage());
                 throw e;
             }
 
-            if (LOGGER.isLoggable(Level.FINE))
-                LOGGER.fine("Octave process exiting");
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace("Octave process exiting");
         } // comm!="quit"
         
         return eng.getResults();
@@ -105,28 +106,28 @@ public class OctaveExecutor implements Callable<List<OctaveObject>> {
          */
         OctaveExecutableSheet es=null;
         int exit=1;
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Octave extecutor started");
         while (exit!=0 && env.hasNext()){
             // extract next ExecutableSheet
             es=env.pop();
             try {
-                if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine("Octave extracted a new ExecutableSheet from env "+env.getUniqueID());
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Octave extracted a new ExecutableSheet from env "+env.getUniqueID());
                 
                 exit=engine.exec(es, true);
 
-                if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine("Octave extecuted sheet with exit status: "+((exit>=0)?"GOOD":"BED"));
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("Octave extecuted sheet with exit status: "+((exit>=0)?"GOOD":"BED"));
                 
             }
             catch (Exception e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Octave throws an exception: "+e.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Octave throws an exception: "+e.getLocalizedMessage());
                 throw e;
             }
         } // comm!="quit"
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Octave process exiting");
 //        if (exit>0)
             return engine.getResults();

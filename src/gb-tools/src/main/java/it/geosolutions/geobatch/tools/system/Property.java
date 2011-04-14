@@ -21,11 +21,11 @@
  */
 package it.geosolutions.geobatch.tools.system;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class Property {
-    private final static Logger LOGGER = Logger.getLogger(Property.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Property.class);
     
     /**
      * Parse the systemProperty searching for the passed arg string
@@ -47,13 +47,13 @@ public final class Property {
                  ret=Integer.parseInt(value);
             }
             catch (NumberFormatException nfe){
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning("Property.getIntProperty: NumberFormatException for argument "+arg+"="+value);
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("Property.getIntProperty: NumberFormatException for argument "+arg+"="+value);
             }
         }
         else {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("Property.getIntProperty: Property "+arg+" not set, unable to parse it!");
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn("Property.getIntProperty: Property "+arg+" not set, unable to parse it!");
         }
         
         return ret;
@@ -74,12 +74,12 @@ public final class Property {
             p=Property.getIntProperty("Property.getIntProperty: "+property);
         }
         catch (NullPointerException npe){
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("Property.getIntProperty: "+property+": "+npe.getLocalizedMessage());
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn("Property.getIntProperty: "+property+": "+npe.getLocalizedMessage());
         }
         
         if (p!=null){
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("Property.getIntProperty: "+property+": "+p);
             return p;
         }

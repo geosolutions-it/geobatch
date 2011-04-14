@@ -25,8 +25,9 @@ import it.geosolutions.geobatch.tools.file.Producer;
 
 import java.io.PipedWriter;
 import java.util.concurrent.ExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -35,7 +36,7 @@ import com.thoughtworks.xstream.XStream;
  *
  */
 public class ObjectProducer extends Producer {
-    private final static Logger LOGGER = Logger.getLogger(ObjectProducer.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(ObjectProducer.class.toString());
     
     private static XStream stream=null;
     private Object obj=null;
@@ -61,8 +62,8 @@ public class ObjectProducer extends Producer {
         }
         else {
             String message="Unable to set the object to produce to NULL!";
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             throw new NullPointerException(message);
         }
     }

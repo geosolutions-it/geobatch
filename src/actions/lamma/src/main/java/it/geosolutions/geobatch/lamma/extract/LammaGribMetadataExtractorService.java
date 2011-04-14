@@ -27,8 +27,9 @@ import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Comments here ...
@@ -39,7 +40,7 @@ import java.util.logging.Logger;
 public class LammaGribMetadataExtractorService extends BaseService implements
         ActionService<FileSystemEvent, LammaGribMetadataExtractorConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(LammaGribMetadataExtractorService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(LammaGribMetadataExtractorService.class
             .toString());
 
     public LammaGribMetadataExtractorService(String id, String name, String description) {
@@ -54,8 +55,8 @@ public class LammaGribMetadataExtractorService extends BaseService implements
         try {
             return new LammaGribMetadataExtractorAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

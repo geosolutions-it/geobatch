@@ -27,11 +27,13 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <PRE>{@code
@@ -62,7 +64,7 @@ import org.jdom.input.SAXBuilder;
  */
 public abstract class AbstractListPackage extends AbstractBasePackage {
 
-    private final static Logger LOGGER = Logger.getLogger(AbstractListPackage.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractListPackage.class);
     
     public static class PackedElement {
         private String identifier;

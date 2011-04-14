@@ -47,9 +47,33 @@
 	<!-- =========================================================== -->
 
 	<dependencies>
+	<!-- ============================== -->
+		<!-- log4j -->
+		<!-- ============================== -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+		</dependency>
+	    <dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>runtime</scope>
+			<version>1.2.14</version>
+	    </dependency>
+	    
+	    
+	
 		<!-- ============================== -->
 		<!-- Platform -->
 		<!-- ============================== -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -61,10 +85,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -105,7 +125,7 @@
 		<!-- ============================== -->
 		<!-- GB Modules -->
 		<!-- ============================== -->
-		<!-- GB Resource Loader -->
+		<!-- GB Resource Loader-->
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty</artifactId>
@@ -117,6 +137,13 @@
 			<type>pom</type>
 			<scope>test</scope>
 		</dependency>
+		
+		
+		<dependency>
+			<groupId>it.geosolutions</groupId>
+			<artifactId>gb-ftp-server</artifactId>
+		</dependency>
+<!--
 		<dependency>
 			<groupId>it.geosolutions</groupId>
 			<artifactId>gb-core-impl</artifactId>
@@ -125,14 +152,10 @@
 			<groupId>it.geosolutions</groupId>
 			<artifactId>gb-fs-catalog</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>it.geosolutions</groupId>
-			<artifactId>gb-ftp-server</artifactId>
-		</dependency>
-
+-->
 		<!-- ============================== -->
 		<!-- RESTLET -->
-		<!-- ============================== -->
+		<!-- ============================== --> 
 		<dependency>
 			<groupId>com.noelios.restlet</groupId>
 			<artifactId>com.noelios.restlet</artifactId>
@@ -173,6 +196,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
 		</dependency>
+		
 	</dependencies>
 
 

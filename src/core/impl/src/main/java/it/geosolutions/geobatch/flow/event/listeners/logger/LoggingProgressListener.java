@@ -25,7 +25,8 @@ package it.geosolutions.geobatch.flow.event.listeners.logger;
 import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -43,7 +44,7 @@ public class LoggingProgressListener extends ProgressListener {
     }
 
     private Logger getLogger() {
-        return Logger.getLogger(getConfig().getLoggerName());
+        return LoggerFactory.getLogger(getConfig().getLoggerName());
     }
 
     public void started() {

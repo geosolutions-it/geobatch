@@ -28,11 +28,12 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 
 import java.io.File;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
-    private final static Logger LOGGER = Logger.getLogger(GBFileSystemMonitorSPI.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GBFileSystemMonitorSPI.class.toString());
 
     public final static long DEFAULT_POLLING_INTERVAL = 1000; // milliseconds
 
@@ -79,10 +80,8 @@ public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
             if (element != null && element.getClass().isAssignableFrom(FileSystemEventType.class))
                 type = (FileSystemEventType) element;
         } catch (NullPointerException npe) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(
-                        Level.SEVERE,
-                        "Exception during FileSystemWatcher instantiation: "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Exception during FileSystemWatcher instantiation: "
                                 + npe.getLocalizedMessage(), npe);
         }
         // checks
@@ -103,10 +102,8 @@ public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
                 }
             }
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(
-                        Level.SEVERE,
-                        "Exception during FileSystemWatcher instantiation: "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Exception during FileSystemWatcher instantiation: "
                                 + e.getLocalizedMessage(), e);
         }
 

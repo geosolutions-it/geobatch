@@ -26,8 +26,9 @@ import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Public class to generate JGSFLoDeSS Services
@@ -37,7 +38,7 @@ public class JGSFLoDeSSNCOMGeneratorService extends
         GeoServerConfiguratorService<FileSystemEvent, MetocActionConfiguration> {
 
 
-    private final static Logger LOGGER = Logger.getLogger(JGSFLoDeSSNCOMGeneratorService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(JGSFLoDeSSNCOMGeneratorService.class
             .toString());
     
     public JGSFLoDeSSNCOMGeneratorService(String id, String name, String description) {
@@ -55,8 +56,8 @@ public class JGSFLoDeSSNCOMGeneratorService extends
         try {
             return new JGSFLoDeSSNCOMFileConfigurator(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

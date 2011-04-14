@@ -29,8 +29,9 @@ import it.geosolutions.geobatch.gliders.configuration.GlidersActionConfiguration
 import it.geosolutions.geobatch.gliders.configuration.GlidersConfiguratorService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Public class to generate NetCDF Service 
@@ -43,7 +44,7 @@ public class GlidersFileGeneratorService extends
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(GlidersFileGeneratorService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(GlidersFileGeneratorService.class
             .toString());
 
     /**
@@ -56,8 +57,8 @@ public class GlidersFileGeneratorService extends
         try {
             return new GlidersFileConfigurator(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

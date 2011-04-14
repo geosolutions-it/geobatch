@@ -52,8 +52,6 @@ import java.util.TimeZone;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,6 +74,8 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.MultiLineString;
 
@@ -87,8 +87,7 @@ import com.vividsolutions.jts.geom.MultiLineString;
  */
 public class LammaContourBuilderActionDB extends LammaBaseAction {
 
-	protected final static Logger LOGGER = Logger
-			.getLogger(LammaContourBuilderActionDB.class.toString());
+	protected final static Logger LOGGER = LoggerFactory.getLogger(LammaContourBuilderActionDB.class);
 	protected final LammaContourBuilderConfiguration configuration;
 
 	/**
@@ -190,8 +189,8 @@ public class LammaContourBuilderActionDB extends LammaBaseAction {
 
 			return outEvents;
 		} catch (Throwable t) {
-			if (LOGGER.isLoggable(Level.SEVERE)) {
-				LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+			if (LOGGER.isErrorEnabled()){
+				LOGGER.error(t.getLocalizedMessage(), t);
 			}
 			// Logging to ESB ...
 			logMessage.setMessage("[ERROR] " + t.getLocalizedMessage());
@@ -381,7 +380,7 @@ public class LammaContourBuilderActionDB extends LammaBaseAction {
 				fw.write();
 			}
 		} catch (IOException e) {
-			LOGGER.severe(e.getLocalizedMessage());
+			LOGGER.error(e.getLocalizedMessage());
 			throw e;
 		} finally {
 			if (fw != null) {
@@ -591,7 +590,7 @@ public class LammaContourBuilderActionDB extends LammaBaseAction {
 					configuration.getGeoserverPWD(), configuration
 							.getGeoserverUID(), "application/xml");
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE,
+			LOGGER.error(
 					"Error occurred while writing datstore file!", e);
 		} finally {
 			if (out != null) {
@@ -715,7 +714,7 @@ public class LammaContourBuilderActionDB extends LammaBaseAction {
 					configuration.getGeoserverPWD(), configuration
 							.getGeoserverUID(), "application/xml");
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE,
+			LOGGER.error(
 					"Error occurred while writing featureType file!", e);
 		} finally {
 			if (out != null) {
@@ -734,13 +733,13 @@ public class LammaContourBuilderActionDB extends LammaBaseAction {
 					configuration.getGeoserverUID(), configuration
 							.getGeoserverPWD(), contourLayerName);
 		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, "Error occurred while configuring "
+			LOGGER.error("Error occurred while configuring "
 					+ contourLayerName + " Layer!", e);
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Error occurred while configuring "
+			LOGGER.error("Error occurred while configuring "
 					+ contourLayerName + " Layer!", e);
 		} catch (TransformerException e) {
-			LOGGER.log(Level.SEVERE, "Error occurred while configuring "
+			LOGGER.error("Error occurred while configuring "
 					+ contourLayerName + " Layer!", e);
 		}
 	}

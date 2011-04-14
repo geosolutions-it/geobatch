@@ -23,8 +23,9 @@ package it.geosolutions.geobatch.octave;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import dk.ange.octave.exception.OctaveException;
 import dk.ange.octave.exception.OctaveParseException;
@@ -32,7 +33,7 @@ import dk.ange.octave.exception.OctaveParseException;
 public class SheetPreprocessor {
     private Map<String, SheetBuilder> preprocessors=new HashMap<String, SheetBuilder>();
     
-    private final static Logger LOGGER = Logger.getLogger(SheetPreprocessor.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(SheetPreprocessor.class.toString());
     
     public final void addBuilder(String name, SheetBuilder sb){
         preprocessors.put(name, sb);
@@ -84,8 +85,8 @@ public class SheetPreprocessor {
                             env.push(oes);
                         }
                         catch (OctaveException oe){
-                            if (LOGGER.isLoggable(Level.SEVERE))
-                                LOGGER.severe("Unable to build the sheet named: "+f.getName()
+                            if (LOGGER.isErrorEnabled())
+                                LOGGER.error("Unable to build the sheet named: "+f.getName()
                                         +" message is:\n"+oe.getLocalizedMessage());
 // debug
 oe.printStackTrace();
@@ -94,7 +95,7 @@ oe.printStackTrace();
                     }
                     else {
                         String message="No preprocessor found for the OctaveFunctionSheet named "+f.getName();
-                        if (LOGGER.isLoggable(Level.INFO))
+                        if (LOGGER.isInfoEnabled())
                             LOGGER.info(message);
                         throw new OctaveParseException(message);
                     }

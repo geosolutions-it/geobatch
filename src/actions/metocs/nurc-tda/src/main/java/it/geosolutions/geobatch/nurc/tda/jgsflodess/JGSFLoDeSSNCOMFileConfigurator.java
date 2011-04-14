@@ -54,8 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.media.jai.JAI;
 import javax.media.jai.RasterFactory;
@@ -64,6 +62,8 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.geometry.GeneralEnvelope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
@@ -81,7 +81,7 @@ import ucar.nc2.Variable;
  */
 public class JGSFLoDeSSNCOMFileConfigurator extends BaseAction<FileSystemEvent> {
     
-    private final static Logger LOGGER = Logger.getLogger(JGSFLoDeSSNCOMFileConfigurator.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(JGSFLoDeSSNCOMFileConfigurator.class.toString());
     
     private final MetocActionConfiguration configuration;
 
@@ -110,7 +110,7 @@ public class JGSFLoDeSSNCOMFileConfigurator extends BaseAction<FileSystemEvent> 
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Starting with processing...");
         NetcdfFile ncGridAreaDefinitionFile = null;
         NetcdfFileWriteable ncFileOut = null;
@@ -137,7 +137,7 @@ public class JGSFLoDeSSNCOMFileConfigurator extends BaseAction<FileSystemEvent> 
             //
             // ////////////////////////////////////////////////////////////////////
             if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "GeoServerDataDirectory is null or does not exist.");
+                LOGGER.error("GeoServerDataDirectory is null or does not exist.");
                 throw new IllegalStateException("GeoServerDataDirectory is null or does not exist.");
             }
 
@@ -163,7 +163,7 @@ public class JGSFLoDeSSNCOMFileConfigurator extends BaseAction<FileSystemEvent> 
             }
 
             if (baseFileName == null) {
-                LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
+                LOGGER.error("Unexpected file '" + inputFileName + "'");
                 throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
             }
 
@@ -201,8 +201,8 @@ public class JGSFLoDeSSNCOMFileConfigurator extends BaseAction<FileSystemEvent> 
             });
 
             if (NCOMGridAreaFiles.length != 1) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Could not find NCOM Grid Area definition file.");
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Could not find NCOM Grid Area definition file.");
                 throw new IOException("Could not find NCOM Grid Area definition file.");
             }
 
@@ -250,8 +250,8 @@ public class JGSFLoDeSSNCOMFileConfigurator extends BaseAction<FileSystemEvent> 
             });
 
             if (NCOMVarFolders.length == 0) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Could not find NCOM Variables.");
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Could not find NCOM Variables.");
                 throw new IOException("Could not find NCOM Variables.");
             }
 
@@ -558,8 +558,8 @@ public class JGSFLoDeSSNCOMFileConfigurator extends BaseAction<FileSystemEvent> 
                                                 false);
 
                                         // Resampling to a Regular Grid ...
-                                        if (LOGGER.isLoggable(Level.FINE))
-                                            LOGGER.fine("Resampling to a Regular Grid ...");
+                                        if (LOGGER.isTraceEnabled())
+                                            LOGGER.trace("Resampling to a Regular Grid ...");
                                         userRaster = METOCSActionsIOUtils.warping(bbox,
                                                 lonOriginalData, latOriginalData, xIndex
                                                         .getLength(), yIndex.getLength(), 2,
@@ -657,7 +657,7 @@ public class JGSFLoDeSSNCOMFileConfigurator extends BaseAction<FileSystemEvent> 
                     FileSystemEventType.FILE_ADDED));
             return events;
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            LOGGER.error(t.getLocalizedMessage(), t);
             JAI.getDefaultInstance().getTileCache().flush();
             return null;
         } finally {
@@ -668,8 +668,8 @@ public class JGSFLoDeSSNCOMFileConfigurator extends BaseAction<FileSystemEvent> 
                 if (ncFileOut != null)
                     ncFileOut.close();
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn(e.getLocalizedMessage(), e);
             } finally {
                 JAI.getDefaultInstance().getTileCache().flush();
             }

@@ -38,8 +38,9 @@ import java.util.List;
 import java.util.Queue;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Alessio Fabiani, GeoSolutions
@@ -48,7 +49,7 @@ import java.util.logging.Logger;
 public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends EventConsumerConfiguration>
         extends BaseResource implements Callable<Queue<XEO>>, EventConsumer<XEO, ECC> {
 
-    private static Logger LOGGER = Logger.getLogger(BaseEventConsumer.class.toString());
+    private static Logger LOGGER = LoggerFactory.getLogger(BaseEventConsumer.class.toString());
 
 //    private static Counter counter = new Counter();
 
@@ -150,8 +151,8 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
      * flow.</I>
      */
     protected Queue<XEO> applyActions(Queue<XEO> events) throws ActionException {
-        if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.log(Level.FINE, "Applying " + actions.size() + " actions on " + events.size()
+        if (LOGGER.isTraceEnabled()){
+            LOGGER.trace("Applying " + actions.size() + " actions on " + events.size()
                     + " events.");
         }
 
@@ -177,16 +178,16 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                             + action.getClass().getSimpleName() + " left no event in queue.");
                 }
                 if (events.isEmpty()) {
-                    if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.warning("Action " + action.getClass().getSimpleName()
+                    if (LOGGER.isWarnEnabled()) {
+                        LOGGER.warn("Action " + action.getClass().getSimpleName()
                                 + " left no event in queue.");
                     }
                 }
                 step++;
 
             } catch (ActionException e) {
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(e.getLocalizedMessage(), e);
                 }
 
                 listenerForwarder.setTask("Action " + action.getClass().getSimpleName()
@@ -202,9 +203,8 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                 }
 
             } catch (Exception e) { // exception not handled by the Action
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.log(Level.SEVERE,
-                            "Action threw an unhandled exception: " + e.getLocalizedMessage(), e);
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("Action threw an unhandled exception: " + e.getLocalizedMessage(), e);
                 }
 
                 listenerForwarder.setTask("Action " + action.getClass().getSimpleName()
@@ -339,7 +339,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                         ((EventConsumerListener) l).statusChanged(olds, news);
                     }
                 } catch (Exception e) {
-                    LOGGER.warning("Exception in event forwarder: " + e);
+                    LOGGER.warn("Exception in event forwarder: " + e);
                 }
             }
         }

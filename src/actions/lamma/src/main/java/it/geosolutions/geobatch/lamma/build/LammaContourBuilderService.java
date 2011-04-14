@@ -27,8 +27,9 @@ import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Comments here ...
@@ -39,7 +40,7 @@ import java.util.logging.Logger;
 public class LammaContourBuilderService extends BaseService implements
         ActionService<FileSystemEvent, LammaContourBuilderConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(LammaContourBuilderService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(LammaContourBuilderService.class
             .toString());
 
     public LammaContourBuilderService(String id, String name, String description) {
@@ -53,8 +54,8 @@ public class LammaContourBuilderService extends BaseService implements
         try {
             return new LammaContourBuilderActionDB(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

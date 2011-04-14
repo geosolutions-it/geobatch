@@ -42,7 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.TimeZone;
-import java.util.logging.Level;
+
 
 import javax.media.jai.JAI;
 
@@ -110,7 +110,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Starting with processing...");
 
         throw new ActionException(this,"NOT IMPLEMENTED");
@@ -128,7 +128,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
             // data flow configuration and dataStore name must not be null.
             // //
             if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+                LOGGER.error("DataFlowConfig is null.");
                 throw new IllegalStateException("DataFlowConfig is null.");
             }
             // ////////////////////////////////////////////////////////////////////
@@ -145,7 +145,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
             //
             // ////////////////////////////////////////////////////////////////////
             if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "WorkingDirectory is null or does not exist.");
+                LOGGER.error("WorkingDirectory is null or does not exist.");
                 throw new IllegalStateException("WorkingDirectory is null or does not exist.");
             }
 
@@ -169,7 +169,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
             }
 
             if (baseFileName == null) {
-                LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
+                LOGGER.error("Unexpected file '" + inputFileName + "'");
                 throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
             }
 
@@ -303,7 +303,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
 
             return events;
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            LOGGER.error(t.getLocalizedMessage(), t);
             return null;
         } finally {
             JAI.getDefaultInstance().getTileCache().flush();

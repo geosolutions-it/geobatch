@@ -29,7 +29,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 /**
  * 
@@ -37,7 +40,7 @@ import org.apache.log4j.Logger;
  */
 public class ServicesProcessor {
 
-    private final static Logger LOGGER = Logger.getLogger(ServicesProcessor.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ServicesProcessor.class);
 
     private Map<String, URL> services = new HashMap<String, URL>();
 

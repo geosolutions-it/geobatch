@@ -23,14 +23,14 @@
 package it.geosolutions.geobatch.jetty;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.thread.BoundedThreadPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Jetty starter, will run GeoBatch inside the Jetty web container.<br>
@@ -41,7 +41,7 @@ import org.mortbay.thread.BoundedThreadPool;
  * 
  */
 public class Start {
-    private static final Logger log = Logger.getLogger(Start.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(Start.class);
 
     public static void main(String[] args) {
         Server jettyServer = null;
@@ -83,14 +83,13 @@ public class Start {
             // jetty stop just after you started it...)
             // jettyServer.stop();
         } catch (Throwable e) {
-            log.log(Level.SEVERE, "Could not start the Jetty server: " + e.getMessage(), e);
+            log.error("Could not start the Jetty server: " + e.getMessage(), e);
 
             if (jettyServer != null) {
                 try {
                     jettyServer.stop();
                 } catch (Exception e1) {
-                    log.log(Level.SEVERE,
-                            "Unable to stop the " + "Jetty server:" + e1.getMessage(), e1);
+                    log.error("Unable to stop the " + "Jetty server:" + e1.getMessage(), e1);
                 }
             }
         }

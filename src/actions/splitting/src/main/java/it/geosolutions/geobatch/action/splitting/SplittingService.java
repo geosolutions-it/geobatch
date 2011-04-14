@@ -26,8 +26,9 @@ import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates an Action from a scripting language.
@@ -41,13 +42,13 @@ public class SplittingService extends BaseService implements
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(SplittingService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(SplittingService.class.toString());
 
     public SplittingAction createAction(SplittingConfiguration configuration) {
         try {
             return new SplittingAction(configuration);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error occurred creating splitting Action... "
+            LOGGER.error("Error occurred creating splitting Action... "
                     + e.getLocalizedMessage(), e);
         }
 

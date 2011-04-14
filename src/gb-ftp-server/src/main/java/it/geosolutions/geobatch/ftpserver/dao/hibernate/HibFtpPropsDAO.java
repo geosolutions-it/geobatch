@@ -31,14 +31,8 @@ package it.geosolutions.geobatch.ftpserver.dao.hibernate;
 
 import it.geosolutions.geobatch.ftpserver.dao.FtpPropsDAO;
 import it.geosolutions.geobatch.ftpserver.model.FtpProps;
-
 import it.geosolutions.geobatch.users.dao.DAOException;
-import java.sql.SQLException;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 

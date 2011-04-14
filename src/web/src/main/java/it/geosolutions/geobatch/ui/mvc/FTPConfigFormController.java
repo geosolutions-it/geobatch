@@ -96,7 +96,7 @@ public class FTPConfigFormController extends SimpleFormController {
             Object command, BindException errors) throws Exception {
         FtpConfigDataBean givenData = (FtpConfigDataBean) command;
 
-        logger.debug(givenData.toString());
+        //LOGGER.debug(givenData.toString());
 
         FtpServerConfig config = new FtpServerConfig();
         config.setAnonEnabled(givenData.isAnonEnabled());
@@ -126,7 +126,7 @@ public class FTPConfigFormController extends SimpleFormController {
                 stats = ((DefaultFtpServerContext) context).getFtpStatistics();
         }
         mav.addObject("ftpStats", stats);
-        logger.debug("Form data successfully submitted");
+//        logger.debug("Form data successfully submitted");
         return mav;
     }
 

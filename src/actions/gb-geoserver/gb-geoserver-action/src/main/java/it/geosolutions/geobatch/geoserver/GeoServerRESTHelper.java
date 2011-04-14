@@ -39,8 +39,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -80,7 +81,7 @@ public class GeoServerRESTHelper {
     /**
      *
      */
-    private static final Logger LOGGER = Logger.getLogger(GeoServerRESTHelper.class.toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeoServerRESTHelper.class.toString());
 
     public static boolean putBinaryFileTo(URL geoserverREST_URL, InputStream inputStream,
             String geoserverUser, String geoserverPassword, final String[] returnedLayerName) {
@@ -138,13 +139,13 @@ public class GeoServerRESTHelper {
                 extractContent(response, returnedLayerName);
                 // if (returnedLayerName!=null && returnedLayerName.length>0)
                 // returnedLayerName[0]=name;
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("GeoServerRESTHelper::putBinaryFileTo(): HTTP CREATED: " + response);
 
                 res = true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning("GeoServerRESTHelper::putBinaryFileTo(): HTTP ERROR:"
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("GeoServerRESTHelper::putBinaryFileTo(): HTTP ERROR:"
                             + "\nRequestMethod: " + con.getRequestMethod() + "\nResponseMessage: "
                             + con.getResponseMessage() + "\nCode: " + con.getResponseCode()
                             + "\nReadTimeout is (0 return implies that the option is disabled): "
@@ -152,15 +153,13 @@ public class GeoServerRESTHelper {
                 res = false;
             }
         } catch (MalformedURLException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(
-                        Level.SEVERE,
-                        "GeoServerRESTHelper::putBinaryFileTo(): MalformedURLException: "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GeoServerRESTHelper::putBinaryFileTo(): MalformedURLException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, "GeoServerRESTHelper::putBinaryFileTo(): IOException: "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GeoServerRESTHelper::putBinaryFileTo(): IOException: "
                         + e.getLocalizedMessage(), e);
             res = false;
         }
@@ -222,7 +221,7 @@ public class GeoServerRESTHelper {
                 InputStreamReader is = new InputStreamReader(con.getInputStream());
                 String response = readIs(is);
                 is.close();
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("GeoServerRESTHelper::putTextFileTo(): HTTP OK: " + response);
                 res = true;
             } else if (responseCode == HttpURLConnection.HTTP_CREATED) {
@@ -232,13 +231,13 @@ public class GeoServerRESTHelper {
 
                 extractContent(response, returnedLayerName);
 
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("GeoServerRESTHelper::putTextFileTo(): HTTP CREATED: " + response);
 
                 res = true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning("GeoServerRESTHelper::putTextFileTo(): HTTP ERROR:"
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("GeoServerRESTHelper::putTextFileTo(): HTTP ERROR:"
                             + "\nRequestMethod: " + con.getRequestMethod() + "\nResponseMessage: "
                             + con.getResponseMessage() + "\nCode: " + con.getResponseCode()
                             + "\nReadTimeout is (0 return implies that the option is disabled): "
@@ -246,15 +245,13 @@ public class GeoServerRESTHelper {
                 res = false;
             }
         } catch (MalformedURLException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(
-                        Level.SEVERE,
-                        "GeoServerRESTHelper::putBinaryFileTo(): MalformedURLException: "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GeoServerRESTHelper::putBinaryFileTo(): MalformedURLException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, "GeoServerRESTHelper::putBinaryFileTo(): IOException: "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GeoServerRESTHelper::putBinaryFileTo(): IOException: "
                         + e.getLocalizedMessage(), e);
             res = false;
         }
@@ -307,7 +304,7 @@ public class GeoServerRESTHelper {
                 InputStreamReader is = new InputStreamReader(con.getInputStream());
                 String response = readIs(is);
                 is.close();
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("GeoServerRESTHelper::putContent(): HTTP OK: " + response);
                 res = true;
             } else if (responseCode == HttpURLConnection.HTTP_CREATED) {
@@ -317,14 +314,14 @@ public class GeoServerRESTHelper {
                 extractContent(response, returnedLayerName);
                 // if (returnedLayerName!=null && returnedLayerName.length>0)
                 // returnedLayerName[0]=name;
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.log(Level.INFO, "GeoServerRESTHelper::putContent(): HTTP CREATED: "
+                if (LOGGER.isInfoEnabled())
+                    LOGGER.info("GeoServerRESTHelper::putContent(): HTTP CREATED: "
                             + response);
 
                 res = true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning("GeoServerRESTHelper::putContent(): HTTP ERROR:"
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("GeoServerRESTHelper::putContent(): HTTP ERROR:"
                             + "\nRequestMethod: " + con.getRequestMethod() + "\nResponseMessage: "
                             + con.getResponseMessage() + "\nCode: " + con.getResponseCode()
                             + "\nReadTimeout is (0 return implies that the option is disabled): "
@@ -332,17 +329,13 @@ public class GeoServerRESTHelper {
                 res = false;
             }
         } catch (MalformedURLException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(
-                        Level.SEVERE,
-                        "GeoServerRESTHelper::putContent(): MalformedURLException: "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GeoServerRESTHelper::putContent(): MalformedURLException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(
-                        Level.SEVERE,
-                        "GeoServerRESTHelper::putContent(): IOException: "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GeoServerRESTHelper::putContent(): IOException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         }
@@ -417,14 +410,14 @@ public class GeoServerRESTHelper {
                 extractContent(response, returnedLayerName);
                 // if (returnedLayerName!=null && returnedLayerName.length>0)
                 // returnedLayerName[0]=name;
-                if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.log(Level.FINE, "HTTP CREATED: " + response);
-                else if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("HTTP CREATED: " + response);
+                else if (LOGGER.isInfoEnabled())
                     LOGGER.info("HTTP CREATED: " + name);
                 res = true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning("GeoServerRESTHelper::postTextFileTo(): HTTP ERROR:"
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("GeoServerRESTHelper::postTextFileTo(): HTTP ERROR:"
                             + "\nRequestMethod: " + con.getRequestMethod() + "\nResponseMessage: "
                             + con.getResponseMessage() + "\nCode: " + con.getResponseCode()
                             + "\nReadTimeout is (0 return implies that the option is disabled): "
@@ -432,17 +425,13 @@ public class GeoServerRESTHelper {
                 res = false;
             }
         } catch (MalformedURLException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(
-                        Level.SEVERE,
-                        "GeoServerRESTHelper::postTextFileTo(): MalformedURLException: "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GeoServerRESTHelper::postTextFileTo(): MalformedURLException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(
-                        Level.SEVERE,
-                        "GeoServerRESTHelper::postTextFileTo(): IOException: "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GeoServerRESTHelper::postTextFileTo(): IOException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         }
@@ -470,8 +459,8 @@ public class GeoServerRESTHelper {
                 name = response.substring(indexOfNameStart + 6, indexOfNameEnd);
             } catch (StringIndexOutOfBoundsException e) {
                 name = response;
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING,
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn(
                             "GeoServerRESTHelper::extractName(): " + e.getLocalizedMessage(), e);
             }
         }
@@ -502,9 +491,8 @@ public class GeoServerRESTHelper {
                 }
 
             } catch (StringIndexOutOfBoundsException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE,
-                            "GeoServerRESTHelper::extractContent(): StringIndexOutOfBoundsException: "
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("GeoServerRESTHelper::extractContent(): StringIndexOutOfBoundsException: "
                                     + e.getLocalizedMessage(), e);
             }
         }
@@ -542,9 +530,8 @@ public class GeoServerRESTHelper {
                 input.append(inCh, 0, r);
             }
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE,
-                        "GeoServerRESTHelper::readIs(): " + e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GeoServerRESTHelper::readIs(): " + e.getLocalizedMessage(), e);
         }
 
         return input.toString();
@@ -628,7 +615,7 @@ public class GeoServerRESTHelper {
                 geoserverREST_URL = new URL(new StringBuilder(geoserverBaseURL)
                         .append("/rest/folders/").append(coverageStoreId).append("/layers/")
                         .append(layerName).append("/file.").append(type).append(suffix).toString());
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("GeoServerRESTHelper::sendCoverage(): sending binary content to ... "
                             + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, new FileInputStream(
@@ -638,7 +625,7 @@ public class GeoServerRESTHelper {
                         .append("/rest/folders/").append(coverageStoreId).append("/layers/")
                         .append(layerName).append("/url.").append(type).append(queryString)
                         .toString());
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("GeoServerRESTHelper::sendCoverage(): sending data "
                             + data.toURL().toExternalForm() + " to ... " + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
@@ -648,7 +635,7 @@ public class GeoServerRESTHelper {
                         .append("/rest/folders/").append(coverageStoreId).append("/layers/")
                         .append(layerName).append("/external.").append(type).append(queryString)
                         .toString());
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("GeoServerRESTHelper::sendCoverage(): sending PATH "
                             + data.toURL().toExternalForm() + " to ... " + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
@@ -660,7 +647,7 @@ public class GeoServerRESTHelper {
                         .append("/rest/workspaces/").append(queryParams.get("namespace"))
                         .append("/coveragestores/").append(coverageStoreId).append("/file.")
                         .append(type).append(suffix).toString());
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("GeoServerRESTHelper::sendCoverage(): sending binary content to ... "
                             + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, new FileInputStream(
@@ -670,7 +657,7 @@ public class GeoServerRESTHelper {
                         .append("/rest/workspaces/").append(queryParams.get("namespace"))
                         .append("/coveragestores/").append(coverageStoreId).append("/url.")
                         .append(type).append(suffix).toString());
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("GeoServerRESTHelper::sendCoverage(): sending data " + data.toURL().toExternalForm()
                             + " to ... " + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
@@ -680,7 +667,7 @@ public class GeoServerRESTHelper {
                         .append("/rest/workspaces/").append(queryParams.get("namespace"))
                         .append("/coveragestores/").append(coverageStoreId).append("/external.")
                         .append(type).append(suffix).toString());
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("GeoServerRESTHelper::sendCoverage(): sending PATH " + data.toURL().toExternalForm()
                             + " to ... " + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
@@ -689,7 +676,7 @@ public class GeoServerRESTHelper {
         }
         
         if (sent) {
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("GeoServerRESTHelper::sendCoverage(): coverage SUCCESSFULLY sent to GeoServer");
             configureLayer(queryParams, defaultStyle, geoserverBaseURL, geoserverUID, geoserverPWD,
                     layerName);
@@ -698,8 +685,8 @@ public class GeoServerRESTHelper {
             // geoserverBaseURL, geoserverUID, geoserverPWD);
             return layer;
         } else {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("GeoServerRESTHelper::sendCoverage(): " +
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn("GeoServerRESTHelper::sendCoverage(): " +
                 		"coverage was NOT sent to GeoServer due to connection errors!");
             return null;
         }
@@ -774,7 +761,7 @@ public class GeoServerRESTHelper {
         }
 
         if (sent) {
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("GeoServerRESTHelper::sendFeature(): coverage SUCCESSFULLY sent to GeoServer");
 
             configureLayer(queryParams, defaultStyle, geoserverBaseURL, geoserverUID, geoserverPWD,
@@ -785,8 +772,8 @@ public class GeoServerRESTHelper {
             // geoserverBaseURL, geoserverUID, geoserverPWD);
             return layer;
         } else {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("GeoServerRESTHelper::sendFeature(): FeatureType was NOT sent to GeoServer due to connection errors!");
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn("GeoServerRESTHelper::sendFeature(): FeatureType was NOT sent to GeoServer due to connection errors!");
             return null;
         }
     }
@@ -888,13 +875,13 @@ public class GeoServerRESTHelper {
             final boolean send = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, inStream,
                     geoserverUID, geoserverPWD, null, "text/xml");
             if (send){
-                if (LOGGER.isLoggable(Level.INFO)){
+                if (LOGGER.isInfoEnabled()){
                     LOGGER.info("GeoServerRESTHelper::sendLayerConfiguration(): Layer SUCCESSFULLY configured");
                 }
             }
             else {
-                if (LOGGER.isLoggable(Level.WARNING)){
-                    LOGGER.warning("GeoServerRESTHelper::sendLayerConfiguration(): Layer FAILED to be configured");
+                if (LOGGER.isWarnEnabled()){
+                    LOGGER.warn("GeoServerRESTHelper::sendLayerConfiguration(): Layer FAILED to be configured");
                 }
             }
         } finally {
@@ -949,13 +936,13 @@ public class GeoServerRESTHelper {
             final boolean send = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, inStream,
                     geoserverUID, geoserverPWD, null, "text/xml");
             if (send){
-                if (LOGGER.isLoggable(Level.INFO)){
+                if (LOGGER.isInfoEnabled()){
                     LOGGER.info("GeoServerRESTHelper::sendCoverageConfiguration(): Coverage SUCCESSFULLY configured!");
                 }
             }
             else {
-                if (LOGGER.isLoggable(Level.WARNING)){
-                    LOGGER.warning("GeoServerRESTHelper::sendCoverageConfiguration(): Layer FAILED to be configured");
+                if (LOGGER.isWarnEnabled()){
+                    LOGGER.warn("GeoServerRESTHelper::sendCoverageConfiguration(): Layer FAILED to be configured");
                 }
             }
         } finally {
@@ -1200,7 +1187,7 @@ public class GeoServerRESTHelper {
 
                 LOGGER.info("added style " + styleName + " for layer " + layerName);
             } else {
-                LOGGER.warning("error adding style " + styleName + " for layer " + layerName);
+                LOGGER.warn("error adding style " + styleName + " for layer " + layerName);
                 ret = false;
             }
         }

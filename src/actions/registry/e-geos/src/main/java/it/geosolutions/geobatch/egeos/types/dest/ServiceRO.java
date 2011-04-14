@@ -23,7 +23,10 @@ package it.geosolutions.geobatch.egeos.types.dest;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 /**
  * Registry Object for Service.
@@ -63,7 +66,7 @@ import org.apache.log4j.Logger;
  * @author ETj (etj at geo-solutions.it)
  */
 public class ServiceRO {
-    private final static Logger LOGGER = Logger.getLogger(ServiceRO.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ServiceRO.class);
     
     private String id;
     private String getCapURL = null;

@@ -37,8 +37,9 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
 
@@ -59,7 +60,7 @@ import org.springframework.web.context.WebApplicationContext;
  */
 public class XStreamCatalogLoader extends CatalogHolder implements ApplicationContextAware {
 
-    private static final Logger LOGGER = Logger.getLogger(XStreamCatalogLoader.class.toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(XStreamCatalogLoader.class.toString());
 
     private final Alias alias;
 
@@ -127,8 +128,8 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
 
         } catch (SecurityException e) {
             // gobble exception
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
         }
 
         if (dataDir == null)
@@ -188,12 +189,12 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
         for (Entry<String, ? extends Service> servicePair : services.entrySet()) {
             final Service service = servicePair.getValue();
             if (!service.isAvailable()) {
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info(new StringBuilder("Skipping service ").append(servicePair.getKey())
                             .append(service.getClass().toString()).toString());
                 continue;
             }
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info(new StringBuilder("Loading service ").append(servicePair.getKey())
                         .append(service.getClass().toString()).toString());
             catalog.add(servicePair.getValue());
@@ -215,7 +216,7 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
             try {
 
                 // loaded
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info(new StringBuilder("Loading flow from file ").append(
                             o.getAbsolutePath()).toString());
 
@@ -234,12 +235,12 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
                 catalog.add(flow);
                 
                 // loaded
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info(new StringBuilder("Loaded flow from file ").append(
                             o.getAbsolutePath()).toString());
             } catch (Throwable t) {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING, "Skipping flow", t);
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("Skipping flow", t);
             }
 
         }

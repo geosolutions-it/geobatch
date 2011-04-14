@@ -31,14 +31,15 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.global.CatalogHolder;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.ftpserver.ftplet.DefaultFtpReply;
-import org.apache.ftpserver.ftplet.DefaultFtplet;
-
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.FtpReply;
 import org.apache.ftpserver.ftplet.FtpRequest;
@@ -56,7 +57,7 @@ public class GeoBatchFtplet
 // extends DefaultFtplet
         implements Ftplet {
 
-    private final static Logger LOGGER = Logger.getLogger(GeoBatchFtplet.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeoBatchFtplet.class.getName());
 
     private FtpStatistics ftpStats;
 
@@ -72,7 +73,7 @@ public class GeoBatchFtplet
 
     private void logStatus() {
         LOGGER
-                .log(Level.INFO, "FTP Stats: CONNECTIONS : {0} / {1} -- LOGINS : {2} / {3}",
+                .info("FTP Stats: CONNECTIONS : {0} / {1} -- LOGINS : {2} / {3}",
                         new Object[] { this.ftpStats.getCurrentConnectionNumber(),
                                 this.ftpStats.getTotalConnectionNumber(),
                                 this.ftpStats.getCurrentLoginNumber(),
@@ -151,12 +152,12 @@ public class GeoBatchFtplet
             // been
             // an
             // error
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, "Upload of file '" + request.getArgument() + "' failed.");
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("Upload of file '" + request.getArgument() + "' failed.");
             return FtpletResult.DEFAULT;
         } else {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, "Upload of file '" + request.getArgument() + "' completed.");
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("Upload of file '" + request.getArgument() + "' completed.");
             return fireGeoBatchFileAdd(session, request);
         }
     }
@@ -168,12 +169,12 @@ public class GeoBatchFtplet
             // been
             // an
             // error
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, "Append of file '" + request.getArgument() + "' failed.");
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("Append of file '" + request.getArgument() + "' failed.");
             return FtpletResult.DEFAULT;
         } else {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, "Append of file '" + request.getArgument() + "' completed.");
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("Append of file '" + request.getArgument() + "' completed.");
             return fireGeoBatchFileAdd(session, request);
         }
     }
@@ -190,8 +191,8 @@ public class GeoBatchFtplet
 
         String flowid = FilenameUtils.getName(currDirPath);
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.log(Level.INFO,
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info(
                     "File upload/append finished: - session working dir: ''{0}'' - file: ''{1}''",
                     new Object[] { currDirPath, filename });
 
@@ -214,11 +215,11 @@ public class GeoBatchFtplet
         }
 
         if (fm != null) {
-            LOGGER.log(Level.INFO, "Firing FILEADDED event to {0}", fm);
+            LOGGER.info("Firing FILEADDED event to {0}", fm);
             fm.postEvent(new FileSystemEvent(targetFile,
                     FileSystemEventType.FILE_ADDED));
         } else {
-            LOGGER.log(Level.INFO, "No FlowManager ''{0}'' to notify about {1} -- {2}",
+            LOGGER.info("No FlowManager ''{0}'' to notify about {1} -- {2}",
                     new Object[] { flowid, targetFile, availFmSb });
         }
 

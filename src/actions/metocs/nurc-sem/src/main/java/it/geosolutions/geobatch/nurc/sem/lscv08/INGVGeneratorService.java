@@ -53,15 +53,13 @@ public class INGVGeneratorService extends BaseService implements
                 configuration.setWorkingDirectory(wd);
                 return true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(
-                            Level.WARNING,
-                            "INGVGeneratorService::canCreateAction(): "
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("INGVGeneratorService::canCreateAction(): "
                                     + "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -77,8 +75,8 @@ public class INGVGeneratorService extends BaseService implements
         try {
             return new INGVAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

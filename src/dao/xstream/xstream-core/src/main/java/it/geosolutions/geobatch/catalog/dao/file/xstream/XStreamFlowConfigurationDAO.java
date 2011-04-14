@@ -39,14 +39,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
 public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> implements
         FlowManagerConfigurationDAO {
 
-    private final static Logger LOGGER = Logger.getLogger(XStreamFlowConfigurationDAO.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(XStreamFlowConfigurationDAO.class
             .toString());
 
     public XStreamFlowConfigurationDAO(String directory, Alias alias) {
@@ -71,11 +72,11 @@ public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> i
                         .fromXML(new BufferedInputStream(inStream));
 
                 if (obj.getEventConsumerConfiguration() == null)
-                    LOGGER.severe("FileBasedFlowConfiguration " + obj
+                    LOGGER.error("FileBasedFlowConfiguration " + obj
                             + " does not have a ConsumerCfg");
 
                 if (obj.getEventGeneratorConfiguration() == null)
-                    LOGGER.severe("FileBasedFlowConfiguration " + obj
+                    LOGGER.error("FileBasedFlowConfiguration " + obj
                             + " does not have a GeneratorCfg");
 
                 resolveReferences(obj);
@@ -112,7 +113,7 @@ public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> i
             for (ProgressListenerConfiguration plc : obj.getProgressListenerConfigurations()) {
                 String plcId = plc.getId();
                 if (plcId == null) {
-                    LOGGER.severe("FileBasedFlowConfiguration " + obj
+                    LOGGER.error("FileBasedFlowConfiguration " + obj
                             + " declares a Listener with no id: " + plc);
                     continue; // skip the listener definition
                 }
@@ -129,7 +130,7 @@ public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> i
                     if (listenersMap.containsKey(listenerId)) {
                         ecc.addListenerConfiguration(listenersMap.get(listenerId));
                     } else {
-                        LOGGER.severe("FileBasedFlowConfiguration " + obj
+                        LOGGER.error("FileBasedFlowConfiguration " + obj
                                 + " declares an invalid listener in the ConsumerConfiguration '"
                                 + listenerId + "'");
                     }
@@ -151,7 +152,7 @@ public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> i
                         if (listenersMap.containsKey(actionListenerId)) {
                             ac.addListenerConfiguration(listenersMap.get(actionListenerId));
                         } else {
-                            LOGGER.severe("FileBasedFlowConfiguration " + obj
+                            LOGGER.error("FileBasedFlowConfiguration " + obj
                                     + " declares an invalid listener in an action configuration '"
                                     + actionListenerId + "'");
                         }

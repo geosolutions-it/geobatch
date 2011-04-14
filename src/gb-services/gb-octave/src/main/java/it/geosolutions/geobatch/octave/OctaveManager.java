@@ -32,8 +32,9 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import dk.ange.octave.type.OctaveObject;
 /**
@@ -43,7 +44,7 @@ import dk.ange.octave.type.OctaveObject;
  */
 public final class OctaveManager{
     
-    private final static Logger LOGGER = Logger.getLogger(OctaveManager.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(OctaveManager.class.toString());
 
     private final static int TIME_TO_WAIT = 100*60; // in seconds == 100 min
     
@@ -87,8 +88,8 @@ public final class OctaveManager{
                     }
                 }
                 catch(InterruptedException ie){
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe(ie.getLocalizedMessage());
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(ie.getLocalizedMessage());
                     if (singleton!=null)
                         singleton.shutdown();
                 }
@@ -99,14 +100,14 @@ public final class OctaveManager{
             return singleton;
         }
         catch (IOException ioe){
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(ioe.getLocalizedMessage());
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(ioe.getLocalizedMessage());
             if (singleton!=null)
                 singleton=null;
         }
         catch (Exception e){
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(e.getLocalizedMessage());
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage());
             if (singleton!=null)
                 singleton=null;
         }
@@ -190,7 +191,7 @@ public final class OctaveManager{
      * @throws InterruptedException
      */
     public void shutdown(){
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("OctaveManager is shutting down");
         exit();
         //clear(); this is done if exit
@@ -201,7 +202,7 @@ public final class OctaveManager{
      * this singleton state
      */
     private void clear(){
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("OctaveManager clear");
         
         // resetting initialization flag to false
@@ -239,7 +240,7 @@ public final class OctaveManager{
      */
     private void exit(){
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("OctaveManager is exiting");
         
         notExit=false; //exit
@@ -250,8 +251,8 @@ public final class OctaveManager{
         try {
             inQueue.put(exit_env);
         } catch (InterruptedException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("OctaveManager engine process exit abnormally\n"
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("OctaveManager engine process exit abnormally\n"
                         +e.getLocalizedMessage());
         }
     }
@@ -264,7 +265,7 @@ public final class OctaveManager{
             OctaveProcessScheduler.getOctaveProcessScheduler(octaveConfiguration.getExecutorService());
         
         try{
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("OctaveManager starting up...");
             //wait for an new object
             while ((env=inQueue.take())!=null && notExit){
@@ -276,8 +277,8 @@ public final class OctaveManager{
                     task=octaveProcessScheduler.getProcessor(env);
                 }
                 catch(InterruptedException ie){
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe("OctaveManager engine process exit abnormally.\n"
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("OctaveManager engine process exit abnormally.\n"
                                 +ie.getLocalizedMessage());
                     // octave engine process exit abnormally
                     shutdown();
@@ -289,15 +290,15 @@ public final class OctaveManager{
                     result = octaveConfiguration.getExecutorService().submit(task);
                 }
                 catch(RejectedExecutionException ree){
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe("OctaveManager task cannot be scheduled for execution.\n"
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("OctaveManager task cannot be scheduled for execution.\n"
                                 +ree.getLocalizedMessage());
                     //if task cannot be scheduled for execution
                     shutdown();
                 }
                 catch(NullPointerException npe){
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe("OctaveManager passed task is null\n"+npe.getLocalizedMessage());
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("OctaveManager passed task is null\n"+npe.getLocalizedMessage());
                     //The passed task is null
                     shutdown();
                 }
@@ -306,8 +307,8 @@ public final class OctaveManager{
                 out.put(env.getUniqueID(), result);
                 }
                 catch(NullPointerException npe){
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe("OctaveManager the key or value is null\n"+npe.getLocalizedMessage());
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("OctaveManager the key or value is null\n"+npe.getLocalizedMessage());
                     //NullPointerException - if the key or value is null.
                     shutdown();
                 }
@@ -318,8 +319,8 @@ public final class OctaveManager{
             } // while !shutdown()
         }
         catch(InterruptedException ie){
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("OctaveManager interrupted while waiting\n"+ie.getLocalizedMessage());
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("OctaveManager interrupted while waiting\n"+ie.getLocalizedMessage());
 //InterruptedException - if interrupted while waiting
         }
         finally{

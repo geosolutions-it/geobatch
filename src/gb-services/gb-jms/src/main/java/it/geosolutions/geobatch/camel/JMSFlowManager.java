@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Queue;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +34,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 @ManagedResource
 public class JMSFlowManager implements AsyncProcessor {
-    private final static Logger LOGGER = Logger.getLogger(JMSFlowManager.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(JMSFlowManager.class.toString());
     
     private FileBasedEventConsumerConfiguration configuration;
     private FileBasedFlowManager parent;
@@ -41,14 +42,14 @@ public class JMSFlowManager implements AsyncProcessor {
 
     private void init(String FlowManagerID) throws Exception {
 
-        if (LOGGER.isLoggable(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT catalog");
         }
         Catalog catalog = CatalogHolder.getCatalog();
         if (catalog == null)
             throw new NullArgumentException(
                     "JMSFlowManager: Unable to load the catalog... -> catalog == null.");
-        if (LOGGER.isLoggable(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT parent flow manager");
         }
         parent = catalog.getResource(FlowManagerID,
@@ -57,20 +58,20 @@ public class JMSFlowManager implements AsyncProcessor {
             throw new NullArgumentException("JMSFlowManager: The flow id \'" + FlowManagerID
                     + "\' do not exists into catalog... -> parent == null");
 
-        if (LOGGER.isLoggable(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT configuration");
         }
         configuration = ((FileBasedEventConsumerConfiguration) parent.getConfiguration()
                 .getEventConsumerConfiguration()).clone();
-        if (LOGGER.isLoggable(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT consumer");
         }
         consumer = new GBFileSystemEventConsumer(configuration);
-        if (LOGGER.isLoggable(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT injecting consumer to the parent flow");
         }
         parent.getEventConsumers().add(consumer);
-        if (LOGGER.isLoggable(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT concluded");
         }
     }
@@ -118,21 +119,21 @@ public class JMSFlowManager implements AsyncProcessor {
             // initializing members
             init(request.getFlowId());
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("JMSFlowManager: INIT error:" + e.getLocalizedMessage());
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn("JMSFlowManager: INIT error:" + e.getLocalizedMessage());
             }
             throw e;
         }
-        if (LOGGER.isLoggable(Level.INFO)) {
+        if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: Initialized");
         }
 
         List<FileSystemEvent> fsel = buildEventList(request.getFiles());
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("JMSFlowManager: EventList Built...");
 
         if (consumer.canConsumeAll(fsel)) {
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("JMSFlowManager: Can consume");
             
             // using the Flow manager task executor
@@ -153,8 +154,8 @@ public class JMSFlowManager implements AsyncProcessor {
             return new JMSFlowResponse(JMSFlowStatus.SUCCESS, outList);
 
         } else {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("JMSFlowManager: CanNOT consume");
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn("JMSFlowManager: CanNOT consume");
 
             throw new IllegalArgumentException("JMSFlowManager: Unable to start the flow: "
                     + "message do not match flow configuration");
@@ -164,7 +165,7 @@ public class JMSFlowManager implements AsyncProcessor {
     @InOut
     public void process(Exchange exchange) throws Exception {
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("JMSFlowManager: will reply to ->"
                     + exchange.getIn().getHeader("JMSReplyTo").toString());
 
@@ -179,7 +180,7 @@ public class JMSFlowManager implements AsyncProcessor {
                 throw new Throwable("Bad message type");
             } else {
 
-                if (LOGGER.isLoggable(Level.INFO)) {
+                if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("JMSFlowManager: (" + exchange.getIn().getMessageId()
                             + ") STARTING PROCESSING");
                 }
@@ -198,8 +199,8 @@ public class JMSFlowManager implements AsyncProcessor {
 
             responses.add(message);
 
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe(message);
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error(message);
             }
 
 //TODO            // exchange.getIn().setFault(true);
@@ -212,15 +213,15 @@ public class JMSFlowManager implements AsyncProcessor {
                     responses = new ArrayList<String>(1);
                 String message = "JMSFlowManager (" + exchange.getIn().getMessageId()
                         + "): Problem occurred during flow execution";
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning(message);
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn(message);
                 responses.add(message);
                 response = new JMSFlowResponse(JMSFlowStatus.FAILURE, responses);
             }
 
             in.setBody(response, JMSFlowResponse.class);
             // exchange.setOut(in);//TODO check needed?
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("JMSFlowManager: Process ends for message ID:"
                         + exchange.getIn().getMessageId());
         }

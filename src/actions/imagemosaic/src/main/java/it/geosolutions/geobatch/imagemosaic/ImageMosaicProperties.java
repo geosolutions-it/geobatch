@@ -10,8 +10,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.geotools.data.DataUtilities;
@@ -22,7 +23,7 @@ public abstract class ImageMosaicProperties {
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(ImageMosaicProperties.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicProperties.class.toString());
 
     /**
      * get the properties object from the file.
@@ -68,9 +69,8 @@ public abstract class ImageMosaicProperties {
                     // Write text to file
                     out.println("regex=" + regex);
                 } catch (IOException e) {
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.log(Level.SEVERE,
-                                "Error occurred while writing "+regexFile.getAbsolutePath()+" file!", e);
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("Error occurred while writing "+regexFile.getAbsolutePath()+" file!", e);
                 } finally {
                     if (out != null) {
                         out.flush();
@@ -154,9 +154,8 @@ public abstract class ImageMosaicProperties {
                                 + "RuntimeFileNameExtractorSPI[runtimeregex](runtime)"
                                 : ""));
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE,
-                            "Error occurred while writing indexer.properties file!", e);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Error occurred while writing indexer.properties file!", e);
             } finally {
                 if (out != null) {
                     out.flush();
@@ -181,8 +180,8 @@ public abstract class ImageMosaicProperties {
                 }
             }
             else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning(
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn(
                            "ImageMosaicProperty:buildIndexer():Unable to get the "+CACHING_KEY
                            +" property into the "+indexer.getAbsolutePath()+" file.");
             }
@@ -211,36 +210,36 @@ public abstract class ImageMosaicProperties {
                             new File(((FileBaseCatalog) CatalogHolder.getCatalog())
                                     .getBaseDirectory()));
                 } catch (IOException e) {
-                    if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
-                        ImageMosaicAction.LOGGER.warning("ImageMosaicAction:checkDataStore() " + e.getMessage());
+                    if (LOGGER.isWarnEnabled()){
+                        LOGGER.warn("ImageMosaicAction:checkDataStore() " + e.getMessage());
                     }
                     return null;
                 }
                 if (dsFile != null) {
                     if (!dsFile.isDirectory()) {
-                        if (ImageMosaicAction.LOGGER.isLoggable(Level.INFO)) {
-                            ImageMosaicAction.LOGGER.info("ImageMosaicAction:checkDataStore() Configuration DataStore file found: '"
+                        if (LOGGER.isInfoEnabled()){
+                            LOGGER.info("ImageMosaicAction:checkDataStore() Configuration DataStore file found: '"
                                     + dsFile.getAbsolutePath() + "'.");
                         }
                         try {
                             FileUtils.copyFileToDirectory(dsFile, baseDir);
                         } catch (IOException e) {
-                            if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING))
-                                ImageMosaicAction.LOGGER.warning("ImageMosaicAction:checkDataStore() "
+                            if (LOGGER.isWarnEnabled())
+                                LOGGER.warn("ImageMosaicAction:checkDataStore() "
                                         + e.getMessage());
                             return null;
                         }
                     } else {
-                        if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
-                            ImageMosaicAction.LOGGER.log(Level.WARNING,
+                        if (LOGGER.isWarnEnabled()){
+                            LOGGER.warn(
                                     "ImageMosaicAction:checkDataStore() DataStoreProperties file points to a directory! "
                                             + dsFile.getAbsolutePath() + "'. Skipping event");
                         }
                         return null;
                     }
                 } else {
-                    if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
-                        ImageMosaicAction.LOGGER.log(Level.WARNING,
+                    if (LOGGER.isWarnEnabled()){
+                        LOGGER.warn(
                                 "ImageMosaicAction: DataStoreProperties file not found"
                                         + configuration.getDatastorePropertiesPath()
                                         + "'. Skipping event");
@@ -248,8 +247,8 @@ public abstract class ImageMosaicProperties {
                     return null;
                 }
             } else {
-                if (ImageMosaicAction.LOGGER.isLoggable(Level.WARNING)) {
-                    ImageMosaicAction.LOGGER.log(Level.WARNING,
+                if (LOGGER.isWarnEnabled()){
+                    LOGGER.warn(
                             "ImageMosaicAction: DataStoreProperties file not configured "
                                     + "nor found into destination dir. A shape file will be used.");
                 }

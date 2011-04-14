@@ -25,20 +25,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.log4j.Logger;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  * @author ETj (etj at geo-solutions.it)
  */
 public class EarthObservation {
-    private final static Logger LOGGER = Logger.getLogger(EarthObservation.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(EarthObservation.class);
 
     public final static Namespace NS = Namespace.getNamespace("http://www.emsa.europa.eu/csndc");
     public final static Namespace NS_CSN = Namespace.getNamespace("csn", "http://www.emsa.europa.eu/csndc");

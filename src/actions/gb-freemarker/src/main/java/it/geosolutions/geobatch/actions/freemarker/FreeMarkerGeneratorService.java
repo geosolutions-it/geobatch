@@ -25,8 +25,9 @@ import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.util.EventObject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -40,7 +41,7 @@ public class FreeMarkerGeneratorService extends BaseService implements
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(FreeMarkerGeneratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerGeneratorService.class.toString());
 
 //    public FreeMarkerGeneratorService(){
 //        super();
@@ -50,8 +51,8 @@ public class FreeMarkerGeneratorService extends BaseService implements
         try {
             return new FreeMarkerAction(configuration);
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

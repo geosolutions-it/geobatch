@@ -27,8 +27,9 @@ import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEvent
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileBasedEventConsumerService extends BaseService {
 
@@ -36,7 +37,7 @@ public class FileBasedEventConsumerService extends BaseService {
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(FileBasedEventConsumerService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(FileBasedEventConsumerService.class
             .toString());
 
     public boolean canCreateEventConsumer(FileBasedEventConsumerConfiguration configuration) {
@@ -56,11 +57,11 @@ public class FileBasedEventConsumerService extends BaseService {
         try {
             return new FileBasedEventConsumer(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         } catch (InterruptedException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return null;
     }

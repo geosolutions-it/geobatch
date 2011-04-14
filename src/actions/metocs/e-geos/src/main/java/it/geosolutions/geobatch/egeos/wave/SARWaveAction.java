@@ -41,9 +41,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.FilenameUtils;
@@ -66,7 +66,7 @@ import ucar.nc2.Variable;
  */
 public class SARWaveAction extends MetocBaseAction {
 
-    private final static Logger LOGGER = Logger.getLogger(SARWaveAction.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(SARWaveAction.class.getName());
 
     private NetcdfFileWriteable ncFileOut = null;
 
@@ -163,8 +163,8 @@ public class SARWaveAction extends MetocBaseAction {
                     ncFileOut.close();
                 }
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn(e.getLocalizedMessage(), e);
             }
         }
 
@@ -388,7 +388,7 @@ public class SARWaveAction extends MetocBaseAction {
                 }
 
                 // Resampling to a Regular Grid ...
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("Resampling to a Regular Grid ...");
                 userRaster = METOCSActionsIOUtils.warping(bbox, lonOriginalData, latOriginalData,
                         ra_size.getLength(), az_size.getLength(), 2, userRaster, (float) noData,

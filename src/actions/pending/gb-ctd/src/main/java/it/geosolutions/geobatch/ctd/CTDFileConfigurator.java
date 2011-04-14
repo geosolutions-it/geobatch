@@ -85,7 +85,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
             // ///////////////////////////////////
 
             if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "ActionConfig is null.");
+                LOGGER.error("ActionConfig is null.");
                 throw new IllegalStateException("ActionConfig is null.");
             }
 
@@ -101,12 +101,12 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
             // ///////////////////////////////////
 
             if (workingDir == null) {
-                LOGGER.log(Level.SEVERE, "Working directory is null.");
+                LOGGER.error("Working directory is null.");
                 throw new IllegalStateException("Working directory is null.");
             }
 
             if (!workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "Working directory does not exist ("
+                LOGGER.error("Working directory does not exist ("
                         + workingDir.getAbsolutePath() + ").");
                 throw new IllegalStateException("Working directory does not exist ("
                         + workingDir.getAbsolutePath() + ").");
@@ -131,7 +131,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
             }
 
             if (ctdFile == null) {
-                LOGGER.log(Level.SEVERE, "netcdf file not found in fileset.");
+                LOGGER.error("netcdf file not found in fileset.");
                 throw new IllegalStateException("netcdf file not found in fileset.");
             }
 
@@ -149,7 +149,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
             return events;
 
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            LOGGER.error(t.getLocalizedMessage(), t);
             return null;
         } finally {
             cleanup();
@@ -167,7 +167,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
                 isConnected = false;
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
+            LOGGER.error(e.getLocalizedMessage());
         }
     }
 
@@ -408,7 +408,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
                     if (psTmp != null)
                         psTmp.close();
                 } else {
-                    LOGGER.log(Level.SEVERE, new StringBuffer(
+                    LOGGER.error(new StringBuffer(
                             "Can't retrieve OBS_TYPE_ID for observation_type ").append(shipName)
                             .append(". Aborting ingestion... file ").append(ctdFile.getName())
                             .append(" not ingested!").toString());
@@ -476,7 +476,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
                         psTmp = null;
                     }
                 } else {
-                    LOGGER.log(Level.SEVERE, new StringBuffer(
+                    LOGGER.error(new StringBuffer(
                             "Can't retrieve CRUISE_ID for cruise ").append(cruiseName).append(
                             ". Aborting ingestion... file ").append(ctdFile.getName()).append(
                             " not ingested!").toString());
@@ -545,7 +545,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
                         psTmp = null;
                     }
                 } else {
-                    LOGGER.log(Level.SEVERE, new StringBuffer(
+                    LOGGER.error(new StringBuffer(
                             "Can't retrieve MISSION_ID for cruise ").append(
                             cruiseName.toLowerCase().concat("-2008-10-11")).append(
                             ". Aborting ingestion... file ").append(ctdFile.getName()).append(
@@ -618,7 +618,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
                     }
 
                 } else {
-                    LOGGER.log(Level.SEVERE, new StringBuffer("Can't retrieve SHIP_ID for ship ")
+                    LOGGER.error(new StringBuffer("Can't retrieve SHIP_ID for ship ")
                             .append(shipName).append(". Aborting ingestion... file ").append(
                                     ctdFile.getName()).append(" not ingested!").toString());
 
@@ -730,7 +730,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
                             ps = null;
                         }
 
-                        LOGGER.log(Level.SEVERE, new StringBuffer("CTD ").append(stationName)
+                        LOGGER.error(new StringBuffer("CTD ").append(stationName)
                                 .append(" doesn't exist in DB").append(
                                         ". Aborting ingestion... file ").append(ctdFile.getName())
                                 .append(" not ingested!").toString());
@@ -819,7 +819,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
                             if (rs.next()) {
                                 uom_id = rs.getLong("uom_id");
                             } else {
-                                LOGGER.log(Level.SEVERE, new StringBuffer(
+                                LOGGER.error(new StringBuffer(
                                         "Can't retrieve UOM_ID for unit of mesure ")
                                         .append(uomName).append(". Aborting ingestion... file ")
                                         .append(ctdFile.getName()).append(" not ingested!")
@@ -872,7 +872,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
                         if (rs.next()) {
                             param_id = rs.getLong("param_id");
                         } else {
-                            LOGGER.log(Level.SEVERE, new StringBuffer(
+                            LOGGER.error(new StringBuffer(
                                     "Can't retrieve PARAM_ID for parameter ").append(paramName)
                                     .append(". Aborting ingestion... file ").append(
                                             ctdFile.getName()).append(" not ingested!").toString());
@@ -988,7 +988,7 @@ public class CTDFileConfigurator extends CTDConfiguratorAction<FileSystemEvent> 
                         if (rs.next())
                             param_id = rs.getLong("param_id");
                         else {
-                            LOGGER.log(Level.SEVERE, new StringBuffer(
+                            LOGGER.error(new StringBuffer(
                                     "Can't retrieve PARAM_ID for parameter ").append(paramName)
                                     .append(". Aborting ingestion... file ").append(
                                             ctdFile.getName()).append(" not ingested!").toString());

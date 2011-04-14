@@ -26,8 +26,9 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Public class to generate WMCs
@@ -36,8 +37,7 @@ import java.util.logging.Logger;
 public class NURCWPSOutput2WMCGeneratorService extends
         GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(NURCWPSOutput2WMCGeneratorService.class
-            .toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(NURCWPSOutput2WMCGeneratorService.class);
 
     public NURCWPSOutput2WMCGeneratorService(String id, String name, String description) {
         super(id, name, description);
@@ -54,8 +54,8 @@ public class NURCWPSOutput2WMCGeneratorService extends
         try {
             return new NURCWPSOutput2WMCFileAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

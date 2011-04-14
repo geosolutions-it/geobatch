@@ -30,7 +30,7 @@ package it.geosolutions.geobatch.tools.file;
  *
  */
 public abstract class Consumer{
-//    private final static Logger LOGGER = Logger.getLogger(Consumer.class.toString());
+//    private final static Logger LOGGER = LoggerFactory.getLogger(Consumer.class.toString());
     
     
     

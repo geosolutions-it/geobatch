@@ -11,7 +11,10 @@ import java.net.URL;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 import be.kzen.ergorr.interfaces.soap.csw.ServiceExceptionReport;
 import be.kzen.ergorr.model.rim.ServiceType;
@@ -22,7 +25,7 @@ import be.kzen.ergorr.model.rim.ServiceType;
  */
 public class ServicesSender {
 
-    private final static Logger LOGGER = Logger.getLogger(ServicesSender.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ServicesSender.class);
     private URL serviceURL;
     private CSWConn cswConn;
 

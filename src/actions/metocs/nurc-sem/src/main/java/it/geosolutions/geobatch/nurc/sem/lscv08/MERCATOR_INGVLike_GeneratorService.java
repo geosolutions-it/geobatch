@@ -55,8 +55,8 @@ public class MERCATOR_INGVLike_GeneratorService extends
         try {
             return new MERCATORINGVLikeAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

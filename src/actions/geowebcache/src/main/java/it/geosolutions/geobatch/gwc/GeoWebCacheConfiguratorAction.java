@@ -25,14 +25,15 @@ package it.geosolutions.geobatch.gwc;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.util.EventObject;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class GeoWebCacheConfiguratorAction<T extends EventObject> extends BaseAction<T> {
 
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(GeoWebCacheConfiguratorAction.class
+    protected final static Logger LOGGER = LoggerFactory.getLogger(GeoWebCacheConfiguratorAction.class
             .toString());
 
     protected final GeoWebCacheActionConfiguration configuration;

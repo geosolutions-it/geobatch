@@ -95,7 +95,7 @@ public class GeoServerRESTConfiguratorAction extends
             //
             // ////////////////////////////////////////////////////////////////////
             if (configuration == null) {
-                // LOGGER.log(Level.SEVERE, "ActionConfig is null."); // we're
+                // LOGGER.error("ActionConfig is null."); // we're
                 // rethrowing it, so don't log
                 throw new IllegalStateException("ActionConfig is null.");
             }
@@ -114,13 +114,13 @@ public class GeoServerRESTConfiguratorAction extends
             //
             // ////////////////////////////////////////////////////////////////////
             if (workingDir == null) {
-                // LOGGER.log(Level.SEVERE, "Working directory is null."); //
+                // LOGGER.error("Working directory is null."); //
                 // we're rethrowing it, so don't log
                 throw new IllegalStateException("Working directory is null.");
             }
 
             if (!workingDir.exists() || !workingDir.isDirectory()) {
-                // LOGGER.log(Level.SEVERE,
+                // LOGGER.error(
                 // "Working directory does not exist ("+workingDir.getAbsolutePath()+").");
                 // // we're rethrowing it, so don't log
                 throw new IllegalStateException("Working directory does not exist ("
@@ -182,7 +182,7 @@ public class GeoServerRESTConfiguratorAction extends
 
             return outEvents;
         } catch (Throwable t) {
-            // LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // we're
+            // LOGGER.error(t.getLocalizedMessage(), t); // we're
             // rethrowing it, so don't log
             listenerForwarder.failed(t); // fails the Action
             throw new ActionException(this, t.getMessage(), t);

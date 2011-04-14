@@ -39,8 +39,9 @@ import it.geosolutions.geobatch.users.model.GBUserRole;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.ftpserver.ftplet.Authentication;
 import org.apache.ftpserver.ftplet.AuthenticationFailedException;
@@ -61,7 +62,7 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
  */
 public class GeoBatchUserManager implements UserManager {
 
-    private Logger logger = Logger.getLogger(GeoBatchUserManager.class.getName());
+    private Logger logger = LoggerFactory.getLogger(GeoBatchUserManager.class.getName());
 
     // private File ftpRootDir;
 
@@ -261,7 +262,7 @@ public class GeoBatchUserManager implements UserManager {
             // when using JPA pls ensure the right behaviour will be enforced
         } catch (DAOException e) {
             // TODO Auto-generated catch block
-            logger.log(Level.WARNING, "Error saving user(" + user + "):" + e.getMessage(), e);
+            logger.warn("Error saving user(" + user + "):" + e.getMessage(), e);
         }
     }
 
@@ -271,7 +272,7 @@ public class GeoBatchUserManager implements UserManager {
         // ETj: maybe this is not the right place to create an home dir
         if (!homeDirectory.exists()) {
             if (!homeDirectory.mkdir()) {
-                logger.warning("Unable to create ftp home dir at "
+                logger.warn("Unable to create ftp home dir at "
                         + homeDirectory.getAbsolutePath() + " for user " + user.getName());
 
                 throw new IllegalStateException("Unable to create ftp home dir at "
@@ -287,7 +288,7 @@ public class GeoBatchUserManager implements UserManager {
 
                 if (!flowDir.exists()) {
                     if (!flowDir.mkdir()) {
-                        logger.warning("Unable to create ftp flow dir at "
+                        logger.warn("Unable to create ftp flow dir at "
                                 + flowDir.getAbsolutePath() + " for user " + user.getName());
 
                         throw new IllegalStateException("Unable to create ftp flow dir at "
@@ -326,7 +327,7 @@ public class GeoBatchUserManager implements UserManager {
         try {
             return ftpUserDAO.existsUser(id);
         } catch (DAOException e) {
-            logger.log(Level.INFO, "ERROR : " + e.getMessage(), e);
+            logger.info("ERROR : " + e.getMessage(), e);
         }
         return false;
     }
@@ -335,7 +336,7 @@ public class GeoBatchUserManager implements UserManager {
         try {
             return ftpUserDAO.existsUser(name);
         } catch (DAOException e) {
-            logger.log(Level.INFO, "ERROR : " + e.getMessage(), e);
+            logger.info("ERROR : " + e.getMessage(), e);
         }
         return false;
     }

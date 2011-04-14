@@ -1,13 +1,10 @@
 package it.geosolutions.geobatch.action.egeos.emsa.features;
 
-
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,16 +21,17 @@ import org.geotools.data.Transaction;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.CRS;
-import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import com.vividsolutions.jts.geom.Point;
 
 public class ShipParser {
-    private final static  Logger LOGGER = Logging.getLogger(ShipParser.class);
+    private final static  Logger LOGGER = LoggerFactory.getLogger(ShipParser.class);
 
     // build the xpath extractor
     public final static XPath xpath = XPathFactory.newInstance().newXPath();
@@ -70,8 +68,8 @@ public class ShipParser {
                 fs.addFeatures(DataUtilities.collection(ship));
                 t.commit();
             } catch (Exception e) {
-                if(LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);                
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage(),e);                
                 t.rollback();
             } finally {
                 if (t!=null){
@@ -79,8 +77,8 @@ public class ShipParser {
                         t.close();
                     }
                     catch (Throwable tr){
-                        if(LOGGER.isLoggable(Level.SEVERE))
-                            LOGGER.log(Level.SEVERE,tr.getLocalizedMessage(),tr);
+                        if (LOGGER.isErrorEnabled())
+                            LOGGER.error(tr.getLocalizedMessage(),tr);
                     }
                 }
             }
@@ -88,8 +86,8 @@ public class ShipParser {
             
         }
         catch(Exception e){
-            if(LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(),e);
         }
     }
 

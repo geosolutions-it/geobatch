@@ -43,14 +43,17 @@ import java.net.URL;
 import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
 public class CSWConn {
-    private final static Logger LOGGER = Logger.getLogger(CSWConn.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CSWConn.class);
 
     private static final RemoteFileCache FILE_CACHE = new RemoteFileCache();
 
@@ -73,7 +76,7 @@ public class CSWConn {
         try {
             wsdlFile = file.toURI().toURL();
         } catch (MalformedURLException ex) {
-            LOGGER.error(ex); // should not happen
+            LOGGER.error(ex.getLocalizedMessage(),ex); // should not happen
         }
     }
 

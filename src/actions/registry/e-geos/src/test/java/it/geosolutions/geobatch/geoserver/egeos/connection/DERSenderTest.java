@@ -34,7 +34,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.bind.JAXBElement;
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 /**
@@ -42,7 +44,7 @@ import org.springframework.core.io.ClassPathResource;
  * @author ETj (etj at geo-solutions.it)
  */
 public class DERSenderTest extends TestCase {
-    private final static Logger LOGGER = Logger.getLogger(DERSenderTest.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DERSenderTest.class);
 
     private static final URL serviceURL;
 

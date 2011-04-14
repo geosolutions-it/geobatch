@@ -25,8 +25,9 @@ package it.geosolutions.geobatch.gwc;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Public class to generate NetCDF Service
@@ -39,7 +40,7 @@ public class GWCGeneratorService extends
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(GWCGeneratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GWCGeneratorService.class.toString());
 
     /**
      * Action creator
@@ -52,8 +53,8 @@ public class GWCGeneratorService extends
         try {
             return new GWCConfigurator(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

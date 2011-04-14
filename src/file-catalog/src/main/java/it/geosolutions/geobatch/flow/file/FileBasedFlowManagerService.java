@@ -29,25 +29,27 @@ import it.geosolutions.geobatch.flow.FlowManagerService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.geotools.data.DataAccessFactory.Param;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileBasedFlowManagerService extends BaseService implements
         FlowManagerService<FileSystemEvent, FileBasedFlowConfiguration> {
 
-//    private FileBasedFlowManagerService() {
-//        super(true);
-//    }
+    // private FileBasedFlowManagerService() {
+    // super(true);
+    // }
 
     public FileBasedFlowManagerService(String id, String name, String description) {
         super(id, name, description);
     }
 
-    public final static Param WORKING_DIR = new Param("WorkingDir", String.class, "WorkingDir", true);
+    // 06 04 2011 carlo: commented out -> never used
+    // public final static Param WORKING_DIR = new Param("WorkingDir", String.class, "WorkingDir",
+    // true);
 
-    private final static Logger LOGGER = Logger.getLogger(FileBasedFlowManagerService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FileBasedFlowManagerService.class
+            .toString());
 
     public boolean canCreateFlowManager(FileBasedFlowConfiguration configuration) {
 
@@ -55,8 +57,8 @@ public class FileBasedFlowManagerService extends BaseService implements
         if (workingDir != null) {
             final File dir = new File((String) workingDir);
             if (!dir.exists() || !dir.isDirectory() || !dir.canRead()) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Bad working dir '" + dir + "'");
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Bad working dir '" + dir + "'");
                 return false;
             }
         }
@@ -70,22 +72,20 @@ public class FileBasedFlowManagerService extends BaseService implements
         if (workingDir != null) {
             final File dir = new File((String) workingDir);
             if (!dir.exists() || !dir.isDirectory() || !dir.canRead()) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Bad working dir '" + dir + "'");
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Bad working dir '" + dir + "'");
                 return null;
             }
 
             try {
                 final FileBasedFlowManager manager = new FileBasedFlowManager(configuration);
                 return manager;
-            }
-            catch (NullPointerException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-            }
-            catch (IOException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            } catch (NullPointerException e) {
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage(), e);
+            } catch (IOException e) {
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage(), e);
             }
         }
         return null;

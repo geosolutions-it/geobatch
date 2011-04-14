@@ -72,8 +72,8 @@ public class MERCATORAction extends MetocBaseAction {
         super(configuration);
     }
 
-    @Override
-    protected File unzipMetocArchive(FileSystemEvent event, String fileSuffix, File outDir,
+    
+    private File unzipMetocArchive(FileSystemEvent event, String fileSuffix, File outDir,
             File tempFile) throws IOException {
         return ("zip".equalsIgnoreCase(fileSuffix) || "tar".equalsIgnoreCase(fileSuffix)) ? Utilities
                 .decompress("MERCATOR", event.getSource(), tempFile)
@@ -357,7 +357,7 @@ public class MERCATORAction extends MetocBaseAction {
                         new int[] { z, latDim.getLength(), lonDim.getLength() }, false);
 
                 // Resampling to a Regular Grid ...
-                // if (LOGGER.isLoggable(Level.INFO))
+                // if (LOGGER.isInfoEnabled())
                 // LOGGER.info("Resampling to a Regular Grid ...");
                 // userRaster = METOCSActionsIOUtils.warping(
                 // bbox,

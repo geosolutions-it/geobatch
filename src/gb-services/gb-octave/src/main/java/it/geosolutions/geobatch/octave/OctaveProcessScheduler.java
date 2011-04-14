@@ -28,8 +28,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -37,7 +38,7 @@ import java.util.logging.Logger;
  *
  */
 public class OctaveProcessScheduler implements Runnable{
-    private final static Logger LOGGER = Logger.getLogger(OctaveProcessScheduler.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(OctaveProcessScheduler.class.toString());
     
     private static Lock l=new ReentrantLock(true);
     
@@ -79,7 +80,7 @@ public class OctaveProcessScheduler implements Runnable{
                     }
                     else {
                         String message="OctaveProcessScheduler: unable to start using a null ExecutorService";
-                        if (LOGGER.isLoggable(Level.INFO))
+                        if (LOGGER.isInfoEnabled())
                             LOGGER.info(message);
                         throw new NullPointerException(message);
 //                        Thread t=new Thread(singleton);
@@ -88,14 +89,14 @@ public class OctaveProcessScheduler implements Runnable{
 //                        t.start();
                     }
 //                    initted=true;
-                    if (LOGGER.isLoggable(Level.INFO))
+                    if (LOGGER.isInfoEnabled())
                         LOGGER.info("OctaveProcessScheduler is up and running");
 // DEBUG
 //System.out.println("OctaveProcessScheduler is up and running");
                 }
             } catch (InterruptedException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(e.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage());
             }
             finally {
                 l.unlock();
@@ -150,7 +151,7 @@ public class OctaveProcessScheduler implements Runnable{
 
     public void run() {
         boolean notExit=true;
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("OctaveProcessScheduler starting up...");
         while (notExit){
             try {
@@ -160,8 +161,8 @@ public class OctaveProcessScheduler implements Runnable{
 // DEBUG
 //System.out.println("Starting");
             } catch (InterruptedException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(e.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage());
             }
 
             synchronized (engineList) {
@@ -193,7 +194,7 @@ public class OctaveProcessScheduler implements Runnable{
                 }
             } // sync on engineList
         } // while noExit
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("OctaveProcessScheduler shutdown...");
 // DEBUG
 //System.out.println("PS_Shutdown done, bye!");

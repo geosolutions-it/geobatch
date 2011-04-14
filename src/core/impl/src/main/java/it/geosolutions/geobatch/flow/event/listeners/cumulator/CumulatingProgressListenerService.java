@@ -41,7 +41,7 @@ public class CumulatingProgressListenerService extends BaseService implements
     // private CumulatingProgressListenerService() {
     // }
 
-//    private final static Logger LOGGER = Logger.getLogger(CumulatingProgressListenerService.class
+//    private final static Logger LOGGER = LoggerFactory.getLogger(CumulatingProgressListenerService.class
 //            .toString());
 
 

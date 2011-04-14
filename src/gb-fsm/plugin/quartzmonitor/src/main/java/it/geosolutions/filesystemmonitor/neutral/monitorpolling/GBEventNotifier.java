@@ -29,8 +29,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.event.EventListenerList;
 
@@ -43,17 +44,14 @@ import javax.swing.event.EventListenerList;
 public class GBEventNotifier implements Runnable {
 
     /** Default Logger **/
-    private final static Logger LOGGER = Logger.getLogger(GBEventNotifier.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GBEventNotifier.class.toString());
 
-    
     // private long lockWaitThreshold = IOUtils.MAX_WAITING_TIME_FOR_LOCK;
 
-    
     // private boolean lockInputFiles;
 
     public final static ExecutorService threadPool = Executors.newCachedThreadPool();
 
-    
     private EventListenerList listeners = null;
 
     // queue of events to pass to the listener list
@@ -69,7 +67,7 @@ public class GBEventNotifier implements Runnable {
     private static FileSystemEvent STOP = new FileSystemEvent(new File(""), null);
 
     // set true to end the thread
-    
+
     private boolean stop;
 
     // used to filter the the type of events to be notified
@@ -90,12 +88,12 @@ public class GBEventNotifier implements Runnable {
      */
     public void start() {
         if (this.isStopped()) {
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("Starting the event consumer...");
             threadPool.execute(this);
             stop = false;
-        } else if (LOGGER.isLoggable(Level.WARNING))
-            LOGGER.warning("The event consumer is already started");
+        } else if (LOGGER.isWarnEnabled())
+            LOGGER.warn("The event consumer is already started");
     }
 
     /**
@@ -105,8 +103,8 @@ public class GBEventNotifier implements Runnable {
         try {
             eventQueue.put(STOP);
         } catch (InterruptedException e) {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(e.getLocalizedMessage(), e);
         } finally {
             stop = true;
         }
@@ -155,9 +153,9 @@ public class GBEventNotifier implements Runnable {
          * with locking of input files if (lockInputFiles) { final File source = event.getSource();
          * try { //java.nio.channels.FileLock //org.apache.commons.io.FileUtils.
          * IOUtils.acquireLock(this, source, lockWaitThreshold); } catch (InterruptedException e) {
-         * if (LOGGER.isLoggable(Level.SEVERE)) LOGGER.log(Level.SEVERE, e.getLocalizedMessage(),
-         * e); return; } catch (IOException e) { if (LOGGER.isLoggable(Level.SEVERE))
-         * LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e); return; } } }
+         * if (LOGGER.isErrorEnabled()) LOGGER.error(e.getLocalizedMessage(), e); return; } catch
+         * (IOException e) { if (LOGGER.isErrorEnabled()) LOGGER.error(e.getLocalizedMessage(), e);
+         * return; } } }
          */
         final Object[] listenersArray = listeners.getListenerList();// return a not-null array
         /*
@@ -173,8 +171,7 @@ public class GBEventNotifier implements Runnable {
     }
 
     /**
-     * /**
-     * Use this method to add events to this consumer the event will be filtered using the
+     * /** Use this method to add events to this consumer the event will be filtered using the
      * FileSystemEventType specified into the EventGeneratorConfiguration.
      * 
      * @param file
@@ -183,10 +180,10 @@ public class GBEventNotifier implements Runnable {
     protected void notifyEvent(final File file, final FileSystemEventType type) {
         if (type == eventFilter) {
             if (!eventQueue.offer(new FileSystemEvent(file, type)))
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning("GBEventNotifier: Unable to offer a new object to the eventQueue");
-        } else if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("GBEventNotifier: FILTERED -> event of type \'" + type.toString()
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("GBEventNotifier: Unable to offer a new object to the eventQueue");
+        } else if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("GBEventNotifier: FILTERED -> event of type \'" + type.toString()
                     + "\' on file \'" + file.getAbsolutePath() + "\'");
         }
     }
@@ -204,18 +201,15 @@ public class GBEventNotifier implements Runnable {
             // clean
             eventQueue.clear();
         } catch (InterruptedException uoe) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, "GBEventNotifier: " + uoe.getLocalizedMessage(), uoe);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GBEventNotifier: " + uoe.getLocalizedMessage(), uoe);
         } catch (UnsupportedOperationException uoe) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(
-                        Level.SEVERE,
-                        "GBEventNotifier: Caught an UnsupportedOperationException: "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GBEventNotifier: Caught an UnsupportedOperationException: "
                                 + uoe.getLocalizedMessage(), uoe);
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE,
-                        "GBEventNotifier: Caught an IOException: " + e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("GBEventNotifier: Caught an IOException: " + e.getLocalizedMessage(), e);
         }
 
     }

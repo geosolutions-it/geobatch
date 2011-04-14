@@ -24,8 +24,9 @@ package it.geosolutions.geobatch.ftp.client;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.enterprisedt.net.ftp.FTPClient;
 import com.enterprisedt.net.ftp.FTPConnectMode;
@@ -47,7 +48,7 @@ import com.enterprisedt.net.ftp.WriteMode;
  */
 public class FTPHelperBare {
 
-    private static final Logger LOGGER = Logger.getLogger(FTPHelperBare.class.toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(FTPHelperBare.class.toString());
 
     /**
      * Function to put binary file.
@@ -72,14 +73,14 @@ public class FTPHelperBare {
             String ftpserverUser, String ftpserverPassword, int ftpserverPort, WriteMode writeMode,
             FTPConnectMode connectMode, int timeout) throws IOException, FTPException {
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("[FTP::PutFileTo]: " + "start");
 
         try {
             putFile(ftpserverHost, binaryFile, path, ftpserverUser, ftpserverPassword,
                     ftpserverPort, FTPTransferType.BINARY, writeMode, connectMode, timeout);
         } finally {
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::PutFileTo]: " + "end");
         }
     }
@@ -125,12 +126,12 @@ public class FTPHelperBare {
             final FTPMessageCollector listener = new FTPMessageCollector();
             ftp.setMessageListener(listener);
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("Connecting");
 
             ftp.connect();
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("Logging in");
 
             ftp.login(login, password);
@@ -150,8 +151,8 @@ public class FTPHelperBare {
             return ftp;
 
         } catch (FTPException ftpe) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, ftpe.getLocalizedMessage(), ftpe);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(ftpe.getLocalizedMessage(), ftpe);
 
             // ///////////////////////////////
             // Disconnect to the FTP server
@@ -161,14 +162,14 @@ public class FTPHelperBare {
                 try {
                     ftp.quitImmediately();
                 } catch (Throwable t) {
-                    if (LOGGER.isLoggable(Level.FINE))
-                        LOGGER.log(Level.FINE, t.getLocalizedMessage(), t);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace(t.getLocalizedMessage(), t);
                 }
 
             throw ftpe;
         } catch (IOException ioe) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, ioe.getLocalizedMessage(), ioe);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(ioe.getLocalizedMessage(), ioe);
 
             // ///////////////////////////////
             // Disconnect to the FTP server
@@ -178,8 +179,8 @@ public class FTPHelperBare {
                 try {
                     ftp.quitImmediately();
                 } catch (Throwable t) {
-                    if (LOGGER.isLoggable(Level.FINE))
-                        LOGGER.log(Level.FINE, t.getLocalizedMessage(), t);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace(t.getLocalizedMessage(), t);
                 }
 
             throw ioe;
@@ -229,11 +230,11 @@ public class FTPHelperBare {
             remoteFileName = remoteFileName.substring(remoteFileName.lastIndexOf("/") + 1,
                     remoteFileName.length());
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::PutFileTo]: " + "Connecting to :" + ftpserverHost + ":"
                         + ftpserverPort);
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER
                         .info("[FTP::FileTo]: " + "sending: " + binaryFile + " to: "
                                 + remoteFileName);
@@ -258,7 +259,7 @@ public class FTPHelperBare {
 
             final String remoteFileNameReturned = ftp.put(binaryFile, remoteFileName);
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::FileTo]: " + "sent: " + binaryFile + " to: "
                         + remoteFileNameReturned);
 
@@ -267,18 +268,18 @@ public class FTPHelperBare {
                 throw new RuntimeException("PUT failed for file " + remoteFileName);
 
             // }catch (FTPException ftpe) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // ftpe.getLocalizedMessage(),ftpe);
             // res = false;
             // }catch (IOException ioe) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // ioe.getLocalizedMessage(),ioe);
             // res = false;
             // }catch (Throwable t) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // t.getLocalizedMessage(),t);
             // res = false;
         } finally {
@@ -291,8 +292,8 @@ public class FTPHelperBare {
                 try {
                     ftp.quitImmediately();
                 } catch (Throwable t) {
-                    if (LOGGER.isLoggable(Level.FINE))
-                        LOGGER.log(Level.FINE, t.getLocalizedMessage(), t);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace(t.getLocalizedMessage(), t);
                 }
         }
     }
@@ -319,14 +320,14 @@ public class FTPHelperBare {
     public static void putTextFileTo(String ftpserverHost, String textFile, String path,
             String ftpserverUser, String ftpserverPassword, int ftpserverPort, WriteMode writeMode,
             FTPConnectMode connectMode, int timeout) throws IOException, FTPException {
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("[FTP::PutFileTo]: " + "start");
 
         try {
             putFile(ftpserverHost, textFile, path, ftpserverUser, ftpserverPassword, ftpserverPort,
                     FTPTransferType.ASCII, writeMode, connectMode, timeout);
         } finally {
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::PutFileTo]: " + "end");
         }
     }
@@ -376,11 +377,11 @@ public class FTPHelperBare {
             remoteFileName = remoteFileName.substring(remoteFileName.lastIndexOf("/") + 1,
                     remoteFileName.length());
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::createDirectory]: " + "Connecting to :" + ftpserverHost + ":"
                         + ftpserverPort);
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::createDirectory]: " + "sending: " + binaryFile + " to: "
                         + remoteFileName);
 
@@ -407,18 +408,18 @@ public class FTPHelperBare {
             // res = true;
 
             // }catch (FTPException ftpe) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // ftpe.getLocalizedMessage(),ftpe);
             // res = false;
             // }catch (IOException ioe) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // ioe.getLocalizedMessage(),ioe);
             // res = false;
             // }catch (Throwable t) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // t.getLocalizedMessage(),t);
             // res = false;
         } finally {
@@ -431,8 +432,8 @@ public class FTPHelperBare {
                 try {
                     ftp.quitImmediately();
                 } catch (Throwable t) {
-                    if (LOGGER.isLoggable(Level.FINE))
-                        LOGGER.log(Level.FINE, t.getLocalizedMessage(), t);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace(t.getLocalizedMessage(), t);
                 }
         }
 
@@ -478,11 +479,11 @@ public class FTPHelperBare {
             ftp = connectTo(ftpserverHost, ftpserverUser, ftpserverPassword, ftpserverPort,
                     transferType, writeMode, connectMode, timeout);
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::downloadFile]: " + "Connecting to :" + ftpserverHost + ":"
                         + ftpserverPort);
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::downloadFile]: " + "downloading: " + remoteFile + " from: "
                         + remoteFile);
 
@@ -506,25 +507,25 @@ public class FTPHelperBare {
 
             ftp.get(localPath, remoteFile);
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::downloadFile]: " + "downloaded: " + remoteFile + " from: "
                         + remoteFile);
 
             // res = true;
 
             // }catch (FTPException ftpe) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // ftpe.getLocalizedMessage(),ftpe);
             // res = false;
             // }catch (IOException ioe) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // ioe.getLocalizedMessage(),ioe);
             // res = false;
             // }catch (Throwable t) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // t.getLocalizedMessage(),t);
             // res = false;
         } finally {
@@ -537,8 +538,8 @@ public class FTPHelperBare {
                 try {
                     ftp.quitImmediately();
                 } catch (Throwable t) {
-                    if (LOGGER.isLoggable(Level.FINE))
-                        LOGGER.log(Level.FINE, t.getLocalizedMessage(), t);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace(t.getLocalizedMessage(), t);
                 }
         }
 
@@ -584,7 +585,7 @@ public class FTPHelperBare {
             ftp = connectTo(ftpserverHost, ftpserverUser, ftpserverPassword, ftpserverPort,
                     transferType, writeMode, connectMode, timeout);
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::dirDetails]: " + "Connecting to :" + ftpserverHost + ":"
                         + ftpserverPort);
 
@@ -612,18 +613,18 @@ public class FTPHelperBare {
             // res = true;
 
             // }catch (FTPException ftpe) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // ftpe.getLocalizedMessage(),ftpe);
             // res = false;
             // }catch (IOException ioe) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // ioe.getLocalizedMessage(),ioe);
             // res = false;
             // }catch (Throwable t) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // t.getLocalizedMessage(),t);
             // res = false;
         } finally {
@@ -636,8 +637,8 @@ public class FTPHelperBare {
                 try {
                     ftp.quitImmediately();
                 } catch (Throwable t) {
-                    if (LOGGER.isLoggable(Level.FINE))
-                        LOGGER.log(Level.FINE, t.getLocalizedMessage(), t);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace(t.getLocalizedMessage(), t);
                 }
         }
 
@@ -691,16 +692,16 @@ public class FTPHelperBare {
             ftp.setPassword(password);
             ftp.setUserName(login);
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("Connecting");
 
             ftp.connect();
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::deleteFileOrDirectory]: " + "Connecting to :" + host + ":"
                         + port);
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::deleteFileOrDirectory]: " + "removing: " + remoteFile
                         + " from: " + remoteFile);
 
@@ -727,25 +728,25 @@ public class FTPHelperBare {
             else
                 ftp.deleteFile(remoteFile);
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("[FTP::deleteFileOrDirectory]: " + "removed: " + remoteFile + " from: "
                         + remoteFile);
 
             // res = true;
 
             // }catch (FTPException ftpe) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // ftpe.getLocalizedMessage(),ftpe);
             // res = false;
             // }catch (IOException ioe) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // ioe.getLocalizedMessage(),ioe);
             // res = false;
             // }catch (Throwable t) {
-            // if (LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,"FTP ERROR: " +
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("FTP ERROR: " +
             // t.getLocalizedMessage(),t);
             // res = false;
         } finally {
@@ -758,8 +759,8 @@ public class FTPHelperBare {
                 try {
                     ftp.disconnect(true);
                 } catch (Throwable t) {
-                    if (LOGGER.isLoggable(Level.FINE))
-                        LOGGER.log(Level.FINE, t.getLocalizedMessage(), t);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace(t.getLocalizedMessage(), t);
                 }
         }
 

@@ -26,8 +26,9 @@ import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -43,13 +44,13 @@ public class EMSAService extends BaseService {
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(EMSAService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(EMSAService.class.toString());
 
     public ScriptingAction createAction(ScriptingConfiguration configuration) {
         try {
             return new EMSAAction(configuration);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error occurred creating EMSA Action... "
+            LOGGER.error("Error occurred creating EMSA Action... "
                     + e.getLocalizedMessage(), e);
         }
 
@@ -66,7 +67,7 @@ public class EMSAService extends BaseService {
         if (engine != null)
             return true;
 
-        LOGGER.warning("Requested unhandled language '" + configuration.getLanguage() + "'");
+        LOGGER.warn("Requested unhandled language '" + configuration.getLanguage() + "'");
         return false;
     }
 

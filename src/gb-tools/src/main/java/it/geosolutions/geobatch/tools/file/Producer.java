@@ -33,8 +33,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class implementing a producer which write on a PipeWriter.
@@ -44,7 +45,7 @@ import java.util.logging.Logger;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public abstract class Producer {
-    private final static Logger LOGGER = Logger.getLogger(Producer.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Producer.class.toString());
     
     /**
      * Implementing this method you have to write on the pipedWriter
@@ -66,7 +67,7 @@ public abstract class Producer {
     
     public Producer(ExecutorService e){
         if (e==null){
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("Handling the producer with a newSingleThreadExecutor");
             executor=Executors.newSingleThreadExecutor();
             handleExecutor=true;
@@ -107,8 +108,8 @@ public abstract class Producer {
                                 producer(out);
                                 out.flush();
                             } catch (IOException e) {
-                                if (LOGGER.isLoggable(Level.SEVERE))
-                                    LOGGER.severe(e.getLocalizedMessage());
+                                if (LOGGER.isErrorEnabled())
+                                    LOGGER.error(e.getLocalizedMessage());
                                 throw e;
                             }
                             /*Exception aren't cached*/
@@ -116,8 +117,8 @@ public abstract class Producer {
                                 try {
                                     out.close();
                                 } catch (IOException e) {
-                                    if (LOGGER.isLoggable(Level.SEVERE))
-                                        LOGGER.severe("Unable to close the writer.\n"
+                                    if (LOGGER.isErrorEnabled())
+                                        LOGGER.error("Unable to close the writer.\n"
                                                 +e.getLocalizedMessage());
                                 }
                             }
@@ -127,8 +128,8 @@ public abstract class Producer {
                 ); //submit
         }
         catch (IOException ex){
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Unable to close the writer.\n"
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Unable to close the writer.\n"
                         +ex.getLocalizedMessage());
             throw ex;
         }
@@ -137,24 +138,24 @@ public abstract class Producer {
     
     public void close(boolean force){
         try{
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("Closing the producer");
             
             if (!force){
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("Waiting for the producer");
                 productor.get(Conf.getTimeToWait(), TimeUnit.SECONDS);
             }
             
         } catch (InterruptedException ie) {
-            if (LOGGER.isLoggable(Level.FINER))
-                LOGGER.log(Level.FINER, ie.getMessage(), ie);
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace(ie.getMessage(), ie);
         } catch (ExecutionException ee) {
-            if (LOGGER.isLoggable(Level.FINER))
-                LOGGER.log(Level.FINER, ee.getMessage(), ee);
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace(ee.getMessage(), ee);
         } catch (TimeoutException te) {
-            if (LOGGER.isLoggable(Level.FINER))
-                LOGGER.log(Level.FINER, te.getMessage(), te);
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace(te.getMessage(), te);
         }
         finally{
             // be sure the thread ends
@@ -163,7 +164,7 @@ public abstract class Producer {
             if (handleExecutor)
                 executor.shutdownNow();
         }
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Producer is successfully closed");
     }
 

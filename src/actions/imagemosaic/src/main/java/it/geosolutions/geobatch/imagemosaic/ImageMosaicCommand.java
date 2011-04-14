@@ -114,10 +114,10 @@ public class ImageMosaicCommand implements Serializable {
             final ImageMosaicCommand cmd = (ImageMosaicCommand) stream.fromXML(is);
             return cmd;
 //        } catch (XSException e) {
-//            // LOGGER.log(Level.FINER, e.getMessage(), e);
+//            // LOGGER.trace(e.getMessage(), e);
 //            e.printStackTrace();
 //        } catch (FileNotFoundException e) {
-//            // LOGGER.log(Level.FINER, e.getMessage(), e);
+//            // LOGGER.trace(e.getMessage(), e);
 //            e.printStackTrace();
 //        }
 //        return null;

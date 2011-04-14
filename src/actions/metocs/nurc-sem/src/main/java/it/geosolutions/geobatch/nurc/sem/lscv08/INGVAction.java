@@ -85,8 +85,7 @@ public class INGVAction extends MetocBaseAction {
         super(configuration);
     }
 
-    @Override
-    protected File unzipMetocArchive(FileSystemEvent event, String fileSuffix, File outDir,
+    private File unzipMetocArchive(FileSystemEvent event, String fileSuffix, File outDir,
             File tempFile) throws IOException {
         return ("zip".equalsIgnoreCase(fileSuffix) || "tar".equalsIgnoreCase(fileSuffix)) ? Utilities
                 .decompress("INGV-MFS", event.getSource(), tempFile)

@@ -25,15 +25,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ETj <etj at geo-solutions.it>
  */
 public class AliasRegistry implements Iterable<Map.Entry<String, Class<?>>> {
 
-    private final static Logger LOGGER = Logger.getLogger(AliasRegistrar.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(AliasRegistrar.class.getName());
 
     private Map<String, Class<?>> alias = new HashMap<String, Class<?>>();
 
@@ -45,7 +46,7 @@ public class AliasRegistry implements Iterable<Map.Entry<String, Class<?>>> {
     }
 
     public void putAlias(String name, Class<?> clazz) {
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Adding alias " + name + " for class " + clazz.getSimpleName());
         alias.put(name, clazz);
     }

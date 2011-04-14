@@ -20,17 +20,19 @@
 
 package it.geosolutions.geobatch.egeos.types.util;
 
-import org.apache.log4j.Logger;
+
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.xpath.XPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author ETj (etj at geo-solutions.it)
  */
 public class JDOMUtils {
-    private final static Logger LOGGER = Logger.getLogger(JDOMUtils.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(JDOMUtils.class);
 
     public static String getString(Element root, XPath xpath) throws JDOMException {
         Element e = (Element)xpath.selectSingleNode(root);

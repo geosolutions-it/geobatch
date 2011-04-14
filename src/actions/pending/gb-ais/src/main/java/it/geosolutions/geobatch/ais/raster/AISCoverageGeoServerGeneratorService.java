@@ -5,8 +5,9 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AISCoverageGeoServerGeneratorService extends
         GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
@@ -15,15 +16,14 @@ public class AISCoverageGeoServerGeneratorService extends
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger
-            .getLogger(AISCoverageGeoServerGeneratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(AISCoverageGeoServerGeneratorService.class);
 
     public AISCoverageGeoServerGenerator createAction(GeoServerActionConfiguration configuration) {
         try {
             return new AISCoverageGeoServerGenerator(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

@@ -7,8 +7,9 @@ import it.geosolutions.geobatch.users.dao.DAOException;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.FtpServer;
@@ -21,7 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class GeoBatchServer implements InitializingBean {
 
-    private final static Logger LOGGER = Logger.getLogger(GeoBatchServer.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeoBatchServer.class.getName());
 
     private FtpServer ftpServer;
 
@@ -79,7 +80,7 @@ public class GeoBatchServer implements InitializingBean {
 
     public synchronized void start() throws FtpException {
         if (!ftpServer.isStopped()) {
-            LOGGER.log(Level.WARNING,
+            LOGGER.warn(
                     "FTP server is already running and will not be started again.");
             return;
         }
@@ -93,7 +94,7 @@ public class GeoBatchServer implements InitializingBean {
                 ftpServer = create(getLastConfig(), userManager);
             }
         } catch (DAOException ex) {
-            LOGGER.log(Level.WARNING,
+            LOGGER.warn(
                     "Could not retrieve server config. Using old server instance", ex);
         }
 

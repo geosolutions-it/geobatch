@@ -21,7 +21,10 @@
 package it.geosolutions.geobatch.egeos.types.dest;
 
 import java.util.List;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Registry Object for OilSpill.
@@ -79,7 +82,7 @@ import org.apache.log4j.Logger;
  * @author ETj (etj at geo-solutions.it)
  */
 public class SARProductRO {
-    private final static Logger LOGGER = Logger.getLogger(SARProductRO.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SARProductRO.class);
 
     private String id;
 

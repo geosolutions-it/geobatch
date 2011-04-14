@@ -26,8 +26,9 @@ import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -44,13 +45,13 @@ public class ScriptingService extends BaseService implements
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(ScriptingService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(ScriptingService.class.toString());
 
     public ScriptingAction createAction(ScriptingConfiguration configuration) {
         try {
             return new ScriptingAction(configuration);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error occurred creating scripting Action... "
+            LOGGER.error("Error occurred creating scripting Action... "
                     + e.getLocalizedMessage(), e);
         }
 
@@ -67,7 +68,7 @@ public class ScriptingService extends BaseService implements
         if (engine != null)
             return true;
 
-        LOGGER.warning("Requested unhandled language '" + configuration.getLanguage() + "'");
+        LOGGER.warn("Requested unhandled language '" + configuration.getLanguage() + "'");
         return false;
     }
 

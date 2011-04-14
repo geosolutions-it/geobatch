@@ -31,7 +31,8 @@ import it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGenerato
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.Assert;
 
@@ -46,7 +47,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class EventGeneratorTestCase implements FlowEventListener<FileSystemEvent> {
 
-    private final static Logger LOGGER = Logger.getLogger(EventGeneratorTestCase.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(EventGeneratorTestCase.class.toString());
 
     
     private ClassPathXmlApplicationContext context;

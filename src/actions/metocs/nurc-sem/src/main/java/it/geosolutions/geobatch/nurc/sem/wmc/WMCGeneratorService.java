@@ -27,8 +27,9 @@ import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Public class to generate WMCs
@@ -41,11 +42,12 @@ public class WMCGeneratorService extends BaseService implements
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(WMCGeneratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(WMCGeneratorService.class
+            .toString());
 
-//    private WMCGeneratorService() {
-//        super(true);
-//    }
+    // private WMCGeneratorService() {
+    // super(true);
+    // }
 
     /**
      * Action creator
@@ -58,8 +60,8 @@ public class WMCGeneratorService extends BaseService implements
         try {
             return new WMCFileConfiguratorAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }
@@ -72,15 +74,13 @@ public class WMCGeneratorService extends BaseService implements
                 configuration.setWorkingDirectory(wd);
                 return true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(
-                            Level.WARNING,
-                            "WMCGeneratorService::canCreateAction(): "
-                                    + "unable to create action, it's not possible to get an absolute working dir.");
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("WMCGeneratorService::canCreateAction(): "
+                            + "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return false;
     }

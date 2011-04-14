@@ -35,8 +35,9 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.media.jai.RasterFactory;
 import javax.vecmath.GMatrix;
@@ -71,7 +72,7 @@ public class METOCSActionsIOUtils {
 
     }
 
-    protected final static Logger LOGGER = Logger.getLogger(METOCSActionsIOUtils.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(METOCSActionsIOUtils.class.toString());
 
     /**
      * NetCDF-CF Dimensions and Variables
@@ -130,10 +131,10 @@ public class METOCSActionsIOUtils {
 
         } catch (NoSuchAuthorityCodeException e) {
 
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            LOGGER.error(e.getLocalizedMessage(), e);
             crs = DefaultGeographicCRS.WGS84;
         } catch (FactoryException e) {
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            LOGGER.error(e.getLocalizedMessage(), e);
             crs = DefaultGeographicCRS.WGS84;
         }
         WGS_84 = crs;

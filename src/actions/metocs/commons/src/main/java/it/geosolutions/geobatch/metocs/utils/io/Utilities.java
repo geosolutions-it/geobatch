@@ -37,8 +37,10 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -84,7 +86,7 @@ public class Utilities {
      */
     public final static String DEFAULT_GEOSERVER_VERSION = "2.x";
 
-    protected final static Logger LOGGER = Logger.getLogger(Utilities.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(Utilities.class.toString());
 
     private Utilities() {
 
@@ -113,8 +115,8 @@ public class Utilities {
         // PREPARING A WRITE
         //
         // /////////////////////////////////////////////////////////////////////
-        if (LOGGER.isLoggable(Level.FINE))
-            LOGGER.fine("Writing down the file in the decoded directory...");
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Writing down the file in the decoded directory...");
         final GeoTiffFormat wformat = new GeoTiffFormat();
         final GeoTiffWriteParams wp = new GeoTiffWriteParams();
         if (!Double.isNaN(compressionRatio)) {
@@ -226,7 +228,7 @@ public class Utilities {
         // PREPARING A WRITE
         //
         // /////////////////////////////////////////////////////////////////////
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Writing down the file in the decoded directory...");
         final GeoTiffFormat wformat = new GeoTiffFormat();
         final GeoTiffWriteParams wp = new GeoTiffWriteParams();

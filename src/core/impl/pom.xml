@@ -96,11 +96,24 @@
 
         <!-- ============================== -->
         <!--            tools               -->
-        <!-- ============================== --> 
+        <!-- ============================== -->
+         
         <dependency>
 			<groupId>it.geosolutions</groupId>
 			<artifactId>gb-tools</artifactId>
 		</dependency>
+		
+		<!-- ============================== -->
+        <!-- 		logging					-->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+        </dependency>
 		
     </dependencies>
 

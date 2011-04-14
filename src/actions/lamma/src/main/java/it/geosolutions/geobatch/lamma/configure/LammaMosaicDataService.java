@@ -27,8 +27,9 @@ import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Comments here ...
@@ -39,7 +40,7 @@ import java.util.logging.Logger;
 public class LammaMosaicDataService extends BaseService implements
         ActionService<FileSystemEvent, LammaMosaicDataConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(LammaMosaicDataService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(LammaMosaicDataService.class.toString());
 
     public LammaMosaicDataService(String id, String name, String description) {
         super(id, name, description);
@@ -52,8 +53,8 @@ public class LammaMosaicDataService extends BaseService implements
         try {
             return new LammaMosaicDataAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

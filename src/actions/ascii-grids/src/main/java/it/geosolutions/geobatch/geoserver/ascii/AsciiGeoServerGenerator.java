@@ -25,8 +25,8 @@ package it.geosolutions.geobatch.geoserver.ascii;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerAction;
+import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
@@ -41,7 +41,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.logging.Level;
 
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.gce.arcgrid.ArcGridFormat;
@@ -180,7 +179,7 @@ public class AsciiGeoServerGenerator extends GeoServerAction<FileSystemEvent> {
             // data flow configuration and dataStore name must not be null.
             // //
             if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+                LOGGER.error("DataFlowConfig is null.");
                 throw new IllegalStateException("DataFlowConfig is null.");
             }
 
@@ -198,13 +197,13 @@ public class AsciiGeoServerGenerator extends GeoServerAction<FileSystemEvent> {
             //
             // ////////////////////////////////////////////////////////////////////
             if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "GeoServerDataDirectory is null or does not exist.");
+                LOGGER.error("GeoServerDataDirectory is null or does not exist.");
                 throw new IllegalStateException("GeoServerDataDirectory is null or does not exist.");
             }
 
             if ((getConfiguration().getGeoserverURL() == null)
                     || "".equals(getConfiguration().getGeoserverURL())) {
-                LOGGER.log(Level.SEVERE, "GeoServerCatalogServiceURL is null.");
+                LOGGER.error("GeoServerCatalogServiceURL is null.");
                 throw new IllegalStateException("GeoServerCatalogServiceURL is null.");
             }
 
@@ -315,12 +314,12 @@ public class AsciiGeoServerGenerator extends GeoServerAction<FileSystemEvent> {
                 coverageReader = (ArcGridReader) format.getReader(event.getSource());
 
                 if (coverageReader == null) {
-                    LOGGER.log(Level.SEVERE, "No valid ArcGrid File found for this Data Flow!");
+                    LOGGER.error("No valid ArcGrid File found for this Data Flow!");
                     throw new IllegalStateException(
                             "No valid ArcGrid File found for this Data Flow!");
                 }
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "No valid ArcGrid File found for this Data Flow: "
+                LOGGER.error("No valid ArcGrid File found for this Data Flow: "
                         + e.getLocalizedMessage());
                 throw new IllegalStateException("No valid ArcGrid File found for this Data Flow: "
                         + e.getLocalizedMessage());
@@ -337,8 +336,8 @@ public class AsciiGeoServerGenerator extends GeoServerAction<FileSystemEvent> {
             listenerForwarder.completed();
             return events;
         } catch (Throwable t) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(t.getLocalizedMessage(), t);
 
             listenerForwarder.failed(t);
             throw new ActionException(this, t.getMessage(), t);

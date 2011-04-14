@@ -30,8 +30,9 @@ import it.geosolutions.geobatch.global.CatalogHolder;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Actions in scripting languages shall extend this class.
@@ -39,7 +40,7 @@ import java.util.logging.Logger;
  * @author etj
  */
 public class SplittingAction extends BaseAction<FileSystemEvent> {
-    private static final Logger LOGGER = Logger.getLogger(SplittingAction.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SplittingAction.class.getName());
 
     private SplittingConfiguration configuration;
 
@@ -67,7 +68,7 @@ public class SplittingAction extends BaseAction<FileSystemEvent> {
                 // data flow configuration and dataStore name must not be null.
                 // //
                 if (getConfiguration() == null) {
-                    LOGGER.log(Level.SEVERE, "Conf is null.");
+                    LOGGER.error("Conf is null.");
                     throw new IllegalStateException("Conf is null.");
                 }
 
@@ -82,7 +83,7 @@ public class SplittingAction extends BaseAction<FileSystemEvent> {
                     if (flow != null) {
                         flow.postEvent(event);
                     } else {
-                        LOGGER.warning("Trying to forward event to flow " + flowId
+                        LOGGER.warn("Trying to forward event to flow " + flowId
                                 + " but it was unavailable!");
                     }
                 }
@@ -93,7 +94,7 @@ public class SplittingAction extends BaseAction<FileSystemEvent> {
             listenerForwarder.completed();
             return forwardingEvents;
         } catch (Exception t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to log, we're
+            LOGGER.error(t.getLocalizedMessage(), t); // no need to log, we're
             // rethrowing it
             listenerForwarder.failed(t);
             throw new ActionException(this, t.getMessage(), t);

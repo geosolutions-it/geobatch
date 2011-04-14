@@ -31,7 +31,8 @@ import it.geosolutions.geobatch.ftpserver.model.FtpServerConfig;
 import it.geosolutions.geobatch.users.dao.DAOException;
 
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class HibFtpServerConfigDAO extends DAOAbstractSpring<FtpServerConfig, Long> implements
         FtpServerConfigDAO {
 
-    private final static Logger LOGGER = Logger.getLogger(HibFtpServerConfigDAO.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(HibFtpServerConfigDAO.class.getName());
 
     public HibFtpServerConfigDAO() {
         super(FtpServerConfig.class);
@@ -67,7 +68,7 @@ public class HibFtpServerConfigDAO extends DAOAbstractSpring<FtpServerConfig, Lo
             return list.get(0);
 
         default:
-            LOGGER.severe("Too many FTP server configs found(" + list.size() + ").");
+            LOGGER.error("Too many FTP server configs found(" + list.size() + ").");
             return list.get(0);
         }
 

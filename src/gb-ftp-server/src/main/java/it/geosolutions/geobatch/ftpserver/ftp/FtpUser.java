@@ -9,7 +9,8 @@ import it.geosolutions.geobatch.users.model.GBUserRole;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.AuthorizationRequest;
 import org.apache.ftpserver.ftplet.User;
@@ -23,7 +24,7 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
  * @author etj
  */
 public class FtpUser implements User {
-    private final static Logger LOGGER = Logger.getLogger(FtpUser.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FtpUser.class.getName());
 
     private GBUser delegateUser;
 

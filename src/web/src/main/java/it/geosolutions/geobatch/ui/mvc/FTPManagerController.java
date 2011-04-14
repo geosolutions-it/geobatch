@@ -28,7 +28,8 @@ import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
 import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
 
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +46,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * 
  */
 public class FTPManagerController extends AbstractController {
-    private final static Logger LOGGER = Logger.getLogger(FlowManagerController.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FlowManagerController.class.getName());
 
     private GeoBatchServer server;
 

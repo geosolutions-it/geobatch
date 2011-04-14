@@ -27,8 +27,9 @@ import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Comments here ...
@@ -40,7 +41,7 @@ import java.util.logging.Logger;
 public class ShapeFileGeneratorService extends BaseService implements
         ActionService<FileSystemEvent, ShapeFileConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(ShapeFileGeneratorService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(ShapeFileGeneratorService.class
             .toString());
 
     public ShapeFileGeneratorService(String id, String name, String description) {
@@ -51,8 +52,8 @@ public class ShapeFileGeneratorService extends BaseService implements
         try {
             return new ShapeFileConfigurator(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(e.getLocalizedMessage(), e);
             return null;
         }
     }

@@ -40,8 +40,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -61,7 +62,7 @@ import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 public class ShapeFileConfigurator extends BaseAction<FileSystemEvent> implements
         Action<FileSystemEvent> {
 
-    private final static Logger LOGGER = Logger.getLogger(ShapeFileConfigurator.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(ShapeFileConfigurator.class.toString());
 
     private File tempOutDir = null;
 
@@ -90,7 +91,7 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemEvent> implement
             //
             // ////////////////////////////////////////////////////////////////////
             if (configuration == null) {
-                // LOGGER.log(Level.SEVERE, "ActionConfig is null."); // we're
+                // LOGGER.error("ActionConfig is null."); // we're
                 // rethrowing it, so don't log
                 throw new IllegalStateException("ActionConfig is null.");
             }
@@ -109,14 +110,13 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemEvent> implement
             //
             // ////////////////////////////////////////////////////////////////////
             if (workingDir == null) {
-                // LOGGER.log(Level.SEVERE, "Working directory is null."); //
+                // LOGGER.error("Working directory is null."); //
                 // we're rethrowing it, so don't log
                 throw new IllegalStateException("Working directory is null.");
             }
 
             if (!workingDir.exists() || !workingDir.isDirectory()) {
-                // LOGGER.log(Level.SEVERE,
-                // "Working directory does not exist ("+workingDir.getAbsolutePath()+").");
+                // LOGGER.error(// "Working directory does not exist ("+workingDir.getAbsolutePath()+").");
                 // // we're rethrowing it, so don't log
                 throw new IllegalStateException("Working directory does not exist ("
                         + workingDir.getAbsolutePath() + ").");
@@ -160,7 +160,7 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemEvent> implement
             }
 
             if (shapeFile == null) {
-                // LOGGER.log(Level.SEVERE, "Shp file not found in fileset.");
+                // LOGGER.error("Shp file not found in fileset.");
                 // // we're rethrowing it, so don't log
                 throw new IllegalStateException("Shp file not found in fileset.");
             }
@@ -190,8 +190,7 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemEvent> implement
             try {
                 connectionParams.put("url", shapeFile.toURI().toURL());
             } catch (MalformedURLException e) {
-                // LOGGER.log(Level.SEVERE,
-                // "No valid ShapeFile URL found for this Data Flow: "
+                // LOGGER.error(// "No valid ShapeFile URL found for this Data Flow: "
                 // + e.getLocalizedMessage()); // we're rethrowing it, so don't
                 // log
                 throw new IllegalStateException("No valid ShapeFile URL found for this Data Flow: "
@@ -204,8 +203,7 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemEvent> implement
             factory = null;
 
             if (!validShape) {
-                // LOGGER.log(Level.SEVERE,
-                // "No valid ShapeFile found for this Data Flow!"); // we're
+                // LOGGER.error(// "No valid ShapeFile found for this Data Flow!"); // we're
                 // rethrowing it, so don't log
                 throw new IllegalStateException("No valid ShapeFiles found for this Data Flow!");
             }
@@ -221,12 +219,12 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemEvent> implement
 
             listenerForwarder.progressing(40, "Preparing shape");
 
-            if (LOGGER.isLoggable(Level.FINE)) {
+            if (LOGGER.isTraceEnabled()){
                 StringBuilder sb = new StringBuilder("Packing shapefiles: ");
                 for (File file : shpList) {
                     sb.append('[').append(file.getName()).append(']');
                 }
-                LOGGER.fine(sb.toString());
+                LOGGER.trace(sb.toString());
             }
             if (isZipped) {
                 zipFileToSend = zippedFile;
@@ -246,7 +244,7 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemEvent> implement
                     FileSystemEventType.FILE_ADDED));
             return events;
         } catch (Throwable t) {
-            // LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // we're
+            // LOGGER.error(t.getLocalizedMessage(), t); // we're
             // rethrowing it, so don't log
             listenerForwarder.failed(t); // fails the Action
             throw new ActionException(this, t.getMessage(), t);
@@ -256,7 +254,7 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemEvent> implement
                 try {
                     FileUtils.deleteDirectory(tempOutDir);
                 } catch (IOException ex) {
-                    LOGGER.log(Level.WARNING, "Could not delete temp dir: " + ex.getMessage(), ex);
+                    LOGGER.warn("Could not delete temp dir: " + ex.getMessage(), ex);
                 }
             }
         }
@@ -352,12 +350,12 @@ public class ShapeFileConfigurator extends BaseAction<FileSystemEvent> implement
             return fileList.toArray(new File[fileList.size()]);
 
         } catch (Throwable t) {
-            LOGGER.log(Level.WARNING, "Error examining zipfile", t);
+            LOGGER.warn("Error examining zipfile", t);
             try {
                 // org.apache.commons.io.IOUtils.
                 FileUtils.forceDelete(tempOutDir);
             } catch (IOException ex) {
-                LOGGER.log(Level.SEVERE, "Can't delete temp dir '" + tempOutDir + "'", ex);
+                LOGGER.error("Can't delete temp dir '" + tempOutDir + "'", ex);
             }
             return null;
         }

@@ -8,7 +8,8 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 
 import java.io.File;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class DummyMonitor implements FileSystemMonitorSPI, FileSystemMonitor {
     public DummyMonitor() {
@@ -17,8 +18,7 @@ public final class DummyMonitor implements FileSystemMonitorSPI, FileSystemMonit
     // //
     // default logger
     // //
-    private final static Logger LOGGER = Logger
-            .getLogger("it.geosolutions.filesystemmonitor.monitor.ThreadedFileSystemMonitor");
+    private final static Logger LOGGER = LoggerFactory.getLogger(DummyMonitor.class);
 
     public void start() {
         LOGGER.info("Dummy-ThreadedFileSystemMonitor Started ...");

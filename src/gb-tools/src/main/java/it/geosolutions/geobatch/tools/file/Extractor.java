@@ -32,8 +32,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -56,7 +57,7 @@ import org.apache.commons.io.FilenameUtils;
  * 
  */
 public final class Extractor {
-    private final static Logger LOGGER = Logger.getLogger(Extractor.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Extractor.class.toString());
 
     /**
      * Unzips the files from a zipfile into a directory. All of the files will be put in a single
@@ -102,7 +103,7 @@ public final class Extractor {
             zipinputstream.close();
             return ret;
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Error unzipping file '" + zipFile.getAbsolutePath() + "'", e);
+            LOGGER.warn("Error unzipping file '" + zipFile.getAbsolutePath() + "'", e);
             return null;
         }
     }

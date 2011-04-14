@@ -28,8 +28,9 @@ import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Comments here ...
@@ -49,8 +50,7 @@ public class GeoTiffOverviewsEmbedderService extends BaseService implements
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger
-            .getLogger(GeoTiffOverviewsEmbedder.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeoTiffOverviewsEmbedder.class);
 
     public boolean canCreateAction(GeoTiffOverviewsEmbedderConfiguration configuration) {
         try {
@@ -60,15 +60,13 @@ public class GeoTiffOverviewsEmbedderService extends BaseService implements
                 configuration.setWorkingDirectory(wd);
                 return true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(
-                            Level.WARNING,
-                            "GeoTiffOverviewsEmbedderService::canCreateAction(): "
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("GeoTiffOverviewsEmbedderService::canCreateAction(): "
                                     + "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return false;
     }
@@ -77,8 +75,8 @@ public class GeoTiffOverviewsEmbedderService extends BaseService implements
         try {
             return new GeoTiffOverviewsEmbedder(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return null;
     }

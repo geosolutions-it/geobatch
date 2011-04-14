@@ -28,7 +28,8 @@ import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Comments here ...
@@ -43,7 +44,7 @@ public abstract class RegistryConfiguratorAction extends BaseAction<FileSystemEv
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(RegistryConfiguratorAction.class
+    protected final static Logger LOGGER = LoggerFactory.getLogger(RegistryConfiguratorAction.class
             .toString());
 
     protected final RegistryActionConfiguration configuration;

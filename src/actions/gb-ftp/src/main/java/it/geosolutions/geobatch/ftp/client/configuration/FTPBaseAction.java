@@ -28,7 +28,8 @@ import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.io.IOException;
 import java.util.EventObject;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class represent a basic FTP action.
@@ -41,7 +42,7 @@ public abstract class FTPBaseAction<T extends EventObject> extends BaseAction<T>
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(FTPBaseAction.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(FTPBaseAction.class.toString());
 
     protected final FTPActionConfiguration configuration;
 

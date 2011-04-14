@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
@@ -25,7 +26,7 @@ import org.geotools.jdbc.JDBCDataStoreFactory;
  */
 public class ShipParserTest extends TestCase {
 
-    private static Logger LOGGER = Logger.getLogger(ShipParserTest.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(ShipParserTest.class.getName());
     
     public void testShipParser() throws Exception {
         // connect to the store

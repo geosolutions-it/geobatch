@@ -37,8 +37,9 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This action can be used to filter a data structure of type DATA_IN which
@@ -52,7 +53,7 @@ public class FreeMarkerAction
         extends BaseAction<EventObject> 
         implements EventAdapter<TemplateModelEvent>
     {
-    private final static Logger LOGGER = Logger.getLogger(FreeMarkerAction.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerAction.class.toString());
     
     FreeMarkerConfiguration conf;
     
@@ -76,11 +77,11 @@ public class FreeMarkerAction
         }
         catch(NullPointerException npe){
             String message="Unable to build the output file name";
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             throw new ActionException(this,message);
         }
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Output file name: "+output.toString());
 
         // the output
@@ -92,8 +93,8 @@ public class FreeMarkerAction
         }
         catch (IOException ioe){
             String message="Unable to build the output file writer: "+ioe.getLocalizedMessage();
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             throw new ActionException(this,message);
         }
         
@@ -118,14 +119,14 @@ public class FreeMarkerAction
             }
             catch (TemplateModelException tme){
                 String message="Unable to wrap the passed object: "+tme.getLocalizedMessage();
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(message);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
                 throw new ActionException(this,message);
             }
             catch(Exception ioe){
                 String message="Unable to produce the output: "+ioe.getLocalizedMessage();
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(message);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
                 throw new ActionException(this,message);
             }
             
@@ -148,21 +149,21 @@ public class FreeMarkerAction
         }
         catch (IOException ioe){
             String message="Unable to flush buffer to the output file: "+ioe.getLocalizedMessage();
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             throw new ActionException(this,message);
         }
         catch (TemplateModelException tme){
             String message="Unable to wrap the passed object: "+tme.getLocalizedMessage();
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             throw new ActionException(this,message);
         }
         catch (Exception e){
             String message="Unable to process the input file: "+e.getLocalizedMessage();
             e.printStackTrace();
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             throw new ActionException(this,message);
         }
         

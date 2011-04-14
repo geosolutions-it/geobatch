@@ -31,24 +31,29 @@ import java.util.Arrays;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.kzen.ergorr.interfaces.soap.csw.ServiceExceptionReport;
 import be.kzen.ergorr.model.csw.TransactionResponseType;
 import be.kzen.ergorr.model.wrs.WrsExtrinsicObjectType;
 
 /**
- *
+ * 
  * @author ETj (etj at geo-solutions.it)
  */
 public class EOPSender {
 
-    private final static Logger LOGGER = Logger.getLogger(EOPSender.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(EOPSender.class);
+
     private URL serviceURL;
+
     private CSWConn cswConn;
+
     private EOProcessor processor;
+
     private CollectionRO[] collections;
 
     public EOPSender(EOProcessor processor) {
@@ -56,11 +61,11 @@ public class EOPSender {
     }
 
     public void run() throws ServiceExceptionReport, JAXBException {
-        if(serviceURL == null)
+        if (serviceURL == null)
             throw new IllegalStateException("ServiceURL not set");
 
-//        EarthObservationPackage pkg = processor.parsePackage();
-//        EarthObservation eo = processor.getEO();
+        // EarthObservationPackage pkg = processor.parsePackage();
+        // EarthObservation eo = processor.getEO();
         processor.parsePackage();
         PlatformRO platform = processor.getPlatform();
         try {
@@ -68,10 +73,10 @@ public class EOPSender {
                 insertPlatform(processor.getPlatform());
             }
         } catch (Exception ex) {
-            LOGGER.error("Error while handling platform at "+serviceURL+": " + ex.getMessage(), ex);
+            LOGGER.error("Error while handling platform at " + serviceURL + ": " + ex.getMessage(),
+                    ex);
             return;
         }
-
 
         insertEOP(processor.getSARProduct());
     }
@@ -87,17 +92,17 @@ public class EOPSender {
 
         JAXBElement<WrsExtrinsicObjectType> pext = cswConn.getById(platform.getURN());
 
-        if(pext != null) {
+        if (pext != null) {
             JAXBElement<WrsExtrinsicObjectType> resp0 = pext;
             WrsExtrinsicObjectType extobj = resp0.getValue();
-            LOGGER.info("Found platform "+extobj.getId()+" as a " + resp0.getDeclaredType().getName());
+            LOGGER.info("Found platform " + extobj.getId() + " as a "
+                    + resp0.getDeclaredType().getName());
             LOGGER.info(extobj.toString());
         } else
-            LOGGER.info("Platform not found :: "+platform.getURN());
+            LOGGER.info("Platform not found :: " + platform.getURN());
 
         return pext != null;
     }
-
 
     private void insertPlatform(PlatformRO platform) {
         LOGGER.info("Inserting platform " + platform.getURN());
@@ -109,22 +114,23 @@ public class EOPSender {
         LOGGER.info("Inserting SARProduct " + sp.getURN());
 
         TransactionResponseType trt = cswConn.insert(sp.getXML());
-        int inserted = trt != null && trt.getTransactionSummary() != null ? trt.getTransactionSummary().getTotalInserted().intValue() : -1;
-        
+        int inserted = trt != null && trt.getTransactionSummary() != null ? trt
+                .getTransactionSummary().getTotalInserted().intValue() : -1;
+
         if (inserted > 0 && collections != null) {
             CollectionsProcessor collectionProcessor = new CollectionsProcessor();
             collectionProcessor.setCollections(Arrays.asList(collections));
             CollectionsSender collectionsSender = new CollectionsSender(collectionProcessor);
             collectionsSender.setServiceURL(serviceURL);
-            
+
             for (CollectionRO collection : collections) {
                 try {
                     collection.update(sp.getEnvelope(), sp.getBeginTimePosition());
                 } catch (NoSuchAuthorityCodeException e) {
-                    LOGGER.error(e);
+                    LOGGER.error(e.getLocalizedMessage(),e);
                     throw new ServiceExceptionReport(e.getLocalizedMessage(), e);
                 } catch (FactoryException e) {
-                    LOGGER.error(e);
+                    LOGGER.error(e.getLocalizedMessage(),e);
                     throw new ServiceExceptionReport(e.getLocalizedMessage(), e);
                 }
                 collectionsSender.updateCollection(collection);
@@ -133,17 +139,20 @@ public class EOPSender {
     }
 
     /**
-     * @param collections the collections to set
+     * @param collections
+     *            the collections to set
      */
-    public void setCollections(CollectionRO ...collections) {
+    public void setCollections(CollectionRO... collections) {
         this.collections = collections;
     }
+
     public void setCollections(String collection) {
-        this.setCollections(new String[] {collection});
+        this.setCollections(new String[] { collection });
     }
-    public void setCollections(String ...collections) {
+
+    public void setCollections(String... collections) {
         this.collections = new CollectionRO[collections.length];
-        for (int i=0; i<collections.length; i++) {
+        for (int i = 0; i < collections.length; i++) {
             this.collections[i] = new CollectionRO();
             this.collections[i].setId(collections[i]);
         }
@@ -155,6 +164,5 @@ public class EOPSender {
     public CollectionRO[] getCollections() {
         return collections;
     }
-
 
 }

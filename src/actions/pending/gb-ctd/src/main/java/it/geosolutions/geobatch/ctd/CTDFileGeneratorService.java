@@ -20,8 +20,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 package it.geosolutions.geobatch.ctd;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
@@ -29,37 +27,38 @@ import it.geosolutions.geobatch.ctd.configuration.CTDActionConfiguration;
 import it.geosolutions.geobatch.ctd.configuration.CTDConfiguratorService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Public class to generate CTD Service 
+ * Public class to generate CTD Service
  * 
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  * 
  */
 public class CTDFileGeneratorService extends
         CTDConfiguratorService<FileSystemEvent, CTDActionConfiguration> {
-	
+
     public CTDFileGeneratorService(String id, String name, String description, boolean available) {
         super(id, name, description, available);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(CTDFileGeneratorService.class
-            .toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(CTDFileGeneratorService.class);
 
     /**
-     *  Action creator
+     * Action creator
      * 
-     *  @param configuration The data base action configuration 
-     *  @return new CTDFileConfigurator()
+     * @param configuration
+     *            The data base action configuration
+     * @return new CTDFileConfigurator()
      */
     public CTDFileConfigurator createAction(CTDActionConfiguration configuration) {
         try {
             return new CTDFileConfigurator(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

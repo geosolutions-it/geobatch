@@ -28,8 +28,9 @@ import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class manage the download service running the FTP download action.
@@ -44,8 +45,7 @@ public class FTPDownloadActionService extends BaseService implements
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger
-            .getLogger(FTPDownloadActionService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FTPDownloadActionService.class.toString());
 
     /**
      * The FTPDownloadActionService default constructor.
@@ -76,8 +76,8 @@ public class FTPDownloadActionService extends BaseService implements
         try {
             return new FTPDownloadAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
 
         return null;

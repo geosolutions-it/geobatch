@@ -7,8 +7,9 @@ import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -25,7 +26,7 @@ import org.restlet.resource.StringRepresentation;
  */
 public class PublishRestletResource extends Resource {
 
-    private final static Logger LOGGER = Logger.getLogger(PublishRestletResource.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(PublishRestletResource.class.toString());
 
     private PublishingRestletGlobalConfig config;
 
@@ -115,8 +116,8 @@ public class PublishRestletResource extends Resource {
             // } catch (IOException e) {
             // response.setEntity(new StringRepresentation("Internal error "));
             // response.setStatus(Status.SERVER_ERROR_INTERNAL);
-            // if(LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error(e.getLocalizedMessage(),e);
             // return;
             // }
             // if (workingDir == null ||
@@ -124,8 +125,8 @@ public class PublishRestletResource extends Resource {
             // {
             // response.setEntity(new StringRepresentation("Internal error "));
             // response.setStatus(Status.SERVER_ERROR_INTERNAL);
-            // if(LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.severe("Unable to work with the provided working directory:"+(workingDir!=null?workingDir:""));
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("Unable to work with the provided working directory:"+(workingDir!=null?workingDir:""));
             // return;
             // }
             //            
@@ -151,42 +152,42 @@ public class PublishRestletResource extends Resource {
                         if (raf != null)
                             raf.close();
                     } catch (Throwable e) {
-                        if (LOGGER.isLoggable(Level.FINE))
-                            LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+                        if (LOGGER.isTraceEnabled())
+                            LOGGER.trace(e.getLocalizedMessage(), e);
                     }
 
                     try {
                         if (channel != null)
                             IOUtils.closeQuietly(channel);
                     } catch (Throwable e) {
-                        if (LOGGER.isLoggable(Level.FINE))
-                            LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+                        if (LOGGER.isTraceEnabled())
+                            LOGGER.trace(e.getLocalizedMessage(), e);
                     }
 
                     try {
                         if (lock != null)
                             lock.release();
                     } catch (Throwable e) {
-                        if (LOGGER.isLoggable(Level.FINE))
-                            LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+                        if (LOGGER.isTraceEnabled())
+                            LOGGER.trace(e.getLocalizedMessage(), e);
                     }
 
                 }
 
-                LOGGER.severe("Could not acquire file lock: " + inputFile.getAbsolutePath());
+                LOGGER.error("Could not acquire file lock: " + inputFile.getAbsolutePath());
                 response.setEntity(Status.SERVER_ERROR_INTERNAL);
 
                 // if (IOUtils.acquireLock(this, inputFile)) {
                 // response.setEntity(IOUtils.toString(inputFile),
                 // MediaType.TEXT_XML);
                 // } else {
-                // LOGGER.severe("Could not acquire file lock: " +
+                // LOGGER.error("Could not acquire file lock: " +
                 // inputFile.getAbsolutePath());
                 // response.setEntity(Status.SERVER_ERROR_INTERNAL);
                 // }
 
             } else {
-                LOGGER.severe("Could not find file: " + inputFile.getAbsolutePath());
+                LOGGER.error("Could not find file: " + inputFile.getAbsolutePath());
                 response.setEntity(Status.CLIENT_ERROR_BAD_REQUEST);
             }
         } else {

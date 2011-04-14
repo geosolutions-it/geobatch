@@ -41,8 +41,9 @@ import java.io.IOException;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.event.EventListenerList;
 
@@ -53,7 +54,7 @@ import javax.swing.event.EventListenerList;
  */
 public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGenerator<T> {
 
-    private static Logger LOGGER = Logger.getLogger(FileBasedEventGenerator.class.toString());
+    private static Logger LOGGER = LoggerFactory.getLogger(FileBasedEventGenerator.class.toString());
 
     /**
      * The File-System Monitor thread.
@@ -107,7 +108,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
                 
                 final FileSystemEventType incomingEvent = fe.getEventType();
 
-                if (LOGGER.isLoggable(Level.INFO)) {
+                if (LOGGER.isInfoEnabled()) {
                     LOGGER.info(new StringBuilder("Event: ").append(incomingEvent.toString())
                             .append(" ").append(fe.getSource()).toString());
                 }
@@ -121,11 +122,11 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
 //                }
             } else {
                 if (fe == null) {
-                    if (LOGGER.isLoggable(Level.INFO)) {
+                    if (LOGGER.isInfoEnabled()) {
                         LOGGER.info("Null Event delivered ");
                     }
                 } else {
-                    if (LOGGER.isLoggable(Level.INFO)) {
+                    if (LOGGER.isInfoEnabled()) {
                         LOGGER.info("Null Event's source ");
                     }
                 }
@@ -172,8 +173,8 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             this.wildCard = wildcard;
         else{
             this.wildCard = "*";
-            if(LOGGER.isLoggable(Level.FINE)){
-                LOGGER.fine("Provided wild card is null, using default ( * )");
+            if (LOGGER.isTraceEnabled()){
+                LOGGER.trace("Provided wild card is null, using default ( * )");
             }
         }
         
@@ -363,11 +364,11 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
      */
     public synchronized void start() {
         if (!keepFiles) {
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Cleaning up " + watchDirectory.getAbsolutePath().toString());
             }
             Path.emptyDirectory(watchDirectory, true, false);
-        } else if (LOGGER.isLoggable(Level.INFO)) {
+        } else if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Keep existing files in " + watchDirectory.getAbsolutePath().toString());
         }
 
@@ -426,8 +427,8 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
                 throw new NullPointerException("Unable to remove a NULL listener list.");
         }
         catch (Throwable t){
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Unable to remove listener list:\n"+t.getLocalizedMessage());
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Unable to remove listener list:\n"+t.getLocalizedMessage());
         }
     }
 

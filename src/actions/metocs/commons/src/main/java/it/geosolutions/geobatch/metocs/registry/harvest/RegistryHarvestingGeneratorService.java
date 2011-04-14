@@ -26,8 +26,9 @@ import it.geosolutions.geobatch.metocs.registry.RegistryActionConfiguration;
 import it.geosolutions.geobatch.metocs.registry.RegistryConfiguratorService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -37,7 +38,7 @@ import java.util.logging.Logger;
 public class RegistryHarvestingGeneratorService extends
         RegistryConfiguratorService<FileSystemEvent, RegistryActionConfiguration> {
 
-    private final static Logger LOGGER = Logger.getLogger(RegistryHarvestingGeneratorService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(RegistryHarvestingGeneratorService.class
             .toString());
 
     public RegistryHarvestingGeneratorService(String id, String name, String description) {
@@ -56,8 +57,8 @@ public class RegistryHarvestingGeneratorService extends
         try {
             return new RegistryHarvestingConfiguratorAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

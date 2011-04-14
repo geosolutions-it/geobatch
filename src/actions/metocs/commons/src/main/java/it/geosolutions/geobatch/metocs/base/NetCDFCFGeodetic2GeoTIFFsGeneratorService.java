@@ -27,8 +27,9 @@ import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
 import java.util.EventObject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Public class to generate NetCDF_CF-2-GeoTIFFs Services
@@ -37,8 +38,8 @@ import java.util.logging.Logger;
 public class NetCDFCFGeodetic2GeoTIFFsGeneratorService extends BaseService implements
         ActionService<EventObject, NetCDFCFGeodetic2GeoTIFFsConfiguration> {
 
-    private final static Logger LOGGER = Logger
-            .getLogger(NetCDFCFGeodetic2GeoTIFFsGeneratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(NetCDFCFGeodetic2GeoTIFFsGeneratorService.class);
 
     public NetCDFCFGeodetic2GeoTIFFsGeneratorService(String id, String name, String description) {
         super(id, name, description);
@@ -56,8 +57,8 @@ public class NetCDFCFGeodetic2GeoTIFFsGeneratorService extends BaseService imple
         try {
             return new NetCDFCFGeodetic2GeoTIFFsFileAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getMessage(), e);
         }
         return null;
     }
@@ -70,15 +71,13 @@ public class NetCDFCFGeodetic2GeoTIFFsGeneratorService extends BaseService imple
                 configuration.setWorkingDirectory(wd);
                 return true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(
-                            Level.WARNING,
-                            "NetCDFCFGeodetic2GeoTIFFsFileAction::canCreateAction(): "
-                                    + "unable to create action, it's not possible to get an absolute working dir.");
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("NetCDFCFGeodetic2GeoTIFFsFileAction::canCreateAction(): "
+                            + "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return false;
     }

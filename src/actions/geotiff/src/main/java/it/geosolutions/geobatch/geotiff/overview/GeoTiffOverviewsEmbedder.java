@@ -34,8 +34,9 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.geotools.utils.imageoverviews.OverviewsEmbedder;
@@ -56,8 +57,7 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 
     private GeoTiffOverviewsEmbedderConfiguration configuration;
 
-    private final static Logger LOGGER = Logger
-            .getLogger(GeoTiffOverviewsEmbedder.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeoTiffOverviewsEmbedder.class);
 
     public GeoTiffOverviewsEmbedder(GeoTiffOverviewsEmbedderConfiguration configuration)
             throws IOException {
@@ -84,8 +84,8 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
             // //
             if (configuration == null) {
                 final String message = "GeoTiffOverviewsEmbedder::execute(): DataFlowConfig is null.";
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(message);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
                 throw new IllegalStateException(message);
             }
 
@@ -122,13 +122,13 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                 oe.addProcessingEventListener(new ProcessingEventListener() {
 
                     public void exceptionOccurred(ExceptionEvent event) {
-                        if (LOGGER.isLoggable(Level.INFO))
+                        if (LOGGER.isInfoEnabled())
                             LOGGER.info("GeoTiffOverviewsEmbedder::execute(): "
                                     + event.getMessage());
                     }
 
                     public void getNotification(ProcessingEvent event) {
-                        if (LOGGER.isLoggable(Level.INFO))
+                        if (LOGGER.isInfoEnabled())
                             LOGGER.info("GeoTiffOverviewsEmbedder::execute(): "
                                     + event.getMessage());
                         listenerForwarder.progressing((float) event.getPercentage(),
@@ -168,16 +168,14 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                                 oe.run();
                             } catch (UnsupportedOperationException uoe) {
                                 listenerForwarder.failed(uoe);
-                                if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.log(
-                                            Level.WARNING,
+                                if (LOGGER.isWarnEnabled())
+                                    LOGGER.warn(
                                             "GeoTiffOverviewsEmbedder::execute(): "
                                                     + uoe.getLocalizedMessage(), uoe);
                             } catch (IllegalArgumentException iae) {
                                 listenerForwarder.failed(iae);
-                                if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.log(
-                                            Level.WARNING,
+                                if (LOGGER.isWarnEnabled())
+                                    LOGGER.warn(
                                             "GeoTiffOverviewsEmbedder::execute(): "
                                                     + iae.getLocalizedMessage(), iae);
                             } finally {
@@ -193,14 +191,16 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                             oe.run();
                         } catch (UnsupportedOperationException uoe) {
                             listenerForwarder.failed(uoe);
-                            if (LOGGER.isLoggable(Level.WARNING))
-                                LOGGER.log(Level.WARNING, "GeoTiffOverviewsEmbedder::execute(): "
-                                        + uoe.getLocalizedMessage(), uoe);
+                            if (LOGGER.isWarnEnabled())
+                                LOGGER.warn(
+                                        "GeoTiffOverviewsEmbedder::execute(): "
+                                                + uoe.getLocalizedMessage(), uoe);
                         } catch (IllegalArgumentException iae) {
                             listenerForwarder.failed(iae);
-                            if (LOGGER.isLoggable(Level.WARNING))
-                                LOGGER.log(Level.WARNING, "GeoTiffOverviewsEmbedder::execute(): "
-                                        + iae.getLocalizedMessage(), iae);
+                            if (LOGGER.isWarnEnabled())
+                                LOGGER.warn(
+                                        "GeoTiffOverviewsEmbedder::execute(): "
+                                                + iae.getLocalizedMessage(), iae);
                         } finally {
                             listenerForwarder.setProgress(100 / ((events.size() != 0) ? events
                                     .size() : 1));
@@ -213,8 +213,8 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
                     final String message = "GeoTiffOverviewsEmbedder::execute(): The passed file event refers to a not existent "
                             + "or not readable/writeable file! File: "
                             + eventFile.getAbsolutePath();
-                    if (LOGGER.isLoggable(Level.WARNING))
-                        LOGGER.warning(message);
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(message);
                     listenerForwarder.failed(new IllegalArgumentException(message));
                 }
             } // endwile
@@ -234,8 +234,8 @@ public class GeoTiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
         } catch (Exception t) {
             final String message = "GeoTiffOverviewsEmbedder::execute(): "
                     + t.getLocalizedMessage();
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, message, t);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message, t);
             final ActionException exc = new ActionException(this, message, t);
             listenerForwarder.failed(exc);
             throw exc;

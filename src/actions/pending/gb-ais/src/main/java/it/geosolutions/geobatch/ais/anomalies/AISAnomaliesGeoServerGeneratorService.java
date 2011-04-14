@@ -29,9 +29,9 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 public class AISAnomaliesGeoServerGeneratorService extends
         GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
 
@@ -39,8 +39,7 @@ public class AISAnomaliesGeoServerGeneratorService extends
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger
-            .getLogger(AISAnomaliesGeoServerGeneratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(AISAnomaliesGeoServerGeneratorService.class);
 
     private AISAnomaliesDAO aisAnomaliesDAO;
 
@@ -56,8 +55,8 @@ public class AISAnomaliesGeoServerGeneratorService extends
         try {
             return new AISAnomaliesGeoServerGenerator(configuration, this.aisAnomaliesDAO);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(e.getLocalizedMessage(), e);
             return null;
         }
     }

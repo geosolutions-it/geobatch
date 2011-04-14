@@ -40,8 +40,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,6 +52,8 @@ import org.geotools.data.shapefile.indexed.IndexedShapefileDataStore;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.MultiLineString;
 
@@ -64,8 +64,7 @@ import com.vividsolutions.jts.geom.MultiLineString;
  */
 public class LammaContourBuilderAction extends LammaBaseAction {
 
-	protected final static Logger LOGGER = Logger
-			.getLogger(LammaContourBuilderAction.class.toString());
+	protected final static Logger LOGGER = LoggerFactory.getLogger(LammaContourBuilderAction.class);
 	protected final LammaContourBuilderConfiguration configuration;
 
 	/**
@@ -344,8 +343,8 @@ public class LammaContourBuilderAction extends LammaBaseAction {
 
 			return outEvents;
 		} catch (Throwable t) {
-			if (LOGGER.isLoggable(Level.SEVERE)) {
-				LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+			if (LOGGER.isErrorEnabled()){
+				LOGGER.error(t.getLocalizedMessage(), t);
 			}
 			// Logging to ESB ...
 			logMessage.setMessage("[ERROR] " + t.getLocalizedMessage());

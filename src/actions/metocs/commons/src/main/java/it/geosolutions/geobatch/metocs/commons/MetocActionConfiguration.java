@@ -28,7 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MetocActionConfiguration extends ActionConfiguration implements Configuration {
 
@@ -67,7 +68,7 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
      * Default logger
      */
     protected final static Logger LOGGER = 
-                            Logger.getLogger(MetocActionConfiguration.class.toString());
+                            LoggerFactory.getLogger(MetocActionConfiguration.class.toString());
 
     protected final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddmm_HHH");
 

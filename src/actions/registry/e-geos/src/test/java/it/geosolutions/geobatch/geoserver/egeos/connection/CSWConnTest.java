@@ -31,7 +31,9 @@ import javax.xml.bind.JAXBElement;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 import be.kzen.ergorr.model.wrs.WrsExtrinsicObjectType;
@@ -41,7 +43,7 @@ import be.kzen.ergorr.model.wrs.WrsExtrinsicObjectType;
  * @author ETj (etj at geo-solutions.it)
  */
 public class CSWConnTest extends TestCase {
-    private final static Logger LOGGER = Logger.getLogger(CSWConnTest.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CSWConnTest.class);
    
     public void testCSWConn() throws Exception {
         File dir = new ClassPathResource("testEOP").getFile();

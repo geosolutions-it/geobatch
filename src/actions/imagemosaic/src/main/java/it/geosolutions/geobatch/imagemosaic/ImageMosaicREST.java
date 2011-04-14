@@ -19,8 +19,9 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -31,7 +32,7 @@ public abstract class ImageMosaicREST {
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(ImageMosaicREST.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicREST.class.toString());
 
     /**
      * 
@@ -202,9 +203,8 @@ public abstract class ImageMosaicREST {
 
             return true;
         } else {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE,
-                        "Bad response from the GeoServer:GeoServerRESTHelper.sendCoverage()");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Bad response from the GeoServer:GeoServerRESTHelper.sendCoverage()");
             return false;
         }
     }
@@ -228,9 +228,8 @@ public abstract class ImageMosaicREST {
                     out.println("driver=ImageMosaic");
                     out.println("path=" + File.separator);
                 } catch (IOException e) {
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.log(Level.SEVERE,
-                                "Error occurred while writing indexer.properties file!", e);
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("Error occurred while writing indexer.properties file!", e);
                 } finally {
                     if (out != null) {
                         out.flush();
@@ -242,7 +241,7 @@ public abstract class ImageMosaicREST {
                 }
             }
         } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "ImageMosaic:setReturn(): " + e.getMessage(), e);
+            LOGGER.warn("ImageMosaic:setReturn(): " + e.getMessage(), e);
         }
         return layerDescriptor;
     }
@@ -307,7 +306,7 @@ public abstract class ImageMosaicREST {
 
                 LOGGER.info("added style " + styleName + " for layer " + layerName);
             } else {
-                LOGGER.warning("error adding style " + styleName + " for layer " + layerName);
+                LOGGER.warn("error adding style " + styleName + " for layer " + layerName);
                 ret = false;
             }
         }
@@ -334,7 +333,7 @@ public abstract class ImageMosaicREST {
                 conf.getGeoserverPWD(), null)) {
             LOGGER.info("ImageMosaicREST::reloadCatalog(): GeoServer Catalog successfully reloaded!");
         } else {
-            LOGGER.warning("ImageMosaicREST::reloadCatalog(): Error occurred while trying to reload GeoServer Catalog!");
+            LOGGER.warn("ImageMosaicREST::reloadCatalog(): Error occurred while trying to reload GeoServer Catalog!");
             ret = false;
         }
         return ret;
@@ -399,7 +398,7 @@ public abstract class ImageMosaicREST {
                 if (is!=null){
                     is.close();
                 }
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("HTTP OK: " + response);
                 res = true;
             } else if (responseCode == HttpURLConnection.HTTP_CREATED) {
@@ -409,17 +408,17 @@ public abstract class ImageMosaicREST {
                 final String name = GeoServerRESTHelper.extractName(response);
                 // if (returnedLayerName!=null && returnedLayerName.length>0)
                 // returnedLayerName[0]=name;
-                if (LOGGER.isLoggable(Level.FINE)){
-                    LOGGER.log(Level.FINE, "HTTP CREATED: " + response);
+                if (LOGGER.isTraceEnabled()){
+                    LOGGER.trace("HTTP CREATED: " + response);
                 }
                 else {
-                    if (LOGGER.isLoggable(Level.INFO))
+                    if (LOGGER.isInfoEnabled())
                         LOGGER.info("HTTP CREATED: " + name);
                 }
                 res = true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning("ImageMosaicREST::disposeReader(): HTTP ERROR:"
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("ImageMosaicREST::disposeReader(): HTTP ERROR:"
                             + "\nRequestMethod: " + urlConnection.getRequestMethod()
                             + "\nResponseMessage: " + urlConnection.getResponseMessage()
                             + "\nCode: " + urlConnection.getResponseCode()
@@ -429,12 +428,12 @@ public abstract class ImageMosaicREST {
             }
 
         } catch (UnsupportedEncodingException e) {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.log(Level.WARNING, e.getMessage(), e);
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(e.getMessage(), e);
             return false;
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.log(Level.WARNING, e.getMessage(), e);
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(e.getMessage(), e);
             return false;
         } finally {
             try {
@@ -444,8 +443,8 @@ public abstract class ImageMosaicREST {
                 if (outStream != null)
                     outStream.close();
             } catch (Exception e) {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING, e.getMessage(), e);
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn(e.getMessage(), e);
             }
         }
         return res;

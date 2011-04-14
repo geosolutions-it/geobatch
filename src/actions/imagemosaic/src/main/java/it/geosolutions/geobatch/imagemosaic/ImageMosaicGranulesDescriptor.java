@@ -6,8 +6,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
@@ -21,7 +22,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
  * 
  */
 final class ImageMosaicGranulesDescriptor {
-    private final static Logger LOGGER = Logger.getLogger(ImageMosaicGranulesDescriptor.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicGranulesDescriptor.class
             .toString());
 
     // TODO a better file filter
@@ -180,7 +181,7 @@ final class ImageMosaicGranulesDescriptor {
         }
 
         if (fileNameList == null) {
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("ImageMosaicGranulesDescriptor:buildDescriptor(): unable to collect files from the dir: "
                         + inputDir.getAbsolutePath());
             }
@@ -205,7 +206,7 @@ final class ImageMosaicGranulesDescriptor {
         fileNameList = coll.collect(inputDir);
 
         if (fileNameList == null) {
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("ImageMosaicGranulesDescriptor:buildDescriptor(): unable to collect files from the dir: "
                         + inputDir.getAbsolutePath());
             }
@@ -254,10 +255,8 @@ final class ImageMosaicGranulesDescriptor {
                 if (mosaicDescriptor != null) {
                     return mosaicDescriptor;
                 } else {
-                    if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.log(
-                                Level.WARNING,
-                                "ImageMosaicGranulesDescriptor:buildDescriptor(): Unable to use COARDS naming convention for file: "
+                    if (LOGGER.isWarnEnabled()) {
+                        LOGGER.warn("ImageMosaicGranulesDescriptor:buildDescriptor(): Unable to use COARDS naming convention for file: "
                                         + firstFile.getAbsolutePath()
                                         + "\nLet's use default configuration parameters.");
                     }
@@ -267,8 +266,8 @@ final class ImageMosaicGranulesDescriptor {
                     firstCvNameParts, lastCvNameParts);
 
         } else {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("ImageMosaicGranulesDescriptor:buildDescriptor(): The passed base dir is empty! Dir:"
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn("ImageMosaicGranulesDescriptor:buildDescriptor(): The passed base dir is empty! Dir:"
                         + inputDir.getAbsolutePath());
             }
 
@@ -339,8 +338,8 @@ final class ImageMosaicGranulesDescriptor {
 
                 } catch (NumberFormatException nfe) {
                     // if the string does not contain a parsable float.
-                    if (LOGGER.isLoggable(Level.WARNING)) {
-                        LOGGER.log(Level.WARNING, "ImageMosaicGranulesDescriptor:buildCOARDS(): "
+                    if (LOGGER.isWarnEnabled()) {
+                        LOGGER.warn("ImageMosaicGranulesDescriptor:buildCOARDS(): "
                                 + "\nSome of the name parts don't contain a parsable number: "
                                 + nfe.getLocalizedMessage(), nfe);
                     }

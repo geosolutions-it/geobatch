@@ -5,8 +5,9 @@ import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,7 +21,7 @@ import org.w3c.dom.NodeList;
 
 public class ProParser {
 
-    private final static Logger LOGGER = Logger.getLogger(ProParser.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(ProParser.class.toString());
 
     final static class ProType {
         public ProType() {
@@ -109,7 +110,7 @@ public class ProParser {
             if (proNode.getNodeName() == "sat:imageFileName") {
                 ret.imageParentPath = xmlFile.getParent();
                 ret.imageFileName = proNode.getTextContent();
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("ProParser.parse() sat:imageFileName:" + proNode.getTextContent());
 
             } else if (proNode.getNodeName() == "sat:source") {
@@ -120,7 +121,7 @@ public class ProParser {
                     if (sourceNode.getNodeName() == "sat:startTime") {
                         ret.startTime = sourceNode.getTextContent();
                         complete = true;
-                        if (LOGGER.isLoggable(Level.INFO))
+                        if (LOGGER.isInfoEnabled())
                             LOGGER.info("ProParser.parse() sat:startTime:"
                                     + sourceNode.getTextContent());
                         break;
@@ -191,20 +192,20 @@ public class ProParser {
             if (seconds>0){
                 if (!FileUtils.waitFor(dest, seconds)){
                     dest=null;
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe("ProParser.copyTif() : failed to propagate tif to->"+dest.getAbsolutePath());
-                } else if (LOGGER.isLoggable(Level.INFO)){
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("ProParser.copyTif() : failed to propagate tif to->"+dest.getAbsolutePath());
+                } else if (LOGGER.isInfoEnabled()){
                     LOGGER.info("ProParser.copyTif() : file: "+source.getAbsoluteFile()
                             +" succesfully copied and propagated over nfs to: "+dest.getAbsolutePath());
                 }
             }
-            else if (LOGGER.isLoggable(Level.INFO)){
+            else if (LOGGER.isInfoEnabled()){
                 LOGGER.info("ProParser.copyTif() : source file: "+source.getAbsoluteFile()
                         +" succesfully copied to: "+dest.getAbsolutePath());
             }
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("ProParser.copyTif() : failed to copy tif to->"+dest.getAbsolutePath()+
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("ProParser.copyTif() : failed to copy tif to->"+dest.getAbsolutePath()+
                         "message is: "+e.getLocalizedMessage());
             dest = null;
         }

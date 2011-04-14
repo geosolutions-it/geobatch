@@ -27,8 +27,9 @@ import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.metocs.commons.MetocActionConfiguration;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Public class to generate E-GEOS::SAR Wind Derived Products Services
@@ -40,7 +41,7 @@ public class SARWindGeneratorService extends BaseService implements ActionServic
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(SARWindGeneratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(SARWindGeneratorService.class.toString());
 
     /**
      * Action creator
@@ -53,8 +54,8 @@ public class SARWindGeneratorService extends BaseService implements ActionServic
         try {
             return new SARWindAction(configuration);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
             return null;
         }
     }

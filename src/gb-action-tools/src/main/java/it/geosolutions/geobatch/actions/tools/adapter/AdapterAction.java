@@ -29,8 +29,9 @@ import java.io.IOException;
 import java.util.EventObject;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
@@ -43,7 +44,7 @@ public abstract class AdapterAction<T extends EventObject>
                         extends BaseAction<EventObject>
                         implements EventAdapter<T>{
     
-    private final static Logger LOGGER = Logger.getLogger(AdapterAction.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(AdapterAction.class.toString());
 
     protected AdapterAction(ActionConfiguration configuration)
             throws IOException {
@@ -56,7 +57,7 @@ public abstract class AdapterAction<T extends EventObject>
     public Queue<EventObject> execute(Queue<EventObject> events)
             throws ActionException {
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Starting with processing...");
         // looking for file
         if (events.size() > 0){

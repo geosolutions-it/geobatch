@@ -39,8 +39,9 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Queue;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ucar.ma2.Array;
 import ucar.ma2.Section;
@@ -64,7 +65,7 @@ import ucar.nc2.ncml.NcMLReader;
  */
 public class SHOMAction extends BaseAction<EventObject>{
     // logger
-    private final static Logger LOGGER = Logger.getLogger(SHOMAction.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(SHOMAction.class.toString());
     // time zone
     private final static TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
     // time format
@@ -91,7 +92,7 @@ public class SHOMAction extends BaseAction<EventObject>{
     public Queue<EventObject> execute(Queue<EventObject> events)
             throws ActionException {
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Starting with processing...");
         
         // looking for file
@@ -101,7 +102,7 @@ public class SHOMAction extends BaseAction<EventObject>{
         EventObject event= events.remove();
         if (event instanceof FileSystemEvent){
             FileSystemEvent fs_event=(FileSystemEvent) event;
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("Event is a FileSystemEvent");
             
             try{
@@ -118,7 +119,7 @@ public class SHOMAction extends BaseAction<EventObject>{
                     throw new FileNotFoundException("BAD FileSystemEvent path");
                 f=null;
 
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("Scanning directory: "+dir_name);
                 
 //TODO
@@ -129,13 +130,13 @@ public class SHOMAction extends BaseAction<EventObject>{
                  * Initialize configuration
                  */
                 if (conf.init()){
-                    if (LOGGER.isLoggable(Level.INFO)){
+                    if (LOGGER.isInfoEnabled()){
                         LOGGER.info("SHOM configuration initialized");
                     }
                 }
                 else {
-                    if (LOGGER.isLoggable(Level.SEVERE)){
-                        LOGGER.severe("Failed to initialize the SHOM configuration");
+                    if (LOGGER.isErrorEnabled()){
+                        LOGGER.error("Failed to initialize the SHOM configuration");
                     }
                     return null;
                 }
@@ -164,7 +165,7 @@ public class SHOMAction extends BaseAction<EventObject>{
 
                 pr.close();
                 
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("Closing the producer");
                 // be sure the producer thread ends
                 filter.close(false);
@@ -177,7 +178,7 @@ public class SHOMAction extends BaseAction<EventObject>{
 //NetcdfFile ncdnew = ucar.nc2.FileWriter.writeToFile(dataset, conf.getWorkingDirectory()+"/out.nc", true);
 //ncdnew.close();
                 
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("Aggregating by time");
                 
                 NetcdfEvent ev=new NetcdfEvent(dataset,conf.getPerformBackup());
@@ -263,22 +264,22 @@ e.printStackTrace();
             if (base_time<0){
                 base_time=(secsSince-originTo70Diff);
                 tau=-new_time;
-                if (LOGGER.isLoggable(Level.FINER)) {            
-                    LOGGER.finer("BASE_TIME is: "+base_time);
+                if (LOGGER.isTraceEnabled()) {    
+                    LOGGER.trace("BASE_TIME is: "+base_time);
                 }
             }
             else if (tau<0){
                 // tau is negative (lock above) 
                 tau=(int)((new_time+tau)/3600);
-                if (LOGGER.isLoggable(Level.FINER)) {            
-                    LOGGER.finer("TAU is: "+tau);
+                if (LOGGER.isTraceEnabled()){            
+                    LOGGER.trace("TAU is: "+tau);
                 }
             }
             
-            if (LOGGER.isLoggable(Level.FINER)) {            
+            if (LOGGER.isTraceEnabled()){            
                 gc.clear();
                 gc.setTimeInMillis((new_time+originTo80Diff)*1000);
-                LOGGER.finer("Rebuild "+index+" time is: "+sdf.format(gc.getTime()));
+                LOGGER.trace("Rebuild "+index+" time is: "+sdf.format(gc.getTime()));
             }
         }
         
@@ -291,8 +292,8 @@ e.printStackTrace();
         // write data as cached data into the dataset
         timeVar.setCachedData(timeArray, true);
         
-        if (LOGGER.isLoggable(Level.FINER))
-            LOGGER.finer("TIME: "+sdf.format(gc.getTime()));
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("TIME: "+sdf.format(gc.getTime()));
 
         /*
         * Setting global attribute(s)

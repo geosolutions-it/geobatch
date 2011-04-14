@@ -34,9 +34,11 @@ import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
+
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.kzen.ergorr.interfaces.soap.csw.ServiceExceptionReport;
 import be.kzen.ergorr.model.csw.TransactionResponseType;
@@ -47,7 +49,7 @@ import be.kzen.ergorr.model.csw.TransactionResponseType;
  */
 public class DERSender {
 
-    private final static Logger LOGGER = Logger.getLogger(DERSender.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DERSender.class);
 
     private URL serviceURL;
     private CSWConn cswConn;
@@ -88,10 +90,10 @@ public class DERSender {
                             try {
                                 collection.update(ro.getEnvelope(), ro.getTimeStamp());
                             } catch (NoSuchAuthorityCodeException e) {
-                                LOGGER.error(e);
+                                LOGGER.error(e.getLocalizedMessage(),e);
                                 throw new ServiceExceptionReport(e.getLocalizedMessage(), e);
                             } catch (FactoryException e) {
-                                LOGGER.error(e);
+                                LOGGER.error(e.getLocalizedMessage(),e);
                                 throw new ServiceExceptionReport(e.getLocalizedMessage(), e);
                             }
                         }
@@ -121,10 +123,10 @@ public class DERSender {
                             try {
                                 collection.update(ro.getEnvelope(), ro.getTimeStamp());
                             } catch (NoSuchAuthorityCodeException e) {
-                                LOGGER.error(e);
+                                LOGGER.error(e.getLocalizedMessage(),e);
                                 throw new ServiceExceptionReport(e.getLocalizedMessage(), e);
                             } catch (FactoryException e) {
-                                LOGGER.error(e);
+                                LOGGER.error(e.getLocalizedMessage(),e);
                                 throw new ServiceExceptionReport(e.getLocalizedMessage(), e);
                             }
                         }

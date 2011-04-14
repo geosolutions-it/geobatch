@@ -28,8 +28,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -42,7 +43,7 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
  * 
  */
 public class Collector extends DirectoryWalker<File> {
-    private final static Logger LOGGER=Logger.getLogger(Collector.class.toString());
+    private final static Logger LOGGER=LoggerFactory.getLogger(Collector.class.toString());
     
     private FileFilter filter = null;
 
@@ -83,14 +84,14 @@ public class Collector extends DirectoryWalker<File> {
                 super.walk(root, res);
             } catch (NullPointerException npe){
                 // if the start directory is null
-                if (LOGGER.isLoggable(Level.WARNING)){
-                    LOGGER.log(Level.WARNING,"Collector::collect() the start directory is null",npe);
+                if (LOGGER.isWarnEnabled()){
+                    LOGGER.warn("Collector::collect() the start directory is null",npe);
                 }
                 return null;
             } catch (IOException ioe){
                 // if an I/O Error occurs
-                if (LOGGER.isLoggable(Level.WARNING)){
-                    LOGGER.log(Level.WARNING,"Collector::collect() an I/O Error occurs.",ioe);
+                if (LOGGER.isWarnEnabled()){
+                    LOGGER.warn("Collector::collect() an I/O Error occurs.",ioe);
                 }
                 return null;
             }
@@ -98,8 +99,8 @@ public class Collector extends DirectoryWalker<File> {
         }
         else {
             // if the start directory is null
-            if (LOGGER.isLoggable(Level.WARNING)){
-                LOGGER.log(Level.WARNING, "Collector::collect() the start directory is null");
+            if (LOGGER.isWarnEnabled()){
+                LOGGER.warn("Collector::collect() the start directory is null");
             }
             return null;
         }

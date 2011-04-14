@@ -25,8 +25,9 @@ package it.geosolutions.geobatch.gliders.configuration;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.util.EventObject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -36,7 +37,7 @@ extends BaseAction<T> {
 	/**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(GlidersConfiguratorAction.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(GlidersConfiguratorAction.class.toString());
 
     protected final GlidersActionConfiguration configuration;
     
@@ -55,7 +56,7 @@ extends BaseAction<T> {
         // //////////////////////////
         
 		if ((configuration.getDbServerIp() == null) || (configuration.getDbPort() == null)) {
-			LOGGER.log(Level.SEVERE, "Data Base url is null.");
+			LOGGER.error("Data Base url is null.");
 			throw new IllegalStateException("Data Base url is null.");
 		}
 

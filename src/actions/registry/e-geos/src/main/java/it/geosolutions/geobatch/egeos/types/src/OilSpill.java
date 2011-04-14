@@ -26,13 +26,15 @@ import it.geosolutions.geobatch.egeos.types.util.GmlPolygonParser;
 import it.geosolutions.geobatch.egeos.types.util.JDOMUtils;
 import java.io.File;
 import java.io.IOException;
-import org.apache.log4j.Logger;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Used to parse both OSN and OSW.
@@ -68,7 +70,7 @@ import org.jdom.xpath.XPath;
  * @author ETj (etj at geo-solutions.it)
  */
 public class OilSpill {
-    private final static Logger LOGGER = Logger.getLogger(OilSpill.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(OilSpill.class);
 
     public final static Namespace NS = Namespace.getNamespace("http://www.emsa.europa.eu/csndc");
     public final static Namespace NS_CSN = Namespace.getNamespace("csn", "http://www.emsa.europa.eu/csndc");

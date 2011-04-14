@@ -25,13 +25,14 @@ import it.geosolutions.geobatch.tools.check.Objects;
 
 import java.io.File;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.geotools.data.DataUtilities;
 
 public class Url {
-    private final static Logger LOGGER = Logger.getLogger(Url.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Url.class.toString());
     
     /**
      * Tries to convert a {@link URL} into a {@link File}. Return null if something bad happens
@@ -48,8 +49,8 @@ public class Url {
             return retFile;
 
         } catch (Throwable t) {
-            if (LOGGER.isLoggable(Level.FINE))
-                LOGGER.log(Level.FINE, t.getLocalizedMessage(), t);
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace(t.getLocalizedMessage(), t);
         }
         return null;
     }

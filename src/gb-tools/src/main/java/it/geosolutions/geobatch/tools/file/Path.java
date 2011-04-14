@@ -33,13 +33,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.FileUtils;
 
 public class Path {
-    private final static Logger LOGGER = Logger.getLogger(Path.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Path.class.toString());
 
     /**
      * 
@@ -271,8 +272,8 @@ public class Path {
                     try {
                         source.close();
                     } catch (Throwable t) {
-                        if (LOGGER.isLoggable(Level.INFO))
-                            LOGGER.log(Level.INFO, t.getLocalizedMessage(), t);
+                        if (LOGGER.isInfoEnabled())
+                            LOGGER.info(t.getLocalizedMessage(), t);
                     }
                 }
             } finally {
@@ -280,8 +281,8 @@ public class Path {
                     try {
                         destination.close();
                     } catch (Throwable t) {
-                        if (LOGGER.isLoggable(Level.INFO))
-                            LOGGER.log(Level.INFO, t.getLocalizedMessage(), t);
+                        if (LOGGER.isInfoEnabled())
+                            LOGGER.info(t.getLocalizedMessage(), t);
                     }
                 }
             }
@@ -338,8 +339,8 @@ public class Path {
         if (source != null && dest != null) {
             if (dest.exists()) {
                 if (!overwrite) {
-                    if (LOGGER.isLoggable(Level.WARNING))
-                        LOGGER.warning("Path:copyFileToNFS(): failed to propagate file to: \'"
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn("Path:copyFileToNFS(): failed to propagate file to: \'"
                                 + dest.getAbsolutePath()
                                 + "\' destination exists! (overwrite is set to \'" + overwrite
                                 + "\').");
@@ -350,8 +351,8 @@ public class Path {
 
         } else {
             // NullPointerException - if source or destination is null
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Path:copyFileToNFS() : source or destination is null.");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Path:copyFileToNFS() : source or destination is null.");
             return null;
         }
     }
@@ -372,22 +373,22 @@ public class Path {
             FileUtils.copyFile(source, dest);
             if (seconds > 0) {
                 if (!FileUtils.waitFor(dest, seconds)) {
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe("Path:copyFileToNFS() : failed to propagate file to: "
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("Path:copyFileToNFS() : failed to propagate file to: "
                                 + dest.getAbsolutePath());
                     dest = null;
-                } else if (LOGGER.isLoggable(Level.INFO)) {
+                } else if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("Path:copyFileToNFS() : file: \'" + source.getAbsoluteFile()
                             + "\' succesfully copied and propagated to: " + dest.getAbsolutePath());
                 }
-            } else if (LOGGER.isLoggable(Level.INFO)) {
+            } else if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Path:copyFileToNFS() : source file: \'" + source.getAbsoluteFile()
                         + "\' succesfully copied to: " + dest.getAbsolutePath());
             }
         } catch (NullPointerException e) {
             // NullPointerException - if source or destination is null
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Path:copyFileToNFS() : source or destination is null."
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Path:copyFileToNFS() : source or destination is null."
                         + "\n\tThe message is: " + e.getLocalizedMessage());
             dest = null;
         } catch (IOException e) {
@@ -395,13 +396,12 @@ public class Path {
              * IOException - if source or destination is invalid IOException - if an IO error occurs
              * during copying
              */
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE,
-                        "Path:copyFileToNFS() : \n\tThe message is: " + e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Path:copyFileToNFS() : \n\tThe message is: " + e.getLocalizedMessage(), e);
             dest = null;
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Path:copyFileToNFS() : failed to copy file."
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Path:copyFileToNFS() : failed to copy file."
                         + "\n\tThe message is: " + e.getLocalizedMessage());
             dest = null;
         }
@@ -423,24 +423,24 @@ public class Path {
             boolean overwrite, int seconds) {
         // list
         if (list == null) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using a NULL list");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Path:copyListFileToNFS() : failed to copy file list using a NULL list");
             return null;
         }
         final int size = list.size();
         if (size == 0) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using an empty list");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Path:copyListFileToNFS() : failed to copy file list using an empty list");
             return null;
         }
         // baseDestDir
         if (baseDestDir == null) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using a NULL baseDestDir");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Path:copyListFileToNFS() : failed to copy file list using a NULL baseDestDir");
             return null;
         } else if (!baseDestDir.isDirectory() || !baseDestDir.canWrite()) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Path:copyListFileToNFS() : failed to copy file list using a not "
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Path:copyListFileToNFS() : failed to copy file list using a not "
                         + "writeable directory as baseDestDir: " + baseDestDir.getAbsolutePath());
             return null;
         }
@@ -455,8 +455,8 @@ public class Path {
                         ret.add(dest);
                     }
                 } else {
-                    if (LOGGER.isLoggable(Level.WARNING))
-                        LOGGER.warning("Path:copyListFileToNFS() : + SKIPPING file:\n"
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn("Path:copyListFileToNFS() : + SKIPPING file:\n"
                                 + file.getAbsolutePath()+"\nUnable to copy a not existent file.");
                 }
             }

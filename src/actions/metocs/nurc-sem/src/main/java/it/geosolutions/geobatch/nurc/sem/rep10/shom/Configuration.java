@@ -31,8 +31,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
@@ -41,36 +42,37 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  */
 @XStreamAlias("filter")
 @XStreamInclude(Configuration.class)
 public class Configuration extends ActionConfiguration {
 
     @XStreamOmitField
-    private boolean initted=false;
-    
+    private boolean initted = false;
+
     @XStreamOmitField
-    private final static Logger LOGGER = Logger.getLogger(Configuration.class.toString());
-    
+    private final static Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
+
     // Create a data-model
     @XStreamAlias("map")
-    private Map<String, String> root=null;
-    
+    private Map<String, String> root = null;
+
     // path where to find ncml template
     @XStreamAlias("file")
-    private String template_path=null;
-    
-    // You should do this ONLY ONCE in the whole application life-cycle: 
-    @XStreamOmitField 
+    private String template_path = null;
+
+    // You should do this ONLY ONCE in the whole application life-cycle:
+    @XStreamOmitField
     private freemarker.template.Configuration cfg = null;
 
-    // Hold the template 
-    @XStreamOmitField 
-    private Template template=null;
-    
+    // Hold the template
+    @XStreamOmitField
+    private Template template = null;
+
     /**
      * Default constructor
+     * 
      * @note this is never called by XStream
      * @param id
      * @param name
@@ -79,110 +81,109 @@ public class Configuration extends ActionConfiguration {
     public Configuration(String id, String name, String description) {
         super(id, name, description);
         if (init())
-            if (LOGGER.isLoggable(Level.WARNING))
-              LOGGER.warning("Failed to initialize the configuration");
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn("Failed to initialize the configuration");
     }
-    
+
     /**
      * Check the status of this configuration
-     * @return true if the init() method has already run
-     * false otherwise
+     * 
+     * @return true if the init() method has already run false otherwise
      */
-    public boolean isInitted(){
+    public boolean isInitted() {
         return initted;
     }
-    
+
     /**
      * initialize members
+     * 
      * @return true if init ends successful
      */
-    public boolean init(){
+    public boolean init() {
         if (initted)
             return initted;
-        
-     // singleton configuration pattern
-        if (cfg==null){
-            cfg=new freemarker.template.Configuration();
+
+        // singleton configuration pattern
+        if (cfg == null) {
+            cfg = new freemarker.template.Configuration();
         }
-        
-        if (root==null){
-            root=new HashMap<String, String>();
+
+        if (root == null) {
+            root = new HashMap<String, String>();
         }
-        String workingDirectory=getWorkingDirectory();
-        if (workingDirectory!=null && cfg!=null){
+        String workingDirectory = getWorkingDirectory();
+        if (workingDirectory != null && cfg != null) {
             try {
                 setWorkingDirectory(Path.getAbsolutePath(workingDirectory));
                 cfg.setDirectoryForTemplateLoading(new File(getWorkingDirectory()));
-            }
-            catch (IOException e){
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Unable to get the working dir for the SHOM configuration: "
-                            +e.getLocalizedMessage());
+            } catch (IOException e) {
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Unable to get the working dir for the SHOM configuration: "
+                            + e.getLocalizedMessage());
                 return false;
             }
-        }
-        else {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Unable to get the working dir for the SHOM configuration");
+        } else {
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Unable to get the working dir for the SHOM configuration");
             return false;
         }
-            
+
         /* Get or create a template */
-        if (template_path!=null)
+        if (template_path != null)
             try {
                 template = cfg.getTemplate(template_path);
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Unable to get the template: "+e.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Unable to get the template: " + e.getLocalizedMessage());
                 return false;
             }
         else {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Unable to set the NcML template file check the SHOM configuration");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Unable to set the NcML template file check the SHOM configuration");
             return false;
         }
-        initted=true;
+        initted = true;
         return true;
     }
-    
+
     /**
      * return the substitution map
+     * 
      * @return the substitution map
-     * @note before you call init() method
-     * this object can be null
+     * @note before you call init() method this object can be null
      */
-    public Map<String, String> getRoot(){
+    public Map<String, String> getRoot() {
         return root;
     }
-    
+
     /**
      * return the template path
+     * 
      * @return the template path
-     * @note before you call init() method
-     * this object can be null anyway
-     * the template_path should be always
-     * present into the configuration.
+     * @note before you call init() method this object can be null anyway the template_path should
+     *       be always present into the configuration.
      */
-    public final String getTemplate(){
+    public final String getTemplate() {
         return template_path;
     }
-    
+
     /**
-     * This method is used to process the file using
-     * this configuration
-     * @param out the Writer
+     * This method is used to process the file using this configuration
+     * 
+     * @param out
+     *            the Writer
      * @return
      */
-    protected final boolean process(Writer out){
+    protected final boolean process(Writer out) {
         try {
-            template.process(root,out);
+            template.process(root, out);
             return true;
         } catch (TemplateException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(e.getLocalizedMessage());
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(),e);
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(e.getLocalizedMessage());
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(),e);
         }
         return false;
     }

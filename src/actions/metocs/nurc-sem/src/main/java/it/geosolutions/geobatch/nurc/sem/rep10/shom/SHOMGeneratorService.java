@@ -26,13 +26,14 @@ import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.util.EventObject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  */
 public class SHOMGeneratorService extends BaseService implements
         ActionService<EventObject, SHOMConfiguration> {
@@ -41,14 +42,15 @@ public class SHOMGeneratorService extends BaseService implements
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(SHOMGeneratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(SHOMGeneratorService.class
+            .toString());
 
     public SHOMAction createAction(SHOMConfiguration configuration) {
         try {
             return new SHOMAction(configuration);
         } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
             return null;
         }
     }
@@ -61,15 +63,13 @@ public class SHOMGeneratorService extends BaseService implements
                 configuration.setWorkingDirectory(wd);
                 return true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(
-                            Level.WARNING,
-                            "SHOMGeneratorService::canCreateAction(): "
-                                    + "unable to create action, it's not possible to get an absolute working dir.");
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("SHOMGeneratorService::canCreateAction(): "
+                            + "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return false;
     }

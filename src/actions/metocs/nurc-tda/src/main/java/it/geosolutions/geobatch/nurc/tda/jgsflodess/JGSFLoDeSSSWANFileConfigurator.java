@@ -48,14 +48,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.media.jai.JAI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
@@ -72,7 +72,7 @@ import ucar.nc2.Variable;
  */
 public class JGSFLoDeSSSWANFileConfigurator extends BaseAction<FileSystemEvent> {
     
-    private final static Logger LOGGER = Logger.getLogger(JGSFLoDeSSSWANFileConfigurator.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(JGSFLoDeSSSWANFileConfigurator.class.toString());
 
     public static final long startTime;
 
@@ -96,7 +96,7 @@ public class JGSFLoDeSSSWANFileConfigurator extends BaseAction<FileSystemEvent> 
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Starting with processing...");
         NetcdfFile ncFileIn = null;
         NetcdfFileWriteable ncFileOut = null;
@@ -121,7 +121,7 @@ public class JGSFLoDeSSSWANFileConfigurator extends BaseAction<FileSystemEvent> 
             //
             // ////////////////////////////////////////////////////////////////////
             if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "GeoServerDataDirectory is null or does not exist.");
+                LOGGER.error("GeoServerDataDirectory is null or does not exist.");
                 throw new IllegalStateException("GeoServerDataDirectory is null or does not exist.");
             }
 
@@ -145,7 +145,7 @@ public class JGSFLoDeSSSWANFileConfigurator extends BaseAction<FileSystemEvent> 
             }
 
             if (baseFileName == null) {
-                LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
+                LOGGER.error("Unexpected file '" + inputFileName + "'");
                 throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
             }
 
@@ -453,7 +453,7 @@ public class JGSFLoDeSSSWANFileConfigurator extends BaseAction<FileSystemEvent> 
                     FileSystemEventType.FILE_ADDED));
             return events;
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            LOGGER.error(t.getLocalizedMessage(), t);
             JAI.getDefaultInstance().getTileCache().flush();
             return null;
         } finally {
@@ -464,8 +464,8 @@ public class JGSFLoDeSSSWANFileConfigurator extends BaseAction<FileSystemEvent> 
                 if (ncFileOut != null)
                     ncFileOut.close();
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn(e.getLocalizedMessage(), e);
             } finally {
                 JAI.getDefaultInstance().getTileCache().flush();
             }

@@ -27,8 +27,8 @@ import it.geosolutions.geobatch.ais.dao.AISAnomaliesDAO;
 import it.geosolutions.geobatch.ais.dao.DAOException;
 import it.geosolutions.geobatch.ais.model.AISAnomalies;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerAction;
+import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Extractor;
 import it.geosolutions.geobatch.tools.file.Path;
@@ -43,7 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.logging.Level;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -87,7 +86,7 @@ public class AISAnomaliesGeoServerGenerator extends
 		// ////////////////////////////////////////////////////////////////////
 		try {
 			if (configuration == null) {
-				LOGGER.log(Level.SEVERE, "ActionConfig is null.");
+				LOGGER.error("ActionConfig is null.");
 				throw new IllegalStateException("ActionConfig is null.");
 			}
 
@@ -97,12 +96,12 @@ public class AISAnomaliesGeoServerGenerator extends
 							.getBaseDirectory()));
 
 			if (workingDir == null) {
-				LOGGER.log(Level.SEVERE, "Working directory is null.");
+				LOGGER.error("Working directory is null.");
 				throw new IllegalStateException("Working directory is null.");
 			}
 
 			if (!workingDir.exists() || !workingDir.isDirectory()) {
-				LOGGER.log(Level.SEVERE, "Working directory does not exist ("
+				LOGGER.error("Working directory does not exist ("
 						+ workingDir.getAbsolutePath() + ").");
 				throw new IllegalStateException(
 						"Working directory does not exist ("
@@ -136,7 +135,7 @@ public class AISAnomaliesGeoServerGenerator extends
 			}
 
 			if (shapeFile == null) {
-				LOGGER.log(Level.SEVERE, "Shp file not found in fileset.");
+				LOGGER.error("Shp file not found in fileset.");
 				throw new IllegalStateException(
 						"Shp file not found in fileset.");
 			}
@@ -154,7 +153,7 @@ public class AISAnomaliesGeoServerGenerator extends
 			try {
 				connectionParams.put("url", shapeFile.toURI().toURL());
 			} catch (MalformedURLException e) {
-				LOGGER.log(Level.SEVERE,
+				LOGGER.error(
 						"No valid ShapeFile URL found for this Data Flow: "
 								+ e.getLocalizedMessage());
 				throw new IllegalStateException(
@@ -196,7 +195,7 @@ public class AISAnomaliesGeoServerGenerator extends
 
 				} catch (java.text.ParseException e) {
 					theAnomaly = null;
-					LOGGER.finest("createAndStoreAnomaly - " + e.toString()
+					LOGGER.trace("createAndStoreAnomaly - " + e.toString()
 							+ " : " + e.getLocalizedMessage());
 					throw e;
 				} finally {
@@ -211,7 +210,7 @@ public class AISAnomaliesGeoServerGenerator extends
 			storeAISAnomalies(anomalies);
 
 		} catch (Throwable t) {
-			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+			LOGGER.error(t.getLocalizedMessage(), t);
 			return null;
 		} finally {
 			// Clear unzipped files, if any
@@ -241,7 +240,7 @@ public class AISAnomaliesGeoServerGenerator extends
 				aisAnomaliesDAO.save(ais);
 			}
 		} catch (DAOException e) {
-			LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			LOGGER.error(e.getLocalizedMessage(), e);
 		}
 	}
 
@@ -311,12 +310,12 @@ public class AISAnomaliesGeoServerGenerator extends
 			return fileList.toArray(new File[fileList.size()]);
 
 		} catch (Throwable t) {
-			LOGGER.log(Level.WARNING, "Error examining zipfile", t);
+			LOGGER.warn("Error examining zipfile", t);
 			try {
 				// org.apache.commons.io.IOUtils.
 				FileUtils.forceDelete(tempOutDir);
 			} catch (IOException ex) {
-				LOGGER.log(Level.SEVERE, "Can't delete temp dir '" + tempOutDir
+				LOGGER.error("Can't delete temp dir '" + tempOutDir
 						+ "'", ex);
 			}
 			return null;

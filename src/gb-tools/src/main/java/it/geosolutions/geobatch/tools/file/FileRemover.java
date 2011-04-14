@@ -30,8 +30,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple class implementing a Thread that periodically tries to delete the files that
@@ -46,7 +47,7 @@ import java.util.logging.Logger;
  */
 public final class FileRemover extends Thread {
     
-    private final static Logger LOGGER = Logger.getLogger(Path.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Path.class.toString());
 
     private final static Map<String, Integer> FILE_ATTEMPTS_COUNTS = Collections
             .synchronizedMap(new HashMap<String, Integer>());
@@ -141,7 +142,7 @@ public final class FileRemover extends Thread {
 
                             // get next file path and its count
                             final String sFile = it.next();
-                            if (LOGGER.isLoggable(Level.INFO))
+                            if (LOGGER.isInfoEnabled())
                                 LOGGER.info("Trying to remove file " + sFile);
                             int attempts = FILE_ATTEMPTS_COUNTS.get(sFile).intValue();
                             if (!new File(sFile).exists()) {
@@ -150,21 +151,21 @@ public final class FileRemover extends Thread {
                             } else {
                                 // try to delete it
                                 if (new File(sFile).delete()) {
-                                    if (LOGGER.isLoggable(Level.INFO))
+                                    if (LOGGER.isInfoEnabled())
                                         LOGGER.info("Successfully removed file " + sFile);
                                     it.remove();
                                     FILE_ATTEMPTS_COUNTS.remove(sFile);
                                 } else {
-                                    if (LOGGER.isLoggable(Level.INFO))
+                                    if (LOGGER.isInfoEnabled())
                                         LOGGER.info("Unable to  remove file " + sFile);
                                     attempts++;
                                     if (maxAttempts < attempts) {
-                                        if (LOGGER.isLoggable(Level.INFO))
+                                        if (LOGGER.isInfoEnabled())
                                             LOGGER.info("Dropping file " + sFile);
                                         it.remove();
                                         FILE_ATTEMPTS_COUNTS.remove(sFile);
-                                        if (LOGGER.isLoggable(Level.WARNING))
-                                            LOGGER.warning("Unable to delete file " + sFile);
+                                        if (LOGGER.isWarnEnabled())
+                                            LOGGER.warn("Unable to delete file " + sFile);
                                     } else {
                                         FILE_ATTEMPTS_COUNTS.remove(sFile);
                                         FILE_ATTEMPTS_COUNTS.put(sFile, new Integer(attempts));
@@ -192,8 +193,8 @@ public final class FileRemover extends Thread {
                 Thread.sleep(period * 1000);
 
             } catch (Throwable t) {
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.log(Level.INFO, t.getLocalizedMessage(), t);
+                if (LOGGER.isInfoEnabled())
+                    LOGGER.info(t.getLocalizedMessage(), t);
             }
         }
     }

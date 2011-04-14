@@ -27,14 +27,15 @@ import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OctaveFreeMarkerGeneratorService
     extends BaseService 
     implements ActionService<FileSystemEvent, OctaveFreeMarkerConfiguration> {
 
-    protected final static Logger LOGGER = Logger.getLogger(OctaveFreeMarkerGeneratorService.class
+    protected final static Logger LOGGER = LoggerFactory.getLogger(OctaveFreeMarkerGeneratorService.class
             .toString());
     
     public OctaveFreeMarkerGeneratorService(String id, String name, String description) {
@@ -49,15 +50,13 @@ public class OctaveFreeMarkerGeneratorService
                 configuration.setWorkingDirectory(wd);
                 return true;
             } else {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(
-                            Level.WARNING,
-                            "OctaveFreeMarkerGeneratorService::canCreateAction(): "
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("OctaveFreeMarkerGeneratorService::canCreateAction(): "
                                     + "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return false;
         

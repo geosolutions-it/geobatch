@@ -29,8 +29,9 @@ import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.geotiff.overview.GeoTiffOverviewsEmbedder;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates an Action from a scripting language.
@@ -44,7 +45,7 @@ public class EGEOSGeoServerDeployerService extends BaseService implements
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(EGEOSGeoServerDeployerService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(EGEOSGeoServerDeployerService.class
             .toString());
 
     public EGEOSDeployerBaseAction createAction(EGEOSGeoServerDeployerConfiguration configuration) {
@@ -58,7 +59,7 @@ public class EGEOSGeoServerDeployerService extends BaseService implements
             else
                 return null;
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error occurred creating EGEOSGeoServerDeployer Action... "
+            LOGGER.error("Error occurred creating EGEOSGeoServerDeployer Action... "
                     + e.getLocalizedMessage(), e);
         }
 

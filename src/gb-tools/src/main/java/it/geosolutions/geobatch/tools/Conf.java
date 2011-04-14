@@ -23,8 +23,8 @@ package it.geosolutions.geobatch.tools;
 
 import it.geosolutions.geobatch.tools.system.Property;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  *
  */
 public class Conf {
-    private final static Logger LOGGER = Logger.getLogger(Conf.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Conf.class.toString());
     
     /**
      * Variables used by FileRemover
@@ -69,7 +69,7 @@ public class Conf {
         }
         catch (NullPointerException e){
             bufferSize=(1024*8*100); // default value
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info(property+": "+bufferSize);
         }
         
@@ -81,7 +81,7 @@ public class Conf {
             timeToWait=Property.getIntProperty(property);
         }
         catch (NullPointerException e){
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info(property+": "+timeToWait);   
         }
     }

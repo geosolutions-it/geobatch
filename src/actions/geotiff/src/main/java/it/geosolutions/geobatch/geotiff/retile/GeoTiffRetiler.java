@@ -32,8 +32,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -70,7 +71,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
 
     private GeoTiffRetilerConfiguration configuration;
 
-    private final static Logger LOGGER = Logger.getLogger(GeoTiffRetiler.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeoTiffRetiler.class.toString());
 
     protected GeoTiffRetiler(GeoTiffRetilerConfiguration configuration) throws IOException {
         super(configuration);
@@ -90,7 +91,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
         final String absolutePath = inFile.getAbsolutePath();
         final String inputFileName = FilenameUtils.getName(absolutePath);
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("GeoTiffRetiler: is going to retile: " + inputFileName);
 
         listenerForwarder.setTask("GeoTiffRetiler");
@@ -113,16 +114,16 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                 if (!tiledTiffFile.canWrite()) {
                     final String message = "GeoTiffRetiler::reTile(): Unable to over-write the temporary file called: "
                             + tiledTiffFile.getAbsolutePath() + "\nCheck permissions.";
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.severe(message);
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error(message);
                     }
                     throw new IllegalArgumentException(message);
                 }
             } else if (!tiledTiffFile.createNewFile()) {
                 final String message = "GeoTiffRetiler::reTile(): Unable to create temporary file called: "
                         + tiledTiffFile.getAbsolutePath();
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.severe(message);
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(message);
                 }
                 throw new IllegalArgumentException(message);
             }
@@ -132,7 +133,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
             // ACQUIRING A READER
             //
             // /////////////////////////////////////////////////////////////////////
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("GeoTiffRetiler: Acquiring a reader for the provided file...");
             }
 
@@ -156,7 +157,7 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
             // ACQUIRING A COVERAGE
             //
             // /////////////////////////////////////////////////////////////////////
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("GeoTiffRetiler::reTile(): Acquiring a coverage provided file...");
             }
             inCoverage = (GridCoverage2D) reader.read(null);
@@ -169,7 +170,7 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
             // PREPARING A WRITE
             //
             // /////////////////////////////////////////////////////////////////////
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("GeoTiffRetiler::reTile(): Writing down the file in the decoded directory...");
             }
             final double compressionRatio = configuration.getCompressionRatio();
@@ -208,8 +209,8 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                 try {
                     reader.dispose();
                 } catch (Exception e) {
-                    if (LOGGER.isLoggable(Level.WARNING))
-                        LOGGER.log(Level.WARNING,
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(
                                 "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
@@ -219,8 +220,8 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                 try {
                     writer.dispose();
                 } catch (Exception e) {
-                    if (LOGGER.isLoggable(Level.WARNING))
-                        LOGGER.log(Level.WARNING,
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(
                                 "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
@@ -233,8 +234,8 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                 try {
                     r.dispose();
                 } catch (Exception e) {
-                    if (LOGGER.isLoggable(Level.WARNING))
-                        LOGGER.log(Level.WARNING,
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(
                                 "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
@@ -244,8 +245,8 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                     try {
                         ((ImageInputStream) input).close();
                     } catch (Exception e) {
-                        if (LOGGER.isLoggable(Level.WARNING))
-                            LOGGER.log(Level.WARNING,
+                        if (LOGGER.isWarnEnabled())
+                            LOGGER.warn(
                                     "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                     }
                 }
@@ -253,8 +254,8 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                 try {
                     initImage.dispose();
                 } catch (Exception e) {
-                    if (LOGGER.isLoggable(Level.WARNING))
-                        LOGGER.log(Level.WARNING,
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(
                                 "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
@@ -280,8 +281,8 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
 
             if (configuration == null) {
                 final String message = "GeoTiffRetiler::execute(): DataFlowConfig is null.";
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE, message);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
                 throw new ActionException(this, message);
             }
             if (events.size() == 0) {
@@ -289,7 +290,7 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                         "GeoTiffRetiler::execute(): Unable to process an empty events queue.");
             }
 
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("GeoTiffRetiler::execute(): Starting with processing...");
 
             listenerForwarder.started();
@@ -334,26 +335,20 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                                  */
                             } catch (UnsupportedOperationException uoe) {
                                 listenerForwarder.failed(uoe);
-                                if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.log(
-                                            Level.WARNING,
-                                            "GeoTiffRetiler::execute(): "
+                                if (LOGGER.isWarnEnabled())
+                                    LOGGER.warn("GeoTiffRetiler::execute(): "
                                                     + uoe.getLocalizedMessage(), uoe);
                                 continue;
                             } catch (IOException ioe) {
                                 listenerForwarder.failed(ioe);
-                                if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.log(
-                                            Level.WARNING,
-                                            "GeoTiffRetiler::execute(): "
+                                if (LOGGER.isWarnEnabled())
+                                    LOGGER.warn("GeoTiffRetiler::execute(): "
                                                     + ioe.getLocalizedMessage(), ioe);
                                 continue;
                             } catch (IllegalArgumentException iae) {
                                 listenerForwarder.failed(iae);
-                                if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.log(
-                                            Level.WARNING,
-                                            "GeoTiffRetiler::execute(): "
+                                if (LOGGER.isWarnEnabled())
+                                    LOGGER.warn("GeoTiffRetiler::execute(): "
                                                     + iae.getLocalizedMessage(), iae);
                                 continue;
                             } finally {
@@ -380,22 +375,22 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                             }
                         } catch (UnsupportedOperationException uoe) {
                             listenerForwarder.failed(uoe);
-                            if (LOGGER.isLoggable(Level.WARNING))
-                                LOGGER.log(Level.WARNING,
+                            if (LOGGER.isWarnEnabled())
+                                LOGGER.warn(
                                         "GeoTiffRetiler::execute(): " + uoe.getLocalizedMessage(),
                                         uoe);
                             continue;
                         } catch (IOException ioe) {
                             listenerForwarder.failed(ioe);
-                            if (LOGGER.isLoggable(Level.WARNING))
-                                LOGGER.log(Level.WARNING,
+                            if (LOGGER.isWarnEnabled())
+                                LOGGER.warn(
                                         "GeoTiffRetiler::execute(): " + ioe.getLocalizedMessage(),
                                         ioe);
                             continue;
                         } catch (IllegalArgumentException iae) {
                             listenerForwarder.failed(iae);
-                            if (LOGGER.isLoggable(Level.WARNING))
-                                LOGGER.log(Level.WARNING,
+                            if (LOGGER.isWarnEnabled())
+                                LOGGER.warn(
                                         "GeoTiffRetiler::execute(): " + iae.getLocalizedMessage(),
                                         iae);
                             continue;
@@ -409,8 +404,8 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                     final String message = "GeoTiffRetiler::execute(): The passed file event refers to a not existent "
                             + "or not readable/writeable file! File: "
                             + eventFile.getAbsolutePath();
-                    if (LOGGER.isLoggable(Level.WARNING))
-                        LOGGER.warning(message);
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(message);
                     final IllegalArgumentException iae = new IllegalArgumentException(message);
                     listenerForwarder.failed(iae);
                 }
@@ -430,8 +425,8 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
             }
         } catch (Exception t) {
             String message = "GeoTiffRetiler::execute(): " + t.getLocalizedMessage();
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, message, t);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message, t);
             final ActionException exc = new ActionException(this, message, t);
             listenerForwarder.failed(exc);
             throw exc;

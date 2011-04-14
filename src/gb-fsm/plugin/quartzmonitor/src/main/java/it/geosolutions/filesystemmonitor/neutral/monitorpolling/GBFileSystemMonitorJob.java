@@ -27,8 +27,9 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.io.monitor.FileAlterationListener;
@@ -40,7 +41,7 @@ import org.quartz.JobExecutionException;
 import org.quartz.StatefulJob;
 
 public class GBFileSystemMonitorJob implements StatefulJob {
-    private final static Logger LOGGER = Logger.getLogger(GBFileSystemMonitorJob.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GBFileSystemMonitorJob.class);
 
     // protected static final String ROOT_PATH_KEY=FileSystemMonitorSPI.SOURCE;
     // protected static final String WILDCARD_KEY=FileSystemMonitorSPI.WILDCARD;
@@ -101,14 +102,14 @@ public class GBFileSystemMonitorJob implements StatefulJob {
 
         switch (policy) {
         case IMMEDIATELY:
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             jee.refireImmediately();
             break;
         // TODO OTHER POLICY HERE
         default:
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             jee.refireImmediately();
             break;
         }
@@ -223,9 +224,9 @@ public class GBFileSystemMonitorJob implements StatefulJob {
      * Scheduler).
      */
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        if (LOGGER.isLoggable(Level.FINE)) {
+        if (LOGGER.isTraceEnabled()){
             final JobDetail detail = context.getJobDetail();
-            LOGGER.fine("Starting FSM job named: " + detail.getGroup() + detail.getName());
+            LOGGER.trace("Starting FSM job named: " + detail.getGroup() + detail.getName());
         }
 
         final JobDataMap jdm = context.getJobDetail().getJobDataMap();
@@ -245,12 +246,12 @@ public class GBFileSystemMonitorJob implements StatefulJob {
                 // System.out.println("if1 + synch done if2");
                 if ((observer = getObserver(jdm)) == null) {
                     // System.out.println("all is done building");
-                    if (LOGGER.isLoggable(Level.INFO))
+                    if (LOGGER.isInfoEnabled())
                         LOGGER.info("Building the observer tree...");
 
                     observer = buildObserver(jdm);
 
-                    if (LOGGER.isLoggable(Level.INFO))
+                    if (LOGGER.isInfoEnabled())
                         LOGGER.info("Observer tree complete.");
                 }
             } catch (InterruptedException ie) {
@@ -258,10 +259,8 @@ public class GBFileSystemMonitorJob implements StatefulJob {
                 // DEBUG
                 // ie.printStackTrace();
             } catch (Throwable t) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(
-                            Level.SEVERE,
-                            "GBFileSystemMonitorJob JOB throws a throwable: "
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("GBFileSystemMonitorJob JOB throws a throwable: "
                                     + t.getLocalizedMessage(), t);
                 // DEBUG
                 // t.printStackTrace();
@@ -277,9 +276,9 @@ public class GBFileSystemMonitorJob implements StatefulJob {
         // DEBUG
         // System.out.println("DOTHEJOB");
 
-        if (LOGGER.isLoggable(Level.FINE)) {
+        if (LOGGER.isTraceEnabled()){
             final JobDetail detail = context.getJobDetail();
-            LOGGER.fine("job named: " + detail.getGroup() + detail.getName() + " completed");
+            LOGGER.trace("job named: " + detail.getGroup() + detail.getName() + " completed");
         }
     }
 }

@@ -127,7 +127,7 @@ public class FTPUserFormController extends SimpleFormController {
             Object command, BindException errors) throws Exception {
         FtpUserDataBean givenData = (FtpUserDataBean) command;
 
-        logger.debug(givenData.toString());
+//        logger.debug(givenData.toString());
 
         FtpUser user = null;
 
@@ -179,7 +179,7 @@ public class FTPUserFormController extends SimpleFormController {
                 stats = ((DefaultFtpServerContext) context).getFtpStatistics();
         }
         mav.addObject("ftpStats", stats);
-        logger.debug("Form data successfully submitted");
+//        logger.debug("Form data successfully submitted");
         return mav;
     }
 

@@ -33,8 +33,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Comments here ...
@@ -43,8 +44,7 @@ import java.util.logging.Logger;
  */
 public class LammaMosaicDataAction extends LammaBaseAction {
 
-	protected final static Logger LOGGER = Logger
-			.getLogger(LammaMosaicDataAction.class.toString());
+	protected final static Logger LOGGER = LoggerFactory.getLogger(LammaMosaicDataAction.class);
 	protected final LammaMosaicDataConfiguration configuration;
 
 	/**
@@ -102,8 +102,8 @@ public class LammaMosaicDataAction extends LammaBaseAction {
 
 			return outEvents;
 		} catch (Throwable t) {
-			if (LOGGER.isLoggable(Level.SEVERE)) {
-				LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+			if (LOGGER.isErrorEnabled()){
+				LOGGER.error(t.getLocalizedMessage(), t);
 			}
 			// Logging to ESB ...
 			logMessage.setMessage("[ERROR] " + t.getLocalizedMessage());

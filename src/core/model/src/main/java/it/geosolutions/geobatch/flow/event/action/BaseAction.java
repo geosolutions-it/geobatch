@@ -29,7 +29,8 @@ import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 
 import java.util.EventObject;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -41,7 +42,7 @@ import java.util.logging.Logger;
 public abstract class BaseAction<XEO extends EventObject> extends BaseIdentifiable implements
         Action<XEO>, Job {
 
-    private final static Logger LOGGER = Logger.getLogger(BaseAction.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(BaseAction.class.toString());
 
     
     final protected ProgressListenerForwarder listenerForwarder;

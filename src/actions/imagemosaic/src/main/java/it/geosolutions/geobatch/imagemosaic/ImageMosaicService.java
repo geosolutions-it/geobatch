@@ -29,8 +29,9 @@ import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.File;
 import java.util.EventObject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Comments here ...
@@ -41,7 +42,7 @@ import java.util.logging.Logger;
  */
 public abstract class ImageMosaicService<T extends EventObject, C extends ActionConfiguration>
         extends BaseService implements ActionService<T, C> {
-    protected final static Logger LOGGER = Logger.getLogger(ImageMosaicService.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicService.class.toString());
 
     public ImageMosaicService(String id, String name, String description) {
         super(id, name, description);
@@ -56,8 +57,8 @@ public abstract class ImageMosaicService<T extends EventObject, C extends Action
 
         if (configuration == null) {
             final String message = "ImageMosaicService::canCreateAction():  Cannot create the ImageMosaicAction:  Configuration is null.";
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             return false;
         }
 
@@ -67,15 +68,13 @@ public abstract class ImageMosaicService<T extends EventObject, C extends Action
             if (wd != null) {
                 configuration.setWorkingDirectory(wd);
             } else {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(
-                            Level.SEVERE,
-                            "ImageMosaicService::canCreateAction(): "
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("ImageMosaicService::canCreateAction(): "
                                     + "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
             return false;
         }
 
@@ -84,8 +83,8 @@ public abstract class ImageMosaicService<T extends EventObject, C extends Action
         if (!workingDir.exists() || !workingDir.isDirectory()) {
             final String message = "ImageMosaicService::canCreateAction(): Cannot create the ImageMosaicAction: "
                     + "GeoServer working Dir does not exist.";
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             return false;
         }
 

@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.logging.Level;
+
 
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.gce.geotiff.GeoTiffFormat;
@@ -79,7 +79,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
             // data flow configuration and dataStore name must not be null.
             // //
             if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+                LOGGER.error("DataFlowConfig is null.");
                 throw new IllegalStateException("DataFlowConfig is null.");
             }
             // ////////////////////////////////////////////////////////////////////
@@ -96,13 +96,13 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
             //
             // ////////////////////////////////////////////////////////////////////
             if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "GeoServerDataDirectory is null or does not exist.");
+                LOGGER.error("GeoServerDataDirectory is null or does not exist.");
                 throw new IllegalStateException("GeoServerDataDirectory is null or does not exist.");
             }
 
             // checked by superclass
             // if ((geoserverURL == null) || "".equals(geoserverURL)) {
-            // LOGGER.log(Level.SEVERE, "GeoServerCatalogServiceURL is null.");
+            // LOGGER.error("GeoServerCatalogServiceURL is null.");
             // throw new
             // IllegalStateException("GeoServerCatalogServiceURL is null.");
             // }
@@ -126,7 +126,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
             }
 
             if (baseFileName == null) {
-                LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
+                LOGGER.error("Unexpected file '" + inputFileName + "'");
                 throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
             }
 
@@ -149,7 +149,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
                 coverageReader = (GeoTiffReader) format.getReader(event.getSource());
 
                 if (coverageReader == null) {
-                    LOGGER.log(Level.SEVERE, "No valid GeoTIFF File found for this Data Flow!");
+                    LOGGER.error("No valid GeoTIFF File found for this Data Flow!");
                     throw new IllegalStateException(
                             "No valid GeoTIFF File found for this Data Flow!");
                 }
@@ -158,8 +158,8 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
                     try {
                         coverageReader.dispose();
                     } catch (Throwable e) {
-                        if (LOGGER.isLoggable(Level.FINEST)) {
-                            LOGGER.log(Level.FINEST, e.getLocalizedMessage(), e);
+                        if (LOGGER.isTraceEnabled()){
+                            LOGGER.trace(e.getLocalizedMessage(), e);
                         }
                     }
                 }
@@ -181,7 +181,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
             listenerForwarder.completed();
             return events;
         } catch (Exception t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to
+            LOGGER.error(t.getLocalizedMessage(), t); // no need to
             // log,
             // we're
             // rethrowing
@@ -252,13 +252,13 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
         }
 
         if (sent) {
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isInfoEnabled()) {
                 LOGGER
                         .info("GeoTIFF GeoServerAction: coverage SUCCESSFULLY sent to GeoServer!");
             }
             boolean sldSent = configureStyles(layerName);
         } else {
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isInfoEnabled()) {
                 LOGGER
                         .info("GeoTIFF GeoServerAction: coverage was NOT sent to GeoServer due to connection errors!");
             }

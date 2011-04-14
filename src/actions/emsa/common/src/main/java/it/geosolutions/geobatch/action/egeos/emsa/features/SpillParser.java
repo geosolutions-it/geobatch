@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,10 +20,11 @@ import org.geotools.data.Transaction;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.CRS;
-import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.identity.FeatureId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -47,7 +46,7 @@ public class SpillParser {
         xpath.setNamespaceContext(ctx);
     }
 
-    private final static  Logger LOGGER = Logging.getLogger(SpillParser.class);
+    private final static  Logger LOGGER = LoggerFactory.getLogger(SpillParser.class);
 
     @SuppressWarnings("unchecked")
     public void parseOilSpill(DataStore store, XPath xpath, File fXmlFile) throws Exception {
@@ -93,8 +92,8 @@ public class SpillParser {
                 ospfs.addFeatures(DataUtilities.collection(oilSpillPolygons));
                 t.commit();
             } catch (Exception e) {
-                if(LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage(),e);
                 if (t!=null)
                     t.rollback();
             } finally {
@@ -103,8 +102,8 @@ public class SpillParser {
                         t.close();
                     }
                     catch (Throwable tr){
-                        if(LOGGER.isLoggable(Level.SEVERE))
-                            LOGGER.log(Level.SEVERE,tr.getLocalizedMessage(),tr);
+                        if (LOGGER.isErrorEnabled())
+                            LOGGER.error(tr.getLocalizedMessage(),tr);
                     }
                 }
             }    

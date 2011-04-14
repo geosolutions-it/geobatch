@@ -47,8 +47,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
@@ -107,7 +108,7 @@ public class FileBasedEventConsumer extends
     /**
      * Default logger
      */
-    private final static Logger LOGGER = Logger.getLogger(FileBasedEventConsumer.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FileBasedEventConsumer.class.toString());
 
     // ----------------------------------------------- PUBLIC CONSTRUCTORS
     public FileBasedEventConsumer(FileBasedEventConsumerConfiguration configuration)
@@ -306,8 +307,8 @@ public class FileBasedEventConsumer extends
                 if (actionService.canCreateAction(actionConfig)) {
                     action = actionService.createAction(actionConfig);
                     if (action == null) {
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.severe("FileBasedEventConsumer::initialize(): Unable to load the action using the service "
+                        if (LOGGER.isErrorEnabled()) {
+                            LOGGER.error("FileBasedEventConsumer::initialize(): Unable to load the action using the service "
                                     + actionServiceID);
                         }
                         throw new IllegalArgumentException(
@@ -315,8 +316,8 @@ public class FileBasedEventConsumer extends
                                         + actionConfig);
                     }
                 } else {
-                    if (LOGGER.isLoggable(Level.SEVERE)) {
-                        LOGGER.severe("FileBasedEventConsumer::initialize(): Cannot create the action using the service "
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("FileBasedEventConsumer::initialize(): Cannot create the action using the service "
                                 + actionServiceID + " check the configuration.");
                     }
                     throw new IllegalArgumentException(
@@ -340,8 +341,8 @@ public class FileBasedEventConsumer extends
                         + "' listener," + " declared in " + actionConfig.getId()
                         + " action configuration," + " in " + configuration.getId()
                         + " consumer";
-                        if (LOGGER.isLoggable(Level.SEVERE)) {
-                            LOGGER.severe(message);
+                        if (LOGGER.isErrorEnabled()) {
+                            LOGGER.error(message);
                         }
                         throw new IllegalArgumentException(message);
                     }
@@ -351,8 +352,8 @@ public class FileBasedEventConsumer extends
             } else {
                 final String message="FileBasedEventConsumer::initialize(): ActionService not found '" + actionServiceID
                 + "' for ActionConfig '" + actionConfig.getName() + "'";
-                if (LOGGER.isLoggable(Level.SEVERE)) {
-                    LOGGER.severe(message);
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(message);
                 }
                 throw new IllegalArgumentException(message);
             }
@@ -360,7 +361,7 @@ public class FileBasedEventConsumer extends
         super.addActions(loadedActions);
 
         if (loadedActions.isEmpty()) {
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("FileBasedEventConsumer::initialize(): "+getClass().getSimpleName() + " initialized with "
                         + mandatoryRules.size() + " mandatory rules, " + optionalRules.size()
                         + " optional rules, " + loadedActions.size() + " actions");
@@ -420,7 +421,7 @@ public class FileBasedEventConsumer extends
             Queue<FileSystemEvent> fileEventList = new LinkedList<FileSystemEvent>();
             int numProcessedFiles = 0;
             for (FileSystemEvent event : this.eventsQueue) {
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("FileBasedEventConsumer::call(): [" + Thread.currentThread().getName()
                             + "]: new element retrieved from the MailBox.");
 
@@ -477,13 +478,13 @@ public class FileBasedEventConsumer extends
                         fileEventList.offer(event);
 
                     }
-                    if (LOGGER.isLoggable(Level.INFO)){
+                    if (LOGGER.isInfoEnabled()){
                         LOGGER.info("FileBasedEventConsumer::call():  [" + Thread.currentThread().getName()
                             + "]: accepted file " + sourceDataFile);
                     }
                 } else {
-                    if (LOGGER.isLoggable(Level.SEVERE)){
-                        LOGGER.severe(new StringBuilder("FileBasedEventConsumer::call(): [")
+                    if (LOGGER.isErrorEnabled()){
+                        LOGGER.error(new StringBuilder("FileBasedEventConsumer::call(): [")
                                 .append(Thread.currentThread().getName())
                                 .append("]: could not lock file ").append(sourceDataFile).toString());
                     }
@@ -498,7 +499,7 @@ public class FileBasedEventConsumer extends
             // done due to some error, set eventConsumerStatus to Finished or
             // Failure. (etj: ???)
             // //
-            if (LOGGER.isLoggable(Level.INFO)){
+            if (LOGGER.isInfoEnabled()){
                 LOGGER.info("FileBasedEventConsumer::call(): [" + Thread.currentThread().getName()
                     + "]: new element processed.");
             }
@@ -517,9 +518,8 @@ public class FileBasedEventConsumer extends
 
             return fileEventList;
         } catch (ActionException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                        "FileBasedEventConsumer " + Thread.currentThread().getName()
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("FileBasedEventConsumer " + Thread.currentThread().getName()
                                 + " Error during " + e.getAction().getClass().getSimpleName()
                                 + " execution: " + e.getLocalizedMessage(), e);
             }
@@ -527,8 +527,8 @@ public class FileBasedEventConsumer extends
             exceptionOccurred = e;
 
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "FileBasedEventConsumer "
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("FileBasedEventConsumer "
                         + Thread.currentThread().getName() + " could not move file "
                         + " due to the following IO error: " + e.getLocalizedMessage(), e);
             }
@@ -536,8 +536,8 @@ public class FileBasedEventConsumer extends
             exceptionOccurred = e;
 
         } catch (InterruptedException e) {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE, "FileBasedEventConsumer "
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("FileBasedEventConsumer "
                         + Thread.currentThread().getName() + " could not move file "
                         + " due to an InterruptedException: " + e.getLocalizedMessage(), e);
             }
@@ -550,7 +550,7 @@ public class FileBasedEventConsumer extends
 
         } finally {
             getListenerForwarder().progressing(100, "Running actions");
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info(Thread.currentThread().getName() + " DONE!");
             this.dispose();
 

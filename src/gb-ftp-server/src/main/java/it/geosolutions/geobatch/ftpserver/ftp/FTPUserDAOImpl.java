@@ -10,7 +10,8 @@ import it.geosolutions.geobatch.users.dao.GBUserDAO;
 import it.geosolutions.geobatch.users.model.GBUser;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public class FTPUserDAOImpl implements FtpUserDAO {
-    private final static Logger LOGGER = Logger.getLogger(FTPUserDAOImpl.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FTPUserDAOImpl.class.getName());
 
     private GBUserDAO userDAO;
 

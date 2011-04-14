@@ -27,8 +27,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
@@ -48,7 +49,7 @@ public class OctaveConfiguration {
     
     private static OctaveConfiguration singleton=null;
     
-    private final static Logger LOGGER = Logger.getLogger(OctaveConfiguration.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(OctaveConfiguration.class.toString());
     
     private static int timeToWait = 100*60; // in seconds == 100 min
     
@@ -75,8 +76,8 @@ public class OctaveConfiguration {
                     singleton=new OctaveConfiguration(workingdir, es);
                 }
             } catch (InterruptedException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(e.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage());
             }
             finally {
                 l.unlock();
@@ -96,8 +97,8 @@ public class OctaveConfiguration {
             p=Property.getIntProperty(property);
         }
         catch (NullPointerException npe){
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning(property+": "+npe.getLocalizedMessage());
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(property+": "+npe.getLocalizedMessage());
         }
         if (p!=null){
             processors=p;
@@ -107,7 +108,7 @@ public class OctaveConfiguration {
             processors=r.availableProcessors();
         }
         
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info(property+": "+processors);
 //System.out.println("OctaveConfiguration.processors: "+processors);
         /*
@@ -119,13 +120,13 @@ public class OctaveConfiguration {
             p=Property.getIntProperty(property);        
         }
         catch (NullPointerException npe){
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning(property+" :"+npe.getLocalizedMessage());
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(property+" :"+npe.getLocalizedMessage());
         }
         if (p!=null){
             executionQueueSize=p;
         }
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info(property+": "+executionQueueSize);
         
 //System.out.println("OctaveConfiguration.executionQueueSize: "+executionQueueSize);
@@ -140,14 +141,14 @@ public class OctaveConfiguration {
             p=Property.getIntProperty(property);        
         }
         catch (NullPointerException npe){
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning(property+": "+npe.getLocalizedMessage());
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(property+": "+npe.getLocalizedMessage());
         }
         if (p!=null){
             timeToWait=p;
         }
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info(property+": "+timeToWait);
         /*
          * configuring workingDirectory
@@ -159,10 +160,10 @@ public class OctaveConfiguration {
                 workingDirectory=arg;
         }
         else
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning(property+" actually not set.");
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(property+" actually not set.");
         
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info(property+": "+workingDirectory);
     }
 
@@ -174,8 +175,8 @@ public class OctaveConfiguration {
     private OctaveConfiguration(String workingdir, ExecutorService es) {
         if (workingdir!=null){
             if (workingDirectory!=null){
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning("OctaveConfiguration.workingDirectory is set by command line argument\n" +
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("OctaveConfiguration.workingDirectory is set by command line argument\n" +
                     		"this will override the code set.\n No changes will be applied.\n" +
                     		"Working dir: "+workingDirectory);
             }
@@ -185,21 +186,21 @@ public class OctaveConfiguration {
         else {
             if (workingDirectory==null){
                 String message="OctaveConfiguration.workingDirectory is not set by command line nor by argument";
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(message);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
                 throw new NullPointerException(message);
             }
         }
         if (executorService==null){
             if (es!=null){
                 executorService=es;
-                if (LOGGER.isLoggable(Level.INFO))
+                if (LOGGER.isInfoEnabled())
                     LOGGER.info("OctaveConfiguration.executorService is set.");
             }
             else {
                 String message="OctaveConfiguration.executorService can't be null";
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(message);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
                 throw new NullPointerException(message);
             }
         }
@@ -207,19 +208,19 @@ public class OctaveConfiguration {
             if (executorService.isShutdown()){
                 if (es!=null){
                     executorService=es;
-                    if (LOGGER.isLoggable(Level.INFO))
+                    if (LOGGER.isInfoEnabled())
                         LOGGER.info("OctaveConfiguration.executorService is set.");
                 }
                 else {
                     String message="OctaveConfiguration.executorService can't be null";
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe(message);
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(message);
                     throw new NullPointerException(message);
                 }
             }
             else
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning("OctaveConfiguration.executorService is already set.\nNo modifications are performed.");
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("OctaveConfiguration.executorService is already set.\nNo modifications are performed.");
         }
     }
     
@@ -245,11 +246,11 @@ public class OctaveConfiguration {
 
     public void setWorkingDirectory(String workingDir) {
         if (workingDirectory!=null){
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.warning("OctaveConfiguration.workingDirectory: overriding working dir");
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn("OctaveConfiguration.workingDirectory: overriding working dir");
         }
         else {
-            if (LOGGER.isLoggable(Level.INFO))
+            if (LOGGER.isInfoEnabled())
                 LOGGER.info("OctaveConfiguration.workingDirectory: setting working dir");
         }
         workingDirectory = workingDir;

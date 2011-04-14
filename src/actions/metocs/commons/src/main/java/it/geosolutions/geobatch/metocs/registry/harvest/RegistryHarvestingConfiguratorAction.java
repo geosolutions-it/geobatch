@@ -55,7 +55,7 @@ import java.util.Properties;
 import java.util.Queue;
 import java.util.TimeZone;
 import java.util.UUID;
-import java.util.logging.Level;
+
 
 import javax.media.jai.JAI;
 import javax.xml.bind.JAXBContext;
@@ -103,7 +103,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Starting with processing...");
 
         try {
@@ -121,7 +121,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 // data flow configuration and dataStore name must not be null.
                 // //
                 if (configuration == null) {
-                    LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+                    LOGGER.error("DataFlowConfig is null.");
                     throw new IllegalStateException("DataFlowConfig is null.");
                 }
                 // ////////////////////////////////////////////////////////////////////
@@ -139,7 +139,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 //
                 // ////////////////////////////////////////////////////////////////////
                 if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                    LOGGER.log(Level.SEVERE, "WorkingDirectory is null or does not exist.");
+                    LOGGER.error("WorkingDirectory is null or does not exist.");
                     throw new IllegalStateException("WorkingDirectory is null or does not exist.");
                 }
 
@@ -163,7 +163,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 }
 
                 if (baseFileName == null) {
-                    LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
+                    LOGGER.error("Unexpected file '" + inputFileName + "'");
                     throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
                 }
 
@@ -176,7 +176,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
 
                 // catch exception in case properties file does not exist
                 catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                    LOGGER.error(e.getLocalizedMessage(), e);
                 }
 
                 final String namespace = props.getProperty("namespace");
@@ -209,7 +209,7 @@ public class RegistryHarvestingConfiguratorAction extends RegistryConfiguratorAc
                 events.addAll(generatedEvents);
             return events;
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            LOGGER.error(t.getLocalizedMessage(), t);
             JAI.getDefaultInstance().getTileCache().flush();
             return null;
         } finally {

@@ -38,7 +38,6 @@ public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog
 
     /**
      * baseDirectory: represents the base directory where the xml files are located. The workingDirecotry will be relative to this base directory unless an absolute path has been specified.
-     * @uml.property  name="baseDirectory"
      */
     private String baseDirectory;
 

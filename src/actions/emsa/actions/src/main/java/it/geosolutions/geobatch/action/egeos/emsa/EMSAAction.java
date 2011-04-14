@@ -9,7 +9,8 @@ import it.geosolutions.geobatch.action.scripting.ScriptingConfiguration;
 import it.geosolutions.geobatch.flow.event.action.Action;
 
 import java.io.IOException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Administrator
@@ -21,7 +22,7 @@ public class EMSAAction extends ScriptingAction implements Action<FileSystemEven
      * Default Logger
      */
     @SuppressWarnings("unused")
-    private final static Logger LOGGER = Logger.getLogger(EMSAAction.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(EMSAAction.class.toString());
 
     public EMSAAction(ScriptingConfiguration configuration) throws IOException {
         super(configuration);

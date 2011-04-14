@@ -21,7 +21,8 @@
  */
 package it.geosolutions.geobatch.registry;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implemented by all the beans that add entries to AliasRegistry
@@ -29,6 +30,6 @@ import java.util.logging.Logger;
  * @author ETj <etj at geo-solutions.it>
  */
 public abstract class AliasRegistrar {
-    protected final static Logger LOGGER = Logger.getLogger(AliasRegistrar.class.getName());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(AliasRegistrar.class.getName());
 
 }

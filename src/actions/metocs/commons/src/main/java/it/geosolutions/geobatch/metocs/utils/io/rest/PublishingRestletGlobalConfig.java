@@ -35,8 +35,9 @@ import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Fabiani
@@ -44,7 +45,7 @@ import java.util.logging.Logger;
  */
 public final class PublishingRestletGlobalConfig {
 
-    private static final Logger LOGGER = Logger.getLogger(PublishingRestletGlobalConfig.class
+    private static final Logger LOGGER = LoggerFactory.getLogger(PublishingRestletGlobalConfig.class
             .toString());
 
     private static String rootDirectory;
@@ -67,8 +68,8 @@ public final class PublishingRestletGlobalConfig {
             workingDir = Path.findLocation(rootDirectory, new File(
                     ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
         } catch (IOException e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
             throw new IllegalArgumentException(
                     "Unable to work with the provided working directory:"
                             + (workingDir != null ? workingDir : ""));

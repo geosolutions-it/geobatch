@@ -130,7 +130,7 @@ public class NURCWPSOutput2WMCFileAction extends
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
             throws ActionException {
 
-        if (LOGGER.isLoggable(Level.INFO))
+        if (LOGGER.isInfoEnabled())
             LOGGER.info("Starting with processing...");
         NetcdfFile ncFileIn = null;
         try {
@@ -144,7 +144,7 @@ public class NURCWPSOutput2WMCFileAction extends
             // data flow configuration and dataStore name must not be null.
             // //
             if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "DataFlowConfig is null.");
+                LOGGER.error("DataFlowConfig is null.");
                 throw new IllegalStateException("DataFlowConfig is null.");
             }
             // ////////////////////////////////////////////////////////////////////
@@ -161,7 +161,7 @@ public class NURCWPSOutput2WMCFileAction extends
             //
             // ////////////////////////////////////////////////////////////////////
             if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "WorkingDirectory is null or does not exist.");
+                LOGGER.error("WorkingDirectory is null or does not exist.");
                 throw new IllegalStateException("WorkingDirectory is null or does not exist.");
             }
 
@@ -189,7 +189,7 @@ public class NURCWPSOutput2WMCFileAction extends
             }
 
             if (baseFileName == null) {
-                LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
+                LOGGER.error("Unexpected file '" + inputFileName + "'");
                 throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
             }
 
@@ -376,9 +376,8 @@ public class NURCWPSOutput2WMCFileAction extends
             final boolean hasZeta = depthDimExists || heightDimExists;
 
             if (!latDimExists || !lonDimExists) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER
-                            .severe("Invalid input NetCDF-CF Geodetic file: longitude and/or latitude dimensions could not be found!");
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Invalid input NetCDF-CF Geodetic file: longitude and/or latitude dimensions could not be found!");
                 throw new IllegalStateException(
                         "Invalid input NetCDF-CF Geodetic file: longitude and/or latitude dimensions could not be found!");
             }
@@ -680,7 +679,7 @@ public class NURCWPSOutput2WMCFileAction extends
 
             return events;
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            LOGGER.error(t.getLocalizedMessage(), t);
             JAI.getDefaultInstance().getTileCache().flush();
             return null;
         } finally {
@@ -688,8 +687,8 @@ public class NURCWPSOutput2WMCFileAction extends
                 if (ncFileIn != null)
                     ncFileIn.close();
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn(e.getLocalizedMessage(), e);
             } finally {
                 JAI.getDefaultInstance().getTileCache().flush();
             }

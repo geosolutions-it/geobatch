@@ -8,10 +8,9 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.geotools.util.logging.Logging;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -19,7 +18,7 @@ import org.geotools.util.logging.Logging;
  * @author Simone Giannecchini, GeoSolutions SAS
  */
 public class StorageCleaner extends TimerTask {
-    private final static Logger LOGGER = Logging.getLogger(StorageCleaner.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(StorageCleaner.class);
 
     private long expirationDelay;
 
@@ -48,8 +47,8 @@ public class StorageCleaner extends TimerTask {
             // if (workingDir == null ||
             // !workingDir.exists()||!workingDir.canRead()||!workingDir.isDirectory())
             // {
-            // if(LOGGER.isLoggable(Level.SEVERE))
-            // LOGGER.severe("Unable to work with the provided working directory:"+(workingDir!=null?workingDir:""));
+            // if (LOGGER.isErrorEnabled())
+            // LOGGER.error("Unable to work with the provided working directory:"+(workingDir!=null?workingDir:""));
             // return;
             // }
 
@@ -73,30 +72,30 @@ public class StorageCleaner extends TimerTask {
                             if (raf != null)
                                 raf.close();
                         } catch (Throwable e) {
-                            if (LOGGER.isLoggable(Level.FINE))
-                                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+                            if (LOGGER.isTraceEnabled())
+                                LOGGER.trace(e.getLocalizedMessage(), e);
                         }
                         try {
                             if (lock != null)
                                 lock.release();
                         } catch (Throwable e) {
-                            if (LOGGER.isLoggable(Level.FINE))
-                                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+                            if (LOGGER.isTraceEnabled())
+                                LOGGER.trace(e.getLocalizedMessage(), e);
                         }
 
                         try {
                             if (channel != null)
                                 IOUtils.closeQuietly(channel);
                         } catch (Throwable e) {
-                            if (LOGGER.isLoggable(Level.FINE))
-                                LOGGER.log(Level.FINE, e.getLocalizedMessage(), e);
+                            if (LOGGER.isTraceEnabled())
+                                LOGGER.trace(e.getLocalizedMessage(), e);
                         }
 
                     }
                 }
             }
         } catch (Throwable e) {
-            LOGGER.log(Level.WARNING,
+            LOGGER.warn(
                     "Error occurred while trying to clean up old coverages from temp storage", e);
         }
     }

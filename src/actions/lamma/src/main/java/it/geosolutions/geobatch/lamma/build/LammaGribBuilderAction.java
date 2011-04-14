@@ -42,8 +42,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.measure.unit.Unit;
 import javax.media.jai.PlanarImage;
@@ -74,6 +72,8 @@ import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Comments here ...
@@ -82,8 +82,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  */
 public class LammaGribBuilderAction extends LammaBaseAction {
 
-	protected final static Logger LOGGER = Logger
-			.getLogger(LammaGribBuilderAction.class.toString());
+	protected final static Logger LOGGER = LoggerFactory.getLogger(LammaGribBuilderAction.class);
 	protected final LammaGribBuilderConfiguration configuration;
 
 	private static CoordinateReferenceSystem wgs84;
@@ -197,7 +196,7 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 						outEvents.add(new FileSystemEvent(contourFile,
 								FileSystemEventType.FILE_ADDED));
 					} catch (Exception e) {
-						LOGGER.severe("Errors occurred reading DAT file: "
+						LOGGER.error("Errors occurred reading DAT file: "
 								+ e.getLocalizedMessage());
 						throw new IllegalStateException(
 								"Errors occurred reading DAT file: "
@@ -221,8 +220,8 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 
 			return outEvents;
 		} catch (Throwable t) {
-			if (LOGGER.isLoggable(Level.SEVERE)) {
-				LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+			if (LOGGER.isErrorEnabled()){
+				LOGGER.error(t.getLocalizedMessage(), t);
 			}
 			// Logging to ESB ...
 			logMessage.setMessage("[ERROR] " + t.getLocalizedMessage());
@@ -272,7 +271,7 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 			// Write text to file
 			out.println(wgs84.toWKT());
 		} catch (IOException e) {
-			LOGGER.severe(e.getLocalizedMessage());
+			LOGGER.error(e.getLocalizedMessage());
 		} finally {
 			if (out != null)
 				out.close();
@@ -281,7 +280,7 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 				try {
 					outW.close();
 				} catch (IOException e) {
-					LOGGER.severe(e.getLocalizedMessage());
+					LOGGER.error(e.getLocalizedMessage());
 				}
 		}
 
@@ -300,7 +299,7 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 					+ "</dstfile>");
 			out.println("</GdalContour>");
 		} catch (IOException e) {
-			LOGGER.severe(e.getLocalizedMessage());
+			LOGGER.error(e.getLocalizedMessage());
 		} finally {
 			if (out != null)
 				out.close();
@@ -309,7 +308,7 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 				try {
 					outW.close();
 				} catch (IOException e) {
-					LOGGER.severe(e.getLocalizedMessage());
+					LOGGER.error(e.getLocalizedMessage());
 				}
 		}
 
@@ -370,7 +369,7 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 			}
 
 		} catch (Exception e) {
-			LOGGER.severe("Errors extracting envelope: ");
+			LOGGER.error("Errors extracting envelope: ");
 		} finally {
 			if (scanner != null)
 				scanner.close();
@@ -405,8 +404,8 @@ public class LammaGribBuilderAction extends LammaBaseAction {
 		// PREPARING A WRITE
 		//
 		// /////////////////////////////////////////////////////////////////////
-		if (LOGGER.isLoggable(Level.FINE))
-			LOGGER.fine("Writing down the file in the decoded directory...");
+		if (LOGGER.isTraceEnabled())
+			LOGGER.trace("Writing down the file in the decoded directory...");
 		final GeoTiffFormat wformat = new GeoTiffFormat();
 		final GeoTiffWriteParams wp = new GeoTiffWriteParams();
 		if (!Double.isNaN(compressionRatio)) {

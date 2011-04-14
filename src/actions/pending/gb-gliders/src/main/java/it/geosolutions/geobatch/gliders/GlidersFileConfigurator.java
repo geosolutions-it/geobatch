@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Queue;
-import java.util.logging.Level;
+
 
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.geometry.jts.JTSFactoryFinder;
@@ -100,7 +100,7 @@ public class GlidersFileConfigurator extends
             // ///////////////////////////////////
         	
             if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "ActionConfig is null.");
+                LOGGER.error("ActionConfig is null.");
                 throw new IllegalStateException("ActionConfig is null.");
             }
 
@@ -116,12 +116,12 @@ public class GlidersFileConfigurator extends
             // ///////////////////////////////////
             
             if (workingDir == null) {
-                LOGGER.log(Level.SEVERE, "Working directory is null.");
+                LOGGER.error("Working directory is null.");
                 throw new IllegalStateException("Working directory is null.");
             }
 
             if ( !workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "Working directory does not exist ("+workingDir.getAbsolutePath()+").");
+                LOGGER.error("Working directory does not exist ("+workingDir.getAbsolutePath()+").");
                 throw new IllegalStateException("Working directory does not exist ("+workingDir.getAbsolutePath()+").");
             }
 
@@ -144,7 +144,7 @@ public class GlidersFileConfigurator extends
 			}
 
 			if(netcdfFile == null) {
-                LOGGER.log(Level.SEVERE, "netcdf file not found in fileset.");
+                LOGGER.error("netcdf file not found in fileset.");
                 throw new IllegalStateException("netcdf file not found in fileset.");
 			}
 
@@ -174,7 +174,7 @@ public class GlidersFileConfigurator extends
         	return events;        	
         	
         } catch (Throwable t) {
-			LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+			LOGGER.error(t.getLocalizedMessage(), t);
             listenerForwarder.failed(t);
             throw new ActionException(this, t.getMessage(), t);
         } finally {
@@ -193,7 +193,7 @@ public class GlidersFileConfigurator extends
 	        	isConnected = false;
 	        }
 		}catch(SQLException e){
-			LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
+			LOGGER.error(e.getLocalizedMessage());
 		}  
 	}
 
@@ -433,7 +433,7 @@ public class GlidersFileConfigurator extends
             	    		else
             	    			zPos.append(map_variables.get("depth").getDouble(map_variables.get("depth").getIndex().set(j)));  
         	    		}else{
-        	    			LOGGER.log(Level.INFO, "Missing depth variable!");
+        	    			LOGGER.info("Missing depth variable!");
         	    			
         	    			depth_value = Double.NaN;
         	    			zPos.append(0.0);
@@ -485,7 +485,7 @@ public class GlidersFileConfigurator extends
                         	check_var.put(rs_glider_ms.getLong("param_id"), map_variables.get(variables_name[k]));
                         	param_id.add(rs_glider_ms.getLong("param_id"));
                         }else{
-                        	LOGGER.log(Level.INFO, "The " + variables_name[k] + " variable won't be inserted " +
+                        	LOGGER.info("The " + variables_name[k] + " variable won't be inserted " +
                         			"because the data base is not properly configured");
                         }                    	
                         

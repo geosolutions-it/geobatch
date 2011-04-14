@@ -26,8 +26,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -42,7 +43,7 @@ import freemarker.template.TemplateModelException;
  *
  */
 public class FreeMarkerFilter {
-    private final static Logger LOGGER = Logger.getLogger(FreeMarkerFilter.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerFilter.class.toString());
     
     // You should initialize this ONLY ONCE in the whole application life-cycle:
     private freemarker.template.Configuration cfg = null;
@@ -116,15 +117,15 @@ public class FreeMarkerFilter {
             }
             else {
                 String message="Unable to initialize filter using a null root data structure";
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(message);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
                 throw new NullPointerException(message);
             }
         }
         else {
             String message="Unable to initialize filter since it is not initialized!";
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             throw new NullPointerException(message);
         }
             
@@ -157,15 +158,15 @@ public class FreeMarkerFilter {
                 cfg.setDirectoryForTemplateLoading(new File(workingDirectory));
             }
             catch (IOException e){
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Unable to get the working dir: "
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Unable to get the working dir: "
                             +e.getLocalizedMessage());
                 return false;
             }
         }
         else {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Unable to get the working dir for this filter");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Unable to get the working dir for this filter");
             return false;
         }
         
@@ -182,14 +183,14 @@ public class FreeMarkerFilter {
             try {
                 template = new Template(null,reader,cfg,cfg.getEncoding(cfg.getLocale()));
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Unable to get the template: "+e.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Unable to get the template: "+e.getLocalizedMessage());
                 return false;
             }
         }
         else {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Unable to set the template file check the input_name parameter");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Unable to set the template file check the input_name parameter");
             return false;
         }
         
@@ -207,14 +208,14 @@ public class FreeMarkerFilter {
             try {
                 template = cfg.getTemplate(input_name);
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Unable to get the template: "+e.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Unable to get the template: "+e.getLocalizedMessage());
                 return false;
             }
         }
         else {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Unable to set the template file check the input_name parameter");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Unable to set the template file check the input_name parameter");
             return false;
         }
         
@@ -235,18 +236,18 @@ public class FreeMarkerFilter {
                 template.process(root,out);
                 return true;
             } catch (TemplateException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(e.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage());
                 throw e;
             } catch (IOException e) {
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(e.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(e.getLocalizedMessage());
                 throw e;
             }
         }
         else {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("This filter is not well initialized");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("This filter is not well initialized");
             return false;   
         }
     }

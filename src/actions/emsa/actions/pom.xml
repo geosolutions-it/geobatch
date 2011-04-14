@@ -52,11 +52,6 @@
     		<artifactId>gb-action-registry-egeos</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
@@ -113,6 +108,18 @@
             <groupId>org.geotools.jdbc</groupId>
             <artifactId>gt-jdbc-postgis</artifactId>
             <type>jar</type>
+        </dependency>
+        
+    	<!-- ============================== -->
+        <!-- 		logging					-->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
         </dependency>
     </dependencies>
 </project>

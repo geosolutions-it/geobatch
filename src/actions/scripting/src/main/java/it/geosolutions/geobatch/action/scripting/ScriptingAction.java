@@ -18,8 +18,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.script.Bindings;
 import javax.script.Invocable;
@@ -37,7 +38,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
     /**
      * Default Logger
      */
-    private final static Logger LOGGER = Logger.getLogger(ScriptingAction.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(ScriptingAction.class.toString());
 
     protected ScriptEngineManager factory = new ScriptEngineManager();
 
@@ -78,7 +79,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
             // data flow configuration and dataStore name must not be null.
             // //
             if (configuration == null) {
-                LOGGER.log(Level.SEVERE, "Conf is null.");
+                LOGGER.error("Conf is null.");
                 throw new IllegalStateException("Conf is null.");
             }
 
@@ -92,7 +93,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
             final File script = new File(configuration.getScriptFile());
             final String moduleFolder = new File(script.getParentFile(), "jars").getAbsolutePath();
 
-            if (LOGGER.isLoggable(Level.INFO)) {
+            if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Runtime class-loading from moduleFolder -> " + moduleFolder);
             }
 
@@ -101,7 +102,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
                 addFile(moduleDirectory.getParentFile());
                 addFile(moduleDirectory);
             } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Error, could not add URL to system classloader", e);
+                LOGGER.error("Error, could not add URL to system classloader", e);
             }
             String classpath = System.getProperty("java.class.path");
             File[] moduleFiles = moduleDirectory.listFiles();
@@ -113,8 +114,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
                             try {
                                 addFile(moduleFiles[i]);
                             } catch (IOException e) {
-                                LOGGER.log(Level.SEVERE,
-                                        "Error, could not add URL to system classloader", e);
+                                LOGGER.error("Error, could not add URL to system classloader", e);
                             }
                         }
                     }
@@ -145,15 +145,15 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
                             FileSystemEventType.FILE_ADDED));
                 }
             } catch (FileNotFoundException e) {
-                LOGGER.log(Level.SEVERE, "Can't create an Action for " + configuration, e);
+                LOGGER.error("Can't create an Action for " + configuration, e);
             } catch (ScriptException e) {
-                LOGGER.log(Level.SEVERE, "Can't create an Action for " + configuration, e);
+                LOGGER.error("Can't create an Action for " + configuration, e);
             }
 
             listenerForwarder.completed();
             return events;
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to
+            LOGGER.error(t.getLocalizedMessage(), t); // no need to
             // log,
             // we're
             // rethrowing
@@ -183,7 +183,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
             method.setAccessible(true);
             method.invoke(sysloader, new Object[] { moduleURL });
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, "Error, could not add URL to system classloader", t);
+            LOGGER.error("Error, could not add URL to system classloader", t);
             throw new IOException("Error, could not add URL to system classloader");
         }
     }

@@ -64,8 +64,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -74,11 +72,13 @@ import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.Format;
 import org.opengis.geometry.DirectPosition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WMCFileConfiguratorAction extends BaseAction<FileSystemEvent> implements
         Action<FileSystemEvent> {
 
-    private final static Logger LOGGER = Logger.getLogger(WMCFileConfiguratorAction.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(WMCFileConfiguratorAction.class
             .toString());
 
     private WMCActionConfiguration configuration;
@@ -121,7 +121,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemEvent> imple
             //
             // ////////////////////////////////////////////////////////////////////
             if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                LOGGER.log(Level.SEVERE, "WorkingDirectory is null or does not exist.");
+                LOGGER.error("WorkingDirectory is null or does not exist.");
                 throw new IllegalStateException("WorkingDirectory is null or does not exist.");
             }
 
@@ -152,7 +152,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemEvent> imple
                 }
 
                 if (baseFileName == null) {
-                    LOGGER.log(Level.SEVERE, "Unexpected file '" + inputFileName + "'");
+                    LOGGER.error("Unexpected file '" + inputFileName + "'");
                     throw new IllegalStateException("Unexpected file '" + inputFileName + "'");
                 }
 
@@ -169,7 +169,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemEvent> imple
 
                 // catch exception in case properties file does not exist
                 catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                    LOGGER.error(e.getLocalizedMessage(), e);
                 }
 
                 final String namespace = props.getProperty("namespace");
@@ -365,7 +365,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemEvent> imple
 
                     new WMCStream().toXML(viewContext, out);
                 } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+                    LOGGER.error(e.getLocalizedMessage(), e);
                 } finally {
                     if (out != null) {
                         out.flush();
@@ -379,7 +379,7 @@ public class WMCFileConfiguratorAction extends BaseAction<FileSystemEvent> imple
 
             return events;
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+            LOGGER.error(t.getLocalizedMessage(), t);
             return null;
         }
     }

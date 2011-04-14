@@ -25,8 +25,10 @@ import it.geosolutions.geobatch.tools.file.reader.TarReader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -38,7 +40,7 @@ import org.apache.tika.mime.MimeTypes;
 
 public final class Extract {
     
-    private final static Logger LOGGER = Logger.getLogger(Extract.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Extract.class.toString());
     
     
     private static MimeTypes mimeTypes=TikaConfig.getDefaultConfig().getMimeRepository();
@@ -61,8 +63,8 @@ public final class Extract {
             p=compile("(.+)(?:(\\..+))$|(.+)$"); // MATCH simple (not dotted) dir name in group(3)
         }
         catch (Exception e){
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Exception while initializing extractor regex pattern!");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("Exception while initializing extractor regex pattern!");
         }
     } 
     
@@ -80,15 +82,15 @@ public final class Extract {
                 return Pattern.compile(regex);
             }
             catch( PatternSyntaxException pse){
-                if (LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe(pse.getLocalizedMessage());    
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(pse.getLocalizedMessage());    
                 throw pse;
             }
         }
         else{
             final String message="Unable to compile the passed regular expression: \'"+regex+"\'";
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe(message);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
             throw new Exception(message);
         }
     }
@@ -192,7 +194,7 @@ public final class Extract {
                 type=mt.getType();
             }
             
-            if(LOGGER.isLoggable(Level.INFO)) {
+            if(LOGGER.isInfoEnabled()) {
                 LOGGER.info("File type is: "+type);
             }
             if (type==null)
@@ -256,7 +258,7 @@ public final class Extract {
         if (m!=null){
             switch (getEnumType(in_file,true)){
                 case TAR:
-                    if(LOGGER.isLoggable(Level.INFO))
+                    if(LOGGER.isInfoEnabled())
                         LOGGER.info("Input file is a tar file.");
                     
                     File tar_file=null;
@@ -275,13 +277,13 @@ public final class Extract {
                     
                     // rename tar_file to filename.tar
                     if (!in_file.renameTo(tar_file)){
-                        if(LOGGER.isLoggable(Level.INFO)) {
+                        if(LOGGER.isInfoEnabled()) {
                             LOGGER.info("Unable to rename file to "+end_name+".tar");
                         }
                         throw new Exception("Unable to rename file to "+end_name+".tar");
                     }
                         
-                    if(LOGGER.isLoggable(Level.INFO)) {
+                    if(LOGGER.isInfoEnabled()) {
                         LOGGER.info("Untarring...");
                     }
                     
@@ -289,7 +291,7 @@ public final class Extract {
                     
                 break;
                 case BZIP2:
-                    if(LOGGER.isLoggable(Level.INFO))
+                    if(LOGGER.isInfoEnabled())
                         LOGGER.info("Input file is a BZ2 compressed file.");
 
                     // Output filename
@@ -299,14 +301,14 @@ public final class Extract {
                     // uncompress BZ2 to the tar file
                     Extractor.extractBz2(in_file,end_file);
                     
-                    if(LOGGER.isLoggable(Level.INFO)) {
+                    if(LOGGER.isInfoEnabled()) {
                         LOGGER.info("BZ2 uncompressed to "+end_file.getAbsolutePath());
                     }
                     
                     end_name=extract(end_name);
                 break;
                 case GZIP:
-                    if(LOGGER.isLoggable(Level.INFO))
+                    if(LOGGER.isInfoEnabled())
                         LOGGER.info("Input file is a Gz compressed file.");
                     
                     // Output filename
@@ -316,7 +318,7 @@ public final class Extract {
                     // uncompress BZ2 to the tar file
                     Extractor.extractGzip(in_file,end_file);
         
-                    if(LOGGER.isLoggable(Level.INFO)) {
+                    if(LOGGER.isInfoEnabled()) {
                         LOGGER.info("GZ uncompressed to "+end_name);
                     }
                     
@@ -326,7 +328,7 @@ public final class Extract {
                 break;
                 case ZIP:
                     
-                    if(LOGGER.isLoggable(Level.INFO))
+                    if(LOGGER.isInfoEnabled())
                         LOGGER.info("Input file is a ZIP compressed file. UnZipping...");
                     
                     // preparing path to extract to
@@ -343,7 +345,7 @@ public final class Extract {
 //                    Extractor.unzipFlat(in_file,end_file);
                     Extractor.unZip(in_name,end_name);
                     
-                    if(LOGGER.isLoggable(Level.INFO)) {
+                    if(LOGGER.isInfoEnabled()) {
                         LOGGER.info("Zip file uncompressed to "+end_name);
                     }
                     
@@ -354,7 +356,7 @@ public final class Extract {
                     
                     end_name=m.group(0);
                     
-                    if(LOGGER.isLoggable(Level.INFO))
+                    if(LOGGER.isInfoEnabled())
                         LOGGER.info("Working on a not compressed file.");
                     break;
                 default:

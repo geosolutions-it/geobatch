@@ -28,13 +28,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.transform.stream.StreamSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TextReader {
-    private final static Logger LOGGER = Logger.getLogger(TextReader.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(TextReader.class.toString());
 
     /**
      * Get the contents of a {@link File} as a String using the specified character encoding.
@@ -57,16 +58,16 @@ public class TextReader {
             else
                 return org.apache.commons.io.IOUtils.toString(new FileInputStream(file), encoding);
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.WARNING))
-                LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(e.getLocalizedMessage(), e);
             return null;
         } finally {
             if (stream != null)
                 try {
                     stream.close();
                 } catch (Throwable e) {
-                    if (LOGGER.isLoggable(Level.FINEST))
-                        LOGGER.log(Level.FINEST, e.getLocalizedMessage(), e);
+                    if (LOGGER.isTraceEnabled())
+                        LOGGER.trace(e.getLocalizedMessage(), e);
                 }
         }
     }

@@ -42,7 +42,8 @@ import java.util.Collections;
 import java.util.EventObject;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.commons.collections.MultiHashMap;
 
@@ -57,31 +58,22 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(BaseCatalog.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(BaseCatalog.class.getName());
 
     /**
      * flow manager types
      * 
-     * @uml.property name="flowManagers"
-     * @uml.associationEnd multiplicity="(1 1)"
      */
-    private final MultiHashMap /* <Class> */flowManagers = new MultiHashMap();
+//    private final MultiHashMap /* <Class> */flowManagers = new MultiHashMap();
 
     /**
      * resources
      * 
-     * @uml.property name="resources"
-     * @uml.associationEnd 
-     *                     qualifier="getClass:java.lang.Class it.geosolutions.geobatch.flow.FlowManager"
      */
     private final MultiHashMap /* <Class> */resources = new MultiHashMap();
 
     /**
      * listeners
-     * 
-     * @uml.property name="listeners"
-     * @uml.associationEnd multiplicity="(0 -1)"
-     *                     elementType="it.geosolutions.geobatch.catalog.event.CatalogListener"
      */
     private final List<CatalogListener> listeners = new CopyOnWriteArrayList<CatalogListener>();
 
@@ -122,13 +114,17 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      * @see it.geosolutions.geobatch.catalog.Catalog#dispose()
      */
     public void dispose() {
-        try {
-            persist();
-        } catch (Throwable e) {
-            // TODO
-            e.printStackTrace();
-        }
-        flowManagers.clear();
+        super.dispose();
+        /*
+         * this is formally wrong here
+         */
+//        try {
+//            persist();
+//        } catch (Throwable e) {
+//            // TODO
+//            e.printStackTrace();
+//        }
+//        flowManagers.clear();
         resources.clear();
         listeners.clear();
     }
@@ -142,7 +138,7 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
     public <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> FM getFlowManager(
             final String id, final Class<FM> clazz) {
 
-        final List<FM> l = lookup(clazz, flowManagers);
+        final List<FM> l = lookup(clazz, resources);
 
         for (final FM fm : l) {
             if (id.equals(fm.getId())) {
@@ -153,16 +149,17 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
         return null;
     }
 
+    
     /*
      * (non-Javadoc)
      * 
      * @see it.geosolutions.geobatch.catalog.Catalog#getFlowManagerTypeByName(java .lang.String,
      * java.lang.Class)
-     */
+    */
     public <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> FM getFlowManagerByName(
             final String name, final Class<FM> clazz) {
 
-        final List<FM> l = lookup(clazz, flowManagers);
+        final List<FM> l = lookup(clazz, resources);
 
         for (final FM fm : l) {
 
@@ -173,7 +170,8 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
 
         return null;
     }
-
+    
+    
     /*
      * (non-Javadoc)
      * 
@@ -252,7 +250,7 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
     public <EO extends EventObject, FC extends FlowConfiguration> void save(
             final FlowManager<EO, FC> resource) {
         // TODO
-        LOGGER.severe("To be implemented");
+        LOGGER.error("To be implemented");
     }
 
     // //

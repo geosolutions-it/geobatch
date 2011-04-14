@@ -34,8 +34,9 @@ import it.geosolutions.geobatch.ftpserver.dao.GenericDAO;
 import it.geosolutions.geobatch.users.dao.DAOException;
 import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -50,19 +51,19 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 public abstract class DAOAbstractSpring<T, ID extends Serializable> extends HibernateDaoSupport
         implements GenericDAO<T, ID> {
 
-    private static final Logger logger = Logger.getLogger(DAOAbstractSpring.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(DAOAbstractSpring.class);
 
     private Class<T> persistentClass;
 
     public DAOAbstractSpring(Class<T> persistentClass) {
-        if (logger.isLoggable(Level.FINE))
-            logger.log(Level.FINE, "Persistent Class : {0}", persistentClass);
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Persistent Class : {0}", persistentClass);
         this.persistentClass = persistentClass;
     }
 
     protected Class<T> getPersistentClass() {
-        if (logger.isLoggable(Level.FINE))
-            logger.log(Level.FINE, "Persistent class: {0}", persistentClass.getName());
+        if (LOGGER.isTraceEnabled())
+            LOGGER.trace("Persistent class: {0}", persistentClass.getName());
         return persistentClass;
     }
 
@@ -83,7 +84,7 @@ public abstract class DAOAbstractSpring<T, ID extends Serializable> extends Hibe
             }
             return crit.list();
         } catch (HibernateException ex) {
-            logger.fine(ex.getMessage());
+            LOGGER.trace(ex.getMessage());
             throw new DAOException(ex);
         }
     }
@@ -100,7 +101,7 @@ public abstract class DAOAbstractSpring<T, ID extends Serializable> extends Hibe
             crit.setMaxResults(limite);
             return crit.list();
         } catch (HibernateException ex) {
-            logger.fine(ex.getMessage());
+            LOGGER.trace(ex.getMessage());
             throw new DAOException(ex);
         }
     }
@@ -115,7 +116,7 @@ public abstract class DAOAbstractSpring<T, ID extends Serializable> extends Hibe
                 entity = (T) getSession().load(getPersistentClass(), id);
             }
         } catch (HibernateException ex) {
-            logger.fine(ex.getMessage());
+            LOGGER.trace(ex.getMessage());
             throw new DAOException(ex);
         }
         return entity;
@@ -126,7 +127,7 @@ public abstract class DAOAbstractSpring<T, ID extends Serializable> extends Hibe
         try {
             getSession().lock(entity, LockMode.UPGRADE);
         } catch (HibernateException ex) {
-            logger.fine(ex.getMessage());
+            LOGGER.trace(ex.getMessage());
             throw new DAOException(ex);
         }
     }
@@ -135,7 +136,7 @@ public abstract class DAOAbstractSpring<T, ID extends Serializable> extends Hibe
         try {
             getSession().saveOrUpdate(entity);
         } catch (HibernateException ex) {
-            logger.info(ex.getMessage());
+            LOGGER.info(ex.getMessage());
             throw new DAOException(ex);
         }
         return entity;
@@ -145,7 +146,7 @@ public abstract class DAOAbstractSpring<T, ID extends Serializable> extends Hibe
         try {
             getSession().delete(entity);
         } catch (HibernateException ex) {
-            logger.fine(ex.getMessage());
+            LOGGER.trace(ex.getMessage());
             throw new DAOException(ex);
         }
     }

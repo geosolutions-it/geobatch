@@ -52,6 +52,32 @@
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->
   <dependencies>
+
+	<dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+            </dependency>
+<!--
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-jdk14</artifactId>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl104-over-slf4j</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+            </dependency>
+             <dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-log4j12</artifactId>
+	    </dependency>
+-->
+		
   
         <!-- file.IOUtils -->
         <dependency>
@@ -76,67 +102,6 @@
 			<artifactId>tika-core</artifactId>
 		</dependency>
 
-		<!-- ============================== -->
-        <!--     Platform                   -->
-        <!-- ============================== -->
-<!-- 	
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
--->
-<!--    <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-fsm-purejava</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-fsm-native</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-fsm-core</artifactId>
-            <version>${version}</version>
-        </dependency>
-
-
-		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream</artifactId>
-		</dependency>
--->        
-        <!-- file.IOUtils -->
-<!--
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>gb-core-impl</artifactId>
-        </dependency>
--->
         <dependency>
 			<groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
@@ -154,5 +119,30 @@
 			<artifactId>freemarker</artifactId>
 		</dependency>
 		
+		
+		<!-- ============================== -->
+		<!-- Platform -->
+		<!-- ============================== 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+-->		
   </dependencies>
 </project>

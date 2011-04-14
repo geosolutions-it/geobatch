@@ -33,7 +33,9 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
 /**
@@ -42,7 +44,7 @@ import org.apache.log4j.Logger;
  */
 public class RemoteFileCache {
 
-    private final static Logger LOGGER = Logger.getLogger(RemoteFileCache.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RemoteFileCache.class);
 
     private final Map<URL, File> cache = new HashMap<URL, File>();
 

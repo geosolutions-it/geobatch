@@ -24,8 +24,9 @@ package it.geosolutions.geobatch.ctd.configuration;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.util.EventObject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -37,7 +38,7 @@ public abstract class CTDConfiguratorAction<EO extends EventObject> extends Base
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = Logger.getLogger(CTDConfiguratorAction.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(CTDConfiguratorAction.class.toString());
 
     protected final CTDActionConfiguration configuration;
 
@@ -55,7 +56,7 @@ public abstract class CTDConfiguratorAction<EO extends EventObject> extends Base
         // //////////////////////////
 
         if ((configuration.getDbServerIp() == null) || (configuration.getDbPort() == null)) {
-            LOGGER.log(Level.SEVERE, "Data Base url is null.");
+            LOGGER.error("Data Base url is null.");
             throw new IllegalStateException("Data Base url is null.");
         }
 

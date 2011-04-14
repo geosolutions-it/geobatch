@@ -36,7 +36,8 @@ import it.geosolutions.geobatch.users.model.GBUserRole;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -53,7 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long> implements GBUserDAO,
         InitializingBean {
 
-    private final static Logger LOGGER = Logger.getLogger(HibGBUserDAO.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(HibGBUserDAO.class.getName());
 
     public HibGBUserDAO() {
         super(GBUser.class);

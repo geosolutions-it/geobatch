@@ -33,8 +33,9 @@ import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Simone Giannecchini, GeoSolutions
@@ -48,7 +49,7 @@ public class FileBasedEventGeneratorService extends
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = Logger.getLogger(FileBasedEventGeneratorService.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(FileBasedEventGeneratorService.class
             .toString());
 
     /*
@@ -71,8 +72,8 @@ public class FileBasedEventGeneratorService extends
                     return true;
             }
         } catch (IOException ex) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(ex.getLocalizedMessage(), ex);
         }
         return false;
     }
@@ -94,8 +95,8 @@ public class FileBasedEventGeneratorService extends
                     ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
             if (sensedDir != null) {
                 if (!sensedDir.exists() || !sensedDir.isDirectory() || !sensedDir.canRead()){
-                    if (LOGGER.isLoggable(Level.SEVERE))
-                        LOGGER.severe("FileBasedEventGenerator: Watching dir is not valid!");
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("FileBasedEventGenerator: Watching dir is not valid!");
                     return null;
                 }
             }
@@ -104,11 +105,11 @@ public class FileBasedEventGeneratorService extends
             return new FileBasedEventGenerator<FileSystemEvent>(configuration);
             
         } catch (IOException ex) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(ex.getLocalizedMessage(), ex);
         } catch (Throwable e) {
-            if (LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
         }
         return null;
     }
