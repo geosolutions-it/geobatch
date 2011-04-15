@@ -433,6 +433,16 @@
                 <artifactId>jsp-2.0</artifactId>
                 <version>6.1.8</version>
                 <type>pom</type>
+                <exclusions>
+		  <exclusion>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>jcl104-over-slf4j</artifactId>
+		  </exclusion>
+		  <exclusion>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-simple</artifactId>
+		  </exclusion>
+		</exclusions>
             </dependency>
             
             
@@ -737,36 +747,38 @@ Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.5.8</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-jdk14</artifactId>
-                <version>1.5.8</version>
+                <version>1.5.10</version>
             </dependency>
 	    <dependency>
 		<groupId>org.slf4j</groupId>
 		<artifactId>jcl-over-slf4j</artifactId>
-		<version>1.5.8</version>
+		<version>1.5.10</version>
 	    </dependency>
+	    <!--
+	    
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-jdk14</artifactId>
+                <version>1.5.10</version>
+            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl104-over-slf4j</artifactId>
-                <version>1.5.8</version>
+                <version>1.5.10</version>
             </dependency>
-	  <!--
+	  
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
                 <version>1.5.8</version>
                 
-            </dependency>-->
+            </dependency>
              <dependency>
 		<groupId>org.slf4j</groupId>
 		<artifactId>slf4j-log4j12</artifactId>
 		<version>1.5.8</version>
 	    </dependency>
-            
+            -->
             <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
