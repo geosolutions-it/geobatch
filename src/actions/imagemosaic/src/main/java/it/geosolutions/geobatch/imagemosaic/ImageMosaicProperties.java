@@ -18,12 +18,13 @@ import org.apache.commons.io.FileUtils;
 import org.geotools.data.DataUtilities;
 
 public abstract class ImageMosaicProperties {
-    
-    private static final String CACHING_KEY="Caching";
+
+    private static final String CACHING_KEY = "Caching";
+
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicProperties.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicProperties.class);
 
     /**
      * get the properties object from the file.
@@ -47,16 +48,15 @@ public abstract class ImageMosaicProperties {
     }
 
     /**
-     * If the regex file do not exists, build it using the passed configuration and
-     * return the corresponding properties object
+     * If the regex file do not exists, build it using the passed configuration and return the
+     * corresponding properties object
      * 
      * @param regexFile
      * @param configuration
      * @return
      * @throws UnsatisfiedLinkError
      */
-    private static Properties build(File regexFile,
-            String regex) throws UnsatisfiedLinkError {
+    private static Properties build(File regexFile, String regex) throws UnsatisfiedLinkError {
 
         if (!regexFile.exists()) {
             FileWriter outFile = null;
@@ -70,7 +70,8 @@ public abstract class ImageMosaicProperties {
                     out.println("regex=" + regex);
                 } catch (IOException e) {
                     if (LOGGER.isErrorEnabled())
-                        LOGGER.error("Error occurred while writing "+regexFile.getAbsolutePath()+" file!", e);
+                        LOGGER.error("Error occurred while writing " + regexFile.getAbsolutePath()
+                                + " file!", e);
                 } finally {
                     if (out != null) {
                         out.flush();
@@ -80,15 +81,14 @@ public abstract class ImageMosaicProperties {
                     outFile = null;
                     out = null;
                 }
-            }
-            else
-                throw new NullPointerException("Unable to build the property file using a null regex string");
-            
+            } else
+                throw new NullPointerException(
+                        "Unable to build the property file using a null regex string");
+
             return getProperty(regexFile);
         }
         return null;
     }
-
 
     /**
      * If the indexer file do not exists, build the indexer using the passed configuration and
@@ -98,41 +98,39 @@ public abstract class ImageMosaicProperties {
      * @param configuration
      * @return
      */
-    protected static Properties buildIndexer(File indexer,
-            ImageMosaicConfiguration configuration) {
+    protected static Properties buildIndexer(File indexer, ImageMosaicConfiguration configuration) {
         // ////
         // INDEXER
         // ////
         if (!indexer.exists()) {
-            
+
             FileWriter outFile = null;
             PrintWriter out = null;
             try {
                 outFile = new FileWriter(indexer);
                 out = new PrintWriter(outFile);
-                
-                File baseDir=indexer.getParentFile();
-                
+
+                File baseDir = indexer.getParentFile();
+
                 // Write text to file
                 // setting caching of file to false
                 out.println("Caching=false");
-                
-                
-                if (configuration.getTimeRegex() != null){
+
+                if (configuration.getTimeRegex() != null) {
                     out.println("TimeAttribute=ingestion");
-                    
+
                     final File timeregex = new File(baseDir, "timeregex.properties");
                     ImageMosaicProperties.build(timeregex, configuration.getTimeRegex());
                 }
 
-                if (configuration.getElevationRegex() != null){
+                if (configuration.getElevationRegex() != null) {
                     out.println("ElevationAttribute=elevation");
 
                     final File elevationRegex = new File(baseDir, "elevationregex.properties");
                     ImageMosaicProperties.build(elevationRegex, configuration.getElevationRegex());
                 }
 
-                if (configuration.getRuntimeRegex() != null){
+                if (configuration.getRuntimeRegex() != null) {
                     out.println("RuntimeAttribute=runtime");
 
                     final File runtimeRegex = new File(baseDir, "runtimeregex.properties");
@@ -166,26 +164,24 @@ public abstract class ImageMosaicProperties {
                 out = null;
             }
             return getProperty(indexer);
-        }
-        else {
+        } else {
             // file -> indexer.properties
             /**
              * get the Caching property and set it to false
              */
-            Properties indexerProps=getProperty(indexer);
-            String caching=indexerProps.getProperty(CACHING_KEY);
-            if (caching!=null){
-                if (caching.equals("true")){
+            Properties indexerProps = getProperty(indexer);
+            String caching = indexerProps.getProperty(CACHING_KEY);
+            if (caching != null) {
+                if (caching.equals("true")) {
                     indexerProps.setProperty(CACHING_KEY, "false");
                 }
-            }
-            else {
+            } else {
                 if (LOGGER.isWarnEnabled())
-                    LOGGER.warn(
-                           "ImageMosaicProperty:buildIndexer():Unable to get the "+CACHING_KEY
-                           +" property into the "+indexer.getAbsolutePath()+" file.");
+                    LOGGER.warn("ImageMosaicProperty:buildIndexer():Unable to get the "
+                            + CACHING_KEY + " property into the " + indexer.getAbsolutePath()
+                            + " file.");
             }
-                
+
             return indexerProps;
         }
     }
@@ -203,21 +199,19 @@ public abstract class ImageMosaicProperties {
         final File datastore = new File(baseDir, "datastore.properties");
         if (!datastore.exists()) {
             if (configuration.getDatastorePropertiesPath() != null) {
-                File dsFile;
-                try {
-                    dsFile = Path.findLocation(
-                            configuration.getDatastorePropertiesPath(),
-                            new File(((FileBaseCatalog) CatalogHolder.getCatalog())
-                                    .getBaseDirectory()));
-                } catch (IOException e) {
-                    if (LOGGER.isWarnEnabled()){
-                        LOGGER.warn("ImageMosaicAction:checkDataStore() " + e.getMessage());
+                File dsFile = Path
+                        .findLocation(configuration.getDatastorePropertiesPath(), new File(
+                                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+                if (dsFile == null) {
+                    if (LOGGER.isWarnEnabled()) {
+                        LOGGER.warn("ImageMosaicAction:checkDataStore(): unable to get the absolute "
+                                + "path of the 'datastore.properties'");
                     }
                     return null;
                 }
                 if (dsFile != null) {
                     if (!dsFile.isDirectory()) {
-                        if (LOGGER.isInfoEnabled()){
+                        if (LOGGER.isInfoEnabled()) {
                             LOGGER.info("ImageMosaicAction:checkDataStore() Configuration DataStore file found: '"
                                     + dsFile.getAbsolutePath() + "'.");
                         }
@@ -225,32 +219,27 @@ public abstract class ImageMosaicProperties {
                             FileUtils.copyFileToDirectory(dsFile, baseDir);
                         } catch (IOException e) {
                             if (LOGGER.isWarnEnabled())
-                                LOGGER.warn("ImageMosaicAction:checkDataStore() "
-                                        + e.getMessage());
+                                LOGGER.warn("ImageMosaicAction:checkDataStore() " + e.getMessage());
                             return null;
                         }
                     } else {
-                        if (LOGGER.isWarnEnabled()){
-                            LOGGER.warn(
-                                    "ImageMosaicAction:checkDataStore() DataStoreProperties file points to a directory! "
-                                            + dsFile.getAbsolutePath() + "'. Skipping event");
+                        if (LOGGER.isWarnEnabled()) {
+                            LOGGER.warn("ImageMosaicAction:checkDataStore() DataStoreProperties file points to a directory! "
+                                    + dsFile.getAbsolutePath() + "'. Skipping event");
                         }
                         return null;
                     }
                 } else {
-                    if (LOGGER.isWarnEnabled()){
-                        LOGGER.warn(
-                                "ImageMosaicAction: DataStoreProperties file not found"
-                                        + configuration.getDatastorePropertiesPath()
-                                        + "'. Skipping event");
+                    if (LOGGER.isWarnEnabled()) {
+                        LOGGER.warn("ImageMosaicAction: DataStoreProperties file not found"
+                                + configuration.getDatastorePropertiesPath() + "'. Skipping event");
                     }
                     return null;
                 }
             } else {
-                if (LOGGER.isWarnEnabled()){
-                    LOGGER.warn(
-                            "ImageMosaicAction: DataStoreProperties file not configured "
-                                    + "nor found into destination dir. A shape file will be used.");
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("ImageMosaicAction: DataStoreProperties file not configured "
+                            + "nor found into destination dir. A shape file will be used.");
                 }
             }
         }

@@ -42,19 +42,15 @@ public final class Path {
      * @see FileBaseCatalog
      * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
      */
-    public static String getAbsolutePath(String working_dir) /*throws FileNotFoundException */{ 
+    public static String getAbsolutePath(String working_dir){ 
         FileBaseCatalog c = (FileBaseCatalog) CatalogHolder.getCatalog();
         
         File fo=null;
-        try {
-            if (c!=null)
-                fo=it.geosolutions.geobatch.tools.file.Path.findLocation(working_dir,new File(c.getBaseDirectory()));
-            else
-                fo=it.geosolutions.geobatch.tools.file.Path.findLocation(working_dir,null);
-        }
-        catch (IOException ioe){
-            return null;
-        }
+    
+        if (c!=null)
+            fo=it.geosolutions.geobatch.tools.file.Path.findLocation(working_dir,new File(c.getBaseDirectory()));
+        else
+            fo=it.geosolutions.geobatch.tools.file.Path.findLocation(working_dir,null);
         
         if (fo!=null){
             return fo.toString();

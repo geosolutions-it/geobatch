@@ -56,26 +56,30 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
 
     /**
      * The configuring directory.
-     * @uml.property  name="watchDirectory"
      */
     private String watchDirectory;
 
+    public void setWatchDirectory(String watchDirectory) {
+        this.watchDirectory = watchDirectory;
+    }
+
     /**
      * A flag used to keep files in watchDirectory when flow is started.
-     * @uml.property  name="keepFiles"
      */
     private boolean keepFiles = false;
 
     /**
      * The wild-card used to catch the kind of input files.
-     * @uml.property  name="wildCard"
      */
     private String wildCard;
 
+    /**
+     * The polling interval in millisec
+     */
+    private long interval;
 
     /**
      * @return
-     * @uml.property  name="monitorType"
      */
     public FileSystemMonitorType getMonitorType() {
         return monitorType;
@@ -83,40 +87,24 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
 
     /**
      * @param monitorType
-     * @uml.property  name="monitorType"
      */
     public void setMonitorType(FileSystemMonitorType monitorType) {
         this.monitorType = monitorType;
     }
     
-    /**
-     * Default Constructor.
-     */
-//    public FileBasedEventGeneratorConfiguration() {
-//        super();
-//    }
 
-    /**
-     * 
-     * @param id
-     * @param name
-     * @param description
-     * @param dirty
-     * @param osType
-     * @param eventType
-     * @param workingDirectory
-     * @param wildCard
-     */
-    public FileBasedEventGeneratorConfiguration(String id, String name, String description,
-            boolean dirty, OsType osType, FileSystemEventType eventType,
-            String workingDirectory, String wildCard) {
-        super(id, name, description, dirty);
-        this.osType = osType;
-        this.eventType = eventType;
-        this.watchDirectory = workingDirectory;
-        this.wildCard = wildCard;
+    public long getInterval() {
+        return interval;
     }
 
+    public void setInterval(long interval) {
+        this.interval = interval;
+    }
+
+    public String getWatchDirectory() {
+        return watchDirectory;
+    }
+    
     /**
      * 
      * @param id
@@ -125,17 +113,19 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
      * @param dirty
      * @param osType
      * @param eventType
-     * @param workingDirectory
+     * @param watchDirectory
+     * @param interval
      * @param wildCard
      * @param keepFiles
      */
     public FileBasedEventGeneratorConfiguration(String id, String name, String description,
             boolean dirty, OsType osType, FileSystemEventType eventType,
-            String workingDirectory, String wildCard, boolean keepFiles) {
+            String watchDirectory, long interval, String wildCard, boolean keepFiles) {
         super(id, name, description, dirty);
         this.osType = osType;
         this.eventType = eventType;
-        this.watchDirectory = workingDirectory;
+        this.watchDirectory = watchDirectory;
+        this.interval = interval;
         this.wildCard = wildCard;
         this.keepFiles = keepFiles;
     }
@@ -143,7 +133,6 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
     /**
      * Getter for the OS type attribute.
      * @return  osType
-     * @uml.property  name="osType"
      */
     public OsType getOsType() {
         return osType;
@@ -152,34 +141,14 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
     /**
      * Setter for the OS type attribute.
      * @param  osType
-     * @uml.property  name="osType"
      */
     public void setOsType(OsType osType) {
         this.osType = osType;
     }
 
     /**
-     * Getter for the configuring directory attribute.
-     * 
-     * @return workinfDirectory
-     */
-    public String getWorkingDirectory() {
-        return watchDirectory;
-    }
-
-    /**
-     * Setter for the configuring directory attribute.
-     * 
-     * @param workingDirectory
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.watchDirectory = workingDirectory;
-    }
-
-    /**
      * Getter for the wild card attribute.
      * @return  wildCard
-     * @uml.property  name="wildCard"
      */
     public String getWildCard() {
         return wildCard;
@@ -188,7 +157,6 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
     /**
      * Setter for the wild card attribute.
      * @param  wildCard
-     * @uml.property  name="wildCard"
      */
     public void setWildCard(String wildCard) {
         this.wildCard = wildCard;
@@ -197,7 +165,6 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
     /**
      * Getter for the event type attribute.
      * @return  eventType
-     * @uml.property  name="eventType"
      */
     public FileSystemEventType getEventType() {
         return eventType;
@@ -206,7 +173,6 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
     /**
      * Setter for the event type attribute.
      * @param  eventType
-     * @uml.property  name="eventType"
      */
     public void setEventType(FileSystemEventType eventType) {
         this.eventType = eventType;
@@ -224,7 +190,6 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
     /**
      * Setter for the keep files in watchDirectory flag.
      * @param  keepFiles
-     * @uml.property  name="keepFiles"
      */
     public void setKeepFiles(boolean keepFiles) {
         this.keepFiles = keepFiles;

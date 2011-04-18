@@ -66,10 +66,9 @@ public class Path {
      * @note can return null
      * @param location
      * @param directory
-     * @return
-     * @throws IOException
+     * @return the absolute path
      */
-    public static File findLocation(String location, File directory) throws IOException {
+    public static File findLocation(String location, File directory) {
         if (location != null) {
             // trim spaces
             location = location.trim();

@@ -22,14 +22,14 @@
 
 package it.geosolutions.geobatch.configuration.flow.file;
 
-import java.io.File;
-import java.io.IOException;
-
 import it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl;
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import it.geosolutions.geobatch.configuration.CatalogConfiguration;
+import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
+
+import java.io.File;
 
 /**
  * A Conf for the Catalog based on xml marshalled files.
@@ -88,12 +88,7 @@ public class FileBasedCatalogConfiguration extends BaseConfiguration implements
     public static String getAbsolutePath(String working_dir) /*throws FileNotFoundException */{ 
         FileBasedCatalogImpl c=(FileBasedCatalogImpl) CatalogHolder.getCatalog();
         File fo=null;
-        try {
-            fo=Path.findLocation(working_dir,new File(c.getBaseDirectory()));
-        }catch (IOException ioe){
-            return null;
-        }
-        
+        fo=Path.findLocation(working_dir,new File(c.getBaseDirectory()));
         if (fo!=null){
             return fo.toString();
         }

@@ -24,7 +24,6 @@ package it.geosolutions.geobatch.flow.event.generator.file;
 
 import it.geosolutions.filesystemmonitor.OsType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.flow.event.generator.BaseEventGeneratorService;
@@ -49,8 +48,8 @@ public class FileBasedEventGeneratorService extends
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(FileBasedEventGeneratorService.class
-            .toString());
+    private final static Logger LOGGER = LoggerFactory
+            .getLogger(FileBasedEventGeneratorService.class.toString());
 
     /*
      * (non-Javadoc)
@@ -62,19 +61,18 @@ public class FileBasedEventGeneratorService extends
         final OsType osType = configuration.getOsType();
         if (osType == null)
             return false;
-        final File sensedDir;
-        try {
-            sensedDir = Path.findLocation(configuration.getWorkingDirectory(), new File(
-                    ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-            if (sensedDir != null) {
-                if (sensedDir.exists() && sensedDir.isDirectory() && sensedDir.canRead()) // TODO
-                                                                                          // message
-                    return true;
+        final File sensedDir = Path.findLocation(configuration.getWatchDirectory(), new File(
+                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+        if (sensedDir != null) {
+            if (sensedDir.exists() && sensedDir.isDirectory() && sensedDir.canRead()) {
+                configuration.setWatchDirectory(sensedDir.getAbsolutePath());
+                return true;
             }
-        } catch (IOException ex) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(ex.getLocalizedMessage(), ex);
+
         }
+        if (LOGGER.isErrorEnabled())
+            LOGGER.error("FileBasedEventGenerator:canCreateEventGenerator(): "
+                    + "failed to create event generator ID: " + configuration.getId());
         return false;
     }
 
@@ -88,22 +86,7 @@ public class FileBasedEventGeneratorService extends
             FileBasedEventGeneratorConfiguration configuration) {
 
         try {
-            final OsType osType = configuration.getOsType();
-            final FileSystemEventType eventType = configuration.getEventType();
-            final File sensedDir;
-            sensedDir = Path.findLocation(configuration.getWorkingDirectory(), new File(
-                    ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
-            if (sensedDir != null) {
-                if (!sensedDir.exists() || !sensedDir.isDirectory() || !sensedDir.canRead()){
-                    if (LOGGER.isErrorEnabled())
-                        LOGGER.error("FileBasedEventGenerator: Watching dir is not valid!");
-                    return null;
-                }
-            }
-            final boolean keepFiles = configuration.getKeepFiles();
-
             return new FileBasedEventGenerator<FileSystemEvent>(configuration);
-            
         } catch (IOException ex) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(ex.getLocalizedMessage(), ex);

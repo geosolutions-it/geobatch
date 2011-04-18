@@ -26,23 +26,29 @@ import it.geosolutions.filesystemmonitor.OsType;
 import java.util.Map;
 
 /**
- * ServiceProviderInterface class for  {@link ThreadedFileSystemMonitor}  implementations.
- * @author  Simone Giannecchini
- * @since  0.2
+ * ServiceProviderInterface class for {@link ThreadedFileSystemMonitor} implementations.
+ * 
+ * @author Simone Giannecchini
+ * @since 0.2
  */
 public interface FileSystemMonitorSPI {
 
-    public final static String SOURCE = "source";
+    public final static String SOURCE_KEY = "source";
 
-    public final static String WILDCARD = "wildcard";
-    
-    public final static String TYPE = "type";
-    
+    public final static String WILDCARD_KEY = "wildcard";
+
+    public final static String TYPE_KEY = "type";
+
+    public final static String INTERVAL_KEY = "interval";
+
+    public final static long INTERVAL_DEFAULT_POLLING = 5000; // milliseconds -> 5 sec.
+
     /**
      * Get the type of this FileSystemMonitor
+     * 
      * @return
-     * @uml.property  name="type"
-     * @uml.associationEnd  
+     * @uml.property name="type"
+     * @uml.associationEnd
      */
     public FileSystemMonitorType getType();
 

@@ -22,6 +22,7 @@
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
+import it.geosolutions.geobatch.tools.file.IOUtils;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -43,18 +44,18 @@ import org.quartz.StatefulJob;
 public class GBFileSystemMonitorJob implements StatefulJob {
     private final static Logger LOGGER = LoggerFactory.getLogger(GBFileSystemMonitorJob.class);
 
-    // protected static final String ROOT_PATH_KEY=FileSystemMonitorSPI.SOURCE;
-    // protected static final String WILDCARD_KEY=FileSystemMonitorSPI.WILDCARD;
-    // protected static final String EVENT_TYPE_KEY=FileSystemMonitorSPI.TYPE;
+    // protected static final String ROOT_PATH_KEY=FileSystemMonitorSPI.SOURCE_KEY;
+    // protected static final String WILDCARD_KEY=FileSystemMonitorSPI.WILDCARD_KEY;
+    // protected static final String EVENT_TYPE_KEY=FileSystemMonitorSPI.TYPE_KEY;
 
     protected static final String OBSERVER_KEY = "OBSERVER";
 
     protected static final String EVENT_NOTIFIER_KEY = "EVENT_NOTIFIER";
 
-    // time to wait to get the lock
+    // KEY time to wait to get the lock
     protected static final String WAITING_LOCK_TIME_KEY = "WAITING_LOCK_TIME";
-
-    protected static final long WAITING_LOCK_TIME_DEFAULT = 1000; // milliseconds
+    // VALUE time to wait to get the lock
+    protected static final long WAITING_LOCK_TIME_DEFAULT = IOUtils.MAX_WAITING_TIME_FOR_LOCK; // milliseconds
 
     /**
      * Define a policy. Refer to the Quartz Exception Handler documentation to define a new policy
@@ -180,10 +181,10 @@ public class GBFileSystemMonitorJob implements StatefulJob {
         GBEventNotifier notifier = null;
         // first time build
         try {
-            File directory = new File(jdm.getString(FileSystemMonitorSPI.SOURCE));
+            File directory = new File(jdm.getString(FileSystemMonitorSPI.SOURCE_KEY));
 
             observer = new FileAlterationObserver(directory, new WildcardFileFilter(
-                    jdm.getString(FileSystemMonitorSPI.WILDCARD)));
+                    jdm.getString(FileSystemMonitorSPI.WILDCARD_KEY)));
 
             notifier = (GBEventNotifier) jdm.get(EVENT_NOTIFIER_KEY);
 

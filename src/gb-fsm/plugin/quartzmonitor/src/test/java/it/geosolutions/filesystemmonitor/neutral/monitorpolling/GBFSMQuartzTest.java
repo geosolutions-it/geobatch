@@ -15,8 +15,8 @@ public class GBFSMQuartzTest {
     @Test
     public final void testGBFileSystemMonitorJob() {
         JobDetail jd=new JobDetail("NAME", GBFileSystemMonitorJob.class);
-        jd.getJobDataMap().put(FileSystemMonitorSPI.SOURCE, "src/test/resources/data");
-        jd.getJobDataMap().put(FileSystemMonitorSPI.WILDCARD, ".*");
+        jd.getJobDataMap().put(FileSystemMonitorSPI.SOURCE_KEY, "src/test/resources/data");
+        jd.getJobDataMap().put(FileSystemMonitorSPI.WILDCARD_KEY, ".*");
         
         final Scheduler sched;
         try {

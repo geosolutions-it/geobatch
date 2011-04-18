@@ -109,14 +109,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>it.geosolutions.imageio-ext</groupId>
@@ -130,7 +122,7 @@
         <!--  SPRING DEPENDENCIES -->
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
+            <artifactId>spring-context</artifactId>
         </dependency>
 
         <!-- SCOPE TEST -->

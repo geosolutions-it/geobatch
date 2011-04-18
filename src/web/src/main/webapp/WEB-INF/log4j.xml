@@ -21,9 +21,10 @@
 	</appender>
 
 	<logger name="it.geosolutions" additivity="true">
-		<level value="warning" />
+		<!-- <level value="warning" /> -->
+		<level value="trace" /><!--  DEBUG  -->
 		<appender-ref ref="rolling" />
-		<!-- <appender-ref ref="console" />-->
+		<appender-ref ref="console" /><!--  DEBUG  -->
 	</logger>
 
 	<logger name="org.quartz" additivity="true">

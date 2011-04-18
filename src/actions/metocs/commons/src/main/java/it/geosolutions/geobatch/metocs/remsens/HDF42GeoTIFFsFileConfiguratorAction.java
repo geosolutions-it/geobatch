@@ -218,7 +218,7 @@ public class HDF42GeoTIFFsFileConfiguratorAction extends
                     if (horizontalDomain == null)
                         throw new IllegalStateException("Horizontal domain is null");
 
-                    // RANGE TYPE
+                    // RANGE TYPE_KEY
                     final RangeType range = gridSource.getRangeType(null);
 
                     final CoverageReadRequest readRequest = new CoverageReadRequest();

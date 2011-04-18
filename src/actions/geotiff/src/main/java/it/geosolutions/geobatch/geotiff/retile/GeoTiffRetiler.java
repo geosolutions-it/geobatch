@@ -162,7 +162,7 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
             }
             inCoverage = (GridCoverage2D) reader.read(null);
             if (inCoverage == null) {
-                final IOException ioe = new IOException("");
+                final IOException ioe = new IOException("GeoTiffRetiler::reTile(): inCoverage == null");
                 throw ioe;
             }
             // /////////////////////////////////////////////////////////////////////

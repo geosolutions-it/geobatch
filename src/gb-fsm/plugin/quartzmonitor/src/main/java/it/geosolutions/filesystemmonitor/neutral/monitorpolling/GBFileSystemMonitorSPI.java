@@ -25,6 +25,7 @@ import it.geosolutions.filesystemmonitor.OsType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
+import it.geosolutions.geobatch.tools.file.IOUtils;
 
 import java.io.File;
 import java.util.Map;
@@ -35,11 +36,7 @@ import org.slf4j.LoggerFactory;
 public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
     private final static Logger LOGGER = LoggerFactory.getLogger(GBFileSystemMonitorSPI.class.toString());
 
-    public final static long DEFAULT_POLLING_INTERVAL = 1000; // milliseconds
-
-    public final static long DEFAULT_MAX_LOOKING_INTERVAL = 10000; // milliseconds
-
-    private final static String INTERVAL_KEY = "interval";
+    public final static long DEFAULT_MAX_LOOKING_INTERVAL = IOUtils.MAX_WAITING_TIME_FOR_LOCK; // milliseconds
 
     public boolean canWatch(OsType osType) {
         return true;
@@ -64,19 +61,19 @@ public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
         FileSystemEventType type = null;
 
         try {
-            Object element = configuration.get(INTERVAL_KEY);
+            Object element = configuration.get(FileSystemMonitorSPI.INTERVAL_KEY);
             if (element != null && element.getClass().isAssignableFrom(Long.class))
                 interval = (Long) element;
 
-            element = configuration.get(SOURCE);
+            element = configuration.get(FileSystemMonitorSPI.SOURCE_KEY);
             if (element != null && element.getClass().isAssignableFrom(File.class))
                 file = (File) element;
 
-            element = configuration.get(WILDCARD);
+            element = configuration.get(FileSystemMonitorSPI.WILDCARD_KEY);
             if (element != null && element.getClass().isAssignableFrom(String.class))
                 wildcard = (String) element;
 
-            element = configuration.get(TYPE);
+            element = configuration.get(FileSystemMonitorSPI.TYPE_KEY);
             if (element != null && element.getClass().isAssignableFrom(FileSystemEventType.class))
                 type = (FileSystemEventType) element;
         } catch (NullPointerException npe) {
@@ -95,10 +92,10 @@ public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
                                 interval, true, DEFAULT_MAX_LOOKING_INTERVAL);
                     else
                         return new GBFileSystemMonitor(file.getAbsolutePath(), wildcard, type,
-                                DEFAULT_POLLING_INTERVAL, true, DEFAULT_MAX_LOOKING_INTERVAL);
+                                FileSystemMonitorSPI.INTERVAL_DEFAULT_POLLING, true, DEFAULT_MAX_LOOKING_INTERVAL);
                 } else {
                     return new GBFileSystemMonitor(file.getAbsolutePath(), wildcard, type,
-                            DEFAULT_POLLING_INTERVAL, true, DEFAULT_MAX_LOOKING_INTERVAL);
+                            FileSystemMonitorSPI.INTERVAL_DEFAULT_POLLING, true, DEFAULT_MAX_LOOKING_INTERVAL);
                 }
             }
         } catch (Throwable e) {
