@@ -285,7 +285,7 @@ public class METOCSActionsIOUtils {
                         newYpos = latPositions - yPos - 1;
                     }
                     if (!rescale) {
-                        userRaster.setSample(xPos, newYpos, 0, sVal); 
+                        userRaster.setSample(xPos, newYpos, 0, sVal);
                     } else {
                         double rescaled = sVal != fillValue ? (sVal * scale) + offset : fillValue;
                         userRaster.setSample(xPos, newYpos, 0, rescaled); 

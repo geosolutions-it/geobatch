@@ -96,6 +96,11 @@
 	    -->
 	    
 <!--  TESTS  -->        
+        <!-- 18Apr2011 deps -->
+        <dependency> <!-- NOTE: this can also applied using profile 'metocs' -->
+            <groupId>it.geosolutions</groupId>
+			<artifactId>gb-action-metocs-commons</artifactId>
+        </dependency>
         
 
     	<!-- GeoBatch ACTIONS -->
