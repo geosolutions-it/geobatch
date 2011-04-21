@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.geoserver.geotiff;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.catalog.Service;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
@@ -37,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @version $ GeoTIFFFolderGeoServerConfiguratorService.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
 public class GeoTIFFFolderGeoServerConfiguratorService extends
-        GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
+        GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> implements Service{
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GeoTIFFFolderGeoServerConfiguratorService.class.toString());
 

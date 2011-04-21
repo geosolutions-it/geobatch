@@ -402,7 +402,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
                         // //
                         // defining the SampleModel data type
                         // //
-                        final SampleModel outSampleModel = Utilities.getSampleModel(
+                        final SampleModel outSampleModel = it.geosolutions.geobatch.metocs.utils.io.Utilities.getSampleModel(
                                 var.getDataType(), nLon, nLat, 1);
 
                         Array originalVarArray = var.read();

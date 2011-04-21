@@ -282,41 +282,7 @@ public abstract class ImageMosaicREST {
      * 
      *             }
      */
-    /**
-     * Configures the styles associated in this class' GeoServerActionConfiguration to the layer
-     * passed as parameter.
-     * 
-     * @param layerName
-     *            the layer to associate to the given styles.
-     * @param
-     * @return true if there were no errors in setting the styles.
-     * @throws java.net.MalformedURLException
-     * @throws java.io.FileNotFoundException
-     */
-    protected static boolean configureStyles(String layerName, ImageMosaicConfiguration conf)
-            throws MalformedURLException {
 
-        boolean ret = true;
-        URL restUrl = new URL(conf.getGeoserverURL() + "/rest/sldservice/updateLayer/" + layerName);
-
-        for (String styleName : conf.getStyles()) {
-
-            if (GeoServerRESTHelper.putContent(restUrl, "<LayerConfig><Style>" + styleName
-                    + "</Style></LayerConfig>", conf.getGeoserverUID(), conf.getGeoserverPWD())) {
-
-                LOGGER.info("added style " + styleName + " for layer " + layerName);
-            } else {
-                LOGGER.warn("error adding style " + styleName + " for layer " + layerName);
-                ret = false;
-            }
-        }
-
-        ret &= GeoServerRESTHelper.putContent(restUrl,
-                "<LayerConfig><DefaultStyle>" + conf.getDefaultStyle()
-                        + "</DefaultStyle></LayerConfig>", conf.getGeoserverUID(),
-                conf.getGeoserverPWD());
-        return ret;
-    }
 
     /**
      * @throws MalformedURLException
