@@ -41,7 +41,7 @@ public interface FileSystemMonitorSPI {
 
     public final static String INTERVAL_KEY = "interval";
 
-    public final static long INTERVAL_DEFAULT_POLLING = 5000; // milliseconds -> 5 sec.
+    public final static int INTERVAL_DEFAULT_POLLING = 5; // 5 sec.
 
     /**
      * Get the type of this FileSystemMonitor

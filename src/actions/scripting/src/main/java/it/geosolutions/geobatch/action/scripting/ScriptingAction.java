@@ -33,18 +33,18 @@ import javax.script.SimpleScriptContext;
 /**
  * ScriptingAction Class definition ...
  **/
-public class ScriptingAction extends BaseAction<FileSystemEvent>implements Action<FileSystemEvent> {
+public class ScriptingAction extends BaseAction<FileSystemEvent> implements Action<FileSystemEvent> {
 
     /**
      * Default Logger
      */
-    private final static Logger LOGGER = LoggerFactory.getLogger(ScriptingAction.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(ScriptingAction.class);
 
     protected ScriptEngineManager factory = new ScriptEngineManager();
 
     protected ScriptEngine engine = null;
 
-    private ScriptingConfiguration configuration;
+    private ScriptingConfiguration configuration = null;
 
     /**
      * Constructor.
@@ -54,7 +54,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
      */
     public ScriptingAction(ScriptingConfiguration configuration) throws IOException {
         super(configuration);
-        this.configuration=configuration;
+        this.configuration = configuration;
         engine = factory.getEngineByName(configuration.getLanguage());
     }
 
@@ -62,8 +62,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
      * Default execute method...
      */
     @SuppressWarnings("unchecked")
-    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
-            throws ActionException {
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         try {
 
             listenerForwarder.started();
@@ -79,8 +78,10 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
             // data flow configuration and dataStore name must not be null.
             // //
             if (configuration == null) {
-                LOGGER.error("Conf is null.");
-                throw new IllegalStateException("Conf is null.");
+                final String message = "Conf is null.";
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
+                throw new IllegalStateException(message);
             }
 
             // final String configId = configuration.getName();
@@ -102,7 +103,8 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
                 addFile(moduleDirectory.getParentFile());
                 addFile(moduleDirectory);
             } catch (IOException e) {
-                LOGGER.error("Error, could not add URL to system classloader", e);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Error, could not add URL to system classloader", e);
             }
             String classpath = System.getProperty("java.class.path");
             File[] moduleFiles = moduleDirectory.listFiles();
@@ -114,7 +116,9 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
                             try {
                                 addFile(moduleFiles[i]);
                             } catch (IOException e) {
-                                LOGGER.error("Error, could not add URL to system classloader", e);
+                                if (LOGGER.isErrorEnabled())
+                                    LOGGER.error("Error, could not add URL to system classloader",
+                                            e);
                             }
                         }
                     }
@@ -137,7 +141,8 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
 
                 Invocable inv = (Invocable) engine;
                 List<String> outputFiles = (List<String>) inv.invokeFunction("execute",
-                        new Object[]{configuration, event.getSource().getAbsolutePath(), listenerForwarder});
+                        new Object[] { configuration, event.getSource().getAbsolutePath(),
+                                listenerForwarder });
 
                 // FORWARDING EVENTS
                 for (String outputFile : outputFiles) {
@@ -145,15 +150,18 @@ public class ScriptingAction extends BaseAction<FileSystemEvent>implements Actio
                             FileSystemEventType.FILE_ADDED));
                 }
             } catch (FileNotFoundException e) {
-                LOGGER.error("Can't create an Action for " + configuration, e);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Can't create an Action for " + configuration, e);
             } catch (ScriptException e) {
-                LOGGER.error("Can't create an Action for " + configuration, e);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Can't create an Action for " + configuration, e);
             }
 
             listenerForwarder.completed();
             return events;
         } catch (Throwable t) {
-            LOGGER.error(t.getLocalizedMessage(), t); // no need to
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(t.getLocalizedMessage(), t); // no need to
             // log,
             // we're
             // rethrowing

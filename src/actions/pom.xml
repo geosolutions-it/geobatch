@@ -14,7 +14,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>it.geosolutions</groupId>
+        <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb</artifactId>
         <version>0.9-SNAPSHOT</version>
     </parent>
@@ -22,7 +22,7 @@
     <!-- =========================================================== -->
     <!--     Module Description                                      -->
     <!-- =========================================================== -->
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-actions</artifactId>
     <packaging>pom</packaging>
 
@@ -49,7 +49,7 @@
 
     <dependencies>
 	<dependency>
-		<groupId>it.geosolutions</groupId>
+		<groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb-action-tools</artifactId>
 	</dependency>
     </dependencies>		
@@ -161,47 +161,7 @@
                 <module>geotiff</module>
             </modules>
         </profile>
-
-<!--
-        <profile>
-            <id>gliders</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                </property>
-            </activation>
-            <modules>
-                <module>gb-geoserver</module>
-                <module>gb-gliders</module>
-            </modules>
-        </profile>
--->
-<!--
-        <profile>
-            <id>ctd</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                </property>
-            </activation>
-            <modules>
-                <module>gb-ctd</module>
-            </modules>
-        </profile>
--->
-<!--        <profile>
-            <id>ais</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                </property>
-            </activation>
-            <modules>
-                <module>ais</module>
-                <module>gb-geoserver</module>
-            </modules>
-        </profile>
--->
+        
         <profile>
             <id>geowebcache</id>
             <activation>
@@ -228,17 +188,7 @@
                 <module>gb-geoserver</module>
             </modules>
         </profile>
-<!--
-REF. MAIL 30Dec2010: "[GEOBATCH] tree"
-		<profile>
-			<id>jgsflodess</id>
-			<modules>
-				 <module>gb-geoserver</module>
-				 <module>imagemosaic</module>
-				 <module>jgsflodess</module>
-			</modules>
-		</profile>
--->
+        
         <profile>
             <id>ascii-grids</id>
             <activation>
@@ -280,107 +230,7 @@ REF. MAIL 30Dec2010: "[GEOBATCH] tree"
                 <module>gb-task-executor</module>
             </modules>
         </profile>
-
-        <profile>
-            <id>metocs</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>geotiff</module>
-                <module>gb-geoserver</module>
-                <module>imagemosaic</module>
-                <module>shapefile</module>
-                <module>gb-task-executor</module>
-                <module>scripting</module>
-                <module>splitting</module>
-                <module>metocs</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>emsa</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>registry</module>
-                <module>metocs</module>
-                <module>scripting</module>
-                <module>splitting</module>
-                <module>emsa</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>lamma</id>
-
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>geotiff</module>
-                <module>gb-geoserver</module>
-                <module>imagemosaic</module>
-                <module>shapefile</module>
-                <module>gb-task-executor</module>
-                <module>lamma</module>
-            </modules>
-        </profile>
-<!-- REF. MAIL 30Dec2010: "[PENDING] action"
-        <profile>
-            <id>sas</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>sas</module>
-                <module>gb-task-executor</module>
-            </modules>
-        </profile>
--->
-<!-- REF. MAIL 30Dec2010: "[GEOBATCH] tree"
-        <profile>
-            <id>sasgs</id>
-            
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>sas</module>
-                <module>sasgs</module>
-                <module>gb-task-executor</module>
-            </modules>
-        </profile>
--->
-        <profile>
-            <id>registry</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>registry</module>
-            </modules>
-        </profile>
-
+        
         <profile>
             <id>scripting</id>
             <activation>
@@ -391,6 +241,19 @@ REF. MAIL 30Dec2010: "[GEOBATCH] tree"
             </activation>
             <modules>
                 <module>scripting</module>
+            </modules>
+        </profile>
+        
+        <profile>
+            <id>geoserver</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>gb-geoserver</module>
             </modules>
         </profile>
 
@@ -407,38 +270,6 @@ REF. MAIL 30Dec2010: "[GEOBATCH] tree"
             </modules>
         </profile>
         
-        <profile>
-            <id>pending</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-		<module>pending</module>
-            </modules>
-        </profile>
     </profiles>
-    <!--
-    <modules>
-		<module>gb-freemarker</module>
-		<module>splitting</module>
-		<module>metocs</module>
-		<module>scripting</module>
-		<module>gb-task-executor</module>
-		<module>shapefile</module>
-		<module>imagemosaic</module>
-		<module>geotiff</module>
-		<module>gb-geoserver</module>
-		<module>pending</module>
-		<module>registry</module>
-		<module>emsa</module>
-		<module>ascii-grids</module>
-		<module>geowebcache</module>
-		<module>gb-ftp</module>
-		<module>lamma</module>
-		<module>sas</module>
-    </modules>
-    -->
+    
 </project>

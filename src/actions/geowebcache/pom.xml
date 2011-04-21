@@ -14,7 +14,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-actions</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
@@ -23,7 +23,7 @@
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
-  <groupId>it.geosolutions</groupId>
+  <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb-action-geowebcache</artifactId>
   <packaging>jar</packaging>
   <name>GeoBatch action: GWC config</name>
@@ -102,11 +102,11 @@
     	
     	<!-- GEOBATCH lib -->
        <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-alias-registry</artifactId>
         </dependency> 
 	          

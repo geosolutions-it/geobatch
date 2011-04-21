@@ -14,7 +14,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>it.geosolutions</groupId>
+        <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-actions</artifactId>
         <version>0.9-SNAPSHOT</version>
     </parent>
@@ -22,7 +22,7 @@
     <!-- =========================================================== -->
     <!--     Module Description                                      -->
     <!-- =========================================================== -->
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-action-geotiff</artifactId>
     <packaging>jar</packaging>
 
@@ -51,12 +51,12 @@
     <!-- =========================================================== -->
     <dependencies>
     	<dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-tools</artifactId>
         </dependency>
     
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-core-impl</artifactId>
         </dependency>
 
@@ -72,12 +72,12 @@
         </dependency>
 
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
         
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-action-geoserver</artifactId>
         </dependency>
 

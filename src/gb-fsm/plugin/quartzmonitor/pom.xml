@@ -11,7 +11,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>it.geosolutions</groupId>
+		<groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb-fsm-plugin</artifactId>
 		<version>0.9-SNAPSHOT</version>
 	</parent>
@@ -20,7 +20,7 @@
 	<!-- ==================================================== -->
 	<!--     Module description                               -->
 	<!-- ==================================================== -->
-	<groupId>it.geosolutions</groupId>
+	<groupId>it.geosolutions.geobatch</groupId>
 	<artifactId>gb-fsm-quartz</artifactId>
 	<packaging>jar</packaging>
 	<name>Filesystem Monitor: quartz plugin</name>
@@ -39,21 +39,8 @@
 	<!-- ==================================================== -->
 	<dependencies>
 		<dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-fsm-core</artifactId>
-		</dependency>
-<!-- 
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-core</artifactId>
-		</dependency>
--->
-
-		
-		<dependency>
-			<groupId>it.geosolutions</groupId>
-			<artifactId>test-data</artifactId>
-			<scope>test</scope>
 		</dependency>
 		
 		<dependency>
@@ -61,56 +48,11 @@
 	    	<artifactId>commons-io</artifactId>
 		</dependency>
 		
-		
-		<!--  TODO change to quartz -->
-		<!-- 
-		<dependency>
-		    <groupId>org.apache.camel</groupId>
-		    <artifactId>camel-quartz</artifactId>
-		</dependency>
-		-->
 		<dependency>
 		    <groupId>org.quartz-scheduler</groupId>
 		    <artifactId>quartz</artifactId>
-		    <version>1.8.3</version>
 		</dependency>
  
-<!-- 
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-        <dependency>
-  <groupId>org.apache.camel</groupId>
-  <artifactId>camel-jms</artifactId>
-  <version>2.5.0</version>
-</dependency>
-        
-        <dependency>
-  <groupId>org.apache.activemq</groupId>
-  <artifactId>activemq-camel</artifactId>
-  <version>5.2.0</version>
-</dependency>
-        
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        
-        -->
 	</dependencies>
 
 </project>

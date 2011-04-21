@@ -10,7 +10,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-	  <groupId>it.geosolutions</groupId>
+	  <groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb-fsm</artifactId>
 		<version>0.9-SNAPSHOT</version>
   </parent>
@@ -19,7 +19,7 @@
   <!-- ===================================================================== -->
   <!--     Module description                                                -->
   <!-- ===================================================================== -->
-  <groupId>it.geosolutions</groupId>
+  <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb-fsm-plugin</artifactId>
   <packaging>pom</packaging>
   <name>FileSystemMonitor plugins</name>

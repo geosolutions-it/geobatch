@@ -26,15 +26,11 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.geotiff.GeotiffUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -55,6 +51,8 @@ import org.geotools.gce.geotiff.GeoTiffWriteParams;
 import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.media.jai.operator.ImageReadDescriptor;
 
@@ -71,7 +69,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
 
     private GeoTiffRetilerConfiguration configuration;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeoTiffRetiler.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeoTiffRetiler.class);
 
     protected GeoTiffRetiler(GeoTiffRetilerConfiguration configuration) throws IOException {
         super(configuration);
@@ -139,12 +137,12 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
 
             // can throw UnsupportedOperationsException
 
-//TODO format???
-reader = GeotiffUtils.getReader(inFile, new Hints(
-        Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+            // TODO format???
+            // reader = GeotiffUtils.getReader(inFile, new Hints(
+            // Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
 
-// reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
-// Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+            reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
+                    Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
             if (reader == null) {
                 final IOException ioe = new IOException(
                         "GeoTiffRetiler::reTile(): Unable to find a reader for the provided file: "
@@ -162,7 +160,8 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
             }
             inCoverage = (GridCoverage2D) reader.read(null);
             if (inCoverage == null) {
-                final IOException ioe = new IOException("GeoTiffRetiler::reTile(): inCoverage == null");
+                final IOException ioe = new IOException(
+                        "GeoTiffRetiler::reTile(): inCoverage == null");
                 throw ioe;
             }
             // /////////////////////////////////////////////////////////////////////
@@ -210,8 +209,7 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                     reader.dispose();
                 } catch (Exception e) {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn(
-                                "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                        LOGGER.warn("GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
             }
@@ -221,8 +219,7 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                     writer.dispose();
                 } catch (Exception e) {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn(
-                                "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                        LOGGER.warn("GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
             }
@@ -235,8 +232,7 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                     r.dispose();
                 } catch (Exception e) {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn(
-                                "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                        LOGGER.warn("GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
                 Object input = r.getInput();
@@ -246,8 +242,7 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                         ((ImageInputStream) input).close();
                     } catch (Exception e) {
                         if (LOGGER.isWarnEnabled())
-                            LOGGER.warn(
-                                    "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                            LOGGER.warn("GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                     }
                 }
 
@@ -255,8 +250,7 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                     initImage.dispose();
                 } catch (Exception e) {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn(
-                                "GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                        LOGGER.warn("GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
             }
@@ -336,19 +330,22 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                             } catch (UnsupportedOperationException uoe) {
                                 listenerForwarder.failed(uoe);
                                 if (LOGGER.isWarnEnabled())
-                                    LOGGER.warn("GeoTiffRetiler::execute(): "
+                                    LOGGER.warn(
+                                            "GeoTiffRetiler::execute(): "
                                                     + uoe.getLocalizedMessage(), uoe);
                                 continue;
                             } catch (IOException ioe) {
                                 listenerForwarder.failed(ioe);
                                 if (LOGGER.isWarnEnabled())
-                                    LOGGER.warn("GeoTiffRetiler::execute(): "
+                                    LOGGER.warn(
+                                            "GeoTiffRetiler::execute(): "
                                                     + ioe.getLocalizedMessage(), ioe);
                                 continue;
                             } catch (IllegalArgumentException iae) {
                                 listenerForwarder.failed(iae);
                                 if (LOGGER.isWarnEnabled())
-                                    LOGGER.warn("GeoTiffRetiler::execute(): "
+                                    LOGGER.warn(
+                                            "GeoTiffRetiler::execute(): "
                                                     + iae.getLocalizedMessage(), iae);
                                 continue;
                             } finally {
@@ -366,12 +363,18 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                         try {
                             outFile = reTile(eventFile);
                             if (outFile != null) {
+                                if (LOGGER.isInfoEnabled())
+                                    LOGGER.info("GeoTiffRetiler::execute(): SUCCESFULLY completed work on: "
+                                            + event.getSource());
                                 listenerForwarder.setProgress(100);
                                 ret.add(new FileSystemEvent(outFile, eventType));
                             } else {
                                 ret.add(new FileSystemEvent(eventFile, eventType));
-                                throw new NullPointerException(
-                                        "GeoTiffRetiler: retiler failed to return the output file");
+                                final String message = "GeoTiffRetiler::execute(): retiler FAILED to return the output file: "
+                                        + event.getSource();
+                                if (LOGGER.isErrorEnabled())
+                                    LOGGER.error(message);
+                                throw new NullPointerException(message);
                             }
                         } catch (UnsupportedOperationException uoe) {
                             listenerForwarder.failed(uoe);
@@ -395,6 +398,7 @@ reader = GeotiffUtils.getReader(inFile, new Hints(
                                         iae);
                             continue;
                         } finally {
+
                             listenerForwarder.setProgress((100) / ((events.size() != 0) ? events
                                     .size() : 1));
                             listenerForwarder.progressing();

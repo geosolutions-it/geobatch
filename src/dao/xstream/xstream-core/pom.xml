@@ -7,7 +7,7 @@
 
     <parent>
         <artifactId>gb-dao-xstream-base</artifactId>
-        <groupId>it.geosolutions</groupId>
+        <groupId>it.geosolutions.geobatch</groupId>
         <version>0.9-SNAPSHOT</version>
     </parent>
 
@@ -15,7 +15,7 @@
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
 
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-dao-xstream</artifactId>
 	<!--<packaging>jar</packaging>-->
     <name>GeoBatch DAOs - XStream main</name>
@@ -25,23 +25,23 @@
 
     <dependencies>
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-core-impl</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-alias-registry</artifactId>
         </dependency>
 
         <!-- used for aliasing testing files -->
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-action-geoserver</artifactId>
             <scope>test</scope>
         </dependency>

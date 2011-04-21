@@ -49,7 +49,7 @@ public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
     public GBFileSystemMonitor createInstance(Map<String, ?> configuration) {
         // get the params
         // polling interval
-        Long interval = null;
+        String interval = null;
 
         // file
         File file = null;
@@ -62,8 +62,8 @@ public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
 
         try {
             Object element = configuration.get(FileSystemMonitorSPI.INTERVAL_KEY);
-            if (element != null && element.getClass().isAssignableFrom(Long.class))
-                interval = (Long) element;
+            if (element != null && element.getClass().isAssignableFrom(String.class))
+                interval = (String) element;
 
             element = configuration.get(FileSystemMonitorSPI.SOURCE_KEY);
             if (element != null && element.getClass().isAssignableFrom(File.class))
@@ -86,17 +86,8 @@ public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
             return null;
         try {
             if (wildcard != null) {
-                if (interval != null) {
-                    if (interval != null && interval > 0)
-                        return new GBFileSystemMonitor(file.getAbsolutePath(), wildcard, type,
-                                interval, true, DEFAULT_MAX_LOOKING_INTERVAL);
-                    else
-                        return new GBFileSystemMonitor(file.getAbsolutePath(), wildcard, type,
-                                FileSystemMonitorSPI.INTERVAL_DEFAULT_POLLING, true, DEFAULT_MAX_LOOKING_INTERVAL);
-                } else {
-                    return new GBFileSystemMonitor(file.getAbsolutePath(), wildcard, type,
-                            FileSystemMonitorSPI.INTERVAL_DEFAULT_POLLING, true, DEFAULT_MAX_LOOKING_INTERVAL);
-                }
+                return new GBFileSystemMonitor(file.getAbsolutePath(), wildcard, type,
+                        interval, true, DEFAULT_MAX_LOOKING_INTERVAL);
             }
         } catch (Throwable e) {
             if (LOGGER.isErrorEnabled())

@@ -54,7 +54,7 @@
 	<root additivity="true">
 		<level value="info" />
 		<appender-ref ref="rolling" />
-		<!-- <appender-ref ref="console" />-->
+		<appender-ref ref="console" /><!--  DEBUG  -->
 	</root>
 
 </log4j:configuration>

@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>it.geosolutions</groupId>
+        <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-action-geoserver-parent</artifactId>
         <version>0.9-SNAPSHOT</version>
     </parent>
 
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-action-gsrest</artifactId>
     <packaging>jar</packaging>
 
@@ -40,13 +40,13 @@
         </dependency>
         
         <dependency>
-        	<groupId>it.geosolutions</groupId>
+        	<groupId>it.geosolutions.geobatch</groupId>
     		<artifactId>gb-action-geoserver</artifactId>
         </dependency>
 
 		<!--  dependencies on core classes for the events -->
         <dependency>
-        	<groupId>it.geosolutions</groupId>
+        	<groupId>it.geosolutions.geobatch</groupId>
     		<artifactId>gb-fsm-core</artifactId>
         </dependency>        
 
@@ -60,7 +60,7 @@
         <!--            tools               -->
         <!-- ============================== -->
         <dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-tools</artifactId>
 		</dependency>
 

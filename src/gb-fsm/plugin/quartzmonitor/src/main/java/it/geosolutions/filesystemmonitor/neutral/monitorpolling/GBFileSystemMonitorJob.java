@@ -29,19 +29,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.StatefulJob;
+import org.quartz.PersistJobDataAfterExecution;
 
-public class GBFileSystemMonitorJob implements StatefulJob {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@PersistJobDataAfterExecution
+public class GBFileSystemMonitorJob implements Job {
     private final static Logger LOGGER = LoggerFactory.getLogger(GBFileSystemMonitorJob.class);
 
     // protected static final String ROOT_PATH_KEY=FileSystemMonitorSPI.SOURCE_KEY;
@@ -54,6 +56,7 @@ public class GBFileSystemMonitorJob implements StatefulJob {
 
     // KEY time to wait to get the lock
     protected static final String WAITING_LOCK_TIME_KEY = "WAITING_LOCK_TIME";
+
     // VALUE time to wait to get the lock
     protected static final long WAITING_LOCK_TIME_DEFAULT = IOUtils.MAX_WAITING_TIME_FOR_LOCK; // milliseconds
 
@@ -63,7 +66,7 @@ public class GBFileSystemMonitorJob implements StatefulJob {
      * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
      */
     private enum ExcPolicy { // Exceptions Policy
-        
+
         IMMEDIATELY
         // throw immediately
     }; // Exceptions Policy
@@ -71,7 +74,7 @@ public class GBFileSystemMonitorJob implements StatefulJob {
     /*
      * The lock to synchronize multiple calls to this job instance
      */
-    
+
     private Lock lock = new ReentrantLock();
 
     /**
@@ -225,9 +228,9 @@ public class GBFileSystemMonitorJob implements StatefulJob {
      * Scheduler).
      */
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        if (LOGGER.isTraceEnabled()){
+        if (LOGGER.isTraceEnabled()) {
             final JobDetail detail = context.getJobDetail();
-            LOGGER.trace("Starting FSM job named: " + detail.getGroup() + detail.getName());
+            LOGGER.trace("Starting FSM job named: " + detail.getDescription()); // TODO or key?
         }
 
         final JobDataMap jdm = context.getJobDetail().getJobDataMap();
@@ -261,7 +264,8 @@ public class GBFileSystemMonitorJob implements StatefulJob {
                 // ie.printStackTrace();
             } catch (Throwable t) {
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error("GBFileSystemMonitorJob JOB throws a throwable: "
+                    LOGGER.error(
+                            "GBFileSystemMonitorJob JOB throws a throwable: "
                                     + t.getLocalizedMessage(), t);
                 // DEBUG
                 // t.printStackTrace();
@@ -277,9 +281,9 @@ public class GBFileSystemMonitorJob implements StatefulJob {
         // DEBUG
         // System.out.println("DOTHEJOB");
 
-        if (LOGGER.isTraceEnabled()){
+        if (LOGGER.isTraceEnabled()) {
             final JobDetail detail = context.getJobDetail();
-            LOGGER.trace("job named: " + detail.getGroup() + detail.getName() + " completed");
+            LOGGER.trace("job named: " + detail.getKey() + " completed");
         }
     }
 }

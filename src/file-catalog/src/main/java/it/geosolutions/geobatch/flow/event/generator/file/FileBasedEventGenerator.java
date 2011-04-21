@@ -169,10 +169,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             final Map<String, Object> params = new HashMap<String, Object>();
 
             // the polling interval
-            final long interval=(configuration.getInterval()>0)?
-                    configuration.getInterval():
-                        FileSystemMonitorSPI.INTERVAL_DEFAULT_POLLING;
-            params.put(FileSystemMonitorSPI.INTERVAL_KEY, interval);
+            params.put(FileSystemMonitorSPI.INTERVAL_KEY, configuration.getInterval());
 
             // the watched directory
             params.put(FileSystemMonitorSPI.SOURCE_KEY, watchDirectory);

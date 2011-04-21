@@ -27,22 +27,27 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitor;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.swing.event.EventListenerList;
 
+import org.quartz.CronScheduleBuilder;
+import org.quartz.DateBuilder;
+import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GBFileSystemMonitor implements FileSystemMonitor {
     private final static Logger LOGGER = LoggerFactory.getLogger(GBFileSystemMonitor.class);
@@ -143,7 +148,7 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
     }
 
     public GBFileSystemMonitor(final String path, final String wildcard,
-            final FileSystemEventType type, final long pollingInterval,
+            final FileSystemEventType type, final String pollingInterval,
             final boolean lockInputFiles, final long maxLockingWait) throws SchedulerException,
             NullPointerException {
         // fsm=new GBFileSystemMonitorJob();
@@ -171,9 +176,9 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
                     "GBFileSystemMonitor: Could not start a GBFileSystemMonitorJob job using a null or empty path: "
                             + path);
 
-        triggerName = jobName + jobGroup;
+//      triggerName = jobName + jobGroup;
 
-        jobDetail = new JobDetail(jobName, jobGroup, GBFileSystemMonitorJob.class);
+        jobDetail = JobBuilder.newJob(GBFileSystemMonitorJob.class).withIdentity(jobName, jobGroup).build();
 
         // consumer=new GBEventNotifier(lockInputFiles, maxLockingWait, listeners);
         consumer = new GBEventNotifier(listeners, type);
@@ -192,8 +197,37 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
 
         // a SimpleTrigger to start the job indefinitely number of times with pollingInterval
         // interval
-        trigger = new SimpleTrigger(path + wildcard, SimpleTrigger.REPEAT_INDEFINITELY,
-                pollingInterval);
+        if (pollingInterval==null){
+         // use the default value
+            trigger = TriggerBuilder.newTrigger().withIdentity(new TriggerKey(path, wildcard))
+            .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(FileSystemMonitorSPI.INTERVAL_DEFAULT_POLLING)).startAt(DateBuilder.evenSecondDateAfterNow())
+                    .build();
+        }
+        else {
+            try {
+                //lets try to parse a cron string
+            trigger = TriggerBuilder.newTrigger().withIdentity(new TriggerKey(path, wildcard))
+            .withSchedule(CronScheduleBuilder.cronSchedule(pollingInterval)).startAt(DateBuilder.evenSecondDateAfterNow())
+                    .build();
+            }
+            catch (ParseException e) {
+                try {
+                    // FAILED to parse a cron string
+                    // lets try to parse an int
+                    final int interval=Integer.parseInt(pollingInterval);
+                    trigger = TriggerBuilder.newTrigger().withIdentity(new TriggerKey(path, wildcard))
+                    .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(interval)).startAt(DateBuilder.evenSecondDateAfterNow())
+                            .build();
+                }
+                catch (NumberFormatException nfe){
+                    // FAILED: use the default value
+                    trigger = TriggerBuilder.newTrigger().withIdentity(new TriggerKey(path, wildcard))
+                    .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(FileSystemMonitorSPI.INTERVAL_DEFAULT_POLLING)).startAt(DateBuilder.evenSecondDateAfterNow())
+                            .build();
+                }
+            }
+        }
+
 
     }
 
@@ -209,7 +243,7 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
             try {
 
                 if (pause) {
-                    getScheduler().resumeJob(jobName, jobGroup);
+                    getScheduler().resumeJob(jobDetail.getKey());
                     pause = false;
                 } else {
                     // schedule the job
@@ -245,7 +279,7 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
         try {
             // System.out.print("STOP");
             if (getScheduler().isStarted() && !pause) {
-                getScheduler().deleteJob(jobName, jobGroup);
+                getScheduler().deleteJob(jobDetail.getKey());
                 int numJob = getScheduler().getContext().getInt(FS_JOBS_NUM_KEY);
                 getScheduler().getContext().put(FS_JOBS_NUM_KEY, --numJob);
             } else
@@ -266,7 +300,7 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
             // System.out.print("PAUSE");
             if (getScheduler().isStarted() && !pause) {
                 pause = true;
-                getScheduler().pauseJob(jobName, jobGroup);
+                getScheduler().pauseJob(jobDetail.getKey());
             } else
                 throw new SchedulerException(
                         "GBFileSystemMonitor: The job is already paused or the scheduler is down");
@@ -323,7 +357,7 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
              */
             int numJob = getScheduler().getContext().getInt(FS_JOBS_NUM_KEY);
             if (numJob > 1) {
-                getScheduler().unscheduleJob(triggerName, jobGroup);
+                getScheduler().unscheduleJob(trigger.getKey());
             } else {
                 getScheduler().shutdown();
                 // to make getScheduler() able to rebuild the scheduler

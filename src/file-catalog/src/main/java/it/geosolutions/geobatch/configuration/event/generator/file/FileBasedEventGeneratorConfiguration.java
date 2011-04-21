@@ -75,8 +75,12 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
 
     /**
      * The polling interval in millisec
+     * can be:
+     * - a cron string
+     * - an integer
+     * - null
      */
-    private long interval;
+    private String interval;
 
     /**
      * @return
@@ -93,11 +97,11 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
     }
     
 
-    public long getInterval() {
+    public String getInterval() {
         return interval;
     }
 
-    public void setInterval(long interval) {
+    public void setInterval(String interval) {
         this.interval = interval;
     }
 
@@ -120,7 +124,7 @@ public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfigur
      */
     public FileBasedEventGeneratorConfiguration(String id, String name, String description,
             boolean dirty, OsType osType, FileSystemEventType eventType,
-            String watchDirectory, long interval, String wildCard, boolean keepFiles) {
+            String watchDirectory, String interval, String wildCard, boolean keepFiles) {
         super(id, name, description, dirty);
         this.osType = osType;
         this.eventType = eventType;

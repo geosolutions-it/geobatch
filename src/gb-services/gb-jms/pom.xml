@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>it.geosolutions</groupId>
+		<groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb-services</artifactId>
 		<version>0.9-SNAPSHOT</version>
 	</parent>
@@ -21,7 +21,7 @@
 	<!-- ===================================================================== -->
 	<!-- Project description (including license). -->
 	<!-- ===================================================================== -->
-	<groupId>it.geosolutions</groupId>
+	<groupId>it.geosolutions.geobatch</groupId>
 	<artifactId>gb-jms</artifactId>
 	<packaging>jar</packaging>
 
@@ -47,11 +47,11 @@
 	<!-- ==================================================== -->
 	<dependencies>
 		<dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-fsm-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-fs-catalog</artifactId>
 		</dependency>
 
@@ -117,6 +117,6 @@
 	</dependencies>
 	<!-- <profiles> <profile> <id>jms</id> <activation> <property> <name>all</name> 
 		<value>true</value> </property> </activation> <dependencies> <dependency> 
-		<groupId>it.geosolutions</groupId> <artifactId>gb-jms</artifactId> </dependency> 
+		<groupId>it.geosolutions.geobatch</groupId> <artifactId>gb-jms</artifactId> </dependency> 
 		</dependencies> </profile> </profiles> -->
 </project>

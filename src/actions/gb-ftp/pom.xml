@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>it.geosolutions</groupId>
+        <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-actions</artifactId>
         <version>0.9-SNAPSHOT</version>
     </parent>
@@ -19,7 +19,7 @@
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-action-ftp</artifactId>
     <name>GeoBatch action: FTP client</name>
     <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
@@ -49,11 +49,11 @@
     <dependencies>
 
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-alias-registry</artifactId>
         </dependency>        
 

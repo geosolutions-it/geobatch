@@ -14,7 +14,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>it.geosolutions</groupId>
+        <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-actions</artifactId>
         <version>0.9-SNAPSHOT</version>
     </parent>
@@ -23,7 +23,7 @@
     <!-- =========================================================== -->
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-action-shapefile</artifactId>
     <packaging>jar</packaging>
     <name>GeoBatch action: ESRI Shapefiles</name>
@@ -54,7 +54,7 @@
     <dependencies>
     
     	<dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-tools</artifactId>
         </dependency>
 
@@ -64,7 +64,7 @@
         </dependency>
 
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-action-geoserver</artifactId>
         </dependency>
 

@@ -174,7 +174,7 @@
 										</ul>
 										<div id="tab-config-<%= i %>">
 											<p>
-												<strong>Input directory:</strong> <c:out value="${fm.configuration.eventGeneratorConfiguration.workingDirectory}"/><br/>
+												<strong>Input directory:</strong> <c:out value="${fm.configuration.eventGeneratorConfiguration.watchDirectory}"/><br/>
 												<strong>Working directory:</strong> <c:out value="${fm.configuration.workingDirectory}"/><br/>
 												
 												<strong>Status:</strong>

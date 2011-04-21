@@ -15,7 +15,7 @@
          http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>it.geosolutions</groupId>
+        <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-actions</artifactId>
         <version>0.9-SNAPSHOT</version>
     </parent>
@@ -23,7 +23,7 @@
     <!-- =========================================================== -->
     <!--     Module Description                                      -->
     <!-- =========================================================== -->
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-action-ascii</artifactId>
     <packaging>jar</packaging>
 
@@ -52,7 +52,7 @@
   <!-- =========================================================== -->
     <dependencies>
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-action-geoserver</artifactId>
         </dependency>
 
@@ -70,7 +70,7 @@
         </dependency>
 
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-alias-registry</artifactId>
         </dependency>
     </dependencies>

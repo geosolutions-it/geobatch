@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- =======================================================================    
-        Maven Project Configuration File
-
-        GeoSolutions GeoBatch Project
-            http://geobatch.codehaus.org
-
-======================================================================= -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<!-- ======================================================================= 
+	Maven Project Configuration File GeoSolutions GeoBatch Project http://geobatch.codehaus.org 
+	======================================================================= -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
          http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>it.geosolutions</groupId>
+		<groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb-actions</artifactId>
 		<version>0.9-SNAPSHOT</version>
 	</parent>
 
-    <!-- =========================================================== -->
-    <!--     Module Description                                      -->
-    <!-- =========================================================== -->
-	<groupId>it.geosolutions</groupId>
+	<!-- =========================================================== -->
+	<!-- Module Description -->
+	<!-- =========================================================== -->
+	<groupId>it.geosolutions.geobatch</groupId>
 	<artifactId>gb-action-scripting</artifactId>
 	<packaging>jar</packaging>
 
@@ -45,11 +40,11 @@
 		</license>
 	</licenses>
 
-    <!-- =========================================================== -->
-    <!--     Dependency Management                                   -->
-    <!-- =========================================================== -->
-    <repositories>
-	    <repository>
+	<!-- =========================================================== -->
+	<!-- Dependency Management -->
+	<!-- =========================================================== -->
+	<repositories>
+		<repository>
 			<id>mule-deps</id>
 			<name>Mule Dependencies</name>
 			<url>http://dist.codehaus.org/mule/dependencies/maven2</url>
@@ -58,36 +53,40 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	
+
 	<dependencies>
 		<dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-core-impl</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-fs-catalog</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-fsm-core</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.bsf</groupId>
 			<artifactId>bsf-api</artifactId> <!-- the javax.script API -->
 			<version>3.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.bsf</groupId>
 			<artifactId>bsf-utils</artifactId> <!-- CLI tool and helper classes -->
 			<version>3.1</version>
 			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
 				<exclusion>
 					<groupId>org.apache.bsf</groupId>
 					<artifactId>bsf-engines</artifactId> <!-- CLI tool and helper classes -->
@@ -101,78 +100,31 @@
 			<version>1.0</version>
 			<classifier>jdk14</classifier>
 		</dependency>
-		
-		<dependency>
-			<groupId>groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-			<version>1.0</version>
-		</dependency>	
 
-		<!--  11 Jan 2011 
-			COMMENTED OUT DUE TO THE BSF SUBSTITUTION
-			This is done to keep the jdk5 compatibility (which is
-			supported by Apache bsf)
-		 -->
-		 
-		<!--dependency>
-			<groupId>javax.script</groupId>
-			<artifactId>script-api</artifactId>
-			<version>1.0</version>
-			<classifier>jdk14</classifier>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.retrotranslator</groupId>
-			<artifactId>retrotranslator-runtime</artifactId>
-			<version>1.2.1</version>
-		</dependency>
-		
-
-		<dependency>
-			<groupId>javax.script</groupId>
-			<artifactId>js-engine</artifactId>
-			<version>1.0</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>rhino</groupId>
-			<artifactId>js</artifactId>
-			<version>1.7R2</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>javax.script</groupId>
-			<artifactId>groovy-engine</artifactId>
-			<version>1.0</version>
-			<classifier>jdk14</classifier>
-		</dependency>
-		
 		<dependency>
 			<groupId>groovy</groupId>
 			<artifactId>groovy-all</artifactId>
 			<version>1.0</version>
 		</dependency>
-	
-		<dependency>
-			<groupId>javax.script</groupId>
-			<artifactId>jruby-engine</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>jruby</groupId>
-			<artifactId>jruby</artifactId>
-			<version>0.9.8</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>javax.script</groupId>
-			<artifactId>jython-engine</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.python</groupId>
-		    <artifactId>jython</artifactId>
-		    <version>2.2</version>
-		</dependency!-->
+
+		<!-- 11 Jan 2011 COMMENTED OUT DUE TO THE BSF SUBSTITUTION This is done 
+			to keep the jdk5 compatibility (which is supported by Apache bsf) -->
+
+		<!--dependency> <groupId>javax.script</groupId> <artifactId>script-api</artifactId> 
+			<version>1.0</version> <classifier>jdk14</classifier> </dependency> <dependency> 
+			<groupId>net.sf.retrotranslator</groupId> <artifactId>retrotranslator-runtime</artifactId> 
+			<version>1.2.1</version> </dependency> <dependency> <groupId>javax.script</groupId> 
+			<artifactId>js-engine</artifactId> <version>1.0</version> </dependency> <dependency> 
+			<groupId>rhino</groupId> <artifactId>js</artifactId> <version>1.7R2</version> 
+			</dependency> <dependency> <groupId>javax.script</groupId> <artifactId>groovy-engine</artifactId> 
+			<version>1.0</version> <classifier>jdk14</classifier> </dependency> <dependency> 
+			<groupId>groovy</groupId> <artifactId>groovy-all</artifactId> <version>1.0</version> 
+			</dependency> <dependency> <groupId>javax.script</groupId> <artifactId>jruby-engine</artifactId> 
+			<version>1.0</version> </dependency> <dependency> <groupId>jruby</groupId> 
+			<artifactId>jruby</artifactId> <version>0.9.8</version> </dependency> <dependency> 
+			<groupId>javax.script</groupId> <artifactId>jython-engine</artifactId> <version>1.0</version> 
+			</dependency> <dependency> <groupId>org.python</groupId> <artifactId>jython</artifactId> 
+			<version>2.2</version> </dependency! -->
 
 	</dependencies>
 

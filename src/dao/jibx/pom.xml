@@ -7,7 +7,7 @@
 
     <parent>
         <artifactId>gb-dao</artifactId>
-        <groupId>it.geosolutions</groupId>
+        <groupId>it.geosolutions.geobatch</groupId>
         <version>0.9-SNAPSHOT</version>
     </parent>
 
@@ -15,7 +15,7 @@
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
 
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-dao-jibx</artifactId>
     <version>${version}</version>
     <name>GeoSolutions GeoBatch pluggable DAOs - JiBX</name>
@@ -24,18 +24,18 @@
     <dependencies>
 
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
 
 		<!--  needed for binding GeoTiffOverviewsEmbedderConfiguration -->        
         <dependency>
-			  <groupId>it.geosolutions</groupId>
+			  <groupId>it.geosolutions.geobatch</groupId>
 			  <artifactId>gb-action-geotiff</artifactId>
         </dependency>
 

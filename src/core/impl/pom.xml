@@ -12,7 +12,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>it.geosolutions</groupId>
+        <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-core</artifactId>
         <version>0.9-SNAPSHOT</version>
     </parent>
@@ -20,7 +20,7 @@
     <!-- =========================================================== -->
     <!--     Module Description                                      -->
     <!-- =========================================================== -->
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-core-impl</artifactId>
 
     <name>GeoBatch core implementation</name>
@@ -81,7 +81,7 @@
         </dependency>
 
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-core-model</artifactId>
         </dependency>
 
@@ -90,7 +90,7 @@
         <!-- ============================== -->
 
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-alias-registry</artifactId>
         </dependency>
 
@@ -99,7 +99,7 @@
         <!-- ============================== -->
          
         <dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-tools</artifactId>
 		</dependency>
 		

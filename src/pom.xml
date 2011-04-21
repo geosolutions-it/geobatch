@@ -172,7 +172,7 @@
     <!-- =========================================================== -->
     <!--     Project Description                                     -->
     <!-- =========================================================== -->
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb</artifactId>
     <packaging>pom</packaging>
     <version>0.9-SNAPSHOT</version>
@@ -261,6 +261,12 @@
               <artifactId>geoserver-manager</artifactId>
               <version>1.0</version>
             </dependency>
+            <dependency> <!-- used by new geoserver action-->
+              <groupId>it.geosolutions</groupId>
+              <artifactId>gb-action-geoserver-restclient</artifactId>
+              <version>0.9-SNAPSHOT</version>
+            </dependency>
+            
             
             <!-- Spring Framework ===========================================-->
 
@@ -457,7 +463,7 @@
 				<version>1.5.4</version>
 			</dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>test-data</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
@@ -632,6 +638,12 @@
 		<groupId>essi-unidata</groupId>
 		<artifactId>netcdf-java</artifactId>
 		<version>4.0.41</version>
+		<exclusions>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+			</exclusion>
+		    </exclusions>
 	    </dependency>
 	    
 	    <dependency>
@@ -847,7 +859,7 @@ Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.
 
 <!-- CAMEL =============================================-->
 	    <dependency>
-		  <groupId>it.geosolutions</groupId>
+		  <groupId>it.geosolutions.geobatch</groupId>
 		  <artifactId>gb-jms</artifactId>
 		  <version>${gb.version}</version>
             </dependency>
@@ -856,41 +868,62 @@ Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-core</artifactId>
                 <version>${camel.version}</version>
+                <exclusions>
+		  <exclusion>
+		    <groupId>commons-logging</groupId>
+		    <artifactId>commons-logging-api</artifactId>
+		  </exclusion>
+		  <exclusion>
+		    <groupId>commons-logging</groupId>
+		    <artifactId>commons-logging</artifactId>
+		  </exclusion>
+		</exclusions>
             </dependency>
             <dependency>
-				<groupId>org.apache.camel</groupId>
-				<artifactId>camel-quartz</artifactId>
-				<version>${camel.version}</version>
-			</dependency>
-			<!-- required by both client and server -->
-			<dependency>
-				<groupId>org.apache.camel</groupId>
-				<artifactId>camel-core</artifactId>
-				<version>${camel.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.camel</groupId>
-				<artifactId>camel-jms</artifactId>
-				<version>${camel.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.camel</groupId>
-				<artifactId>camel-spring</artifactId>
-				<version>${camel.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-camel</artifactId>
-				<version>5.2.0</version>
-			</dependency>
+		<groupId>org.apache.camel</groupId>
+		<artifactId>camel-quartz</artifactId>
+		<version>${camel.version}</version>
+	    </dependency>
+	    <!-- required by both client and server -->
+	    <dependency>
+		    <groupId>org.apache.camel</groupId>
+		    <artifactId>camel-jms</artifactId>
+		    <version>${camel.version}</version>
+	    </dependency>
+	    <dependency>
+		    <groupId>org.apache.camel</groupId>
+		    <artifactId>camel-spring</artifactId>
+		    <version>${camel.version}</version>
+	    </dependency>
+	    <dependency>
+		    <groupId>org.apache.activemq</groupId>
+		    <artifactId>activemq-camel</artifactId>
+		    <version>5.2.0</version>
+		    <exclusions>
+		      <exclusion>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging-api</artifactId>
+		      </exclusion>
+		      <exclusion>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		      </exclusion>
+		    </exclusions>
+	    </dependency>
 
-			<!-- xbean is required for ActiveMQ broker configuration in the spring xml file -->
-			<dependency>
-				<groupId>org.apache.xbean</groupId>
-				<artifactId>xbean-spring</artifactId>
-				<version>3.6</version>
-				<!--<version>${spring.version}</version>-->
-			</dependency>
+	    <!-- xbean is required for ActiveMQ broker configuration in the spring xml file -->
+	    <dependency>
+		    <groupId>org.apache.xbean</groupId>
+		    <artifactId>xbean-spring</artifactId>
+		    <version>3.6</version>
+		    <exclusions>
+		      <exclusion>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		      </exclusion>
+		    </exclusions>
+		    <!--<version>${spring.version}</version>-->
+	    </dependency>
 
 <!-- restlet dependencies =======================================-->
 
@@ -1013,38 +1046,38 @@ Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.
 <!-- Geobatch ===================================================-->
 
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-core</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-core-model</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-core-impl</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-users</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-fs-catalog</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 <!-- gb-fsm -->
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-fsm-core</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-fsm-plugin</artifactId>
                 <version>${gb.version}</version>
             </dependency>
@@ -1054,65 +1087,70 @@ Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.
 			By: Carlo
 			As requested: Simone
 			<dependency>
-				<groupId>it.geosolutions</groupId>
+				<groupId>it.geosolutions.geobatch</groupId>
 				<artifactId>gb-fsm-native</artifactId>
 				<version>${gb.version}</version>
 			</dependency>
 			-->
 			<dependency>
-				<groupId>it.geosolutions</groupId>
+				<groupId>it.geosolutions.geobatch</groupId>
 				<artifactId>gb-fsm-quartz</artifactId>
 				<version>${gb.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.quartz-scheduler</groupId>
+			    <artifactId>quartz</artifactId>
+			    <version>2.0.1</version>
 			</dependency>
 		<!-- DEPRECATED
 			Removed: 10 Feb 2011
 			By: Carlo
 			As requested: Simone
 			<dependency>
-				<groupId>it.geosolutions</groupId>
+				<groupId>it.geosolutions.geobatch</groupId>
 				<artifactId>gb-fsm-purejava</artifactId>
 				<version>${gb.version}</version>
 			</dependency>-->
 			
 <!-- ALIAS REGISTRY -->
 	    <dependency>
-		    <groupId>it.geosolutions</groupId>
+		    <groupId>it.geosolutions.geobatch</groupId>
 		    <artifactId>gb-dao</artifactId>
 		    <version>${gb.version}</version>
 	    </dependency>
 	    
 	    <dependency>
-		    <groupId>it.geosolutions</groupId>
+		    <groupId>it.geosolutions.geobatch</groupId>
 		    <artifactId>gb-dao-xstream-base</artifactId>
 		    <version>${gb.version}</version>
 	    </dependency>
 	    
 	    <dependency>
-		    <groupId>it.geosolutions</groupId>
+		    <groupId>it.geosolutions.geobatch</groupId>
 		    <artifactId>gb-dao-xstream</artifactId>
 		    <version>${gb.version}</version>
 	    </dependency>
 	    
 	    <dependency>
-		    <groupId>it.geosolutions</groupId>
+		    <groupId>it.geosolutions.geobatch</groupId>
 		    <artifactId>gb-alias-registry-base</artifactId>
 		    <version>${gb.version}</version>
 	    </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-alias-registry</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             
             <dependency>
-		<groupId>it.geosolutions</groupId>
+		<groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb-pending-actions</artifactId>
 		<version>${gb.version}</version>
 	    </dependency>
 
 <!-- CAMEL -->            
 	    <dependency>
-		<groupId>it.geosolutions</groupId>
+		<groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb-camel</artifactId>
 		<version>${gb.version}</version>
             </dependency>
@@ -1120,14 +1158,14 @@ Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.
 	    
 <!-- GEOTIFF -->
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-geotiff</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
 						<!-- Buddata RR -->
             <dependency>
-				<groupId>it.geosolutions</groupId>
+				<groupId>it.geosolutions.geobatch</groupId>
 				<artifactId>gb-action-registry-egeos</artifactId>
                 <version>${gb.version}</version>
             </dependency>
@@ -1156,20 +1194,20 @@ Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.
 			</dependency>
 <!-- tools -->
 			<dependency>
-				<groupId>it.geosolutions</groupId>
+				<groupId>it.geosolutions.geobatch</groupId>
 				<artifactId>gb-tools</artifactId>
 				<version>${gb.version}</version>
 			</dependency>
 <!-- action-tools -->
 			<dependency>
-				<groupId>it.geosolutions</groupId>
+				<groupId>it.geosolutions.geobatch</groupId>
 				<artifactId>gb-action-tools</artifactId>
 				<version>${gb.version}</version>
 			</dependency>
 			
 <!-- action-freemarker -->
 			<dependency>
-				<groupId>it.geosolutions</groupId>
+				<groupId>it.geosolutions.geobatch</groupId>
 				<artifactId>gb-action-freemarker</artifactId>
 				<version>${gb.version}</version>
 			</dependency>
@@ -1182,51 +1220,51 @@ Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.
 			</dependency>
 			
 			<dependency>
-				<groupId>it.geosolutions</groupId>
+				<groupId>it.geosolutions.geobatch</groupId>
 				<artifactId>gb-octave</artifactId>
 				<version>${gb.version}</version>
 			</dependency>
 			
 			<dependency>
-				<groupId>it.geosolutions</groupId>
+				<groupId>it.geosolutions.geobatch</groupId>
 				<artifactId>gb-action-octave-fileinfileout</artifactId>
 				<version>${gb.version}</version>
 			</dependency>
 
 						<!-- METOCS -->
             <dependency>
-				<groupId>it.geosolutions</groupId>
+				<groupId>it.geosolutions.geobatch</groupId>
 				<artifactId>gb-action-metocs-commons</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-nurc-tda</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-nurc-sem</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-e-geos-metocs</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
 						<!-- E-GEOS::EMSA -->
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-emsa-actions</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
 						<!-- LAMMA -->
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-lamma</artifactId>
                 <version>${gb.version}</version>
             </dependency>
@@ -1238,110 +1276,110 @@ Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.
             </dependency>
 						<!-- NURC::SAS -->
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-sas</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 <!--            
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-sasgs</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 -->            
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-sasmanager</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
             			<!--  -->
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-taskexecutor</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-shapefile</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-ascii</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-geoserver</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-geoserver-restclient</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-gliders</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-ctd</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-ais</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-ftp</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-geowebcache</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-imagemosaic</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-JGSFLoDeSS</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-ftp-support</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-ftp-server</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-registry</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-scripting</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>it.geosolutions</groupId>
+                <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-splitting</artifactId>
                 <version>${gb.version}</version>
             </dependency>

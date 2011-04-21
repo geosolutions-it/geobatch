@@ -14,7 +14,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>it.geosolutions</groupId>
+    <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-services</artifactId>
     <version>0.9-SNAPSHOT</version>
   </parent>
@@ -23,7 +23,7 @@
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
-  <groupId>it.geosolutions</groupId>
+  <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb-octave</artifactId>
   <packaging>jar</packaging>
   <name>GeoBatch service library: Octave function executor</name>
@@ -53,7 +53,7 @@
   <!-- =========================================================== -->
   <dependencies>
        <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
         
@@ -64,19 +64,19 @@
         
 <!-- AliasRegistrar 
 		<dependency>
-		    <groupId>it.geosolutions</groupId>
+		    <groupId>it.geosolutions.geobatch</groupId>
     		<artifactId>gb-alias-registry</artifactId>
 		</dependency>
 -->
 
 <!-- tools -->        
         <dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-tools</artifactId>
 		</dependency>
 		
 		<dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-action-tools</artifactId>
 		</dependency>
 		

@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>it.geosolutions</groupId>
+		<groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb</artifactId>
 		<version>0.9-SNAPSHOT</version>
 	</parent>
@@ -16,7 +16,7 @@
 	<!-- =========================================================== -->
 	<!-- Module Description -->
 	<!-- =========================================================== -->
-	<groupId>it.geosolutions</groupId>
+	<groupId>it.geosolutions.geobatch</groupId>
 	<artifactId>gb-web</artifactId>
 	<packaging>war</packaging>
 
@@ -47,24 +47,25 @@
 	<!-- =========================================================== -->
 
 	<dependencies>
-	<!-- ============================== -->
+		<!-- ============================== -->
 		<!-- log4j -->
 		<!-- ============================== -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		<!--
+		 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
+			<version>1.5.6</version>
 		</dependency>
-		-->
+		
 	    <dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>runtime</scope>
-			<version>1.2.14</version>
+			<version>1.2.16</version>
 	    </dependency>
 	    
 	    
@@ -142,16 +143,16 @@
 		
 		
 		<dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-ftp-server</artifactId>
 		</dependency>
 <!--
 		<dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-core-impl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>it.geosolutions</groupId>
+			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-fs-catalog</artifactId>
 		</dependency>
 -->
@@ -247,16 +248,6 @@
 
 	<profiles>
 	
-		<profile>
-			<id>dao.jibx</id>
-			<dependencies>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-dao-jibx</artifactId>
-					<version>${version}</version>
-				</dependency>
-			</dependencies>
-		</profile>
 
 		<profile>
 			<id>dao.xstream</id>
@@ -269,7 +260,7 @@
 
 			<dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-dao-xstream</artifactId>
 				</dependency>
 			</dependencies>
@@ -297,7 +288,7 @@
             </activation>
             <dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-jms</artifactId>
 				</dependency>
 			</dependencies> 
@@ -314,7 +305,7 @@
             </activation>
             <dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-octave</artifactId>
 				</dependency>
 			</dependencies>
@@ -330,272 +321,6 @@
 			the overlay mechanism (http://maven.apache.org/plugins/maven-war-plugin/overlays.html) 
 			was checked to accomplish this very task, but when more actions were specified, 
 			only one was choosen to extract the sample data from. -->
-
-		<!-- GLIDERS ======================================================== -->
-		<profile>
-			<id>gliders</id>
-			<activation>
-				<property>
-					<name>all</name>
-				</property>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-action-gliders</artifactId>
-				</dependency>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>unpack_gliders</id>
-								<phase>package</phase>
-								<goals>
-									<goal>unpack</goal>
-								</goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>it.geosolutions</groupId>
-											<artifactId>gb-action-gliders</artifactId>
-											<version>${gb.version}</version>
-											<classifier>flowdata</classifier>
-											<type>jar</type>
-											<overWrite>false</overWrite>
-											<outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
-											<includes>data/**</includes>
-										</artifactItem>
-									</artifactItems>
-									<overWriteReleases>true</overWriteReleases>
-									<overWriteSnapshots>true</overWriteSnapshots>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<!-- CTD ============================================================ <profile> 
-			<id>ctd</id> <activation> <property> <name>all</name> <value>true</value> 
-			</property> </activation> <dependencies> <dependency> <groupId>it.geosolutions</groupId> 
-			<artifactId>gb-action-ctd</artifactId> </dependency> </dependencies> <build> 
-			<plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-dependency-plugin</artifactId> 
-			<executions> <execution> <id>unpack_ctd</id> <phase>package</phase> <goals><goal>unpack</goal></goals> 
-			<configuration> <artifactItems> <artifactItem> <groupId>it.geosolutions</groupId> 
-			<artifactId>gb-action-ctd</artifactId> <version>${gb.version}</version> <classifier>flowdata</classifier> 
-			<type>jar</type> <overWrite>false</overWrite> <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory> 
-			<includes>data/**</includes> </artifactItem> </artifactItems> <overWriteReleases>true</overWriteReleases> 
-			<overWriteSnapshots>true</overWriteSnapshots> </configuration> </execution> 
-			</executions> </plugin> </plugins> </build> </profile> -->
-		<!-- AIS ============================================================ <profile> 
-			<id>ais</id> <activation> <property> <name>all</name> <value>true</value> 
-			</property> </activation> <dependencies> <dependency> <groupId>it.geosolutions</groupId> 
-			<artifactId>gb-action-ais</artifactId> </dependency> </dependencies> <build> 
-			<plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-dependency-plugin</artifactId> 
-			<executions> <execution> <id>unpack_ais</id> <phase>package</phase> <goals><goal>unpack</goal></goals> 
-			<configuration> <artifactItems> <artifactItem> <groupId>it.geosolutions</groupId> 
-			<artifactId>gb-action-ais</artifactId> <version>${gb.version}</version> <classifier>flowdata</classifier> 
-			<type>jar</type> <overWrite>false</overWrite> <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory> 
-			<includes>data/**</includes> </artifactItem> </artifactItems> <overWriteReleases>true</overWriteReleases> 
-			<overWriteSnapshots>true</overWriteSnapshots> </configuration> </execution> 
-			</executions> </plugin> </plugins> </build> </profile> -->
-		<!-- NURC/TDA ============================================================ -->
-		<profile>
-			<id>nurc</id>
-
-			<dependencies>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-action-nurc-tda</artifactId>
-				</dependency>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-action-nurc-sem</artifactId>
-				</dependency>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>unpack_nurc-tda</id>
-								<phase>package</phase>
-								<goals>
-									<goal>unpack</goal>
-								</goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>it.geosolutions</groupId>
-											<artifactId>gb-action-nurc-tda</artifactId>
-											<version>${gb.version}</version>
-											<classifier>flowdata</classifier>
-											<type>jar</type>
-											<overWrite>false</overWrite>
-											<outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
-											<includes>data/**</includes>
-										</artifactItem>
-									</artifactItems>
-									<overWriteReleases>true</overWriteReleases>
-									<overWriteSnapshots>true</overWriteSnapshots>
-								</configuration>
-							</execution>
-							<execution>
-								<id>unpack_nurc-sem</id>
-								<phase>package</phase>
-								<goals>
-									<goal>unpack</goal>
-								</goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>it.geosolutions</groupId>
-											<artifactId>gb-action-nurc-sem</artifactId>
-											<version>${gb.version}</version>
-											<classifier>flowdata</classifier>
-											<type>jar</type>
-											<overWrite>false</overWrite>
-											<outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
-											<includes>data/**</includes>
-										</artifactItem>
-									</artifactItems>
-									<overWriteReleases>true</overWriteReleases>
-									<overWriteSnapshots>true</overWriteSnapshots>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<!-- E-GEOS::EMSA ============================================================ -->
-		<profile>
-			<id>emsa</id>
-
-			<dependencies>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-action-e-geos-metocs</artifactId>
-				</dependency>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-action-emsa-actions</artifactId>
-				</dependency>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-action-registry-egeos</artifactId>
-				</dependency>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>unpack_emsa</id>
-								<phase>package</phase>
-								<goals>
-									<goal>unpack</goal>
-								</goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>it.geosolutions</groupId>
-											<artifactId>gb-action-e-geos-metocs</artifactId>
-											<version>${gb.version}</version>
-											<classifier>flowdata</classifier>
-											<type>jar</type>
-											<overWrite>false</overWrite>
-											<outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
-											<includes>data/**</includes>
-										</artifactItem>
-										<artifactItem>
-											<groupId>it.geosolutions</groupId>
-											<artifactId>gb-action-emsa-actions</artifactId>
-											<version>${gb.version}</version>
-											<classifier>flowdata</classifier>
-											<type>jar</type>
-											<overWrite>false</overWrite>
-											<outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
-											<includes>data/**</includes>
-										</artifactItem>
-									</artifactItems>
-									<overWriteReleases>true</overWriteReleases>
-									<overWriteSnapshots>true</overWriteSnapshots>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<!-- LaMMa ============================================================ -->
-		<profile>
-			<id>lamma</id>
-
-			<dependencies>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-action-lamma</artifactId>
-				</dependency>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>unpack_lamma</id>
-								<phase>package</phase>
-								<goals>
-									<goal>unpack</goal>
-								</goals>
-								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>it.geosolutions</groupId>
-											<artifactId>gb-action-lamma</artifactId>
-											<version>${gb.version}</version>
-											<classifier>flowdata</classifier>
-											<type>jar</type>
-											<overWrite>false</overWrite>
-											<outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
-											<includes>data/**</includes>
-										</artifactItem>
-									</artifactItems>
-									<overWriteReleases>true</overWriteReleases>
-									<overWriteSnapshots>true</overWriteSnapshots>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<!-- SAS ============================================================ REF. 
-			MAIL 30Dec2010: "[GEOBATCH] tree" <profile> <id>sas</id> <dependencies> <dependency> 
-			<groupId>it.geosolutions</groupId> <artifactId>gb-action-sas</artifactId> 
-			</dependency> </dependencies> <build> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> 
-			<artifactId>maven-dependency-plugin</artifactId> <executions> <execution> 
-			<id>unpack_sas</id> <phase>package</phase> <goals><goal>unpack</goal></goals> 
-			<configuration> <artifactItems> <artifactItem> <groupId>it.geosolutions</groupId> 
-			<artifactId>gb-action-sas</artifactId> <version>${gb.version}</version> <classifier>flowdata</classifier> 
-			<type>jar</type> <overWrite>false</overWrite> <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory> 
-			<includes>data/**</includes> </artifactItem> </artifactItems> <overWriteReleases>true</overWriteReleases> 
-			<overWriteSnapshots>true</overWriteSnapshots> </configuration> </execution> 
-			</executions> </plugin> </plugins> </build> </profile> -->
 		
 		<!-- FreeMarker ================================================== -->
 
@@ -610,7 +335,7 @@
 
 			<dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-freemarker</artifactId>
 				</dependency>
 			</dependencies>
@@ -630,7 +355,7 @@
 								<configuration>
 									<artifactItems>
 										<artifactItem>
-											<groupId>it.geosolutions</groupId>
+											<groupId>it.geosolutions.geobatch</groupId>
 											<artifactId>gb-action-freemarker</artifactId>
 											<version>${gb.version}</version>
 											<classifier>flowdata</classifier>
@@ -666,7 +391,7 @@
 					<artifactId>gb-action-geoserver-restclient</artifactId>
 				</dependency>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-geotiff</artifactId>
 				</dependency>
 			</dependencies>
@@ -685,7 +410,7 @@
 								<configuration>
 									<artifactItems>
 										<artifactItem>
-											<groupId>it.geosolutions</groupId>
+											<groupId>it.geosolutions.geobatch</groupId>
 											<artifactId>gb-action-geotiff</artifactId>
 											<version>${gb.version}</version>
 											<classifier>flowdata</classifier>
@@ -717,7 +442,7 @@
 
 			<dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-ascii</artifactId>
 				</dependency>
 			</dependencies>
@@ -736,7 +461,7 @@
 								<configuration>
 									<artifactItems>
 										<artifactItem>
-											<groupId>it.geosolutions</groupId>
+											<groupId>it.geosolutions.geobatch</groupId>
 											<artifactId>gb-action-ascii</artifactId>
 											<version>${gb.version}</version>
 											<classifier>flowdata</classifier>
@@ -756,7 +481,6 @@
 			</build>
 		</profile>
 
-
 		<!-- ShapeFile ====================================================== -->
 		<profile>
 			<id>shapefile</id>
@@ -773,7 +497,7 @@
 					<artifactId>gb-action-geoserver-restclient</artifactId>
 				</dependency>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-shapefile</artifactId>
 				</dependency>
 			</dependencies>
@@ -792,7 +516,7 @@
 								<configuration>
 									<artifactItems>
 										<artifactItem>
-											<groupId>it.geosolutions</groupId>
+											<groupId>it.geosolutions.geobatch</groupId>
 											<artifactId>gb-action-shapefile</artifactId>
 											<version>${gb.version}</version>
 											<classifier>flowdata</classifier>
@@ -824,7 +548,7 @@
 
 			<dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-taskexecutor</artifactId>
 				</dependency>
 			</dependencies>
@@ -843,7 +567,7 @@
 								<configuration>
 									<artifactItems>
 										<artifactItem>
-											<groupId>it.geosolutions</groupId>
+											<groupId>it.geosolutions.geobatch</groupId>
 											<artifactId>gb-action-taskexecutor</artifactId>
 											<version>${gb.version}</version>
 											<classifier>flowdata</classifier>
@@ -876,15 +600,15 @@
 
 			<dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-freemarker</artifactId>
 				</dependency>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-octave-fileinfileout</artifactId>
 				</dependency>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-octave</artifactId>
 				</dependency>
 			</dependencies>
@@ -903,7 +627,7 @@
 								<configuration>
 									<artifactItems>
 										<artifactItem>
-											<groupId>it.geosolutions</groupId>
+											<groupId>it.geosolutions.geobatch</groupId>
 											<artifactId>gb-action-octave-fileinfileout</artifactId>
 											<version>${gb.version}</version>
 											<classifier>flowdata</classifier>
@@ -935,7 +659,7 @@
 
 			<dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-geowebcache</artifactId>
 				</dependency>
 			</dependencies>
@@ -954,7 +678,7 @@
 								<configuration>
 									<artifactItems>
 										<artifactItem>
-											<groupId>it.geosolutions</groupId>
+											<groupId>it.geosolutions.geobatch</groupId>
 											<artifactId>gb-action-geowebcache</artifactId>
 											<version>${gb.version}</version>
 											<classifier>flowdata</classifier>
@@ -986,7 +710,7 @@
 
 			<dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-ftp</artifactId>
 				</dependency>
 			</dependencies>
@@ -1005,7 +729,7 @@
 								<configuration>
 									<artifactItems>
 										<artifactItem>
-											<groupId>it.geosolutions</groupId>
+											<groupId>it.geosolutions.geobatch</groupId>
 											<artifactId>gb-action-ftp</artifactId>
 											<version>${gb.version}</version>
 											<classifier>flowdata</classifier>
@@ -1037,7 +761,7 @@
 
 			<dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-scripting</artifactId>
 				</dependency>
 			</dependencies>
@@ -1056,7 +780,7 @@
 								<configuration>
 									<artifactItems>
 										<artifactItem>
-											<groupId>it.geosolutions</groupId>
+											<groupId>it.geosolutions.geobatch</groupId>
 											<artifactId>gb-action-scripting</artifactId>
 											<version>${gb.version}</version>
 											<classifier>flowdata</classifier>
@@ -1088,7 +812,7 @@
 
 			<dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-splitting</artifactId>
 				</dependency>
 			</dependencies>
@@ -1107,7 +831,7 @@
 								<configuration>
 									<artifactItems>
 										<artifactItem>
-											<groupId>it.geosolutions</groupId>
+											<groupId>it.geosolutions.geobatch</groupId>
 											<artifactId>gb-action-splitting</artifactId>
 											<version>${gb.version}</version>
 											<classifier>flowdata</classifier>
@@ -1139,20 +863,11 @@
 
 			<dependencies>
 				<dependency>
-					<groupId>it.geosolutions</groupId>
+					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-imagemosaic</artifactId>
 				</dependency>
 			</dependencies>
 		</profile>
-
-		<!-- REF. MAIL 30Dec2010: "[GEOBATCH] tree" <profile> <id>jgsflodess</id> 
-			<activation> <property> <name>all</name> <value>true</value> </property> 
-			</activation> <dependencies> <dependency> <groupId>it.geosolutions</groupId> 
-			<artifactId>gb-action-JGSFLoDeSS</artifactId> </dependency> <dependency> 
-			<groupId>it.geosolutions</groupId> <artifactId>gb-action-geoserver</artifactId> 
-			</dependency> <dependency> <groupId>it.geosolutions</groupId> <artifactId>gb-action-imagemosaic</artifactId> 
-			</dependency> <dependency> <groupId>it.geosolutions</groupId> <artifactId>gb-action-geotiff</artifactId> 
-			</dependency> </dependencies> </profile> -->
 
 	</profiles>
 

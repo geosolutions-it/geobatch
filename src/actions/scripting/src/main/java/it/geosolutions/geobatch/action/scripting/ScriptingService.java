@@ -22,6 +22,7 @@
 package it.geosolutions.geobatch.action.scripting;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
@@ -51,8 +52,8 @@ public class ScriptingService extends BaseService implements
         try {
             return new ScriptingAction(configuration);
         } catch (IOException e) {
-            LOGGER.error("Error occurred creating scripting Action... "
-                    + e.getLocalizedMessage(), e);
+            LOGGER.error("Error occurred creating scripting Action... " + e.getLocalizedMessage(),
+                    e);
         }
 
         return null;
@@ -65,11 +66,29 @@ public class ScriptingService extends BaseService implements
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine engine = factory.getEngineByName(configuration.getLanguage());
 
-        if (engine != null)
-            return true;
+        if (engine == null) {
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn("ScriptingService::canCreateAction(): Requested unhandled language '" + configuration.getLanguage() + "'");
+            return false;
+        }
 
-        LOGGER.warn("Requested unhandled language '" + configuration.getLanguage() + "'");
+        try {
+            // absolutize working dir
+            final String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd != null) {
+                configuration.setWorkingDirectory(wd);
+                return true;
+            } else {
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("ScriptingService::canCreateAction(): "
+                            + "unable to create action, it's not possible to get an absolute working dir.");
+            }
+        } catch (Throwable e) {
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
+        }
         return false;
+
     }
 
 }

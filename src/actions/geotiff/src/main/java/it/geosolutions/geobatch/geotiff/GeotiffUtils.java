@@ -34,22 +34,22 @@ import org.geotools.gce.geotiff.GeoTiffReader;
  */
 public class GeotiffUtils {
     
-    private final static GeoTiffFormat SPI= new GeoTiffFormat();
-
-    /**
-     * 
-     */
-    private GeotiffUtils() {
-    }
-
-    public static synchronized GeoTiffReader getReader(final Object o){
-        return getReader(o, null);
-    }
-    
-    
-    public static synchronized GeoTiffReader getReader(final Object o, final Hints hints){
-        if(o==null)
-            throw new NullPointerException();
-        return SPI.getReader(o,hints);
-    }
+//    private final static GeoTiffFormat SPI= new GeoTiffFormat();
+//
+//    /**
+//     * 
+//     */
+//    private GeotiffUtils() {
+//    }
+//
+//    public static synchronized GeoTiffReader getReader(final Object o){
+//        return getReader(o, null);
+//    }
+//    
+//    
+//    public static synchronized GeoTiffReader getReader(final Object o, final Hints hints){
+//        if(o==null)
+//            throw new NullPointerException();
+//        return SPI.getReader(o,hints);
+//    }
 }
