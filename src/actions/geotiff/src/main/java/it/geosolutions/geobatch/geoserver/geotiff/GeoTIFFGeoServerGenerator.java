@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.gce.geotiff.GeoTiffFormat;
 import org.geotools.gce.geotiff.GeoTiffReader;
@@ -62,8 +61,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
         super(configuration);
     }
 
-    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
-            throws ActionException {
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         try {
             listenerForwarder.started();
 
@@ -158,7 +156,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
                     try {
                         coverageReader.dispose();
                     } catch (Throwable e) {
-                        if (LOGGER.isTraceEnabled()){
+                        if (LOGGER.isTraceEnabled()) {
                             LOGGER.trace(e.getLocalizedMessage(), e);
                         }
                     }
@@ -253,14 +251,12 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
 
         if (sent) {
             if (LOGGER.isInfoEnabled()) {
-                LOGGER
-                        .info("GeoTIFF GeoServerAction: coverage SUCCESSFULLY sent to GeoServer!");
+                LOGGER.info("GeoTIFF GeoServerAction: coverage SUCCESSFULLY sent to GeoServer!");
             }
             boolean sldSent = configureStyles(layerName);
         } else {
             if (LOGGER.isInfoEnabled()) {
-                LOGGER
-                        .info("GeoTIFF GeoServerAction: coverage was NOT sent to GeoServer due to connection errors!");
+                LOGGER.info("GeoTIFF GeoServerAction: coverage was NOT sent to GeoServer due to connection errors!");
             }
         }
     }

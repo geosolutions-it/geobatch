@@ -300,8 +300,7 @@ public class FileBasedEventConsumer extends
         final List<Action<FileSystemEvent>> loadedActions = new ArrayList<Action<FileSystemEvent>>();
         for (ActionConfiguration actionConfig : configuration.getActions()) {
             final String actionServiceID = actionConfig.getServiceID();
-            final ActionService<FileSystemEvent, ActionConfiguration> actionService = CatalogHolder
-                    .getCatalog().getResource(actionServiceID, ActionService.class);
+            final ActionService<FileSystemEvent, ActionConfiguration> actionService = CatalogHolder.getCatalog().getResource(actionServiceID, ActionService.class);
             if (actionService != null) {
                 Action<FileSystemEvent> action = null;
                 if (actionService.canCreateAction(actionConfig)) {

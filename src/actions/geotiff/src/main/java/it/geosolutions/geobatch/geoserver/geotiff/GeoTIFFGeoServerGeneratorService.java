@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.geoserver.geotiff;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
+import it.geosolutions.geobatch.catalog.Service;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
 
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @version $ ShapeFileDTOProducerSPI.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
 public class GeoTIFFGeoServerGeneratorService extends
-        GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> {
+        GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration>  implements Service{
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GeoTIFFGeoServerGenerator.class
             .toString());

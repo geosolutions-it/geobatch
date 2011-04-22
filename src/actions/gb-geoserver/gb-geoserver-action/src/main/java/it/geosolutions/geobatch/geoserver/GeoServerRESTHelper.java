@@ -21,6 +21,8 @@
  */
 package it.geosolutions.geobatch.geoserver;
 
+import it.geosolutions.geobatch.tools.file.IOUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -65,23 +67,30 @@ import org.w3c.dom.Element;
  * 
  */
 public class GeoServerRESTHelper {
-    
-    static public final String CRS="crs";
-    
-    static public final String NATIVE_MINX="nminx";
-    static public final String NATIVE_MAXX="nmaxx";
-    static public final String NATIVE_MINY="nminy";
-    static public final String NATIVE_MAXY="nmaxy";
 
-    static public final String LATLON_MINX="llminx";
-    static public final String LATLON_MAXX="llmaxx";
-    static public final String LATLON_MINY="llminy";
-    static public final String LATLON_MAXY="llmaxx";
-    
+    static public final String CRS = "crs";
+
+    static public final String NATIVE_MINX = "nminx";
+
+    static public final String NATIVE_MAXX = "nmaxx";
+
+    static public final String NATIVE_MINY = "nminy";
+
+    static public final String NATIVE_MAXY = "nmaxy";
+
+    static public final String LATLON_MINX = "llminx";
+
+    static public final String LATLON_MAXX = "llmaxx";
+
+    static public final String LATLON_MINY = "llminy";
+
+    static public final String LATLON_MAXY = "llmaxx";
+
     /**
      *
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(GeoServerRESTHelper.class.toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeoServerRESTHelper.class
+            .toString());
 
     public static boolean putBinaryFileTo(URL geoserverREST_URL, InputStream inputStream,
             String geoserverUser, String geoserverPassword, final String[] returnedLayerName) {
@@ -135,7 +144,7 @@ public class GeoServerRESTHelper {
                 InputStreamReader is = new InputStreamReader(con.getInputStream());
                 String response = readIs(is);
                 is.close();
-                
+
                 extractContent(response, returnedLayerName);
                 // if (returnedLayerName!=null && returnedLayerName.length>0)
                 // returnedLayerName[0]=name;
@@ -154,13 +163,15 @@ public class GeoServerRESTHelper {
             }
         } catch (MalformedURLException e) {
             if (LOGGER.isErrorEnabled())
-                LOGGER.error("GeoServerRESTHelper::putBinaryFileTo(): MalformedURLException: "
+                LOGGER.error(
+                        "GeoServerRESTHelper::putBinaryFileTo(): MalformedURLException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         } catch (IOException e) {
             if (LOGGER.isErrorEnabled())
-                LOGGER.error("GeoServerRESTHelper::putBinaryFileTo(): IOException: "
-                        + e.getLocalizedMessage(), e);
+                LOGGER.error(
+                        "GeoServerRESTHelper::putBinaryFileTo(): IOException: "
+                                + e.getLocalizedMessage(), e);
             res = false;
         }
         return res;
@@ -246,13 +257,15 @@ public class GeoServerRESTHelper {
             }
         } catch (MalformedURLException e) {
             if (LOGGER.isErrorEnabled())
-                LOGGER.error("GeoServerRESTHelper::putBinaryFileTo(): MalformedURLException: "
+                LOGGER.error(
+                        "GeoServerRESTHelper::putBinaryFileTo(): MalformedURLException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         } catch (IOException e) {
             if (LOGGER.isErrorEnabled())
-                LOGGER.error("GeoServerRESTHelper::putBinaryFileTo(): IOException: "
-                        + e.getLocalizedMessage(), e);
+                LOGGER.error(
+                        "GeoServerRESTHelper::putBinaryFileTo(): IOException: "
+                                + e.getLocalizedMessage(), e);
             res = false;
         }
         return res;
@@ -275,6 +288,10 @@ public class GeoServerRESTHelper {
             String geoserverPassword, final String[] returnedLayerName, final String contentType) {
         boolean res = false;
 
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("GeoServerRESTHelper::putContent(): URL is "
+                    + geoserverREST_URL.toExternalForm().toString());
+        }
         try {
             HttpURLConnection con = (HttpURLConnection) geoserverREST_URL.openConnection();
             con.setDoOutput(true);
@@ -301,22 +318,35 @@ public class GeoServerRESTHelper {
 
             final int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                InputStreamReader is = new InputStreamReader(con.getInputStream());
-                String response = readIs(is);
-                is.close();
+                InputStreamReader is = null;
+                String response = null;
+                try {
+                    is = new InputStreamReader(con.getInputStream());
+                    response = readIs(is);
+                } finally {
+                    if (is != null)
+                        IOUtils.closeQuietly(is);
+                }
                 if (LOGGER.isInfoEnabled())
                     LOGGER.info("GeoServerRESTHelper::putContent(): HTTP OK: " + response);
                 res = true;
             } else if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                InputStreamReader is = new InputStreamReader(con.getInputStream());
-                String response = readIs(is);
-                is.close();
-                extractContent(response, returnedLayerName);
+
+                InputStreamReader is = null;
+                String response = null;
+                try {
+                    is = new InputStreamReader(con.getInputStream());
+                    response = readIs(is);
+                } finally {
+                    if (is != null)
+                        IOUtils.closeQuietly(is);
+                }
+                if (returnedLayerName != null && response != null)
+                    extractContent(response, returnedLayerName);
                 // if (returnedLayerName!=null && returnedLayerName.length>0)
                 // returnedLayerName[0]=name;
                 if (LOGGER.isInfoEnabled())
-                    LOGGER.info("GeoServerRESTHelper::putContent(): HTTP CREATED: "
-                            + response);
+                    LOGGER.info("GeoServerRESTHelper::putContent(): HTTP CREATED: " + response);
 
                 res = true;
             } else {
@@ -330,12 +360,14 @@ public class GeoServerRESTHelper {
             }
         } catch (MalformedURLException e) {
             if (LOGGER.isErrorEnabled())
-                LOGGER.error("GeoServerRESTHelper::putContent(): MalformedURLException: "
+                LOGGER.error(
+                        "GeoServerRESTHelper::putContent(): MalformedURLException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         } catch (IOException e) {
             if (LOGGER.isErrorEnabled())
-                LOGGER.error("GeoServerRESTHelper::putContent(): IOException: "
+                LOGGER.error(
+                        "GeoServerRESTHelper::putContent(): IOException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         }
@@ -426,12 +458,14 @@ public class GeoServerRESTHelper {
             }
         } catch (MalformedURLException e) {
             if (LOGGER.isErrorEnabled())
-                LOGGER.error("GeoServerRESTHelper::postTextFileTo(): MalformedURLException: "
+                LOGGER.error(
+                        "GeoServerRESTHelper::postTextFileTo(): MalformedURLException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         } catch (IOException e) {
             if (LOGGER.isErrorEnabled())
-                LOGGER.error("GeoServerRESTHelper::postTextFileTo(): IOException: "
+                LOGGER.error(
+                        "GeoServerRESTHelper::postTextFileTo(): IOException: "
                                 + e.getLocalizedMessage(), e);
             res = false;
         }
@@ -460,8 +494,7 @@ public class GeoServerRESTHelper {
             } catch (StringIndexOutOfBoundsException e) {
                 name = response;
                 if (LOGGER.isWarnEnabled())
-                    LOGGER.warn(
-                            "GeoServerRESTHelper::extractName(): " + e.getLocalizedMessage(), e);
+                    LOGGER.warn("GeoServerRESTHelper::extractName(): " + e.getLocalizedMessage(), e);
             }
         }
         return name;
@@ -492,7 +525,8 @@ public class GeoServerRESTHelper {
 
             } catch (StringIndexOutOfBoundsException e) {
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error("GeoServerRESTHelper::extractContent(): StringIndexOutOfBoundsException: "
+                    LOGGER.error(
+                            "GeoServerRESTHelper::extractContent(): StringIndexOutOfBoundsException: "
                                     + e.getLocalizedMessage(), e);
             }
         }
@@ -658,8 +692,8 @@ public class GeoServerRESTHelper {
                         .append("/coveragestores/").append(coverageStoreId).append("/url.")
                         .append(type).append(suffix).toString());
                 if (LOGGER.isInfoEnabled())
-                    LOGGER.info("GeoServerRESTHelper::sendCoverage(): sending data " + data.toURL().toExternalForm()
-                            + " to ... " + geoserverREST_URL);
+                    LOGGER.info("GeoServerRESTHelper::sendCoverage(): sending data "
+                            + data.toURL().toExternalForm() + " to ... " + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
                         .toExternalForm(), geoserverUID, geoserverPWD, layer, null);
             } else if ("EXTERNAL".equals(dataTransferMethod)) {
@@ -668,13 +702,13 @@ public class GeoServerRESTHelper {
                         .append("/coveragestores/").append(coverageStoreId).append("/external.")
                         .append(type).append(suffix).toString());
                 if (LOGGER.isInfoEnabled())
-                    LOGGER.info("GeoServerRESTHelper::sendCoverage(): sending PATH " + data.toURL().toExternalForm()
-                            + " to ... " + geoserverREST_URL);
+                    LOGGER.info("GeoServerRESTHelper::sendCoverage(): sending PATH "
+                            + data.toURL().toExternalForm() + " to ... " + geoserverREST_URL);
                 sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
                         .toExternalForm(), geoserverUID, geoserverPWD, layer, null);
             }
         }
-        
+
         if (sent) {
             if (LOGGER.isInfoEnabled())
                 LOGGER.info("GeoServerRESTHelper::sendCoverage(): coverage SUCCESSFULLY sent to GeoServer");
@@ -686,8 +720,8 @@ public class GeoServerRESTHelper {
             return layer;
         } else {
             if (LOGGER.isWarnEnabled())
-                LOGGER.warn("GeoServerRESTHelper::sendCoverage(): " +
-                		"coverage was NOT sent to GeoServer due to connection errors!");
+                LOGGER.warn("GeoServerRESTHelper::sendCoverage(): "
+                        + "coverage was NOT sent to GeoServer due to connection errors!");
             return null;
         }
     }
@@ -874,13 +908,12 @@ public class GeoServerRESTHelper {
             inStream = new FileInputStream(file);
             final boolean send = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, inStream,
                     geoserverUID, geoserverPWD, null, "text/xml");
-            if (send){
-                if (LOGGER.isInfoEnabled()){
+            if (send) {
+                if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("GeoServerRESTHelper::sendLayerConfiguration(): Layer SUCCESSFULLY configured");
                 }
-            }
-            else {
-                if (LOGGER.isWarnEnabled()){
+            } else {
+                if (LOGGER.isWarnEnabled()) {
                     LOGGER.warn("GeoServerRESTHelper::sendLayerConfiguration(): Layer FAILED to be configured");
                 }
             }
@@ -917,10 +950,9 @@ public class GeoServerRESTHelper {
      * @throws TransformerException
      */
     public static void sendCoverageConfiguration(final Map<String, String> coverageElements,
-            final Map<String, String> metadataElements,
-            final Map<String, String> configElements, final String geoserverBaseURL,
-            final String geoserverUID, final String geoserverPWD, final String workspace,
-            final String coverageStore, final String coverageName)
+            final Map<String, String> metadataElements, final Map<String, String> configElements,
+            final String geoserverBaseURL, final String geoserverUID, final String geoserverPWD,
+            final String workspace, final String coverageStore, final String coverageName)
             throws ParserConfigurationException, IOException, TransformerException {
 
         String coveragest = URLEncoder.encode(coverageStore, "UTF-8");
@@ -935,13 +967,12 @@ public class GeoServerRESTHelper {
             inStream = new FileInputStream(file);
             final boolean send = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, inStream,
                     geoserverUID, geoserverPWD, null, "text/xml");
-            if (send){
-                if (LOGGER.isInfoEnabled()){
+            if (send) {
+                if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("GeoServerRESTHelper::sendCoverageConfiguration(): Coverage SUCCESSFULLY configured!");
                 }
-            }
-            else {
-                if (LOGGER.isWarnEnabled()){
+            } else {
+                if (LOGGER.isWarnEnabled()) {
                     LOGGER.warn("GeoServerRESTHelper::sendCoverageConfiguration(): Layer FAILED to be configured");
                 }
             }
@@ -1016,9 +1047,8 @@ public class GeoServerRESTHelper {
      * @throws TransformerException
      */
     private static File buildCoverageXMLConfiguration(final Map<String, String> coverageElements,
-            final Map<String, String> metadataElements,
-            final Map<String, String> configElements) throws ParserConfigurationException,
-            IOException, TransformerException {
+            final Map<String, String> metadataElements, final Map<String, String> configElements)
+            throws ParserConfigurationException, IOException, TransformerException {
         final DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
         // Get the DocumentBuilder
@@ -1027,89 +1057,70 @@ public class GeoServerRESTHelper {
         Document doc = parser.newDocument();
         Element root = doc.createElement("coverage");
         doc.appendChild(root);
-                
-        /* 
-         * <coverage>
-         * ...
-         * <nativeBoundingBox>
-            <minx>15.685019493103</minx>
-            <maxx>20.8090171813965</maxx>
-            <miny>39.5162200927734</miny>
-            <maxy>43.3198089599609</maxy>
-            <crs>EPSG:4326</crs>
-           </nativeBoundingBox>
-           <latLonBoundingBox>
-            <minx>15.685019493103</minx>
-            <maxx>20.8090171813965</maxx>
-            <miny>39.5162200927734</miny>
-            <maxy>43.3198089599609</maxy>
-            <crs>EPSG:4326</crs>
-           </latLonBoundingBox>
-           ...
-           </coverage>
-        */
+
+        /*
+         * <coverage> ... <nativeBoundingBox> <minx>15.685019493103</minx>
+         * <maxx>20.8090171813965</maxx> <miny>39.5162200927734</miny> <maxy>43.3198089599609</maxy>
+         * <crs>EPSG:4326</crs> </nativeBoundingBox> <latLonBoundingBox>
+         * <minx>15.685019493103</minx> <maxx>20.8090171813965</maxx> <miny>39.5162200927734</miny>
+         * <maxy>43.3198089599609</maxy> <crs>EPSG:4326</crs> </latLonBoundingBox> ... </coverage>
+         */
         Element nativeBB = doc.createElement("nativeBoundingBox");
         root.appendChild(nativeBB);
-        
-        Element minx= doc.createElement("minx");
+
+        Element minx = doc.createElement("minx");
         nativeBB.appendChild(minx);
         minx.insertBefore(doc.createTextNode(coverageElements.get(NATIVE_MINX)), null);
-        
-        Element maxx= doc.createElement("maxx");
+
+        Element maxx = doc.createElement("maxx");
         nativeBB.appendChild(maxx);
         maxx.insertBefore(doc.createTextNode(coverageElements.get(NATIVE_MAXX)), null);
-        
-        Element miny= doc.createElement("miny");
+
+        Element miny = doc.createElement("miny");
         nativeBB.appendChild(miny);
         miny.insertBefore(doc.createTextNode(coverageElements.get(NATIVE_MINY)), null);
-        
-        Element maxy= doc.createElement("maxy");
+
+        Element maxy = doc.createElement("maxy");
         nativeBB.appendChild(maxy);
         maxy.insertBefore(doc.createTextNode(coverageElements.get(NATIVE_MAXY)), null);
-        
-        Element crs= doc.createElement("crs");
+
+        Element crs = doc.createElement("crs");
         nativeBB.appendChild(crs);
         crs.insertBefore(doc.createTextNode(coverageElements.get(CRS)), null);
-        
-        
+
         Element latLonBB = doc.createElement("latLonBoundingBox");
         root.appendChild(latLonBB);
-        
-        Element minx2= doc.createElement("minx");
+
+        Element minx2 = doc.createElement("minx");
         latLonBB.appendChild(minx2);
         minx2.insertBefore(doc.createTextNode(coverageElements.get(LATLON_MINX)), null);
-        
-        Element maxx2= doc.createElement("maxx");
+
+        Element maxx2 = doc.createElement("maxx");
         latLonBB.appendChild(maxx2);
         maxx2.insertBefore(doc.createTextNode(coverageElements.get(LATLON_MAXX)), null);
-        
-        Element miny2= doc.createElement("miny");
+
+        Element miny2 = doc.createElement("miny");
         latLonBB.appendChild(miny2);
         miny2.insertBefore(doc.createTextNode(coverageElements.get(LATLON_MINY)), null);
-        
-        Element maxy2= doc.createElement("maxy");
+
+        Element maxy2 = doc.createElement("maxy");
         latLonBB.appendChild(maxy2);
         maxy2.insertBefore(doc.createTextNode(coverageElements.get(LATLON_MAXX)), null);
 
-        Element crs2= doc.createElement("crs");
+        Element crs2 = doc.createElement("crs");
         latLonBB.appendChild(crs2);
         crs2.insertBefore(doc.createTextNode(coverageElements.get(CRS)), null);
-        
 
-        /* 
-         * <coverage>
-         * ...
-         * <enabled>true</enabled>
-         * ...
-         * </coverage>
+        /*
+         * <coverage> ... <enabled>true</enabled> ... </coverage>
          */
         Set<String> keys = metadataElements.keySet();
         Element enabledElement = doc.createElement("enabled");
         root.appendChild(enabledElement);
         enabledElement.insertBefore(doc.createTextNode("true"), null);
-        
+
         // METADATA
-        
+
         Element parametersElement = doc.createElement("metadata");
         root.appendChild(parametersElement);
 
