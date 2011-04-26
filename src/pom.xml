@@ -258,8 +258,8 @@
             <!-- GeoServer REST Manager ===========================================-->
             <dependency> <!-- used by new geoserver action-->
               <groupId>it.geosolutions</groupId>
-              <artifactId>geoserver-manager</artifactId>
-              <version>1.0</version>
+              <artifactId>geoservermanager</artifactId><!--<artifactId>geoserver-manager</artifactId>-->
+              <version>1.1-SNAPSHOT</version><!--<version>1.0</version>-->
             </dependency>
             <dependency> <!-- used by new geoserver action-->
               <groupId>it.geosolutions</groupId>
@@ -1230,22 +1230,26 @@ Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.
             
 <!-- Java Octave -->
 		    <dependency>
-				<groupId>dk.ange.octave</groupId>
-				<artifactId>javaoctave</artifactId>
-				<version>0.6.1</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>it.geosolutions.geobatch</groupId>
-				<artifactId>gb-octave</artifactId>
-				<version>${gb.version}</version>
-			</dependency>
-			
-			<dependency>
-				<groupId>it.geosolutions.geobatch</groupId>
-				<artifactId>gb-action-octave-fileinfileout</artifactId>
-				<version>${gb.version}</version>
-			</dependency>
+			    <groupId>dk.ange.octave</groupId>
+			    <artifactId>javaoctave</artifactId>
+			    <version>0.6.1</version>
+			    <exclusion>
+			      <groupId>commons-logging</groupId>
+			      <artifactId>commons-logging</artifactId>
+			    </exclusion>
+		    </dependency>
+		    
+		    <dependency>
+			    <groupId>it.geosolutions.geobatch</groupId>
+			    <artifactId>gb-octave</artifactId>
+			    <version>${gb.version}</version>
+		    </dependency>
+		    
+		    <dependency>
+			    <groupId>it.geosolutions.geobatch</groupId>
+			    <artifactId>gb-action-octave-fileinfileout</artifactId>
+			    <version>${gb.version}</version>
+		    </dependency>
 
 						<!-- METOCS -->
             <dependency>

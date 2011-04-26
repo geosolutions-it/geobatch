@@ -53,16 +53,16 @@
 		<!--  geoserver rest client lib -->
         <dependency>
         	<groupId>it.geosolutions</groupId>
-    		<artifactId>geoserver-manager</artifactId>
+    		<artifactId>geoservermanager</artifactId><!--<artifactId>geoserver-manager</artifactId>-->
         </dependency>
         
         <!-- ============================== -->
         <!--            tools               -->
         <!-- ============================== -->
         <dependency>
-			<groupId>it.geosolutions.geobatch</groupId>
-			<artifactId>gb-tools</artifactId>
-		</dependency>
+		<groupId>it.geosolutions.geobatch</groupId>
+		<artifactId>gb-tools</artifactId>
+	</dependency>
 
     </dependencies>
 </project>
