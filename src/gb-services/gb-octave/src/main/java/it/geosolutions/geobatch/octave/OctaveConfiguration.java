@@ -49,7 +49,7 @@ public class OctaveConfiguration {
     
     private static OctaveConfiguration singleton=null;
     
-    private final static Logger LOGGER = LoggerFactory.getLogger(OctaveConfiguration.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(OctaveConfiguration.class);
     
     private static int timeToWait = 100*60; // in seconds == 100 min
     
