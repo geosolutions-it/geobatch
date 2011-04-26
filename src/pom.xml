@@ -259,18 +259,13 @@
             <!-- used by new geoserver action
             <dependency> 
               <groupId>it.geosolutions</groupId>
-<<<<<<< HEAD
-              <artifactId>geoservermanager</artifactId><!--<artifactId>geoserver-manager</artifactId>-->
-              <version>1.1-SNAPSHOT</version><!--<version>1.0</version>-->
-=======
-              <artifactId>geoserver-manager</artifactId>
+		<artifactId>geoserver-manager</artifactId>
               <version>1.1-SNAPSHOT</version>
             </dependency>-->
             <dependency> <!-- NEW LIBRARY-->
               <groupId>it.geosolutions</groupId>
               <artifactId>geoservermanager</artifactId>
               <version>1.1-SNAPSHOT</version>
->>>>>>> 15f5136... Fixed Octave test and some internal function. Added new geoservermanager dependency
             </dependency>
             <dependency> <!-- used by new geoserver action-->
               <groupId>it.geosolutions</groupId>
@@ -1244,10 +1239,12 @@ Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.
 			    <groupId>dk.ange.octave</groupId>
 			    <artifactId>javaoctave</artifactId>
 			    <version>0.6.1</version>
+			<exclusions>
 			    <exclusion>
 			      <groupId>commons-logging</groupId>
 			      <artifactId>commons-logging</artifactId>
 			    </exclusion>
+			</exclusions>
 		    </dependency>
 		    
 		    <dependency>

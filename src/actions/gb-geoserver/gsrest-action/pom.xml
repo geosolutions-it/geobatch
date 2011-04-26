@@ -53,11 +53,7 @@
 		<!--  geoserver rest client lib -->
         <dependency>
         	<groupId>it.geosolutions</groupId>
-<<<<<<< HEAD
     		<artifactId>geoservermanager</artifactId><!--<artifactId>geoserver-manager</artifactId>-->
-=======
-    		<artifactId>geoservermanager</artifactId>
->>>>>>> 15f5136... Fixed Octave test and some internal function. Added new geoservermanager dependency
         </dependency>
         
         <!-- ============================== -->
