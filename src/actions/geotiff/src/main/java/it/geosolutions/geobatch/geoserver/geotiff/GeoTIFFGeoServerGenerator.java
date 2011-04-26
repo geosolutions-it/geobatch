@@ -54,8 +54,6 @@ import org.geotools.gce.geotiff.GeoTiffReader;
  */
 public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> {
 
-    public final static String GEOSERVER_VERSION = "1.7.X";
-
     protected GeoTIFFGeoServerGenerator(GeoServerActionConfiguration configuration)
             throws IOException {
         super(configuration);
@@ -202,6 +200,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
 
         String layerName = storeFilePrefix != null ? storeFilePrefix : coverageStoreId;
 
+<<<<<<< HEAD
         if (GEOSERVER_VERSION.equalsIgnoreCase("1.7.2")) {
             if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
                 geoserverREST_URL = new URL(geoserverBaseURL + "/rest/folders/" + coverageStoreId
@@ -223,6 +222,21 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
                         .toExternalForm(), getConfiguration().getGeoserverUID(), getConfiguration()
                         .getGeoserverPWD());
             }
+=======
+        GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
+                getConfiguration().getGeoserverURL(), 
+                getConfiguration().getGeoserverUID(), 
+                getConfiguration().getGeoserverPWD());
+
+        
+        if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
+            // deprecate: to be tested
+            sent = publisher.publishGeoTIFF(queryParams.get("namespace"), coverageStoreId, data);
+        } else if ("EXTERNAL".equals(getConfiguration().getDataTransferMethod())) {
+            //String workspace, String coverageStore, File geotiff, String srs, String defaultStyle
+            RESTCoverageStore store = publisher.publishExternalGeoTIFF(configuration.getDefaultNamespace(), coverageStoreId, data,configuration.getCrs(), configuration.getDefaultStyle());
+            sent = store != null;
+>>>>>>> 15f5136... Fixed Octave test and some internal function. Added new geoservermanager dependency
         } else {
             if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
                 geoserverREST_URL = new URL(geoserverBaseURL + "/rest/workspaces/"

@@ -37,10 +37,87 @@ public class ShapeFileConfiguration extends ActionConfiguration implements Confi
 
     private String workingDirectory;
 
+<<<<<<< HEAD
     private String namespace;
 
     public ShapeFileConfiguration(String id, String name, String description) {
         super(id, name, description);
+=======
+    private String defaultWorkspaceName;
+
+    private String defaultStoreName;
+
+//    private String layerName;
+
+//    private String nativeCrs;
+
+    private String defaultStyle;
+
+    private String geoserverURL;
+
+    private String geoserverPWD;
+
+    private String geoserverUID;
+
+    public String getGeoserverPWD() {
+        return geoserverPWD;
+    }
+
+    public void setGeoserverPWD(String geoserverPWD) {
+        this.geoserverPWD = geoserverPWD;
+    }
+
+    public String getGeoserverUID() {
+        return geoserverUID;
+    }
+
+    public void setGeoserverUID(String geoserverUID) {
+        this.geoserverUID = geoserverUID;
+    }
+
+    public String getGeoserverURL() {
+        return geoserverURL;
+    }
+
+    public void setGeoserverURL(String geoserverURL) {
+        this.geoserverURL = geoserverURL;
+    }
+
+    public String getWorkspace() {
+        return defaultWorkspaceName;
+    }
+
+    public void setWorkspace(String workspace) {
+        this.defaultWorkspaceName = workspace;
+    }
+
+    public String getStorename() {
+        return defaultStoreName;
+    }
+
+    public void setStorename(String storename) {
+        this.defaultStoreName = storename;
+    }
+
+//    public String getLayerName() {
+//        return layerName;
+//    }
+
+//    public void setLayerName(String layerName) {
+//        this.layerName = layerName;
+//    }
+
+//    public String getNativeCrs() {
+//        return nativeCrs;
+//    }
+//
+//    public void setNativeCrs(String nativeCrs) {
+//        this.nativeCrs = nativeCrs;
+//    }
+
+    public String getDefaultStyle() {
+        return defaultStyle;
+>>>>>>> 15f5136... Fixed Octave test and some internal function. Added new geoservermanager dependency
     }
     
     /**
@@ -74,6 +151,7 @@ public class ShapeFileConfiguration extends ActionConfiguration implements Confi
     }
 
     /**
+<<<<<<< HEAD
 	 * 
 	 */
     public ShapeFileConfiguration clone() { // throws CloneNotSupportedException
@@ -97,6 +175,41 @@ public class ShapeFileConfiguration extends ActionConfiguration implements Confi
             cns.initCause(e);
             throw cns;
         }
+=======
+     * 
+     */
+    public ShapeFileConfiguration clone() {
+        final ShapeFileConfiguration conf=new ShapeFileConfiguration(this.getId(), this.getName(), this.getDescription());
+        conf.setGeoserverPWD(this.getGeoserverPWD());
+        conf.setGeoserverUID(this.getGeoserverUID());
+        conf.setGeoserverURL(this.getGeoserverURL());
+//        conf.setLayerName(this.getLayerName());
+//        conf.setNativeCrs(this.getNativeCrs());
+        conf.setServiceID(this.getServiceID());
+        conf.setStorename(this.getStorename());
+        conf.setWorkingDirectory(this.getWorkingDirectory());
+        conf.setWorkspace(this.getWorkspace());
+        return conf;
+//        try {
+//            return (ShapeFileConfiguration) BeanUtils.cloneBean(this);
+//        } catch (IllegalAccessException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        } catch (InstantiationException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        } catch (InvocationTargetException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        } catch (NoSuchMethodException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        }
+>>>>>>> 15f5136... Fixed Octave test and some internal function. Added new geoservermanager dependency
     }
 
 }

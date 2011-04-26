@@ -49,7 +49,7 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
     private String configId;
 
     private String datatype;
-
+    
     private String defaultNamespace;
 
     private String defaultNamespaceUri;

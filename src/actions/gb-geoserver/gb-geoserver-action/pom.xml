@@ -59,11 +59,11 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-<dependency>
-  <groupId>org.slf4j</groupId>
-  <artifactId>slf4j-log4j12</artifactId>
-  <scope>test</scope>
-</dependency>
+		<dependency>
+		  <groupId>org.slf4j</groupId>
+		  <artifactId>slf4j-log4j12</artifactId>
+		  <scope>test</scope>
+		</dependency>
 
         <!-- JSON lib -->
 
@@ -89,6 +89,14 @@
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
+<<<<<<< HEAD
 
+=======
+        
+        <dependency>
+	        <groupId>it.geosolutions</groupId>
+			<artifactId>geoservermanager</artifactId>
+		</dependency>
+>>>>>>> 15f5136... Fixed Octave test and some internal function. Added new geoservermanager dependency
     </dependencies>
 </project>
