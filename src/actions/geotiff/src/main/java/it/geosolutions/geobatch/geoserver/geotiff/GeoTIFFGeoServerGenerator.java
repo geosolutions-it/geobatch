@@ -29,6 +29,8 @@ import it.geosolutions.geobatch.geoserver.GeoServerAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
+import it.geosolutions.geoserver.rest.decoder.RESTCoverageStore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -202,58 +204,25 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
 
         String layerName = storeFilePrefix != null ? storeFilePrefix : coverageStoreId;
 
-        if (GEOSERVER_VERSION.equalsIgnoreCase("1.7.2")) {
-            if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
-                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/folders/" + coverageStoreId
-                        + "/layers/" + layerName + "/file.geotiff" + getQueryString(queryParams));
-                sent = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, new FileInputStream(
-                        data), getConfiguration().getGeoserverUID(), getConfiguration()
-                        .getGeoserverPWD());
-            } else if ("URL".equals(getConfiguration().getDataTransferMethod())) {
-                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/folders/" + coverageStoreId
-                        + "/layers/" + layerName + "/url.geotiff" + getQueryString(queryParams));
-                sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
-                        .toExternalForm(), getConfiguration().getGeoserverUID(), getConfiguration()
-                        .getGeoserverPWD());
-            } else if ("EXTERNAL".equals(getConfiguration().getDataTransferMethod())) {
-                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/folders/" + coverageStoreId
-                        + "/layers/" + layerName + "/external.geotiff"
-                        + getQueryString(queryParams));
-                sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
-                        .toExternalForm(), getConfiguration().getGeoserverUID(), getConfiguration()
-                        .getGeoserverPWD());
-            }
+        GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
+                getConfiguration().getGeoserverURL(), 
+                getConfiguration().getGeoserverUID(), 
+                getConfiguration().getGeoserverPWD());
+
+        
+        if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
+            sent = publisher.publishGeoTIFF(queryParams.get("namespace"), coverageStoreId, data);
+        } else if ("EXTERNAL".equals(getConfiguration().getDataTransferMethod())) {
+            RESTCoverageStore store = publisher.publishExternalGeoTIFF(queryParams.get("namespace"), layerName, data, configuration.getDefaultStyle());
+            sent = store != null;
         } else {
-            if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
-                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/workspaces/"
-                        + queryParams.get("namespace") + "/coveragestores/" + coverageStoreId
-                        + "/file.geotiff");
-                sent = GeoServerRESTHelper.putBinaryFileTo(geoserverREST_URL, new FileInputStream(
-                        data), getConfiguration().getGeoserverUID(), getConfiguration()
-                        .getGeoserverPWD());
-            } else if ("URL".equals(getConfiguration().getDataTransferMethod())) {
-                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/workspaces/"
-                        + queryParams.get("namespace") + "/coveragestores/" + coverageStoreId
-                        + "/url.geotiff");
-                sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
-                        .toExternalForm(), getConfiguration().getGeoserverUID(), getConfiguration()
-                        .getGeoserverPWD());
-            } else if ("EXTERNAL".equals(getConfiguration().getDataTransferMethod())) {
-                geoserverREST_URL = new URL(geoserverBaseURL + "/rest/workspaces/"
-                        + queryParams.get("namespace") + "/coveragestores/" + coverageStoreId
-                        + "/external.geotiff");
-                sent = GeoServerRESTHelper.putContent(geoserverREST_URL, data.toURL()
-                        .toExternalForm(), getConfiguration().getGeoserverUID(), getConfiguration()
-                        .getGeoserverPWD());
-            }
-
+            throw new IllegalStateException("Unknown transfer method " + getConfiguration().getDataTransferMethod());
         }
-
+        
         if (sent) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("GeoTIFF GeoServerAction: coverage SUCCESSFULLY sent to GeoServer!");
             }
-            boolean sldSent = configureStyles(layerName);
         } else {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("GeoTIFF GeoServerAction: coverage was NOT sent to GeoServer due to connection errors!");

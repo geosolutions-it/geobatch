@@ -48,9 +48,9 @@ public class ShapeFileGeneratorService extends BaseService implements
         super(id, name, description);
     }
     
-    public ShapeFileConfigurator createAction(final ShapeFileConfiguration configuration) {
+    public ShapeFileAction createAction(final ShapeFileConfiguration configuration) {
         try {
-            return new ShapeFileConfigurator(configuration);
+            return new ShapeFileAction(configuration);
         } catch (IOException e) {
             if (LOGGER.isWarnEnabled())
                 LOGGER.warn(e.getLocalizedMessage(), e);

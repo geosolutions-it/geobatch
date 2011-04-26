@@ -43,7 +43,7 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
  * 
  */
 public class Collector extends DirectoryWalker<File> {
-    private final static Logger LOGGER=LoggerFactory.getLogger(Collector.class.toString());
+    private final static Logger LOGGER=LoggerFactory.getLogger(Collector.class);
     
     private FileFilter filter = null;
 

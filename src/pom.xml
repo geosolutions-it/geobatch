@@ -259,7 +259,7 @@
             <dependency> <!-- used by new geoserver action-->
               <groupId>it.geosolutions</groupId>
               <artifactId>geoserver-manager</artifactId>
-              <version>1.0</version>
+              <version>1.1-SNAPSHOT</version>
             </dependency>
             
             <!-- Spring Framework ===========================================-->

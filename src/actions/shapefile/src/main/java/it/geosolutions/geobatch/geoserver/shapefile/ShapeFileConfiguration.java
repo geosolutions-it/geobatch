@@ -21,41 +21,106 @@
  */
 package it.geosolutions.geobatch.geoserver.shapefile;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.apache.commons.beanutils.BeanUtils;
-
 /**
- * Comments here ...
  * 
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
-public class ShapeFileConfiguration extends ActionConfiguration implements Configuration {
+public class ShapeFileConfiguration extends ActionConfiguration {
+
+    /*
+     * <crs>EPSG:4326</crs> <dataTransferMethod>DIRECT</dataTransferMethod>
+     * <vectorialLayer>true</vectorialLayer> <geoserverPWD>geoserver</geoserverPWD>
+     * <geoserverUID>admin</geoserverUID>
+     * <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+     * <storeFilePrefix></storeFilePrefix> <storeId></storeId> <defaultStyle>polygon</defaultStyle>
+     */
 
     private String workingDirectory;
 
-    private String namespace;
+    private String workspace;
+
+    private String storename;
+
+//    private String layerName;
+
+    private String nativeCrs;
+
+    private String defaultStyle;
+
+    private String geoserverURL;
+
+    private String geoserverPWD;
+
+    private String geoserverUID;
+
+    public String getGeoserverPWD() {
+        return geoserverPWD;
+    }
+
+    public void setGeoserverPWD(String geoserverPWD) {
+        this.geoserverPWD = geoserverPWD;
+    }
+
+    public String getGeoserverUID() {
+        return geoserverUID;
+    }
+
+    public void setGeoserverUID(String geoserverUID) {
+        this.geoserverUID = geoserverUID;
+    }
+
+    public String getGeoserverURL() {
+        return geoserverURL;
+    }
+
+    public void setGeoserverURL(String geoserverURL) {
+        this.geoserverURL = geoserverURL;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
+    }
+
+    public String getStorename() {
+        return storename;
+    }
+
+    public void setStorename(String storename) {
+        this.storename = storename;
+    }
+
+//    public String getLayerName() {
+//        return layerName;
+//    }
+
+//    public void setLayerName(String layerName) {
+//        this.layerName = layerName;
+//    }
+
+    public String getNativeCrs() {
+        return nativeCrs;
+    }
+
+    public void setNativeCrs(String nativeCrs) {
+        this.nativeCrs = nativeCrs;
+    }
+
+    public String getDefaultStyle() {
+        return defaultStyle;
+    }
+
+    public void setDefaultStyle(String defaultStyle) {
+        this.defaultStyle = defaultStyle;
+    }
 
     public ShapeFileConfiguration(String id, String name, String description) {
         super(id, name, description);
-    }
-    
-    /**
-     * @param namespace
-     *            the namespace to set
-     */
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
-
-    /**
-     * @return the namespace
-     */
-    public String getNamespace() {
-        return namespace;
     }
 
     /**
@@ -74,29 +139,39 @@ public class ShapeFileConfiguration extends ActionConfiguration implements Confi
     }
 
     /**
-	 * 
-	 */
-    public ShapeFileConfiguration clone() { // throws CloneNotSupportedException
-        // {
-        try {
-            return (ShapeFileConfiguration) BeanUtils.cloneBean(this);
-        } catch (IllegalAccessException e) {
-            final RuntimeException cns = new RuntimeException();
-            cns.initCause(e);
-            throw cns;
-        } catch (InstantiationException e) {
-            final RuntimeException cns = new RuntimeException();
-            cns.initCause(e);
-            throw cns;
-        } catch (InvocationTargetException e) {
-            final RuntimeException cns = new RuntimeException();
-            cns.initCause(e);
-            throw cns;
-        } catch (NoSuchMethodException e) {
-            final RuntimeException cns = new RuntimeException();
-            cns.initCause(e);
-            throw cns;
-        }
+     * 
+     */
+    public ShapeFileConfiguration clone() {
+        final ShapeFileConfiguration conf=new ShapeFileConfiguration(this.getId(), this.getName(), this.getDescription());
+        conf.setGeoserverPWD(this.getGeoserverPWD());
+        conf.setGeoserverUID(this.getGeoserverUID());
+        conf.setGeoserverURL(this.getGeoserverURL());
+//        conf.setLayerName(this.getLayerName());
+        conf.setNativeCrs(this.getNativeCrs());
+        conf.setServiceID(this.getServiceID());
+        conf.setStorename(this.getStorename());
+        conf.setWorkingDirectory(this.getWorkingDirectory());
+        conf.setWorkspace(this.getWorkspace());
+        return conf;
+//        try {
+//            return (ShapeFileConfiguration) BeanUtils.cloneBean(this);
+//        } catch (IllegalAccessException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        } catch (InstantiationException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        } catch (InvocationTargetException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        } catch (NoSuchMethodException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        }
     }
 
 }
