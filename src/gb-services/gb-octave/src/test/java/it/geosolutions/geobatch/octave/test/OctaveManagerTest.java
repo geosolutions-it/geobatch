@@ -41,18 +41,10 @@ public class OctaveManagerTest {
         try {
 System.out.println("Starting");
 
-ExecutorService e=Executors.newFixedThreadPool(10);
-
-System.out.println("Starting the manager");            
-            Thread.sleep(1000);
-            
+            ExecutorService e=Executors.newFixedThreadPool(10);
             OctaveEnv<OctaveExecutableSheet> oes=new OctaveEnv<OctaveExecutableSheet>();
-            
-            
-            // do something 
-System.out.println("Doing something waiting for octave");
-            Thread.sleep(1000);
             // now we have to wait for octave
+System.out.println("Starting the manager");
 System.out.println("Getting results from Octave");
             OctaveManager.process(oes,e);
 System.out.println("Stopping the manager");
@@ -78,6 +70,7 @@ System.out.println("Starting the manager");
             OctaveManager manager=OctaveManager.getOctaveManager(oc);
             
             OctaveEnv<OctaveExecutableSheet> oes=new OctaveEnv<OctaveExecutableSheet>();
+System.out.println("Waiting for the result");
             //run the job using a separated thread
             Future<List<OctaveObject>> task=manager.enqueue(oes);
             // do something 
@@ -85,7 +78,11 @@ System.out.println("Doing something waiting for octave");
             Thread.sleep(1000);
             // now we have to wait for octave
 System.out.println("Getting results from Octave");
-            task.get();
+            if (task!=null)
+                task.get();
+            else
+System.out.println("Failed to get the task.");
+            
             manager.shutdown();
 System.out.println("Stopping the manager");            
             Thread.sleep(1000);

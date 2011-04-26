@@ -55,10 +55,10 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-<scope>test</scope>
+				<scope>test</scope>
             </dependency>
 
-	<dependency>
+			<dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
             </dependency>
@@ -120,30 +120,5 @@
 			<artifactId>freemarker</artifactId>
 		</dependency>
 		
-		
-		<!-- ============================== -->
-		<!-- Platform -->
-		<!-- ============================== 
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-		</dependency>
--->		
   </dependencies>
 </project>

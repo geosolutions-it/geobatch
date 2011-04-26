@@ -39,13 +39,13 @@ public class ShapeFileConfiguration extends ActionConfiguration {
 
     private String workingDirectory;
 
-    private String workspace;
+    private String defaultWorkspaceName;
 
-    private String storename;
+    private String defaultStoreName;
 
 //    private String layerName;
 
-    private String nativeCrs;
+//    private String nativeCrs;
 
     private String defaultStyle;
 
@@ -80,19 +80,19 @@ public class ShapeFileConfiguration extends ActionConfiguration {
     }
 
     public String getWorkspace() {
-        return workspace;
+        return defaultWorkspaceName;
     }
 
     public void setWorkspace(String workspace) {
-        this.workspace = workspace;
+        this.defaultWorkspaceName = workspace;
     }
 
     public String getStorename() {
-        return storename;
+        return defaultStoreName;
     }
 
     public void setStorename(String storename) {
-        this.storename = storename;
+        this.defaultStoreName = storename;
     }
 
 //    public String getLayerName() {
@@ -103,13 +103,13 @@ public class ShapeFileConfiguration extends ActionConfiguration {
 //        this.layerName = layerName;
 //    }
 
-    public String getNativeCrs() {
-        return nativeCrs;
-    }
-
-    public void setNativeCrs(String nativeCrs) {
-        this.nativeCrs = nativeCrs;
-    }
+//    public String getNativeCrs() {
+//        return nativeCrs;
+//    }
+//
+//    public void setNativeCrs(String nativeCrs) {
+//        this.nativeCrs = nativeCrs;
+//    }
 
     public String getDefaultStyle() {
         return defaultStyle;
@@ -147,7 +147,7 @@ public class ShapeFileConfiguration extends ActionConfiguration {
         conf.setGeoserverUID(this.getGeoserverUID());
         conf.setGeoserverURL(this.getGeoserverURL());
 //        conf.setLayerName(this.getLayerName());
-        conf.setNativeCrs(this.getNativeCrs());
+//        conf.setNativeCrs(this.getNativeCrs());
         conf.setServiceID(this.getServiceID());
         conf.setStorename(this.getStorename());
         conf.setWorkingDirectory(this.getWorkingDirectory());

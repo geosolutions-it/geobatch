@@ -56,8 +56,6 @@ import org.geotools.gce.geotiff.GeoTiffReader;
  */
 public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> {
 
-    public final static String GEOSERVER_VERSION = "1.7.X";
-
     protected GeoTIFFGeoServerGenerator(GeoServerActionConfiguration configuration)
             throws IOException {
         super(configuration);
@@ -211,9 +209,11 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
 
         
         if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
+            // deprecate: to be tested
             sent = publisher.publishGeoTIFF(queryParams.get("namespace"), coverageStoreId, data);
         } else if ("EXTERNAL".equals(getConfiguration().getDataTransferMethod())) {
-            RESTCoverageStore store = publisher.publishExternalGeoTIFF(queryParams.get("namespace"), layerName, data, configuration.getDefaultStyle());
+            //String workspace, String coverageStore, File geotiff, String srs, String defaultStyle
+            RESTCoverageStore store = publisher.publishExternalGeoTIFF(configuration.getDefaultNamespace(), coverageStoreId, data,configuration.getCrs(), configuration.getDefaultStyle());
             sent = store != null;
         } else {
             throw new IllegalStateException("Unknown transfer method " + getConfiguration().getDataTransferMethod());

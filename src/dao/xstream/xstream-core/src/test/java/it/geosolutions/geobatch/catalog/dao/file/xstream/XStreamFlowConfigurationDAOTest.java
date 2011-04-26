@@ -49,7 +49,7 @@ public class XStreamFlowConfigurationDAOTest extends TestCase {
 
     @Before
     public void setUp() throws Exception {
-        this.context = new ClassPathXmlApplicationContext();
+//        this.context = new ClassPathXmlApplicationContext();
     }
 
     private Alias createAlias() {
