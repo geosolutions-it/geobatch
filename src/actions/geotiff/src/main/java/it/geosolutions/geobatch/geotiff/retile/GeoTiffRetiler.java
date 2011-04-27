@@ -138,11 +138,11 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
 
             // can throw UnsupportedOperationsException
 
-//TODO format???
-reader = GeotiffUtils.getReader(inFile, new Hints(
-        Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
-// reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
-// Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+            // //TODO format???
+             reader = GeotiffUtils.getReader(inFile, new Hints(
+             Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+//            reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
+//                    Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
 
             reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
                     Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
