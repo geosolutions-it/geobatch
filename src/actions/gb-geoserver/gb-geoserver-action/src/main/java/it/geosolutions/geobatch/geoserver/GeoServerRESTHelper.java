@@ -65,6 +65,7 @@ import org.w3c.dom.Element;
  * 
  * @version 0.2 date: 25/Feb/2011
  * 
+ * @deprecated Use geoserver-manager REST library
  */
 public class GeoServerRESTHelper {
 

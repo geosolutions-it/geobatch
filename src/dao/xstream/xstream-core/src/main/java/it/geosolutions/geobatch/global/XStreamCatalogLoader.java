@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2011 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -45,8 +45,6 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.geotools.coverage.grid.io.imageio.geotiff.GeoTiffMetadata2CRSAdapter;
-import org.geotools.factory.Hints;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -63,10 +61,6 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
     private static final Logger LOGGER = LoggerFactory.getLogger(XStreamCatalogLoader.class.toString());
 
     private final Alias alias;
-
-    public void setDataDir(File dataDir) {
-        this.dataDir = dataDir;
-    }
 
     // enforcing singleton
     private XStreamCatalogLoader(Catalog catalog, Alias alias) {
@@ -88,63 +82,8 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
 
     @SuppressWarnings("unchecked")
     public void init() throws Exception {
-        // see if exists a system property...
 
-        // //
-        //
-        // We might have introduced the data dir via env var
-        //
-        // //
-        try {
-
-            if (dataDir == null) {
-                // its defined!!
-                String prop = System.getProperty("GEOBATCH_DATA_DIR");
-                if (prop != null)
-                    dataDir = new File(prop);
-                else {
-                    prop = System.getenv("GEOBATCH_DATA_DIR");
-                    if (prop != null)
-                        dataDir = new File(prop);
-                    else {
-                        if (this.context instanceof WebApplicationContext) {
-                            final WebApplicationContext wContext = (WebApplicationContext) context;
-                            final ServletContext servletContext = wContext.getServletContext();
-                            String rootDir = servletContext.getInitParameter("GEOBATCH_DATA_DIR");
-                            if (rootDir != null)
-                                dataDir = new File(rootDir);
-                            else {
-                                rootDir = ((WebApplicationContext) context).getServletContext()
-                                        .getRealPath("/WEB-INF/data");
-                                if (rootDir != null)
-                                    dataDir = new File(rootDir);
-                            }
-                        } else
-                            dataDir = new File("./data");
-                    }
-                }
-
-            }
-
-        } catch (SecurityException e) {
-            // gobble exception
-            if (LOGGER.isInfoEnabled())
-                LOGGER.info(e.getLocalizedMessage(), e);
-        }
-
-        if (dataDir == null)
-            throw new NullPointerException(
-                    "Could not initialize Data Directory: The provided path is null.");
-
-        if (!dataDir.exists())
-            throw new IllegalStateException(
-                    "Could not initialize Data Directory: The provided path does not exists ("
-                            + dataDir + ").");
-
-        if (!dataDir.isDirectory() || !dataDir.canRead())
-            throw new IllegalStateException(
-                    "Could not initialize Data Directory: The provided path is not a readable directory ("
-                            + dataDir + ")");
+        configureDataDir();
 
         ((FileBaseCatalog) CatalogHolder.getCatalog()).setBaseDirectory(dataDir.getAbsolutePath());
         System.out.println("----------------------------------");
@@ -154,7 +93,7 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
         
         // //
         //
-        // force loading all alias registerers
+        // force loading all alias registrars
         //
         // //
         context.getBeansOfType(AliasRegistrar.class);
@@ -181,13 +120,11 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
             final Service service = servicePair.getValue();
             if (!service.isAvailable()) {
                 if (LOGGER.isInfoEnabled())
-                    LOGGER.info(new StringBuilder("Skipping service ").append(servicePair.getKey())
-                            .append(service.getClass().toString()).toString());
+                    LOGGER.info("Skipping service " + servicePair.getKey() + " (" +service.getClass()+ ")" );
                 continue;
             }
             if (LOGGER.isInfoEnabled())
-                LOGGER.info(new StringBuilder("Loading service ").append(servicePair.getKey())
-                        .append(service.getClass().toString()).toString());
+                LOGGER.info("Loading service " + servicePair.getKey() + " (" +service.getClass()+ ")");
             catalog.add(servicePair.getValue());
         }
 
@@ -198,37 +135,36 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
         // //
         final Iterator<File> it = FileUtils.iterateFiles(dataDir, new String[] { "xml" }, false);
         while (it.hasNext()) {
-            final File o = it.next();
+            final File flowConfigFile = it.next();
 
             // skip catalog config file
-            if (o.getName().equalsIgnoreCase(catalog.getId() + ".xml"))
+            if (flowConfigFile.getName().equalsIgnoreCase(catalog.getId() + ".xml"))
                 continue;
 
             try {
 
                 // loaded
                 if (LOGGER.isInfoEnabled())
-                    LOGGER.info(new StringBuilder("Loading flow from file ").append(
-                            o.getAbsolutePath()).toString());
+                    LOGGER.info("Loading flow from file " + flowConfigFile.getAbsolutePath());
 
                 // try to load the flow and add it to the catalog
 // TODO change this:
-                final FileBasedFlowManager flow = new FileBasedFlowManager(
-                        FilenameUtils.getBaseName(o.getName()),
+                final FileBasedFlowManager flowManager = new FileBasedFlowManager(
+                        FilenameUtils.getBaseName(flowConfigFile.getName()),
                         configuration.getName(),
                         configuration.getDescription());
 //                flow.setId(FilenameUtils.getBaseName(o.getName()));
                 DAO flowLoader = new XStreamFlowConfigurationDAO(dataDir.getAbsolutePath(), alias);
-                flow.setDAO(flowLoader);
-                flow.load();
+                flowManager.setDAO(flowLoader);
+                flowManager.load();
 // TODO ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // add to the catalog
-                catalog.add(flow);
+                catalog.add(flowManager);
                 
                 // loaded
                 if (LOGGER.isInfoEnabled())
                     LOGGER.info(new StringBuilder("Loaded flow from file ").append(
-                            o.getAbsolutePath()).toString());
+                            flowConfigFile.getAbsolutePath()).toString());
             } catch (Throwable t) {
                 if (LOGGER.isWarnEnabled())
                     LOGGER.warn("Skipping flow", t);
@@ -238,6 +174,81 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
 
     }
 
+    /**
+     * Try to retrieve the info about where the data dir is located.
+     * <br/>
+     * On exit, the <tt>datadir</tt> var will be set, or an exception will be thrown.
+     * 
+     * @throws NullPointerException
+     * @throws IllegalStateException 
+     */
+    protected void configureDataDir() throws NullPointerException, IllegalStateException {
+        try {
+
+            if (dataDir == null) {
+                String prop = System.getProperty("GEOBATCH_DATA_DIR");
+                if (prop != null) {
+                    dataDir = new File(prop); 
+                    if(LOGGER.isInfoEnabled()) 
+                        LOGGER.info("data dir read from property");
+                } else {
+                    prop = System.getenv("GEOBATCH_DATA_DIR");
+                    if (prop != null) {
+                        dataDir = new File(prop);
+                        if(LOGGER.isInfoEnabled()) 
+                            LOGGER.info("data dir read from environment var");                        
+                    } else {
+                        if (this.context instanceof WebApplicationContext) {
+                            final WebApplicationContext wContext = (WebApplicationContext) context;
+                            final ServletContext servletContext = wContext.getServletContext();
+                            String rootDir = servletContext.getInitParameter("GEOBATCH_DATA_DIR");
+                            if (rootDir != null) {
+                                dataDir = new File(rootDir); 
+                                if(LOGGER.isInfoEnabled()) 
+                                    LOGGER.info("data dir read from servlet init param");
+                            }else {
+                                rootDir = ((WebApplicationContext) context).getServletContext().getRealPath("/WEB-INF/data");
+                                if (rootDir != null) {
+                                    dataDir = new File(rootDir);
+                                    if(LOGGER.isInfoEnabled()) 
+                                        LOGGER.info("data dir automatically set inside webapp");
+                                    
+                                }
+                            }
+                        } else {
+                            dataDir = new File("./data");
+                            if(LOGGER.isInfoEnabled()) 
+                                LOGGER.info("data dir automatically set in current dir");
+                        }
+                    }
+                }
+            }
+
+        } catch (SecurityException e) {
+            // gobble exception
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info(e.getLocalizedMessage(), e);
+        }
+
+        if (dataDir == null)
+            throw new NullPointerException(
+                    "Could not initialize Data Directory: The provided path is null.");
+
+        if (!dataDir.exists())
+            throw new IllegalStateException(
+                    "Could not initialize Data Directory: The provided path does not exists ("
+                            + dataDir + ").");
+
+        if (!dataDir.isDirectory() || !dataDir.canRead())
+            throw new IllegalStateException(
+                    "Could not initialize Data Directory: The provided path is not a readable directory ("
+                            + dataDir + ")");
+    }
+
+    public void setDataDir(File dataDir) {
+        this.dataDir = dataDir;
+    }
+    
     public File getDataDir() {
         return dataDir;
     }

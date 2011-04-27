@@ -61,8 +61,8 @@ import org.apache.commons.io.FilenameUtils;
  * @author Simone Giannecchini, GeoSolutions S.A.S.
  * 
  */
-public class FileBasedEventConsumer extends
-        BaseEventConsumer<FileSystemEvent, FileBasedEventConsumerConfiguration> {
+public class FileBasedEventConsumer 
+    extends BaseEventConsumer<FileSystemEvent, FileBasedEventConsumerConfiguration> {
 
     /**
      * Common file prefix (unless the rule specify another one)
@@ -72,7 +72,9 @@ public class FileBasedEventConsumer extends
     private String commonPrefixRegex;
 
     /**
-     * Stream Transfer control
+     * The number of expected mandatory files before the flow can be started.
+     * Should be set by configuration, and decremented each time a mandatory file
+     * is consumed.
      * 
      * @uml.property name="numInputFiles"
      */
@@ -215,13 +217,13 @@ public class FileBasedEventConsumer extends
                     this.commonPrefixRegex = prefix;
                     rule.setActualOccurrencies(occurrencies + 1);
                     if (mandatory) {
-                        this.numInputFiles--;
+                        this.numInputFiles--; // WARNING!!!! the numinputfiles should be decreased only when the event is actually consumed, not when checked (TODO)
                     }
                     return true;
                 } else if (prefix.startsWith(this.commonPrefixRegex)) {
                     rule.setActualOccurrencies(occurrencies + 1);
                     if (mandatory) {
-                        this.numInputFiles--;
+                        this.numInputFiles--; // WARNING!!!! the numinputfiles should be decreased only when the event is actually consumed, not when checked (TODO)
                     }
                     return true;
                 }
@@ -371,8 +373,10 @@ public class FileBasedEventConsumer extends
     /***************************************************************************
      * Main Thread cycle.
      * 
-     * <LI>Create needed dirs</LI> <LI>Optionally backup files</LI> <LI>Move files into a
-     * job-specific working dir</LI> <LI>Run the actions</LI>
+     * <LI>Create needed dirs</LI> 
+     * <LI>Optionally backup files</LI> 
+     * <LI>Move files into a job-specific working dir</LI> 
+     * <LI>Run the actions</LI>
      */
     public Queue<FileSystemEvent> call() throws Exception {
         this.canceled = false;
@@ -650,16 +654,11 @@ public class FileBasedEventConsumer extends
     public String toString() {
         return getClass().getSimpleName()
                 + "["
-                + "name:"
-                + getName()
-                + " status:"
-                + getStatus()
-                + " actions:"
-                + actions.size()
-                + " events:"
-                + eventsQueue.size()
-                + " still missing:"
-                + numInputFiles
+                + "name:" + getName()
+                + " status:"+ getStatus()
+                + " actions:"+ actions.size()
+                + " events:" + eventsQueue.size()
+                + " still missing:"+ numInputFiles
                 + (isPaused() ? " PAUSED" : "")
                 + (eventsQueue.isEmpty() ? "" : (" first event:" + eventsQueue.peek().getSource()
                         .getName())) + "]";
