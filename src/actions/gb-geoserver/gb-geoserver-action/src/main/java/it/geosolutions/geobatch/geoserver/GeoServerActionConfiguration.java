@@ -36,7 +36,7 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
 
     private String crs;
 
-    private String envelope;
+    private String envelope; // set BB comma separated
 
     private String geoserverPWD;
 
@@ -44,11 +44,11 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
 
     private String geoserverURL;
 
-    private String storeFilePrefix;
+    private String storeFilePrefix; // store name
 
     private String configId;
 
-    private String datatype;
+    private String datatype; // ?
     
     private String defaultNamespace;
 
@@ -56,11 +56,11 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
 
     private String defaultStyle;
 
-    private String wmsPath;
+    private String wmsPath; // change WMS:getCapabilities layer structure
 
-    private List<String> styles;
+    private List<String> styles; 
 
-    private String dataTransferMethod;
+    private String dataTransferMethod; // DIRECT, URL, EXTERNAL
 
     /**
      * @return the workingDirectory
