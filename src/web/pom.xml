@@ -68,7 +68,11 @@
 			<version>1.2.16</version>
 	    </dependency>
 	    
-	    
+        <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+<!--                <version>1.5.10</version>-->
+            </dependency>	    
 	
 		<!-- ============================== -->
 		<!-- Platform -->
