@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.geoserver.shapefile;
 
+import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 
@@ -34,6 +35,6 @@ public class ShapeFileAliasRegistrar extends AliasRegistrar {
 
     public ShapeFileAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-        registry.putAlias("ShapeFileConfiguration", ShapeFileConfiguration.class);
+        registry.putAlias("GeoServerActionConfiguration", GeoServerActionConfiguration.class);
     }
 }

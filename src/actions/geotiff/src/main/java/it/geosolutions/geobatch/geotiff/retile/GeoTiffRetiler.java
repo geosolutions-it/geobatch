@@ -26,6 +26,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.geotiff.GeotiffUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -102,8 +103,8 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                             + inputFileName);
         }
 
-        final File tiledTiffFile = new File(configuration.getWorkingDirectory(), inputFileName
-                + "_" + Thread.currentThread().getId() + "_tiled.tif");
+        final File tiledTiffFile = new File(inFile.getParent(), inputFileName + "_"
+                + Thread.currentThread().getId() + "_tiled.tif");
 
         try {
             if (tiledTiffFile.exists()) {
@@ -118,7 +119,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                     throw new IllegalArgumentException(message);
                 }
             } else if (!tiledTiffFile.createNewFile()) {
-                final String message = "GeoTiffRetiler::reTile(): Unable to create temporary file called: "
+                final String message = "GeoTiffRetiler.reTile(): Unable to create temporary file called: "
                         + tiledTiffFile.getAbsolutePath();
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(message);
@@ -132,14 +133,16 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
             //
             // /////////////////////////////////////////////////////////////////////
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("GeoTiffRetiler: Acquiring a reader for the provided file...");
+                LOGGER.info("GeoTiffRetiler.reTile(): Acquiring a reader for the provided file...");
             }
 
             // can throw UnsupportedOperationsException
 
-            // TODO format???
-            // reader = GeotiffUtils.getReader(inFile, new Hints(
-            // Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+//TODO format???
+reader = GeotiffUtils.getReader(inFile, new Hints(
+        Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+// reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
+// Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
 
             reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
                     Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
@@ -428,7 +431,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                 return events;
             }
         } catch (Exception t) {
-            String message = "GeoTiffRetiler::execute(): " + t.getLocalizedMessage();
+            final String message = "GeoTiffRetiler::execute(): " + t.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message, t);
             final ActionException exc = new ActionException(this, message, t);

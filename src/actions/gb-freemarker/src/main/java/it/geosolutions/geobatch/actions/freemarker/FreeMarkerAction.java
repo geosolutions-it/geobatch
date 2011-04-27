@@ -175,6 +175,11 @@ public class FreeMarkerAction
     public TemplateModelEvent adapter(EventObject ieo) throws ActionException {
         if (ieo instanceof TemplateModelEvent)
             return (TemplateModelEvent)ieo;
+        else if (ieo instanceof FileSystemEvent){
+            Map<String,Object> map=new HashMap<String, Object>();
+            map.put("FILE", ieo.getSource());
+            return new TemplateModelEvent(map);
+        }
         else
             return null;
     }

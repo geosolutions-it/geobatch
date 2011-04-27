@@ -49,13 +49,9 @@ public class ShapeFileGeneratorService extends BaseService implements
         super(id, name, description);
     }
     
-<<<<<<< HEAD
-    public ShapeFileConfigurator createAction(final ShapeFileConfiguration configuration) {
-=======
     public ShapeFileAction createAction(final GeoServerActionConfiguration configuration) {
->>>>>>> 15f5136... Fixed Octave test and some internal function. Added new geoservermanager dependency
         try {
-            return new ShapeFileConfigurator(configuration);
+            return new ShapeFileAction(configuration);
         } catch (IOException e) {
             if (LOGGER.isWarnEnabled())
                 LOGGER.warn(e.getLocalizedMessage(), e);

@@ -66,7 +66,7 @@
 			<id>ImageMosaicService</id>
 			<description>ImageMosaicService</description>
 			<name>ImageMosaicService</name>
-		</ImageMosaicActionConfiguration>
+		</ImageMosaicActionConfiguration>>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)
 
 	</EventConsumerConfiguration>
 

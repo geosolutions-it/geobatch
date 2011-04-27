@@ -364,14 +364,19 @@ public final class IOUtils extends org.apache.commons.io.IOUtils {
                 if (channel != null) {
                     // here we could block
                     lock = channel.tryLock();
-                    if (lock != null)
+                    if (lock != null){
+                        if (LOGGER.isTraceEnabled())
+                            LOGGER.trace("File locked successfully");
                         return true;
+                    }
                 }
             } catch (OverlappingFileLockException e) {
                 // File is already locked in this thread or virtual machine
-                LOGGER.info("File is already locked in this thread or virtual machine");
+                if (LOGGER.isInfoEnabled())
+                    LOGGER.info("File is already locked in this thread or virtual machine");
             } catch (Exception e) {
-                LOGGER.info(e.getLocalizedMessage(), e);
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn(e.getLocalizedMessage(), e);
             } finally {
 
                 org.apache.commons.io.IOUtils.closeQuietly(outStream);
@@ -400,7 +405,8 @@ public final class IOUtils extends org.apache.commons.io.IOUtils {
 
             sumWait += Conf.ATOMIC_WAIT;
             if (sumWait > maxwait) {
-                LOGGER.info("Waiting time beyond maximum specified waiting time, exiting...");
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("Waiting time beyond maximum specified waiting time, exiting...");
                 // Quitting the loop
                 break;
             }
