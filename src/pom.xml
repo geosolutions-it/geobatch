@@ -459,6 +459,11 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+		<groupId>org.javassist</groupId>
+		<artifactId>javassist</artifactId>
+		<version>3.13.0-GA</version>
+	    </dependency>
             
             
             <dependency>
@@ -789,32 +794,33 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+	    <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
             <!-- commons-logging can be rather simply and conveniently 
                 excluded as a dependency by declaring it in the provided scope 
                 within the pom.xml file of your project. 
                 The actual commons-logging classes would be provided by 
                 jcl-over-slf4j. 
                 This translates into the following pom file snippet:-->
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-
-            <!-- ============================================================-->
-
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.16</version>
-            </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>1.1.1</version>
                 <scope>provided</scope>
             </dependency>
+
+            <!-- ===LOG4J====================================================-->
+
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.16</version>
+            </dependency>
+            
             
             <!-- ============================================================-->
             
