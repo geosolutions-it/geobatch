@@ -230,7 +230,7 @@ public class GBFileSystemMonitorJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         if (LOGGER.isTraceEnabled()) {
             final JobDetail detail = context.getJobDetail();
-            LOGGER.trace("Starting FSM job named: " + detail.getDescription()); // TODO or key?
+            LOGGER.trace("Starting FSM job named: " + detail.getKey()); // TODO or key?
         }
 
         final JobDataMap jdm = context.getJobDetail().getJobDataMap();

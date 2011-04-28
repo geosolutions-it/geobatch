@@ -151,7 +151,6 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
             final FileSystemEventType type, final String pollingInterval,
             final boolean lockInputFiles, final long maxLockingWait) throws SchedulerException,
             NullPointerException {
-        // fsm=new GBFileSystemMonitorJob();
 
         /*
          * Discussed on 17 01 2011 with Carlo Cancellieri and Simone Giannecchini
@@ -175,8 +174,6 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
             throw new NullPointerException(
                     "GBFileSystemMonitor: Could not start a GBFileSystemMonitorJob job using a null or empty path: "
                             + path);
-
-//      triggerName = jobName + jobGroup;
 
         jobDetail = JobBuilder.newJob(GBFileSystemMonitorJob.class).withIdentity(jobName, jobGroup).build();
 
