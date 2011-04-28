@@ -21,66 +21,92 @@
  */
 package it.geosolutions.geobatch.actions.freemarker;
 
-
 import it.geosolutions.geobatch.tools.filter.FreeMarkerFilter;
 
 import java.util.EventObject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
+/**
+ * 
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * 
+ *         The default FreeMarker incoming event class it represent a FreeMarker datamodel
+ */
 public class TemplateModelEvent extends EventObject {
-    private static final String EVENT_NAME="event";
+    private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerAction.class);
+    /**
+     * Used as key into the map for the incoming event: ${event.NAME_VAR} where name var is a KEY
+     * value of the incoming map event NOTE: for the default FileSystemEvent key:
+     * 
+     * @see FreeMarkerConfiguration
+     */
+    private static final String EVENT_NAME = "event";
 
     private static final long serialVersionUID = -8211229935415131446L;
+
     // name of this Model structure
     private String name;
 
     /**
      * Constructor
-     * @param source the object to use as data Structure (should be an
-     * implementation of TemplateModel)
-     * @param n the name of this event
+     * 
+     * @param source
+     *            the object to use as data Structure (should be an implementation of TemplateModel)
+     * @param n
+     *            the name of this event
      */
     public TemplateModelEvent(Object source, String n) {
         super(source);
-        name=n;
+        name = n;
     }
-    
+
     /**
-     * Constructor, the name of this event will be set to the
-     * default one.
+     * Constructor, the name of this event will be set to the default one.
+     * 
      * @see EVENT_NAME
-     * @param source the object to use as data Structure (should be an
-     * implementation of TemplateModel)
+     * @param source
+     *            the object to use as data Structure (should be an implementation of TemplateModel)
      * 
      */
     public TemplateModelEvent(Object source) {
         super(source);
-        name=EVENT_NAME;
+        name = EVENT_NAME;
     }
-    
+
     /**
-     * Using the specified filter try to get a valid TemplateModel
-     * useful to start a freemarker process operation
-     * @param f the FreeMarkerFilter to use
-     * @return the wrapped template model 
-     * @throws NullPointerException if f or the source are null 
-     * @throws TemplateModelException if it is not possible to wrap the passed object
+     * Using the specified filter try to get a valid TemplateModel useful to start a freemarker
+     * process operation
+     * 
+     * @param f
+     *            the FreeMarkerFilter to use
+     * @return the wrapped template model
+     * @throws NullPointerException
+     *             if f or the source are null
+     * @throws TemplateModelException
+     *             if it is not possible to wrap the passed object
      */
-    public TemplateModel getModel(FreeMarkerFilter f)
-        throws NullPointerException, TemplateModelException
-        {
-        if (f!=null)
+    public TemplateModel getModel(FreeMarkerFilter f) throws NullPointerException,
+            TemplateModelException {
+        if (f != null)
             return f.wrapRoot(this.getSource());
-        else
-            throw new NullPointerException("Unable to get the model using a null FreeMarkerFilter");
+        else {
+            final String message="TemplateModelEvent.getModel(): Unable to get the model using a null FreeMarkerFilter";
+            if (LOGGER.isErrorEnabled()){
+                LOGGER.error(message);
+            }
+            throw new NullPointerException(null);
+        }
     }
-    
+
     /**
      * @return the name of this event
      */
-    public String getName(){
+    public String getName() {
         return name;
     }
 

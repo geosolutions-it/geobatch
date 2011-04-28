@@ -38,28 +38,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This action can be used to filter a data structure of type DATA_IN which
- * must be supported by FreeMarker (see its documentation)
- *  
+ * This action can be used to filter a data structure of type DATA_IN which must be supported by
+ * FreeMarker (see its documentation)
+ * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  * @param <DATA_CONF>
  */
-public class FreeMarkerAction 
-        extends BaseAction<EventObject> 
-        implements EventAdapter<TemplateModelEvent>
-    {
-    private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerAction.class.toString());
-    
+public class FreeMarkerAction extends BaseAction<EventObject> implements
+        EventAdapter<TemplateModelEvent> {
+    private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerAction.class);
+
     FreeMarkerConfiguration conf;
-    
+
     public FreeMarkerAction(FreeMarkerConfiguration configuration) {
         super(configuration);
-        conf=configuration;
+        conf = configuration;
     }
 
     /**
@@ -67,106 +66,112 @@ public class FreeMarkerAction
      */
     public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
         // the filter
-        FreeMarkerFilter f=new FreeMarkerFilter(Path.getAbsolutePath(conf.getWorkingDirectory()),conf.getInput());
-        
+        FreeMarkerFilter f = new FreeMarkerFilter(Path.getAbsolutePath(conf.getWorkingDirectory()),
+                conf.getInput());
+
         // build the output absolute file name
-        StringBuilder output=null;
-        try{
-            output=new StringBuilder(Path.getAbsolutePath(conf.getWorkingDirectory()));
-            output.append(File.separatorChar+conf.getOutput());
-        }
-        catch(NullPointerException npe){
-            String message="Unable to build the output file name";
+        StringBuilder output = null;
+        try {
+            output = new StringBuilder(Path.getAbsolutePath(conf.getWorkingDirectory()));
+            output.append(File.separatorChar + conf.getOutput());
+        } catch (NullPointerException npe) {
+            final String message = "FreeMarkerAction.execute(): Unable to build the output file name";
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message);
-            throw new ActionException(this,message);
+            throw new ActionException(this, message);
         }
         if (LOGGER.isInfoEnabled())
-            LOGGER.info("Output file name: "+output.toString());
+            LOGGER.info("FreeMarkerAction.execute(): Output file name: " + output.toString());
 
         // the output
-        File out=new File(output.toString());
+        File out = new File(output.toString());
         // try to open the file to write into
-        FileWriter fw=null;
-        try{
-            fw=new FileWriter(out);
-        }
-        catch (IOException ioe){
-            String message="Unable to build the output file writer: "+ioe.getLocalizedMessage();
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(out);
+        } catch (IOException ioe) {
+            final String message = "FreeMarkerAction.execute(): Unable to build the output file writer: " + ioe.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message);
-            throw new ActionException(this,message);
+            throw new ActionException(this, message);
         }
-        
+
         /*
          * Building/getting the root data structure
          */
-        Map<String,Object> root=null;
-        if (conf.getRoot()!=null)
-            root=conf.getRoot();
+        Map<String, Object> root = null;
+        if (conf.getRoot() != null)
+            root = conf.getRoot();
         else
-            root=new HashMap<String, Object>();
-        
+            root = new HashMap<String, Object>();
+
         /*
-         * while the adapted object (peeked from the queue) is a TemplateModelEvent 
-         * instance, try to add to it the root data structure using the name of the event.
+         * while the adapted object (peeked from the queue) is a TemplateModelEvent instance, try to
+         * add to it the root data structure using the name of the event.
          */
-        TemplateModelEvent ev=null;
-        while ((ev=adapter(events.peek()))!=null){
+        TemplateModelEvent ev = null;
+        while (events.size() > 0) {
+
             try {
                 // append the incoming data structure
-                root.put(ev.getName(), ev.getModel(f));
-            }
-            catch (TemplateModelException tme){
-                String message="Unable to wrap the passed object: "+tme.getLocalizedMessage();
+                if ((ev = adapter(events.remove())) != null)
+                    root.put(ev.getName(), ev.getModel(f));
+                else {
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("FreeMarkerAction.execute(): Unable to append the event: unrecognized format");
+                    }
+                }
+            } catch (TemplateModelException tme) {
+                final String message = "FreeMarkerAction.execute(): Unable to wrap the passed object: " + tme.getLocalizedMessage();
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
-                throw new ActionException(this,message);
-            }
-            catch(Exception ioe){
-                String message="Unable to produce the output: "+ioe.getLocalizedMessage();
+                throw new ActionException(this, message);
+            } catch (Exception ioe) {
+                final String message = "FreeMarkerAction.execute(): Unable to produce the output: " + ioe.getLocalizedMessage();
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
-                throw new ActionException(this,message);
+                throw new ActionException(this, message);
             }
-            
-            // remove the processed element
-            events.remove(ev);
         }
-        
+
         /*
-         * If available, process the output file using 
-         * the TemplateModel data structure
+         * If available, process the output file using the TemplateModel data structure
          */
         try {
             // process the input template file
-            if (root!=null)
+            if (root != null) {
                 f.process(f.wrapRoot(root), fw);
-            else
-                throw new NullPointerException("Unable to process a null root data structure");
+            } else {
+                final String message = "FreeMarkerAction.execute(): Unable to process a null root data structure";
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
+                throw new NullPointerException(message);
+            }
+
             // flush the buffer
-            fw.flush();
-        }
-        catch (IOException ioe){
-            String message="Unable to flush buffer to the output file: "+ioe.getLocalizedMessage();
+            if (fw != null)
+                fw.flush();
+
+        } catch (IOException ioe) {
+            final String message = "FreeMarkerAction.execute(): Unable to flush buffer to the output file: "
+                    + ioe.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message);
-            throw new ActionException(this,message);
-        }
-        catch (TemplateModelException tme){
-            String message="Unable to wrap the passed object: "+tme.getLocalizedMessage();
+            throw new ActionException(this, message);
+        } catch (TemplateModelException tme) {
+            final String message = "FreeMarkerAction.execute(): Unable to wrap the passed object: " + tme.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message);
-            throw new ActionException(this,message);
-        }
-        catch (Exception e){
-            String message="Unable to process the input file: "+e.getLocalizedMessage();
-            e.printStackTrace();
+            throw new ActionException(this, message);
+        } catch (Exception e) {
+            final String message = "FreeMarkerAction.execute(): Unable to process the input file: " + e.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message);
-            throw new ActionException(this,message);
+            throw new ActionException(this, message);
+        } finally {
+            IOUtils.closeQuietly(fw);
         }
-        
+
         // add the file to the queue
         events.add(new FileSystemEvent(out.getAbsoluteFile(), FileSystemEventType.FILE_ADDED));
         return events;
@@ -174,13 +179,12 @@ public class FreeMarkerAction
 
     public TemplateModelEvent adapter(EventObject ieo) throws ActionException {
         if (ieo instanceof TemplateModelEvent)
-            return (TemplateModelEvent)ieo;
-        else if (ieo instanceof FileSystemEvent){
-            Map<String,Object> map=new HashMap<String, Object>();
-            map.put("FILE", ieo.getSource());
+            return (TemplateModelEvent) ieo;
+        else if (ieo instanceof FileSystemEvent) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put(FreeMarkerConfiguration.FILE_EVENT_KEY, ieo.getSource());
             return new TemplateModelEvent(map);
-        }
-        else
+        } else
             return null;
     }
 

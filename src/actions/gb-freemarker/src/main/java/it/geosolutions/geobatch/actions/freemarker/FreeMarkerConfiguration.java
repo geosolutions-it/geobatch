@@ -28,6 +28,7 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * 
@@ -37,6 +38,20 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 @XStreamAlias("FreeMarker")
 @XStreamInclude(FreeMarkerConfiguration.class)
 public class FreeMarkerConfiguration extends ActionConfiguration implements Configuration {
+    
+    /**
+     * Used as key into the map for the incoming event.
+     * ${event.FILE}
+     * 
+     * TODO: changing adapter
+     * It is concat using the integer representing
+     * the position into the event queue.
+     * To use it into a template you have to use:
+     * ${event.FILE_0} -> first file into the queue
+     * ${event.FILE_(N-1)} -> (N)th file into the queue
+     */
+    @XStreamOmitField
+    protected static final String FILE_EVENT_KEY="FILE"; 
 
     public FreeMarkerConfiguration(String id, String name, String description) {
         super(id, name, description);
