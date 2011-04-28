@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.geoserver.geotiff;
+package it.geosolutions.geobatch.geotiff.publish;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.Service;
@@ -35,21 +35,21 @@ import org.slf4j.LoggerFactory;
 /**
  * @author
  * 
- * @version $ GeoTIFFFolderGeoServerConfiguratorService.java $ Revision: x.x $ 19/feb/07 16:16:13
+ * @version $ GeotiffFolderGeoServerService.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
-public class GeoTIFFFolderGeoServerConfiguratorService extends
+public class GeotiffFolderGeoServerService extends
         GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> implements Service{
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeoTIFFFolderGeoServerConfiguratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffFolderGeoServerService.class.toString());
 
-    public GeoTIFFFolderGeoServerConfiguratorService(String id, String name, String description) {
+    public GeotiffFolderGeoServerService(String id, String name, String description) {
         super(id, name, description);
     }
 
-    public GeoTIFFFolderGeoServerConfigurator createAction(
+    public GeotiffFolderGeoServerConfigurator createAction(
             GeoServerActionConfiguration configuration) {
         try {
-            return new GeoTIFFFolderGeoServerConfigurator(configuration);
+            return new GeotiffFolderGeoServerConfigurator(configuration);
         } catch (IOException e) {
             if (LOGGER.isInfoEnabled())
                 LOGGER.info(e.getLocalizedMessage(), e);

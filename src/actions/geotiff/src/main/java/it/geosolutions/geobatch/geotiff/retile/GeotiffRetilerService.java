@@ -39,16 +39,16 @@ import org.slf4j.LoggerFactory;
  * 
  * @version $ ShapeFileDTOProducerSPI.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
-public class GeoTiffRetilerService extends BaseService implements
-        ActionService<FileSystemEvent, GeoTiffRetilerConfiguration> {
+public class GeotiffRetilerService extends BaseService implements
+        ActionService<FileSystemEvent, GeotiffRetilerConfiguration> {
 
-    public GeoTiffRetilerService(String id, String name, String description) {
+    public GeotiffRetilerService(String id, String name, String description) {
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeoTiffRetiler.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffRetiler.class.toString());
 
-    public boolean canCreateAction(GeoTiffRetilerConfiguration configuration) {
+    public boolean canCreateAction(GeotiffRetilerConfiguration configuration) {
         try {
             // absolutize working dir
             String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
@@ -57,7 +57,7 @@ public class GeoTiffRetilerService extends BaseService implements
                 return true;
             } else {
                 if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("GeoTiffRetilerService::canCreateAction(): "
+                    LOGGER.warn("GeotiffRetilerService::canCreateAction(): "
                                     + "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {
@@ -67,9 +67,9 @@ public class GeoTiffRetilerService extends BaseService implements
         return false;
     }
 
-    public GeoTiffRetiler createAction(GeoTiffRetilerConfiguration configuration) {
+    public GeotiffRetiler createAction(GeotiffRetilerConfiguration configuration) {
         try {
-            return new GeoTiffRetiler(configuration);
+            return new GeotiffRetiler(configuration);
         } catch (IOException e) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(e.getLocalizedMessage(), e);

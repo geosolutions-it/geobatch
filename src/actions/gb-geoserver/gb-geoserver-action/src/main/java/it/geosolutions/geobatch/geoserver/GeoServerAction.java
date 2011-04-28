@@ -41,6 +41,8 @@ import org.slf4j.LoggerFactory;
  * @author AlFa
  * 
  * @version $ GeoServerAction.java $ Revision: 0.1 $ 12/feb/07 12:07:06
+ * 
+ * @deprecated Implement BaseAction instead
  */
 
 public abstract class GeoServerAction<T extends EventObject> extends BaseAction<T> {

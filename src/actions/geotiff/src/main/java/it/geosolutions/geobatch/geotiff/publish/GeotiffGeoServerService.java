@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.geoserver.geotiff;
+package it.geosolutions.geobatch.geotiff.publish;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
@@ -40,19 +40,19 @@ import org.slf4j.LoggerFactory;
  * 
  * @version $ ShapeFileDTOProducerSPI.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
-public class GeoTIFFGeoServerGeneratorService extends
+public class GeotiffGeoServerService extends
         GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration>  implements Service{
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeoTIFFGeoServerGenerator.class
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffGeoServerAction.class
             .toString());
 
-    public GeoTIFFGeoServerGeneratorService(String id, String name, String description) {
+    public GeotiffGeoServerService(String id, String name, String description) {
         super(id, name, description);
     }
 
-    public GeoTIFFGeoServerGenerator createAction(GeoServerActionConfiguration configuration) {
+    public GeotiffGeoServerAction createAction(GeoServerActionConfiguration configuration) {
         try {
-            return new GeoTIFFGeoServerGenerator(configuration);
+            return new GeotiffGeoServerAction(configuration);
         } catch (IOException e) {
             if (LOGGER.isInfoEnabled())
                 LOGGER.info(e.getLocalizedMessage(), e);
@@ -69,7 +69,7 @@ public class GeoTIFFGeoServerGeneratorService extends
                 return true;
             } else {
                 if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("GeoTIFFGeoServerGeneratorService::canCreateAction(): "
+                    LOGGER.warn("GeotiffGeoServerService::canCreateAction(): "
                             + "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {

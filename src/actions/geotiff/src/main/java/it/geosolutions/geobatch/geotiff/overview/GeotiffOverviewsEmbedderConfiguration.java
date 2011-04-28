@@ -29,10 +29,10 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import org.geotools.utils.CoverageToolsConstants;
 
-public class GeoTiffOverviewsEmbedderConfiguration extends ActionConfiguration implements
+public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration implements
         Configuration {
 
-    public GeoTiffOverviewsEmbedderConfiguration(String id, String name, String description) {
+    public GeotiffOverviewsEmbedderConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
 
@@ -81,7 +81,7 @@ public class GeoTiffOverviewsEmbedderConfiguration extends ActionConfiguration i
 
     private String serviceID;
 
-//    public GeoTiffOverviewsEmbedderConfiguration() {
+//    public GeotiffOverviewsEmbedderConfiguration() {
 //        super();
 //    }
 
@@ -202,8 +202,8 @@ public class GeoTiffOverviewsEmbedderConfiguration extends ActionConfiguration i
     }
 
     @Override
-    public GeoTiffOverviewsEmbedderConfiguration clone() { 
-        final GeoTiffOverviewsEmbedderConfiguration configuration = (GeoTiffOverviewsEmbedderConfiguration) super.clone();
+    public GeotiffOverviewsEmbedderConfiguration clone() { 
+        final GeotiffOverviewsEmbedderConfiguration configuration = (GeotiffOverviewsEmbedderConfiguration) super.clone();
 
         configuration.setCompressionRatio(compressionRatio);
         configuration.setCompressionScheme(compressionScheme);

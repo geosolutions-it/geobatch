@@ -30,14 +30,14 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
  * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class GeoTIFFAliasRegistrar extends AliasRegistrar {
+public class GeotiffAliasRegistrar extends AliasRegistrar {
 
-    public GeoTIFFAliasRegistrar(AliasRegistry registry) {
+    public GeotiffAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-        registry.putAlias("GeoTiffOverviewsEmbedderConfiguration",
-                        it.geosolutions.geobatch.geotiff.overview.GeoTiffOverviewsEmbedderConfiguration.class);
-        registry.putAlias("GeoTiffRetilerConfiguration",
-                it.geosolutions.geobatch.geotiff.retile.GeoTiffRetilerConfiguration.class);
+        registry.putAlias("GeotiffOverviewsEmbedderConfiguration",
+                        it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderConfiguration.class);
+        registry.putAlias("GeotiffRetilerConfiguration",
+                it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerConfiguration.class);
 
     }
 }

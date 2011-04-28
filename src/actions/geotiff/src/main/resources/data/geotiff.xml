@@ -2,39 +2,42 @@
 <FlowConfiguration>
 	<id>geotiff</id>
 	<name>Prepare GeoTIFF and publish</name>
-	<description>Create overviews, retile the image and publish on GeoServer</description>
-	
+	<description>Create overviews, retile the image and publish on
+		GeoServer</description>
+
 	<workingDirectory>geotiff</workingDirectory>
 	<autorun>true</autorun>
-	
+
 	<corePoolSize>10</corePoolSize>
 	<maximumPoolSize>30</maximumPoolSize>
-	<keepAliveTime>15</keepAliveTime> <!--seconds-->
+	<keepAliveTime>15</keepAliveTime> <!--seconds -->
 	<workQueueSize>100</workQueueSize>
-	
+
 	<EventGeneratorConfiguration>
-		<wildCard>*</wildCard>
-		<watchDirectory>geotiff/in</watchDirectory>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>briseide_2/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>geotiff_id</id>
-        <serviceID>fsEventGeneratorService</serviceID>
+		<interval>0 * * * * ?</interval><!-- CRON: every minute at sec 0 -->
+		<!--<interval>20</interval> each 20 sec -->
+		<id>id</id>
+		<serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
 		<name>geotiff</name>
 	</EventGeneratorConfiguration>
-	
-    <EventConsumerConfiguration>
+
+	<EventConsumerConfiguration>
 		<id>geotiff_retile_overview_publish</id>
 		<name>geotiffEventConsumer</name>
 		<description>geotiff EventConsumer</description>
 
 		<listenerId>GeoTIFFConsumerLogger0</listenerId>
 		<listenerId>GeoTIFFCumulator0</listenerId>
-        
+
 		<workingDirectory>geotiff</workingDirectory>
-		
+
 		<performBackup>true</performBackup>
-		
+
 		<preserveInput>false</preserveInput>
 
 		<FileEventRule>
@@ -46,7 +49,7 @@
 			<name>geotiff_rule_1</name>
 		</FileEventRule>
 
-		<GeoTiffRetilerConfiguration>
+		<GeotiffRetilerConfiguration>
 			<id>GeoTiffRetiler</id>
 			<description>Action to retile the geotif</description>
 			<name>GdalTranslate action</name>
@@ -54,24 +57,24 @@
 			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 			
-			<workingDirectory>geotiff</workingDirectory>
-			<serviceID>geoTiffRetilerService</serviceID>
+			<workingDirectory>briseide_2</workingDirectory>
+			<serviceID>GeotiffRetilerService</serviceID>
 			
 			<tileH>256</tileH>
 			<tileW>256</tileW>
 			
-		</GeoTiffRetilerConfiguration>
+		</GeotiffRetilerConfiguration>
 		
-		<GeoTiffOverviewsEmbedderConfiguration>
+		<GeotiffOverviewsEmbedderConfiguration>
 			<id>GeoTiffOverviewsEmbedder</id>
 			<description>Action to add overview to the geotif</description>
-			<name>GdalTranslate action</name>
+			<name>GeotiffOverview embedder action</name>
 			
 			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 			
 			<workingDirectory>geotiff</workingDirectory>
-			<serviceID>geotiffOverviewsEmbedderService</serviceID>
+			<serviceID>GeotiffOverviewsEmbedderService</serviceID>
 			
 			<downsampleStep>2</downsampleStep>
 			<scaleAlgorithm>Average</scaleAlgorithm>
@@ -79,12 +82,11 @@
 			<tileH>256</tileH>
 			<tileW>256</tileW>
 			
-			
-		</GeoTiffOverviewsEmbedderConfiguration>
+		</GeotiffOverviewsEmbedderConfiguration>
 		
 		
-		<!--GeoServerActionConfiguration>
-            <serviceID>geotiffGeoServerGeneratorService</serviceID>
+		<GeoServerActionConfiguration>
+			<serviceID>GeotiffGeoServerService</serviceID>
 			<id>geotiff</id>
 			<description>Action to ingest GeoTIFF on GeoServer</description>
 			<name>geotiff action</name>
@@ -93,42 +95,45 @@
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 			
 			<workingDirectory>geotiff</workingDirectory>
-            <crs>EPSG:4326</crs>
-            <envelope/>
-            <dataTransferMethod>DIRECT</dataTransferMethod>
-            <geoserverPWD>geoserver</geoserverPWD>
-            <geoserverUID>admin</geoserverUID>
-            <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
-            <wmsPath>/</wmsPath>
-            <defaultStyle>raster</defaultStyle>
-            <styles/>
-		</GeoServerActionConfiguration-->
+			
+			<crs>EPSG:3765</crs>
+			
+			<envelope/>
+			<dataTransferMethod>EXTERNAL</dataTransferMethod>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:9090/geoserver</geoserverURL>
+			<defaultNamespace>topp</defaultNamespace>
 
+			<wmsPath>/</wmsPath>
+			<defaultStyle>raster</defaultStyle>
+			<styles/>
+		</GeoServerActionConfiguration>
 	</EventConsumerConfiguration>
 
-    <ListenerConfigurations>
-    	<StatusProgressListener>
-	    <serviceID>statusListenerService</serviceID>
-            <id>GeoTIFFStatusActionLogger0</id>
-    	</StatusProgressListener>
-        
-        <LoggingProgressListener>
-            <serviceID>loggingListenerService</serviceID>
-            <id>GeoTIFFActionLogger0</id>
+	<ListenerConfigurations>
+		<StatusProgressListener>
+			<serviceID>statusListenerService</serviceID>
+			<id>GeoTIFFStatusActionLogger0</id>
+		</StatusProgressListener>
 
-            <loggerName>GeoTIFFActionLogger0</loggerName>
-        </LoggingProgressListener>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>GeoTIFFActionLogger0</id>
 
-        <LoggingProgressListener>
-            <serviceID>loggingListenerService</serviceID>
-            <id>GeoTIFFConsumerLogger0</id>
+			<loggerName>GeoTIFFActionLogger0</loggerName>
+		</LoggingProgressListener>
 
-            <loggerName>GeoTIFFConsumerLogger0</loggerName>
-        </LoggingProgressListener>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>GeoTIFFConsumerLogger0</id>
 
-        <CumulatingProgressListener>
-            <serviceID>cumulatingListenerService</serviceID>
-            <id>GeoTIFFCumulator0</id>
-        </CumulatingProgressListener>
-    </ListenerConfigurations>
+			<loggerName>GeoTIFFConsumerLogger0</loggerName>
+		</LoggingProgressListener>
+
+		<CumulatingProgressListener>
+			<serviceID>cumulatingListenerService</serviceID>
+			<id>GeoTIFFCumulator0</id>
+		</CumulatingProgressListener>
+	</ListenerConfigurations>
 </FlowConfiguration>

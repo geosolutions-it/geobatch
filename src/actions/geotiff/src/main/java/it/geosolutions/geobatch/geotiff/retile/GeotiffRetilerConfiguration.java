@@ -27,9 +27,9 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import org.geotools.utils.CoverageToolsConstants;
 
-public class GeoTiffRetilerConfiguration extends ActionConfiguration implements Configuration {
+public class GeotiffRetilerConfiguration extends ActionConfiguration implements Configuration {
 
-    protected GeoTiffRetilerConfiguration(String id, String name, String description) {
+    protected GeotiffRetilerConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
 
@@ -57,7 +57,7 @@ public class GeoTiffRetilerConfiguration extends ActionConfiguration implements 
 
     private String serviceID;
 
-//    public GeoTiffRetilerConfiguration() {
+//    public GeotiffRetilerConfiguration() {
 //        super();
 //    }
 
@@ -115,11 +115,11 @@ public class GeoTiffRetilerConfiguration extends ActionConfiguration implements 
     }
 
     @Override
-    public GeoTiffRetilerConfiguration clone() {
-        GeoTiffRetilerConfiguration configuration = (GeoTiffRetilerConfiguration) super.clone();
-        // final GeoTiffRetilerConfiguration configuration=
+    public GeotiffRetilerConfiguration clone() {
+        GeotiffRetilerConfiguration configuration = (GeotiffRetilerConfiguration) super.clone();
+        // final GeotiffRetilerConfiguration configuration=
         // new
-        // GeoTiffRetilerConfiguration(getId(),getName(),getDescription(),isDirty());
+        // GeotiffRetilerConfiguration(getId(),getName(),getDescription(),isDirty());
         configuration.setCompressionRatio(compressionRatio);
         configuration.setCompressionScheme(compressionScheme);
         configuration.setJAICapacity(JAICapacity);

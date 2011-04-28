@@ -19,11 +19,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.geoserver.geotiff;
+package it.geosolutions.geobatch.geotiff.publish;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.global.CatalogHolder;
@@ -38,6 +39,8 @@ import java.util.Queue;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.gce.geotiff.GeoTiffFormat;
 import org.geotools.gce.geotiff.GeoTiffReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -47,11 +50,20 @@ import org.geotools.gce.geotiff.GeoTiffReader;
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: 0.1 $ 23/mar/07 11:42:25
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: 0.2 $ 25/Apr/11 11:00:00
  */
-public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> {
+public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 
-    protected GeoTIFFGeoServerGenerator(GeoServerActionConfiguration configuration)
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeoServerAction.class);
+
+    private final GeoServerActionConfiguration configuration;
+
+    public GeotiffGeoServerAction(GeoServerActionConfiguration configuration)
             throws IOException {
         super(configuration);
+        this.configuration = configuration;
+    }
+
+    public GeoServerActionConfiguration getConfiguration() {
+        return configuration;
     }
 
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
@@ -60,7 +72,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
 
             // looking for file
             if (events.size() != 1) {
-                final String message = "GeoTIFFGeoServerGenerator.execute(): Wrong number of elements for this action: "
+                final String message = "GeotiffGeoServerAction.execute(): Wrong number of elements for this action: "
                         + events.size();
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
@@ -71,7 +83,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
             // data flow configuration and dataStore name must not be null.
             // //
             if (configuration == null) {
-                final String message = "GeoTIFFGeoServerGenerator.execute(): DataFlowConfig is null.";
+                final String message = "GeotiffGeoServerAction.execute(): DataFlowConfig is null.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
                 throw new IllegalStateException(message);
@@ -90,7 +102,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
             //
             // ////////////////////////////////////////////////////////////////////
             if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                final String message = "GeoTIFFGeoServerGenerator.execute(): GeoServerDataDirectory is null or does not exist.";
+                final String message = "GeotiffGeoServerAction.execute(): GeoServerDataDirectory is null or does not exist.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
                 throw new IllegalStateException(message);
@@ -102,7 +114,6 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
             final String inputFileName = inputFile.getName();
             final String filePrefix = FilenameUtils.getBaseName(inputFile.getName());
             final String fileSuffix = FilenameUtils.getExtension(inputFile.getName());
-
 
             String baseFileName = null;
             final String fileNameFilter = getConfiguration().getStoreFilePrefix();
@@ -118,14 +129,13 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
             }
 
             if (baseFileName == null) {
-                final String message="GeoTIFFGeoServerGenerator.execute(): Unexpected file '"
-                    + inputFileName + "'";
+                final String message = "GeotiffGeoServerAction.execute(): Unexpected file '"
+                        + inputFileName + "'";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
                 throw new IllegalStateException(message);
             }
 
-            
             final String coverageStoreId = FilenameUtils.getBaseName(inputFileName);
 
             // //
@@ -144,7 +154,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
                 coverageReader = (GeoTiffReader) format.getReader(inputFile);
 
                 if (coverageReader == null) {
-                    final String message = "GeoTIFFGeoServerGenerator.execute(): No valid GeoTIFF File found for this Data Flow!";
+                    final String message = "GeotiffGeoServerAction.execute(): No valid GeoTIFF File found for this Data Flow!";
                     if (LOGGER.isErrorEnabled()) {
                         LOGGER.error(message);
                     }
@@ -157,7 +167,7 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
                     } catch (Throwable e) {
                         if (LOGGER.isTraceEnabled()) {
                             LOGGER.trace(
-                                    "GeoTIFFGeoServerGenerator.execute(): "
+                                    "GeotiffGeoServerAction.execute(): "
                                             + e.getLocalizedMessage(), e);
                         }
                     }
@@ -173,32 +183,32 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
             GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(getConfiguration()
                     .getGeoserverURL(), getConfiguration().getGeoserverUID(), getConfiguration()
                     .getGeoserverPWD());
-        
+
             if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
-                    // TODO Deprecated: to be tested
-                    sent = publisher.publishGeoTIFF(getConfiguration().getDefaultNamespace(),
-                            coverageStoreId, inputFile);
+                // TODO Deprecated: to be tested
+                sent = publisher.publishGeoTIFF(getConfiguration().getDefaultNamespace(),
+                        coverageStoreId, inputFile);
             } else if ("EXTERNAL".equals(getConfiguration().getDataTransferMethod())) {
-                    // String workspace, String coverageStore, File geotiff, String srs, String
-                    // defaultStyle
-                    RESTCoverageStore store = publisher.publishExternalGeoTIFF(getConfiguration()
-                            .getDefaultNamespace(), coverageStoreId, inputFile, getConfiguration()
-                            .getCrs(), getConfiguration().getDefaultStyle());
-                    sent = store != null;
-                } else {
-                    final String message = "GeoTIFFGeoServerGenerator.execute(): FATAL -> Unknown transfer method "
+                // String workspace, String coverageStore, File geotiff, String srs, String
+                // defaultStyle
+                RESTCoverageStore store = publisher.publishExternalGeoTIFF(getConfiguration()
+                        .getDefaultNamespace(), coverageStoreId, inputFile, getConfiguration()
+                        .getCrs(), getConfiguration().getDefaultStyle());
+                sent = store != null;
+            } else {
+                final String message = "GeotiffGeoServerAction.execute(): FATAL -> Unknown transfer method "
                         + getConfiguration().getDataTransferMethod();
-                    if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error(message);
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(message);
                 }
-            
+
                 if (sent) {
                     if (LOGGER.isInfoEnabled()) {
-                        LOGGER.info("GeoTIFFGeoServerGenerator.execute(): coverage SUCCESSFULLY sent to GeoServer!");
+                        LOGGER.info("GeotiffGeoServerAction.execute(): coverage SUCCESSFULLY sent to GeoServer!");
                     }
                 } else {
                     if (LOGGER.isInfoEnabled()) {
-                        LOGGER.info("GeoTIFFGeoServerGenerator.execute(): coverage was NOT sent to GeoServer due to connection errors!");
+                        LOGGER.info("GeotiffGeoServerAction.execute(): coverage was NOT sent to GeoServer due to connection errors!");
                     }
                 }
             }
@@ -206,7 +216,8 @@ public class GeoTIFFGeoServerGenerator extends GeoServerAction<FileSystemEvent> 
             listenerForwarder.completed();
             return events;
         } catch (Exception t) {
-            final String message="GeoTIFFGeoServerGenerator.execute(): FATAL -> "+t.getLocalizedMessage();
+            final String message = "GeotiffGeoServerAction.execute(): FATAL -> "
+                    + t.getLocalizedMessage();
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error(message, t); // no need to
             }

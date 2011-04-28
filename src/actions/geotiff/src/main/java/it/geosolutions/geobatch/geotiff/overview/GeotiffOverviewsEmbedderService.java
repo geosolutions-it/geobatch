@@ -39,20 +39,20 @@ import org.slf4j.LoggerFactory;
  * 
  * @version $ ShapeFileDTOProducerSPI.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
-public class GeoTiffOverviewsEmbedderService extends BaseService implements
-        ActionService<FileSystemEvent, GeoTiffOverviewsEmbedderConfiguration> {
+public class GeotiffOverviewsEmbedderService extends BaseService implements
+        ActionService<FileSystemEvent, GeotiffOverviewsEmbedderConfiguration> {
 
-    // private GeoTiffOverviewsEmbedderService() {
+    // private GeotiffOverviewsEmbedderService() {
     // super(description, description, description, true);
     // }
 
-    public GeoTiffOverviewsEmbedderService(String id, String name, String description) {
+    public GeotiffOverviewsEmbedderService(String id, String name, String description) {
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeoTiffOverviewsEmbedder.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffOverviewsEmbedder.class);
 
-    public boolean canCreateAction(GeoTiffOverviewsEmbedderConfiguration configuration) {
+    public boolean canCreateAction(GeotiffOverviewsEmbedderConfiguration configuration) {
         try {
             // absolutize working dir
             String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
@@ -61,7 +61,7 @@ public class GeoTiffOverviewsEmbedderService extends BaseService implements
                 return true;
             } else {
                 if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("GeoTiffOverviewsEmbedderService::canCreateAction(): "
+                    LOGGER.warn("GeotiffOverviewsEmbedderService::canCreateAction(): "
                                     + "unable to create action, it's not possible to get an absolute working dir.");
             }
         } catch (Throwable e) {
@@ -71,9 +71,9 @@ public class GeoTiffOverviewsEmbedderService extends BaseService implements
         return false;
     }
 
-    public GeoTiffOverviewsEmbedder createAction(GeoTiffOverviewsEmbedderConfiguration configuration) {
+    public GeotiffOverviewsEmbedder createAction(GeotiffOverviewsEmbedderConfiguration configuration) {
         try {
-            return new GeoTiffOverviewsEmbedder(configuration);
+            return new GeotiffOverviewsEmbedder(configuration);
         } catch (IOException e) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(e.getLocalizedMessage(), e);

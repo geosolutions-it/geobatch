@@ -20,14 +20,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.geoserver.geotiff;
+package it.geosolutions.geobatch.geotiff.publish;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerAction;
+import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
@@ -55,13 +55,15 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
  * 
  * @author AlFa
  * 
- * @version $ GeoTIFFFolderGeoServerConfigurator.java $ Revision: x.x $ 23/mar/07 11:42:25
+ * @version $ GeotiffFolderGeoServerConfigurator.java $ Revision: x.x $ 23/mar/07 11:42:25
+ * 
+ * @TODO swith to the new GS REST library
  */
-public class GeoTIFFFolderGeoServerConfigurator extends GeoServerAction<FileSystemEvent> {
+public class GeotiffFolderGeoServerConfigurator extends GeoServerAction<FileSystemEvent> {
 
     public final static String GEOSERVER_VERSION = "2.X";
 
-    protected GeoTIFFFolderGeoServerConfigurator(GeoServerActionConfiguration configuration)
+    protected GeotiffFolderGeoServerConfigurator(GeoServerActionConfiguration configuration)
             throws IOException {
         super(configuration);
     }

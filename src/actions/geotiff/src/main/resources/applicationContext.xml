@@ -4,33 +4,33 @@
 <beans>
 
 	<!-- Environment Initialization -->
-	<bean id="geotiffGeoServerGeneratorService" class="it.geosolutions.geobatch.geoserver.geotiff.GeoTIFFGeoServerGeneratorService">
-		<constructor-arg type="String"><value>geotiffGeoServerGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>geotiffGeoServerGeneratorService</value></constructor-arg>
-        <constructor-arg type="String"><value>geotiffGeoServerGeneratorService</value></constructor-arg>
+	<bean id="GeotiffGeoServerService" class="it.geosolutions.geobatch.geotiff.publish.GeotiffGeoServerService">
+		<constructor-arg type="String"><value>GeotiffGeoServerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>GeotiffGeoServerService</value></constructor-arg>
+        <constructor-arg type="String"><value>GeotiffGeoServerService</value></constructor-arg>
     </bean>	
     
-    <bean id="geotiffFolderGeoServerConfiguratorService" class="it.geosolutions.geobatch.geoserver.geotiff.GeoTIFFFolderGeoServerConfiguratorService">
-		<constructor-arg type="String"><value>geotiffFolderGeoServerConfiguratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>geotiffFolderGeoServerConfiguratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>geotiffFolderGeoServerConfiguratorService</value></constructor-arg>
+    <bean id="GeotiffFolderGeoServerService" class="it.geosolutions.geobatch.geotiff.publish.GeotiffFolderGeoServerService">
+		<constructor-arg type="String"><value>GeotiffFolderGeoServerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>GeotiffFolderGeoServerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>GeotiffFolderGeoServerService</value></constructor-arg>
     </bean>
 
 	<!-- Environment Initialization -->
-	<bean id="geotiffOverviewsEmbedderService" class="it.geosolutions.geobatch.geotiff.overview.GeoTiffOverviewsEmbedderService">
-		<constructor-arg type="String"><value>geotiffOverviewsEmbedderService</value></constructor-arg>
-    	<constructor-arg type="String"><value>geotiffOverviewsEmbedderService</value></constructor-arg>
-    	<constructor-arg type="String"><value>geotiffOverviewsEmbedderService</value></constructor-arg>
+	<bean id="GeotiffOverviewsEmbedderService" class="it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderService">
+		<constructor-arg type="String"><value>GeotiffOverviewsEmbedderService</value></constructor-arg>
+    	<constructor-arg type="String"><value>GeotiffOverviewsEmbedderService</value></constructor-arg>
+    	<constructor-arg type="String"><value>GeotiffOverviewsEmbedderService</value></constructor-arg>
     </bean>	    
         
 	<!-- Environment Initialization -->
-	<bean id="geoTiffRetilerService" class="it.geosolutions.geobatch.geotiff.retile.GeoTiffRetilerService">
-		<constructor-arg type="String"><value>geoTiffRetilerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>geoTiffRetilerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>geoTiffRetilerService</value></constructor-arg>
+	<bean id="GeotiffRetilerService" class="it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerService">
+		<constructor-arg type="String"><value>GeotiffRetilerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>GeotiffRetilerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>GeotiffRetilerService</value></constructor-arg>
     </bean>	      
 
-    <bean id="flowGeoTIFFRegistrar" class="it.geosolutions.geobatch.geotiff.GeoTIFFAliasRegistrar" lazy-init="false">
+    <bean id="FlowGeotiffRegistrar" class="it.geosolutions.geobatch.geotiff.GeotiffAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
 

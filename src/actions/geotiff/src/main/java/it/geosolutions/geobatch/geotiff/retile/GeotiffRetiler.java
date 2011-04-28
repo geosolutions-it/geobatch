@@ -66,13 +66,13 @@ import com.sun.media.jai.operator.ImageReadDescriptor;
  * @version $GeoTIFFOverviewsEmbedder.java Revision: 0.1 $ 23/mar/07 11:42:25 Revision: 0.2 $
  *          15/Feb/11 14:40:00
  */
-public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
+public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
 
-    private GeoTiffRetilerConfiguration configuration;
+    private GeotiffRetilerConfiguration configuration;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeoTiffRetiler.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffRetiler.class);
 
-    protected GeoTiffRetiler(GeoTiffRetilerConfiguration configuration) throws IOException {
+    protected GeotiffRetiler(GeotiffRetilerConfiguration configuration) throws IOException {
         super(configuration);
         this.configuration = configuration;
     }
@@ -91,15 +91,15 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
         final String inputFileName = FilenameUtils.getName(absolutePath);
 
         if (LOGGER.isInfoEnabled())
-            LOGGER.info("GeoTiffRetiler: is going to retile: " + inputFileName);
+            LOGGER.info("GeotiffRetiler: is going to retile: " + inputFileName);
 
-        listenerForwarder.setTask("GeoTiffRetiler");
+        listenerForwarder.setTask("GeotiffRetiler");
 
         // getting a format for the given input
         format = (AbstractGridFormat) GridFormatFinder.findFormat(inFile);
         if (format == null || (format instanceof UnknownFormat)) {
             throw new IllegalArgumentException(
-                    "GeoTiffRetiler::reTile(): Unable to find the GridFormat for the provided file: "
+                    "GeotiffRetiler::reTile(): Unable to find the GridFormat for the provided file: "
                             + inputFileName);
         }
 
@@ -111,7 +111,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                 // file already exists
                 // check write permission
                 if (!tiledTiffFile.canWrite()) {
-                    final String message = "GeoTiffRetiler::reTile(): Unable to over-write the temporary file called: "
+                    final String message = "GeotiffRetiler::reTile(): Unable to over-write the temporary file called: "
                             + tiledTiffFile.getAbsolutePath() + "\nCheck permissions.";
                     if (LOGGER.isErrorEnabled()) {
                         LOGGER.error(message);
@@ -119,7 +119,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                     throw new IllegalArgumentException(message);
                 }
             } else if (!tiledTiffFile.createNewFile()) {
-                final String message = "GeoTiffRetiler.reTile(): Unable to create temporary file called: "
+                final String message = "GeotiffRetiler.reTile(): Unable to create temporary file called: "
                         + tiledTiffFile.getAbsolutePath();
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(message);
@@ -133,7 +133,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
             //
             // /////////////////////////////////////////////////////////////////////
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("GeoTiffRetiler.reTile(): Acquiring a reader for the provided file...");
+                LOGGER.info("GeotiffRetiler.reTile(): Acquiring a reader for the provided file...");
             }
 
             // can throw UnsupportedOperationsException
@@ -148,7 +148,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                     Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
             if (reader == null) {
                 final IOException ioe = new IOException(
-                        "GeoTiffRetiler::reTile(): Unable to find a reader for the provided file: "
+                        "GeotiffRetiler::reTile(): Unable to find a reader for the provided file: "
                                 + inputFileName);
                 throw ioe;
             }
@@ -159,12 +159,12 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
             //
             // /////////////////////////////////////////////////////////////////////
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("GeoTiffRetiler::reTile(): Acquiring a coverage provided file...");
+                LOGGER.info("GeotiffRetiler::reTile(): Acquiring a coverage provided file...");
             }
             inCoverage = (GridCoverage2D) reader.read(null);
             if (inCoverage == null) {
                 final IOException ioe = new IOException(
-                        "GeoTiffRetiler::reTile(): inCoverage == null");
+                        "GeotiffRetiler::reTile(): inCoverage == null");
                 throw ioe;
             }
             // /////////////////////////////////////////////////////////////////////
@@ -173,7 +173,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
             //
             // /////////////////////////////////////////////////////////////////////
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("GeoTiffRetiler::reTile(): Writing down the file in the decoded directory...");
+                LOGGER.info("GeotiffRetiler::reTile(): Writing down the file in the decoded directory...");
             }
             final double compressionRatio = configuration.getCompressionRatio();
             final String compressionType = configuration.getCompressionScheme();
@@ -212,7 +212,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                     reader.dispose();
                 } catch (Exception e) {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn("GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                        LOGGER.warn("GeotiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
             }
@@ -222,7 +222,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                     writer.dispose();
                 } catch (Exception e) {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn("GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                        LOGGER.warn("GeotiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
             }
@@ -235,7 +235,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                     r.dispose();
                 } catch (Exception e) {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn("GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                        LOGGER.warn("GeotiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
                 Object input = r.getInput();
@@ -245,7 +245,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                         ((ImageInputStream) input).close();
                     } catch (Exception e) {
                         if (LOGGER.isWarnEnabled())
-                            LOGGER.warn("GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                            LOGGER.warn("GeotiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                     }
                 }
 
@@ -253,7 +253,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                     initImage.dispose();
                 } catch (Exception e) {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn("GeoTiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                        LOGGER.warn("GeotiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
                 }
 
             }
@@ -277,18 +277,18 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
         try {
 
             if (configuration == null) {
-                final String message = "GeoTiffRetiler::execute(): DataFlowConfig is null.";
+                final String message = "GeotiffRetiler::execute(): DataFlowConfig is null.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
                 throw new ActionException(this, message);
             }
             if (events.size() == 0) {
                 throw new ActionException(this,
-                        "GeoTiffRetiler::execute(): Unable to process an empty events queue.");
+                        "GeotiffRetiler::execute(): Unable to process an empty events queue.");
             }
 
             if (LOGGER.isInfoEnabled())
-                LOGGER.info("GeoTiffRetiler::execute(): Starting with processing...");
+                LOGGER.info("GeotiffRetiler::execute(): Starting with processing...");
 
             listenerForwarder.started();
 
@@ -334,21 +334,21 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                                 listenerForwarder.failed(uoe);
                                 if (LOGGER.isWarnEnabled())
                                     LOGGER.warn(
-                                            "GeoTiffRetiler::execute(): "
+                                            "GeotiffRetiler::execute(): "
                                                     + uoe.getLocalizedMessage(), uoe);
                                 continue;
                             } catch (IOException ioe) {
                                 listenerForwarder.failed(ioe);
                                 if (LOGGER.isWarnEnabled())
                                     LOGGER.warn(
-                                            "GeoTiffRetiler::execute(): "
+                                            "GeotiffRetiler::execute(): "
                                                     + ioe.getLocalizedMessage(), ioe);
                                 continue;
                             } catch (IllegalArgumentException iae) {
                                 listenerForwarder.failed(iae);
                                 if (LOGGER.isWarnEnabled())
                                     LOGGER.warn(
-                                            "GeoTiffRetiler::execute(): "
+                                            "GeotiffRetiler::execute(): "
                                                     + iae.getLocalizedMessage(), iae);
                                 continue;
                             } finally {
@@ -367,13 +367,13 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                             outFile = reTile(eventFile);
                             if (outFile != null) {
                                 if (LOGGER.isInfoEnabled())
-                                    LOGGER.info("GeoTiffRetiler::execute(): SUCCESFULLY completed work on: "
+                                    LOGGER.info("GeotiffRetiler::execute(): SUCCESFULLY completed work on: "
                                             + event.getSource());
                                 listenerForwarder.setProgress(100);
                                 ret.add(new FileSystemEvent(outFile, eventType));
                             } else {
                                 ret.add(new FileSystemEvent(eventFile, eventType));
-                                final String message = "GeoTiffRetiler::execute(): retiler FAILED to return the output file: "
+                                final String message = "GeotiffRetiler::execute(): retiler FAILED to return the output file: "
                                         + event.getSource();
                                 if (LOGGER.isErrorEnabled())
                                     LOGGER.error(message);
@@ -383,21 +383,21 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                             listenerForwarder.failed(uoe);
                             if (LOGGER.isWarnEnabled())
                                 LOGGER.warn(
-                                        "GeoTiffRetiler::execute(): " + uoe.getLocalizedMessage(),
+                                        "GeotiffRetiler::execute(): " + uoe.getLocalizedMessage(),
                                         uoe);
                             continue;
                         } catch (IOException ioe) {
                             listenerForwarder.failed(ioe);
                             if (LOGGER.isWarnEnabled())
                                 LOGGER.warn(
-                                        "GeoTiffRetiler::execute(): " + ioe.getLocalizedMessage(),
+                                        "GeotiffRetiler::execute(): " + ioe.getLocalizedMessage(),
                                         ioe);
                             continue;
                         } catch (IllegalArgumentException iae) {
                             listenerForwarder.failed(iae);
                             if (LOGGER.isWarnEnabled())
                                 LOGGER.warn(
-                                        "GeoTiffRetiler::execute(): " + iae.getLocalizedMessage(),
+                                        "GeotiffRetiler::execute(): " + iae.getLocalizedMessage(),
                                         iae);
                             continue;
                         } finally {
@@ -408,7 +408,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                         }
                     }
                 } else {
-                    final String message = "GeoTiffRetiler::execute(): The passed file event refers to a not existent "
+                    final String message = "GeotiffRetiler::execute(): The passed file event refers to a not existent "
                             + "or not readable/writeable file! File: "
                             + eventFile.getAbsolutePath();
                     if (LOGGER.isWarnEnabled())
@@ -431,7 +431,7 @@ public class GeoTiffRetiler extends BaseAction<FileSystemEvent> {
                 return events;
             }
         } catch (Exception t) {
-            final String message = "GeoTiffRetiler::execute(): " + t.getLocalizedMessage();
+            final String message = "GeotiffRetiler::execute(): " + t.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message, t);
             final ActionException exc = new ActionException(this, message, t);
