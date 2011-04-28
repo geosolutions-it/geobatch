@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeoServerAction.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffGeoServerAction.class);
 
     private final GeoServerActionConfiguration configuration;
 

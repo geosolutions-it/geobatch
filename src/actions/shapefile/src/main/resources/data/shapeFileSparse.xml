@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 
-    <id>sample_shape_flow</id>
+    <id>shapeFileSparse</id>
     <description>Sample injection of sparse shapefiles</description>
     <name>Shapefile</name>
 
-    <workingDirectory>shape_work</workingDirectory>
-    <autorun>false</autorun>
+    <workingDirectory>shapeFile</workingDirectory>
+
+    <autorun>true</autorun>
 
     <EventConsumerConfiguration>
         <id>shape_consumer</id>
@@ -16,9 +17,8 @@
         <listenerId>ConsumerLogger0</listenerId>
         <listenerId>Cumulator</listenerId>
 
-        <workingDirectory>shape_work</workingDirectory>
-        <performBackup>true</performBackup>
-
+        <workingDirectory>shapeFile</workingDirectory>
+        
         <FileEventRule>
             <optional>false</optional>
             <originalOccurrencies>1</originalOccurrencies>
@@ -52,46 +52,30 @@
             <name>test</name>
         </FileEventRule>
 
-        <ShapeFileConfiguration>
-            <serviceID>shapefileGeoServerGeneratorService</serviceID>
+        <GeoServerActionConfiguration>
+            <serviceID>ShapeFileGeoServerService</serviceID>
             <id>step0</id>
             <name>ShapeFileIngestion</name>
-            <description>Get a pack of shapefiles (optionally zipped) and ingest them into a GeoServer instance.</description>
+            <description>Get a pack of shapefiles (zipped) and ingest them into a GeoServer instance.</description>
 
-			<listenerId>StatusActionLogger0</listenerId>
+	    <listenerId>StatusActionLogger0</listenerId>
             <listenerId>ActionLogger0</listenerId>
 
-            <workingDirectory>shape_work</workingDirectory>
-        </ShapeFileConfiguration>
+            <workingDirectory>shapeFile</workingDirectory>
+	    
+	    <defaultStyle>polygon</defaultStyle>
+	    <crs>EPSG:4326</crs>
+	    <envelope/>
+	    <dataTransferMethod>EXTERNAL</dataTransferMethod>
+	    <wmsPath>/</wmsPath>
+	    <defaultNamespace>it.geosolutions</defaultNamespace>
 
-		<GeoServerRESTActionConfiguration>
-            <serviceID>geoServerRESTGeneratorService</serviceID>
-            <id>step1</id>
-            <name>GeoServerIngestion</name>
-            <description>GeoServer REST.</description>
-
-			<listenerId>StatusActionLogger0</listenerId>
-            <listenerId>ActionLogger0</listenerId>
-
-            <workingDirectory>shape_work</workingDirectory>
-            <crs>EPSG:4326</crs>
-            <envelope/>
-            <dataTransferMethod>DIRECT</dataTransferMethod>
-            <vectorialLayer>true</vectorialLayer>
+	    <styles/>
             <geoserverPWD>geoserver</geoserverPWD>
             <geoserverUID>admin</geoserverUID>
-            <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
-            <geoserverVersion>2.0.0</geoserverVersion>
-            <!-- storeFilePrefix></storeFilePrefix -->
-            <!-- storeId></storeId -->
-            <storeType>shp</storeType>
-            <wmsPath>/</wmsPath>
-            <defaultStyle>polygon</defaultStyle>
-            <styles/>
-            <!-- styles>
-                <style>raster.sld</style>
-            </styles -->
-		</GeoServerRESTActionConfiguration>
+            <geoserverURL>http://localhost:9090/geoserver</geoserverURL>
+
+	</GeoServerActionConfiguration>
 		
     </EventConsumerConfiguration>
 
@@ -102,8 +86,7 @@
         <serviceID>fsEventGeneratorService</serviceID>
         
         <wildCard>*.*</wildCard>
-        <watchDirectory>shape_work/in</watchDirectory>
-        <keepFiles>true</keepFiles>
+        <watchDirectory>shapeFile/in_sparse</watchDirectory>
         <osType>OS_UNDEFINED</osType>
         <eventType>FILE_ADDED</eventType>
     </EventGeneratorConfiguration>
@@ -118,14 +101,14 @@
             <serviceID>loggingListenerService</serviceID>
             <id>ActionLogger0</id>
 
-            <loggerName>ActionLogger</loggerName>
+            <loggerName>it.geosolutions.ActionLogger</loggerName>
         </LoggingProgressListener>
 
         <LoggingProgressListener>
             <serviceID>loggingListenerService</serviceID>
             <id>ConsumerLogger0</id>
 
-            <loggerName>ConsLogger</loggerName>
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
         </LoggingProgressListener>
 
         <CumulatingProgressListener>

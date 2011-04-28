@@ -24,12 +24,12 @@ package it.geosolutions.geobatch.geoserver.shapefile;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Collector;
-import it.geosolutions.geobatch.tools.file.Compressor;
 import it.geosolutions.geobatch.tools.file.Extract;
 import it.geosolutions.geobatch.tools.file.Path;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
@@ -43,6 +43,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,17 +51,6 @@ import org.slf4j.LoggerFactory;
  * Geoserver ShapeFile action.
  * 
  * Process shapefiles and inject them into a Geoserver instance.
- * 
- * Accept:<br>
- * - a list of mandatory files(ref. to the shape file standard for details)
- * - a compressed archive (ref. to the Extract class to see accepted formats)
- * 
- * Check the content of the input and build a valid ZIP file which represent
- * the output of this action.
- * 
- * The same output is sent to the configured GeoServer using the GS REST api.
- * 
- * TODO: check for store/layer existence
  * 
  * @author AlFa
  * @author ETj
@@ -136,73 +126,78 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             // files
 
             final FileSystemEvent event = events.peek();
-            final IOFileFilter shpFilter = FileFilterUtils.suffixFileFilter("shp",
-                    IOCase.INSENSITIVE);
+            final IOFileFilter shpFilter = FileFilterUtils.suffixFileFilter("shp",IOCase.INSENSITIVE);
             final Collector coll = new Collector(shpFilter);
-            List<File> shpFiles = null;
-
+            List<File> shpFiles =null;
+            
             // the name of the shapefile
             String shapeName = null;
-
             // the output (to send to the geoserver) file
             File zippedFile = null;
-
-            // list of file to send to the GeoServer
-            final File[] files;
+            
+            
             if (events.size() == 1) {
-
-                zippedFile = event.getSource();
-
-                if (LOGGER.isTraceEnabled())
-                    LOGGER.trace("Testing for compressed file: " + zippedFile.getAbsolutePath());
-
+                
                 final String tmpDirName = Extract.extract(zippedFile.getAbsolutePath());
-
-                listenerForwarder.progressing(5, "File extracted");
-
-                /*
-                 * if the output (Extract) file is not a dir the event was a not compressed file so
-                 * we have to throw and error
-                 */
                 final File tmpDirFile = new File(tmpDirName);
-                if (!tmpDirFile.isDirectory()) {
+                /*
+                 *  if the output file is not a dir
+                 *  the event was not a compressed file
+                 *  so we have to throw and error
+                 */
+                if (!tmpDirFile.isDirectory()){
                     throw new IllegalStateException("Not valid input: we need a zip file ");
                 }
-
-                // collect extracted files
-                files = tmpDirFile.listFiles();
-
+                
+                zippedFile = event.getSource();
+                
+                if (LOGGER.isTraceEnabled())
+                    LOGGER.trace("ZIP file: " + zippedFile.getAbsolutePath());
+                
+                listenerForwarder.progressing(5, "unzipping");
+                
+                shpFiles = coll.collect(tmpDirFile);
+                
+                if (shpFiles.size() == 1) {
+                    shapeName = FilenameUtils.getBaseName(shpFiles.get(0).getName());
+                } else
+                    throw new IllegalStateException("Shp file not found");
+                
             } else if (events.size() >= 3) {
-
+                
                 if (LOGGER.isTraceEnabled())
                     LOGGER.trace("Checking input collection...");
-
+                
                 listenerForwarder.progressing(5, "Checking input collection...");
-
+                
                 /*
                  * build the collection of files
+                 * and get the shape file name
                  */
-                files = new File[events.size()];
-                int i = 0;
-                for (FileSystemEvent ev : events) {
-                    files[i++] = ev.getSource();
+                List<File> files=new ArrayList<File>();
+                for (FileSystemEvent ev: events){
+                    files.add(ev.getSource());
+                    if (shpFilter.accept(ev.getSource())){
+                        shapeName=FilenameUtils.getBaseName(ev.getSource().getName());
+                    }
                 }
-
+                
+                if (!acceptable(files)){
+                    throw new IllegalStateException(
+                    "The file list do not contains mondadory files");
+                }
+                
+                zippedFile=Compressor.deflate(new File(configuration.getWorkingDirectory()), shapeName, files.toArray(new File[]{}));
+                if (zippedFile==null){
+                    throw new IllegalStateException("Unable to create the zip file");
+                }
+                
             } else {
                 throw new IllegalStateException(
                         "Input is not a zipped file nor a valid collection of files");
             }
 
-            // obtain the shape file name and check for mondatory file
-            if ((shapeName = acceptable(files)) == null) {
-                throw new IllegalStateException("The file list do not contains mondadory files");
-            }
-
-            zippedFile = Compressor.deflate(new File(configuration.getWorkingDirectory()),
-                    shapeName, files);
-            if (zippedFile == null) {
-                throw new IllegalStateException("Unable to create the zip file");
-            }
+            
 
             listenerForwarder.progressing(10, "In progress");
 
@@ -217,6 +212,7 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             // SENDING data to GeoServer via REST protocol.
             //
             // ////////////////////////////////////////////////////////////////////
+
 
             GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
                     configuration.getGeoserverURL(), configuration.getGeoserverUID(),
@@ -240,7 +236,6 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
 
             // Removing old files...
             events.clear();
-            
             // Adding the zipped file to send...
             events.add(new FileSystemEvent(zippedFile, FileSystemEventType.FILE_ADDED));
             return events;
@@ -254,48 +249,39 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             throw ae;
         }
     }
-
-    /**
-     * check for mandatory files in the passed list: .shp — shape format; the feature geometry
-     * itself <br>
-     * .shx — shape index format; a positional index of the feature geometry to allow seeking
-     * forwards and backwards quickly <br>
-     * .dbf — attribute format; columnar attributes for each shape, in dBase IV format
-     * 
-     * 
-     * @param files
-     *            a list of file to check for
-     * @return null if 'files' do not contain needed files or contain more than 1 shape file, the
-     *         name of the shape file otherwise.
-     */
-    private static String acceptable(final File[] files) {
-        String shapeFileName = null;
-
+    
+    private static boolean acceptable(final List<File> files){
+        /*
+         * Mandatory files :
+         * 
+         * .shp — shape format; the feature geometry itself 
+         * .shx — shape index format; a
+         * positional index of the feature geometry to allow seeking forwards and backwards
+         * quickly 
+         * .dbf — attribute format; columnar attributes for each shape, in dBase IV
+         * format
+         */
         // if ==3 the incoming file list is acceptable
-        int acceptable = 0;
-        for (File file : files) {
-            final String ext = FilenameUtils.getExtension(file.getAbsolutePath());
-
-            if (ext.equals("shp")) {
+        int acceptable=0;
+        for (File file: files){
+            final String ext=FilenameUtils.getExtension(file.getAbsolutePath());
+            
+            if (ext.equals("shp")){
                 ++acceptable;
-                /*
-                 * check if there are more than 1 shp file in the list if so an error occur
-                 */
-                if (shapeFileName == null)
-                    shapeFileName = FilenameUtils.getBaseName(file.getName());
-                else
-                    return null;
-            } else if (ext.equals("shx")) {
+            }
+            else if (ext.equals("shx")){
                 ++acceptable;
-            } else if (ext.equals("dbf")) {
+            }
+            else if (ext.equals("dbf")){
                 ++acceptable;
             }
         }
-
-        if (acceptable == 3) {
-            return shapeFileName;
-        } else
-            return null;
+        
+        if (acceptable==3){
+            return true;
+        }
+        else
+            return false;
     }
 
 }

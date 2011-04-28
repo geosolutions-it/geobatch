@@ -57,8 +57,9 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     private List<FileEventRule> rules;
 
     /**
+     * workingDirectory: this attribute represents the configuring directory for this flow. 
+     * It can be relative to the catalog.xml directory or absolute.
      * The configuring directory. This is the directory where the consumer will store the input data.
-     * @uml.property  name="workingDirectory"
      */
     private String workingDirectory;
 
