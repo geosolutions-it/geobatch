@@ -13,6 +13,8 @@
 		<watchDirectory>freemarker/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
+		<interval>0 * * * * ?</interval><!-- CRON: every minute at sec 0 -->
+		<!--<interval>20</interval> each 20 sec -->
 		<id>FreeMarkerFlow</id>
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
@@ -36,7 +38,7 @@
 			<name>test</name>
 		</FileEventRule>
 		
-		<freemarker>
+		<FreeMarker>
 			<serviceID>FreeMarkerGeneratorService</serviceID>
 			<id>FreeMarkerGeneratorService</id>
 			<description>description</description>
@@ -55,7 +57,7 @@
 					<string>value</string>
 				</entry>
 			</root>
-		</freemarker>
+		</FreeMarker>
 		
 		<!-- ${KEY} -->
 	</EventConsumerConfiguration>

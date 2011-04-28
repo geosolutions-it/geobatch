@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<id>groovy_flow0</id>
+	<id>scriptingGroovy</id>
 	<name>Test groovy flow</name>
 	<description>A test flow for scripting actions</description>
 
@@ -12,6 +12,8 @@
 		<watchDirectory>scripting_groovy_work/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
+		<interval>0 * * * * ?</interval><!-- CRON: every minute at sec 0 -->
+		<!--<interval>20</interval> each 20 sec -->
 		<id>id</id>
         <serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
@@ -32,7 +34,7 @@
 		<FileEventRule>
 			<optional>false</optional>
 			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.nc.*</regex>
+			<regex>.*\.*</regex>
 			<id>r1</id>
 			<description>description</description>
 			<name>test</name>
@@ -46,7 +48,7 @@
 			<listenerId>ScriptActionLogger0</listenerId>
 			<listenerId>ScriptActionStatus0</listenerId>
 						
-			<serviceID>scriptingService</serviceID>
+			<serviceID>ScriptingService</serviceID>
 
             <language>groovy</language>
             <scriptFile>G:/tmp/TestAction.groovy</scriptFile>
