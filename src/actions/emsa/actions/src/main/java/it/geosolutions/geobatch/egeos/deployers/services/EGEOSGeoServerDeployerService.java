@@ -26,7 +26,6 @@ import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.egeos.deployers.actions.EGEOSDeployerBaseAction;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
-import it.geosolutions.geobatch.geotiff.overview.GeoTiffOverviewsEmbedder;
 
 import java.io.IOException;
 
