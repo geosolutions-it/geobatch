@@ -44,8 +44,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class PublishingRestletGlobalConfig {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PublishingRestletGlobalConfig.class
-            .toString());
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(PublishingRestletGlobalConfig.class);
 
     private static String rootDirectory;
 
@@ -66,10 +66,11 @@ public final class PublishingRestletGlobalConfig {
                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
     
         if (workingDir == null || !workingDir.exists() || !workingDir.canRead()
-                || !workingDir.isDirectory())
+                || !workingDir.isDirectory()) {
             throw new IllegalArgumentException(
                     "Unable to work with the provided working directory:"
                             + (workingDir != null ? workingDir : ""));
+        }
         rootDirectory = workingDir.getAbsolutePath();
     }
 

@@ -25,6 +25,7 @@ package it.geosolutions.geobatch.octave;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +58,13 @@ public class OctaveExecutor implements Callable<List<OctaveObject>> {
      * @throws Exception
      */
     public static List<OctaveObject> call(OctaveEnv<OctaveExecutableSheet> env, Engine eng) throws Exception {
+        if (eng==null){
+            final String message="OctaveExecutor.call(): Unable to run the call using a null Engine.";
+            if (LOGGER.isErrorEnabled()){
+                LOGGER.error(message);
+            }
+            throw new NullArgumentException(message);
+        }
         /**
          * Objects are extracted from the list
          * since each returning value should be returned
@@ -82,7 +90,7 @@ public class OctaveExecutor implements Callable<List<OctaveObject>> {
             }
             catch (Exception e) {
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error("Octave throws an exception: "+e.getLocalizedMessage());
+                    LOGGER.error("Octave throws an exception: "+e.getLocalizedMessage(),e);
                 throw e;
             }
 

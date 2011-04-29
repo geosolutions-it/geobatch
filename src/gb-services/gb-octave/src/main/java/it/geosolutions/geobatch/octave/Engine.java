@@ -100,8 +100,12 @@ public class Engine{
                 }
             }catch (InterruptedException ie){
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error(ie.getLocalizedMessage());
+                    LOGGER.error(ie.getLocalizedMessage(), ie);
                 throw ie;
+            }catch (Throwable t){
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(t.getLocalizedMessage(), t);
+                return -1;
             }
             finally{
                 lock.unlock();

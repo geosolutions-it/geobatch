@@ -41,10 +41,18 @@
 
         <!-- used for aliasing testing files -->
         <dependency>
+             <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-log4j12</artifactId>
+			 <scope>test</scope>
+        </dependency>
+        
+        <!--  THIS IMPLY A DEPENDENCY!!!
+        <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>gb-action-geoserver</artifactId>
             <scope>test</scope>
         </dependency>
+        -->
         
         
 

@@ -256,9 +256,15 @@
         <dependencies>
 
             <!-- GeoServer REST Manager ===========================================-->
-            <dependency> <!-- used by new geoserver action-->
+            <!-- used by new geoserver action
+            <dependency> 
               <groupId>it.geosolutions</groupId>
               <artifactId>geoserver-manager</artifactId>
+              <version>1.1-SNAPSHOT</version>
+            </dependency>-->
+            <dependency> <!-- NEW LIBRARY-->
+              <groupId>it.geosolutions</groupId>
+              <artifactId>geoservermanager</artifactId>
               <version>1.1-SNAPSHOT</version>
             </dependency>
             

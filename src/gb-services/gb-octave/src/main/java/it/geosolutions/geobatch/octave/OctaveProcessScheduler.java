@@ -80,8 +80,8 @@ public class OctaveProcessScheduler implements Runnable{
                     }
                     else {
                         String message="OctaveProcessScheduler: unable to start using a null ExecutorService";
-                        if (LOGGER.isInfoEnabled())
-                            LOGGER.info(message);
+                        if (LOGGER.isErrorEnabled())
+                            LOGGER.error(message);
                         throw new NullPointerException(message);
 //                        Thread t=new Thread(singleton);
 //System.out.println("OctaveProcessScheduler STARTING THREAD_ID:"+t.getId());
@@ -96,7 +96,7 @@ public class OctaveProcessScheduler implements Runnable{
                 }
             } catch (InterruptedException e) {
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error(e.getLocalizedMessage());
+                    LOGGER.error(e.getLocalizedMessage(),e);
             }
             finally {
                 l.unlock();

@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Collector;
 import it.geosolutions.geobatch.tools.file.Extract;
@@ -58,9 +59,10 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> implements Acti
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ShapeFileAction.class);
 
-    private ShapeFileConfiguration configuration;
+    // private ShapeFileConfiguration configuration;
+    private GeoServerActionConfiguration configuration;
 
-    public ShapeFileAction(final ShapeFileConfiguration configuration) throws IOException {
+    public ShapeFileAction(final GeoServerActionConfiguration configuration) throws IOException {
         super(configuration);
         this.configuration = configuration;
     }
@@ -130,24 +132,24 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> implements Acti
             }
 
             listenerForwarder.progressing(5, "unzipping");
-            String tmpDirName =Extract.extract(zippedFile.getAbsolutePath());
-            
-            File tmpDirFile =new File(tmpDirName);
-            
-            Collector coll=new Collector(FileFilterUtils.suffixFileFilter("shp",IOCase.INSENSITIVE));
-            List<File> files=coll.collect(tmpDirFile);
-            
-            String shapeName=null;
-            if (files.size()==1) {// TODO cecks >1
-                shapeName=FilenameUtils.getBaseName(files.get(0).getName());
-            }
-            else
+            String tmpDirName = Extract.extract(zippedFile.getAbsolutePath());
+
+            File tmpDirFile = new File(tmpDirName);
+
+            Collector coll = new Collector(FileFilterUtils.suffixFileFilter("shp",
+                    IOCase.INSENSITIVE));
+            List<File> files = coll.collect(tmpDirFile);
+
+            String shapeName = null;
+            if (files.size() == 1) {// TODO cecks >1
+                shapeName = FilenameUtils.getBaseName(files.get(0).getName());
+            } else
                 throw new IllegalStateException("Shp file not found");
 
             listenerForwarder.progressing(10, "In progress");
 
             // TODO: check if the store do not exists and if so create it
-            
+
             // TODO: check if a layer with the same name already exists in GS
             // GeoServerRESTReader reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
             // configuration.getGeoserverUID(), configuration.getGeoserverPWD());
@@ -160,35 +162,34 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> implements Acti
 
             if (LOGGER.isTraceEnabled())
                 LOGGER.trace("ZIP file: " + zippedFile.getAbsolutePath());
-            
+
             GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
                     configuration.getGeoserverURL(), configuration.getGeoserverUID(),
                     configuration.getGeoserverPWD());
-            
-            
-            
-            if (publisher.publishShp(configuration.getWorkspace(), configuration.getStorename(),
-                    shapeName, zippedFile)){
-                final String message="Shape file SUCCESFULLY sent";
+            /*
+             * Storename - same as layer. Layername - same as file name.
+             */
+            if (publisher.publishShp(configuration.getDefaultNamespace(), shapeName, shapeName,
+                    zippedFile,configuration.getCrs(),configuration.getDefaultStyle())) {
+                final String message = "Shape file SUCCESFULLY sent";
                 if (LOGGER.isInfoEnabled())
                     LOGGER.info(message);
                 listenerForwarder.progressing(100, message);
-            }
-            else {
-                final String message="Shape file FAILED to be sent";
-                final ActionException ae=new ActionException(this, message);
+            } else {
+                final String message = "Shape file FAILED to be sent";
+                final ActionException ae = new ActionException(this, message);
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message, ae);
                 listenerForwarder.failed(ae);
             }
-            
+
             // Removing old files...
             events.clear();
             // Adding the zipped file to send...
             events.add(new FileSystemEvent(zippedFile, FileSystemEventType.FILE_ADDED));
             return events;
         } catch (Throwable t) {
-            final ActionException ae=new ActionException(this, t.getMessage(), t);
+            final ActionException ae = new ActionException(this, t.getMessage(), t);
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(ae.getLocalizedMessage(), ae);
             LOGGER.error(t.getLocalizedMessage(), t); // we're
