@@ -73,7 +73,7 @@
         
         <gt.version>2.7-SNAPSHOT</gt.version>
         <opengis.version>2.3-M1</opengis.version>
-        <gb.version>0.9-SNAPSHOT</gb.version>
+        <gb.version>1.1-SNAPSHOT</gb.version>
         <imageio-ext.version>1.1-SNAPSHOT</imageio-ext.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <spring.security.version>3.0.3.RELEASE</spring.security.version>
@@ -178,7 +178,7 @@
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb</artifactId>
     <packaging>pom</packaging>
-    <version>0.9-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <name>GeoSolutions GeoBatch</name>
     <url>http://www.geo-solutions.it/maven_reports/gb/</url>
 
@@ -1335,11 +1335,12 @@
                 <artifactId>gb-action-geoserver</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+            <!--
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-geoserver-restclient</artifactId>
                 <version>${gb.version}</version>
-            </dependency>
+            </dependency-->
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-gliders</artifactId>

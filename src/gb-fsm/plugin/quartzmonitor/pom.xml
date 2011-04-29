@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb-fsm-plugin</artifactId>
-		<version>0.9-SNAPSHOT</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 
 
@@ -29,7 +29,7 @@
 		<connection>scm:svn:https://www.geo-solutions.it/svn/repo/FileSystemMonitor/trunk/plugin/DirMonitorPolling/</connection>
 		<url>https://www.geo-solutions.it/svn/repo/FileSystemMonitor/trunk/plugin/DirMonitorPolling/</url>
 	</scm>
-	<version>0.9-SNAPSHOT</version>
+	<version>1.1-SNAPSHOT</version>
 	<description>
     The FileSystemMonitor quartz plugin.
   </description>
