@@ -80,10 +80,10 @@
         <!-- ============================== -->
         <!--     GT  		                -->
         <!-- ============================== -->
-        <dependency>
+<!--        <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
-        </dependency>
+        </dependency>-->
 
 		<!-- ============================== -->
         <!-- 		logging					-->

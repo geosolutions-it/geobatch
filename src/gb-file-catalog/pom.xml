@@ -76,7 +76,7 @@
             <artifactId>servlet-api</artifactId>
         </dependency>
         
-        <dependency>
+<!--        <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-api</artifactId>
         </dependency>
@@ -105,7 +105,7 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-epsg-hsql</artifactId>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>javax.media</groupId>

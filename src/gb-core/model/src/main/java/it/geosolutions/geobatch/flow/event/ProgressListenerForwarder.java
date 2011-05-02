@@ -25,12 +25,12 @@ import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.misc.ListenerRegistry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.geotools.resources.UnmodifiableArrayList;
 
 /**
  * Dispatch ProgressListener events to registered sublistener. <BR>
@@ -206,7 +206,6 @@ public class ProgressListenerForwarder extends ProgressListener implements
     }
 
     public List<? extends IProgressListener> getListeners() {
-        return UnmodifiableArrayList.wrap(listeners
-                .toArray(new IProgressListener[listeners.size()]));
+        return Collections.unmodifiableList(listeners);
     }
 }
