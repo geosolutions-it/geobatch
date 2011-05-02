@@ -257,6 +257,11 @@
     <!-- =========================================================== -->
     <dependencyManagement>
         <dependencies>
+	    <dependency>
+		<groupId>it.geosolutions.geobatch</groupId>
+		<artifactId>gb-gui</artifactId>
+		<version>${gb.version}</version>
+	    </dependency>
 
             <!-- GeoServer REST Manager ===========================================-->
             <!-- used by new geoserver action
@@ -1719,15 +1724,16 @@
     <modules>
 	<module>gb-fsm</module>
         <module>gb-tools</module>
-	<module>file-catalog</module>
-	<module>core</module>
-	<module>dao</module>
+	<module>gb-file-catalog</module>
+	<module>gb-core</module>
+	<module>gb-dao</module>
 	<module>gb-action-tools</module>
 	<module>gb-services</module> <!-- optional services-->
-	<module>users</module>
+	<module>gb-users</module>
 	<module>gb-ftp-server</module>
-        <module>actions</module>
-        <module>web</module>
+        <module>gb-actions</module>
+        <module>gb-gui</module>
+        <module>gb-application</module>
         <!-- other conditional modules are listed in the profiles section -->
     </modules>
 

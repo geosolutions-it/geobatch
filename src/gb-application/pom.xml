@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ======================================================================= 
 	Maven Project Configuration File GeoSolutions GeoBatch Project http://geobatch.codehaus.org 
-	Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $ ======================================================================= -->
+	Version: 0.1 pom.xml 63 2011-05-02 18:55:57Z ccancellieri $
+	 ======================================================================= -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -17,11 +18,11 @@
 	<!-- Module Description -->
 	<!-- =========================================================== -->
 	<groupId>it.geosolutions.geobatch</groupId>
-	<artifactId>gb-web</artifactId>
+	<artifactId>gb-application</artifactId>
 	<packaging>war</packaging>
 
-	<name>GeoBatch web module</name>
-	<description>GeoSolutions GeoBatch web module.</description>
+	<name>GeoBatch Application</name>
+	<description>GeoSolutions GeoBatch Application</description>
 
 	<url>http://www.geo-solutions.it/maven_reports/gb/library/</url>
 
@@ -42,167 +43,70 @@
 		</license>
 	</licenses>
 
+	<properties>
+		<netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
+		<flow.dir>geobatch/WEB-INF/</flow.dir>
+	</properties>
+	
 	<!-- =========================================================== -->
 	<!-- Dependencies -->
 	<!-- =========================================================== -->
 
 	<dependencies>
+
 		<!-- ============================== -->
 		<!-- log4j -->
+		<!-- ============================== -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- ============================== -->
+		<!-- slf4j -->
 		<!-- ============================== -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
 		</dependency>
-		
-	    <dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<scope>runtime</scope>
-	    </dependency>
-	    
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-	
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+
 		<!-- ============================== -->
 		<!-- Platform -->
 		<!-- ============================== -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jsp-api</artifactId>
-			<scope>provided</scope>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-gui</artifactId>
 		</dependency>
 
 		<!-- ============================== -->
-		<!-- GB Modules -->
+		<!-- Test: JETTY -->
 		<!-- ============================== -->
-		<!-- GB Resource Loader-->
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jsp-2.0</artifactId>
-			<type>pom</type>
-			<scope>test</scope>
-		</dependency>
-        <dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
-	    </dependency>
-		
-		
-		<!-- ============================== -->
-		<!-- RESTLET -->
-		<!-- ============================== --> 
-		<dependency>
-			<groupId>com.noelios.restlet</groupId>
-			<artifactId>com.noelios.restlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.noelios.restlet</groupId>
-			<artifactId>com.noelios.restlet.ext.servlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.noelios.restlet</groupId>
-			<artifactId>com.noelios.restlet.ext.spring</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.restlet</groupId>
-			<artifactId>org.restlet.ext.spring</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jettison</groupId>
-			<artifactId>jettison</artifactId>
+			<scope>test</scope>
 		</dependency>
 
-		<!-- ============================== -->
-		<!-- Spring Security -->
-		<!-- ============================== -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-acl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-		</dependency>
-		
-		
-		<dependency>
-			<groupId>it.geosolutions.geobatch</groupId>
-			<artifactId>gb-ftp-server</artifactId>
-		</dependency>
-		
 	</dependencies>
 
 
 	<build>
-		<!-- finalName>geobatch</finalName -->
-
 		<plugins>
 
 			<plugin>
@@ -244,7 +148,17 @@
 	</build>
 
 	<profiles>
-	
+
+		<!-- I wanted to select all action profiles by selecting the "all" profile, 
+			via an internal property definition, but it seems not to work as expected... 
+			You'll need to explicitly set the -Dall env var. -->
+		<profile>
+			<id>all</id>
+			<properties>
+				<all>true</all>
+			</properties>
+		</profile>
+
 
 		<profile>
 			<id>dao.xstream</id>
@@ -263,51 +177,41 @@
 			</dependencies>
 		</profile>
 
-		<!-- I wanted to select all action profiles by selecting the "all" profile, 
-			via an internal property definition, but it seems not to work as expected... 
-			You'll need to explicitly set the -Dall env var. -->
-		<profile>
-			<id>all</id>
-			<properties>
-				<all>true</all>
-			</properties>
-		</profile>
-		
 		<!-- GB-SERVICES================================================= -->
 		<!-- JMS ======================================================== -->
 		<profile>
-            <id>jms</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <dependencies>
+			<id>jms</id>
+			<activation>
+				<property>
+					<name>all</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<dependencies>
 				<dependency>
 					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-jms</artifactId>
 				</dependency>
-			</dependencies> 
-        </profile>
-        
-        <!-- Octave ======================================================== -->
-        <profile>
-            <id>octave</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <dependencies>
+			</dependencies>
+		</profile>
+
+		<!-- Octave ======================================================== -->
+		<profile>
+			<id>octave</id>
+			<activation>
+				<property>
+					<name>all</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<dependencies>
 				<dependency>
 					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-octave</artifactId>
 				</dependency>
 			</dependencies>
-        </profile>
-				
+		</profile>
+
 
 		<!-- ======================================================================== 
 			ACTIONS ======================================================================== 
@@ -318,7 +222,7 @@
 			the overlay mechanism (http://maven.apache.org/plugins/maven-war-plugin/overlays.html) 
 			was checked to accomplish this very task, but when more actions were specified, 
 			only one was choosen to extract the sample data from. -->
-		
+
 		<!-- FreeMarker ================================================== -->
 
 		<profile>
@@ -336,7 +240,7 @@
 					<artifactId>gb-action-freemarker</artifactId>
 				</dependency>
 			</dependencies>
-			
+
 			<build>
 				<plugins>
 					<plugin>
@@ -864,13 +768,42 @@
 					<artifactId>gb-action-imagemosaic</artifactId>
 				</dependency>
 			</dependencies>
+			
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>unpack_imagemosaic</id>
+								<phase>package</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>it.geosolutions.geobatch</groupId>
+											<artifactId>gb-action-imagemosaic</artifactId>
+											<version>${gb.version}</version>
+											<classifier>flowdata</classifier>
+											<type>jar</type>
+											<overWrite>false</overWrite>
+											<outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+											<includes>data/**</includes>
+										</artifactItem>
+									</artifactItems>
+									<overWriteReleases>true</overWriteReleases>
+									<overWriteSnapshots>true</overWriteSnapshots>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 
 	</profiles>
-
-	<properties>
-		<netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
-		<flow.dir>geobatch/WEB-INF/</flow.dir>
-	</properties>
 
 </project>

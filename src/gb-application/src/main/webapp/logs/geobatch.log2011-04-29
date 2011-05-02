@@ -1,0 +1,682 @@
+16:30:58,554  INFO /geobatch:? - Initializing Spring root WebApplicationContext
+16:30:58,558  INFO ContextLoader:187 - Root WebApplicationContext: initialization started
+16:30:58,558  INFO ContextLoader:187 - Root WebApplicationContext: initialization started
+16:30:58,602  INFO XmlWebApplicationContext:456 - Refreshing Root WebApplicationContext: startup date [Fri Apr 29 16:30:58 CEST 2011]; root of context hierarchy
+16:30:58,602  INFO XmlWebApplicationContext:456 - Refreshing Root WebApplicationContext: startup date [Fri Apr 29 16:30:58 CEST 2011]; root of context hierarchy
+16:30:58,679  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/web/target/classes/applicationContext.xml]
+16:30:58,679  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/web/target/classes/applicationContext.xml]
+16:30:58,716  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/ascii-grids/target/classes/applicationContext.xml]
+16:30:58,716  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/ascii-grids/target/classes/applicationContext.xml]
+16:30:58,728  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/gb-geoserver/gb-geoserver-action/target/classes/applicationContext.xml]
+16:30:58,728  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/gb-geoserver/gb-geoserver-action/target/classes/applicationContext.xml]
+16:30:58,739  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/dao/xstream/alias-registry/target/classes/applicationContext.xml]
+16:30:58,739  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/dao/xstream/alias-registry/target/classes/applicationContext.xml]
+16:30:58,748  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/core/impl/target/classes/applicationContext.xml]
+16:30:58,748  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/core/impl/target/classes/applicationContext.xml]
+16:30:58,763  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/test-classes/applicationContext.xml]
+16:30:58,763  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/test-classes/applicationContext.xml]
+16:30:58,773  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/classes/applicationContext.xml]
+16:30:58,773  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/classes/applicationContext.xml]
+16:30:58,786  INFO DefaultListableBeanFactory:612 - Overriding bean definition for bean 'fsEventGeneratorService': replacing [Generic bean: class [it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGeneratorService]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=init; destroyMethodName=dispose; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/test-classes/applicationContext.xml]] with [Generic bean: class [it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGeneratorService]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=init; destroyMethodName=dispose; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/classes/applicationContext.xml]]
+16:30:58,786  INFO DefaultListableBeanFactory:612 - Overriding bean definition for bean 'fsEventGeneratorService': replacing [Generic bean: class [it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGeneratorService]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=init; destroyMethodName=dispose; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/test-classes/applicationContext.xml]] with [Generic bean: class [it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGeneratorService]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=init; destroyMethodName=dispose; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/classes/applicationContext.xml]]
+16:30:58,787  INFO DefaultListableBeanFactory:612 - Overriding bean definition for bean 'fsFlowManagerService': replacing [Generic bean: class [it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=init; destroyMethodName=dispose; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/test-classes/applicationContext.xml]] with [Generic bean: class [it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=init; destroyMethodName=dispose; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/classes/applicationContext.xml]]
+16:30:58,787  INFO DefaultListableBeanFactory:612 - Overriding bean definition for bean 'fsFlowManagerService': replacing [Generic bean: class [it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=init; destroyMethodName=dispose; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/test-classes/applicationContext.xml]] with [Generic bean: class [it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=init; destroyMethodName=dispose; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/file-catalog/target/classes/applicationContext.xml]]
+16:30:58,787  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-fsm/module/monitor/target/classes/applicationContext.xml]
+16:30:58,787  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-fsm/module/monitor/target/classes/applicationContext.xml]
+16:30:58,796  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-fsm/plugin/quartzmonitor/target/classes/applicationContext.xml]
+16:30:58,796  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-fsm/plugin/quartzmonitor/target/classes/applicationContext.xml]
+16:30:58,805  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/gb-freemarker/target/classes/applicationContext.xml]
+16:30:58,805  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/gb-freemarker/target/classes/applicationContext.xml]
+16:30:58,816  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/gb-ftp/target/classes/applicationContext.xml]
+16:30:58,816  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/gb-ftp/target/classes/applicationContext.xml]
+16:30:58,830  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/geotiff/target/classes/applicationContext.xml]
+16:30:58,830  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/geotiff/target/classes/applicationContext.xml]
+16:30:58,843  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/geowebcache/target/classes/applicationContext.xml]
+16:30:58,843  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/geowebcache/target/classes/applicationContext.xml]
+16:30:58,854  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/imagemosaic/target/classes/applicationContext.xml]
+16:30:58,854  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/imagemosaic/target/classes/applicationContext.xml]
+16:30:58,864  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/gb-octave-fileinfileout/target/classes/applicationContext.xml]
+16:30:58,864  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/gb-octave-fileinfileout/target/classes/applicationContext.xml]
+16:30:58,874  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/scripting/target/classes/applicationContext.xml]
+16:30:58,874  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/scripting/target/classes/applicationContext.xml]
+16:30:58,885  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/shapefile/target/classes/applicationContext.xml]
+16:30:58,885  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/shapefile/target/classes/applicationContext.xml]
+16:30:58,895  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/splitting/target/classes/applicationContext.xml]
+16:30:58,895  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/splitting/target/classes/applicationContext.xml]
+16:30:58,904  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/gb-task-executor/target/classes/applicationContext.xml]
+16:30:58,904  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/actions/gb-task-executor/target/classes/applicationContext.xml]
+16:30:58,914  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/dao/xstream/xstream-core/target/classes/applicationContext.xml]
+16:30:58,914  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/dao/xstream/xstream-core/target/classes/applicationContext.xml]
+16:30:58,926  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-ftp-server/target/classes/applicationContext.xml]
+16:30:58,926  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-ftp-server/target/classes/applicationContext.xml]
+16:30:59,154  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-ftp-server/target/classes/applicationContext-database.xml]
+16:30:59,154  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-ftp-server/target/classes/applicationContext-database.xml]
+16:30:59,246  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-ftp-server/target/classes/applicationContext-DAO.xml]
+16:30:59,246  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-ftp-server/target/classes/applicationContext-DAO.xml]
+16:30:59,316  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/users/target/classes/applicationContext.xml]
+16:30:59,316  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/users/target/classes/applicationContext.xml]
+16:30:59,346  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/users/target/classes/applicationContext-database.xml]
+16:30:59,346  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/users/target/classes/applicationContext-database.xml]
+16:30:59,392  INFO DefaultListableBeanFactory:612 - Overriding bean definition for bean 'transactionManager': replacing [Generic bean: class [org.springframework.orm.hibernate3.HibernateTransactionManager]; scope=; abstract=false; lazyInit=false; autowireMode=1; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-ftp-server/target/classes/applicationContext-database.xml]] with [Generic bean: class [org.springframework.orm.hibernate3.HibernateTransactionManager]; scope=; abstract=false; lazyInit=false; autowireMode=1; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/users/target/classes/applicationContext-database.xml]]
+16:30:59,392  INFO DefaultListableBeanFactory:612 - Overriding bean definition for bean 'transactionManager': replacing [Generic bean: class [org.springframework.orm.hibernate3.HibernateTransactionManager]; scope=; abstract=false; lazyInit=false; autowireMode=1; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-ftp-server/target/classes/applicationContext-database.xml]] with [Generic bean: class [org.springframework.orm.hibernate3.HibernateTransactionManager]; scope=; abstract=false; lazyInit=false; autowireMode=1; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null; defined in URL [file:/home/carlo/work/code/java/geobatch-master/src/users/target/classes/applicationContext-database.xml]]
+16:30:59,393  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/users/target/classes/applicationContext-DAO.xml]
+16:30:59,393  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/users/target/classes/applicationContext-DAO.xml]
+16:30:59,436  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-services/gb-jms/target/classes/applicationContext.xml]
+16:30:59,436  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/gb-services/gb-jms/target/classes/applicationContext.xml]
+16:30:59,975  INFO CamelNamespaceHandler:132 - OSGi environment not detected.
+16:31:01,106  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContextSecurity.xml]
+16:31:01,106  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContextSecurity.xml]
+16:31:01,313  INFO HttpSecurityBeanDefinitionParser:187 - Checking sorted filter chain: [Root bean: class [org.springframework.security.web.context.SecurityContextPersistenceFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 300, Root bean: class [org.springframework.security.web.authentication.logout.LogoutFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 400, Root bean: class [org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 800, Root bean: class [org.springframework.security.web.savedrequest.RequestCacheAwareFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1300, Root bean: class [org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1400, Root bean: class [org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1500, Root bean: class [org.springframework.security.web.authentication.AnonymousAuthenticationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1600, Root bean: class [org.springframework.security.web.session.SessionManagementFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1700, Root bean: class [org.springframework.security.web.access.ExceptionTranslationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1800, <org.springframework.security.web.access.intercept.FilterSecurityInterceptor#0>, order = 1900]
+16:31:01,313  INFO HttpSecurityBeanDefinitionParser:187 - Checking sorted filter chain: [Root bean: class [org.springframework.security.web.context.SecurityContextPersistenceFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 300, Root bean: class [org.springframework.security.web.authentication.logout.LogoutFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 400, Root bean: class [org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 800, Root bean: class [org.springframework.security.web.savedrequest.RequestCacheAwareFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1300, Root bean: class [org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1400, Root bean: class [org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1500, Root bean: class [org.springframework.security.web.authentication.AnonymousAuthenticationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1600, Root bean: class [org.springframework.security.web.session.SessionManagementFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1700, Root bean: class [org.springframework.security.web.access.ExceptionTranslationFilter]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null, order = 1800, <org.springframework.security.web.access.intercept.FilterSecurityInterceptor#0>, order = 1900]
+16:31:01,880  INFO PropertyPlaceholderConfigurer:177 - Loading properties file from class path resource [gb.properties]
+16:31:01,880  INFO PropertyPlaceholderConfigurer:177 - Loading properties file from class path resource [gb.properties]
+16:31:01,984  INFO XmlWebApplicationContext:1332 - Bean 'org.springframework.transaction.annotation.AnnotationTransactionAttributeSource#0' is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+16:31:01,984  INFO XmlWebApplicationContext:1332 - Bean 'org.springframework.transaction.annotation.AnnotationTransactionAttributeSource#0' is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+16:31:01,988  INFO XmlWebApplicationContext:1332 - Bean 'org.springframework.transaction.config.internalTransactionAdvisor' is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+16:31:01,988  INFO XmlWebApplicationContext:1332 - Bean 'org.springframework.transaction.config.internalTransactionAdvisor' is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+16:31:02,040  INFO DefaultListableBeanFactory:549 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@71b493c6: defining beans [logger,asciiGeoServerGenerator,geoserverRegistrar,aliasRegistry,loggingListenerConfigRegistrar,cumulatingListenerConfigRegistrar,statusListenerConfigRegistrar,loggingListenerService,cumulatingListenerService,statusListenerService,fsEventGeneratorService,fsFlowManagerService,taskExecutor,catalog,fsmSPIFinder,FSMSPI,FreeMarkerGeneratorService,FreeMarkerAliasRegistrar,ftpUploadActionService,ftpDownloadActionService,ftpDeleteActionService,ftpSupportRegistrar,GeotiffGeoServerService,GeotiffFolderGeoServerService,GeotiffOverviewsEmbedderService,GeotiffRetilerService,FlowGeotiffRegistrar,geowebcacheGeneratorService,gwcRegistrar,ImageMosaicGeneratorService,ImageMosaicAliasRegistrar,OctaveFreeMarkerGeneratorService,OctaveFreeMarkerAliasRegistrar,OctaveAliasRegistrar,ScriptingService,ScriptingRegistrar,ShapeFileGeoServerService,ShapeFileRegistrar,splittingService,splittingRegistrar,TaskExecutorService,TaskExecutorRegistrar,propertyConfigurer,alias,globalConfig,XStreamFlowConfigurationDAOService,dataSource-gb-ftp-server,sessionFactory-gb-ftp-server,org.springframework.aop.config.internalAutoProxyCreator,org.springframework.transaction.annotation.AnnotationTransactionAttributeSource#0,org.springframework.transaction.interceptor.TransactionInterceptor#0,org.springframework.transaction.config.internalTransactionAdvisor,transactionManager,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalPersistenceAnnotationProcessor,ftpPropsDAO,ftpConfigDAO,ftpUserDAO,gbUserManager,geoBatchServer,dataSource-gb-users,sessionFactory-gb-users,gbUserDAO,userFlowAccessDAO,jmsConnectionFactory,pooledConnectionFactory,jmsConfig,activemq,org.apache.activemq.xbean.XBeanBrokerService#0,JMSFlowManager,agent,template,consumerTemplate,camel-server:beanPostProcessor,camel-server,org.springframework.security.web.PortMapperImpl#0,org.springframework.security.web.context.HttpSessionSecurityContextRepository#0,org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy#0,org.springframework.security.authentication.ProviderManager#0,org.springframework.security.access.vote.AffirmativeBased#0,org.springframework.security.web.access.intercept.FilterSecurityInterceptor#0,org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator#0,org.springframework.security.authentication.AnonymousAuthenticationProvider#0,org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices#0,org.springframework.security.authentication.RememberMeAuthenticationProvider#0,org.springframework.security.web.savedrequest.HttpSessionRequestCache#0,org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter#0,org.springframework.security.config.http.UserDetailsServiceInjectionBeanPostProcessor#0,org.springframework.security.filterChainProxy,org.springframework.security.provisioning.JdbcUserDetailsManager#0,org.springframework.security.authentication.dao.DaoAuthenticationProvider#0,org.springframework.security.authentication.DefaultAuthenticationEventPublisher#0,org.springframework.security.authenticationManager]; root of factory hierarchy
+16:31:02,040  INFO DefaultListableBeanFactory:549 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@71b493c6: defining beans [logger,asciiGeoServerGenerator,geoserverRegistrar,aliasRegistry,loggingListenerConfigRegistrar,cumulatingListenerConfigRegistrar,statusListenerConfigRegistrar,loggingListenerService,cumulatingListenerService,statusListenerService,fsEventGeneratorService,fsFlowManagerService,taskExecutor,catalog,fsmSPIFinder,FSMSPI,FreeMarkerGeneratorService,FreeMarkerAliasRegistrar,ftpUploadActionService,ftpDownloadActionService,ftpDeleteActionService,ftpSupportRegistrar,GeotiffGeoServerService,GeotiffFolderGeoServerService,GeotiffOverviewsEmbedderService,GeotiffRetilerService,FlowGeotiffRegistrar,geowebcacheGeneratorService,gwcRegistrar,ImageMosaicGeneratorService,ImageMosaicAliasRegistrar,OctaveFreeMarkerGeneratorService,OctaveFreeMarkerAliasRegistrar,OctaveAliasRegistrar,ScriptingService,ScriptingRegistrar,ShapeFileGeoServerService,ShapeFileRegistrar,splittingService,splittingRegistrar,TaskExecutorService,TaskExecutorRegistrar,propertyConfigurer,alias,globalConfig,XStreamFlowConfigurationDAOService,dataSource-gb-ftp-server,sessionFactory-gb-ftp-server,org.springframework.aop.config.internalAutoProxyCreator,org.springframework.transaction.annotation.AnnotationTransactionAttributeSource#0,org.springframework.transaction.interceptor.TransactionInterceptor#0,org.springframework.transaction.config.internalTransactionAdvisor,transactionManager,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalPersistenceAnnotationProcessor,ftpPropsDAO,ftpConfigDAO,ftpUserDAO,gbUserManager,geoBatchServer,dataSource-gb-users,sessionFactory-gb-users,gbUserDAO,userFlowAccessDAO,jmsConnectionFactory,pooledConnectionFactory,jmsConfig,activemq,org.apache.activemq.xbean.XBeanBrokerService#0,JMSFlowManager,agent,template,consumerTemplate,camel-server:beanPostProcessor,camel-server,org.springframework.security.web.PortMapperImpl#0,org.springframework.security.web.context.HttpSessionSecurityContextRepository#0,org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy#0,org.springframework.security.authentication.ProviderManager#0,org.springframework.security.access.vote.AffirmativeBased#0,org.springframework.security.web.access.intercept.FilterSecurityInterceptor#0,org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator#0,org.springframework.security.authentication.AnonymousAuthenticationProvider#0,org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices#0,org.springframework.security.authentication.RememberMeAuthenticationProvider#0,org.springframework.security.web.savedrequest.HttpSessionRequestCache#0,org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter#0,org.springframework.security.config.http.UserDetailsServiceInjectionBeanPostProcessor#0,org.springframework.security.filterChainProxy,org.springframework.security.provisioning.JdbcUserDetailsManager#0,org.springframework.security.authentication.dao.DaoAuthenticationProvider#0,org.springframework.security.authentication.DefaultAuthenticationEventPublisher#0,org.springframework.security.authenticationManager]; root of factory hierarchy
+16:31:02,295  INFO AbstractCamelContextFactoryBean:321 - JMXAgent enabled: CamelJMXAgent[usePlatformMBeanServer=true, createConnector=true, statisticsLevel=All]
+16:31:02,853  INFO AnnotationTypeConverterLoader:80 - Found 4 packages with 15 @Converter classes to load
+16:31:02,891  INFO DefaultTypeConverter:408 - Loaded 150 type converters in 0.582 seconds
+16:31:02,996  INFO AliasRegistrar:37 - GeoServerAliasRegistrar: registering alias.
+16:31:02,996  INFO AliasRegistrar:37 - GeoServerAliasRegistrar: registering alias.
+16:31:02,996  INFO AliasRegistrar:50 - Adding alias GeoServerActionConfiguration for class GeoServerActionConfiguration
+16:31:02,996  INFO AliasRegistrar:50 - Adding alias GeoServerActionConfiguration for class GeoServerActionConfiguration
+16:31:03,008  INFO AliasRegistrar:43 - LoggingProgressListenerConfigurationAliasRegistrar: registering alias.
+16:31:03,008  INFO AliasRegistrar:43 - LoggingProgressListenerConfigurationAliasRegistrar: registering alias.
+16:31:03,009  INFO AliasRegistrar:50 - Adding alias LoggingProgressListener for class LoggingProgressListenerConfiguration
+16:31:03,009  INFO AliasRegistrar:50 - Adding alias LoggingProgressListener for class LoggingProgressListenerConfiguration
+16:31:03,031  INFO AliasRegistrar:43 - CumulatingProgressListenerConfigurationAliasRegistrar: registering alias.
+16:31:03,031  INFO AliasRegistrar:43 - CumulatingProgressListenerConfigurationAliasRegistrar: registering alias.
+16:31:03,032  INFO AliasRegistrar:50 - Adding alias CumulatingProgressListener for class CumulatingProgressListenerConfiguration
+16:31:03,032  INFO AliasRegistrar:50 - Adding alias CumulatingProgressListener for class CumulatingProgressListenerConfiguration
+16:31:03,042  INFO AliasRegistrar:43 - StatusProgressListenerConfigurationAliasRegistrar: registering alias.
+16:31:03,042  INFO AliasRegistrar:43 - StatusProgressListenerConfigurationAliasRegistrar: registering alias.
+16:31:03,043  INFO AliasRegistrar:50 - Adding alias StatusProgressListener for class StatusProgressListenerConfiguration
+16:31:03,043  INFO AliasRegistrar:50 - Adding alias StatusProgressListener for class StatusProgressListenerConfiguration
+16:31:03,179  INFO ThreadPoolTaskExecutor:115 - Initializing ExecutorService  'taskExecutor'
+16:31:03,179  INFO ThreadPoolTaskExecutor:115 - Initializing ExecutorService  'taskExecutor'
+16:31:03,241  INFO AliasRegistrar:36 - FreeMarkerAliasRegistrar: registering alias.
+16:31:03,241  INFO AliasRegistrar:36 - FreeMarkerAliasRegistrar: registering alias.
+16:31:03,242  INFO AliasRegistrar:50 - Adding alias FreeMarker for class FreeMarkerConfiguration
+16:31:03,242  INFO AliasRegistrar:50 - Adding alias FreeMarker for class FreeMarkerConfiguration
+16:31:03,315  INFO AliasRegistrar:46 - FTPAliasRegistrar: registering alias.
+16:31:03,315  INFO AliasRegistrar:46 - FTPAliasRegistrar: registering alias.
+16:31:03,315  INFO AliasRegistrar:50 - Adding alias FTPActionConfiguration for class FTPActionConfiguration
+16:31:03,315  INFO AliasRegistrar:50 - Adding alias FTPActionConfiguration for class FTPActionConfiguration
+16:31:03,423  INFO AliasRegistrar:36 - GeotiffAliasRegistrar: registering alias.
+16:31:03,423  INFO AliasRegistrar:36 - GeotiffAliasRegistrar: registering alias.
+16:31:03,424  INFO AliasRegistrar:50 - Adding alias GeotiffOverviewsEmbedderConfiguration for class GeotiffOverviewsEmbedderConfiguration
+16:31:03,424  INFO AliasRegistrar:50 - Adding alias GeotiffOverviewsEmbedderConfiguration for class GeotiffOverviewsEmbedderConfiguration
+16:31:03,424  INFO AliasRegistrar:50 - Adding alias GeotiffRetilerConfiguration for class GeotiffRetilerConfiguration
+16:31:03,424  INFO AliasRegistrar:50 - Adding alias GeotiffRetilerConfiguration for class GeotiffRetilerConfiguration
+16:31:03,434  INFO AliasRegistrar:16 - GWCAliasRegistrar: registering alias.
+16:31:03,434  INFO AliasRegistrar:16 - GWCAliasRegistrar: registering alias.
+16:31:03,435  INFO AliasRegistrar:50 - Adding alias GeoWebCacheActionConfiguration for class GeoWebCacheActionConfiguration
+16:31:03,435  INFO AliasRegistrar:50 - Adding alias GeoWebCacheActionConfiguration for class GeoWebCacheActionConfiguration
+16:31:03,489  INFO AliasRegistrar:36 - ImageMosaicAliasRegistrar: registering alias.
+16:31:03,489  INFO AliasRegistrar:36 - ImageMosaicAliasRegistrar: registering alias.
+16:31:03,490  INFO AliasRegistrar:50 - Adding alias ImageMosaicActionConfiguration for class ImageMosaicConfiguration
+16:31:03,490  INFO AliasRegistrar:50 - Adding alias ImageMosaicActionConfiguration for class ImageMosaicConfiguration
+16:31:03,529  INFO AliasRegistrar:36 - OctaveFreeMarkerAliasRegistrar: registering alias.
+16:31:03,529  INFO AliasRegistrar:36 - OctaveFreeMarkerAliasRegistrar: registering alias.
+16:31:03,529  INFO AliasRegistrar:50 - Adding alias OctaveFreeMarkerConfiguration for class OctaveFreeMarkerConfiguration
+16:31:03,529  INFO AliasRegistrar:50 - Adding alias OctaveFreeMarkerConfiguration for class OctaveFreeMarkerConfiguration
+16:31:03,540  INFO AliasRegistrar:44 - OctaveAliasRegistrar: registering alias.
+16:31:03,540  INFO AliasRegistrar:44 - OctaveAliasRegistrar: registering alias.
+16:31:03,540  INFO AliasRegistrar:50 - Adding alias OctaveConfiguration for class OctaveActionConfiguration
+16:31:03,540  INFO AliasRegistrar:50 - Adding alias OctaveConfiguration for class OctaveActionConfiguration
+16:31:03,542  INFO AliasRegistrar:50 - Adding alias octave for class OctaveEnv
+16:31:03,542  INFO AliasRegistrar:50 - Adding alias octave for class OctaveEnv
+16:31:03,544  INFO AliasRegistrar:50 - Adding alias sheet for class OctaveExecutableSheet
+16:31:03,544  INFO AliasRegistrar:50 - Adding alias sheet for class OctaveExecutableSheet
+16:31:03,545  INFO AliasRegistrar:50 - Adding alias sheet for class OctaveFunctionSheet
+16:31:03,545  INFO AliasRegistrar:50 - Adding alias sheet for class OctaveFunctionSheet
+16:31:03,547  INFO AliasRegistrar:50 - Adding alias OctaveCommand for class OctaveCommand
+16:31:03,547  INFO AliasRegistrar:50 - Adding alias OctaveCommand for class OctaveCommand
+16:31:03,548  INFO AliasRegistrar:50 - Adding alias OctaveFunction for class OctaveFunctionFile
+16:31:03,548  INFO AliasRegistrar:50 - Adding alias OctaveFunction for class OctaveFunctionFile
+16:31:03,552  INFO AliasRegistrar:50 - Adding alias OctaveFile for class SerializableOctaveFile
+16:31:03,552  INFO AliasRegistrar:50 - Adding alias OctaveFile for class SerializableOctaveFile
+16:31:03,552  INFO AliasRegistrar:50 - Adding alias OctaveString for class SerializableOctaveString
+16:31:03,552  INFO AliasRegistrar:50 - Adding alias OctaveString for class SerializableOctaveString
+16:31:03,552  INFO AliasRegistrar:50 - Adding alias var for class SerializableOctaveObject
+16:31:03,552  INFO AliasRegistrar:50 - Adding alias var for class SerializableOctaveObject
+16:31:03,587  INFO AliasRegistrar:36 - ScriptingAliasRegistrar: registering alias.
+16:31:03,587  INFO AliasRegistrar:36 - ScriptingAliasRegistrar: registering alias.
+16:31:03,588  INFO AliasRegistrar:50 - Adding alias ScriptingConfiguration for class ScriptingConfiguration
+16:31:03,588  INFO AliasRegistrar:50 - Adding alias ScriptingConfiguration for class ScriptingConfiguration
+16:31:03,624  INFO AliasRegistrar:37 - ShapeFileAliasRegistrar: registering alias.
+16:31:03,624  INFO AliasRegistrar:37 - ShapeFileAliasRegistrar: registering alias.
+16:31:03,624  INFO AliasRegistrar:50 - Adding alias GeoServerActionConfiguration for class GeoServerActionConfiguration
+16:31:03,624  INFO AliasRegistrar:50 - Adding alias GeoServerActionConfiguration for class GeoServerActionConfiguration
+16:31:03,665  INFO AliasRegistrar:36 - SplittingAliasRegistrar: registering alias.
+16:31:03,665  INFO AliasRegistrar:36 - SplittingAliasRegistrar: registering alias.
+16:31:03,666  INFO AliasRegistrar:50 - Adding alias SplittingConfiguration for class SplittingConfiguration
+16:31:03,666  INFO AliasRegistrar:50 - Adding alias SplittingConfiguration for class SplittingConfiguration
+16:31:03,702  INFO AliasRegistrar:36 - TaskExecutorAliasRegistrar: registering alias.
+16:31:03,702  INFO AliasRegistrar:36 - TaskExecutorAliasRegistrar: registering alias.
+16:31:03,702  INFO AliasRegistrar:50 - Adding alias TaskExecutorConfiguration for class TaskExecutorConfiguration
+16:31:03,702  INFO AliasRegistrar:50 - Adding alias TaskExecutorConfiguration for class TaskExecutorConfiguration
+16:31:03,731  INFO XStreamCatalogLoader:193 - data dir read from property
+16:31:03,837  INFO Alias:54 - Setting aliases.
+16:31:03,837  INFO Alias:54 - Setting aliases.
+16:31:03,910  INFO XStreamCatalogDAO:74 - XStreamCatalogDAO:: FOUND catalog>FileBasedCatalogConfiguration[id:catalog, workingDirectory:/home/carlo/work/data, name:nameFileBasedCatalogConfiguration]<
+16:31:03,940  INFO XStreamCatalogLoader:127 - Loading service asciiGeoServerGenerator (class it.geosolutions.geobatch.geoserver.ascii.AsciiGeoServerGeneratorService)
+16:31:03,943  INFO XStreamCatalogLoader:127 - Loading service loggingListenerService (class it.geosolutions.geobatch.flow.event.listeners.logger.LoggingProgressListenerService)
+16:31:03,944  INFO XStreamCatalogLoader:127 - Loading service cumulatingListenerService (class it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListenerService)
+16:31:03,944  INFO XStreamCatalogLoader:127 - Loading service statusListenerService (class it.geosolutions.geobatch.flow.event.listeners.status.StatusProgressListenerService)
+16:31:03,944  INFO XStreamCatalogLoader:127 - Loading service fsEventGeneratorService (class it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGeneratorService)
+16:31:03,945  INFO XStreamCatalogLoader:127 - Loading service fsFlowManagerService (class it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService)
+16:31:03,945  INFO XStreamCatalogLoader:127 - Loading service FreeMarkerGeneratorService (class it.geosolutions.geobatch.actions.freemarker.FreeMarkerGeneratorService)
+16:31:03,945  INFO XStreamCatalogLoader:127 - Loading service ftpUploadActionService (class it.geosolutions.geobatch.ftp.client.upload.FTPUploadActionService)
+16:31:03,945  INFO XStreamCatalogLoader:127 - Loading service ftpDownloadActionService (class it.geosolutions.geobatch.ftp.client.download.FTPDownloadActionService)
+16:31:03,945  INFO XStreamCatalogLoader:127 - Loading service ftpDeleteActionService (class it.geosolutions.geobatch.ftp.client.delete.FTPDeleteActionService)
+16:31:03,946  INFO XStreamCatalogLoader:127 - Loading service GeotiffGeoServerService (class it.geosolutions.geobatch.geotiff.publish.GeotiffGeoServerService)
+16:31:03,946  INFO XStreamCatalogLoader:127 - Loading service GeotiffFolderGeoServerService (class it.geosolutions.geobatch.geotiff.publish.GeotiffFolderGeoServerService)
+16:31:03,946  INFO XStreamCatalogLoader:127 - Loading service GeotiffOverviewsEmbedderService (class it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderService)
+16:31:03,946  INFO XStreamCatalogLoader:127 - Loading service GeotiffRetilerService (class it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerService)
+16:31:03,947  INFO XStreamCatalogLoader:127 - Loading service geowebcacheGeneratorService (class it.geosolutions.geobatch.gwc.GWCGeneratorService)
+16:31:03,947  INFO XStreamCatalogLoader:127 - Loading service ImageMosaicGeneratorService (class it.geosolutions.geobatch.imagemosaic.ImageMosaicGeneratorService)
+16:31:03,947  INFO XStreamCatalogLoader:127 - Loading service OctaveFreeMarkerGeneratorService (class it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMarkerGeneratorService)
+16:31:03,947  INFO XStreamCatalogLoader:127 - Loading service ScriptingService (class it.geosolutions.geobatch.action.scripting.ScriptingService)
+16:31:03,947  INFO XStreamCatalogLoader:127 - Loading service ShapeFileGeoServerService (class it.geosolutions.geobatch.geoserver.shapefile.ShapeFileGeoServerService)
+16:31:03,948  INFO XStreamCatalogLoader:127 - Loading service splittingService (class it.geosolutions.geobatch.action.splitting.SplittingService)
+16:31:03,948  INFO XStreamCatalogLoader:127 - Loading service TaskExecutorService (class it.geosolutions.geobatch.task.TaskExecutorService)
+16:31:03,948  INFO XStreamCatalogLoader:127 - Loading service XStreamFlowConfigurationDAOService (class it.geosolutions.geobatch.catalog.dao.file.xstream.XStreamDAOService)
+16:31:03,966  INFO XStreamCatalogLoader:148 - Loading flow from file /home/carlo/work/data/shapeFileSparse.xml
+16:31:03,973  INFO Alias:54 - Setting aliases.
+16:31:03,973  INFO Alias:54 - Setting aliases.
+16:31:04,000  INFO FlowManager:187 - FileBasedFlowManager:initialize(): Automatic Flow Startup for 'catalog'
+16:31:04,000  INFO FlowManager:372 - FileBasedFlowManager::resume(): RESUMING ->shapeFileSparse
+16:31:04,001  INFO FlowManager:379 - FileBasedFlowManager::resume(): STARTED ->shapeFileSparse
+16:31:04,002  INFO XStreamCatalogLoader:166 - Loaded flow from file /home/carlo/work/data/shapeFileSparse.xml
+16:31:04,002  INFO XStreamCatalogLoader:148 - Loading flow from file /home/carlo/work/data/FreeMarkerFlow.xml
+16:31:04,005  INFO FlowManager:331 - FileBasedFlowManager:createGenerator(): EventGeneratorCreationServiceID: fsEventGeneratorService
+16:31:04,006  INFO FlowManager:337 - FileBasedFlowManager:createGenerator(): EventGeneratorService found
+16:31:04,009  INFO FileBasedEventDispatcher:86 - FileBasedEventDispatcher is ready to dispatch Events to flow shapeFileSparse(Shapefile)
+16:31:04,009  INFO FileBasedEventDispatcher:86 - FileBasedEventDispatcher is ready to dispatch Events to flow shapeFileSparse(Shapefile)
+16:31:04,010  INFO Alias:54 - Setting aliases.
+16:31:04,010  INFO Alias:54 - Setting aliases.
+16:31:04,030  INFO FlowManager:187 - FileBasedFlowManager:initialize(): Automatic Flow Startup for 'catalog'
+16:31:04,030  INFO FlowManager:372 - FileBasedFlowManager::resume(): RESUMING ->FreeMarkerFlow
+16:31:04,031  INFO FlowManager:379 - FileBasedFlowManager::resume(): STARTED ->FreeMarkerFlow
+16:31:04,031  INFO XStreamCatalogLoader:166 - Loaded flow from file /home/carlo/work/data/FreeMarkerFlow.xml
+16:31:04,032  INFO XStreamCatalogLoader:148 - Loading flow from file /home/carlo/work/data/briseide.xml
+16:31:04,032  INFO FlowManager:331 - FileBasedFlowManager:createGenerator(): EventGeneratorCreationServiceID: fsEventGeneratorService
+16:31:04,032  INFO FileBasedEventDispatcher:86 - FileBasedEventDispatcher is ready to dispatch Events to flow FreeMarkerFlow(FreeMarkerFlow)
+16:31:04,032  INFO FlowManager:337 - FileBasedFlowManager:createGenerator(): EventGeneratorService found
+16:31:04,032  INFO FileBasedEventDispatcher:86 - FileBasedEventDispatcher is ready to dispatch Events to flow FreeMarkerFlow(FreeMarkerFlow)
+16:31:04,036  INFO Alias:54 - Setting aliases.
+16:31:04,036  INFO Alias:54 - Setting aliases.
+16:31:04,066 ERROR XStreamFlowConfigurationDAO:155 - FileBasedFlowConfiguration FileBasedFlowConfiguration[id:briseide, name:Prepare GeoTIFF and publish, sid:null, wdir:briseide, egcfg:FileBasedEventGeneratorConfiguration[id:BRISEIDE_g0 srvId:fsEventGeneratorService name:BRISEIDE_generator drty:false]] declares an invalid listener in an action configuration 'GeoTIFFStatusActionLogger0'
+16:31:04,067 ERROR XStreamFlowConfigurationDAO:155 - FileBasedFlowConfiguration FileBasedFlowConfiguration[id:briseide, name:Prepare GeoTIFF and publish, sid:null, wdir:briseide, egcfg:FileBasedEventGeneratorConfiguration[id:BRISEIDE_g0 srvId:fsEventGeneratorService name:BRISEIDE_generator drty:false]] declares an invalid listener in an action configuration 'GeoTIFFStatusActionLogger0'
+16:31:04,067  INFO FlowManager:187 - FileBasedFlowManager:initialize(): Automatic Flow Startup for 'catalog'
+16:31:04,067  INFO FlowManager:372 - FileBasedFlowManager::resume(): RESUMING ->briseide
+16:31:04,068  INFO FlowManager:379 - FileBasedFlowManager::resume(): STARTED ->briseide
+16:31:04,068  INFO XStreamCatalogLoader:166 - Loaded flow from file /home/carlo/work/data/briseide.xml
+16:31:04,068  INFO XStreamCatalogLoader:148 - Loading flow from file /home/carlo/work/data/shapeFile.xml
+16:31:04,071  INFO Alias:54 - Setting aliases.
+16:31:04,071  INFO Alias:54 - Setting aliases.
+16:31:04,087  INFO FlowManager:331 - FileBasedFlowManager:createGenerator(): EventGeneratorCreationServiceID: fsEventGeneratorService
+16:31:04,087  INFO FileBasedEventDispatcher:86 - FileBasedEventDispatcher is ready to dispatch Events to flow briseide(Prepare GeoTIFF and publish)
+16:31:04,087  INFO FlowManager:337 - FileBasedFlowManager:createGenerator(): EventGeneratorService found
+16:31:04,087  INFO FileBasedEventDispatcher:86 - FileBasedEventDispatcher is ready to dispatch Events to flow briseide(Prepare GeoTIFF and publish)
+16:31:04,095  INFO FlowManager:187 - FileBasedFlowManager:initialize(): Automatic Flow Startup for 'catalog'
+16:31:04,095  INFO FlowManager:372 - FileBasedFlowManager::resume(): RESUMING ->shapeFile
+16:31:04,096  INFO FlowManager:379 - FileBasedFlowManager::resume(): STARTED ->shapeFile
+16:31:04,096  INFO XStreamCatalogLoader:166 - Loaded flow from file /home/carlo/work/data/shapeFile.xml
+16:31:04,096  INFO XStreamCatalogLoader:148 - Loading flow from file /home/carlo/work/data/briseide_2.xml
+16:31:04,097  INFO FlowManager:331 - FileBasedFlowManager:createGenerator(): EventGeneratorCreationServiceID: fsEventGeneratorService
+16:31:04,097  INFO FileBasedEventDispatcher:86 - FileBasedEventDispatcher is ready to dispatch Events to flow shapeFile(Shapefile)
+16:31:04,097  INFO FlowManager:337 - FileBasedFlowManager:createGenerator(): EventGeneratorService found
+16:31:04,097  INFO FileBasedEventDispatcher:86 - FileBasedEventDispatcher is ready to dispatch Events to flow shapeFile(Shapefile)
+16:31:04,101  INFO Alias:54 - Setting aliases.
+16:31:04,101  INFO Alias:54 - Setting aliases.
+16:31:04,130 ERROR XStreamFlowConfigurationDAO:155 - FileBasedFlowConfiguration FileBasedFlowConfiguration[id:briseide_2, name:Prepare GeoTIFF and publish, sid:null, wdir:briseide_2, egcfg:FileBasedEventGeneratorConfiguration[id:id srvId:fsEventGeneratorService name:test drty:false]] declares an invalid listener in an action configuration 'ScriptActionLogger0'
+16:31:04,131 ERROR XStreamFlowConfigurationDAO:155 - FileBasedFlowConfiguration FileBasedFlowConfiguration[id:briseide_2, name:Prepare GeoTIFF and publish, sid:null, wdir:briseide_2, egcfg:FileBasedEventGeneratorConfiguration[id:id srvId:fsEventGeneratorService name:test drty:false]] declares an invalid listener in an action configuration 'ScriptActionStatus0'
+16:31:04,132  INFO FlowManager:187 - FileBasedFlowManager:initialize(): Automatic Flow Startup for 'catalog'
+16:31:04,132  INFO FlowManager:372 - FileBasedFlowManager::resume(): RESUMING ->briseide_2
+16:31:04,133  INFO FlowManager:379 - FileBasedFlowManager::resume(): STARTED ->briseide_2
+16:31:04,133  INFO XStreamCatalogLoader:166 - Loaded flow from file /home/carlo/work/data/briseide_2.xml
+16:31:04,146  INFO FlowManager:331 - FileBasedFlowManager:createGenerator(): EventGeneratorCreationServiceID: fsEventGeneratorService
+16:31:04,147  INFO FlowManager:337 - FileBasedFlowManager:createGenerator(): EventGeneratorService found
+16:31:04,154  INFO FileBasedEventDispatcher:86 - FileBasedEventDispatcher is ready to dispatch Events to flow briseide_2(Prepare GeoTIFF and publish)
+16:31:04,154  INFO FileBasedEventDispatcher:86 - FileBasedEventDispatcher is ready to dispatch Events to flow briseide_2(Prepare GeoTIFF and publish)
+16:31:04,155  INFO MLog:80 - MLog clients using log4j logging.
+16:31:04,244  INFO C3P0Registry:204 - Initializing c3p0-0.9.1 [built 16-January-2007 14:46:42; debug? true; trace: 10]
+16:31:04,427  INFO Version:15 - Hibernate Annotations 3.3.1.GA
+16:31:04,427  INFO Version:15 - Hibernate Annotations 3.3.1.GA
+16:31:04,449  INFO Environment:514 - Hibernate 3.2.6
+16:31:04,449  INFO Environment:514 - Hibernate 3.2.6
+16:31:04,457  INFO Environment:547 - hibernate.properties not found
+16:31:04,457  INFO Environment:547 - hibernate.properties not found
+16:31:04,462  INFO Environment:681 - Bytecode provider name : cglib
+16:31:04,462  INFO Environment:681 - Bytecode provider name : cglib
+16:31:04,469  INFO Environment:598 - using JDK 1.4 java.sql.Timestamp handling
+16:31:04,469  INFO Environment:598 - using JDK 1.4 java.sql.Timestamp handling
+16:31:04,634  INFO Version:14 - Hibernate Commons Annotations 3.1.0.GA
+16:31:04,634  INFO Version:14 - Hibernate Commons Annotations 3.1.0.GA
+16:31:04,647  INFO Configuration:1447 - configuring from url: file:/home/carlo/work/code/java/geobatch-master/src/gb-ftp-server/target/classes/hibernate-gb-ftp-server.cfg.xml
+16:31:04,647  INFO Configuration:1447 - configuring from url: file:/home/carlo/work/code/java/geobatch-master/src/gb-ftp-server/target/classes/hibernate-gb-ftp-server.cfg.xml
+16:31:04,751  INFO Configuration:1547 - Configured SessionFactory: null
+16:31:04,751  INFO Configuration:1547 - Configured SessionFactory: null
+16:31:04,856  INFO AnnotationBinder:418 - Binding entity from annotated class: it.geosolutions.geobatch.ftpserver.model.FtpProps
+16:31:04,856  INFO AnnotationBinder:418 - Binding entity from annotated class: it.geosolutions.geobatch.ftpserver.model.FtpProps
+16:31:04,945  INFO EntityBinder:424 - Bind entity it.geosolutions.geobatch.ftpserver.model.FtpProps on table FTP_USER_PROP
+16:31:04,945  INFO EntityBinder:424 - Bind entity it.geosolutions.geobatch.ftpserver.model.FtpProps on table FTP_USER_PROP
+16:31:05,035  INFO AnnotationBinder:418 - Binding entity from annotated class: it.geosolutions.geobatch.ftpserver.model.FtpServerConfig
+16:31:05,035  INFO AnnotationBinder:418 - Binding entity from annotated class: it.geosolutions.geobatch.ftpserver.model.FtpServerConfig
+16:31:05,036  INFO EntityBinder:424 - Bind entity it.geosolutions.geobatch.ftpserver.model.FtpServerConfig on table FTP_SERVER_CONFIG
+16:31:05,036  INFO EntityBinder:424 - Bind entity it.geosolutions.geobatch.ftpserver.model.FtpServerConfig on table FTP_SERVER_CONFIG
+16:31:05,050  INFO AnnotationConfiguration:365 - Hibernate Validator not found: ignoring
+16:31:05,050  INFO AnnotationConfiguration:365 - Hibernate Validator not found: ignoring
+16:31:05,050  INFO LocalSessionFactoryBean:772 - Building new Hibernate SessionFactory
+16:31:05,050  INFO LocalSessionFactoryBean:772 - Building new Hibernate SessionFactory
+16:31:05,181  INFO ConnectionProviderFactory:72 - Initializing connection provider: org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider
+16:31:05,181  INFO ConnectionProviderFactory:72 - Initializing connection provider: org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider
+16:31:05,283  INFO AbstractPoolBackedDataSource:462 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> z8kfsx8f18uvkt21jkyws7|576eeb9, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> org.h2.Driver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> z8kfsx8f18uvkt21jkyws7|576eeb9, idleConnectionTestPeriod -> 0, initialPoolSize -> 3, jdbcUrl -> jdbc:h2:ftpusers, lastAcquisitionFailureDefaultUser -> null, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 10, maxStatements -> 100, maxStatementsPerConnection -> 0, minPoolSize -> 4, numHelperThreads -> 3, numThreadsAwaitingCheckoutDefaultUser -> 0, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, usesTraditionalReflectiveProxies -> false ]
+16:31:06,272  INFO SettingsFactory:89 - RDBMS: H2, version: 1.1.119 (2009-09-26)
+16:31:06,272  INFO SettingsFactory:89 - RDBMS: H2, version: 1.1.119 (2009-09-26)
+16:31:06,273  INFO SettingsFactory:90 - JDBC driver: H2 JDBC Driver, version: 1.1.119 (2009-09-26)
+16:31:06,273  INFO SettingsFactory:90 - JDBC driver: H2 JDBC Driver, version: 1.1.119 (2009-09-26)
+16:31:06,309  INFO Dialect:152 - Using dialect: org.hibernate.dialect.H2Dialect
+16:31:06,309  INFO Dialect:152 - Using dialect: org.hibernate.dialect.H2Dialect
+16:31:06,317  INFO TransactionFactoryFactory:34 - Transaction strategy: org.hibernate.transaction.JDBCTransactionFactory
+16:31:06,317  INFO TransactionFactoryFactory:34 - Transaction strategy: org.hibernate.transaction.JDBCTransactionFactory
+16:31:06,321  INFO TransactionManagerLookupFactory:33 - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+16:31:06,321  INFO TransactionManagerLookupFactory:33 - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+16:31:06,322  INFO SettingsFactory:143 - Automatic flush during beforeCompletion(): disabled
+16:31:06,322  INFO SettingsFactory:143 - Automatic flush during beforeCompletion(): disabled
+16:31:06,322  INFO SettingsFactory:147 - Automatic session close at end of transaction: disabled
+16:31:06,322  INFO SettingsFactory:147 - Automatic session close at end of transaction: disabled
+16:31:06,322  INFO SettingsFactory:154 - JDBC batch size: 15
+16:31:06,322  INFO SettingsFactory:154 - JDBC batch size: 15
+16:31:06,323  INFO SettingsFactory:157 - JDBC batch updates for versioned data: disabled
+16:31:06,323  INFO SettingsFactory:157 - JDBC batch updates for versioned data: disabled
+16:31:06,324  INFO SettingsFactory:162 - Scrollable result sets: enabled
+16:31:06,324  INFO SettingsFactory:162 - Scrollable result sets: enabled
+16:31:06,324  INFO SettingsFactory:170 - JDBC3 getGeneratedKeys(): enabled
+16:31:06,324  INFO SettingsFactory:170 - JDBC3 getGeneratedKeys(): enabled
+16:31:06,325  INFO SettingsFactory:178 - Connection release mode: auto
+16:31:06,325  INFO SettingsFactory:178 - Connection release mode: auto
+16:31:06,326  INFO SettingsFactory:205 - Default batch fetch size: 1
+16:31:06,326  INFO SettingsFactory:205 - Default batch fetch size: 1
+16:31:06,327  INFO SettingsFactory:209 - Generate SQL with comments: disabled
+16:31:06,327  INFO SettingsFactory:209 - Generate SQL with comments: disabled
+16:31:06,327  INFO SettingsFactory:213 - Order SQL updates by primary key: disabled
+16:31:06,327  INFO SettingsFactory:213 - Order SQL updates by primary key: disabled
+16:31:06,327  INFO SettingsFactory:217 - Order SQL inserts for batching: disabled
+16:31:06,327  INFO SettingsFactory:217 - Order SQL inserts for batching: disabled
+16:31:06,327  INFO SettingsFactory:386 - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+16:31:06,327  INFO SettingsFactory:386 - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+16:31:06,334  INFO ASTQueryTranslatorFactory:24 - Using ASTQueryTranslatorFactory
+16:31:06,334  INFO ASTQueryTranslatorFactory:24 - Using ASTQueryTranslatorFactory
+16:31:06,334  INFO SettingsFactory:225 - Query language substitutions: {}
+16:31:06,334  INFO SettingsFactory:225 - Query language substitutions: {}
+16:31:06,334  INFO SettingsFactory:230 - JPA-QL strict compliance: disabled
+16:31:06,334  INFO SettingsFactory:230 - JPA-QL strict compliance: disabled
+16:31:06,335  INFO SettingsFactory:235 - Second-level cache: enabled
+16:31:06,335  INFO SettingsFactory:235 - Second-level cache: enabled
+16:31:06,335  INFO SettingsFactory:239 - Query cache: disabled
+16:31:06,335  INFO SettingsFactory:239 - Query cache: disabled
+16:31:06,335  INFO SettingsFactory:373 - Cache provider: org.hibernate.cache.NoCacheProvider
+16:31:06,335  INFO SettingsFactory:373 - Cache provider: org.hibernate.cache.NoCacheProvider
+16:31:06,336  INFO SettingsFactory:254 - Optimize cache for minimal puts: disabled
+16:31:06,336  INFO SettingsFactory:254 - Optimize cache for minimal puts: disabled
+16:31:06,336  INFO SettingsFactory:263 - Structured second-level cache entries: disabled
+16:31:06,336  INFO SettingsFactory:263 - Structured second-level cache entries: disabled
+16:31:06,348  INFO SettingsFactory:290 - Statistics: disabled
+16:31:06,348  INFO SettingsFactory:290 - Statistics: disabled
+16:31:06,348  INFO SettingsFactory:294 - Deleted entity synthetic identifier rollback: disabled
+16:31:06,348  INFO SettingsFactory:294 - Deleted entity synthetic identifier rollback: disabled
+16:31:06,350  INFO SettingsFactory:309 - Default entity-mode: pojo
+16:31:06,350  INFO SettingsFactory:309 - Default entity-mode: pojo
+16:31:06,353  INFO SettingsFactory:313 - Named query checking : enabled
+16:31:06,353  INFO SettingsFactory:313 - Named query checking : enabled
+16:31:06,391  INFO SessionFactoryImpl:161 - building session factory
+16:31:06,391  INFO SessionFactoryImpl:161 - building session factory
+16:31:06,713  INFO SessionFactoryObjectFactory:82 - Not binding factory to JNDI, no JNDI name configured
+16:31:06,713  INFO SessionFactoryObjectFactory:82 - Not binding factory to JNDI, no JNDI name configured
+16:31:06,719  INFO SchemaUpdate:115 - Running hbm2ddl schema update
+16:31:06,719  INFO SchemaUpdate:115 - Running hbm2ddl schema update
+16:31:06,720  INFO SchemaUpdate:126 - fetching database metadata
+16:31:06,720  INFO SchemaUpdate:126 - fetching database metadata
+16:31:06,752  INFO SchemaUpdate:138 - updating schema
+16:31:06,752  INFO SchemaUpdate:138 - updating schema
+16:31:06,769  INFO DatabaseMetadata:96 - table not found: FTP_SERVER_CONFIG
+16:31:06,769  INFO DatabaseMetadata:96 - table not found: FTP_SERVER_CONFIG
+16:31:06,772  INFO DatabaseMetadata:96 - table not found: FTP_USER_PROP
+16:31:06,772  INFO DatabaseMetadata:96 - table not found: FTP_USER_PROP
+16:31:06,774  INFO DatabaseMetadata:96 - table not found: FTP_SERVER_CONFIG
+16:31:06,774  INFO DatabaseMetadata:96 - table not found: FTP_SERVER_CONFIG
+16:31:06,776  INFO DatabaseMetadata:96 - table not found: FTP_USER_PROP
+16:31:06,776  INFO DatabaseMetadata:96 - table not found: FTP_USER_PROP
+16:31:06,795  INFO SchemaUpdate:160 - schema update complete
+16:31:06,795  INFO SchemaUpdate:160 - schema update complete
+16:31:06,868  INFO Configuration:1447 - configuring from url: file:/home/carlo/work/code/java/geobatch-master/src/users/target/classes/hibernate-gb-users.cfg.xml
+16:31:06,868  INFO Configuration:1447 - configuring from url: file:/home/carlo/work/code/java/geobatch-master/src/users/target/classes/hibernate-gb-users.cfg.xml
+16:31:06,879  INFO Configuration:1547 - Configured SessionFactory: null
+16:31:06,879  INFO Configuration:1547 - Configured SessionFactory: null
+16:31:06,880  INFO AnnotationBinder:418 - Binding entity from annotated class: it.geosolutions.geobatch.users.model.GBUser
+16:31:06,880  INFO AnnotationBinder:418 - Binding entity from annotated class: it.geosolutions.geobatch.users.model.GBUser
+16:31:06,881  INFO EntityBinder:424 - Bind entity it.geosolutions.geobatch.users.model.GBUser on table GBUSER
+16:31:06,881  INFO EntityBinder:424 - Bind entity it.geosolutions.geobatch.users.model.GBUser on table GBUSER
+16:31:06,901  INFO AnnotationBinder:418 - Binding entity from annotated class: it.geosolutions.geobatch.users.model.UserFlowAccess
+16:31:06,901  INFO AnnotationBinder:418 - Binding entity from annotated class: it.geosolutions.geobatch.users.model.UserFlowAccess
+16:31:06,902  INFO EntityBinder:424 - Bind entity it.geosolutions.geobatch.users.model.UserFlowAccess on table UserFlowAccess
+16:31:06,902  INFO EntityBinder:424 - Bind entity it.geosolutions.geobatch.users.model.UserFlowAccess on table UserFlowAccess
+16:31:06,910  INFO AnnotationConfiguration:365 - Hibernate Validator not found: ignoring
+16:31:06,910  INFO AnnotationConfiguration:365 - Hibernate Validator not found: ignoring
+16:31:06,910  INFO LocalSessionFactoryBean:772 - Building new Hibernate SessionFactory
+16:31:06,910  INFO LocalSessionFactoryBean:772 - Building new Hibernate SessionFactory
+16:31:06,922  INFO ConnectionProviderFactory:72 - Initializing connection provider: org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider
+16:31:06,922  INFO ConnectionProviderFactory:72 - Initializing connection provider: org.springframework.orm.hibernate3.LocalDataSourceConnectionProvider
+16:31:06,949  INFO AbstractPoolBackedDataSource:462 - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> z8kfsx8f18uvkt21jkyws7|4eb0a518, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> org.h2.Driver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> z8kfsx8f18uvkt21jkyws7|4eb0a518, idleConnectionTestPeriod -> 0, initialPoolSize -> 3, jdbcUrl -> jdbc:h2:gbusers, lastAcquisitionFailureDefaultUser -> null, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 10, maxStatements -> 100, maxStatementsPerConnection -> 0, minPoolSize -> 4, numHelperThreads -> 3, numThreadsAwaitingCheckoutDefaultUser -> 0, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, usesTraditionalReflectiveProxies -> false ]
+16:31:06,980  INFO SettingsFactory:89 - RDBMS: H2, version: 1.1.119 (2009-09-26)
+16:31:06,980  INFO SettingsFactory:89 - RDBMS: H2, version: 1.1.119 (2009-09-26)
+16:31:06,981  INFO SettingsFactory:90 - JDBC driver: H2 JDBC Driver, version: 1.1.119 (2009-09-26)
+16:31:06,981  INFO SettingsFactory:90 - JDBC driver: H2 JDBC Driver, version: 1.1.119 (2009-09-26)
+16:31:06,981  INFO Dialect:152 - Using dialect: org.hibernate.dialect.H2Dialect
+16:31:06,981  INFO Dialect:152 - Using dialect: org.hibernate.dialect.H2Dialect
+16:31:06,982  INFO TransactionFactoryFactory:34 - Transaction strategy: org.hibernate.transaction.JDBCTransactionFactory
+16:31:06,982  INFO TransactionFactoryFactory:34 - Transaction strategy: org.hibernate.transaction.JDBCTransactionFactory
+16:31:06,982  INFO TransactionManagerLookupFactory:33 - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+16:31:06,982  INFO TransactionManagerLookupFactory:33 - No TransactionManagerLookup configured (in JTA environment, use of read-write or transactional second-level cache is not recommended)
+16:31:06,983  INFO SettingsFactory:143 - Automatic flush during beforeCompletion(): disabled
+16:31:06,983  INFO SettingsFactory:143 - Automatic flush during beforeCompletion(): disabled
+16:31:06,983  INFO SettingsFactory:147 - Automatic session close at end of transaction: disabled
+16:31:06,983  INFO SettingsFactory:147 - Automatic session close at end of transaction: disabled
+16:31:06,983  INFO SettingsFactory:154 - JDBC batch size: 15
+16:31:06,983  INFO SettingsFactory:154 - JDBC batch size: 15
+16:31:06,984  INFO SettingsFactory:157 - JDBC batch updates for versioned data: disabled
+16:31:06,984  INFO SettingsFactory:157 - JDBC batch updates for versioned data: disabled
+16:31:06,984  INFO SettingsFactory:162 - Scrollable result sets: enabled
+16:31:06,984  INFO SettingsFactory:162 - Scrollable result sets: enabled
+16:31:06,984  INFO SettingsFactory:170 - JDBC3 getGeneratedKeys(): enabled
+16:31:06,984  INFO SettingsFactory:170 - JDBC3 getGeneratedKeys(): enabled
+16:31:06,985  INFO SettingsFactory:178 - Connection release mode: auto
+16:31:06,985  INFO SettingsFactory:178 - Connection release mode: auto
+16:31:06,985  INFO SettingsFactory:205 - Default batch fetch size: 1
+16:31:06,985  INFO SettingsFactory:205 - Default batch fetch size: 1
+16:31:06,985  INFO SettingsFactory:209 - Generate SQL with comments: disabled
+16:31:06,985  INFO SettingsFactory:209 - Generate SQL with comments: disabled
+16:31:06,985  INFO SettingsFactory:213 - Order SQL updates by primary key: disabled
+16:31:06,985  INFO SettingsFactory:213 - Order SQL updates by primary key: disabled
+16:31:06,985  INFO SettingsFactory:217 - Order SQL inserts for batching: disabled
+16:31:06,985  INFO SettingsFactory:217 - Order SQL inserts for batching: disabled
+16:31:06,986  INFO SettingsFactory:386 - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+16:31:06,986  INFO SettingsFactory:386 - Query translator: org.hibernate.hql.ast.ASTQueryTranslatorFactory
+16:31:06,986  INFO ASTQueryTranslatorFactory:24 - Using ASTQueryTranslatorFactory
+16:31:06,986  INFO ASTQueryTranslatorFactory:24 - Using ASTQueryTranslatorFactory
+16:31:06,986  INFO SettingsFactory:225 - Query language substitutions: {}
+16:31:06,986  INFO SettingsFactory:225 - Query language substitutions: {}
+16:31:06,987  INFO SettingsFactory:230 - JPA-QL strict compliance: disabled
+16:31:06,987  INFO SettingsFactory:230 - JPA-QL strict compliance: disabled
+16:31:06,987  INFO SettingsFactory:235 - Second-level cache: enabled
+16:31:06,987  INFO SettingsFactory:235 - Second-level cache: enabled
+16:31:06,987  INFO SettingsFactory:239 - Query cache: disabled
+16:31:06,987  INFO SettingsFactory:239 - Query cache: disabled
+16:31:06,987  INFO SettingsFactory:373 - Cache provider: org.hibernate.cache.NoCacheProvider
+16:31:06,987  INFO SettingsFactory:373 - Cache provider: org.hibernate.cache.NoCacheProvider
+16:31:06,988  INFO SettingsFactory:254 - Optimize cache for minimal puts: disabled
+16:31:06,988  INFO SettingsFactory:254 - Optimize cache for minimal puts: disabled
+16:31:06,988  INFO SettingsFactory:263 - Structured second-level cache entries: disabled
+16:31:06,988  INFO SettingsFactory:263 - Structured second-level cache entries: disabled
+16:31:06,988  INFO SettingsFactory:290 - Statistics: disabled
+16:31:06,988  INFO SettingsFactory:290 - Statistics: disabled
+16:31:06,989  INFO SettingsFactory:294 - Deleted entity synthetic identifier rollback: disabled
+16:31:06,989  INFO SettingsFactory:294 - Deleted entity synthetic identifier rollback: disabled
+16:31:06,989  INFO SettingsFactory:309 - Default entity-mode: pojo
+16:31:06,989  INFO SettingsFactory:309 - Default entity-mode: pojo
+16:31:06,989  INFO SettingsFactory:313 - Named query checking : enabled
+16:31:06,989  INFO SettingsFactory:313 - Named query checking : enabled
+16:31:07,004  INFO SessionFactoryImpl:161 - building session factory
+16:31:07,004  INFO SessionFactoryImpl:161 - building session factory
+16:31:07,025  INFO SessionFactoryObjectFactory:82 - Not binding factory to JNDI, no JNDI name configured
+16:31:07,025  INFO SessionFactoryObjectFactory:82 - Not binding factory to JNDI, no JNDI name configured
+16:31:07,026  INFO SchemaUpdate:115 - Running hbm2ddl schema update
+16:31:07,026  INFO SchemaUpdate:115 - Running hbm2ddl schema update
+16:31:07,026  INFO SchemaUpdate:126 - fetching database metadata
+16:31:07,026  INFO SchemaUpdate:126 - fetching database metadata
+16:31:07,027  INFO SchemaUpdate:138 - updating schema
+16:31:07,027  INFO SchemaUpdate:138 - updating schema
+16:31:07,031  INFO DatabaseMetadata:96 - table not found: GBUSER
+16:31:07,031  INFO DatabaseMetadata:96 - table not found: GBUSER
+16:31:07,034  INFO DatabaseMetadata:96 - table not found: UserFlowAccess
+16:31:07,034  INFO DatabaseMetadata:96 - table not found: UserFlowAccess
+16:31:07,038  INFO DatabaseMetadata:96 - table not found: GBUSER
+16:31:07,038  INFO DatabaseMetadata:96 - table not found: GBUSER
+16:31:07,040  INFO DatabaseMetadata:96 - table not found: UserFlowAccess
+16:31:07,040  INFO DatabaseMetadata:96 - table not found: UserFlowAccess
+16:31:07,050  INFO SchemaUpdate:160 - schema update complete
+16:31:07,050  INFO SchemaUpdate:160 - schema update complete
+16:31:07,153  INFO HibernateTransactionManager:415 - Using DataSource [com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> z8kfsx8f18uvkt21jkyws7|4eb0a518, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> org.h2.Driver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> z8kfsx8f18uvkt21jkyws7|4eb0a518, idleConnectionTestPeriod -> 0, initialPoolSize -> 3, jdbcUrl -> jdbc:h2:gbusers, lastAcquisitionFailureDefaultUser -> null, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 10, maxStatements -> 100, maxStatementsPerConnection -> 0, minPoolSize -> 4, numHelperThreads -> 3, numThreadsAwaitingCheckoutDefaultUser -> 0, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, usesTraditionalReflectiveProxies -> false ]] of Hibernate SessionFactory for HibernateTransactionManager
+16:31:07,153  INFO HibernateTransactionManager:415 - Using DataSource [com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> z8kfsx8f18uvkt21jkyws7|4eb0a518, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> org.h2.Driver, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> z8kfsx8f18uvkt21jkyws7|4eb0a518, idleConnectionTestPeriod -> 0, initialPoolSize -> 3, jdbcUrl -> jdbc:h2:gbusers, lastAcquisitionFailureDefaultUser -> null, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 10, maxStatements -> 100, maxStatementsPerConnection -> 0, minPoolSize -> 4, numHelperThreads -> 3, numThreadsAwaitingCheckoutDefaultUser -> 0, preferredTestQuery -> null, properties -> {user=******, password=******}, propertyCycle -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, usesTraditionalReflectiveProxies -> false ]] of Hibernate SessionFactory for HibernateTransactionManager
+16:31:07,158 TRACE DAOAbstractSpring:60 - Persistent Class : {0}
+16:31:07,158 TRACE DAOAbstractSpring:60 - Persistent Class : {0}
+16:31:07,217 TRACE DAOAbstractSpring:60 - Persistent Class : {0}
+16:31:07,217 TRACE DAOAbstractSpring:60 - Persistent Class : {0}
+16:31:07,256 TRACE DAOAbstractSpring:60 - Persistent Class : {0}
+16:31:07,256 TRACE DAOAbstractSpring:60 - Persistent Class : {0}
+16:31:07,325 TRACE DAOAbstractSpring:66 - Persistent class: {0}
+16:31:07,325 TRACE DAOAbstractSpring:66 - Persistent class: {0}
+16:31:07,377  INFO HibGBUserDAO:72 - Admin user does not exist. Creating default one.
+16:31:07,377  INFO HibGBUserDAO:72 - Admin user does not exist. Creating default one.
+16:31:07,441 TRACE DAOAbstractSpring:60 - Persistent Class : {0}
+16:31:07,441 TRACE DAOAbstractSpring:60 - Persistent Class : {0}
+16:31:07,514 TRACE DAOAbstractSpring:66 - Persistent class: {0}
+16:31:07,514 TRACE DAOAbstractSpring:66 - Persistent class: {0}
+16:31:07,517  INFO HibFtpServerConfigDAO:63 - No FTP server config found. Storing a brand new one.
+16:31:07,517  INFO HibFtpServerConfigDAO:63 - No FTP server config found. Storing a brand new one.
+16:31:07,545 TRACE DAOAbstractSpring:66 - Persistent class: {0}
+16:31:07,545 TRACE DAOAbstractSpring:66 - Persistent class: {0}
+16:31:07,860  INFO BrokerService:454 - Using Persistence Adapter: MemoryPersistenceAdapter
+16:31:07,862  INFO BrokerService:577 - ActiveMQ 5.2.0 JMS Message Broker (brokerURL) is starting
+16:31:07,863  INFO BrokerService:578 - For help or more information please see: http://activemq.apache.org/
+16:31:08,017  INFO TransportServerThreadSupport:72 - Listening for connections at: tcp://carlo-workstation:61611
+16:31:08,018  INFO TransportConnector:252 - Connector tcp Started
+16:31:08,019  INFO BrokerService:488 - ActiveMQ JMS Message Broker (brokerURL, ID:carlo-workstation-35369-1304087467878-0:0) started
+16:31:08,188  INFO JdbcUserDetailsManager:130 - No authentication manager set. Reauthentication of users when changing passwords will not be performed.
+16:31:08,188  INFO JdbcUserDetailsManager:130 - No authentication manager set. Reauthentication of users when changing passwords will not be performed.
+16:31:08,330  INFO FilterSecurityInterceptor:156 - Validated configuration attributes
+16:31:08,330  INFO FilterSecurityInterceptor:156 - Validated configuration attributes
+16:31:08,563  INFO FSSPIRegistry:92 - Creating an instance of: class it.geosolutions.filesystemmonitor.neutral.monitorpolling.GBFileSystemMonitorSPI
+16:31:08,563  INFO FSSPIRegistry:92 - Creating an instance of: class it.geosolutions.filesystemmonitor.neutral.monitorpolling.GBFileSystemMonitorSPI
+16:31:08,563  INFO FSSPIRegistry:92 - Creating an instance of: class it.geosolutions.filesystemmonitor.neutral.monitorpolling.GBFileSystemMonitorSPI
+16:31:08,563  INFO FSSPIRegistry:92 - Creating an instance of: class it.geosolutions.filesystemmonitor.neutral.monitorpolling.GBFileSystemMonitorSPI
+16:31:08,563  INFO FSSPIRegistry:92 - Creating an instance of: class it.geosolutions.filesystemmonitor.neutral.monitorpolling.GBFileSystemMonitorSPI
+16:31:08,574  INFO SpringCamelContext:1293 - Apache Camel 2.6.0 (CamelContext: camel-server) is starting
+16:31:08,580  INFO GBEventNotifier:92 - Starting the event consumer...
+16:31:08,580  INFO GBEventNotifier:92 - Starting the event consumer...
+16:31:08,581  INFO GBEventNotifier:92 - Starting the event consumer...
+16:31:08,581  INFO GBEventNotifier:92 - Starting the event consumer...
+16:31:08,582  INFO GBEventNotifier:92 - Starting the event consumer...
+16:31:08,596  INFO FlowManager:341 - FileBasedFlowManager:createGenerator(): FileSystemEventGenerator created
+16:31:08,597  INFO FlowManager:341 - FileBasedFlowManager:createGenerator(): FileSystemEventGenerator created
+16:31:08,597  INFO FileBasedEventGenerator:338 - Cleaning up /home/carlo/work/data/briseide/in
+16:31:08,597  INFO FileBasedEventGenerator:338 - Cleaning up /home/carlo/work/data/freemarker/in
+16:31:08,598  INFO FlowManager:341 - FileBasedFlowManager:createGenerator(): FileSystemEventGenerator created
+16:31:08,598  INFO FileBasedEventGenerator:338 - Cleaning up /home/carlo/work/data/shapeFile/in_sparse
+16:31:08,599  INFO FlowManager:341 - FileBasedFlowManager:createGenerator(): FileSystemEventGenerator created
+16:31:08,599  INFO FileBasedEventGenerator:338 - Cleaning up /home/carlo/work/data/briseide_2/in
+16:31:08,603  INFO FlowManager:341 - FileBasedFlowManager:createGenerator(): FileSystemEventGenerator created
+16:31:08,603  INFO FileBasedEventGenerator:338 - Cleaning up /home/carlo/work/data/shapeFile/in
+16:31:08,606  INFO DefaultManagementAgent:424 - JMX Connector thread started and listening at: service:jmx:rmi:///jndi/rmi://carlo-workstation:1099/jmxrmi/camel
+16:31:08,710  INFO SimpleThreadPool:270 - Job execution threads will use class loader of thread: pool-3-thread-1
+16:31:08,710  INFO SimpleThreadPool:270 - Job execution threads will use class loader of thread: pool-3-thread-1
+16:31:08,748  INFO SchedulerSignalerImpl:61 - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+16:31:08,748  INFO SchedulerSignalerImpl:61 - Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+16:31:08,750  INFO QuartzScheduler:234 - Quartz Scheduler v.2.0.1 created.
+16:31:08,750  INFO QuartzScheduler:234 - Quartz Scheduler v.2.0.1 created.
+16:31:08,755  INFO RAMJobStore:154 - RAMJobStore initialized.
+16:31:08,755  INFO RAMJobStore:154 - RAMJobStore initialized.
+16:31:08,759  INFO QuartzScheduler:257 - Scheduler meta-data: Quartz Scheduler (v2.0.1) 'DefaultQuartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+16:31:08,759  INFO QuartzScheduler:257 - Scheduler meta-data: Quartz Scheduler (v2.0.1) 'DefaultQuartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+16:31:08,760  INFO StdSchedulerFactory:1254 - Quartz scheduler 'DefaultQuartzScheduler' initialized from default resource file in Quartz package: 'quartz.properties'
+16:31:08,760  INFO StdSchedulerFactory:1254 - Quartz scheduler 'DefaultQuartzScheduler' initialized from default resource file in Quartz package: 'quartz.properties'
+16:31:08,760  INFO StdSchedulerFactory:1258 - Quartz scheduler version: 2.0.1
+16:31:08,760  INFO StdSchedulerFactory:1258 - Quartz scheduler version: 2.0.1
+16:31:08,761  INFO QuartzScheduler:513 - Scheduler DefaultQuartzScheduler_$_NON_CLUSTERED started.
+16:31:08,761  INFO QuartzScheduler:513 - Scheduler DefaultQuartzScheduler_$_NON_CLUSTERED started.
+16:31:08,780  INFO FlowManager:345 - FileBasedFlowManager:createGenerator(): FileSystemEventGenerator started
+16:31:08,781  INFO FlowManager:345 - FileBasedFlowManager:createGenerator(): FileSystemEventGenerator started
+16:31:08,782  INFO FlowManager:345 - FileBasedFlowManager:createGenerator(): FileSystemEventGenerator started
+16:31:08,782  INFO FlowManager:345 - FileBasedFlowManager:createGenerator(): FileSystemEventGenerator started
+16:31:08,781  INFO FlowManager:345 - FileBasedFlowManager:createGenerator(): FileSystemEventGenerator started
+16:31:09,018 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/freemarker/in.*.*
+16:31:09,018 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/freemarker/in.*.*
+16:31:09,018 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in.*.*
+16:31:09,018 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in.*.*
+16:31:09,019  INFO GBFileSystemMonitorJob:254 - Building the observer tree...
+16:31:09,019  INFO GBFileSystemMonitorJob:254 - Building the observer tree...
+16:31:09,018  INFO GBFileSystemMonitorJob:254 - Building the observer tree...
+16:31:09,018  INFO GBFileSystemMonitorJob:254 - Building the observer tree...
+16:31:09,018 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in_sparse.*.*
+16:31:09,018 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in_sparse.*.*
+16:31:09,021  INFO GBFileSystemMonitorJob:254 - Building the observer tree...
+16:31:09,021  INFO GBFileSystemMonitorJob:254 - Building the observer tree...
+16:31:09,018 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/briseide/in.*.*
+16:31:09,018 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/briseide/in.*.*
+16:31:09,022  INFO GBFileSystemMonitorJob:254 - Building the observer tree...
+16:31:09,022  INFO GBFileSystemMonitorJob:254 - Building the observer tree...
+16:31:09,027  INFO GBFileSystemMonitorJob:259 - Observer tree complete.
+16:31:09,027  INFO GBFileSystemMonitorJob:259 - Observer tree complete.
+16:31:09,027 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in_sparse.*.* completed
+16:31:09,027 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in_sparse.*.* completed
+16:31:09,028  INFO GBFileSystemMonitorJob:259 - Observer tree complete.
+16:31:09,028  INFO GBFileSystemMonitorJob:259 - Observer tree complete.
+16:31:09,028 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/briseide/in.*.* completed
+16:31:09,028 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/briseide/in.*.* completed
+16:31:09,029  INFO GBFileSystemMonitorJob:259 - Observer tree complete.
+16:31:09,029  INFO GBFileSystemMonitorJob:259 - Observer tree complete.
+16:31:09,029  INFO GBFileSystemMonitorJob:259 - Observer tree complete.
+16:31:09,029  INFO GBFileSystemMonitorJob:259 - Observer tree complete.
+16:31:09,029 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in.*.* completed
+16:31:09,029 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in.*.* completed
+16:31:09,029 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/freemarker/in.*.* completed
+16:31:09,029 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/freemarker/in.*.* completed
+16:31:09,624  INFO SpringCamelContext:1860 - Route: JMSFlowManagerRoute started and consuming from: Endpoint[activemq://queue:fileSevice?preserveMessageQos=true]
+16:31:09,650  INFO SpringCamelContext:1310 - Total 1 routes, of which 1 is started.
+16:31:09,651  INFO SpringCamelContext:1311 - Apache Camel 2.6.0 (CamelContext: camel-server) started in 1.076 seconds
+16:31:09,662  INFO ContextLoader:214 - Root WebApplicationContext: initialization completed in 11104 ms
+16:31:09,662  INFO ContextLoader:214 - Root WebApplicationContext: initialization completed in 11104 ms
+16:31:09,785  INFO /geobatch:? - Initializing Spring FrameworkServlet 'rservlet'
+16:31:09,785  INFO RestletFrameworkServlet:301 - FrameworkServlet 'rservlet': initialization started
+16:31:09,788  INFO XmlWebApplicationContext:456 - Refreshing WebApplicationContext for namespace 'rservlet-servlet': startup date [Fri Apr 29 16:31:09 CEST 2011]; parent: Root WebApplicationContext
+16:31:09,788  INFO XmlWebApplicationContext:456 - Refreshing WebApplicationContext for namespace 'rservlet-servlet': startup date [Fri Apr 29 16:31:09 CEST 2011]; parent: Root WebApplicationContext
+16:31:09,791  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/web/target/classes/rservlet-servlet.xml]
+16:31:09,791  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from URL [file:/home/carlo/work/code/java/geobatch-master/src/web/target/classes/rservlet-servlet.xml]
+16:31:09,814  INFO DefaultListableBeanFactory:549 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@5c3f1224: defining beans [root]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@71b493c6
+16:31:09,814  INFO DefaultListableBeanFactory:549 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@5c3f1224: defining beans [root]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@71b493c6
+16:31:09,902  INFO RestletFrameworkServlet:320 - FrameworkServlet 'rservlet': initialization completed in 117 ms
+16:31:09,909  INFO /geobatch:? - Initializing Spring FrameworkServlet 'geobatch'
+16:31:09,909  INFO DispatcherServlet:301 - FrameworkServlet 'geobatch': initialization started
+16:31:09,909  INFO DispatcherServlet:301 - FrameworkServlet 'geobatch': initialization started
+16:31:09,909  INFO XmlWebApplicationContext:456 - Refreshing WebApplicationContext for namespace 'geobatch-servlet': startup date [Fri Apr 29 16:31:09 CEST 2011]; parent: Root WebApplicationContext
+16:31:09,909  INFO XmlWebApplicationContext:456 - Refreshing WebApplicationContext for namespace 'geobatch-servlet': startup date [Fri Apr 29 16:31:09 CEST 2011]; parent: Root WebApplicationContext
+16:31:09,911  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from ServletContext resource [/WEB-INF/geobatch-servlet.xml]
+16:31:09,911  INFO XmlBeanDefinitionReader:315 - Loading XML bean definitions from ServletContext resource [/WEB-INF/geobatch-servlet.xml]
+16:31:09,961  INFO DefaultListableBeanFactory:549 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@773d3f62: defining beans [beanNameUrlMapping,viewResolver,flowManagerController,flowManagerInfoController,flowManagerPauseController,flowManagerResumeController,flowManagerDisposeController,deleteFtpUserController,ftpManagerController,flowManagerFormValidator,flowManagerFormController,ftpConfigController,ftpUserFormController,consumerInfoController,consumerPauseController,consumerResumeController,consumerDisposeController,org.springframework.web.servlet.handler.SimpleUrlHandlerMapping#0]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@71b493c6
+16:31:09,961  INFO DefaultListableBeanFactory:549 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@773d3f62: defining beans [beanNameUrlMapping,viewResolver,flowManagerController,flowManagerInfoController,flowManagerPauseController,flowManagerResumeController,flowManagerDisposeController,deleteFtpUserController,ftpManagerController,flowManagerFormValidator,flowManagerFormController,ftpConfigController,ftpUserFormController,consumerInfoController,consumerPauseController,consumerResumeController,consumerDisposeController,org.springframework.web.servlet.handler.SimpleUrlHandlerMapping#0]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@71b493c6
+16:31:10,348  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/consumerDispose.do] onto handler [it.geosolutions.geobatch.ui.mvc.ConsumerDisposeController@108543aa]
+16:31:10,348  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/consumerDispose.do] onto handler [it.geosolutions.geobatch.ui.mvc.ConsumerDisposeController@108543aa]
+16:31:10,349  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/flows.do] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerController@1d1d565f]
+16:31:10,349  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/flows.do] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerController@1d1d565f]
+16:31:10,350  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/resume.do] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerResumeController@711185e7]
+16:31:10,350  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/resume.do] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerResumeController@711185e7]
+16:31:10,350  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/newFtpUser.form] onto handler [it.geosolutions.geobatch.ui.mvc.FTPUserFormController@356e3aaf]
+16:31:10,350  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/newFtpUser.form] onto handler [it.geosolutions.geobatch.ui.mvc.FTPUserFormController@356e3aaf]
+16:31:10,350  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/consumerResume.do] onto handler [it.geosolutions.geobatch.ui.mvc.ConsumerResumeController@57ced290]
+16:31:10,350  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/consumerResume.do] onto handler [it.geosolutions.geobatch.ui.mvc.ConsumerResumeController@57ced290]
+16:31:10,351  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/flowinfo.do] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerInfoController@4b6218f9]
+16:31:10,351  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/flowinfo.do] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerInfoController@4b6218f9]
+16:31:10,351  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/updateFtpUser.form] onto handler [it.geosolutions.geobatch.ui.mvc.FTPUserFormController@356e3aaf]
+16:31:10,351  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/updateFtpUser.form] onto handler [it.geosolutions.geobatch.ui.mvc.FTPUserFormController@356e3aaf]
+16:31:10,351  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/ftpUsers.do] onto handler [it.geosolutions.geobatch.ui.mvc.FTPManagerController@1555aa19]
+16:31:10,351  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/ftpUsers.do] onto handler [it.geosolutions.geobatch.ui.mvc.FTPManagerController@1555aa19]
+16:31:10,351  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/newFlowManager.form] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerFormController@2b125a40]
+16:31:10,351  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/newFlowManager.form] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerFormController@2b125a40]
+16:31:10,352  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/ftpConfig.form] onto handler [it.geosolutions.geobatch.ui.mvc.FTPConfigFormController@41e335d7]
+16:31:10,352  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/ftpConfig.form] onto handler [it.geosolutions.geobatch.ui.mvc.FTPConfigFormController@41e335d7]
+16:31:10,352  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/consumerInfo.do] onto handler [it.geosolutions.geobatch.ui.mvc.ConsumerInfoController@2be3d80c]
+16:31:10,352  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/consumerInfo.do] onto handler [it.geosolutions.geobatch.ui.mvc.ConsumerInfoController@2be3d80c]
+16:31:10,352  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/pause.do] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerPauseController@7b7d1256]
+16:31:10,352  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/pause.do] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerPauseController@7b7d1256]
+16:31:10,352  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/ftp.do] onto handler [it.geosolutions.geobatch.ui.mvc.FTPManagerController@1555aa19]
+16:31:10,352  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/ftp.do] onto handler [it.geosolutions.geobatch.ui.mvc.FTPManagerController@1555aa19]
+16:31:10,353  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/dispose.do] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerDisposeController@503f0b70]
+16:31:10,353  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/dispose.do] onto handler [it.geosolutions.geobatch.ui.mvc.FlowManagerDisposeController@503f0b70]
+16:31:10,353  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/consumerPause.do] onto handler [it.geosolutions.geobatch.ui.mvc.ConsumerPauseController@5b080f38]
+16:31:10,353  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/consumerPause.do] onto handler [it.geosolutions.geobatch.ui.mvc.ConsumerPauseController@5b080f38]
+16:31:10,353  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/deleteFtpUser.do] onto handler [it.geosolutions.geobatch.ui.mvc.DeleteFtpUserController@6e1f5438]
+16:31:10,353  INFO SimpleUrlHandlerMapping:411 - Mapped URL path [/deleteFtpUser.do] onto handler [it.geosolutions.geobatch.ui.mvc.DeleteFtpUserController@6e1f5438]
+16:31:10,485  INFO DispatcherServlet:320 - FrameworkServlet 'geobatch': initialization completed in 576 ms
+16:31:10,485  INFO DispatcherServlet:320 - FrameworkServlet 'geobatch': initialization completed in 576 ms
+16:31:10,487  INFO log:? - Started SocketConnector@0.0.0.0:8080
+16:31:14,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/briseide/in.*.*
+16:31:14,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/briseide/in.*.*
+16:31:14,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in_sparse.*.*
+16:31:14,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in_sparse.*.*
+16:31:14,002 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/briseide/in.*.* completed
+16:31:14,002 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/briseide/in.*.* completed
+16:31:14,002 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in_sparse.*.* completed
+16:31:14,002 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in_sparse.*.* completed
+16:31:14,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in.*.*
+16:31:14,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in.*.*
+16:31:14,002 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in.*.* completed
+16:31:14,002 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in.*.* completed
+16:31:14,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/freemarker/in.*.*
+16:31:14,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/freemarker/in.*.*
+16:31:14,003 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/freemarker/in.*.* completed
+16:31:14,003 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/freemarker/in.*.* completed
+16:31:19,000 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/briseide/in.*.*
+16:31:19,000 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/briseide/in.*.*
+16:31:19,001 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/briseide/in.*.* completed
+16:31:19,001 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/briseide/in.*.* completed
+16:31:19,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in_sparse.*.*
+16:31:19,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in_sparse.*.*
+16:31:19,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in.*.*
+16:31:19,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in.*.*
+16:31:19,001 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in_sparse.*.* completed
+16:31:19,001 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in_sparse.*.* completed
+16:31:19,001 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in.*.* completed
+16:31:19,001 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in.*.* completed
+16:31:19,000 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/freemarker/in.*.*
+16:31:19,000 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/freemarker/in.*.*
+16:31:19,002 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/freemarker/in.*.* completed
+16:31:19,002 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/freemarker/in.*.* completed
+16:31:24,000 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/briseide/in.*.*
+16:31:24,000 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/briseide/in.*.*
+16:31:24,000 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in.*.*
+16:31:24,000 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in.*.*
+16:31:24,001 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in.*.* completed
+16:31:24,001 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in.*.* completed
+16:31:24,000 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/briseide/in.*.* completed
+16:31:24,000 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/briseide/in.*.* completed
+16:31:24,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in_sparse.*.*
+16:31:24,001 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/shapeFile/in_sparse.*.*
+16:31:24,000 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/freemarker/in.*.*
+16:31:24,000 TRACE GBFileSystemMonitorJob:233 - Starting FSM job named: /home/carlo/work/data/freemarker/in.*.*
+16:31:24,001 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in_sparse.*.* completed
+16:31:24,001 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/shapeFile/in_sparse.*.* completed
+16:31:24,002 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/freemarker/in.*.* completed
+16:31:24,002 TRACE GBFileSystemMonitorJob:286 - job named: /home/carlo/work/data/freemarker/in.*.* completed
+16:31:26,009  INFO BrokerService:505 - ActiveMQ Message Broker (brokerURL, ID:carlo-workstation-35369-1304087467878-0:0) is shutting down
+16:31:27,588  INFO TransportConnector:273 - Connector tcp Stopped
+16:31:27,596  INFO BrokerService:542 - ActiveMQ JMS Message Broker (brokerURL, ID:carlo-workstation-35369-1304087467878-0:0) stopped
