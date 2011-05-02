@@ -28,6 +28,8 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.tools.file.Path;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
+import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -177,6 +179,10 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
                      */
                     if (input.isFile()
                             && FilenameUtils.getExtension(input.getName()).equalsIgnoreCase("xml")) {
+                        if (LOGGER.isInfoEnabled()) {
+                            LOGGER.info("ImageMosaicAction: working on an XML command file: "+input.getAbsolutePath());
+                        }
+                        
                         // try to deserialize
                         cmd = ImageMosaicCommand.deserialize(input.getAbsoluteFile());
                         if (cmd == null) {
@@ -433,10 +439,19 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
                     }
                     // the file event points to a directory
                     else if (input.isDirectory()) {
+                        if (LOGGER.isInfoEnabled()) {
+                            LOGGER.info("ImageMosaicAction: Input file event points to a directory: "
+                                    + input.getAbsolutePath());
+                        }
                         /**
                          * If here: - get the base dir file which will be used as ID.
                          */
                         baseDir = input;
+                        
+// STARTING Switch to the new REST library
+                        GeoServerRESTReader gsReader = new GeoServerRESTReader(getConfiguration()
+                                .getGeoserverURL(), getConfiguration().getGeoserverUID(),
+                                getConfiguration().getGeoserverPWD());
 
                         mosaicDescriptor = ImageMosaicGranulesDescriptor.buildDescriptor(baseDir,
                                 configuration);
@@ -453,29 +468,11 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
                          * Check if ImageMosaic layer already exists...
                          */
                         boolean layerExists = false;
-                        try {
-                            layerExists = GeoServerRESTHelper.checkLayerExistence(ImageMosaicREST
-                                    .decurtSlash(getConfiguration().getGeoserverURL()),
-                                    getConfiguration().getGeoserverUID(), getConfiguration()
-                                            .getGeoserverPWD(), mosaicDescriptor
-                                            .getCoverageStoreId());
-
-                        } catch (ParserConfigurationException pce) {
-                            // unrecoverable error
-                            throw pce;
-                        } catch (IOException ioe) {
-                            if (LOGGER.isWarnEnabled()) {
-                                LOGGER.warn(
-                                        "ImageMosaicAction: " + ioe.getLocalizedMessage(), ioe);
-                            }
-                            continue;
-                        } catch (TransformerException te) {
-                            if (LOGGER.isWarnEnabled()) {
-                                LOGGER.warn(
-                                        "ImageMosaicAction: " + te.getLocalizedMessage(), te);
-                            }
-                            continue;
-                        }
+// STARTING Switch to the new REST library
+                            if (gsReader.getLayer(mosaicDescriptor.getCoverageStoreId())==null)
+                                layerExists=false;
+                            else
+                                layerExists=true;
 
                         /*
                          * CHECKING FOR datastore.properties
@@ -492,11 +489,17 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
 
                         final File indexer = new File(baseDir, "indexer.properties");
                         ImageMosaicProperties.buildIndexer(indexer, configuration);
-
+// STARTING Switch to the new REST library
+                        GeoServerRESTPublisher gsPublisher = new GeoServerRESTPublisher(
+                                getConfiguration().getGeoserverURL(), getConfiguration()
+                                        .getGeoserverUID(), getConfiguration().getGeoserverPWD());
+                        
                         if (!layerExists) {
+// STARTING Switch to the new REST library
                             // create a new ImageMosaic layer... normal case
-                            ImageMosaicREST.createNewImageMosaicLayer(baseDir, mosaicDescriptor,
-                                    configuration, layers);
+                            gsPublisher.publishExternalMosaic(configuration.getDefaultNamespace(),
+                                    mosaicDescriptor.getCoverageStoreId(), baseDir,
+                                    configuration.getCrs(), configuration.getDefaultStyle());
 
                         } else {
                             // layer already exists

@@ -267,7 +267,7 @@
             </dependency>-->
             <dependency> <!-- NEW LIBRARY-->
                 <groupId>it.geosolutions</groupId>
-                <artifactId>geoservermanager</artifactId>
+                <artifactId>geoserver-manager</artifactId>
                 <version>1.1-SNAPSHOT</version>
             </dependency>
             <dependency> <!-- used by new geoserver action-->

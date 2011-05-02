@@ -53,7 +53,7 @@
 		<!--  geoserver rest client lib -->
         <dependency>
         	<groupId>it.geosolutions</groupId>
-    		<artifactId>geoservermanager</artifactId><!--<artifactId>geoserver-manager</artifactId>-->
+    		<artifactId>geoserver-manager</artifactId>
         </dependency>
         
         <!-- ============================== -->

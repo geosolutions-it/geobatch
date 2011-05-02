@@ -1085,9 +1085,16 @@ public class GeoServerRESTHelper {
         nativeBB.appendChild(maxy);
         maxy.insertBefore(doc.createTextNode(coverageElements.get(NATIVE_MAXY)), null);
 
-        Element crs = doc.createElement("crs");
-        nativeBB.appendChild(crs);
-        crs.insertBefore(doc.createTextNode(coverageElements.get(CRS)), null);
+/*
+ *         TODO should be taken using optionally:
+ *          - the prj                                   *better
+ *          - recognized from the file                  *better
+ *          - reading nativeCRS from the created layer  *good
+ *          - change the config adding another crs      !NO!
+ */
+//        Element crs = doc.createElement("crs");
+//        nativeBB.appendChild(crs);
+//        crs.insertBefore(doc.createTextNode(coverageElements.get(CRS)), null);
 
         Element latLonBB = doc.createElement("latLonBoundingBox");
         root.appendChild(latLonBB);
@@ -1111,7 +1118,14 @@ public class GeoServerRESTHelper {
         Element crs2 = doc.createElement("crs");
         latLonBB.appendChild(crs2);
         crs2.insertBefore(doc.createTextNode(coverageElements.get(CRS)), null);
-
+        
+        /*
+         * <projectionPolicy>REPROJECT_TO_DECLARED</projectionPolicy>
+         */
+        Element projectionPolicy= doc.createElement("projectionPolicy");
+        root.appendChild(projectionPolicy);
+        projectionPolicy.insertBefore(doc.createTextNode("REPROJECT_TO_DECLARED"), null); //TODO
+        
         /*
          * <coverage> ... <enabled>true</enabled> ... </coverage>
          */

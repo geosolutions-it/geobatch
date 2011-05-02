@@ -54,7 +54,7 @@ abstract class ImageMosaicUpdater {
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicAction.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicAction.class);
 
     /**
      * 
