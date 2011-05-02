@@ -96,8 +96,7 @@ public class GeotiffFolderGeoServerConfigurator extends GeoServerAction<FileSyst
                 //
                 // ////////////////////////////////////////////////////////////////////
                 final File workingDir = Path
-                        .findLocation(configuration.getWorkingDirectory(), new File(
-                                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+                        .findLocation(configuration.getWorkingDirectory(),  ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
 
                 // ////////////////////////////////////////////////////////////////////
                 //

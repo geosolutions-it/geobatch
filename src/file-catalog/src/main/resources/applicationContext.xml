@@ -8,8 +8,10 @@
 	  <property name="maxPoolSize" value="300" />
 	  <property name="queueCapacity" value="200" />
 	</bean>
-	
-	
+
+	<bean id="dataDirHandler" class="it.geosolutions.geobatch.catalog.file.DataDirHandler">
+	</bean>
+    	
     <!-- Catalog Initialization -->
     <bean id="catalog" class="it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl" depends-on="taskExecutor">
 	    <constructor-arg type="String"><value>catalog</value></constructor-arg>
@@ -18,6 +20,7 @@
 	    <!-- property  name="executor">
     		<ref bean="taskExecutor"/>
     	</property-->	      	
+        <property name="dataDirHandler" ref="dataDirHandler"/>
 	</bean>
 
     

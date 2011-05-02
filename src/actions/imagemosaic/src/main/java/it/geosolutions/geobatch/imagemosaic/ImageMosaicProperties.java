@@ -200,8 +200,8 @@ public abstract class ImageMosaicProperties {
         if (!datastore.exists()) {
             if (configuration.getDatastorePropertiesPath() != null) {
                 File dsFile = Path
-                        .findLocation(configuration.getDatastorePropertiesPath(), new File(
-                                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+                        .findLocation(configuration.getDatastorePropertiesPath(), 
+                                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
                 if (dsFile == null) {
                     if (LOGGER.isWarnEnabled()) {
                         LOGGER.warn("ImageMosaicAction:checkDataStore(): unable to get the absolute "

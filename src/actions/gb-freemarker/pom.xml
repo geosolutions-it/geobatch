@@ -25,7 +25,7 @@
   <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb-action-freemarker</artifactId>
   <packaging>jar</packaging>
-  <name>GeoBatch action: freemarker</name>
+  <name>GeoBatch action: Freemarker</name>
   <url>http://www.geo-solutions.it/maven_reports/gb/</url><!--<url>flowmanagers/</url>-->
   
   <scm>

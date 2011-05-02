@@ -40,15 +40,11 @@ import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContext;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.web.context.WebApplicationContext;
 
 /**
  * The application configuration facade.
@@ -58,7 +54,7 @@ import org.springframework.web.context.WebApplicationContext;
  */
 public class XStreamCatalogLoader extends CatalogHolder implements ApplicationContextAware {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XStreamCatalogLoader.class.toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(XStreamCatalogLoader.class);
 
     private final Alias alias;
 
@@ -68,12 +64,12 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
         this.alias = alias;
     }
 
-    ApplicationContext context;
+    private ApplicationContext context;
 
     /**
      * GeoBatch data dir. This directory is used by the GeoBatch to store Flows configuration files.
      */
-    private File dataDir;
+//    private File dataDir;
 
     public void setApplicationContext(ApplicationContext context) throws BeansException {
         this.context = context;
@@ -83,12 +79,9 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
     @SuppressWarnings("unchecked")
     public void init() throws Exception {
 
-        configureDataDir();
+        File dataDir = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
 
-        ((FileBaseCatalog) CatalogHolder.getCatalog()).setBaseDirectory(dataDir.getAbsolutePath());
-        System.out.println("----------------------------------");
-        System.out.println("- GEOBATCH_DATA_DIR: " + dataDir.getAbsolutePath());
-        System.out.println("----------------------------------");
+//        ((FileBaseCatalog) CatalogHolder.getCatalog()).setBaseDirectory(dataDir.getAbsolutePath());
 
         
         // //
@@ -172,85 +165,6 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
 
         }
 
-    }
-
-    /**
-     * Try to retrieve the info about where the data dir is located.
-     * <br/>
-     * On exit, the <tt>datadir</tt> var will be set, or an exception will be thrown.
-     * 
-     * @throws NullPointerException
-     * @throws IllegalStateException 
-     */
-    protected void configureDataDir() throws NullPointerException, IllegalStateException {
-        try {
-
-            if (dataDir == null) {
-                String prop = System.getProperty("GEOBATCH_DATA_DIR");
-                if (prop != null) {
-                    dataDir = new File(prop); 
-                    if(LOGGER.isInfoEnabled()) 
-                        LOGGER.info("data dir read from property");
-                } else {
-                    prop = System.getenv("GEOBATCH_DATA_DIR");
-                    if (prop != null) {
-                        dataDir = new File(prop);
-                        if(LOGGER.isInfoEnabled()) 
-                            LOGGER.info("data dir read from environment var");                        
-                    } else {
-                        if (this.context instanceof WebApplicationContext) {
-                            final WebApplicationContext wContext = (WebApplicationContext) context;
-                            final ServletContext servletContext = wContext.getServletContext();
-                            String rootDir = servletContext.getInitParameter("GEOBATCH_DATA_DIR");
-                            if (rootDir != null) {
-                                dataDir = new File(rootDir); 
-                                if(LOGGER.isInfoEnabled()) 
-                                    LOGGER.info("data dir read from servlet init param");
-                            }else {
-                                rootDir = ((WebApplicationContext) context).getServletContext().getRealPath("/WEB-INF/data");
-                                if (rootDir != null) {
-                                    dataDir = new File(rootDir);
-                                    if(LOGGER.isInfoEnabled()) 
-                                        LOGGER.info("data dir automatically set inside webapp");
-                                    
-                                }
-                            }
-                        } else {
-                            dataDir = new File("./data");
-                            if(LOGGER.isInfoEnabled()) 
-                                LOGGER.info("data dir automatically set in current dir");
-                        }
-                    }
-                }
-            }
-
-        } catch (SecurityException e) {
-            // gobble exception
-            if (LOGGER.isInfoEnabled())
-                LOGGER.info(e.getLocalizedMessage(), e);
-        }
-
-        if (dataDir == null)
-            throw new NullPointerException(
-                    "Could not initialize Data Directory: The provided path is null.");
-
-        if (!dataDir.exists())
-            throw new IllegalStateException(
-                    "Could not initialize Data Directory: The provided path does not exists ("
-                            + dataDir + ").");
-
-        if (!dataDir.isDirectory() || !dataDir.canRead())
-            throw new IllegalStateException(
-                    "Could not initialize Data Directory: The provided path is not a readable directory ("
-                            + dataDir + ")");
-    }
-
-    public void setDataDir(File dataDir) {
-        this.dataDir = dataDir;
-    }
-    
-    public File getDataDir() {
-        return dataDir;
     }
 
 }

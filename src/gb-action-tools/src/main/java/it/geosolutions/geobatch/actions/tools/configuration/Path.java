@@ -45,12 +45,8 @@ public final class Path {
     public static String getAbsolutePath(String working_dir){ 
         FileBaseCatalog c = (FileBaseCatalog) CatalogHolder.getCatalog();
         
-        File fo=null;
-    
-        if (c!=null)
-            fo=it.geosolutions.geobatch.tools.file.Path.findLocation(working_dir,new File(c.getBaseDirectory()));
-        else
-            fo=it.geosolutions.geobatch.tools.file.Path.findLocation(working_dir,null);
+        File fo = it.geosolutions.geobatch.tools.file.Path.findLocation(working_dir, 
+                        c==null? null : c.getBaseDirectory());
         
         if (fo!=null){
             return fo.toString();

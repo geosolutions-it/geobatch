@@ -87,8 +87,7 @@ public class FileBasedCatalogConfiguration extends BaseConfiguration implements
      */
     public static String getAbsolutePath(String working_dir) /*throws FileNotFoundException */{ 
         FileBasedCatalogImpl c=(FileBasedCatalogImpl) CatalogHolder.getCatalog();
-        File fo=null;
-        fo=Path.findLocation(working_dir,new File(c.getBaseDirectory()));
+        File fo = Path.findLocation(working_dir,c.getBaseDirectory());
         if (fo!=null){
             return fo.toString();
         }

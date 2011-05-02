@@ -106,7 +106,7 @@ public class GeoServerRESTConfiguratorAction extends
             //
             // ////////////////////////////////////////////////////////////////////
             final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
-                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+                    ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
 
             // ////////////////////////////////////////////////////////////////////
             //
