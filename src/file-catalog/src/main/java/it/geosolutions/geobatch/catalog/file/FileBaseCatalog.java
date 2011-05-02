@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2011 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.catalog.file;
 
 import it.geosolutions.geobatch.catalog.Catalog;
+import java.io.File;
 
 /**
  * <p> A Catalog based on an xml marshalled file. </p>
@@ -34,12 +35,12 @@ public interface FileBaseCatalog extends Catalog {
      * Getter for the base directory.
      * @return  baseDirectory
      */
-    public String getBaseDirectory();
+    File getBaseDirectory();
 
     /**
      * Setter for the base directory.
      * @param  baseDirectory
      */
-    public void setBaseDirectory(String baseDirectory);
+    void setBaseDirectory(File baseDirectory);
 
 }

@@ -131,8 +131,8 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
             try {
 
                 if (xslPath != null && xslPath.trim().length() > 0) {
-                    xslFile = Path.findLocation(xslPath, new File(
-                            ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+                    xslFile = Path.findLocation(xslPath, 
+                            ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
                 }
                 if (xslFile == null || !xslFile.exists())
                     throw new IllegalArgumentException("The specified XSL file hasn't been found: "
@@ -142,8 +142,8 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
                 String outputFile = null;
                 if (useDefaultScript) {
                     if (defaultScriptPath != null && defaultScriptPath.trim().length() > 0) {
-                        xmlFile = Path.findLocation(defaultScriptPath, new File(
-                                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+                        xmlFile = Path.findLocation(defaultScriptPath,
+                                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
                         final File outXmlFile = File.createTempFile("script", ".xml");
                         outXmlFile.deleteOnExit();
                         outputFile = setScriptArguments(xmlFile.getAbsolutePath(), inputFilePath,
@@ -190,8 +190,8 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
                 // Setting Error logging
                 final String errorPath = configuration.getErrorFile();
                 if (errorPath != null && errorPath.trim().length() > 0) {
-                    File errorFile = Path.findLocation(errorPath, new File(
-                            ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+                    File errorFile = Path.findLocation(errorPath, 
+                            ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
                     if (errorFile != null) {
                         if (!errorFile.exists()) {
                             try {

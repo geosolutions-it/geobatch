@@ -26,7 +26,11 @@ import it.geosolutions.geobatch.catalog.Identifiable;
 import java.util.EventListener;
 
 /**
- * Listener interface for monitorable object. <P> This Listner is designed to have stateful information, such as current task running or current progress percentage, so it should be bound to one object only.
+ * Listener interface for monitorable object. 
+ * <P> This Listner is designed to have stateful information, 
+ * such as current task running or current progress percentage, 
+ * so it should be bound to one object only.
+ * 
  * @author  ETj <etj at geo-solutions.it>
  */
 public interface IProgressListener extends EventListener {

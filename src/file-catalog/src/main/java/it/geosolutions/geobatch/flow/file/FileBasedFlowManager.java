@@ -145,14 +145,13 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         this.paused = false;
         this.terminationRequest = false;
 
-        String baseDir = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
+        File baseDir = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
 
         if (baseDir == null)
             throw new NullPointerException(
                     "FileBasedFlowManager:initialize(): Base Working dir is null");
 
-        this.workingDirectory = Path.findLocation(configuration.getWorkingDirectory(), new File(
-                baseDir));
+        this.workingDirectory = Path.findLocation(configuration.getWorkingDirectory(), baseDir);
 
         if (workingDirectory == null)
             throw new IllegalArgumentException(new StringBuilder(

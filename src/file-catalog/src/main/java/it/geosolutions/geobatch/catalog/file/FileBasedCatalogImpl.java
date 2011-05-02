@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2011 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -23,6 +23,14 @@
 package it.geosolutions.geobatch.catalog.file;
 
 import it.geosolutions.geobatch.catalog.impl.BaseCatalog;
+import java.io.File;
+import javax.servlet.ServletContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * A Catalog based on an xml marshalled file.
@@ -30,37 +38,64 @@ import it.geosolutions.geobatch.catalog.impl.BaseCatalog;
  * @author Simone Giannecchini, GeoSolutions
  */
 @SuppressWarnings("unchecked")
-public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog {
+public class FileBasedCatalogImpl 
+    extends BaseCatalog 
+    implements FileBaseCatalog, ApplicationContextAware {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedCatalogImpl.class);
+        
+    public DataDirHandler dataDirHandler;
+    
+    private ApplicationContext applicationContext;
+//    private File dataDir = null;
+    
+    /**
+     * The base directory where the configuration files are located. 
+     * <br/>The workingDirectory will be relative to this base directory unless 
+     * an absolute path will be specified.
+     */
+    private File dataDir;
 
     public FileBasedCatalogImpl(String id, String name, String description) {
         super(id, name, description);
     }
 
     /**
-     * baseDirectory: represents the base directory where the xml files are located. The workingDirecotry will be relative to this base directory unless an absolute path has been specified.
+     * init method called by Spring
+     * @throws Exception if could not init data dir
      */
-    private String baseDirectory;
-
-    /**
-     * Getter for the baseDirectory.
-     * @uml.property  name="baseDirectory"
-     */
-    public String getBaseDirectory() {
-        return this.baseDirectory;
+    public void init() throws Exception {
+        dataDir = dataDirHandler.getDataDirectory();
+    }
+    
+    
+    public File getBaseDirectory() {
+        return this.dataDir;
     }
 
-    /**
-     * Setter for the baseDirectory.
-     * @uml.property  name="baseDirectory"
-     */
-    public void setBaseDirectory(final String baseDirectory) {
-        this.baseDirectory = baseDirectory;
-
+    public void setBaseDirectory(final File baseDirectory) {
+        LOGGER.warn("Setting datadir to '"+baseDirectory+"', was '"+this.dataDir+"'");
+        this.dataDir = baseDirectory;        
     }
-
+    
+    
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [" + baseDirectory + "]";
+        return getClass().getSimpleName() + " [" + dataDir + "]";
     }
 
+    //==========================================================================
+    
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    public DataDirHandler getDataDirHandler() {
+        return dataDirHandler;
+    }
+
+    public void setDataDirHandler(DataDirHandler dataDirHandler) {
+        this.dataDirHandler = dataDirHandler;
+    }
+    
 }

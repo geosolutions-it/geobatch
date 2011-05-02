@@ -25,13 +25,10 @@ package it.geosolutions.geobatch.ftp.client.upload;
 import com.enterprisedt.net.ftp.FTPException;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
-import it.geosolutions.geobatch.ftp.client.FTPHelper;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPBaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Compressor;
-import it.geosolutions.geobatch.tools.file.Extractor;
-import it.geosolutions.geobatch.tools.file.IOUtils;
 import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
@@ -96,7 +93,7 @@ public class FTPUploadAction extends FTPBaseAction<FileSystemEvent> {
             // ////////////////////////////////////////////////////////////////////
 
             final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
-                    new File(((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
+                    ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
 
             // ////////////////////////////////////////////////////////////////////
             //

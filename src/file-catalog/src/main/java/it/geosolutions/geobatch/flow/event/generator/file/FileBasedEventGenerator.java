@@ -154,8 +154,8 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
                     "FileBasedEventGenerator.initialize(): Unable to initialize "
                             + "FileBasedEventGenerator using a null EventType");
 
-        final File watchDirectory = Path.findLocation(configuration.getWatchDirectory(), new File(
-                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));        
+        final File watchDirectory = Path.findLocation(configuration.getWatchDirectory(), 
+                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());        
         if (watchDirectory != null)
             this.watchDirectory = watchDirectory;
         else

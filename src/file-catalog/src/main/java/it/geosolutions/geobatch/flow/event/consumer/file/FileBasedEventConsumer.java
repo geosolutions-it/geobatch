@@ -118,8 +118,7 @@ public class FileBasedEventConsumer
 
         super(configuration.getId(), configuration.getName(), configuration.getDescription());
 
-        final File catalogFile = new File(
-                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
+        final File catalogFile = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
 
         final File workingDir = Path.findLocation(configuration.getWorkingDirectory(), catalogFile);
 
