@@ -49,7 +49,7 @@
 		<description>description</description>
 		<name>test</name>
 	</EventGeneratorConfiguration>
-	<id>gdal_translate flow</id>
+	<id>gdaltranslateflow</id>
 	<description>Flow to run gdal_translate operations</description>
 	<name>gdal_translateFlow</name>
 </FlowConfiguration>

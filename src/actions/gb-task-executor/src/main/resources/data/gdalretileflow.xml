@@ -51,7 +51,7 @@
 		<description>description</description>
 		<name>test</name>
 	</EventGeneratorConfiguration>
-	<id>gdalretile flow</id>
+	<id>gdalretileflow</id>
 	<description>Flow to run gdalretile operations</description>
-	<name>gdalretileFlow</name>
+	<name>gdalretileflow</name>
 </FlowConfiguration>

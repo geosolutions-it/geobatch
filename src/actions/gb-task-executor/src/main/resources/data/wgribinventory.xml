@@ -46,7 +46,7 @@
 		<description>description</description>
 		<name>test</name>
 	</EventGeneratorConfiguration>
-	<id>wgribInventory Flow</id>
+	<id>wgribInventoryFlow</id>
 	<description>Flow to run wgrib inventory</description>
 	<name>wgribInventoryFlow</name>
 </FlowConfiguration>

@@ -43,8 +43,6 @@ import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -59,6 +57,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.ExecTask;
 import org.apache.tools.ant.types.Environment.Variable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Action to execute tasks such as invoking python scripts, gdal utilities and similar command
@@ -69,7 +69,7 @@ import org.apache.tools.ant.types.Environment.Variable;
 public class TaskExecutor extends BaseAction<FileSystemEvent> implements
         Action<FileSystemEvent> {
 
-    private final static Logger LOGGER = Logger.getLogger(TaskExecutor.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(TaskExecutor.class);
 
     private final static String SOURCE_TAG_OPEN = "<source>";
 
@@ -102,10 +102,16 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
             final FileSystemEvent event = events.remove();
             final File inputFile = event.getSource();
             if (inputFile == null) {
-                throw new IllegalArgumentException("Input File is null");
+                final String message="TaskExecutor.execute(): Input File is null";
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
+                throw new IllegalArgumentException(message);
             }
             if (!inputFile.exists()) {
-                throw new IllegalArgumentException("Input File doesn't exist");
+                final String message="TaskExecutor.execute(): Input File doesn't exist";
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
+                throw new IllegalArgumentException(message);
             }
             final String inputFilePath = inputFile.getAbsolutePath();
 
@@ -117,9 +123,13 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 
             String defaultScriptPath = configuration.getDefaultScript();
             if (inputFileExt.equalsIgnoreCase("xml")) {
+                if (LOGGER.isInfoEnabled())
+                    LOGGER.info("TaskExecutor.execute(): Using input file as script: "+inputFilePath);
                 defaultScriptPath = inputFilePath;
                 useDefaultScript = false;
             } else {
+                if (LOGGER.isInfoEnabled())
+                    LOGGER.info("TaskExecutor.execute(): Using default script: "+configuration.getDefaultScript());
                 useDefaultScript = true;
             }
 
@@ -134,9 +144,13 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
                     xslFile = Path.findLocation(xslPath, new File(
                             ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory()));
                 }
-                if (xslFile == null || !xslFile.exists())
-                    throw new IllegalArgumentException("The specified XSL file hasn't been found: "
-                            + xslPath);
+                if (xslFile == null || !xslFile.exists()){
+                    final String message="TaskExecutor.execute(): The specified XSL file hasn't been found: "
+                            + xslPath;
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(message);
+                    throw new IllegalArgumentException(message);
+                }
 
                 File xmlFile = null;
                 String outputFile = null;
@@ -197,8 +211,8 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
                             try {
                                 errorFile.createNewFile();
                             } catch (Throwable t) {
-                                if (LOGGER.isLoggable(Level.WARNING))
-                                    LOGGER.warning(new StringBuilder(
+                                if (LOGGER.isWarnEnabled())
+                                    LOGGER.warn(new StringBuilder(
                                             "The specified errorFile doesn't exist.").append(
                                             " Unable to create it due to:").append(
                                             t.getLocalizedMessage()).toString());
@@ -272,8 +286,8 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
                 outEvents.add(new FileSystemEvent(outFile,
                         FileSystemEventType.FILE_ADDED));
             } catch (Throwable e) {
-                if (LOGGER.isLoggable(Level.FINE))
-                    LOGGER.fine(e.getLocalizedMessage());
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("TaskExecutor.execute(): "+e.getLocalizedMessage());
 
                 listenerForwarder.failed(e);
 

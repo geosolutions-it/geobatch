@@ -25,17 +25,14 @@ package it.geosolutions.geobatch.task;
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-
-import org.apache.commons.beanutils.BeanUtils;
 
 /**
  * Comments here ...
  * 
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  */
-public class TaskExecutorConfiguration extends ActionConfiguration implements Configuration {
+public class TaskExecutorConfiguration extends ActionConfiguration {
 
     public String getXsl() {
         return xsl;
@@ -131,25 +128,41 @@ public class TaskExecutorConfiguration extends ActionConfiguration implements Co
 
     public TaskExecutorConfiguration clone() { // throws
         // CloneNotSupportedException {
-        try {
-            return (TaskExecutorConfiguration) BeanUtils.cloneBean(this);
-        } catch (IllegalAccessException e) {
-            final RuntimeException cns = new RuntimeException();
-            cns.initCause(e);
-            throw cns;
-        } catch (InstantiationException e) {
-            final RuntimeException cns = new RuntimeException();
-            cns.initCause(e);
-            throw cns;
-        } catch (InvocationTargetException e) {
-            final RuntimeException cns = new RuntimeException();
-            cns.initCause(e);
-            throw cns;
-        } catch (NoSuchMethodException e) {
-            final RuntimeException cns = new RuntimeException();
-            cns.initCause(e);
-            throw cns;
-        }
+        final TaskExecutorConfiguration copy=new TaskExecutorConfiguration(this.getId(),this.getName(),this.getDescription());
+        
+        copy.setDefaultScript(getDefaultScript());
+        copy.setErrorFile(getErrorFile());
+        copy.setExecutable(getExecutable());
+        copy.setFailIgnored(isFailIgnored());
+        copy.setListenerConfigurations(getListenerConfigurations());
+        copy.setOutput(getOutput());
+        copy.setOutputName(getOutputName());
+        copy.setServiceID(getServiceID());
+        copy.setTimeOut(getTimeOut());
+        copy.setVariables(getVariables());
+        copy.setWorkingDirectory(getWorkingDirectory());
+        copy.setXsl(getXsl());
+        
+        return copy;
+//        try {
+//            return (TaskExecutorConfiguration) BeanUtils.cloneBean(this);
+//        } catch (IllegalAccessException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        } catch (InstantiationException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        } catch (InvocationTargetException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        } catch (NoSuchMethodException e) {
+//            final RuntimeException cns = new RuntimeException();
+//            cns.initCause(e);
+//            throw cns;
+//        }
     }
 
     /**

@@ -49,7 +49,7 @@
 		<description>description</description>
 		<name>test</name>
 	</EventGeneratorConfiguration>
-	<id>gdaladdo flow</id>
+	<id>gdaladdoflow</id>
 	<description>Flow to run gdaladdo operations</description>
 	<name>gdaladdoFlow</name>
 </FlowConfiguration>
