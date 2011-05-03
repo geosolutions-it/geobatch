@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.actions.freemarker;
 
+import it.geosolutions.geobatch.actions.freemarker.merge.FreeMarkerMergeConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 
@@ -35,7 +36,8 @@ public class FreeMarkerAliasRegistrar extends AliasRegistrar {
     public FreeMarkerAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
         
-        registry.putAlias("FreeMarker",FreeMarkerConfiguration.class);
+        registry.putAlias("FreeMarker",     FreeMarkerConfiguration.class);
+        registry.putAlias("FreeMarkerMerge",FreeMarkerMergeConfiguration.class);
         
         }
 }
