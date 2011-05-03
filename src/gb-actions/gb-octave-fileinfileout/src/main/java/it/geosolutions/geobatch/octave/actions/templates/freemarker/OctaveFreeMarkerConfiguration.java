@@ -1,43 +1,40 @@
-/**
- * 
+/*
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  http://code.google.com/p/geobatch/
+ *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 
+import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
-import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;;
 
 /**
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
 public class OctaveFreeMarkerConfiguration extends OctaveActionConfiguration {
-    @XStreamOmitField
-    protected static String SHEETNAME_KEY="SHEETNAME";
-    // to set at runtime
-    @XStreamOmitField
-    protected static String WORKINGDIR_KEY="WORKINGDIR";
-    // to update using workingdir
-    @XStreamOmitField
-    protected static String SOURCEDIR_KEY="SOURCEDIR";
     
-    // specific for FileInFileOut!!!
-    @XStreamOmitField
-    protected static String FUNCTION_KEY="FUNCTION";
-    
-    // to set at runtime
-    @XStreamOmitField
-    protected static String IN_FILE_KEY="IN_FILE";
-    @XStreamOmitField
-    protected static String OUT_FILE_KEY="OUT_FILE";
-    
-    @XStreamAlias("root")
     private Map<String,Object> root;
     
+    // TODO MOVE INTO A NURC SPECIFIC CONFIGURATION
     private String cruise;
     private String model;
     private String extension;

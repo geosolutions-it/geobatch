@@ -34,8 +34,8 @@ public class FreeMarkerAliasRegistrar extends AliasRegistrar {
 
     public FreeMarkerAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-        
-        registry.putAlias("FreeMarker",FreeMarkerConfiguration.class);
-        
-        }
+
+        registry.putAlias("FreeMarker", FreeMarkerConfiguration.class);
+
+    }
 }

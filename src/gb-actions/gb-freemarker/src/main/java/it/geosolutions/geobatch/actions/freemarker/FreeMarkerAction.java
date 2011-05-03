@@ -53,8 +53,24 @@ import org.slf4j.LoggerFactory;
 public class FreeMarkerAction extends BaseAction<EventObject> implements
         EventAdapter<TemplateModelEvent> {
     private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerAction.class);
+    
+    /**
+     * Used as key into the map for the incoming event.
+     * ${event.FILE}
+     * 
+     * TODO: changing adapter
+     * It is concat using the integer representing
+     * the position into the event queue.
+     * To use it into a template you have to use:
+     * ${event.FILE_0} -> first file into the queue
+     * ${event.FILE_(N-1)} -> (N)th file into the queue
+     */
+    protected static final String FILE_EVENT_KEY="FILE";
 
-    FreeMarkerConfiguration conf;
+    /**
+     * configuration
+     */
+    final FreeMarkerConfiguration conf;
 
     public FreeMarkerAction(FreeMarkerConfiguration configuration) {
         super(configuration);
@@ -182,7 +198,7 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
             return (TemplateModelEvent) ieo;
         else if (ieo instanceof FileSystemEvent) {
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put(FreeMarkerConfiguration.FILE_EVENT_KEY, ieo.getSource());
+            map.put(FILE_EVENT_KEY, ieo.getSource());
             return new TemplateModelEvent(map);
         } else
             return null;
