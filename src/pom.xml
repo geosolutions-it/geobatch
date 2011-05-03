@@ -71,10 +71,10 @@
         <test.maxHeapSize>512M</test.maxHeapSize>
         <src.output>${basedir}/target</src.output>
         
-        <gt.version>2.7-SNAPSHOT</gt.version>
+        <gt.version>8-SNAPSHOT</gt.version>
         <opengis.version>2.3-M1</opengis.version>
         <gb.version>1.1-SNAPSHOT</gb.version>
-        <imageio-ext.version>1.1-SNAPSHOT</imageio-ext.version>
+        <imageio-ext.version>1.1-RC1</imageio-ext.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <spring.security.version>3.0.3.RELEASE</spring.security.version>
         <camel.version>2.6.0</camel.version>
@@ -607,7 +607,8 @@
             </dependency>
             <dependency>
                 <groupId>it.geosolutions.imageio-ext</groupId>
-                <artifactId>imageio-ext-customstreams</artifactId>
+<!-- imageio-ext-1.0x               <artifactId>imageio-ext-customstreams</artifactId>-->
+                <artifactId>imageio-ext-streams</artifactId>
                 <version>${imageio-ext.version}</version>
             </dependency>
             <dependency>
