@@ -657,7 +657,7 @@
             <dependency>
                 <groupId>essi-unidata</groupId>
                 <artifactId>netcdf-java</artifactId>
-                <version>4.0.41</version>
+                <version>4.0.49</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -665,7 +665,7 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-	    
+	    <!-- JDK 6
             <dependency>
                 <groupId>edu.ucar</groupId>
                 <artifactId>unidatacommon</artifactId>
@@ -682,7 +682,7 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-	    
+	    -->
 
             <!-- XML ========================
             ================================-->
