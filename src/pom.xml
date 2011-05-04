@@ -1607,15 +1607,15 @@
                 </configuration>
             </plugin>
 
-            <!-- ======================================================= -->
-      <!--     Source packaging.                                      -->
-      <!-- ======================================================= -->
+        <!-- ======================================================= -->
+        <!--     Source packaging.                                      -->
+        <!-- ======================================================= -->
             <plugin>
                 <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <configuration>
-                    <attach>true</attach>
+                    <attach>false</attach>
                 </configuration>
                 <executions>
                     <execution>
@@ -1724,7 +1724,7 @@
     <!-- =========================================================== -->
     <modules>
 	<module>gb-fsm</module>
-        <module>gb-tools</module>
+    <module>gb-tools</module>
 	<module>gb-file-catalog</module>
 	<module>gb-core</module>
 	<module>gb-dao</module>
@@ -1732,10 +1732,10 @@
 	<module>gb-services</module> <!-- optional services-->
 	<module>gb-users</module>
 	<module>gb-ftp-server</module>
-        <module>gb-actions</module>
-        <module>gb-gui</module>
-        <module>gb-application</module>
-        <!-- other conditional modules are listed in the profiles section -->
+    <module>gb-actions</module>
+    <module>gb-gui</module>
+    <module>gb-application</module>
+    <!-- other conditional modules are listed in the profiles section -->
     </modules>
 
 </project>
