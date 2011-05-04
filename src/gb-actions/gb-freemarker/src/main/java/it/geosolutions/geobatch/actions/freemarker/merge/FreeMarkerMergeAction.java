@@ -42,15 +42,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Takes a file in input, as a multiproperty file.
- * The keys defined in the input file will be substituted in the template file.
+ * Takes a file in input, as a multiproperty file. The keys defined in the input file will be
+ * substituted in the template file.
  * 
  * @author ETj (etj at geo-solutions.it)
  */
-public class FreeMarkerMergeAction 
-        extends BaseAction<FileSystemEvent> {
-    
-    
+public class FreeMarkerMergeAction extends BaseAction<FileSystemEvent> {
+
     private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerMergeAction.class);
 
     FreeMarkerMergeConfiguration conf;
@@ -63,41 +61,39 @@ public class FreeMarkerMergeAction
     /**
      * Removes TemplateModelEvents from the queue and put
      */
-    @Override
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
-        
+
         // get the input event
         FileSystemEvent event = events.poll();
         File inputFile = event.getSource();
-        
+
         // parse the input file
         MultiPropertyFile multiPropertyFile = new MultiPropertyFile(inputFile);
-        
-        if( ! multiPropertyFile.read()) {
+
+        if (!multiPropertyFile.read()) {
             LOGGER.warn("Error reading input file");
             throw new ActionException(this, "Error reading input file");
         }
-        
-        Map<String, Object> values = new HashMap<String, Object> ();
-        values.putAll(conf.getDefaultValues());         // initial values
-        values.putAll(multiPropertyFile.getRawMap());   // input values
-        values.putAll(conf.getForcedValues());          // fixed overriding values
-                
 
-        File workingDir = new File(Path.getAbsolutePath(conf.getWorkingDirectory()));        
-        
+        Map<String, Object> values = new HashMap<String, Object>();
+        values.putAll(conf.getDefaultValues()); // initial values
+        values.putAll(multiPropertyFile.getRawMap()); // input values
+        values.putAll(conf.getForcedValues()); // fixed overriding values
+
+        File workingDir = new File(Path.getAbsolutePath(conf.getWorkingDirectory()));
+
         // build the output file
         File outputFile = new File(workingDir, conf.getOutputFile());
         if (LOGGER.isDebugEnabled())
             LOGGER.debug("Output file name: " + outputFile);
 
-        
         // try to open the file to write into
         FileWriter fw = null;
         try {
             fw = new FileWriter(outputFile);
         } catch (IOException ioe) {
-            final String message = "Unable to build the output file writer: " + ioe.getLocalizedMessage();
+            final String message = "Unable to build the output file writer: "
+                    + ioe.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message);
             throw new ActionException(this, message);

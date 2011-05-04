@@ -21,6 +21,7 @@
  */
 package it.geosolutions.geobatch.actions.freemarker;
 
+import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
@@ -33,11 +34,14 @@ import it.geosolutions.geobatch.tools.filter.FreeMarkerFilter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,19 +57,19 @@ import org.slf4j.LoggerFactory;
 public class FreeMarkerAction extends BaseAction<EventObject> implements
         EventAdapter<TemplateModelEvent> {
     private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerAction.class);
-    
+
     /**
-     * Used as key into the map for the incoming event.
-     * ${event.FILE}
+     * Used as key into the map for the incoming event. ${event[X].PARENT}
      * 
-     * TODO: changing adapter
-     * It is concat using the integer representing
-     * the position into the event queue.
-     * To use it into a template you have to use:
-     * ${event.FILE_0} -> first file into the queue
-     * ${event.FILE_(N-1)} -> (N)th file into the queue
+     * To use it into a template you have to use: ${event[0].PARENT} -> first file into
+     * the queue ${event[N-1].PARENT} -> (N)th file into the queue
+     * 
+     * To compose the entire file name:
+     * ${event[N].PARENT}/${event[N].FILENAME}.${event[N].EXTENSION}
      */
-    protected static final String FILE_EVENT_KEY="FILE";
+    protected static final String FILE_EVENT_PARENTFILE_KEY ="PARENT";
+    protected static final String FILE_EVENT_NAMEFILE_KEY="FILENAME";
+    protected static final String FILE_EVENT_EXTENSION_KEY="EXTENSION";
 
     /**
      * configuration
@@ -86,27 +90,29 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
                 conf.getInput());
 
         // build the output absolute file name
-        StringBuilder output = null;
+        final File outputFile;
         try {
-            output = new StringBuilder(Path.getAbsolutePath(conf.getWorkingDirectory()));
-            output.append(File.separatorChar + conf.getOutput());
+            // the output
+            
+            outputFile = it.geosolutions.geobatch.tools.file.Path.findLocation(conf.getOutput(),new File(conf.getWorkingDirectory()));
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("FreeMarkerAction.execute(): Output file name: "
+                        + outputFile.toString());
+
         } catch (NullPointerException npe) {
-            final String message = "FreeMarkerAction.execute(): Unable to build the output file name";
+            final String message = "FreeMarkerAction.execute(): Unable to get the output file path from :"+conf.getOutput();
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message);
             throw new ActionException(this, message);
         }
-        if (LOGGER.isInfoEnabled())
-            LOGGER.info("FreeMarkerAction.execute(): Output file name: " + output.toString());
 
-        // the output
-        File out = new File(output.toString());
         // try to open the file to write into
         FileWriter fw = null;
         try {
-            fw = new FileWriter(out);
+            fw = new FileWriter(outputFile);
         } catch (IOException ioe) {
-            final String message = "FreeMarkerAction.execute(): Unable to build the output file writer: " + ioe.getLocalizedMessage();
+            final String message = "FreeMarkerAction.execute(): Unable to build the output file writer: "
+                    + ioe.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message);
             throw new ActionException(this, message);
@@ -126,13 +132,14 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
          * add to it the root data structure using the name of the event.
          */
         TemplateModelEvent ev = null;
+        List<TemplateModel> list = new ArrayList<TemplateModel>();
         while (events.size() > 0) {
-
             try {
                 // append the incoming data structure
-                if ((ev = adapter(events.remove())) != null)
-                    root.put(ev.getName(), ev.getModel(f));
-                else {
+                if ((ev = adapter(events.remove())) != null) {
+                    // try to get a TemplateModel from the adapted object
+                    list.add(ev.getModel(f));
+                } else {
                     if (LOGGER.isErrorEnabled()) {
                         LOGGER.error("FreeMarkerAction.execute(): Unable to append the event: unrecognized format");
                     }
@@ -143,26 +150,23 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
                     LOGGER.error(message);
                 throw new ActionException(this, message);
             } catch (Exception ioe) {
-                final String message = "FreeMarkerAction.execute(): Unable to produce the output: " + ioe.getLocalizedMessage();
+                final String message = "FreeMarkerAction.execute(): Unable to produce the output: "
+                        + ioe.getLocalizedMessage();
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
                 throw new ActionException(this, message);
             }
         }
 
+        // append the list of adapted event objects
+        root.put(TemplateModelEvent.EVENT_KEY, list);
+    
         /*
          * If available, process the output file using the TemplateModel data structure
          */
         try {
             // process the input template file
-            if (root != null) {
-                f.process(f.wrapRoot(root), fw);
-            } else {
-                final String message = "FreeMarkerAction.execute(): Unable to process a null root data structure";
-                if (LOGGER.isErrorEnabled())
-                    LOGGER.error(message);
-                throw new NullPointerException(message);
-            }
+            f.process(f.wrapRoot(root), fw);
 
             // flush the buffer
             if (fw != null)
@@ -175,12 +179,14 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
                 LOGGER.error(message);
             throw new ActionException(this, message);
         } catch (TemplateModelException tme) {
-            final String message = "FreeMarkerAction.execute(): Unable to wrap the passed object: " + tme.getLocalizedMessage();
+            final String message = "FreeMarkerAction.execute(): Unable to wrap the passed object: "
+                    + tme.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message);
             throw new ActionException(this, message);
         } catch (Exception e) {
-            final String message = "FreeMarkerAction.execute(): Unable to process the input file: " + e.getLocalizedMessage();
+            final String message = "FreeMarkerAction.execute(): Unable to process the input file: "
+                    + e.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message);
             throw new ActionException(this, message);
@@ -189,7 +195,7 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
         }
 
         // add the file to the queue
-        events.add(new FileSystemEvent(out.getAbsoluteFile(), FileSystemEventType.FILE_ADDED));
+        events.add(new FileSystemEvent(outputFile.getAbsoluteFile(), FileSystemEventType.FILE_ADDED));
         return events;
     }
 
@@ -198,7 +204,13 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
             return (TemplateModelEvent) ieo;
         else if (ieo instanceof FileSystemEvent) {
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put(FILE_EVENT_KEY, ieo.getSource());
+            
+            final File file=((FileSystemEvent)ieo).getSource().getAbsoluteFile();
+            
+            map.put(FILE_EVENT_PARENTFILE_KEY, file.getParent());
+            map.put(FILE_EVENT_NAMEFILE_KEY, FilenameUtils.getBaseName(file.getName()));
+            map.put(FILE_EVENT_EXTENSION_KEY, FilenameUtils.getExtension(file.getName()));
+            
             return new TemplateModelEvent(map);
         } else
             return null;

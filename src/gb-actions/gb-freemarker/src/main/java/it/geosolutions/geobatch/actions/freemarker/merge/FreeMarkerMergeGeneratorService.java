@@ -43,7 +43,6 @@ public class FreeMarkerMergeGeneratorService
 
     private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerMergeGeneratorService.class);
     
-    @Override
     public FreeMarkerMergeAction createAction(FreeMarkerMergeConfiguration configuration) {
         try {
             return new FreeMarkerMergeAction(configuration);
@@ -54,7 +53,6 @@ public class FreeMarkerMergeGeneratorService
         }
     }
 
-    @Override
     public boolean canCreateAction(FreeMarkerMergeConfiguration configuration) {
         //TODO check input and output file existence
         return true;

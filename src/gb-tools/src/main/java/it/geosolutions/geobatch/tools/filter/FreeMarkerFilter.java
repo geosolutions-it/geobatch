@@ -160,7 +160,7 @@ public class FreeMarkerFilter {
             catch (IOException e){
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error("Unable to get the working dir: "
-                            +e.getLocalizedMessage());
+                            +e.getLocalizedMessage(),e);
                 return false;
             }
         }
@@ -184,7 +184,7 @@ public class FreeMarkerFilter {
                 template = new Template(null,reader,cfg,cfg.getEncoding(cfg.getLocale()));
             } catch (IOException e) {
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error("Unable to get the template: "+e.getLocalizedMessage());
+                    LOGGER.error("Unable to get the template: "+e.getLocalizedMessage(),e);
                 return false;
             }
         }
@@ -209,7 +209,7 @@ public class FreeMarkerFilter {
                 template = cfg.getTemplate(input_name);
             } catch (IOException e) {
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error("Unable to get the template: "+e.getLocalizedMessage());
+                    LOGGER.error("Unable to get the template: "+e.getLocalizedMessage(),e);
                 return false;
             }
         }
@@ -237,11 +237,11 @@ public class FreeMarkerFilter {
                 return true;
             } catch (TemplateException e) {
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error(e.getLocalizedMessage());
+                    LOGGER.error(e.getLocalizedMessage(),e);
                 throw e;
             } catch (IOException e) {
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error(e.getLocalizedMessage());
+                    LOGGER.error(e.getLocalizedMessage(),e);
                 throw e;
             }
         }

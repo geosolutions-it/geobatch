@@ -21,6 +21,7 @@
  */
 package it.geosolutions.geobatch.actions.freemarker;
 
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  */
 public class FreeMarkerGeneratorService extends BaseService implements
         ActionService<EventObject, FreeMarkerConfiguration> {
@@ -41,12 +42,13 @@ public class FreeMarkerGeneratorService extends BaseService implements
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerGeneratorService.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerGeneratorService.class
+            .toString());
 
-//    public FreeMarkerGeneratorService(){
-//        super();
-//    }
-    
+    // public FreeMarkerGeneratorService(){
+    // super();
+    // }
+
     public FreeMarkerAction createAction(FreeMarkerConfiguration configuration) {
         try {
             return new FreeMarkerAction(configuration);
@@ -58,8 +60,22 @@ public class FreeMarkerGeneratorService extends BaseService implements
     }
 
     public boolean canCreateAction(FreeMarkerConfiguration configuration) {
-//TODO check input and output file existence
-        return true;
+        try {
+            // absolutize working dir
+            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            if (wd != null) {
+                configuration.setWorkingDirectory(wd);
+                return true;
+            } else {
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("FreeMarkerGeneratorService::canCreateAction(): "
+                            + "unable to create action, it's not possible to get an absolute working dir.");
+            }
+        } catch (Throwable e) {
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
+        }
+        return false;
     }
 
 }
