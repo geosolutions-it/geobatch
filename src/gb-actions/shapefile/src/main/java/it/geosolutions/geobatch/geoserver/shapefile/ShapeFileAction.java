@@ -52,11 +52,11 @@ import org.slf4j.LoggerFactory;
  * Process shapefiles and inject them into a Geoserver instance.
  * 
  * Accept:<br>
- * - a list of mandatory files(ref. to the shape file standard for details)
- * - a compressed archive (ref. to the Extract class to see accepted formats)
+ * - a list of mandatory files(ref. to the shape file standard for details) - a compressed archive
+ * (ref. to the Extract class to see accepted formats)
  * 
- * Check the content of the input and build a valid ZIP file which represent
- * the output of this action.
+ * Check the content of the input and build a valid ZIP file which represent the output of this
+ * action.
  * 
  * The same output is sent to the configured GeoServer using the GS REST api.
  * 
@@ -136,10 +136,6 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             // files
 
             final FileSystemEvent event = events.peek();
-            final IOFileFilter shpFilter = FileFilterUtils.suffixFileFilter("shp",
-                    IOCase.INSENSITIVE);
-            final Collector coll = new Collector(shpFilter);
-            List<File> shpFiles = null;
 
             // the name of the shapefile
             String shapeName = null;
@@ -170,8 +166,17 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
                 }
 
                 // collect extracted files
-                files = tmpDirFile.listFiles();
-
+                final Collector c = new Collector(null); // no filter
+                final List<File> fileList = c.collect(tmpDirFile);
+                if (fileList != null) {
+                    files = fileList.toArray(new File[1]);
+                } else {
+                    final String message = "Input is not a zipped file nor a valid collection of files";
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(message);
+                    throw new IllegalStateException(message);
+                }
+                
             } else if (events.size() >= 3) {
 
                 if (LOGGER.isTraceEnabled())
@@ -240,7 +245,7 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
 
             // Removing old files...
             events.clear();
-            
+
             // Adding the zipped file to send...
             events.add(new FileSystemEvent(zippedFile, FileSystemEventType.FILE_ADDED));
             return events;
@@ -269,11 +274,15 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
      *         name of the shape file otherwise.
      */
     private static String acceptable(final File[] files) {
-        String shapeFileName = null;
+        if (files == null)
+            return null;
 
+        String shapeFileName = null;
         // if ==3 the incoming file list is acceptable
         int acceptable = 0;
         for (File file : files) {
+            if (file == null)
+                continue;
             final String ext = FilenameUtils.getExtension(file.getAbsolutePath());
 
             if (ext.equals("shp")) {
