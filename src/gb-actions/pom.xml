@@ -269,7 +269,20 @@
                 <module>splitting</module>
             </modules>
         </profile>
-        
+
+		<profile>
+            <id>geonetwork</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>geonetwork</module>
+            </modules>
+        </profile>
+
     </profiles>
-    
+        
 </project>

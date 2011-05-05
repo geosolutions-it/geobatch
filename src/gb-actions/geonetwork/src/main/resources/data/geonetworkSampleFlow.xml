@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<id>GeonetworkSampleFlow</id>
+	<name>Geonetwork sample flow</name>
+	<description>A sample flow for GeoNetwork</description>
+	
+	<workingDirectory>sample_geonetwork/</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*.xml</wildCard>
+		<watchDirectory>sample_geonetwork/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<interval>0 * * * * ?</interval><!-- CRON: every minute at sec 0 -->
+		<!--<interval>20</interval> each 20 sec -->
+		<id>GeonetworkFlow</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		<id>GeonetworkFlow</id>
+		<description>GeonetworkFlow</description>
+		<name>GeonetworkFlow</name>
+		
+		<workingDirectory>sample_geonetwork/</workingDirectory>
+		<performBackup>false</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+		
+		<Geonetwork>
+			<serviceID>GeonetworkGeneratorService</serviceID>
+			<id>GeonetworkGeneratorService</id>
+			<name>GeonetworkConfiguration</name>
+			<description>description</description>
+            		  
+			<dirty>false</dirty>
+			<failIgnored>false</failIgnored>
+			<listenerConfigurations/>
+		  
+			<workingDirectory>sample_geonetwork/</workingDirectory>
+
+            <!-- geonetwork action's specific params -->
+            <geonetworkServiceURL>http://localhost:8080/geonetwork</geonetworkServiceURL>
+			<loginUsername>admin</loginUsername>
+			<loginPassword>admin</loginPassword>
+			<onlyMetadataInput>true</onlyMetadataInput>
+			<group>1</group>
+			<category>_none_</category>
+			<styleSheet>_none_</styleSheet>
+			<validate>false</validate>
+		</Geonetwork>
+		
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>
