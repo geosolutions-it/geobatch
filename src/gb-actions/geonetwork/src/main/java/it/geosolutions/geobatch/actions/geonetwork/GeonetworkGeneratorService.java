@@ -43,7 +43,7 @@ public class GeonetworkGeneratorService
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GeonetworkGeneratorService.class);
     
-    @Override
+//    @Override
     public GeonetworkAction createAction(GeonetworkInsertConfiguration configuration) {
         try {
             return new GeonetworkAction(configuration);
@@ -54,7 +54,7 @@ public class GeonetworkGeneratorService
         }
     }
 
-    @Override
+//    @Override
     public boolean canCreateAction(GeonetworkInsertConfiguration configuration) {
         //TODO check input and output file existence
         return true;

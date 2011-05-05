@@ -73,7 +73,7 @@ public class GeonetworkAction
     /**
      * 
      */
-    @Override
+//    @Override
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         
         // get the input event
@@ -224,7 +224,7 @@ public class GeonetworkAction
         
         Thread t = new Thread(new Runnable() {
 
-            @Override
+//            @Override
             public void run() {
                 try {
                     outputter.output(gnRequest, pos);        

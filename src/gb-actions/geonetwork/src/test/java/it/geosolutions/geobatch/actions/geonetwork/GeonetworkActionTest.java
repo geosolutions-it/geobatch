@@ -24,7 +24,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayDeque;
+import java.util.LinkedList;
 import java.util.Queue;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class GeonetworkActionTest extends TestCase {
     private final static Logger LOGGER = LoggerFactory.getLogger(GeonetworkActionTest.class);
 
-    boolean runIntegrationTest = true;
+    boolean runIntegrationTest = false;
     
     public GeonetworkActionTest() {
     }
@@ -61,7 +61,7 @@ public class GeonetworkActionTest extends TestCase {
         assertNotNull(file);
         
         FileSystemEvent event = new FileSystemEvent(file, FileSystemEventType.FILE_ADDED);
-        Queue<FileSystemEvent> queue = new ArrayDeque<FileSystemEvent>();
+        Queue<FileSystemEvent> queue = new LinkedList<FileSystemEvent>();
         queue.add(event);
         
         GeonetworkAction action = new GeonetworkAction(cfg);
@@ -81,7 +81,7 @@ public class GeonetworkActionTest extends TestCase {
         assertNotNull(file);
         
         FileSystemEvent event = new FileSystemEvent(file, FileSystemEventType.FILE_ADDED);
-        Queue<FileSystemEvent> queue = new ArrayDeque<FileSystemEvent>();
+        Queue<FileSystemEvent> queue = new LinkedList<FileSystemEvent>();
         queue.add(event);
         
         GeonetworkAction action = new GeonetworkAction(cfg);
