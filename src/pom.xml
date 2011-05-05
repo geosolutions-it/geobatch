@@ -1569,7 +1569,6 @@
                 <configuration>
                     <includes>
                         <include>**/*Test.java</include>
-                        <include>**/*.txt</include>
                     </includes>
                     <excludes>
                         <exclude>${online.skip.pattern}</exclude>
