@@ -105,7 +105,7 @@ public class MultiPropertyFile {
             it = IOUtils.lineIterator(in, "UTF-8");
             while (it.hasNext()) {
                 String line = it.nextLine();
-                if(line.trim().isEmpty()) // empty line
+                if(line.trim().length()==0) // empty line
                     continue;
                 if(line.startsWith("#"))  // comment line
                     continue;

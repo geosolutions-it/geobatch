@@ -42,6 +42,8 @@ import java.util.Queue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
 import dk.ange.octave.exception.OctaveEvalException;
 
 
@@ -50,6 +52,28 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
     private final static Logger LOGGER = LoggerFactory.getLogger(OctaveFreeMarkerAction.class.toString());
     
     private final OctaveFreeMarkerConfiguration config;
+
+    @XStreamOmitField
+    protected static String OUT_FILE_KEY="OUT_FILE";
+
+    // to set at runtime
+    @XStreamOmitField
+    protected static String IN_FILE_KEY="IN_FILE";
+
+    // specific for FileInFileOut!!!
+    @XStreamOmitField
+    protected static String FUNCTION_KEY="FUNCTION";
+
+    // to update using workingdir
+    @XStreamOmitField
+    protected static String SOURCEDIR_KEY="SOURCEDIR";
+
+    // to set at runtime
+    @XStreamOmitField
+    protected static String WORKINGDIR_KEY="WORKINGDIR";
+
+    @XStreamOmitField
+    protected static String SHEETNAME_KEY="SHEETNAME";
     
     public OctaveFreeMarkerAction(OctaveFreeMarkerConfiguration actionConfiguration) {
         super(actionConfiguration);
@@ -130,14 +154,14 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
                                 "Preprocessing functions on arguents: \nFile_in: "+in_name
                                 +" \nFile_out: "+out_name);
                     }
-                    root.put(config.IN_FILE_KEY, in_name);
-                    root.put(config.OUT_FILE_KEY, out_name);
+                    root.put(OctaveFreeMarkerAction.IN_FILE_KEY, in_name);
+                    root.put(OctaveFreeMarkerAction.OUT_FILE_KEY, out_name);
                     StringBuilder sb=new StringBuilder(Path.getAbsolutePath(config.getWorkingDirectory())+File.separator);
                     if(LOGGER.isInfoEnabled()){
                         LOGGER.info(
                                 "WorkingDir: "+sb.toString());
                     }
-                    root.put(config.WORKINGDIR_KEY, sb.toString());
+                    root.put(OctaveFreeMarkerAction.WORKINGDIR_KEY, sb.toString());
                     sb=null;
 
                     /**

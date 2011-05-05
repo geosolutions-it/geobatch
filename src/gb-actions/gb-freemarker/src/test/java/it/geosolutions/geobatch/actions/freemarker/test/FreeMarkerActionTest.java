@@ -22,6 +22,7 @@
 package it.geosolutions.geobatch.actions.freemarker.test;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.freemarker.FreeMarkerAction;
 import it.geosolutions.geobatch.actions.freemarker.FreeMarkerConfiguration;
 import it.geosolutions.geobatch.actions.freemarker.TemplateModelEvent;
@@ -32,8 +33,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -96,9 +99,20 @@ public class FreeMarkerActionTest {
         mev.put("FILE_IN", "in_test_file.dat");
         mev.put("FILE_OUT", "out_test_file.dat");
         
+        mev.put("FILE_OUT", "out_test_file.dat");
+        
+        
+        List<String> list=new ArrayList<String>(4);
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        mev.put("LIST", list);
+        
         Queue<EventObject> q=new ArrayBlockingQueue<EventObject>(2);
         
         q.add(new TemplateModelEvent(mev));
+        q.add(new FileSystemEvent(new File("TEST.txt"), FileSystemEventType.FILE_ADDED));
         
         FreeMarkerAction fma=new FreeMarkerAction(fmc);
         

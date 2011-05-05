@@ -176,7 +176,7 @@
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-tools</artifactId>
         </dependency>
-        		<!-- ============================== -->
+    	<!-- ============================== -->
         <!-- 		logging					-->
         <!-- ============================== -->
         <dependency>

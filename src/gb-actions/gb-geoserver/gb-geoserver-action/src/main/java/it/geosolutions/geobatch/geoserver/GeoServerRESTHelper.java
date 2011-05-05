@@ -1065,7 +1065,7 @@ public class GeoServerRESTHelper {
          * <crs>EPSG:4326</crs> </nativeBoundingBox> <latLonBoundingBox>
          * <minx>15.685019493103</minx> <maxx>20.8090171813965</maxx> <miny>39.5162200927734</miny>
          * <maxy>43.3198089599609</maxy> <crs>EPSG:4326</crs> </latLonBoundingBox> ... </coverage>
-         */
+         
         Element nativeBB = doc.createElement("nativeBoundingBox");
         root.appendChild(nativeBB);
 
@@ -1084,7 +1084,8 @@ public class GeoServerRESTHelper {
         Element maxy = doc.createElement("maxy");
         nativeBB.appendChild(maxy);
         maxy.insertBefore(doc.createTextNode(coverageElements.get(NATIVE_MAXY)), null);
-
+*/
+        
 /*
  *         TODO should be taken using optionally:
  *          - the prj                                   *better

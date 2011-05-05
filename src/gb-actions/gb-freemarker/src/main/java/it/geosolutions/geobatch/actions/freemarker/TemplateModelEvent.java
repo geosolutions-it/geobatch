@@ -38,14 +38,14 @@ import freemarker.template.TemplateModelException;
  *         The default FreeMarker incoming event class it represent a FreeMarker datamodel
  */
 public class TemplateModelEvent extends EventObject {
-    private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerAction.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(TemplateModelEvent.class);
     /**
      * Used as key into the map for the incoming event: ${event.NAME_VAR} where name var is a KEY
      * value of the incoming map event NOTE: for the default FileSystemEvent key:
      * 
      * @see FreeMarkerConfiguration
      */
-    private static final String EVENT_NAME = "event";
+    static final String EVENT_KEY = "event";
 
     private static final long serialVersionUID = -8211229935415131446L;
 
@@ -68,14 +68,14 @@ public class TemplateModelEvent extends EventObject {
     /**
      * Constructor, the name of this event will be set to the default one.
      * 
-     * @see EVENT_NAME
+     * @see EVENT_KEY
      * @param source
      *            the object to use as data Structure (should be an implementation of TemplateModel)
      * 
      */
     public TemplateModelEvent(Object source) {
         super(source);
-        name = EVENT_NAME;
+        name = EVENT_KEY;
     }
 
     /**
@@ -99,7 +99,7 @@ public class TemplateModelEvent extends EventObject {
             if (LOGGER.isErrorEnabled()){
                 LOGGER.error(message);
             }
-            throw new NullPointerException(null);
+            throw new NullPointerException(message);
         }
     }
 

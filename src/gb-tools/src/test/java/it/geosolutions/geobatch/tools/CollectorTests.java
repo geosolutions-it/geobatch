@@ -18,7 +18,7 @@ import org.junit.Test;
 
 public class CollectorTests {
     final static int FILES_IN_TEST=6;
-    final static String path="src/main/resources/test-data/collector/";
+    final static String path="src/test/resources/test-data/collector/";
     
     @Test
     public final void testCollect() {

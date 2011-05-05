@@ -66,7 +66,8 @@
         </dependency>
         <dependency>
             <groupId>it.geosolutions.imageio-ext</groupId>
-            <artifactId>imageio-ext-customstreams</artifactId>
+<!-- imageio-ext-1.0x               <artifactId>imageio-ext-customstreams</artifactId>-->
+            <artifactId>imageio-ext-streams</artifactId>
         </dependency>
 
         <dependency>

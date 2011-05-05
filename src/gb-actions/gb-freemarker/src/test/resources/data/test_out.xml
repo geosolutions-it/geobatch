@@ -23,7 +23,7 @@
 		 */
 		 -->
 		<OctaveCommand executed="false">
-			<command>source "/path/to/source";</command><!--/usr/share/octave/3.0.5/m/startup/octaverc"-->
+			<command>source "/home/carlo/work/code/java/geobatch/src/gb-actions/gb-freemarker/TEST.txt";</command><!--/usr/share/octave/3.0.5/m/startup/octaverc"-->
 		</OctaveCommand>
 		<!-- todo: variables! -->
 		<OctaveCommand executed="false">
@@ -38,3 +38,6 @@
 	</sheet>
   </sheets>
 </octave>
+<!-- 
+2, 3
+ -->

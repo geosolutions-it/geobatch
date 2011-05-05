@@ -26,7 +26,6 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.geotiff.GeotiffUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -137,15 +136,9 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
             }
 
             // can throw UnsupportedOperationsException
-
-            // //TODO format???
-             reader = GeotiffUtils.getReader(inFile, new Hints(
-             Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
-//            reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
-//                    Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
-
             reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
                     Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+            
             if (reader == null) {
                 final IOException ioe = new IOException(
                         "GeotiffRetiler::reTile(): Unable to find a reader for the provided file: "

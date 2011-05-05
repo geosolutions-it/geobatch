@@ -26,32 +26,13 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
-
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-@XStreamAlias("FreeMarker")
-@XStreamInclude(FreeMarkerConfiguration.class)
+
 public class FreeMarkerConfiguration extends ActionConfiguration implements Configuration {
-    
-    /**
-     * Used as key into the map for the incoming event.
-     * ${event.FILE}
-     * 
-     * TODO: changing adapter
-     * It is concat using the integer representing
-     * the position into the event queue.
-     * To use it into a template you have to use:
-     * ${event.FILE_0} -> first file into the queue
-     * ${event.FILE_(N-1)} -> (N)th file into the queue
-     */
-    @XStreamOmitField
-    protected static final String FILE_EVENT_KEY="FILE"; 
 
     public FreeMarkerConfiguration(String id, String name, String description) {
         super(id, name, description);
@@ -78,32 +59,13 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
         root = r;
     }
 
-    /**
-     * 
-     * @param in
-     *            the input template file
-     * @param out
-     *            the output filtered (resulting) file
-     * @param r
-     *            the root data model to use as root
-     */
-//    public FreeMarkerConfiguration(String in, String out, Map<String, Object> r) {
-//        super();
-//        input = in;
-//        output = out;
-//        root = r;
-//    }
-
     // path where to find the template
-    @XStreamAlias("input")
     private String input;
 
     // path where to write
-    @XStreamAlias("output")
     private String output;
 
     // Create a data-model
-    @XStreamAlias("root")
     private Map<String, Object> root = null;
 
     public void setInput(String s) {

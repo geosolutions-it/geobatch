@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ======================================================================= 
 	Maven Project Configuration File GeoSolutions GeoBatch Project http://geobatch.codehaus.org 
-	Version: 0.1 pom.xml 63 2011-05-02 18:55:57Z ccancellieri $
-	 ======================================================================= -->
+	Version: 0.1 pom.xml 63 2011-05-02 18:55:57Z ccancellieri $ ======================================================================= -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -47,7 +46,7 @@
 		<netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
 		<flow.dir>geobatch/WEB-INF/</flow.dir>
 	</properties>
-	
+
 	<!-- =========================================================== -->
 	<!-- Dependencies -->
 	<!-- =========================================================== -->
@@ -87,6 +86,85 @@
 		<dependency>
 			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-gui</artifactId>
+		</dependency>
+
+		<!-- ============================== -->
+		<!-- Spring -->
+		<!-- ============================== -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+
+		<!-- ============================== -->
+		<!-- RESTLET -->
+		<!-- ============================== -->
+		<dependency>
+			<groupId>com.noelios.restlet</groupId>
+			<artifactId>com.noelios.restlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.noelios.restlet</groupId>
+			<artifactId>com.noelios.restlet.ext.servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.noelios.restlet</groupId>
+			<artifactId>com.noelios.restlet.ext.spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet</groupId>
+			<artifactId>org.restlet.ext.spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jettison</groupId>
+			<artifactId>jettison</artifactId>
+		</dependency>
+
+		<!-- ============================== -->
+		<!-- Spring Security -->
+		<!-- ============================== -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-acl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- ============================== -->
@@ -768,7 +846,7 @@
 					<artifactId>gb-action-imagemosaic</artifactId>
 				</dependency>
 			</dependencies>
-			
+
 			<build>
 				<plugins>
 					<plugin>
