@@ -22,16 +22,24 @@
 
 package it.geosolutions.geobatch.catalog.dao.file.xstream;
 
+import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
+import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
+import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
+import it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.xstream.Alias;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
 
 /**
  * 
@@ -62,47 +70,47 @@ public class XStreamFlowConfigurationDAOTest extends TestCase {
     @Test
     public void testDAO() throws IOException {
 
-        // Resource resource = context.getResource("data");
-        // File dir = resource.getFile();
-        // assertTrue(dir.exists());
-        //
-        // File file = new File(dir, "flow1.xml");
-        // assertTrue(file.exists());
-        //
-        // XStreamFlowConfigurationDAO dao = new
-        // XStreamFlowConfigurationDAO(dir.getAbsolutePath(), createAlias());
-        // FileBasedFlowConfiguration fbfc = dao.find("flow1", false);
-        //
-        // assertNotNull(fbfc);
-        //
-        // assertEquals(fbfc.getId(), "flow1id");
-        // assertEquals(fbfc.getName(), "flow1name");
-        // assertEquals(fbfc.getDescription(), "flow1desc");
-        //
-        // FileBasedEventGeneratorConfiguration fbegc =
-        // (FileBasedEventGeneratorConfiguration) fbfc
-        // .getEventGeneratorConfiguration();
-        // assertNotNull(fbegc);
-        //
-        // FileBasedEventConsumerConfiguration fbecc =
-        // (FileBasedEventConsumerConfiguration) fbfc
-        // .getEventConsumerConfiguration();
-        // assertNotNull(fbecc);
-        //
-        // List<? extends ActionConfiguration> lac = fbecc.getActions();
-        // assertNotNull(lac);
-        // for (ActionConfiguration actionConfiguration : lac) {
-        // System.out.println(actionConfiguration);
-        // }
-        // assertEquals(1, lac.size());
-        //
-        // List<FileEventRule> lfer = fbecc.getRules();
-        // assertNotNull(lfer);
-        // for (FileEventRule fileEventRule : lfer) {
-        // System.out.println(fileEventRule);
-        // }
-        //
-        // assertEquals(1, lfer.size());
+//         Resource resource = context.getResource("data");
+//         File dir = resource.getFile();
+//         assertTrue(dir.exists());
+//        
+//         File file = new File(dir, "flow1.xml");
+//         assertTrue(file.exists());
+//        
+//         XStreamFlowConfigurationDAO dao = new
+//         XStreamFlowConfigurationDAO(dir.getAbsolutePath(), createAlias());
+//         FileBasedFlowConfiguration fbfc = dao.find("flow1", false);
+//        
+//         assertNotNull(fbfc);
+//        
+//         assertEquals(fbfc.getId(), "flow1id");
+//         assertEquals(fbfc.getName(), "flow1name");
+//         assertEquals(fbfc.getDescription(), "flow1desc");
+//        
+//         FileBasedEventGeneratorConfiguration fbegc =
+//         (FileBasedEventGeneratorConfiguration) fbfc
+//         .getEventGeneratorConfiguration();
+//         assertNotNull(fbegc);
+//        
+//         FileBasedEventConsumerConfiguration fbecc =
+//         (FileBasedEventConsumerConfiguration) fbfc
+//         .getEventConsumerConfiguration();
+//         assertNotNull(fbecc);
+//        
+//         List<? extends ActionConfiguration> lac = fbecc.getActions();
+//         assertNotNull(lac);
+//         for (ActionConfiguration actionConfiguration : lac) {
+//         System.out.println(actionConfiguration);
+//         }
+//         assertEquals(1, lac.size());
+//        
+//         List<FileEventRule> lfer = fbecc.getRules();
+//         assertNotNull(lfer);
+//         for (FileEventRule fileEventRule : lfer) {
+//         System.out.println(fileEventRule);
+//         }
+//        
+//         assertEquals(1, lfer.size());
 
     }
 

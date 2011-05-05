@@ -58,15 +58,14 @@ import org.apache.commons.io.FilenameUtils;
  *          ImageMosaicAction.java $ Revision: 0.2 $ 25/feb/11 09:00:00
  */
 
-public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
-        Action<FileSystemEvent> {
+public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 
     protected final static int WAIT = 10; // seconds to wait for nfs propagation
 
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicAction.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicAction.class);
 
     protected final ImageMosaicConfiguration configuration;
 
@@ -127,7 +126,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
              * For each event into the queue
              */
             while (events.size() > 0) {
-                FileSystemEvent event = events.remove();
+                final FileSystemEvent event = events.remove();
 
                 /**
                  * If the input file exists and it is a file: Check if it is: - A Directory - An XML
@@ -135,23 +134,23 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> implements
                  * 
                  * Building accordingly the ImageMosaicCommand command.
                  */
-                ImageMosaicCommand cmd;
+                final ImageMosaicCommand cmd;
 
                 /**
                  * The returned file: - one for each event - .layer file - will be added to the
                  * output queue
                  */
-                File layerDescriptor;
+                final File layerDescriptor;
 
                 /**
                  * a descriptor for the mosaic to handle
                  */
-                ImageMosaicGranulesDescriptor mosaicDescriptor;
+                final ImageMosaicGranulesDescriptor mosaicDescriptor;
 
                 /**
                  * the file pointing to the directory which the layer will refer to.
                  */
-                File baseDir;
+                final File baseDir;
 
                 /*
                  * Checking input files.

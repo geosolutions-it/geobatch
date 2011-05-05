@@ -12,30 +12,30 @@
 			<description>description</description>
 			<name>test</name>
 		</FileEventRule>
-		<GeoServerActionConfiguration>
-		 	<serviceID>geotiffGeoServerGeneratorService</serviceID>
-			<workingDirectory>flow1workingdir</workingDirectory>
-			<crs>EPSG:4326</crs>
-			<envelope/>
-			<dataTransferMethod>URL</dataTransferMethod>
-			<geoserverPWD>geoserver</geoserverPWD>
-			<geoserverUID>admin</geoserverUID>
-			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
-			<!-- storeFilePrefix>c41078a</storeFilePrefix -->
-			<wmsPath>/</wmsPath>
-			<defaultStyle>raster</defaultStyle>
-			<styles/>
-			<!-- styles>
-				<style>raster.sld</style>
-			</styles -->
-			<id>a1</id>
-			<description>description</description>
-			<name>test</name>
-		</GeoServerActionConfiguration>		
-		<id>id</id>
-		<description>description</description>
-		<name>test</name>
-	</EventConsumerConfiguration>
+<!--		<GeoServerActionConfiguration>-->
+<!--		 	<serviceID>geotiffGeoServerGeneratorService</serviceID>-->
+<!--			<workingDirectory>flow1workingdir</workingDirectory>-->
+<!--			<crs>EPSG:4326</crs>-->
+<!--			<envelope/>-->
+<!--			<dataTransferMethod>URL</dataTransferMethod>-->
+<!--			<geoserverPWD>geoserver</geoserverPWD>-->
+<!--			<geoserverUID>admin</geoserverUID>-->
+<!--			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>-->
+<!--			 storeFilePrefix>c41078a</storeFilePrefix -->
+<!--			<wmsPath>/</wmsPath>-->
+<!--			<defaultStyle>raster</defaultStyle>-->
+<!--			<styles/>-->
+<!--			 styles>-->
+<!--				<style>raster.sld</style>-->
+<!--			</styles -->
+<!--			<id>a1</id>-->
+<!--			<description>description</description>-->
+<!--			<name>test</name>-->
+<!--		</GeoServerActionConfiguration>		-->
+<!--		<id>id</id>-->
+<!--		<description>description</description>-->
+<!--		<name>test</name>-->
+<!--	</EventConsumerConfiguration>-->
 	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
 		<wildCard>*.*</wildCard>
 		<watchDirectory>flow1workingdir/in</watchDirectory>
