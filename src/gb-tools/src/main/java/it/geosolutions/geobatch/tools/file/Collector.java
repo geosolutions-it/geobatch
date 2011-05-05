@@ -79,7 +79,7 @@ public class Collector extends DirectoryWalker<File> {
      */
     public List<File> collect(File root) {
         if (root!=null){
-            List<File> res = new ArrayList<File>();
+            final List<File> res = new ArrayList<File>();
             try{
                 super.walk(root, res);
             } catch (NullPointerException npe){
@@ -107,16 +107,19 @@ public class Collector extends DirectoryWalker<File> {
             
     }
 
-    @Override
-    protected boolean handleDirectory(File directory, int depth, Collection<File> results)
-            throws IOException {
-        if (this.filter != null) {
-            if (this.filter.accept(directory)) {
-                results.add(directory);
-            }
-        }
-        return true; // process directory
-    }
+//    @Override
+//    protected boolean handleDirectory(File directory, int depth, Collection<File> results)
+//            throws IOException {
+//        if (this.filter != null) {
+//            if (this.filter.accept(directory)) {
+//                results.add(directory);
+//            }
+//        }
+//        else {
+//            results.add(directory);
+//        }
+//        return true; // process ALL directory
+//    }
 
     @Override
     protected File[] filterDirectoryContents(File directory, int depth, File[] files)
@@ -131,9 +134,14 @@ public class Collector extends DirectoryWalker<File> {
 
     @Override
     protected void handleFile(File file, int depth, Collection<File> results) throws IOException {
-        if (this.filter != null)
-            if (this.filter.accept(file))
+        if (this.filter != null){
+            if (this.filter.accept(file)){
                 results.add(file);
+            }
+        }
+        else {
+            results.add(file);
+        }
     }
 
 }

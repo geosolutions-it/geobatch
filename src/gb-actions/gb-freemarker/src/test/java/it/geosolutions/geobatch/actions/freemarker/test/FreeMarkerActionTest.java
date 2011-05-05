@@ -29,10 +29,6 @@ import it.geosolutions.geobatch.actions.freemarker.TemplateModelEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -43,8 +39,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.thoughtworks.xstream.XStream;
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
