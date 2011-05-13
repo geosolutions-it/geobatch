@@ -4,12 +4,10 @@
 	<display-name>GeoBatch</display-name>
 	<description>GeoSolutions GeoBatch</description>
  
- 	 
 	<context-param>
 		<param-name>log4jConfigLocation</param-name>
    		<param-value>WEB-INF/log4j.xml</param-value>
 	</context-param>
-	
 	
    	<listener>
    		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
