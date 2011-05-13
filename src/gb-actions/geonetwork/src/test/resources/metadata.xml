@@ -106,12 +106,12 @@
             <gmd:CI_Citation>
 
                <gmd:title>
-                  <gco:CharacterString>Forecast del 2011-03-28</gco:CharacterString>
+                  <gco:CharacterString>Forecast del 2011-03-28</gco:CharacterString><!-- <gco:CharacterString>$NAME forecast for $RUNTIME_HUMAN</gco:CharacterString> -->
                </gmd:title>
                <gmd:date>
                   <gmd:CI_Date>
                      <gmd:date>
-                        <gco:DateTime>2011-03-28T15:30:00</gco:DateTime>
+                        <gco:DateTime>2011-03-28T15:30:00</gco:DateTime><!-- $RUNTIME -->
                      </gmd:date>
 
                      <gmd:dateType>
@@ -396,7 +396,7 @@
                <gmd:onLine>
                   <gmd:CI_OnlineResource>
                      <gmd:linkage>
-                        <gmd:URL/>
+                        <gmd:URL/><!-- <gmd:URL>http://server:port/geoserver/wms?etcetc&amp;layer=${LAYERNAME}&amp;time=${FORECASTTIMESTAMP}</gmd:URL> -->
                      </gmd:linkage>
 
                      <gmd:protocol>
