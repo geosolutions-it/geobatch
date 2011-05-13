@@ -537,6 +537,11 @@
                 <artifactId>gb-action-geoserver</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+            <dependency>
+		<groupId>it.geosolutions.geobatch</groupId>
+		<artifactId>gb-action-geonetwork</artifactId>
+		<version>${gb.version}</version>
+            </dependency>
             <!--
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
@@ -864,6 +869,11 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
+                <artifactId>gt-imagemosaic</artifactId>
+                <version>${gt.version}</version>
+            </dependency>            
+            <dependency>
+                <groupId>org.geotools</groupId>
                 <artifactId>gt-cql</artifactId>
                 <version>${gt.version}</version>
             </dependency>
@@ -908,6 +918,11 @@
                 <artifactId>gt-epsg-hsql</artifactId>
                 <version>${gt.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-data</artifactId>
+                <version>${gt.version}</version>
+            </dependency>            
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-jdbc</artifactId>
@@ -1198,7 +1213,6 @@
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
-
             <!-- commons-logging can be rather simply and conveniently 
                 excluded as a dependency by declaring it in the provided scope 
                 within the pom.xml file of your project. 
@@ -1488,6 +1502,23 @@
     <!--     Dependencies to be inherited by all modules.            -->
     <!-- =========================================================== -->
     <dependencies>
+    
+    <!-- commons-logging can be rather simply and conveniently 
+	    excluded as a dependency by declaring it in the provided scope 
+	    within the pom.xml file of your project. 
+	    The actual commons-logging classes would be provided by 
+	    jcl-over-slf4j. 
+	    This translates into the following pom file snippet:-->
+	<dependency>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>jcl-over-slf4j</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>commons-logging</groupId>
+	    <artifactId>commons-logging</artifactId>
+	    <scope>provided</scope>
+	</dependency>
+    
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

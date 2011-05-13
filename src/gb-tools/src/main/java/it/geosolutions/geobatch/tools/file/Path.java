@@ -455,7 +455,7 @@ public class Path {
                     }
                 } else {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn("Path:copyListFileToNFS() : + SKIPPING file:\n"
+                        LOGGER.warn("Path:copyListFileToNFS() : SKIPPING file:\n"
                                 + file.getAbsolutePath()+"\nUnable to copy a not existent file.");
                 }
             }

@@ -270,7 +270,7 @@
             </modules>
         </profile>
 
-		<profile>
+	<profile>
             <id>geonetwork</id>
             <activation>
                 <property>
