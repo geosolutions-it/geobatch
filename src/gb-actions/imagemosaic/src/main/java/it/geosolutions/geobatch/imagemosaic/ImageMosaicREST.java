@@ -7,10 +7,8 @@ import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -20,11 +18,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sun.misc.BASE64Encoder;
 
@@ -32,7 +30,8 @@ public abstract class ImageMosaicREST {
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicREST.class.toString());
+    protected final static Logger LOGGER = LoggerFactory
+            .getLogger(ImageMosaicREST.class);
 
     /**
      * 
@@ -63,8 +62,8 @@ public abstract class ImageMosaicREST {
      */
     protected static boolean createNewImageMosaicLayer(File inputDir,
             ImageMosaicGranulesDescriptor mosaicDescriptor, ImageMosaicConfiguration config,
-            Collection<FileSystemEvent> layers) throws ParserConfigurationException, IOException,
-            TransformerException {
+            ImageMosaicCommand cmd, Collection<FileSystemEvent> layers)
+            throws ParserConfigurationException, IOException, TransformerException {
 
         // ////////////////////////////////////////////////////////////////////
         //
@@ -85,8 +84,8 @@ public abstract class ImageMosaicREST {
             queryParams.put("MaxAllowedTiles", Integer.toString(Integer.MAX_VALUE));
         }
 
-        String noData;
-        if (mosaicDescriptor.getFirstCvNameParts() == null) {
+        final String noData;
+        if (mosaicDescriptor.getFileListNameParts() == null) {
             noData = (config.getBackgroundValue() != null) ? config.getBackgroundValue() : "-1.0";
         } else {
             if (mosaicDescriptor.getNoData() != null) {
@@ -126,6 +125,12 @@ public abstract class ImageMosaicREST {
                     config.getTileSizeH() + "," + config.getTileSizeW());
         }
 
+        /**
+         * will contain the following elements:<br>
+         * result[0]: the storename<br>
+         * result[1]: the namespace<br>
+         * result[2]: the layername<br>
+         */
         final String[] layerResponse = GeoServerRESTHelper.sendCoverage(inputDir, inputDir,
                 decurtSlash(config.getGeoserverURL()), config.getGeoserverUID(),
                 config.getGeoserverPWD(), mosaicDescriptor.getCoverageStoreId(),
@@ -134,11 +139,11 @@ public abstract class ImageMosaicREST {
 
         if (layerResponse != null && layerResponse.length > 2) {
 
+            final String storename = layerResponse[0];
             final String workspace = layerResponse[1];
-            final String coverageName = layerResponse[0];
-            final String layer = layerResponse[0];
+            final String layername = layerResponse[2];
 
-            LOGGER.info("ImageMosaicConfigurator layer: " + layer);
+            LOGGER.info("ImageMosaicREST.createNewImageMosaicLayer() layer: " + layername);
 
             Map<String, String> metadataParams = new HashMap<String, String>();
 
@@ -151,21 +156,21 @@ public abstract class ImageMosaicREST {
 
             Map<String, String> coverageParams = new HashMap<String, String>();
 
-            coverageParams.put(GeoServerRESTHelper.NATIVE_MAXX,
-                    config.getNativeMaxBoundingBoxX() != null ? config.getNativeMaxBoundingBoxX()
-                            .toString() : "180");
-
-            coverageParams.put(GeoServerRESTHelper.NATIVE_MINX,
-                    config.getNativeMinBoundingBoxX() != null ? config.getNativeMinBoundingBoxX()
-                            .toString() : "-180");
-
-            coverageParams.put(GeoServerRESTHelper.NATIVE_MINY,
-                    config.getNativeMinBoundingBoxY() != null ? config.getNativeMinBoundingBoxY()
-                            .toString() : "-90");
-
-            coverageParams.put(GeoServerRESTHelper.NATIVE_MAXY,
-                    config.getNativeMaxBoundingBoxY() != null ? config.getNativeMaxBoundingBoxY()
-                            .toString() : "90");
+            // coverageParams.put(GeoServerRESTHelper.NATIVE_MAXX,
+            // config.getNativeMaxBoundingBoxX() != null ? config.getNativeMaxBoundingBoxX()
+            // .toString() : "180");
+            //
+            // coverageParams.put(GeoServerRESTHelper.NATIVE_MINX,
+            // config.getNativeMinBoundingBoxX() != null ? config.getNativeMinBoundingBoxX()
+            // .toString() : "-180");
+            //
+            // coverageParams.put(GeoServerRESTHelper.NATIVE_MINY,
+            // config.getNativeMinBoundingBoxY() != null ? config.getNativeMinBoundingBoxY()
+            // .toString() : "-90");
+            //
+            // coverageParams.put(GeoServerRESTHelper.NATIVE_MAXY,
+            // config.getNativeMaxBoundingBoxY() != null ? config.getNativeMaxBoundingBoxY()
+            // .toString() : "90");
 
             coverageParams.put(GeoServerRESTHelper.LATLON_MAXX,
                     config.getLatLonMaxBoundingBoxX() != null ? config.getLatLonMaxBoundingBoxX()
@@ -191,13 +196,12 @@ public abstract class ImageMosaicREST {
             GeoServerRESTHelper.sendCoverageConfiguration(coverageParams, metadataParams,
                     queryParams, decurtSlash(config.getGeoserverURL()), config.getGeoserverUID(),
                     config.getGeoserverPWD(), workspace, mosaicDescriptor.getCoverageStoreId(),
-                    coverageName);
+                    storename);
 
-            File layerDescriptor = null;
+            final File layerDescriptor;
 
             // generate a RETURN file and append it to the return queue
-            if ((layerDescriptor = setReturn(inputDir, layer + ".layer", layerResponse,
-                    mosaicDescriptor)) != null) {
+            if ((layerDescriptor = ImageMosaicOutput.writeReturn(inputDir, layerResponse, mosaicDescriptor, cmd)) != null) {
                 layers.add(new FileSystemEvent(layerDescriptor, FileSystemEventType.FILE_ADDED));
             }
 
@@ -209,80 +213,7 @@ public abstract class ImageMosaicREST {
         }
     }
 
-    private static File setReturn(File inputDir, String outFileName, String[] layerResponse,
-            ImageMosaicGranulesDescriptor mosaicDescriptor) {
-        final File layerDescriptor = new File(inputDir, outFileName);
-        FileWriter outFile = null;
-        try {
-            if (layerDescriptor.createNewFile()) {
-                PrintWriter out = null;
-                try {
-                    outFile = new FileWriter(layerDescriptor);
-                    out = new PrintWriter(outFile);
-
-                    // Write text to file
-                    out.println("namespace=" + layerResponse[1]);
-                    out.println("metocFields=" + mosaicDescriptor.getMetocFields());
-                    out.println("storeid=" + mosaicDescriptor.getCoverageStoreId());
-                    out.println("layerid=" + inputDir.getName());
-                    out.println("driver=ImageMosaic");
-                    out.println("path=" + File.separator);
-                } catch (IOException e) {
-                    if (LOGGER.isErrorEnabled())
-                        LOGGER.error("Error occurred while writing indexer.properties file!", e);
-                } finally {
-                    if (out != null) {
-                        out.flush();
-                        out.close();
-                    }
-
-                    outFile = null;
-                    out = null;
-                }
-            }
-        } catch (IOException e) {
-            LOGGER.warn("ImageMosaic:setReturn(): " + e.getMessage(), e);
-        }
-        return layerDescriptor;
-    }
-
-    /**
-     * Configure Mosaic Method
-     * 
-     * @param queryParams
-     * @param geoserverBaseURL
-     * @param geoserverUID
-     * @param geoserverPWD
-     * @param workspace
-     * @param coverageStore
-     * @param coverageName
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws TransformerException
-     * 
-     *             protected static void configureMosaic(final Map<String, String> metadataParams,
-     *             final Map<String, String> queryParams, final String geoserverBaseURL, final
-     *             String geoserverUID, final String geoserverPWD, final String workspace, final
-     *             String coverageStore, final String coverageName) throws
-     *             ParserConfigurationException, IOException, TransformerException {
-     * 
-     *             // Map<String, String> configElements = new HashMap<String, String>(2);
-     * 
-     *             if (queryParams.containsKey("MaxAllowedTiles")) { // Configuring wmsPath final
-     *             String maxTiles = queryParams.get("MaxAllowedTiles"); //
-     *             configElements.put("MaxAllowedTiles", maxTiles);
-     *             queryParams.put("MaxAllowedTiles", maxTiles); } else { //
-     *             configElements.put("MaxAllowedTiles", "2147483647");
-     *             queryParams.put("MaxAllowedTiles", "2147483647"); }
-     * 
-     *             // if (!configElements.isEmpty()) { if (!queryParams.isEmpty()) {
-     *             GeoServerRESTHelper.sendCoverageConfiguration(metadataParams, // configElements,
-     *             queryParams, geoserverBaseURL, geoserverUID, geoserverPWD, workspace,
-     *             coverageStore, coverageName); }
-     * 
-     *             }
-     */
-
+    
 
     /**
      * @throws MalformedURLException
@@ -361,7 +292,7 @@ public abstract class ImageMosaicREST {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStreamReader is = new InputStreamReader(urlConnection.getInputStream());
                 String response = GeoServerRESTHelper.readIs(is);
-                if (is!=null){
+                if (is != null) {
                     is.close();
                 }
                 if (LOGGER.isInfoEnabled())
@@ -374,10 +305,9 @@ public abstract class ImageMosaicREST {
                 final String name = GeoServerRESTHelper.extractName(response);
                 // if (returnedLayerName!=null && returnedLayerName.length>0)
                 // returnedLayerName[0]=name;
-                if (LOGGER.isTraceEnabled()){
+                if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace("HTTP CREATED: " + response);
-                }
-                else {
+                } else {
                     if (LOGGER.isInfoEnabled())
                         LOGGER.info("HTTP CREATED: " + name);
                 }

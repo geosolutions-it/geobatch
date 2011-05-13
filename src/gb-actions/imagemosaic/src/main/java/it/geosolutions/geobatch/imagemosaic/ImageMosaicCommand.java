@@ -58,13 +58,15 @@ public class ImageMosaicCommand implements Serializable {
 
     /**
      * initialize the XStream env
-     * @throws InitializationException - in case of an initialization problem
+     * 
+     * @throws InitializationException
+     *             - in case of an initialization problem
      */
-    private static void init() throws InitializationException{
+    private static void init() throws InitializationException {
         stream = new XStream();
         stream.processAnnotations(ImageMosaicCommand.class);
     }
-    
+
     /**
      * Try to deserialize the command, return null if some goes wrong
      * 
@@ -80,14 +82,14 @@ public class ImageMosaicCommand implements Serializable {
      * @throws XStreamException
      *             - if the object cannot be serialized
      */
-    public static File serialize(ImageMosaicCommand cmd, String path)
-        throws XSException, FileNotFoundException, SecurityException {
-            final File outFile = new File(path);
-            final FileOutputStream fos = new FileOutputStream(outFile);
-            if (stream == null)
-                init();
-            stream.toXML(cmd, fos);
-            return outFile;
+    public static File serialize(ImageMosaicCommand cmd, String path) throws XSException,
+            FileNotFoundException, SecurityException {
+        final File outFile = new File(path);
+        final FileOutputStream fos = new FileOutputStream(outFile);
+        if (stream == null)
+            init();
+        stream.toXML(cmd, fos);
+        return outFile;
     }
 
     /**
@@ -105,29 +107,48 @@ public class ImageMosaicCommand implements Serializable {
      * @throws XStreamException
      *             - if the object cannot be serialized
      */
-    public static ImageMosaicCommand deserialize(File file)
-        throws XSException, FileNotFoundException, SecurityException {
-//        try {
-            final InputStream is = new FileInputStream(file);
-            if (stream == null)
-                init();
-            final ImageMosaicCommand cmd = (ImageMosaicCommand) stream.fromXML(is);
-            return cmd;
-//        } catch (XSException e) {
-//            // LOGGER.trace(e.getMessage(), e);
-//            e.printStackTrace();
-//        } catch (FileNotFoundException e) {
-//            // LOGGER.trace(e.getMessage(), e);
-//            e.printStackTrace();
-//        }
-//        return null;
+    public static ImageMosaicCommand deserialize(File file) throws XSException,
+            FileNotFoundException, SecurityException {
+        // try {
+        final InputStream is = new FileInputStream(file);
+        if (stream == null)
+            init();
+        final ImageMosaicCommand cmd = (ImageMosaicCommand) stream.fromXML(is);
+        return cmd;
+        // } catch (XSException e) {
+        // // LOGGER.trace(e.getMessage(), e);
+        // e.printStackTrace();
+        // } catch (FileNotFoundException e) {
+        // // LOGGER.trace(e.getMessage(), e);
+        // e.printStackTrace();
+        // }
+        // return null;
     }
 
-    public ImageMosaicCommand(File baseDir, List<File> addFiles, List<File> delFiles) {
+    public ImageMosaicCommand(final File baseDir, final List<File> addFiles,
+            final List<File> delFiles) {
         super();
         this.baseDir = baseDir;
         this.addFiles = addFiles;
         this.delFiles = delFiles;
+    }
+
+    public ImageMosaicCommand(final String baseDir, final List<String> addFiles,
+            final List<String> delFiles) {
+        super();
+        this.baseDir = new File(baseDir);
+        if (addFiles != null) {
+            this.addFiles = new ArrayList<File>();
+            for (String fileName : addFiles) {
+                this.addFiles.add(new File(fileName));
+            }
+        }
+        if (delFiles != null) {
+            this.delFiles = new ArrayList<File>();
+            for (String fileName : delFiles) {
+                this.delFiles.add(new File(fileName));
+            }
+        }
     }
 
     public File getBaseDir() {
