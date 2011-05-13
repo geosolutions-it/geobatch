@@ -27,9 +27,15 @@ import it.geosolutions.geobatch.actions.freemarker.FreeMarkerAction;
 import it.geosolutions.geobatch.actions.freemarker.FreeMarkerConfiguration;
 import it.geosolutions.geobatch.actions.freemarker.TemplateModelEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.tools.time.TimeParser;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +45,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.thoughtworks.xstream.XStream;
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
@@ -71,6 +79,50 @@ public class FreeMarkerActionTest {
           </sheets>
         </octave>
      */
+    
+//    @Test
+//    public void testXstream() throws ActionException {
+//        //FileSystemEvent ev=queue.get(0);
+//        FileInputStream fis=null;
+//        try{
+//            File mapFile=new File("/home/carlo/work/data/briseide/dynamic/raster/pph/20101012T210000_pph/20101012T210000_pph.xml");//ev.getSource();
+//            XStream xstream=new XStream();
+//            fis=new FileInputStream(mapFile);
+//            Map<String,Object> map=(Map<String, Object>) xstream.fromXML(fis);
+//            System.out.println(map.get("LAYERNAME"));
+//            
+//            String layerName=(String) map.get("LAYERNAME");
+//            
+//            String runtimeString=layerName.substring(0,layerName.indexOf('_'));
+//            TimeParser parser=new TimeParser();
+//            try {
+//                List<Date> date=parser.parse(runtimeString);
+//                final SimpleDateFormat iso801= new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+//                final String runtime=iso801.format(date.get(0));
+//                System.out.println("RUNTIME: "+runtime);
+//                map.put("RUNTIME",runtime);
+//            } catch (ParseException e) {
+//                
+//            }
+//            
+//            
+//            System.out.println(map.get("CRS"));
+//        }
+//        catch (IOException ioe){
+//            
+//        }
+//        finally {
+//            try{ 
+//                if (fis!=null)
+//                    fis.close();
+//            }
+//            catch (Exception e)
+//            {}
+//        }
+//        
+//    }
+    
+    
     @Test
     public void test() throws ActionException {
         
@@ -115,24 +167,11 @@ public class FreeMarkerActionTest {
             FileSystemEvent res=(FileSystemEvent)q.remove();
             File out=res.getSource();
             if (!out.exists())
-                Assert.fail("FAIL: unable to create output file");    
-//            FileInputStream fin=new FileInputStream(out);
-//            StringBuilder test=new StringBuilder();
-//            byte[] buf=new byte[1024];
-//            while (fin.read(buf)!=-1){
-//                //test.append((char[])buf);
-//            }
-//            fin.close();
-            
-//            System.out.print(test.toString());
+                Assert.fail("FAIL: unable to create output file");
             
         }
         catch (ClassCastException cce){
             Assert.fail("FAIL: "+cce.getLocalizedMessage());
-//        } catch (FileNotFoundException e) {
-//            Assert.fail("FAIL: "+e.getLocalizedMessage());
-//        } catch (IOException e) {
-//            Assert.fail("FAIL: "+e.getLocalizedMessage());
         }
 
         
