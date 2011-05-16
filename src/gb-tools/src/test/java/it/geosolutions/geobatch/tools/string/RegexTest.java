@@ -54,7 +54,7 @@ public class RegexTest extends TestCase {
         map.put("AT", "url");
         map.put("FILE", "file.txt");
         
-        String res=Regex.resolveTemplate(template, map);
+        String res=Regex.resolveDelimitedTemplate("\\$\\{","\\}",template, map);
         
         assertTrue(!map.containsKey("PATH"));
         assertTrue(map.containsKey("AT"));

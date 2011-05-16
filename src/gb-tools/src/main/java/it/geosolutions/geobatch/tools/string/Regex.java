@@ -21,24 +21,66 @@
  */
 package it.geosolutions.geobatch.tools.string;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import ucar.units.Prefix;
 
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  */
 public class Regex {
+
+    /**
+     * replace the string 'value' into the string 'template' where the string 'regex' matches.
+     * @param template
+     * @param regex
+     * @param value
+     * @param all if true replace all the occurrence
+     * @return the modified string if success (find), null otherwise (bad pattern or something else)
+     */
+    public static final String replace(final String template, final String regex,
+            final String value, boolean all) {
+        if (template == null || regex == null || value == null) {
+            return null;
+        }
+        try {
+            final Pattern pattern = Pattern.compile(regex);
+            final Matcher matcher = pattern.matcher(template);
+            // check if the template contains the regex
+            if (matcher.find()) {
+                return matcher.replaceAll(value);
+            } else
+                return null;
+        } catch (PatternSyntaxException pse) {
+            // TODO LOGGER
+            return null;
+        }
+    }
     
     /**
      * resolve the 'template' String looking for keys found into the passed map substituting their
-     * values into the template. The keys into the template should be into the form: ${KEY}<br>
+     * values into the template.
+     * @param template
+     * @param map
+     * @return
+     */
+    public static final String resolveTemplate(final String template, final Map<String, String> map) {
+        return resolveDelimitedTemplate("", "", template, map);
+    }
+
+    
+    /**
+     * /**
+     * resolve the 'template' String looking for keys found into the passed map substituting their
+     * values into the template. The keys into the template should be into the form: prefixKEYpostfix<br>
      * 
      * NOTE: only [A-z] characters are permitted for keys.<br>
      * 
@@ -54,13 +96,16 @@ public class Regex {
      * modify map removing all but the not found keys:<br>
      * AT, url<br>
      * 
+     * @param suffix
+     * @param postfix
      * @param template
      * @param map
-     * @return modify the Map<String,String> leaving only not found keys and return the resolved template string or
-     *         null if any arguments are null with no changes to the map
+     * @return modify the Map<String,String> leaving only not found keys and return the resolved
+     *         template string or null if any arguments are null with no changes to the map
      */
-    public static final String resolveTemplate(final String template, final Map<String, String> map) {
-        if (template == null || map == null) {
+    public static final String resolveDelimitedTemplate(final String suffix, final String postfix,
+            final String template, final Map<String, String> map) {
+        if (suffix==null || postfix==null || template == null || map == null) {
             return null;
         }
 
@@ -70,22 +115,25 @@ public class Regex {
             final Iterator<Entry<String, String>> it = set.iterator();
             while (it.hasNext()) {
                 final Entry<String, String> entry = it.next();
-                final StringBuilder key = new StringBuilder("\\$\\{").append(entry.getKey())
-                        .append("\\}");
-                final Pattern pattern=Pattern.compile(key.toString());
-                final Matcher matcher=pattern.matcher(buffer);
-                
+                final StringBuilder key = new StringBuilder(suffix).append(entry.getKey())
+                        .append(postfix);
+
                 // check if the buffer contains the KEY
-                if (matcher.find()) {
-                    buffer = matcher.replaceAll(entry.getValue());
+                final String temp;
+                if ((temp = replace(buffer, key.toString(), entry.getValue(),true)) != null) {
+                    buffer=temp;
                     it.remove();
                 }
             }
+        }
+        if (suffix.length()>0||postfix.length()>0){
             // replace all the ${KEYs} found into the template with an empty string
-            buffer = buffer.replaceAll("\\$\\{[A-z]+\\}", "");
+            buffer = buffer.replaceAll(suffix+"[A-z]+"+postfix, "");
         }
 
         return buffer;
+
     }
+
 
 }
