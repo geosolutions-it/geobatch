@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EventManagerConfig xmlns="configuration.geobatch.geosolutions.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="configuration.geobatch.geosolutions.it 
+	..\..\..\..\..\..\..\schema\manager_config.xsd">
+	<Name>SHP_AIS</Name>
+	<NameSpace uri="http://www.nurc.nato.int">nurc</NameSpace>
+	<DefaultStyle>AIS_ANOMALIES</DefaultStyle>
+	<Type>AIS_ANOMALIES</Type>
+	<CRS authority="EPSG" code="4326"/>
+	<Rules>
+		<Rule id="1" optional="false" isStyle="false">
+			<Regex>.*\.dbf</Regex>
+			<Occurrencies>1</Occurrencies>
+			<EventTypes>
+				<Event>FILE_ADDED</Event>
+			</EventTypes>
+		</Rule>
+		<Rule id="2" optional="true" isStyle="false">
+			<Regex>.*\.prj</Regex>
+			<Occurrencies>1</Occurrencies>
+			<EventTypes>
+				<Event>FILE_ADDED</Event>
+			</EventTypes>			
+		</Rule>
+		<Rule id="3" optional="false" isStyle="false">
+			<Regex>.*\.sh.</Regex>
+			<Occurrencies>2</Occurrencies>
+			<EventTypes>
+				<Event>FILE_ADDED</Event>
+			</EventTypes>			
+		</Rule>
+		<Rule id="4" optional="true" isStyle="false">
+			<Regex>.*\.sb.</Regex>
+			<Occurrencies>2</Occurrencies>
+			<EventTypes>
+				<Event>FILE_ADDED</Event>
+			</EventTypes>			
+		</Rule>
+	</Rules>
+</EventManagerConfig>
