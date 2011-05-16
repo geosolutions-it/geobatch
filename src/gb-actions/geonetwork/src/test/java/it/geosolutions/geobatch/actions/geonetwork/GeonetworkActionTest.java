@@ -56,6 +56,11 @@ public class GeonetworkActionTest extends TestCase {
         
         GeonetworkInsertConfiguration cfg = createConfiguration();
         cfg.setOnlyMetadataInput(true);
+        cfg.addPrivileges(0, "012345");
+        cfg.addPrivileges(1, "012345");
+        cfg.addPrivileges(2, "012345");
+        cfg.addPrivileges(3, "012345");
+        cfg.addPrivileges(4, "012345");
         
         File file = loadFile("metadata.xml");
         assertNotNull(file);

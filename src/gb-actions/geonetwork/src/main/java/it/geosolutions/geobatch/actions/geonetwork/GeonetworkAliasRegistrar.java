@@ -36,5 +36,6 @@ public class GeonetworkAliasRegistrar extends AliasRegistrar {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
         
         registry.putAlias("Geonetwork",GeonetworkInsertConfiguration.class);
+        registry.putAlias("grant",GeonetworkInsertConfiguration.Privileges.class);
     }
 }

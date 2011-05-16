@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Geonetwork>
+    <serviceID>GeonetworkGeneratorService</serviceID>
+    <id>GeonetworkGeneratorService</id>
+    <name>GeonetworkConfiguration</name>
+    <description>description</description>
+
+    <dirty>false</dirty>
+    <failIgnored>false</failIgnored>
+    <listenerConfigurations/>
+
+    <workingDirectory>sample_geonetwork/</workingDirectory>
+
+    <!-- geonetwork action's specific params -->
+    <geonetworkServiceURL>http://localhost:8080/geonetwork</geonetworkServiceURL>
+    <loginUsername>admin</loginUsername>
+    <loginPassword>admin</loginPassword>
+    <onlyMetadataInput>true</onlyMetadataInput>
+    <group>1</group>
+    <category>_none_</category>
+    <styleSheet>_none_</styleSheet>
+    <validate>false</validate>
+    
+    <!-- ops is in the format "0?1?2?3?4?5?" , where    
+     * 0: view
+     * 1: download
+     * 2: editing
+     * 3: notify
+     * 4: dynamic
+     * 5: featured
+     -->
+    <privileges>
+        <grant>
+            <group>42</group>
+            <ops>012345</ops>
+        </grant>
+        <grant>
+            <group>1999</group>
+            <ops>01</ops>
+        </grant>
+    </privileges>    
+</Geonetwork>

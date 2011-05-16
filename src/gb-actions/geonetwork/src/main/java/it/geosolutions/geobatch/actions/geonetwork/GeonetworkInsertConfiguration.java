@@ -23,6 +23,9 @@ package it.geosolutions.geobatch.actions.geonetwork;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -86,6 +89,30 @@ validate: Indicates if the metadata should be validated before inserting in the 
      */    
     private Boolean validate;
 
+    /**
+     * Operation provileges as erquired by GeoNetwork:
+     * <UL>
+     * <LI><TT>key</TT>: the id of the group these operations are related to.</LI>
+     * <LI><TT>value</TT>: the set of operations allowed to this group for the inserted metadata.
+     * <br/>Operations are defined as a string of digits, each representing a granted privilege: <UL>
+     * <LI>0: view</LI>
+     * <LI>1: download</LI>
+     * <LI>2: editing</LI>
+     * <LI>3: notify</LI>
+     * <LI>4: dynamic</LI>
+     * <LI>5: featured</LI>
+       </UL></LI>
+     * </UL>
+     * e.g.:<br/>
+     *  to assign the privileges "view" and "download" to group 5, this entry shall
+     * be added to the Map:
+     * <br/><pre>{@code         
+     *      operations.put("5,"01"); }
+     * </pre>
+     */ 
+//    private Map<Integer, String> privileges = new HashMap<Integer, String>();
+    private List<Privileges> privileges = new ArrayList<Privileges>();
+    
     public String getCategory() {
         return category;
     }
@@ -149,4 +176,74 @@ validate: Indicates if the metadata should be validated before inserting in the 
     public void setValidate(Boolean validate) {
         this.validate = validate;
     }
+
+//    public Map<Integer, String> getPrivileges() {
+//        return privileges;
+//    }
+//
+//    protected void setPrivileges(Map<Integer, String> privileges) {
+//        this.privileges = privileges;
+//    }
+//    
+//    public void addPrivileges(Integer groupCode, String ops) {
+//        synchronized(this) {
+//            if(privileges == null)
+//                privileges = new HashMap<Integer, String>();
+//        }
+//
+//        if(!ops.matches("0?1?2?3?4?5?")) {
+//            throw new IllegalArgumentException("Unrecognized privileges set '"+ops+"'");
+//        }
+//        
+//        privileges.put(groupCode, ops);
+//    }
+
+    public List<Privileges> getPrivileges() {
+        return privileges;
+    }
+
+    protected void setPrivileges(List<Privileges> privileges) {
+        this.privileges = privileges;
+    }
+    
+    public void addPrivileges(Integer groupCode, String ops) {
+        synchronized(this) {
+            if(privileges == null)
+                privileges = new ArrayList<Privileges>();
+        }
+
+        if(!ops.matches("0?1?2?3?4?5?")) {
+            throw new IllegalArgumentException("Unrecognized privileges set '"+ops+"'");
+        }
+        
+        privileges.add(new Privileges(groupCode, ops));
+    }
+
+    
+    static public class Privileges {
+        Integer group;
+        String ops;
+
+        public Privileges(Integer group, String ops) {
+            this.group = group;
+            this.ops = ops;
+        }
+
+        public Integer getGroup() {
+            return group;
+        }
+
+        public void setGroup(Integer group) {
+            this.group = group;
+        }
+
+        public String getOps() {
+            return ops;
+        }
+
+        public void setOps(String ops) {
+            this.ops = ops;
+        }
+    }
+    
 }

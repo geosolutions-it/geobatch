@@ -27,12 +27,10 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import java.io.StringReader;
+import java.util.List;
 import java.util.Queue;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.io.IOUtils;
 import org.jdom.CDATA;
 import org.jdom.Document;
 
@@ -81,20 +79,44 @@ public class GeonetworkAction
         File inputFile = event.getSource();
         
         
-        Element requestDocument;
+        Element insertRequest;
         
         if(cfg.isOnlyMetadataInput()) { // only metadata available: we have to build the full request packet
             if(LOGGER.isInfoEnabled()) 
                 LOGGER.info("Handling pure metadata file " + inputFile);
-            requestDocument = buildRequestDocument(inputFile);
+            insertRequest = buildInsertRequest(inputFile);
         } else { // the full xml request is ready in the file to be sent to GN; just parse it
             if(LOGGER.isInfoEnabled()) 
                 LOGGER.info("Handling full request file " + inputFile);
-            requestDocument = parseFile(inputFile);
+            insertRequest = parseFile(inputFile);
         }
         
-        // login and insert the metadata
-        send(requestDocument);
+        // create stateful (we need the cookies) connection handler 
+        HTTPUtils connection = new HTTPUtils();
+        
+        // perform a login into GeoNetwork
+        LOGGER.debug("Logging in");
+        boolean logged = gnLogin(connection, 
+                cfg.getGeonetworkServiceURL(), 
+                cfg.getLoginUsername(), cfg.getLoginPassword());
+        
+        if( ! logged ) 
+            throw new ActionException(this, "Login failed");
+        
+        // insert the metadata
+        LOGGER.debug("Creating metadata");
+        long metadataId = gnInsertMetadata(connection, cfg.getGeonetworkServiceURL(), insertRequest);
+        LOGGER.info("Created metadata " + metadataId);
+               
+        // set the metadata privileges if needed
+        List<GeonetworkInsertConfiguration.Privileges> privs = cfg.getPrivileges();
+        if(privs != null && ! privs.isEmpty()) {
+            LOGGER.debug("Setting privileges");
+            Element adminRequest = buildAdminRequest(metadataId, privs);
+            gnAdminMetadata(connection, cfg.getGeonetworkServiceURL(), adminRequest);
+            LOGGER.info("Set privileges for " + privs.size() + " groups");
+        }
+            
         
         return events;
     }
@@ -114,7 +136,7 @@ public class GeonetworkAction
      * <li><b><tt>validate</tt></b>: Indicates if the metadata should be validated before inserting in the catalog. Values: on, off (default)    </li>
      * </ul>
      */
-    private Element buildRequestDocument(File inputFile) throws ActionException {
+    private Element buildInsertRequest(File inputFile) throws ActionException {
         if(LOGGER.isDebugEnabled()) 
             LOGGER.debug("Compiling request document");
         
@@ -132,18 +154,33 @@ public class GeonetworkAction
                     
         return request;
     }
+    
+    /**
+     * 
+     * @see {@link http://geonetwork-opensource.org/latest/developers/xml_services/metadata_xml_services.html#update-operations-allowed-for-a-metadata-metadata-admin }
+     */
 
-    private void send(Element requestDocument) throws ActionException {
-        HTTPUtils connection = new HTTPUtils();
-        
-        boolean logged = gnLogin(connection, 
-                cfg.getGeonetworkServiceURL(), 
-                cfg.getLoginUsername(), cfg.getLoginPassword());
-        
-        if( ! logged ) 
-            throw new ActionException(this, "Login failed");
-        
-        gnInsertMetadata(connection, cfg.getGeonetworkServiceURL(), requestDocument);
+    private Element buildAdminRequest(long metadataId, List<GeonetworkInsertConfiguration.Privileges> privs) throws ActionException {
+        if(LOGGER.isDebugEnabled()) 
+            LOGGER.debug("Compiling admin request document");
+                
+        Element request = new Element("request");
+        request.addContent(new Element("id").setText(Long.toString(metadataId)));
+        for (GeonetworkInsertConfiguration.Privileges grant : privs) {
+            Integer groupId = grant.getGroup();
+            String ops = grant.getOps();
+            for (char c : "012345".toCharArray()) {
+                if(ops.indexOf(c)!=-1) {
+                    String op = new StringBuilder()
+                            .append('_').append(groupId)
+                            .append('_').append(c)
+                            .toString();
+                    request.addContent(new Element(op));
+                }
+            }
+        }
+                    
+        return request;
     }
 
     /**
@@ -204,48 +241,89 @@ public class GeonetworkAction
      * </request> }</pre></li>
      * </ul>
      * 
-     * @return
+     * @return the id of the metadata created in geonetwork
      * 
      * @see <a href="http://geonetwork-opensource.org/latest/developers/xml_services/metadata_xml_services.html#insert-metadata-metadata-insert" >GeoNetwork documentation about inserting metadata</a>
      */
-    private void gnInsertMetadata(HTTPUtils connection, String serviceURL, final Element gnRequest) throws ActionException {
+    private int gnInsertMetadata(HTTPUtils connection, String baseURL, final Element gnRequest) throws ActionException {
 
-        String loginURL = serviceURL+"/srv/en/metadata.insert";
+        String serviceURL = baseURL + "/srv/en/xml.metadata.insert";                
+        String res = gnPut(connection, serviceURL, gnRequest);
+        if(connection.getLastHttpStatus() != HttpStatus.SC_OK)
+            throw new ActionException(this, "Error inserting metadata in GeoNetwork (HTTP code "+connection.getLastHttpStatus()+")");
+        
+        Element rese = parse(res);
+        try {
+            return Integer.parseInt(rese.getChildText("id"));
+        } catch (Exception e) {
+            LOGGER.error("Error parsing metadata id from: " + res);
+            throw new ActionException(this, "Error parsing metadata id", e);
+        }
+    }
+    
+    private void gnAdminMetadata(HTTPUtils connection, String baseURL, final Element gnRequest) throws ActionException {
+
+        String serviceURL = baseURL + "/srv/en/metadata.admin";                
+        gnPut(connection, serviceURL, gnRequest);
+        if(connection.getLastHttpStatus() != HttpStatus.SC_OK)
+            throw new ActionException(this, "Error setting metadata privileges in GeoNetwork");
+    }
+    
+    private String gnPut(HTTPUtils connection, String serviceURL, final Element gnRequest) throws ActionException {
         
         final XMLOutputter outputter = new XMLOutputter(Format.getCompactFormat());
-        final PipedInputStream pis = new PipedInputStream();
-        final PipedOutputStream pos;
-        try {
-            pos = new PipedOutputStream(pis);
-        } catch (IOException ex) {
-            throw new ActionException(this, "Error setting up streams", ex);
-        }
-        final String thid = "GN_SEND_"+System.currentTimeMillis() ; // TODO: set a unique action instance id
+        String s = outputter.outputString(gnRequest);
         
-        Thread t = new Thread(new Runnable() {
-
-//            @Override
-            public void run() {
-                try {
-                    outputter.output(gnRequest, pos);        
-                    pos.flush();
-                    LOGGER.info("Data sent to GeoNetwork successfully");
-                } catch (IOException ex) {
-                    LOGGER.error("Error while sending data to GeoNetwork", ex);
-                } finally {
-                    IOUtils.closeQuietly(pis);
-                    IOUtils.closeQuietly(pos);
-                }
-            }
-        }, thid) ;
-        t.start();
-                
-        connection.setIgnoreResponseContentOnSuccess(true);
-        connection.postXml(loginURL, pis);
-        if(connection.getLastHttpStatus() != HttpStatus.SC_OK)
-            throw new ActionException(this, "Error inserting metadata in GeoNetwork");
-
+        connection.setIgnoreResponseContentOnSuccess(false);
+        String res = connection.postXml(serviceURL, s);
+//        if(LOGGER.isInfoEnabled())
+//            LOGGER.info(serviceURL + " returned --> " + res);
+        return res;
     }
+//    private String gnPut(HTTPUtils connection, String serviceURL, final Element gnRequest) throws ActionException {
+//        
+//        final XMLOutputter outputter = new XMLOutputter(Format.getCompactFormat());
+//        final PipedInputStream pis = new PipedInputStream();
+//        final PipedOutputStream pos;
+//        try {
+//            pos = new PipedOutputStream(pis);
+//        } catch (IOException ex) {
+//            throw new ActionException(this, "Error setting up streams", ex);
+//        }
+//        final String thid = "GN_PUT_"+System.currentTimeMillis() ; // TODO: set a unique action instance id
+//        
+//        Thread t = new Thread(new Runnable() {
+//
+////            @Override
+//            public void run() {
+//                try {
+//                    String s = outputter.outputString(gnRequest);
+//                    outputter.output(gnRequest, pos);        
+//                    pos.flush();
+//                    if(LOGGER.isInfoEnabled())
+//                        LOGGER.info("Data sent to GeoNetwork successfully");
+//                } catch (IOException ex) {
+//                    LOGGER.error("Error while sending data to GeoNetwork", ex);
+//                } finally {
+//                    IOUtils.closeQuietly(pis);
+//                    IOUtils.closeQuietly(pos);
+//                }
+//            }
+//        }, thid) ;
+//        t.start();
+//        Thread.yield();
+////        try {
+////            Thread.sleep(50);
+////        } catch (InterruptedException ex) {
+////            java.util.logging.Logger.getLogger(GeonetworkAction.class.getName()).log(Level.SEVERE, null, ex);
+////        }
+//                
+//        connection.setIgnoreResponseContentOnSuccess(false);
+//        String res = connection.postXml(serviceURL, pis);
+//        if(LOGGER.isInfoEnabled())
+//            LOGGER.info(serviceURL + " returned --> " + res);
+//        return res;
+//    }
     
     private Element parseFile(File file) throws ActionException {
         try{
@@ -255,6 +333,18 @@ public class GeonetworkAction
 		} catch (Exception ex) {
 			LOGGER.warn("Error parsing input file " + file);
             throw new ActionException(this, "Error parsing input file " + file, ex);
+		}
+    }    
+    
+    private Element parse(String s) throws ActionException {
+        try{
+			SAXBuilder builder = new SAXBuilder();
+            s = s.trim();
+			Document doc = builder.build(new StringReader(s));
+			return  (Element)doc.getRootElement().detach();
+		} catch (Exception ex) {
+			LOGGER.warn("Error parsing input string: >>>" + s +"<<<");
+            throw new ActionException(this, "Error parsing input string", ex);
 		}
     }    
 }

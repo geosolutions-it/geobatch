@@ -68,7 +68,7 @@ public class HTTPUtils {
     private String xmlContentType = "text/xml";
     
     private int lastHttpStatus;
-    private boolean ignoreResponseContentOnSuccess = true;
+    private boolean ignoreResponseContentOnSuccess = false;
     
     public HTTPUtils() {
         this(null, null);

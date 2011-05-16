@@ -106,7 +106,7 @@
             <gmd:CI_Citation>
 
                <gmd:title>
-                  <gco:CharacterString>Forecast del 2011-03-28</gco:CharacterString>
+                  <gco:CharacterString>TEST GeoBatch Action: GeoNetwork</gco:CharacterString>
                </gmd:title>
                <gmd:date>
                   <gmd:CI_Date>
