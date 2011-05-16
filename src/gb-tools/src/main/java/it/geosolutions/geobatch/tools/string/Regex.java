@@ -65,7 +65,6 @@ public class Regex {
         }
 
         String buffer = new String(template);
-        final Map<String,String> ret=new HashMap<String, String>();
         synchronized (map) {
             final Set<Entry<String, String>> set = map.entrySet();
             final Iterator<Entry<String, String>> it = set.iterator();
@@ -78,14 +77,8 @@ public class Regex {
                 
                 // check if the buffer contains the KEY
                 if (matcher.find()) {
-                    //buffer = buffer.replaceAll(key.toString(), );
                     buffer = matcher.replaceAll(entry.getValue());
                     it.remove();
-                } else {
-                    /*
-                     * the searched KEY is not present into the buffer add to return map
-                     */
-                    ret.put(entry.getKey(),entry.getValue());
                 }
             }
             // replace all the ${KEYs} found into the template with an empty string
