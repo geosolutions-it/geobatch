@@ -23,7 +23,6 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
@@ -40,13 +39,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An action which is able to create and update a layer into the GeoServer
@@ -81,7 +79,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
         // //
         // data flow configuration and dataStore name must not be null.
         // //
-        
+
         if (configuration == null) {
             final String message = "ImageMosaicAction: DataFlowConfig is null.";
             if (LOGGER.isErrorEnabled())
@@ -155,7 +153,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                 /*
                  * Checking input files.
                  */
-                File input = event.getSource();
+                final File input = event.getSource();
                 if (input == null) {
                     if (LOGGER.isWarnEnabled())
                         LOGGER.warn("ImageMosaicAction: The input file event points to a null file object.");
@@ -179,9 +177,10 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                     if (input.isFile()
                             && FilenameUtils.getExtension(input.getName()).equalsIgnoreCase("xml")) {
                         if (LOGGER.isInfoEnabled()) {
-                            LOGGER.info("ImageMosaicAction: working on an XML command file: "+input.getAbsolutePath());
+                            LOGGER.info("ImageMosaicAction: working on an XML command file: "
+                                    + input.getAbsolutePath());
                         }
-                        
+
                         // try to deserialize
                         cmd = ImageMosaicCommand.deserialize(input.getAbsoluteFile());
                         if (cmd == null) {
@@ -196,6 +195,36 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                          * as ID.
                          */
                         baseDir = cmd.getBaseDir();
+
+                        // Perform tests on the base dir file
+                        if (!baseDir.exists() || !baseDir.isDirectory()) {
+                            // no base dir exists try to build a new one using addList()
+                            if (cmd.getAddFiles() != null) {
+                                if (cmd.getAddFiles().size() > 0) {
+                                    // try build the baseDir
+                                    if (!baseDir.mkdirs()) {
+                                        if (LOGGER.isWarnEnabled())
+                                            LOGGER.warn("ImageMosaicAction: unable to create the base directory named \'"
+                                                    + baseDir.getAbsolutePath() + "\'.");
+                                        continue;
+                                    }
+                                } else {
+                                    if (LOGGER.isWarnEnabled())
+                                        LOGGER.warn("ImageMosaicAction: Unexpected not existent baseDir for this layer '"
+                                                + baseDir.getAbsolutePath()
+                                                + "'.\n If you want to build a new layer try using an "
+                                                + "existent or writeable baseDir and append a list of file to use to the addFile list.");
+                                    continue;
+                                }
+                            } else {
+                                if (LOGGER.isWarnEnabled())
+                                    LOGGER.warn("ImageMosaicAction: Unexpected not existent baseDir for this layer '"
+                                            + baseDir.getAbsolutePath()
+                                            + "'.\n If you want to build a new layer try using an "
+                                            + "existent or writeable baseDir and append a list of file to use to the addFile list.");
+                                continue;
+                            }
+                        }
 
                         mosaicDescriptor = ImageMosaicGranulesDescriptor.buildDescriptor(cmd,
                                 configuration);
@@ -227,14 +256,12 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                             throw pce;
                         } catch (IOException ioe) {
                             if (LOGGER.isWarnEnabled()) {
-                                LOGGER.warn(
-                                        "ImageMosaicAction: " + ioe.getLocalizedMessage(), ioe);
+                                LOGGER.warn("ImageMosaicAction: " + ioe.getLocalizedMessage(), ioe);
                             }
                             continue;
                         } catch (TransformerException te) {
                             if (LOGGER.isWarnEnabled()) {
-                                LOGGER.warn(
-                                        "ImageMosaicAction: " + te.getLocalizedMessage(), te);
+                                LOGGER.warn("ImageMosaicAction: " + te.getLocalizedMessage(), te);
                             }
                             continue;
                         }
@@ -257,36 +284,6 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 
                         if (!layerExists) {
 
-                            // Perform tests on the base dir file
-                            if (!baseDir.exists() || !baseDir.isDirectory()) {
-                                // no base dir exists try to build a new one using addList()
-                                if (cmd.getAddFiles() != null) {
-                                    if (cmd.getAddFiles().size() > 0) {
-                                        // try build the baseDir
-                                        if (!baseDir.mkdirs()) {
-                                            if (LOGGER.isWarnEnabled())
-                                                LOGGER.warn("ImageMosaicAction: unable to create the base directory named \'"
-                                                        + baseDir.getAbsolutePath() + "\'.");
-                                            continue;
-                                        }
-                                    } else {
-                                        if (LOGGER.isWarnEnabled())
-                                            LOGGER.warn("ImageMosaicAction: Unexpected not existent baseDir for this layer '"
-                                                    + baseDir.getAbsolutePath()
-                                                    + "'.\n If you want to build a new layer try using an "
-                                                    + "existent or writeable baseDir and append a list of file to use to the addFile list.");
-                                        continue;
-                                    }
-                                } else {
-                                    if (LOGGER.isWarnEnabled())
-                                        LOGGER.warn("ImageMosaicAction: Unexpected not existent baseDir for this layer '"
-                                                + baseDir.getAbsolutePath()
-                                                + "'.\n If you want to build a new layer try using an "
-                                                + "existent or writeable baseDir and append a list of file to use to the addFile list.");
-                                    continue;
-                                }
-                            }
-                            
                             // store addeddFiles for rollback purposes
                             List<File> addedFiles = null;
                             // no base dir exists try to build a new one using addList()
@@ -294,8 +291,8 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                                 if (cmd.getAddFiles().size() > 0) {
                                     // copy files from the addFile list to the baseDir (do not
                                     // preventing overwrite)
-                                    addedFiles=Path.copyListFileToNFS(
-                                            cmd.getAddFiles(), cmd.getBaseDir(), true, WAIT);
+                                    addedFiles = Path.copyListFileToNFS(cmd.getAddFiles(),
+                                            cmd.getBaseDir(), true, WAIT);
                                     if (addedFiles == null || addedFiles.size() == 0) {
                                         // no file where transfer to the destination dir
                                         if (LOGGER.isWarnEnabled())
@@ -315,7 +312,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                                 // "existent or writeable baseDir and append a list of file to use to the addFile list.");
                                 // continue;
                                 // }
-//TODO!!!!
+                                // TODO!!!!
                                 if (cmd.getDelFiles() != null) {
                                     if (LOGGER.isWarnEnabled())
                                         LOGGER.warn("ImageMosaicAction: unable to delete files from a not existent layer,"
@@ -326,24 +323,25 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                             }
 
                             // layer do not exists so try to create a new one
-                            if (!ImageMosaicREST.createNewImageMosaicLayer(baseDir, mosaicDescriptor,
-                                    configuration, layers)){
+                            if (!ImageMosaicREST.createNewImageMosaicLayer(baseDir,
+                                    mosaicDescriptor, configuration, cmd, layers)) {
                                 if (LOGGER.isErrorEnabled())
                                     LOGGER.error("ImageMosaicAction: unable to create a new layer, removing copied files...");
                                 // if fails rollback the copied files
-                                if (addedFiles!=null){
-                                    for (File file : addedFiles){
+                                if (addedFiles != null) {
+                                    for (File file : addedFiles) {
                                         if (LOGGER.isWarnEnabled())
-                                            LOGGER.warn("ImageMosaicAction: DELETING -> "+file.getAbsolutePath());
+                                            LOGGER.warn("ImageMosaicAction: DELETING -> "
+                                                    + file.getAbsolutePath());
                                         file.delete();
                                     }
                                     addedFiles.clear();
-                                    addedFiles=null;
+                                    addedFiles = null;
                                 }
-                                
+
                                 /*
-                                 * TODO recover deleted files
-                                 * do we need this? (here we create a new layer)
+                                 * TODO recover deleted files do we need this? (here we create a new
+                                 * layer)
                                  */
                             }
                             /*
@@ -446,8 +444,8 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                          * If here: - get the base dir file which will be used as ID.
                          */
                         baseDir = input;
-                        
-// STARTING Switch to the new REST library
+
+                        // STARTING Switch to the new REST library
                         GeoServerRESTReader gsReader = new GeoServerRESTReader(getConfiguration()
                                 .getGeoserverURL(), getConfiguration().getGeoserverUID(),
                                 getConfiguration().getGeoserverPWD());
@@ -467,11 +465,11 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                          * Check if ImageMosaic layer already exists...
                          */
                         boolean layerExists = false;
-// STARTING Switch to the new REST library
-                            if (gsReader.getLayer(mosaicDescriptor.getCoverageStoreId())==null)
-                                layerExists=false;
-                            else
-                                layerExists=true;
+                        // STARTING Switch to the new REST library
+                        if (gsReader.getLayer(mosaicDescriptor.getCoverageStoreId()) == null)
+                            layerExists = false;
+                        else
+                            layerExists = true;
 
                         /*
                          * CHECKING FOR datastore.properties
@@ -488,13 +486,13 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 
                         final File indexer = new File(baseDir, "indexer.properties");
                         ImageMosaicProperties.buildIndexer(indexer, configuration);
-// STARTING Switch to the new REST library
+                        // STARTING Switch to the new REST library
                         GeoServerRESTPublisher gsPublisher = new GeoServerRESTPublisher(
                                 getConfiguration().getGeoserverURL(), getConfiguration()
                                         .getGeoserverUID(), getConfiguration().getGeoserverPWD());
-                        
+
                         if (!layerExists) {
-// STARTING Switch to the new REST library
+                            // STARTING Switch to the new REST library
                             // create a new ImageMosaic layer... normal case
                             gsPublisher.publishExternalMosaic(configuration.getDefaultNamespace(),
                                     mosaicDescriptor.getCoverageStoreId(), baseDir,
@@ -529,8 +527,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                 }
 
                 // prepare the return
-                layerDescriptor = new File(baseDir, mosaicDescriptor.getCoverageStoreId()
-                        + ".layer");
+                layerDescriptor = new File(baseDir, mosaicDescriptor.getCoverageStoreId()+".xml");
                 if (layerDescriptor.exists() && layerDescriptor.isFile())
                     layers.add(new FileSystemEvent(layerDescriptor, FileSystemEventType.FILE_ADDED));
 

@@ -31,8 +31,15 @@ import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,28 +47,8 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
 
 public class Path {
-    private final static Logger LOGGER = LoggerFactory.getLogger(Path.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Path.class);
 
-    /**
-     * 
-     * PLACED INTO FileBasedCatalogConfiguration
-     * 
-     * Obtaining the Absolute path of the working dir
-     * 
-     * @param working_dir
-     *            the relative (or absolute) path to absolutize
-     * @note it should be a sub-dir of ...
-     * @TODO open a ticket to get getBaseDirectory() into Catalog interface
-     * 
-     *       public static String absolutize(String working_dir) /*throws FileNotFoundException {
-     *       FileBaseCatalog c=(FileBaseCatalog) CatalogHolder.getCatalog(); File fo=null; try {
-     *       fo=findLocation(working_dir,new File(c.getBaseDirectory())); }catch (IOException ioe){
-     *       return null; }
-     * 
-     *       if (fo!=null){ return fo.toString(); } else { //TODO LOG throw new
-     *       FileNotFoundException("Unable to locate the working dir"); // throw new
-     *       FileNotFoundException(); return null; } }
-     */
     /**
      * @note can return null
      * @param location
@@ -396,12 +383,13 @@ public class Path {
              * during copying
              */
             if (LOGGER.isErrorEnabled())
-                LOGGER.error("Path:copyFileToNFS() : \n\tThe message is: " + e.getLocalizedMessage(), e);
+                LOGGER.error(
+                        "Path:copyFileToNFS() : \n\tThe message is: " + e.getLocalizedMessage(), e);
             dest = null;
         } catch (Exception e) {
             if (LOGGER.isErrorEnabled())
-                LOGGER.error("Path:copyFileToNFS() : failed to copy file."
-                        + "\n\tThe message is: " + e.getLocalizedMessage());
+                LOGGER.error("Path:copyFileToNFS() : failed to copy file." + "\n\tThe message is: "
+                        + e.getLocalizedMessage());
             dest = null;
         }
         return dest;
@@ -455,8 +443,8 @@ public class Path {
                     }
                 } else {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn("Path:copyListFileToNFS() : + SKIPPING file:\n"
-                                + file.getAbsolutePath()+"\nUnable to copy a not existent file.");
+                        LOGGER.warn("Path:copyListFileToNFS() : SKIPPING file:\n"
+                                + file.getAbsolutePath() + "\nUnable to copy a not existent file.");
                 }
             }
         }
@@ -480,10 +468,10 @@ public class Path {
                 .append(File.separatorChar).append(SDF.format(new Date())).append("_")
                 .append(inputFileName)).toString();
         File dir = new File(newPath);
-        if (!dir.exists()){
-            if (!dir.mkdirs()){
+        if (!dir.exists()) {
+            if (!dir.mkdirs()) {
                 return null;
-            }   
+            }
         }
         return dir;
     }

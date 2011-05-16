@@ -42,9 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -56,6 +53,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -90,8 +89,7 @@ public class GeoServerRESTHelper {
     /**
      *
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(GeoServerRESTHelper.class
-            .toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeoServerRESTHelper.class);
 
     public static boolean putBinaryFileTo(URL geoserverREST_URL, InputStream inputStream,
             String geoserverUser, String geoserverPassword, final String[] returnedLayerName) {
@@ -1122,10 +1120,12 @@ public class GeoServerRESTHelper {
         
         /*
          * <projectionPolicy>REPROJECT_TO_DECLARED</projectionPolicy>
-         */
+NOTE: it works
+TODO Add the option to the configuration!!!
         Element projectionPolicy= doc.createElement("projectionPolicy");
         root.appendChild(projectionPolicy);
         projectionPolicy.insertBefore(doc.createTextNode("REPROJECT_TO_DECLARED"), null); //TODO
+        */
         
         /*
          * <coverage> ... <enabled>true</enabled> ... </coverage>

@@ -52,7 +52,15 @@
 	<!-- =========================================================== -->
 
 	<dependencies>
-
+		<!-- ============================== -->
+		<!-- log4j -->
+		<!-- ============================== -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
 		<!-- ============================== -->
 		<!-- Platform -->
 		<!-- ============================== -->
@@ -199,6 +207,56 @@
 			the overlay mechanism (http://maven.apache.org/plugins/maven-war-plugin/overlays.html) 
 			was checked to accomplish this very task, but when more actions were specified, 
 			only one was choosen to extract the sample data from. -->
+
+		<profile>
+			<id>geonetwork</id>
+			<activation>
+				<property>
+					<name>all</name>
+					<value>true</value>
+				</property>
+			</activation>
+
+			<dependencies>
+				<dependency>
+					<groupId>it.geosolutions.geobatch</groupId>
+					<artifactId>gb-action-geonetwork</artifactId>
+				</dependency>
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>unpack_geonetwork</id>
+								<phase>package</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>it.geosolutions.geobatch</groupId>
+											<artifactId>gb-action-geonetwork</artifactId>
+											<classifier>flowdata</classifier>
+											<type>jar</type>
+											<overWrite>false</overWrite>
+											<outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+											<includes>data/**</includes>
+										</artifactItem>
+									</artifactItems>
+									<overWriteReleases>true</overWriteReleases>
+									<overWriteSnapshots>true</overWriteSnapshots>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
 		<!-- FreeMarker ================================================== -->
 

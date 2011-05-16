@@ -107,6 +107,16 @@ public abstract class ImageMosaicProperties {
             FileWriter outFile = null;
             PrintWriter out = null;
             try {
+                indexer.createNewFile();
+
+                if (!indexer.canWrite()) {
+                    final String message = "Unable to write on indexer.properties file at URL: "
+                            + indexer.getAbsolutePath();
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(message);
+                    throw new IOException(message);
+                }
+
                 outFile = new FileWriter(indexer);
                 out = new PrintWriter(outFile);
 
@@ -153,7 +163,9 @@ public abstract class ImageMosaicProperties {
                                 : ""));
             } catch (IOException e) {
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error("Error occurred while writing indexer.properties file!", e);
+                    LOGGER.error("Error occurred while writing indexer.properties file at URL: "
+                            + indexer.getAbsolutePath(), e);
+                return null;
             } finally {
                 if (out != null) {
                     out.flush();
@@ -199,9 +211,8 @@ public abstract class ImageMosaicProperties {
         final File datastore = new File(baseDir, "datastore.properties");
         if (!datastore.exists()) {
             if (configuration.getDatastorePropertiesPath() != null) {
-                File dsFile = Path
-                        .findLocation(configuration.getDatastorePropertiesPath(), 
-                                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
+                File dsFile = Path.findLocation(configuration.getDatastorePropertiesPath(),
+                        ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
                 if (dsFile == null) {
                     if (LOGGER.isWarnEnabled()) {
                         LOGGER.warn("ImageMosaicAction:checkDataStore(): unable to get the absolute "
@@ -229,12 +240,6 @@ public abstract class ImageMosaicProperties {
                         }
                         return null;
                     }
-                } else {
-                    if (LOGGER.isWarnEnabled()) {
-                        LOGGER.warn("ImageMosaicAction: DataStoreProperties file not found"
-                                + configuration.getDatastorePropertiesPath() + "'. Skipping event");
-                    }
-                    return null;
                 }
             } else {
                 if (LOGGER.isWarnEnabled()) {

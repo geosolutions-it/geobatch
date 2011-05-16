@@ -82,11 +82,11 @@ public class TemplateModelEvent extends EventObject {
      * Using the specified filter try to get a valid TemplateModel useful to start a freemarker
      * process operation
      * 
-     * @param f
+     * @param filter
      *            the FreeMarkerFilter to use
      * @return the wrapped template model
      * @throws NullPointerException
-     *             if f or the source are null
+     *             if filter or the source are null
      * @throws TemplateModelException
      *             if it is not possible to wrap the passed object
      */

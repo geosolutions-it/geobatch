@@ -46,13 +46,13 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
     private String backgroundValue;// NoData
 
-    private Double NativeMinBoundingBoxX;// BoundingBox
-
-    private Double NativeMinBoundingBoxY;// BoundingBox
-
-    private Double NativeMaxBoundingBoxX;// BoundingBox
-
-    private Double NativeMaxBoundingBoxY;// BoundingBox
+//    private Double NativeMinBoundingBoxX;// BoundingBox
+//
+//    private Double NativeMinBoundingBoxY;// BoundingBox
+//
+//    private Double NativeMaxBoundingBoxX;// BoundingBox
+//
+//    private Double NativeMaxBoundingBoxY;// BoundingBox
     
     private Double latLonMinBoundingBoxX;// BoundingBox
 
@@ -91,37 +91,37 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         COARDS = cOARDS;
     }    
     
-    public Double getNativeMinBoundingBoxX() {
-        return NativeMinBoundingBoxX;
-    }
-
-    public void setNativeMinBoundingBoxX(Double nativeMinBoundingBoxX) {
-        NativeMinBoundingBoxX = nativeMinBoundingBoxX;
-    }
-
-    public Double getNativeMinBoundingBoxY() {
-        return NativeMinBoundingBoxY;
-    }
-
-    public void setNativeMinBoundingBoxY(Double nativeMinBoundingBoxY) {
-        NativeMinBoundingBoxY = nativeMinBoundingBoxY;
-    }
-
-    public Double getNativeMaxBoundingBoxX() {
-        return NativeMaxBoundingBoxX;
-    }
-
-    public void setNativeMaxBoundingBoxX(Double nativeMaxBoundingBoxX) {
-        NativeMaxBoundingBoxX = nativeMaxBoundingBoxX;
-    }
-
-    public Double getNativeMaxBoundingBoxY() {
-        return NativeMaxBoundingBoxY;
-    }
-
-    public void setNativeMaxBoundingBoxY(Double nativeMaxBoundingBoxY) {
-        NativeMaxBoundingBoxY = nativeMaxBoundingBoxY;
-    }
+//    public Double getNativeMinBoundingBoxX() {
+//        return NativeMinBoundingBoxX;
+//    }
+//
+//    public void setNativeMinBoundingBoxX(Double nativeMinBoundingBoxX) {
+//        NativeMinBoundingBoxX = nativeMinBoundingBoxX;
+//    }
+//
+//    public Double getNativeMinBoundingBoxY() {
+//        return NativeMinBoundingBoxY;
+//    }
+//
+//    public void setNativeMinBoundingBoxY(Double nativeMinBoundingBoxY) {
+//        NativeMinBoundingBoxY = nativeMinBoundingBoxY;
+//    }
+//
+//    public Double getNativeMaxBoundingBoxX() {
+//        return NativeMaxBoundingBoxX;
+//    }
+//
+//    public void setNativeMaxBoundingBoxX(Double nativeMaxBoundingBoxX) {
+//        NativeMaxBoundingBoxX = nativeMaxBoundingBoxX;
+//    }
+//
+//    public Double getNativeMaxBoundingBoxY() {
+//        return NativeMaxBoundingBoxY;
+//    }
+//
+//    public void setNativeMaxBoundingBoxY(Double nativeMaxBoundingBoxY) {
+//        NativeMaxBoundingBoxY = nativeMaxBoundingBoxY;
+//    }
 
     public Double getLatLonMinBoundingBoxX() {
         return latLonMinBoundingBoxX;
@@ -319,10 +319,10 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         configuration.setLatLonMinBoundingBoxX(getLatLonMinBoundingBoxX());
         configuration.setLatLonMinBoundingBoxY(getLatLonMinBoundingBoxY());
         configuration.setListenerId(getListenerIds());
-        configuration.setNativeMaxBoundingBoxX(getNativeMaxBoundingBoxX());
-        configuration.setNativeMaxBoundingBoxY(getNativeMaxBoundingBoxY());
-        configuration.setNativeMinBoundingBoxX(getNativeMinBoundingBoxX());
-        configuration.setNativeMinBoundingBoxY(getNativeMinBoundingBoxY());
+//        configuration.setNativeMaxBoundingBoxX(getNativeMaxBoundingBoxX());
+//        configuration.setNativeMaxBoundingBoxY(getNativeMaxBoundingBoxY());
+//        configuration.setNativeMinBoundingBoxX(getNativeMinBoundingBoxX());
+//        configuration.setNativeMinBoundingBoxY(getNativeMinBoundingBoxY());
         configuration.setOutputTransparentColor(getOutputTransparentColor());
         configuration.setRuntimeRegex(getRuntimeRegex());
         configuration.setServiceID(getServiceID()); // unused but formally correct clone

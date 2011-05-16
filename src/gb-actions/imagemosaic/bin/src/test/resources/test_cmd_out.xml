@@ -1,0 +1,5 @@
+<ImageMosaic>
+  <base>src/test/resources/data</base>
+  <del>test2.txt</del>
+  <add>test1.txt</add>
+</ImageMosaic>

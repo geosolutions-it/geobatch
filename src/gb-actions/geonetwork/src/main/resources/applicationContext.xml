@@ -4,6 +4,9 @@
 <beans default-init-method="init" default-destroy-method="dispose">
 		 
 	<bean id="GeonetworkGeneratorService" class="it.geosolutions.geobatch.actions.geonetwork.GeonetworkGeneratorService">
+		<constructor-arg type="String"><value>GeonetworkGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>GeonetworkGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>GeonetworkGeneratorService</value></constructor-arg>
 	</bean>
 	
 	<bean id="GeonetworkAliasRegistrar" class="it.geosolutions.geobatch.actions.geonetwork.GeonetworkAliasRegistrar" lazy-init="false">
