@@ -910,6 +910,11 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
+                <artifactId>gt-hdf4</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
                 <artifactId>gt-coveragetools</artifactId>
                 <version>${gt.version}</version>
             </dependency>
