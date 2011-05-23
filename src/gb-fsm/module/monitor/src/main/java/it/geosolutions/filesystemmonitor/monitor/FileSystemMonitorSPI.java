@@ -47,8 +47,6 @@ public interface FileSystemMonitorSPI {
      * Get the type of this FileSystemMonitor
      * 
      * @return
-     * @uml.property name="type"
-     * @uml.associationEnd
      */
     public FileSystemMonitorType getType();
 
