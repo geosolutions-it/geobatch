@@ -53,33 +53,6 @@
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
-			<!-- WHICH IMPORTS        
-	        <dependency>
-	            <groupId>it.geosolutions.geobatch</groupId>
-	            <artifactId>gb-core-impl</artifactId>
-	        </dependency>
-		        <dependency>
-		            <groupId>it.geosolutions.geobatch</groupId>
-		            <artifactId>gb-core-model</artifactId>
-		        </dependency>
-				<dependency>
-				    <groupId>it.geosolutions.geobatch</groupId>
-		    		<artifactId>gb-alias-registry</artifactId>
-				</dependency>
-	        <dependency>
-	            <groupId>it.geosolutions.geobatch</groupId>
-	            <artifactId>gb-tools</artifactId>
-	        </dependency>
-		        <dependency>
-					<groupId>org.freemarker</groupId>
-					<artifactId>freemarker</artifactId>
-				</dependency>
-	         -->
-	         
-<!--        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-action-tools</artifactId>
-        </dependency>-->
 		
 		<!-- ============================== -->
 		<!--     Spring                     -->
@@ -129,27 +102,21 @@
             <artifactId>jstl</artifactId>
         </dependency>
         
-        <dependency>
+        <!-- dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
         
-        <dependency>
+        <!-- dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency-->
         
-<!--        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-dao-xstream-base</artifactId>
-            <scope>test</scope>
-        </dependency>-->
         <dependency>
-            <groupId>it.geosolutions</groupId>
+            <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-dao-xstream</artifactId>
-            <version>0.9-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
