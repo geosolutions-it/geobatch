@@ -324,20 +324,22 @@ public class Path {
     public static File copyFileToNFS(File source, File dest, boolean overwrite, final int seconds) {
         if (source != null && dest != null) {
             if (dest.exists()) {
+                // source == destination
+                if (source.equals(dest)) {
+                    // YES
+                    // (dest.exists, !overwrite, source==dest) -> return source
+                    if (LOGGER.isInfoEnabled())
+                        LOGGER.info("Path:copyFileToNFS(): Unable to copy file to: \'"
+                                + dest.getAbsolutePath()
+                                + "\' source and destination are the same! (overwrite is set to \'"
+                                + overwrite + "\'). Returning source.");
+                    return source;
+                }
                 // overwrite?
                 if (!overwrite) {
                     // NO
-                    // source == destination
-                    if (source.equals(dest)) {
-                        // YES
-                        // (dest.exists, !overwrite, source==dest) -> return source
-                        if (LOGGER.isInfoEnabled())
-                            LOGGER.info("Path:copyFileToNFS(): Unable to copy file to: \'"
-                                    + dest.getAbsolutePath()
-                                    + "\' source and destination are the same! (overwrite is set to \'"
-                                    + overwrite + "\'). Returning source.");
-                        return source;
-                    } else {
+                    // source != destination
+                    if (!source.equals(dest)) {
                         // NO
                         // (dest.exists, !overwrite, source!=dest) -> fail
                         if (LOGGER.isWarnEnabled())
@@ -346,18 +348,6 @@ public class Path {
                                     + "\' destination exists! (overwrite is set to \'" + overwrite
                                     + "\').");
                         return null;
-                    }
-                } else {
-                    // overwrite YES
-                    if (source.equals(dest)) {
-                        // YES
-                        // (dest.exists, overwrite, source==dest) -> return source
-                        if (LOGGER.isInfoEnabled())
-                            LOGGER.info("Path:copyFileToNFS(): Unable to overwrite file to: \'"
-                                    + dest.getAbsolutePath()
-                                    + "\' source and destination are the same! (overwrite is set to \'"
-                                    + overwrite + "\'). Returning source.");
-                        return source;
                     }
                 }
             }
