@@ -26,8 +26,8 @@ import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -42,7 +42,7 @@ import java.util.TimeZone;
 public class CumulatingProgressListener extends ProgressListener {
 
     
-    private List<String> messages = new ArrayList<String>();
+    private List<String> messages = new LinkedList<String>();
 
     private static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
     static {
@@ -61,6 +61,13 @@ public class CumulatingProgressListener extends ProgressListener {
      */
     public List<String> getMessages() {
         return messages;
+    }
+
+    /**
+     * Removes all cumulated messages
+     */
+    public void clearMessages() {
+        messages.clear();
     }
 
     protected void msg(String msg) {
