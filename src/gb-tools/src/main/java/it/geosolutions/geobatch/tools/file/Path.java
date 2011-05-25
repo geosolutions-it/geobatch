@@ -324,13 +324,31 @@ public class Path {
     public static File copyFileToNFS(File source, File dest, boolean overwrite, final int seconds) {
         if (source != null && dest != null) {
             if (dest.exists()) {
-                if (!overwrite) {
-                    if (LOGGER.isWarnEnabled())
-                        LOGGER.warn("Path:copyFileToNFS(): failed to propagate file to: \'"
+                // source == destination
+                if (source.equals(dest)) {
+                    // YES
+                    // (dest.exists, !overwrite, source==dest) -> return source
+                    if (LOGGER.isInfoEnabled())
+                        LOGGER.info("Path:copyFileToNFS(): Unable to copy file to: \'"
                                 + dest.getAbsolutePath()
-                                + "\' destination exists! (overwrite is set to \'" + overwrite
-                                + "\').");
-                    return null;
+                                + "\' source and destination are the same! (overwrite is set to \'"
+                                + overwrite + "\'). Returning source.");
+                    return source;
+                }
+                // overwrite?
+                if (!overwrite) {
+                    // NO
+                    // source != destination
+                    if (!source.equals(dest)) {
+                        // NO
+                        // (dest.exists, !overwrite, source!=dest) -> fail
+                        if (LOGGER.isWarnEnabled())
+                            LOGGER.warn("Path:copyFileToNFS(): failed to copy file to: \'"
+                                    + dest.getAbsolutePath()
+                                    + "\' destination exists! (overwrite is set to \'" + overwrite
+                                    + "\').");
+                        return null;
+                    }
                 }
             }
             return copyFileToNFS(source, dest, seconds);
