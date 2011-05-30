@@ -33,6 +33,10 @@
 	</bean>
 
 	<!-- Controllers -->
+	<bean id="memoryController" class="it.geosolutions.geobatch.ui.mvc.MemoryController">
+		<property name="cacheSeconds" value="-1" />
+	</bean>
+	
 	<bean id="flowManagerController" class="it.geosolutions.geobatch.ui.mvc.FlowManagerController">
 		<property name="cacheSeconds" value="-1" />
 	</bean>
@@ -175,6 +179,8 @@
                 /consumerPause.do=consumerPauseController
                 /consumerResume.do=consumerResumeController
                 /consumerDispose.do=consumerDisposeController
+                
+                /memoryController.do=memoryController
             </value>
 		</property>
 	</bean>

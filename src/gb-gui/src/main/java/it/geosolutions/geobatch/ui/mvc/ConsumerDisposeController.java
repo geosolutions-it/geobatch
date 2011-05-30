@@ -24,8 +24,12 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
+import java.util.List;
+
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
+import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
 import org.springframework.web.servlet.ModelAndView;
@@ -33,13 +37,34 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  * 
  * @author ETj <etj at geo-solutions.it>
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public class ConsumerDisposeController extends ConsumerAbstractController {
 
     @Override
     protected void runStuff(ModelAndView mav, FileBasedFlowManager fm, BaseEventConsumer consumer) {
-        if (fm != null && consumer != null)
+        if (fm != null && consumer != null){
+            // Progress Logging...
+            CumulatingProgressListener cpl;
+
+            cpl = (CumulatingProgressListener) consumer
+            .getProgressListener(CumulatingProgressListener.class);
+            if (cpl!=null)
+                cpl.clearMessages();
+            
+            // Current Action Status...
+            final List<BaseAction> actions = consumer.getActions();
+            if (actions!=null){
+                for (BaseAction action : actions) {
+                    // try the most interesting information holder
+                    cpl = (CumulatingProgressListener) action
+                            .getProgressListener(CumulatingProgressListener.class);
+                    if (cpl!=null)
+                        cpl.clearMessages();
+                }
+            }
             fm.dispose((FileBasedEventConsumer) consumer);
+        }
 
         mav.addObject("consumer", consumer);
     }
