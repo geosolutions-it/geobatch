@@ -30,10 +30,10 @@ import java.io.File;
 import java.io.StringReader;
 import java.util.List;
 import java.util.Queue;
+
 import org.apache.commons.httpclient.HttpStatus;
 import org.jdom.CDATA;
 import org.jdom.Document;
-
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
@@ -54,6 +54,8 @@ import org.slf4j.LoggerFactory;
  * 
  * 
  * @author ETj (etj at geo-solutions.it)
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * 
  */
 public class GeonetworkAction 
         extends BaseAction<FileSystemEvent> {
@@ -61,7 +63,7 @@ public class GeonetworkAction
     
     private final static Logger LOGGER = LoggerFactory.getLogger(GeonetworkAction.class);
 
-    GeonetworkInsertConfiguration cfg;
+    final GeonetworkInsertConfiguration cfg;
 
     public GeonetworkAction(GeonetworkInsertConfiguration configuration) {
         super(configuration);
@@ -69,55 +71,126 @@ public class GeonetworkAction
     }
 
     /**
-     * 
+     * @param events the queue containing metadata to send to the configured GN server
+     * @return events (if success) the empty queue else the remaining events.
+     * @note: <br>
+     *  1. Handle multiple metadata file events.
+     *  2. This action do not set any output.
      */
-//    @Override
-    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException{
+        /*
+         * TODO check configuration
+         *  cfg.getGeonetworkServiceURL()
+         *  cfg.getLoginUsername()
+         *  cfg.getLoginPassword()
+         */
+        final String user=cfg.getLoginUsername();
+        final String pass=cfg.getLoginPassword();
+        final String url=cfg.getGeonetworkServiceURL();
         
-        // get the input event
-        FileSystemEvent event = events.poll();
-        File inputFile = event.getSource();
-        
-        
-        Element insertRequest;
-        
-        if(cfg.isOnlyMetadataInput()) { // only metadata available: we have to build the full request packet
-            if(LOGGER.isInfoEnabled()) 
-                LOGGER.info("Handling pure metadata file " + inputFile);
-            insertRequest = buildInsertRequest(inputFile);
-        } else { // the full xml request is ready in the file to be sent to GN; just parse it
-            if(LOGGER.isInfoEnabled()) 
-                LOGGER.info("Handling full request file " + inputFile);
-            insertRequest = parseFile(inputFile);
+        if (events==null){
+            final String message="GeoNetworkAction.execute(): FATAL -> Action list is NULL.";
+            if(LOGGER.isErrorEnabled())
+                LOGGER.error(message);
+            // fatal error!!!
+            throw new ActionException(this, message);
         }
         
-        // create stateful (we need the cookies) connection handler 
-        HTTPUtils connection = new HTTPUtils();
-        
-        // perform a login into GeoNetwork
-        LOGGER.debug("Logging in");
-        boolean logged = gnLogin(connection, 
-                cfg.getGeonetworkServiceURL(), 
-                cfg.getLoginUsername(), cfg.getLoginPassword());
-        
-        if( ! logged ) 
-            throw new ActionException(this, "Login failed");
-        
-        // insert the metadata
-        LOGGER.debug("Creating metadata");
-        long metadataId = gnInsertMetadata(connection, cfg.getGeonetworkServiceURL(), insertRequest);
-        LOGGER.info("Created metadata " + metadataId);
-               
-        // set the metadata privileges if needed
-        List<GeonetworkInsertConfiguration.Privileges> privs = cfg.getPrivileges();
-        if(privs != null && ! privs.isEmpty()) {
-            LOGGER.debug("Setting privileges");
-            Element adminRequest = buildAdminRequest(metadataId, privs);
-            gnAdminMetadata(connection, cfg.getGeonetworkServiceURL(), adminRequest);
-            LOGGER.info("Set privileges for " + privs.size() + " groups");
-        }
+        //TODO return -> List<EventObject> ret=new LinkedList<EventObject>();
+        while (events.size()>0){
+         // get the input event
+            FileSystemEvent event = events.poll();
+            if (event==null){
+                if(LOGGER.isErrorEnabled())
+                    LOGGER.error("GeoNetworkAction.execute(): NUll event encountered: SKIPPING...");
+                continue;
+            }
+            final File inputFile = event.getSource();
+            if (inputFile==null){
+                if(LOGGER.isErrorEnabled())
+                    LOGGER.error("GeoNetworkAction.execute(): Incoming file event refer to a null file object: SKIPPING...");
+                continue;
+            }
+            else if (!inputFile.exists() || !inputFile.canRead()){
+                if(LOGGER.isErrorEnabled())
+                    LOGGER.error("GeoNetworkAction.execute(): Incoming file event refer" +
+                    		" to a not readable or not existent file: SKIPPING...");
+                continue;
+            }
             
+            final Element insertRequest;
+            if(cfg.isOnlyMetadataInput()) {
+                // only metadata available: we have to build the full request packet
+                if(LOGGER.isInfoEnabled()) 
+                    LOGGER.info("GeoNetworkAction.execute(): Handling pure metadata file " + inputFile);
+                insertRequest = buildInsertRequest(inputFile);
+            } else {
+                // the full xml request is ready in the file to be sent to GN; just parse it
+                if(LOGGER.isInfoEnabled()) 
+                    LOGGER.info("GeoNetworkAction.execute(): Handling full request file " + inputFile);
+                insertRequest = parseFile(inputFile);
+            }
+            
+            // create stateful (we need the cookies) connection handler 
+            final HTTPUtils connection = new HTTPUtils();
+            
+            // perform a login into GeoNetwork
+            if(LOGGER.isDebugEnabled()) 
+                LOGGER.debug("GeoNetworkAction.execute(): Logging in");
+            final boolean logged = gnLogin(connection, 
+                    url, 
+                    user, pass);
+            
+            if( ! logged ) {
+                final String message="GeoNetworkAction.execute(): Login failed.";
+                if(LOGGER.isErrorEnabled()){
+                    LOGGER.error(message);
+                }
+                if (LOGGER.isDebugEnabled()){
+                    LOGGER.debug("\nUser: "+user+"\nPass: "+pass+"\nURL: "+url);
+                }
+                // fatal error!!!
+                throw new ActionException(this, message);
+            }
+            
+            // insert the metadata
+            if(LOGGER.isDebugEnabled()) 
+                LOGGER.debug("GeoNetworkAction.execute(): Creating metadata");
+            
+            final long metadataId;
+            try {
+                metadataId=gnInsertMetadata(connection, url, insertRequest);
+            }
+            catch (ActionException e){
+                if(LOGGER.isInfoEnabled()) 
+                    LOGGER.info("GeoNetworkAction.execute(): " + e.getLocalizedMessage(),e);
+                continue;
+            }
+            
+            if(LOGGER.isInfoEnabled()) 
+                LOGGER.info("GeoNetworkAction.execute(): Created metadata " + metadataId);
+                   
+            // set the metadata privileges if needed
+            final List<GeonetworkInsertConfiguration.Privileges> privs = cfg.getPrivileges();
+            if(privs != null && ! privs.isEmpty()) {
+                if(LOGGER.isDebugEnabled()) 
+                    LOGGER.debug("GeoNetworkAction.execute(): Setting privileges");
+                
+                final Element adminRequest = buildAdminRequest(metadataId, privs);
+                gnAdminMetadata(connection, url, adminRequest);
+                
+                if(LOGGER.isInfoEnabled()) 
+                    LOGGER.info("GeoNetworkAction.execute(): Set privileges for " + privs.size() + " groups");
+            }
+            else {
+                if(LOGGER.isWarnEnabled()){
+                    LOGGER.warn("GeoNetworkAction.execute(): No setting for privileges will be applied!");
+                }
+                continue;
+            }
+        }
         
+        // should be an empty queue
         return events;
     }
 
@@ -138,7 +211,7 @@ public class GeonetworkAction
      */
     private Element buildInsertRequest(File inputFile) throws ActionException {
         if(LOGGER.isDebugEnabled()) 
-            LOGGER.debug("Compiling request document");
+            LOGGER.debug("GeoNetworkAction.buildInsertRequest(): Compiling request document");
         
         Element metadataFromFile = parseFile(inputFile);
 
@@ -162,7 +235,7 @@ public class GeonetworkAction
 
     private Element buildAdminRequest(long metadataId, List<GeonetworkInsertConfiguration.Privileges> privs) throws ActionException {
         if(LOGGER.isDebugEnabled()) 
-            LOGGER.debug("Compiling admin request document");
+            LOGGER.debug("GeoNetworkAction.buildAdminRequest(): Compiling admin request document");
                 
         Element request = new Element("request");
         request.addContent(new Element("id").setText(Long.toString(metadataId)));
@@ -213,7 +286,7 @@ public class GeonetworkAction
         String xml = outputter.outputString(request);
         
         String loginURL = serviceURL+"/srv/en/xml.user.login";
-        String out = connection.postXml(loginURL, xml);
+        /*TODO check -> String out = */connection.postXml(loginURL, xml);
         
         return connection.getLastHttpStatus() == HttpStatus.SC_OK;
     }
@@ -266,7 +339,7 @@ public class GeonetworkAction
         String serviceURL = baseURL + "/srv/en/metadata.admin";                
         gnPut(connection, serviceURL, gnRequest);
         if(connection.getLastHttpStatus() != HttpStatus.SC_OK)
-            throw new ActionException(this, "Error setting metadata privileges in GeoNetwork");
+            throw new ActionException(this, "GeoNetworkAction.gnAdminMetadata(): Error setting metadata privileges in GeoNetwork");
     }
     
     private String gnPut(HTTPUtils connection, String serviceURL, final Element gnRequest) throws ActionException {
@@ -326,25 +399,31 @@ public class GeonetworkAction
 //    }
     
     private Element parseFile(File file) throws ActionException {
-        try{
-			SAXBuilder builder = new SAXBuilder();
-			Document doc = builder.build(file);
-			return  (Element)doc.getRootElement().detach();
-		} catch (Exception ex) {
-			LOGGER.warn("Error parsing input file " + file);
-            throw new ActionException(this, "Error parsing input file " + file, ex);
-		}
-    }    
+        try {
+            final SAXBuilder builder = new SAXBuilder();
+            final Document doc = builder.build(file);
+            // TODO check root
+            return (Element) doc.getRootElement().detach();
+        } catch (Exception ex) {
+            final String message="GeoNetworkAction.parseFile(): Error parsing input file " + file;
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(message);
+            throw new ActionException(this, message, ex);
+        }
+    }
     
     private Element parse(String s) throws ActionException {
-        try{
-			SAXBuilder builder = new SAXBuilder();
+        try {
+            final SAXBuilder builder = new SAXBuilder();
             s = s.trim();
-			Document doc = builder.build(new StringReader(s));
-			return  (Element)doc.getRootElement().detach();
-		} catch (Exception ex) {
-			LOGGER.warn("Error parsing input string: >>>" + s +"<<<");
-            throw new ActionException(this, "Error parsing input string", ex);
-		}
-    }    
+            final Document doc = builder.build(new StringReader(s));
+            // TODO check root
+            return (Element) doc.getRootElement().detach();
+        } catch (Exception ex) {
+            final String message="GeoNetworkAction.parseFile(): Error parsing input string: >>>" + s + "<<<";
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(message);
+            throw new ActionException(this, message, ex);
+        }
+    } 
 }

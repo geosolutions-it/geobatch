@@ -23,12 +23,13 @@ package it.geosolutions.geobatch.actions.geonetwork;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
 /**
+ * TODO: implement the clone() method
  * 
  * @author ETj (etj at geo-solutions.it)
  */
