@@ -56,9 +56,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 /**
- * Comments here ...
- * 
  * @author Simone Giannecchini, GeoSolutions S.A.S.
+ * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
 public class FileBasedEventConsumer 
@@ -66,8 +65,6 @@ public class FileBasedEventConsumer
 
     /**
      * Common file prefix (unless the rule specify another one)
-     * 
-     * @uml.property name="commonPrefixRegex"
      */
     private String commonPrefixRegex;
 
@@ -75,26 +72,16 @@ public class FileBasedEventConsumer
      * The number of expected mandatory files before the flow can be started.
      * Should be set by configuration, and decremented each time a mandatory file
      * is consumed.
-     * 
-     * @uml.property name="numInputFiles"
      */
     private long numInputFiles = 0;
 
     /**
      * Storing mandatory rules and the times they will occur.
-     * 
-     * @uml.property name="mandatoryRules"
-     * @uml.associationEnd multiplicity="(0 -1)"
-     *                     elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule"
      */
     private final List<FileEventRule> mandatoryRules = new ArrayList<FileEventRule>();
 
     /**
      * Storing optional rules and the times they will occur.
-     * 
-     * @uml.property name="optionalRules"
-     * @uml.associationEnd multiplicity="(0 -1)"
-     *                     elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule"
      */
     private final List<FileEventRule> optionalRules = new ArrayList<FileEventRule>();
 
@@ -122,8 +109,9 @@ public class FileBasedEventConsumer
 
         final File workingDir = Path.findLocation(configuration.getWorkingDirectory(), catalogFile);
 
-        if (workingDir == null)
+        if (workingDir == null){
             throw new IllegalArgumentException("Invalid configuring directory");
+        }
 
         if (workingDir.exists() && workingDir.isDirectory() & workingDir.canRead()) {
             initialize(configuration, workingDir);
@@ -163,21 +151,6 @@ public class FileBasedEventConsumer
         return res;
     }
 
-    /**
-     * Check if all queued events refer to files in the same dir.
-     * 
-     * @NOTE: CHECKME: is it really needed? will it not break flows that need scattered files?
-     */
-    // private boolean checkSamePath(String fullpath) {
-    // for (FileSystemEvent event : eventsQueue) {
-    // String existingFP = FilenameUtils.getFullPath(event.getSource().getAbsolutePath());
-    // if (!fullpath.equals(existingFP)) {
-    // return false;
-    // }
-    // }
-    // return true;
-    // }
-
     // ----------------------------------------------------------------------------
     /**
      * Helper method to check for mandatory rules consistency.
@@ -193,6 +166,9 @@ public class FileBasedEventConsumer
         int occurrencies;
 
         final List<FileEventRule> rules = (mandatory ? this.mandatoryRules : this.optionalRules);
+        if(rules==null||rules.isEmpty()) {
+        	return true;
+        }
         for (FileEventRule rule : rules) {
 
             // check event type
@@ -285,14 +261,17 @@ public class FileBasedEventConsumer
         // ////////////////////////////////////////////////////////////////////
 
         numInputFiles = 0;
-        for (FileEventRule rule : configuration.getRules()) {
-            if (!rule.isOptional()) {
-                this.mandatoryRules.add(rule);
-                numInputFiles += rule.getOriginalOccurrencies();
-            } else {
-                this.optionalRules.add(rule);
+        if(configuration.getRules()!=null){
+            for (FileEventRule rule : configuration.getRules()) {
+                if (!rule.isOptional()) {
+                    this.mandatoryRules.add(rule);
+                    numInputFiles += rule.getOriginalOccurrencies();
+                } else {
+                    this.optionalRules.add(rule);
+                }
             }
         }
+
 
         // ////////////////////////////////////////////////////////////////////
         // ACTIONS
@@ -429,69 +408,80 @@ public class FileBasedEventConsumer
 
                 // get info for the input file event
                 final File sourceDataFile = event.getSource();
-                final String fileBareName = FilenameUtils.getName(sourceDataFile.toString());
-
-                getListenerForwarder().progressing(
+                final String fileBareName;
+                if (sourceDataFile!=null && sourceDataFile.exists()){
+                	fileBareName = FilenameUtils.getName(sourceDataFile.toString());
+                	getListenerForwarder().progressing(
                         30 + (10f / this.eventsQueue.size() * numProcessedFiles++),
                         "Preprocessing event " + fileBareName);
-
-                //
-                // copy input file/dir to current working directory
-                //
-                if (IOUtils.acquireLock(this, sourceDataFile)) {
-
-                    //
-                    // Backing up inputs?
-                    //
-                    if (this.configuration.isPerformBackup()) {
-
-                        // Backing up files and delete sources.
-                        getListenerForwarder().progressing(
-                                30 + (10f / this.eventsQueue.size() * numProcessedFiles++),
-                                "Creating backup files");
-
-                        // In case we do not work on the input as is, we move it to our
-                        // current working directory
-                        final File destDataFile = new File(backupDirectory, fileBareName);
-                        if (sourceDataFile.isDirectory())
-                            FileUtils.copyDirectory(sourceDataFile, destDataFile);
-                        else
-                            FileUtils.copyFile(sourceDataFile, destDataFile);
-                    }
-
-                    //
-                    // Working on input events directly without moving to working dir?
-                    //
-                    if (!configuration.isPreserveInput()) {
-
-                        // In case we do not work on the input as is, we move it to our
-                        // current working directory
-                        final File destDataFile = new File(currentRunDirectory, fileBareName);
-                        if (sourceDataFile.isDirectory())
-                            FileUtils.moveDirectory(sourceDataFile, destDataFile);
-                        else
-                            FileUtils.moveFile(sourceDataFile, destDataFile);
-
-                        // adjust event sources since we moved the files locally
-                        fileEventList
-                                .offer(new FileSystemEvent(destDataFile, event.getEventType()));
-                    } else {
-                        // we are going to work directly on the input files
-                        fileEventList.offer(event);
-
-                    }
-                    if (LOGGER.isInfoEnabled()){
-                        LOGGER.info("FileBasedEventConsumer::call():  [" + Thread.currentThread().getName()
-                            + "]: accepted file " + sourceDataFile);
-                    }
-                } else {
-                    if (LOGGER.isErrorEnabled()){
-                        LOGGER.error(new StringBuilder("FileBasedEventConsumer::call(): [")
-                                .append(Thread.currentThread().getName())
-                                .append("]: could not lock file ").append(sourceDataFile).toString());
-                    }
-
-                    // TODO: lock not acquired: what else?
+	                //
+	                // copy input file/dir to current working directory
+	                //
+	                if (IOUtils.acquireLock(this, sourceDataFile)) {
+	
+	                    //
+	                    // Backing up inputs?
+	                    //
+	                    if (this.configuration.isPerformBackup()) {
+	
+	                        // Backing up files and delete sources.
+	                        getListenerForwarder().progressing(
+	                                30 + (10f / this.eventsQueue.size() * numProcessedFiles++),
+	                                "Creating backup files");
+	
+	                        // In case we do not work on the input as is, we move it to our
+	                        // current working directory
+	                        final File destDataFile = new File(backupDirectory, fileBareName);
+	                        if (sourceDataFile.isDirectory())
+	                            FileUtils.copyDirectory(sourceDataFile, destDataFile);
+	                        else
+	                            FileUtils.copyFile(sourceDataFile, destDataFile);
+	                    }
+	
+	                    //
+	                    // Working on input events directly without moving to working dir?
+	                    //
+	                    if (!configuration.isPreserveInput()) {
+	
+	                        // In case we do not work on the input as is, we move it to our
+	                        // current working directory
+	                        final File destDataFile = new File(currentRunDirectory, fileBareName);
+	                        if (sourceDataFile.isDirectory())
+	                            FileUtils.moveDirectory(sourceDataFile, destDataFile);
+	                        else
+	                            FileUtils.moveFile(sourceDataFile, destDataFile);
+	
+	                        // adjust event sources since we moved the files locally
+	                        fileEventList
+	                                .offer(new FileSystemEvent(destDataFile, event.getEventType()));
+	                    } else {
+	                        // we are going to work directly on the input files
+	                        fileEventList.offer(event);
+	
+	                    }
+	                    if (LOGGER.isInfoEnabled()){
+	                        LOGGER.info("FileBasedEventConsumer::call():  [" + Thread.currentThread().getName()
+	                            + "]: accepted file " + sourceDataFile);
+	                    }
+	                } else {
+	                    if (LOGGER.isErrorEnabled()){
+	                        LOGGER.error(new StringBuilder("FileBasedEventConsumer::call(): [")
+	                                .append(Thread.currentThread().getName())
+	                                .append("]: could not lock file ").append(sourceDataFile).toString());
+	                    }
+	
+	                    /*
+	                     * TODO: lock not acquired: what else?
+	                     */
+	                }
+	                
+                } // event.getSource()!=null && sourceDataFile.exists()
+                else {
+                	/*
+                	 * event.getSource()==null || !sourceDataFile.exists()
+                     * this could be an empty file representing a POLLING event
+                     */
+                    fileEventList.offer(event);
                 }
 
             }
@@ -566,7 +556,6 @@ public class FileBasedEventConsumer
 
     /**
      * @param configuration
-     * @uml.property name="configuration"
      */
     public void setConfiguration(FileBasedEventConsumerConfiguration configuration) {
         this.configuration = configuration;
@@ -575,7 +564,6 @@ public class FileBasedEventConsumer
 
     /**
      * @return the workingDirectory
-     * @uml.property name="workingDir"
      */
     public File getWorkingDir() {
         return workingDir;
@@ -583,7 +571,6 @@ public class FileBasedEventConsumer
 
     /**
      * @return
-     * @uml.property name="configuration"
      */
     public FileBasedEventConsumerConfiguration getConfiguration() {
         return configuration;
@@ -635,7 +622,6 @@ public class FileBasedEventConsumer
 
     /**
      * @return
-     * @uml.property name="canceled"
      */
     public boolean isCanceled() {
         return canceled;

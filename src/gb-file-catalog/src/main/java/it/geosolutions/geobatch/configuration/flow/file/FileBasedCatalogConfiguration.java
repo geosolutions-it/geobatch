@@ -41,66 +41,68 @@ import java.io.File;
  * @see ActionConfiguration
  */
 public class FileBasedCatalogConfiguration extends BaseConfiguration implements
-        CatalogConfiguration {
+		CatalogConfiguration {
 
-    // private List<FlowConfiguration> flowConfigurations;
+	// private List<FlowConfiguration> flowConfigurations;
 
-    public FileBasedCatalogConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description, dirty);
-    }
+	public FileBasedCatalogConfiguration(String id, String name,
+			String description, boolean dirty) {
+		super(id, name, description, dirty);
+	}
 
-    /**
-     * workingDirectory: this attribute represents the configuring directory for this flow. It can be relative to the catalog.xml directory or absolute. Attention: the configuring directory should be different from the one containing the configuration files.
-     * @uml.property  name="workingDirectory"
-     */
-    private String workingDirectory;
+	/**
+	 * workingDirectory: this attribute represents the configuring directory for
+	 * this flow. It can be relative to the catalog.xml directory or absolute.
+	 * Attention: the configuring directory should be different from the one
+	 * containing the configuration files.
+	 */
+	private String workingDirectory;
 
-    /**
-     * Default Constructor.
-     */
-//    public FileBasedCatalogConfiguration() {
-//        super();
-//    }
+	/**
+	 * Getter for the workingDirectory
+	 */
+	public String getWorkingDirectory() {
+		return workingDirectory;
+	}
 
-    /**
-     * Getter for the workingDirectory
-     * @uml.property  name="workingDirectory"
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
+	/**
+	 * Setter for the workingDirectory.
+	 * 
+	 * @param workingDirectory
+	 */
+	public void setWorkingDirectory(String workingDirectory) {
+		this.workingDirectory = workingDirectory;
+	}
 
-    /**
-     * Setter for the workingDirectory.
-     * @param  workingDirectory
-     * @uml.property  name="workingDirectory"
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
-    }
+	/**
+	 * Obtaining the Absolute path of the working dir
+	 * 
+	 * @param working_dir
+	 *            the relative (or absolute) path to absolutize
+	 * @note it should be a sub-dir of ...
+	 * @TODO open a ticket to get getBaseDirectory() into Catalog interface
+	 */
+	public static String getAbsolutePath(String working_dir) /*
+															 * throws
+															 * FileNotFoundException
+															 */{
+		FileBasedCatalogImpl c = (FileBasedCatalogImpl) CatalogHolder
+				.getCatalog();
+		File fo = Path.findLocation(working_dir, c.getBaseDirectory());
+		if (fo != null) {
+			return fo.toString();
+		} else {
+			// TODO LOG throw new
+			// FileNotFoundException("Unable to locate the working dir");
+			// throw new FileNotFoundException();
+			return null;
+		}
+	}
 
-    /**
-     * Obtaining the Absolute path of the working dir
-     * @param working_dir the relative (or absolute) path to absolutize
-     * @note it should be a sub-dir of ...
-* @TODO open a ticket to get getBaseDirectory() into Catalog interface
-     */
-    public static String getAbsolutePath(String working_dir) /*throws FileNotFoundException */{ 
-        FileBasedCatalogImpl c=(FileBasedCatalogImpl) CatalogHolder.getCatalog();
-        File fo = Path.findLocation(working_dir,c.getBaseDirectory());
-        if (fo!=null){
-            return fo.toString();
-        }
-        else {
-//TODO LOG            throw new FileNotFoundException("Unable to locate the working dir");
-//            throw new FileNotFoundException();
-            return null;
-        }
-    } 
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[" + "id:" + getId() + ", workingDirectory:"
-                + getWorkingDirectory() + ", name:" + getName() + "]";
-    }
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[" + "id:" + getId()
+				+ ", workingDirectory:" + getWorkingDirectory() + ", name:"
+				+ getName() + "]";
+	}
 }

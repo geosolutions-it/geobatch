@@ -125,7 +125,11 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      * @param rules
      */
     public void setRules(List<FileEventRule> rules) {
-        this.rules = new ArrayList<FileEventRule>(rules);
+    	if(rules!=null){
+    		this.rules = new ArrayList<FileEventRule>(rules);
+    	} else {
+    		this.rules = null;
+    	}
     }
 
     /**
@@ -222,11 +226,14 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
         object.setWorkingDirectory(workingDirectory);
 
         // clone its elements
-        final List<FileEventRule> clonedRules = new ArrayList<FileEventRule>(rules.size());
-        for (FileEventRule rule : rules)
-            clonedRules.add(rule.clone());
-        object.setRules(clonedRules);
-
+        if(rules!=null){
+	        final List<FileEventRule> clonedRules = new ArrayList<FileEventRule>(rules.size());
+	        for (FileEventRule rule : rules)
+	            clonedRules.add(rule.clone());
+	        object.setRules(clonedRules);
+        } else
+        	object.setRules(null);
+        
         final List<ActionConfiguration> clonedActions = new ArrayList<ActionConfiguration>(actions
                 .size());
         for (ActionConfiguration action : actions)

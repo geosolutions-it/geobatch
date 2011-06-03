@@ -139,26 +139,33 @@ public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> i
         }
 
         // resolve actions listener
-
-        for (ActionConfiguration ac : ecc.getActions()) {
-            if (ac.getListenerConfigurations() == null) { // this happens in
-                // XStream...
-                ac.setListenerConfigurations(new ArrayList<ProgressListenerConfiguration>());
-            }
-
-            if (ac.getListenerIds() != null) {
-                for (String actionListenerId : ac.getListenerIds()) {
-                    if (actionListenerId != null) {
-                        if (listenersMap.containsKey(actionListenerId)) {
-                            ac.addListenerConfiguration(listenersMap.get(actionListenerId));
-                        } else {
-                            LOGGER.error("FileBasedFlowConfiguration " + obj
-                                    + " declares an invalid listener in an action configuration '"
-                                    + actionListenerId + "'");
-                        }
-                    }
-                }
-            }
+        if (ecc.getActions()!=null){
+	        for (ActionConfiguration ac : ecc.getActions()) {
+	            if (ac.getListenerConfigurations() == null) { // this happens in
+	                // XStream...
+	                ac.setListenerConfigurations(new ArrayList<ProgressListenerConfiguration>());
+	            }
+	
+	            if (ac.getListenerIds() != null) {
+	                for (String actionListenerId : ac.getListenerIds()) {
+	                    if (actionListenerId != null) {
+	                        if (listenersMap.containsKey(actionListenerId)) {
+	                            ac.addListenerConfiguration(listenersMap.get(actionListenerId));
+	                        } else {
+	                        	if (LOGGER.isErrorEnabled())
+	                        		LOGGER.error("FlowConfiguration " + obj
+	                                    + " declares an invalid listener in an action configuration '"
+	                                    + actionListenerId + "'");
+	                        }
+	                    }
+	                }
+	            }
+	        }
+        }
+        else {
+        	final String message="FlowConfiguration do not declare any Action!";
+        	if (LOGGER.isErrorEnabled())
+        		LOGGER.error(message);
         }
     }
 }
