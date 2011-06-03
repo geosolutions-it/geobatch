@@ -100,9 +100,8 @@
     <!-- =========================================================== -->
     <!--     Modules for the build in approximate dependency order   -->
     <!-- =========================================================== -->
-    <profiles>
-    
-		<profile>
+    <profiles>    
+	<profile>
             <id>jms</id>
             <activation>
                 <property>
@@ -114,7 +113,6 @@
                 <module>gb-jms</module>
             </modules>
         </profile>
-        
         <profile>
             <id>octave</id>
             <activation>
@@ -124,9 +122,9 @@
                 </property>
             </activation>
             <modules>
-				<module>gb-octave</module>
+		<module>gb-octave</module>
             </modules>
         </profile>
-	</profiles>
+    </profiles>
 	
 </project>

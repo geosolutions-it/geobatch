@@ -282,6 +282,19 @@
                 <module>geonetwork</module>
             </modules>
         </profile>
+        
+        <profile>
+            <id>xstream</id>
+            <activation>
+                <property>
+                    <name>all</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>xstream</module>
+            </modules>
+        </profile>
 
     </profiles>
         

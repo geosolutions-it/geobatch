@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<id>XstreamFlow</id>
+	<description>XstreamFlow</description>
+	<name>XstreamFlow</name>
+	
+	<workingDirectory>xstream/</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>xstream/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<interval>* * * * * ?</interval><!-- CRON: every minute at sec 0 -->
+		<!--<interval>20</interval> each 20 sec -->
+		<id>XstreamFlow</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+		<description>description</description>
+		<name>test</name>
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		<id>xstream</id>
+		<description>xstream</description>
+		<name>xstream</name>
+		
+		<workingDirectory>xstream/</workingDirectory>
+		<performBackup>false</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>test</name>
+		</FileEventRule>
+		
+		<XstreamConfiguration>
+			<serviceID>XstreamGeneratorService</serviceID>
+			<id>XstreamGeneratorService</id>
+			<description>Xstream action</description>
+			<name>XstreamConfiguration</name>
+		  
+			<dirty>false</dirty>
+			<listenerConfigurations/>
+			<failIgnored>false</failIgnored>
+		  
+			<workingDirectory>xstream/</workingDirectory>
+			<output>out/</output>
+			<alias>
+				<entry>
+					<string>XstreamConfiguration</string>
+					<string>it.geosolutions.geobatch.actions.xstream.XstreamConfiguration.class</string>
+				</entry>
+			</alias>
+		</XstreamConfiguration>
+		
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>
