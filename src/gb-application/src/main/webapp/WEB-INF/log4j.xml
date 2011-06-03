@@ -51,7 +51,8 @@
 		<!-- <appender-ref ref="console" />-->
 	</logger>
 
-	<root additivity="true">
+	<root>
+		<!-- <priority value="debug" />-->
 		<level value="info" />
 		<appender-ref ref="rolling" />
 		<appender-ref ref="console" />
