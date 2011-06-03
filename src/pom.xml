@@ -235,7 +235,7 @@
         </developer>
         <developer>
             <name>Carlo Cancellieri</name>
-            <id>carlo</id>
+            <id>ccancellieri</id>
             <email>carlo.cancellieri@geo-solutions.it</email>
             <organization>GeoSolutions</organization>
         </developer>
@@ -277,6 +277,14 @@
                 <artifactId>gb-users</artifactId>
                 <version>${gb.version}</version>
             </dependency>
+            <!-- gb-users DEPENDENCY -->
+            <dependency>
+		<groupId>cglib</groupId>
+		<artifactId>cglib</artifactId>
+		<version>2.2</version>
+	    </dependency>
+	    <!-- gb-users DEPENDENCY -->
+	    
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-fs-catalog</artifactId>
@@ -294,16 +302,6 @@
                 <version>${gb.version}</version>
             </dependency>
 <!-- FSM IMPLEMENTATIONS -->
-		<!-- DEPRECATED
-			Removed: 15 Feb 2011
-			By: Carlo
-			As requested: Simone
-			<dependency>
-				<groupId>it.geosolutions.geobatch</groupId>
-				<artifactId>gb-fsm-native</artifactId>
-				<version>${gb.version}</version>
-			</dependency>
-			-->
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-fsm-quartz</artifactId>
@@ -314,16 +312,13 @@
                 <artifactId>quartz</artifactId>
                 <version>2.0.1</version>
             </dependency>
-		<!-- DEPRECATED
-			Removed: 10 Feb 2011
-			By: Carlo
-			As requested: Simone
-			<dependency>
-				<groupId>it.geosolutions.geobatch</groupId>
-				<artifactId>gb-fsm-purejava</artifactId>
-				<version>${gb.version}</version>
-			</dependency>-->
-			
+<!-- NOT REQUIRED
+            <dependency>
+		<groupId>org.quartz-scheduler</groupId>
+		<artifactId>quartz-backward-compat</artifactId>
+		<version>2.0.1</version>
+	    </dependency>
+-->
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-dao</artifactId>
@@ -335,7 +330,7 @@
                 <artifactId>gb-dao-xstream-base</artifactId>
                 <version>${gb.version}</version>
             </dependency>
-	    
+            
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-dao-xstream</artifactId>
@@ -372,18 +367,17 @@
                 <version>${gb.version}</version>
             </dependency>
             
+<!-- XSTREAM Action-->
+            <dependency>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-action-xstream</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
 	    
 <!-- GEOTIFF -->
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-geotiff</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-
-						<!-- Buddata RR -->
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-registry-egeos</artifactId>
                 <version>${gb.version}</version>
             </dependency>
 
@@ -454,69 +448,7 @@
                 <version>${gb.version}</version>
             </dependency>
 
-						<!-- METOCS -->
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-metocs-commons</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-nurc-tda</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-nurc-sem</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-e-geos-metocs</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-
-						<!-- E-GEOS::EMSA -->
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-emsa-actions</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-
-						<!-- LAMMA -->
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-lamma</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>it.geosolutions.opensdi.lamma</groupId>
-                <artifactId>lamma-ws-su</artifactId>
-              <!--<version>${gb.version}</version>-->
-                <version>0.1-SNAPSHOT</version>
-            </dependency>
-						<!-- NURC::SAS -->
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-sas</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-<!--            
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-sasgs</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
--->            
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-sasmanager</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-
-            			<!--  -->
+<!--  -->
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-taskexecutor</artifactId>
@@ -542,28 +474,13 @@
 		<artifactId>gb-action-geonetwork</artifactId>
 		<version>${gb.version}</version>
             </dependency>
-            <!--
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-geoserver-restclient</artifactId>
-                <version>${gb.version}</version>
-            </dependency-->
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-gliders</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-ctd</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
+<!-- TODO check dependency -->
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-ais</artifactId>
                 <version>${gb.version}</version>
-            </dependency>
-            
+            </dependency>            
+<!-- TODO check dependency -->
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-ftp</artifactId>
@@ -577,11 +494,6 @@
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-action-imagemosaic</artifactId>
-                <version>${gb.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>it.geosolutions.geobatch</groupId>
-                <artifactId>gb-action-JGSFLoDeSS</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             <dependency>
@@ -625,13 +537,7 @@
                 <groupId>it.geosolutions</groupId>
                 <artifactId>geoserver-manager</artifactId>
                 <version>1.1-SNAPSHOT</version>
-            </dependency>
-            <dependency> <!-- used by new geoserver action-->
-                <groupId>it.geosolutions</groupId>
-                <artifactId>gb-action-geoserver-restclient</artifactId>
-                <version>0.9-SNAPSHOT</version>
-            </dependency>
-            
+            </dependency>            
             
             <!--=============================================================-->
             <!-- Spring Framework ===========================================-->
@@ -755,22 +661,6 @@
                 <version>${spring.security.version}</version>
             </dependency>
             <!-- SCOPE TEST -->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${spring.version}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-collections</groupId>
-                        <artifactId>commons-collections</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>xerces</groupId>
-                        <artifactId>xercesImpl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
             
             <!--=============================================================-->
             <!--                  ===========================================-->
@@ -965,7 +855,6 @@
                 <artifactId>gt-matfile5</artifactId>
                 <version>${gt.version}</version>
             </dependency>
-
 
             <!--=============================================================-->
             <!-- imageio-ext ================================================-->
@@ -1174,7 +1063,6 @@
                 <version>1.2.2</version>
             </dependency>
             
-            
             <!-- ============================================================-->
             <!-- === SLF4J ==================================================-->
             <!-- ============================================================-->
@@ -1196,11 +1084,11 @@
                 <version>${slf4j.version}</version>
             </dependency>
 
-            <dependency>
+<!--            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-jdk14</artifactId>
                 <version>${slf4j.version}</version>
-            </dependency>
+            </dependency>-->
 		
             <!--July 5th, 2010 - Release of SLF4J 1.6.1
                 Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.4. 
@@ -1232,14 +1120,6 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!-- ===LOG4J====================================================-->
-
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.16</version>
-            </dependency>
-            
             
             <!-- ============================================================-->
             
@@ -1460,27 +1340,29 @@
             <!-- TEST STUFF =================================================-->
             <!--=============================================================-->
             <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>xerces</groupId>
+                        <artifactId>xercesImpl</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.5</version>
+		<version>4.5</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-		<groupId>org.slf4j</groupId>
-		<artifactId>jcl-over-slf4j</artifactId>
-		<version>${slf4j.version}</version>
-	    </dependency>
-            <dependency>
-		<groupId>org.slf4j</groupId>
-		<artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
-	    </dependency>
-	    <dependency>
-		    <groupId>log4j</groupId>
-		    <artifactId>log4j</artifactId>
-		    <version>1.2.16</version>
-		    <scope>test</scope>
-	    </dependency>
+                        
             <dependency>
                 <groupId>org.easymock</groupId>
                 <artifactId>easymock</artifactId>
@@ -1496,9 +1378,18 @@
             <dependency>
                 <groupId>com.mockrunner</groupId>
                 <artifactId>mockrunner</artifactId>
-                <version>0.3.6</version>
+                <version>0.3.1</version>
                 <scope>test</scope>
             </dependency>
+            
+            <!-- ===LOG4J====================================================-->
+	    <dependency>
+	        <groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+                <version>1.2.16</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- ===LOG4J====================================================-->
         </dependencies>
     </dependencyManagement>
 
@@ -1507,36 +1398,66 @@
     <!-- =========================================================== -->
     <dependencies>
     
-    <!-- commons-logging can be rather simply and conveniently 
-	    excluded as a dependency by declaring it in the provided scope 
-	    within the pom.xml file of your project. 
-	    The actual commons-logging classes would be provided by 
-	    jcl-over-slf4j. 
-	    This translates into the following pom file snippet:-->
-	<dependency>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>jcl-over-slf4j</artifactId>
-	</dependency>
+	    <!-- ============================== -->
+	    <!-- slf4j -->
+	    <!-- ============================== -->
+	    <!-- commons-logging can be rather simply and conveniently 
+	      excluded as a dependency by declaring it in the provided scope 
+	      within the pom.xml file of your project. 
+	      The actual commons-logging classes would be provided by 
+	      jcl-over-slf4j. 
+	      This translates into the following pom file snippet:-->
             <dependency>
-		<groupId>org.slf4j</groupId>
-		<artifactId>slf4j-log4j12</artifactId>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+            </dependency>
+            
+	    <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+            </dependency>
+            <!--July 5th, 2010 - Release of SLF4J 1.6.1
+                Updated log4j dependency to version 1.2.16 and CAL10N dependency to version 0.7.4. 
+            <dependency>
+                <groupId>ch.qos.cal10n</groupId>
+                <artifactId>cal10n-api</artifactId>
+            </dependency>-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+            </dependency>
+
+            <!--=============================================================-->
+            <!-- TEST STUFF =================================================-->
+            <!--=============================================================-->
+	    <dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<scope>test</scope>
 	    </dependency>
-	<dependency>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>slf4j-api</artifactId>
-	</dependency>
-	<dependency>
-	    <groupId>commons-logging</groupId>
-	    <artifactId>commons-logging</artifactId>
-	    <scope>provided</scope>
-	</dependency>
-    
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <!-- The version number is specified above. -->
-            <scope>test</scope>
-        </dependency>
+	    
+	    
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <scope>test</scope>
+            </dependency>
+                        
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymockclassextension</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.mockrunner</groupId>
+                <artifactId>mockrunner</artifactId>
+                <scope>test</scope>
+            </dependency>
     </dependencies>
 
     <build>
