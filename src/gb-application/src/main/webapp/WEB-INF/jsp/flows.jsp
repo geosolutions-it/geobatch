@@ -200,7 +200,8 @@
 			  										<c:if test="${role.authority == 'ROLE_ADMIN'}">
 														<a href="dispose.do?fmId=${fm.id}"><image src='img/cancel.png' border='0' title='cancel' alt='cancel' width='16' height='16'/></a>
 													</c:if>
-												</c:forEach>									
+													<a href='flowManagerClear.do?fmId=${fm.id}'><image src='img/erase.png' border='0' title='clear all consumer instances' alt='clear all consumers' width='16' height='16'/></a>
+												</c:forEach>						
 											</p>
 										</div>
 										<div id="tab-instances-<%= i %>">

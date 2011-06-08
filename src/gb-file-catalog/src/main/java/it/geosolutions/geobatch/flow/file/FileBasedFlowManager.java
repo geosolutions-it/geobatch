@@ -226,16 +226,18 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         if (fbec.getStatus() != EventConsumerStatus.COMPLETED
                 && fbec.getStatus() != EventConsumerStatus.FAILED) {
             if (LOGGER.isWarnEnabled())
-                LOGGER.warn("FileBasedFlowManager:dispose(): Disposing uncompleted consumer "
+                LOGGER.warn("FileBasedFlowManager:dispose(): Trying to dispose and uncompleted consumer "
                         + fbec);
+            fbec.cancel();
         }
 
         synchronized (eventConsumers) {
             eventConsumers.remove(fbec);
         }
-
+        
         // dunno if we should also force a fbec.dispose();
         // it's called at the end of the consumer thread automatically
+        // fbec.dispose();
     }
 
     /**

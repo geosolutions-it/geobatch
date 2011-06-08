@@ -7,20 +7,14 @@
 	<bean id="beanNameUrlMapping"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
 
-	<!--
-		bean id="viewResolver"
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/jsp/"/> <property
-		name="suffix" value=".jsp" /> </bean
-	-->
-	<!--
-		bean id="jspViewResolver"
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass"
-		value="org.springframework.web.servlet.view.JstlView"/> <property
-		name="prefix" value="/WEB-INF/jsp/"/> <property name="suffix"
-		value=".jsp"/> </bean
-	-->
+	<!-- bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+		<property name="prefix" value="/WEB-INF/jsp/"/> <property name="suffix" value=".jsp" 
+		/> </bean -->
+	<!-- bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/> 
+		<property name="prefix" value="/WEB-INF/jsp/"/> <property name="suffix" value=".jsp"/> 
+		</bean -->
+		
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass">
@@ -36,7 +30,7 @@
 	<bean id="memoryController" class="it.geosolutions.geobatch.ui.mvc.MemoryController">
 		<property name="cacheSeconds" value="-1" />
 	</bean>
-	
+
 	<bean id="flowManagerController" class="it.geosolutions.geobatch.ui.mvc.FlowManagerController">
 		<property name="cacheSeconds" value="-1" />
 	</bean>
@@ -61,8 +55,7 @@
 		<property name="cacheSeconds" value="-1" />
 	</bean>
 
-	<bean id="deleteFtpUserController"
-		class="it.geosolutions.geobatch.ui.mvc.DeleteFtpUserController">
+	<bean id="deleteFtpUserController" class="it.geosolutions.geobatch.ui.mvc.DeleteFtpUserController">
 		<property name="cacheSeconds" value="-1" />
 		<property name="server" ref="geoBatchServer" />
 	</bean>
@@ -72,29 +65,30 @@
 		<property name="cacheSeconds" value="-1" />
 	</bean>
 
-	<bean id="flowManagerFormValidator"
-		class="it.geosolutions.geobatch.ui.mvc.FlowManagerFormValidator" />
-	<bean id="flowManagerFormController"
-		class="it.geosolutions.geobatch.ui.mvc.FlowManagerFormController">
-		<property name="sessionForm">
-			<value>false</value>
-		</property>       		<!-- Keep command object throughout session? -->
-		<property name="commandName">
-			<value>flowManagerBean</value>
-		</property> 	<!-- How it’s referenced in the JSP -->
-		<property name="commandClass">
-			<value>it.geosolutions.geobatch.ui.mvc.data.FlowManagerDataBean</value>
-		</property>   <!-- Its class -->
-		<property name="validator">
-			<ref bean="flowManagerFormValidator" />
-		</property>
-		<property name="formView">
-			<value>flowManagerNewForm</value>
-		</property>
-		<property name="successView">
-			<value>flowManagerNewSuccess</value>
-		</property>
-	</bean>
+<!--	<bean id="flowManagerFormValidator"-->
+<!--		class="it.geosolutions.geobatch.ui.mvc.FlowManagerFormValidator" />-->
+	
+<!--	<bean id="flowManagerFormController"-->
+<!--		class="it.geosolutions.geobatch.ui.mvc.FlowManagerFormController">-->
+<!--		<property name="sessionForm">-->
+<!--			<value>false</value>-->
+<!--		</property>       		 Keep command object throughout session? -->
+<!--		<property name="commandName">-->
+<!--			<value>flowManagerBean</value>-->
+<!--		</property> 	 How it’s referenced in the JSP -->
+<!--		<property name="commandClass">-->
+<!--			<value>it.geosolutions.geobatch.ui.mvc.data.FlowManagerDataBean</value>-->
+<!--		</property>    Its class -->
+<!--		<property name="validator">-->
+<!--			<ref bean="flowManagerFormValidator" />-->
+<!--		</property>-->
+<!--		<property name="formView">-->
+<!--			<value>flowManagerNewForm</value>-->
+<!--		</property>-->
+<!--		<property name="successView">-->
+<!--			<value>flowManagerNewSuccess</value>-->
+<!--		</property>-->
+<!--	</bean>-->
 
 	<bean id="ftpConfigController" class="it.geosolutions.geobatch.ui.mvc.FTPConfigFormController">
 		<property name="sessionForm">
@@ -141,12 +135,10 @@
 		</property>
 	</bean>
 
-	<bean id="consumerInfoController"
-		class="it.geosolutions.geobatch.ui.mvc.ConsumerInfoController">
+	<bean id="consumerInfoController" class="it.geosolutions.geobatch.ui.mvc.ConsumerInfoController">
 		<property name="cacheSeconds" value="-1" />
 	</bean>
-	<bean id="consumerPauseController"
-		class="it.geosolutions.geobatch.ui.mvc.ConsumerPauseController">
+	<bean id="consumerPauseController" class="it.geosolutions.geobatch.ui.mvc.ConsumerPauseController">
 		<property name="cacheSeconds" value="-1" />
 	</bean>
 	<bean id="consumerResumeController"
@@ -158,29 +150,39 @@
 		<property name="cacheSeconds" value="-1" />
 	</bean>
 
+	<bean id="flowManagerClearController"
+		class="it.geosolutions.geobatch.ui.mvc.FlowManagerClearController">
+		<property name="cacheSeconds" value="-1" />
+	</bean>
+
 
 	<!-- Mappings -->
 	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
 			<value>
 				/flows.do=flowManagerController
+				
 				/pause.do=flowManagerPauseController
 				/resume.do=flowManagerResumeController
 				/dispose.do=flowManagerDisposeController
-				/newFlowManager.form=flowManagerFormController
+				/flowManagerClear.do=flowManagerClearController
+				
+				/flowinfo.do=flowManagerInfoController
+
+				 <!--/newFlowManager.form=flowManagerFormController ??? -->
+
 				/ftpUsers.do=ftpManagerController
 				/ftp.do=ftpManagerController
 				/ftpConfig.form=ftpConfigController
 				/newFtpUser.form=ftpUserFormController
 				/deleteFtpUser.do=deleteFtpUserController
 				/updateFtpUser.form=ftpUserFormController
-				/flowinfo.do=flowManagerInfoController
 				/consumerInfo.do=consumerInfoController
-                /consumerPause.do=consumerPauseController
-                /consumerResume.do=consumerResumeController
-                /consumerDispose.do=consumerDisposeController
-                
-                /memoryController.do=memoryController
+				/consumerPause.do=consumerPauseController
+				/consumerResume.do=consumerResumeController
+				/consumerDispose.do=consumerDisposeController
+
+				/memoryController.do=memoryController
             </value>
 		</property>
 	</bean>

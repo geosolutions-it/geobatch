@@ -25,9 +25,7 @@
 package it.geosolutions.geobatch.ui.mvc;
 
 import java.lang.management.ManagementFactory;
-
-import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+import java.lang.management.MemoryMXBean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,12 +47,11 @@ public class MemoryController extends AbstractController {
     @Override
     protected ModelAndView handleRequestInternal(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-        //Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
-        
         ModelAndView mav = new ModelAndView("memory"); // jsp
-        
-        mav.addObject("memoryHeapUsage", ManagementFactory.getMemoryMXBean().getHeapMemoryUsage());
-//        mav.addObject("memoryHeapUsage", ManagementFactory.getMemoryMXBean().getHeapMemoryUsage());
+        final MemoryMXBean mmxbean=ManagementFactory.getMemoryMXBean();
+        mav.addObject("objectPendingFinalizationCount", mmxbean.getObjectPendingFinalizationCount());
+        mav.addObject("nonHeapMemoryUsage", mmxbean.getNonHeapMemoryUsage());
+        mav.addObject("heapMemoryUsage", mmxbean.getHeapMemoryUsage());
         mav.addObject("memoryPoolBeansList", ManagementFactory.getMemoryPoolMXBeans());
 
         return mav;
