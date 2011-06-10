@@ -112,14 +112,12 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 	 */
 	protected void setStatus(EventConsumerStatus eventConsumerStatus) {
 
-		EventConsumerStatus old = eventConsumerStatus;
-
-		this.eventConsumerStatus = eventConsumerStatus;
-
-		if (old != eventConsumerStatus) {
-			listenerForwarder.fireStatusChanged(old, eventConsumerStatus);
+		if (this.eventConsumerStatus != eventConsumerStatus) {
+			listenerForwarder.fireStatusChanged(this.eventConsumerStatus, eventConsumerStatus);
 			listenerForwarder.setTask(eventConsumerStatus.toString());
 		}
+		
+		this.eventConsumerStatus = eventConsumerStatus;
 	}
 
 	public Action<XEO> getCurrentAction() {
@@ -250,18 +248,25 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
 	public boolean pause() {
 		pauseHandler.pause();
+		// set new status
+		setStatus(EventConsumerStatus.PAUSED);
 		return true; // we'll pause asap
 	}
 
 	public boolean pause(boolean sub) {
-		if (getStatus().equals(EventConsumerStatus.EXECUTING)
-				|| getStatus().equals(EventConsumerStatus.WAITING)
-				|| getStatus().equals(EventConsumerStatus.IDLE)) {
-			if (LOGGER.isInfoEnabled())
+		final EventConsumerStatus status=getStatus();
+		if (status.equals(EventConsumerStatus.EXECUTING)
+				|| status.equals(EventConsumerStatus.WAITING)
+				|| status.equals(EventConsumerStatus.IDLE)) {
+			
+			if (LOGGER.isInfoEnabled()){
 				LOGGER.info("Pausing consumer " + getName() + " ["
 						+ creationTimestamp + "]");
-
+			}
+			
 			pauseHandler.pause();
+			// set new status
+			setStatus(EventConsumerStatus.PAUSED);
 
 			if (currentAction != null) {
 				LOGGER.info("Pausing action "
@@ -271,7 +276,12 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 				currentAction.pause();
 			}
 		}
-
+		else {
+			if (LOGGER.isInfoEnabled()){
+				LOGGER.info("Consumer " + getName() + " ["
+						+ creationTimestamp + "] is already in state: "+getStatus());
+			}
+		}
 		return true; // we'll pause asap
 	}
 
@@ -287,6 +297,8 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 		}
 
 		pauseHandler.resume();
+		// set new status
+		setStatus(EventConsumerStatus.EXECUTING);
 	}
 
 	public boolean isPaused() {

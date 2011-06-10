@@ -100,35 +100,37 @@
 	<div id="accordion">
 		<div class="accordionInfo">
 			<c:forEach var="ec" items="${fm.eventConsumers}">
-				<hr />
+				<hr/>
 			    <h6>
 			    	<B><c:out value="${ec.id}"/></B>
 			    	- status :
-					    	<c:choose> 
-								<c:when test="${ec.status == 'FAILED'}">
+					    	<c:set var="status" value="${ec.status}"/>
+					    	<c:choose>
+								<c:when test="${status == 'FAILED'}">
 									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: red">
 								</c:when>
 								<c:otherwise>
 									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: green">
 								</c:otherwise>
 							</c:choose>
-					    	<c:out value="${ec.status}"/></font>
+					    		<c:out value="${status}"/>
+					    		</font>
 								<c:choose>
-							        <c:when test="${ec.status == 'PAUSED'}">
+							        <c:when test="${status == 'PAUSED'}">
 	  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
 	  										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
 							            		 <a href='consumerResume.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_play.png' border='0' title='resume instance' alt='resume' width='16' height='16'/></a>
 											</c:if>
 										</c:forEach>
 							        </c:when>
-							        <c:when test="${ec.status == 'EXECUTING'}">
+							        <c:when test="${status == 'EXECUTING'}">
 	  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
 	  										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
 							            		 <a href='consumerPause.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_pause.png' border='0' title='pause instance' alt='pause' width='16' height='16'/></a>
 											</c:if>
 										</c:forEach>
 							        </c:when>
-							        <c:when test="${ec.status == 'COMPLETED' || ec.status == 'FAILED'}">
+							        <c:when test="${status == 'COMPLETED' || status == 'FAILED'}">
 							        	<c:forEach var="role" items="${currentUser.grantedAuthorities}">
 	 										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
 						    					<a href="consumerDispose.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/cancel.png' border='0' title='cancel instance' alt='cancel' width='16' height='16'/></a>
