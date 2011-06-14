@@ -6,12 +6,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<!-- START APPLICATION DESCRIPTION -->
+	<!-- Please do not remove the above placeholder -->
 	<parent>
 		<groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb</artifactId>
 		<version>1.1-SNAPSHOT</version>
 	</parent>
-
 
 	<!-- =========================================================== -->
 	<!-- Module Description -->
@@ -19,7 +20,10 @@
 	<groupId>it.geosolutions.geobatch</groupId>
 	<artifactId>gb-application</artifactId>
 	<packaging>war</packaging>
-
+	
+	<!-- Please do not remove the following placeholder -->
+	<!-- STOP APPLICATION DESCRIPTION -->
+	
 	<name>GeoBatch Application</name>
 	<description>GeoSolutions GeoBatch Application</description>
 
