@@ -63,7 +63,8 @@ for ((i=0; i<$#; i++)){
   case $arg in
   "-s")
 	  echo "Setting Geobatch Source dir (-s)"
-	  GB_DIR=${args[$((++i))]};
+	  i=$((++i));
+	  GB_DIR=${args[$i]};
 	  if [ -d "$GB_DIR" ]; then
 	    echo "GeoBatch source dir set to-> $GB_DIR"
 	  else
@@ -74,7 +75,8 @@ for ((i=0; i<$#; i++)){
 	  ;;
   "-b")
 	  echo "Setting Geobatch Source version (-b)"
-	  GB_VER=${args[$((++i))]};
+	  i=$((++i));
+	  GB_VER=${args[$i]};
 	  case $GB_VER in
 	  "1.0")
 		  ;;
@@ -89,7 +91,8 @@ for ((i=0; i<$#; i++)){
 	  ;;
   "-d")
 	  echo "Setting Application destination dir (-d)"
-	  DEST_DIR=${args[$((++i))]};
+	  i=$((++i));
+	  DEST_DIR=${args[$i]};
 	  if [ -d "$DEST_DIR" ]; then
 	    echo "Application destination directory set to-> $DEST_DIR"
 	  else
@@ -100,8 +103,9 @@ for ((i=0; i<$#; i++)){
 	  ;;
   "-n")
 	  echo "Setting Application name (-n)"
+	  i=$((++i));
 	  # set name application to lowercase
-	  NAME_APP=$(echo ${args[$((++i))]} | tr "[:upper:]" "[:lower:]")
+	  NAME_APP=$(echo ${args[$i]} | tr "[:upper:]" "[:lower:]")
 	  case $NAME_APP in
 	  -*)
 	      echo -e "ERROR:\n Bad application name! ($NAME_APP)"
@@ -114,7 +118,8 @@ for ((i=0; i<$#; i++)){
 	  ;;
   "-v")
 	  echo "Setting Application project version (-v)"
-	  PROJ_VER=${args[$((++i))]}
+	  i=$((++i));
+	  PROJ_VER=${args[$i]}
 	  case $PROJ_VER in
 	  -*)
 	      echo -e "ERROR:\n Bad application project version ! ($PROJ_VER)"
@@ -127,8 +132,9 @@ for ((i=0; i<$#; i++)){
 	  ;;
   "-a")
 	  echo "Setting Action name (-a)"
+	  i=$((++i));
 	  # set name first character to Uppercase (to respect CamelCase format)
-	  NAME_ACT=${args[$((++i))]:0:1}
+	  NAME_ACT="${args[$i]^}"
 	  case $NAME_ACT in
 	  -*)
 	      echo -e "ERROR:\n Bad action name! ($NAME_ACT)"
