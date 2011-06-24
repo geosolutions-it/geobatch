@@ -10,7 +10,7 @@
     	<constructor-arg type="String"><value>ScriptingService</value></constructor-arg>
     </bean>	      
 
-    <bean id="ScriptingRegistrar" class="it.geosolutions.geobatch.action.ScriptingAliasRegistrar" lazy-init="false">
+    <bean id="ScriptingRegistrar" class="it.geosolutions.geobatch.action.scripting.ScriptingAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
 
