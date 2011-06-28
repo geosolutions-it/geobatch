@@ -50,6 +50,7 @@
 		  
 			<workingDirectory>xstream/</workingDirectory>
 			<output>out/</output>
+			<!-- OPTIONALLY specify one or more class name alias -->
 			<alias>
 				<entry>
 					<string>XstreamConfiguration</string>

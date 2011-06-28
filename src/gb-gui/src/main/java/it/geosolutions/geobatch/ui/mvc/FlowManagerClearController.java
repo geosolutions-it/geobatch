@@ -24,13 +24,11 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import java.util.Iterator;
-import java.util.List;
-
 import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

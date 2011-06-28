@@ -29,7 +29,7 @@ import org.geotools.utils.CoverageToolsConstants;
 
 public class GeotiffRetilerConfiguration extends ActionConfiguration implements Configuration {
 
-    protected GeotiffRetilerConfiguration(String id, String name, String description) {
+    public GeotiffRetilerConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
 
