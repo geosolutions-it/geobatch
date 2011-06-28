@@ -31,11 +31,11 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     }
 
     /**
-     * Try to use COARDS file name convention to parse
-     * file name. This is used to get ImageMosaicGranulesDescription info
+     * Try to use COARDS file name convention to parse file name. This is used to get
+     * ImageMosaicGranulesDescription info
      */
     private boolean COARDS;
-    
+
     private String datastorePropertiesPath;
 
     private String timeRegex;
@@ -46,14 +46,24 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
     private String backgroundValue;// NoData
 
-//    private Double NativeMinBoundingBoxX;// BoundingBox
-//
-//    private Double NativeMinBoundingBoxY;// BoundingBox
-//
-//    private Double NativeMaxBoundingBoxX;// BoundingBox
-//
-//    private Double NativeMaxBoundingBoxY;// BoundingBox
-    
+    private String projectionPolicy;// NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED
+
+    // private Double NativeMinBoundingBoxX;// BoundingBox
+    //
+    // private Double NativeMinBoundingBoxY;// BoundingBox
+    //
+    // private Double NativeMaxBoundingBoxX;// BoundingBox
+    //
+    // private Double NativeMaxBoundingBoxY;// BoundingBox
+
+    public String getProjectionPolicy() {
+        return projectionPolicy;
+    }
+
+    public void setProjectionPolicy(String projectionPolicy) {
+        this.projectionPolicy = projectionPolicy;
+    }
+
     private Double latLonMinBoundingBoxX;// BoundingBox
 
     private Double latLonMinBoundingBoxY;// BoundingBox
@@ -62,25 +72,48 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
     private Double latLonMaxBoundingBoxY;// BoundingBox
 
-    
-    
-
-    //    <metadata>
-//    <entry key="timeDimEnabled">true</entry>
-//    <entry key="dirName">20101012T210000_wdi_20101012T210000_wdi</entry>
-//    <entry key="timePresentationMode">LIST</entry>
-//    </metadata>
+    // <metadata>
+    // <entry key="timeDimEnabled">true</entry>
+    // <entry key="dirName">20101012T210000_wdi_20101012T210000_wdi</entry>
+    // <entry key="timePresentationMode">LIST</entry>
+    // </metadata>
     private String timeDimEnabled;
-    
-    
-    private String dirName;
+
+    private String elevDimEnabled;
+
+    public String getElevDimEnabled() {
+        return elevDimEnabled;
+    }
+
+    public void setElevDimEnabled(String elevationDimEnabled) {
+        this.elevDimEnabled = elevationDimEnabled;
+    }
+
     private String timePresentationMode;
-    
+
+    private String elevationPresentationMode;
+
+    public String getElevationPresentationMode() {
+        return elevationPresentationMode;
+    }
+
+    public void setElevationPresentationMode(String elevationPresentationMode) {
+        this.elevationPresentationMode = elevationPresentationMode;
+    }
+
+    // TODO removeme
+    private String dirName;
+
     private String outputTransparentColor;
+
     private String inputTransparentColor;
+
     private boolean allowMultithreading;
+
     private boolean useJaiImageRead;
+
     private int tileSizeH;
+
     private int tileSizeW;
 
     public boolean isCOARDS() {
@@ -89,39 +122,39 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
     public void setCOARDS(boolean cOARDS) {
         COARDS = cOARDS;
-    }    
-    
-//    public Double getNativeMinBoundingBoxX() {
-//        return NativeMinBoundingBoxX;
-//    }
-//
-//    public void setNativeMinBoundingBoxX(Double nativeMinBoundingBoxX) {
-//        NativeMinBoundingBoxX = nativeMinBoundingBoxX;
-//    }
-//
-//    public Double getNativeMinBoundingBoxY() {
-//        return NativeMinBoundingBoxY;
-//    }
-//
-//    public void setNativeMinBoundingBoxY(Double nativeMinBoundingBoxY) {
-//        NativeMinBoundingBoxY = nativeMinBoundingBoxY;
-//    }
-//
-//    public Double getNativeMaxBoundingBoxX() {
-//        return NativeMaxBoundingBoxX;
-//    }
-//
-//    public void setNativeMaxBoundingBoxX(Double nativeMaxBoundingBoxX) {
-//        NativeMaxBoundingBoxX = nativeMaxBoundingBoxX;
-//    }
-//
-//    public Double getNativeMaxBoundingBoxY() {
-//        return NativeMaxBoundingBoxY;
-//    }
-//
-//    public void setNativeMaxBoundingBoxY(Double nativeMaxBoundingBoxY) {
-//        NativeMaxBoundingBoxY = nativeMaxBoundingBoxY;
-//    }
+    }
+
+    // public Double getNativeMinBoundingBoxX() {
+    // return NativeMinBoundingBoxX;
+    // }
+    //
+    // public void setNativeMinBoundingBoxX(Double nativeMinBoundingBoxX) {
+    // NativeMinBoundingBoxX = nativeMinBoundingBoxX;
+    // }
+    //
+    // public Double getNativeMinBoundingBoxY() {
+    // return NativeMinBoundingBoxY;
+    // }
+    //
+    // public void setNativeMinBoundingBoxY(Double nativeMinBoundingBoxY) {
+    // NativeMinBoundingBoxY = nativeMinBoundingBoxY;
+    // }
+    //
+    // public Double getNativeMaxBoundingBoxX() {
+    // return NativeMaxBoundingBoxX;
+    // }
+    //
+    // public void setNativeMaxBoundingBoxX(Double nativeMaxBoundingBoxX) {
+    // NativeMaxBoundingBoxX = nativeMaxBoundingBoxX;
+    // }
+    //
+    // public Double getNativeMaxBoundingBoxY() {
+    // return NativeMaxBoundingBoxY;
+    // }
+    //
+    // public void setNativeMaxBoundingBoxY(Double nativeMaxBoundingBoxY) {
+    // NativeMaxBoundingBoxY = nativeMaxBoundingBoxY;
+    // }
 
     public Double getLatLonMinBoundingBoxX() {
         return latLonMinBoundingBoxX;
@@ -155,7 +188,6 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         this.latLonMaxBoundingBoxY = latLonMaxBoundingBoxY;
     }
 
-    
     public String getTimeDimEnabled() {
         return timeDimEnabled;
     }
@@ -297,9 +329,8 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     }
 
     @Override
-    public ImageMosaicConfiguration clone() { 
-        final ImageMosaicConfiguration configuration = (ImageMosaicConfiguration) super
-                .clone();
+    public ImageMosaicConfiguration clone() {
+        final ImageMosaicConfiguration configuration = (ImageMosaicConfiguration) super.clone();
 
         configuration.setBackgroundValue(getBackgroundValue());
         configuration.setAllowMultithreading(isAllowMultithreading());
@@ -307,26 +338,30 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         configuration.setCOARDS(isCOARDS());
         configuration.setConfigId(getConfigId());
         configuration.setCrs(getCrs());
-        
+
         configuration.setDatastorePropertiesPath(getDatastorePropertiesPath());
-        //super.clone configuration.setDataTransferMethod(getDataTransferMethod());
-        //super.clone configuration.setDatatype(getDatatype());
-        
+        // super.clone configuration.setDataTransferMethod(getDataTransferMethod());
+        // super.clone configuration.setDatatype(getDatatype());
+
         configuration.setElevationRegex(getElevationRegex());
+        configuration.setElevDimEnabled(getElevDimEnabled());
+        configuration.setElevationPresentationMode(getElevationPresentationMode());
+
         configuration.setInputTransparentColor(getInputTransparentColor());
         configuration.setLatLonMaxBoundingBoxX(getLatLonMaxBoundingBoxX());
         configuration.setLatLonMaxBoundingBoxY(getLatLonMaxBoundingBoxY());
         configuration.setLatLonMinBoundingBoxX(getLatLonMinBoundingBoxX());
         configuration.setLatLonMinBoundingBoxY(getLatLonMinBoundingBoxY());
         configuration.setListenerId(getListenerIds());
-//        configuration.setNativeMaxBoundingBoxX(getNativeMaxBoundingBoxX());
-//        configuration.setNativeMaxBoundingBoxY(getNativeMaxBoundingBoxY());
-//        configuration.setNativeMinBoundingBoxX(getNativeMinBoundingBoxX());
-//        configuration.setNativeMinBoundingBoxY(getNativeMinBoundingBoxY());
+        // configuration.setNativeMaxBoundingBoxX(getNativeMaxBoundingBoxX());
+        // configuration.setNativeMaxBoundingBoxY(getNativeMaxBoundingBoxY());
+        // configuration.setNativeMinBoundingBoxX(getNativeMinBoundingBoxX());
+        // configuration.setNativeMinBoundingBoxY(getNativeMinBoundingBoxY());
         configuration.setOutputTransparentColor(getOutputTransparentColor());
+        configuration.setProjectionPolicy(getProjectionPolicy());
         configuration.setRuntimeRegex(getRuntimeRegex());
         configuration.setServiceID(getServiceID()); // unused but formally correct clone
-        //super.clone configuration.setStoreFilePrefix(storeFilePrefix)
+        // super.clone configuration.setStoreFilePrefix(storeFilePrefix)
         configuration.setTileSizeH(getTileSizeH());
         configuration.setTileSizeW(getTileSizeW());
         configuration.setTimeDimEnabled(getTimeDimEnabled());
@@ -334,7 +369,7 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         configuration.setTimeRegex(getTimeRegex());
         configuration.setUseJaiImageRead(isUseJaiImageRead());
         configuration.setWorkingDirectory(getWorkingDirectory());
-        
+
         return configuration;
     }
 

@@ -22,7 +22,6 @@
 package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
@@ -32,8 +31,7 @@ import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -118,7 +116,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
             /*
              * If here: we can execute the action
              */
-            Collection<FileSystemEvent> layers = new ArrayList<FileSystemEvent>();
+            Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
 
             /**
              * For each event into the queue
@@ -324,20 +322,20 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 
                             // layer do not exists so try to create a new one
                             if (!ImageMosaicREST.createNewImageMosaicLayer(baseDir,
-                                    mosaicDescriptor, configuration, cmd, layers)) {
-                                if (LOGGER.isErrorEnabled())
-                                    LOGGER.error("ImageMosaicAction: unable to create a new layer, removing copied files...");
+                                    mosaicDescriptor, configuration, cmd, ret)) {
+//                                if (LOGGER.isErrorEnabled())
+//                                    LOGGER.error("ImageMosaicAction: unable to create a new layer, removing copied files...");
                                 // if fails rollback the copied files
-                                if (addedFiles != null) {
-                                    for (File file : addedFiles) {
-                                        if (LOGGER.isWarnEnabled())
-                                            LOGGER.warn("ImageMosaicAction: DELETING -> "
-                                                    + file.getAbsolutePath());
-                                        file.delete();
-                                    }
-                                    addedFiles.clear();
-                                    addedFiles = null;
-                                }
+//                                if (addedFiles != null) {
+//                                    for (File file : addedFiles) {
+//                                        if (LOGGER.isWarnEnabled())
+//                                            LOGGER.warn("ImageMosaicAction: DELETING -> "
+//                                                    + file.getAbsolutePath());
+//                                        file.delete();
+//                                    }
+//                                    addedFiles.clear();
+//                                    addedFiles = null;
+//                                }
 
                                 /*
                                  * TODO recover deleted files do we need this? (here we create a new
@@ -490,7 +488,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                         GeoServerRESTPublisher gsPublisher = new GeoServerRESTPublisher(
                                 getConfiguration().getGeoserverURL(), getConfiguration()
                                         .getGeoserverUID(), getConfiguration().getGeoserverPWD());
-
+                        
                         if (!layerExists) {
                             // STARTING Switch to the new REST library
                             // create a new ImageMosaic layer... normal case
@@ -506,6 +504,8 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                             }
                             continue;
                         } // layer Exists
+                        
+//TODO generate output!!!
 
                     } // input is Directory || xml
                     else {
@@ -526,18 +526,13 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
                     continue;
                 }
 
-                // prepare the return
-                layerDescriptor = new File(baseDir, mosaicDescriptor.getCoverageStoreId()+".xml");
-                if (layerDescriptor.exists() && layerDescriptor.isFile())
-                    layers.add(new FileSystemEvent(layerDescriptor, FileSystemEventType.FILE_ADDED));
-
             } // while
 
-            // ... setting up the appropriate event for the next action
-            events.addAll(layers);
-
             listenerForwarder.completed();
-            return events;
+            
+            // ... setting up the appropriate event for the next action
+            return ret;
+            
         } catch (Throwable t) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(t.getLocalizedMessage(), t);

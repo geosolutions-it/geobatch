@@ -1,3 +1,24 @@
+/*
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  http://code.google.com/p/geobatch/
+ *  Copyright (C) 2007-2011 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
@@ -30,8 +51,7 @@ public abstract class ImageMosaicREST {
     /**
      * Default logger
      */
-    protected final static Logger LOGGER = LoggerFactory
-            .getLogger(ImageMosaicREST.class);
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicREST.class);
 
     /**
      * 
@@ -149,10 +169,18 @@ public abstract class ImageMosaicREST {
 
             metadataParams.put("timeDimEnabled",
                     config.getTimeDimEnabled() != null ? config.getTimeDimEnabled() : "true");
-            metadataParams.put("dirName", config.getDirName() != null ? config.getDirName() : "");
             metadataParams.put("timePresentationMode",
                     config.getTimePresentationMode() != null ? config.getTimePresentationMode()
                             : "LIST");
+
+            metadataParams.put("elevDimEnabled",
+                    config.getElevDimEnabled() != null ? config.getElevDimEnabled() : "true");
+            metadataParams.put(
+                    "elevationPresentationMode",
+                    config.getElevationPresentationMode() != null ? config
+                            .getElevationPresentationMode() : "LIST");
+
+            metadataParams.put("dirName", config.getDirName() != null ? config.getDirName() : "");
 
             Map<String, String> coverageParams = new HashMap<String, String>();
 
@@ -171,6 +199,12 @@ public abstract class ImageMosaicREST {
             // coverageParams.put(GeoServerRESTHelper.NATIVE_MAXY,
             // config.getNativeMaxBoundingBoxY() != null ? config.getNativeMaxBoundingBoxY()
             // .toString() : "90");
+            /*
+             * NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED
+             */
+            coverageParams.put(GeoServerRESTHelper.PROJECTION_POLICY,
+                    config.getProjectionPolicy() != null ? config.getProjectionPolicy()
+                            : "NONE");
 
             coverageParams.put(GeoServerRESTHelper.LATLON_MAXX,
                     config.getLatLonMaxBoundingBoxX() != null ? config.getLatLonMaxBoundingBoxX()
@@ -201,7 +235,8 @@ public abstract class ImageMosaicREST {
             final File layerDescriptor;
 
             // generate a RETURN file and append it to the return queue
-            if ((layerDescriptor = ImageMosaicOutput.writeReturn(inputDir, layerResponse, mosaicDescriptor, cmd)) != null) {
+            if ((layerDescriptor = ImageMosaicOutput.writeReturn(inputDir, layerResponse,
+                    mosaicDescriptor, cmd)) != null) {
                 layers.add(new FileSystemEvent(layerDescriptor, FileSystemEventType.FILE_ADDED));
             }
 
@@ -212,8 +247,6 @@ public abstract class ImageMosaicREST {
             return false;
         }
     }
-
-    
 
     /**
      * @throws MalformedURLException
