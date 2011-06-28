@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -61,7 +62,7 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
     /**
      * configuration
      */
-    final FreeMarkerConfiguration conf;
+    private final FreeMarkerConfiguration conf;
 
     // the filter
     final FreeMarkerFilter filter;
@@ -79,60 +80,91 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
     public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
 
         // build the output absolute file name
-        final File outputFile;
-        try {
-            // the output
-            outputFile = it.geosolutions.geobatch.tools.file.Path.findLocation(conf.getOutput(),
-                    new File(conf.getWorkingDirectory()));
-            if (LOGGER.isInfoEnabled())
-                LOGGER.info("FreeMarkerAction.execute(): Output file name: "
-                        + outputFile.toString());
+        File outputDir;
+        if (conf.getOutput() != null) {
+            final File out = new File(conf.getOutput());
+            if (!out.isAbsolute()) {
+                try {
 
-        } catch (NullPointerException npe) {
-            final String message = "FreeMarkerAction.execute(): Unable to get the output file path from :"
-                    + conf.getOutput();
+                    // the output
+                    outputDir = it.geosolutions.geobatch.tools.file.Path.findLocation(
+                            conf.getOutput(), new File(conf.getWorkingDirectory()));
+                    if (LOGGER.isInfoEnabled())
+                        LOGGER.info("FreeMarkerAction.execute(): Output directory name: "
+                                + outputDir.toString());
+
+                } catch (NullPointerException npe) {
+                    outputDir = new File(conf.getWorkingDirectory(), conf.getOutput());
+                    // failed to absolutize conf.getOutput()
+                    if (!outputDir.exists()) {
+                        if (!outputDir.mkdirs()) {
+                            final String message = "FreeMarkerAction.execute(): Unable to build the output dir path from : "
+                                    + conf.getOutput();
+                            if (LOGGER.isErrorEnabled())
+                                LOGGER.error(message);
+                            throw new ActionException(this, message);
+                        }
+                    } else if (!outputDir.canWrite()) {
+                        final String message = "FreeMarkerAction.execute(): output dir is not writeable : "
+                                + conf.getOutput();
+                        if (LOGGER.isErrorEnabled())
+                            LOGGER.error(message);
+                        throw new ActionException(this, message);
+                    }
+                }
+            } else {
+                outputDir = new File(conf.getWorkingDirectory(), conf.getOutput());
+                if (!outputDir.mkdirs()) {
+                    final String message = "FreeMarkerAction.execute(): Unable create the output dir : "
+                            + outputDir.getAbsolutePath();
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(message);
+                    throw new ActionException(this, message);
+                }
+            }
+        } else {
             if (LOGGER.isErrorEnabled())
-                LOGGER.error(message);
-            throw new ActionException(this, message);
+                LOGGER.error("FreeMarkerAction.execute(): Output dir : "
+                        + conf.getWorkingDirectory());
+            outputDir = new File(conf.getWorkingDirectory());
         }
 
-        // try to open the file to write into
-        FileWriter fw = null;
-        try {
-            fw = new FileWriter(outputFile);
-        } catch (IOException ioe) {
-            final String message = "FreeMarkerAction.execute(): Unable to build the output file writer: "
-                    + ioe.getLocalizedMessage();
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(message);
-            throw new ActionException(this, message);
-        }
-
+        // return
+        final Queue<EventObject> ret=new LinkedList<EventObject>();
+        
         /*
          * Building/getting the root data structure
          */
-        Map<String, Object> root = null;
+        final Map<String, Object> root;
         if (conf.getRoot() != null)
             root = conf.getRoot();
         else
             root = new HashMap<String, Object>();
 
-        /*
-         * while the adapted object (peeked from the queue) is a TemplateModelEvent instance, try to
-         * add to it the root data structure using the name of the event.
-         */
-        TemplateModelEvent ev = null;
-        List<TemplateModel> list = new ArrayList<TemplateModel>();
+        // list of incoming event to inject into the root datamodel 
+        final List<TemplateModel> list;
+        if (conf.isNtoN()){
+            list=new ArrayList<TemplateModel>(events.size());
+        }else {
+            list=new ArrayList<TemplateModel>(1);
+        }
+        // append the list of adapted event objects
+        root.put(TemplateModelEvent.EVENT_KEY, list);
+        
         while (events.size() > 0) {
+            // the adapted event
+            final TemplateModelEvent ev;
+            final TemplateModel dataModel;
             try {
-                // append the incoming data structure
                 if ((ev = adapter(events.remove())) != null) {
-                    // try to get a TemplateModel from the adapted object
-                    list.add(ev.getModel(filter));
+                    // try to get a Template DataModel from the Adapted event
+                    dataModel=ev.getModel(filter);
+                    
                 } else {
                     if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error("FreeMarkerAction.execute(): Unable to append the event: unrecognized format");
+                        LOGGER.error("FreeMarkerAction.execute(): Unable to append the event: unrecognized format. SKIPPING...");
                     }
+                    continue;
                 }
             } catch (TemplateModelException tme) {
                 final String message = "FreeMarkerAction.execute(): Unable to wrap the passed object: "
@@ -147,10 +179,74 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
                     LOGGER.error(message);
                 throw new ActionException(this, message);
             }
-        }
+            
+            /*
+             * If getNtoN:
+             * For each data incoming event (Template DataModel)
+             * build a file.
+             * Otherwise the entire queue of incoming object will be transformed in a list of datamodel.
+             * In this case only one file is generated.
+             */
+            if (conf.isNtoN()){
 
-        // append the list of adapted event objects
-        root.put(TemplateModelEvent.EVENT_KEY, list);
+                if (list.size()>0){
+                    list.remove(0);
+                }
+                list.add(dataModel);
+                
+                final File outputFile;
+                // append the incoming data structure
+                try{
+                    outputFile=buildOutput(outputDir,root);
+                } catch (ActionException e){
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("FreeMarkerAction.execute(): "+e.getLocalizedMessage(),e);
+                    continue;
+                }
+                // add the file to the return
+                ret.add(new FileSystemEvent(outputFile.getAbsoluteFile(), FileSystemEventType.FILE_ADDED));
+            }
+            else {
+                list.add(dataModel);
+            }
+        }
+        
+        if (!conf.isNtoN()){
+            final File outputFile;
+            // append the incoming data structure
+            try{
+                outputFile=buildOutput(outputDir,root);
+            } catch (ActionException e){
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("FreeMarkerAction.execute(): "+e.getLocalizedMessage(),e);
+                throw e;
+            }
+            // add the file to the return
+            ret.add(new FileSystemEvent(outputFile.getAbsoluteFile(), FileSystemEventType.FILE_ADDED));
+        }
+        
+        return ret;
+    }
+    
+    private final File buildOutput(final File outputDir, final Map<String, Object> root) throws ActionException {
+        // try to open the file to write into
+        final FileWriter fw;
+        final File outputFile;
+        try {
+            final String outputFilePrefix = FilenameUtils.getBaseName(conf.getInput()) + "_";
+            final String outputFileSuffix = "." + FilenameUtils.getExtension(conf.getInput());
+            outputFile = File.createTempFile(outputFilePrefix, outputFileSuffix, outputDir);
+            if (LOGGER.isInfoEnabled())
+                LOGGER.info("FreeMarkerAction.buildOutput(): Output directory name: "
+                        + outputFile.toString());
+            fw = new FileWriter(outputFile);
+        } catch (IOException ioe) {
+            final String message = "FreeMarkerAction.buildOutput(): Unable to build the output file writer: "
+                    + ioe.getLocalizedMessage();
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
+            throw new ActionException(this, message);
+        }
 
         /*
          * If available, process the output file using the TemplateModel data structure
@@ -167,27 +263,24 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
             final String message = "FreeMarkerAction.execute(): Unable to flush buffer to the output file: "
                     + ioe.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
-                LOGGER.error(message);
+                LOGGER.error(message,ioe);
             throw new ActionException(this, message);
         } catch (TemplateModelException tme) {
             final String message = "FreeMarkerAction.execute(): Unable to wrap the passed object: "
                     + tme.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
-                LOGGER.error(message);
+                LOGGER.error(message,tme);
             throw new ActionException(this, message);
         } catch (Exception e) {
             final String message = "FreeMarkerAction.execute(): Unable to process the input file: "
                     + e.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
-                LOGGER.error(message);
+                LOGGER.error(message,e);
             throw new ActionException(this, message);
         } finally {
             IOUtils.closeQuietly(fw);
         }
-
-        // add the file to the queue
-        events.add(new FileSystemEvent(outputFile.getAbsoluteFile(), FileSystemEventType.FILE_ADDED));
-        return events;
+        return outputFile;
     }
 
     /**

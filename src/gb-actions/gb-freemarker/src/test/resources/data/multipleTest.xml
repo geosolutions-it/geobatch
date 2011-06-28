@@ -6,9 +6,12 @@
 	<sheet name="${SHEET_NAME}">
 	  <commands>
 	  
+		<OctaveCommand executed="false">
+			<command>source "${event[1].PARENT}/${event[1].FILENAME}.${event[1].EXTENSION}";</command><!--/usr/share/octave/3.0.5/m/startup/octaverc"-->
+		</OctaveCommand>
 		<!-- todo: variables! -->
 		<OctaveCommand executed="false">
-			<command>cd "${event[0].WORKING_DIR}";</command>
+			<command>cd "${event[0].WORKING_DIR}";</command><!--/home/carlo/work/data/rep10workingdir/mars3d/-->
 		</OctaveCommand>
 		<OctaveCommand executed="false">
 			<command>mars3d("${event[0].FILE_IN}","${event[0].FILE_OUT}");</command>

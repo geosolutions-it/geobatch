@@ -75,7 +75,7 @@ public class TemplateModelEvent extends EventObject {
      */
     public TemplateModelEvent(Object source) {
         super(source);
-        name = EVENT_KEY;
+        name = EVENT_KEY+"_"+Thread.currentThread().getId();
     }
 
     /**

@@ -64,6 +64,17 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
 
     // path where to write
     private String output;
+    
+    // write a file for each incoming event or not
+    private boolean nToN;
+
+    public boolean isNtoN() {
+        return nToN;
+    }
+
+    public void setNtoN(boolean nToN) {
+        this.nToN = nToN;
+    }
 
     // Create a data-model
     private Map<String, Object> root = null;
@@ -108,6 +119,19 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
      */
     public final String getOutput() {
         return output;
+    }
+    
+    @Override
+    public FreeMarkerConfiguration clone(){
+        final FreeMarkerConfiguration ret=new FreeMarkerConfiguration(this.getId(), this.getName(), this.getDescription());
+        ret.setNtoN(this.isNtoN());
+        ret.setWorkingDirectory(this.getWorkingDirectory());
+        ret.setServiceID(this.getServiceID());
+        ret.setOutput(this.getOutput());
+        ret.setInput(this.getInput());
+        ret.setListenerConfigurations(ret.getListenerConfigurations());
+        ret.setRoot(this.getRoot());
+        return ret;
     }
 
 }
