@@ -54,9 +54,20 @@ public class GeotiffRetilerConfiguration extends ActionConfiguration implements 
 
     /** Tile width. */
     private int tileW = 256;
+    
+    /** rewrite geotiff forcing bigtiff */
+    private boolean forceToBigTiff = false;
 
-    private String serviceID;
+	private String serviceID;
 
+    public boolean isForceToBigTiff() {
+		return forceToBigTiff;
+	}
+
+	public void setForceToBigTiff(boolean forceToBigTiff) {
+		this.forceToBigTiff = forceToBigTiff;
+	}
+	
 //    public GeotiffRetilerConfiguration() {
 //        super();
 //    }
@@ -124,6 +135,7 @@ public class GeotiffRetilerConfiguration extends ActionConfiguration implements 
         configuration.setCompressionScheme(compressionScheme);
         configuration.setJAICapacity(JAICapacity);
         configuration.setServiceID(serviceID);
+        configuration.setForceToBigTiff(forceToBigTiff);
         configuration.setTileH(tileH);
         configuration.setTileW(tileW);
         configuration.setWorkingDirectory(workingDirectory);

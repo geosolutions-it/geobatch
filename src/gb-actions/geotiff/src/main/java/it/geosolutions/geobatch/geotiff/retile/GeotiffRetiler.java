@@ -178,6 +178,8 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                 wp.setCompressionType(compressionType);
                 wp.setCompressionQuality((float) compressionRatio);
             }
+            wp.setForceToBigTIFF(configuration.isForceToBigTiff());
+            
             wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
             wp.setTiling(configuration.getTileW(), configuration.getTileH());
             final ParameterValueGroup wparams = wformat.getWriteParameters();
