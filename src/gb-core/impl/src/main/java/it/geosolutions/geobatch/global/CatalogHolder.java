@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.global;
 
 import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.settings.GBSettingsDAO;
 
 /**
  * @author Alessio Fabiani, GeoSolutions
@@ -30,13 +31,22 @@ import it.geosolutions.geobatch.catalog.Catalog;
  */
 public abstract class CatalogHolder {
     private static Catalog catalog;
+    private static GBSettingsDAO settingsDAO;
 
     public synchronized static Catalog getCatalog() {
         return catalog;
     }
 
-    protected synchronized final static void setCatalog(Catalog catalog) {
+    protected synchronized static void setCatalog(Catalog catalog) {
         CatalogHolder.catalog = catalog;
+    }
+
+    public static GBSettingsDAO getSettingsDAO() {
+        return settingsDAO;
+    }
+
+    protected void setSettingsDAO(GBSettingsDAO settingsDAO) {
+        CatalogHolder.settingsDAO = settingsDAO;
     }
 
 }

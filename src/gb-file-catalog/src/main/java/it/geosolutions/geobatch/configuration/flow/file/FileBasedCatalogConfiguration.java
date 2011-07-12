@@ -50,7 +50,10 @@ public class FileBasedCatalogConfiguration extends BaseConfiguration implements
     }
 
     /**
-     * workingDirectory: this attribute represents the configuring directory for this flow. It can be relative to the catalog.xml directory or absolute. Attention: the configuring directory should be different from the one containing the configuration files.
+     * workingDirectory: this attribute represents the configuring directory for this flow.
+     * It can be relative to the catalog.xml directory or absolute.
+     * <P>
+     * <B>Attention: the configuring directory should be different from the one containing the configuration files.</B>
      * @uml.property  name="workingDirectory"
      */
     private String workingDirectory;

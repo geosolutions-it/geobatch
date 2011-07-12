@@ -24,13 +24,11 @@ package it.geosolutions.geobatch.catalog.file;
 
 import it.geosolutions.geobatch.catalog.impl.BaseCatalog;
 import java.io.File;
-import javax.servlet.ServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.web.context.WebApplicationContext;
 
 /**
  * A Catalog based on an xml marshalled file.
@@ -73,7 +71,7 @@ public class FileBasedCatalogImpl
         return this.dataDir;
     }
 
-    public void setBaseDirectory(final File baseDirectory) {
+    protected void setBaseDirectory(final File baseDirectory) {
         LOGGER.warn("Setting datadir to '"+baseDirectory+"', was '"+this.dataDir+"'");
         this.dataDir = baseDirectory;        
     }

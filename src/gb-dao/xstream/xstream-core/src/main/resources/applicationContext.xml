@@ -11,9 +11,7 @@
 				<value>classpath:gb.properties</value>
 			</list>
 		</property>
-		<property name="ignoreUnresolvablePlaceholders">
-			<value>true</value>
-		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
 	</bean>
 
 	<bean id="alias" class="it.geosolutions.geobatch.xstream.Alias">
@@ -22,22 +20,19 @@
 
 	<!-- Environment Initialization -->
 	<bean id="globalConfig" class="it.geosolutions.geobatch.global.XStreamCatalogLoader"
-		depends-on="catalog">
+		depends-on="catalog,settingsDAO">
 		<constructor-arg ref="catalog" />
 		<constructor-arg ref="alias" />
-
-		<!-- property name="dataDir"> <value>/home/simone/catalog</value> </property -->
-
+        <property name="settingsDAO" ref="settingsDAO"/>
 	</bean>
-
 
 	<!-- XStream flow manager DAO -->
 	<bean id="XStreamFlowConfigurationDAOService"
 		class="it.geosolutions.geobatch.catalog.dao.file.xstream.XStreamDAOService">
 		<constructor-arg ref="alias" />
- 		<constructor-arg type="String"><value>XStreamFlowConfigurationDAOService</value></constructor-arg>
-    	<constructor-arg type="String"><value>XStream based FlowConfigurationDAOService</value></constructor-arg>
-    	<constructor-arg type="String"><value>XStreamFlowConfigurationDAOService</value></constructor-arg>
+ 		<constructor-arg type="String" value="XStreamFlowConfigurationDAOService"/>
+    	<constructor-arg type="String" value="XStream based FlowConfigurationDAOService"/>
+    	<constructor-arg type="String" value="XStreamFlowConfigurationDAOService"/>
 		
 <!--		<property name="id">-->
 <!--			<value>XStreamFlowConfigurationDAOService</value>-->
@@ -49,5 +44,11 @@
 <!--			<value>XStreamFlowConfigurationDAOService</value>-->
 <!--		</property>-->
 	</bean>
+
+    <bean id="settingsDAO" class="it.geosolutions.geobatch.settings.GBSettingsDAOXStreamImpl">
+        <property name="alias" ref="alias"/>
+        <property name="dataDirHandler" ref="dataDirHandler"/>
+        <property name="relativeDir" value="settings"/>
+    </bean>
 
 </beans>
