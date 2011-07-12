@@ -1,7 +1,6 @@
-<%
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://geobatch.codehaus.org/
+ *  http://code.google.com/p/geobatch/
  *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -20,15 +19,22 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-%>
- <HEADER>
-	<META 
-		HTTP-EQUIV="Refresh"
-     	CONTENT="3; URL=index.do">
-</HEADER>
-<BODY>
-	<H3>GeoSolutions (c) - GeoBatch v.1.0</H3>
-	<p>
-		The Flow Manager has been correctly created. Now redirecting to the Control Panel...
-	</p>
-</BODY>
+
+package it.geosolutions.geobatch.action.scripting;
+
+import it.geosolutions.geobatch.registry.AliasRegistrar;
+import it.geosolutions.geobatch.registry.AliasRegistry;
+
+/**
+ * Register XStream aliases for the relevant services we ship in this class.
+ * 
+ * @author ETj <etj at geo-solutions.it>
+ */
+public class ScriptingAliasRegistrar extends AliasRegistrar {
+
+    public ScriptingAliasRegistrar(AliasRegistry registry) {
+        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+        registry.putAlias("ScriptingConfiguration",
+                it.geosolutions.geobatch.action.scripting.ScriptingConfiguration.class);
+    }
+}

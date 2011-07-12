@@ -21,6 +21,7 @@
  */
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 import it.geosolutions.geobatch.tools.file.IOUtils;
 
@@ -38,7 +39,6 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,17 +181,18 @@ public class GBFileSystemMonitorJob implements Job {
             throws JobExecutionException {
 
         FileAlterationObserver observer = null;
-        GBEventNotifier notifier = null;
+        final GBEventNotifier notifier;
         // first time build
         try {
-            File directory = new File(jdm.getString(FileSystemMonitorSPI.SOURCE_KEY));
+        	final File directory = new File(jdm.getString(FileSystemMonitorSPI.SOURCE_KEY));
 
             observer = new FileAlterationObserver(directory, new WildcardFileFilter(
                     jdm.getString(FileSystemMonitorSPI.WILDCARD_KEY)));
 
             notifier = (GBEventNotifier) jdm.get(EVENT_NOTIFIER_KEY);
 
-            FileAlterationListener fal = new GBFileAlterationListener(notifier);
+            final FileAlterationListener fal = new GBFileAlterationListener(notifier);
+            
             observer.addListener(fal);
         } catch (ClassCastException cce) {
             // ClassCastException - if the identified object is not a String.
@@ -228,12 +229,28 @@ public class GBFileSystemMonitorJob implements Job {
      * Scheduler).
      */
     public void execute(JobExecutionContext context) throws JobExecutionException {
+
+        final JobDetail detail = context.getJobDetail();
+        
         if (LOGGER.isTraceEnabled()) {
-            final JobDetail detail = context.getJobDetail();
             LOGGER.trace("Starting FSM job named: " + detail.getKey()); // TODO or key?
         }
-
-        final JobDataMap jdm = context.getJobDetail().getJobDataMap();
+        
+        final JobDataMap jdm = detail.getJobDataMap();
+        
+// WORKAROUND
+        /*
+         * 1Giu2011 Carlo: 
+         * Added POLLING_EVENT to implement a Quartz EventGenerator using quartz file system.
+         * The returned file path represent the instant when the event is executed (in millisecs)
+         */
+if (jdm.get(FileSystemMonitorSPI.TYPE_KEY)==FileSystemEventType.POLLING_EVENT){
+	final GBEventNotifier notifier = (GBEventNotifier) jdm.get(EVENT_NOTIFIER_KEY);
+	notifier.notifyEvent(new File(""+System.currentTimeMillis()), FileSystemEventType.POLLING_EVENT);
+	return;
+}
+//WORKAROUND
+        
         FileAlterationObserver observer = null;
 
         if ((observer = getObserver(jdm)) == null) {
@@ -282,7 +299,6 @@ public class GBFileSystemMonitorJob implements Job {
         // System.out.println("DOTHEJOB");
 
         if (LOGGER.isTraceEnabled()) {
-            final JobDetail detail = context.getJobDetail();
             LOGGER.trace("job named: " + detail.getKey() + " completed");
         }
     }

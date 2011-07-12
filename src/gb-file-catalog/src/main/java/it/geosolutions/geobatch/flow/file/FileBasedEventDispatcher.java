@@ -113,14 +113,14 @@ import org.slf4j.LoggerFactory;
                     if (LOGGER.isTraceEnabled())
                         LOGGER.trace("FileBasedEventDispatcher:run() Checking consumer "
                                 + consumer + " for " + event);
-
-                    if (consumer.consume(event)) {
-                        // //
-                        // we have found an Event BaseEventConsumer waiting for
-                        // this event, if
-                        // we have changed state we remove it from the list
-                        // //
-                        if (consumer.getStatus() == EventConsumerStatus.EXECUTING) {
+                    
+                    if (consumer.getStatus() == EventConsumerStatus.EXECUTING) {
+                        if (consumer.consume(event)) {
+                            // //
+                            // we have found an Event BaseEventConsumer waiting for
+                            // this event, if
+                            // we have changed state we remove it from the list
+                            // //
                             if (LOGGER.isTraceEnabled())
                                 LOGGER.trace("FileBasedEventDispatcher:run()" + event
                                         + " was the last needed event for " + consumer);
@@ -128,14 +128,13 @@ import org.slf4j.LoggerFactory;
                             // are we executing? If we are, let's trigger a
                             // thread!
                             flowManager.execute(consumer);
-                        } else if (LOGGER.isTraceEnabled())
-                            LOGGER.trace("FileBasedEventDispatcher:run()" + event
-                                    + " was consumed by " + consumer);
-
-                        // event served
-                        eventServed = true;
-                        break;
-                    }
+                            // event served
+                            eventServed = true;
+                            break;
+                        }
+                    } else if (LOGGER.isTraceEnabled())
+                        LOGGER.trace("FileBasedEventDispatcher:run()" + event
+                                + " was consumed by " + consumer);
                 }
 
                 if (LOGGER.isTraceEnabled())

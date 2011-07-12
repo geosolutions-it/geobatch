@@ -360,7 +360,6 @@ public final class IOUtils extends org.apache.commons.io.IOUtils {
 
                 // get a rw channel
                 channel = outStream.getChannel();
-
                 if (channel != null) {
                     // here we could block
                     lock = channel.tryLock();

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<id>##NAME_ACT_LOWER##</id>
+	<description>##NAME_ACT## configuration flow</description>
+	<name>##NAME_ACT## flow</name>
+	
+	<workingDirectory>##NAME_ACT_LOWER##/</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>##NAME_ACT_LOWER##/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<interval>* * * * * ?</interval><!-- CRON: every minute at sec 0 -->
+		<!--<interval>20</interval> each 20 sec -->
+		<id>##NAME_ACT##Flow</id>
+		<serviceID>fsEventGeneratorService</serviceID>
+		<description>##NAME_ACT## event generator description</description>
+		<name>##NAME_ACT##</name>
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		<id>##NAME_ACT_LOWER##</id>
+		<description>##NAME_ACT_LOWER##</description>
+		<name>##NAME_ACT_LOWER##</name>
+		
+		<workingDirectory>##NAME_ACT_LOWER##/</workingDirectory>
+		<performBackup>false</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>##NAME_ACT##</name>
+		</FileEventRule>
+		
+		<##NAME_ACT##Configuration>
+			<serviceID>##NAME_ACT##GeneratorService</serviceID>
+			<id>##NAME_ACT##GeneratorService</id>
+			<description>##NAME_ACT## action</description>
+			<name>##NAME_ACT##Configuration</name>
+			
+			<listenerConfigurations/>
+			<failIgnored>false</failIgnored>
+		  
+			<workingDirectory>##NAME_ACT_LOWER##/</workingDirectory>
+			
+			<!-- 
+			<alias>
+				<entry>
+					<string>##NAME_ACT##Configuration</string>
+					<string>it.geosolutions.geobatch.actions.##NAME_ACT_LOWER##.##NAME_ACT##Configuration</string>
+				</entry>
+			</alias>
+			 -->
+		</##NAME_ACT##Configuration>
+		
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>

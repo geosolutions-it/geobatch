@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+		 
+	<!-- Environment Initialization -->
+	
+	<bean id="XstreamGeneratorService" class="it.geosolutions.geobatch.actions.xstream.XstreamGeneratorService">
+		<constructor-arg type="String"><value>XstreamGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>XstreamGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>XstreamGeneratorService</value></constructor-arg>
+	</bean>
+	
+	<bean id="XstreamAliasRegistrar" class="it.geosolutions.geobatch.actions.xstream.XstreamAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+ 
+</beans>

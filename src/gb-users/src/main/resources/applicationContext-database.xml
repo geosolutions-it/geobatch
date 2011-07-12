@@ -17,13 +17,8 @@
 <!--		<property name="driverClass" value="org.postgresql.Driver" />-->
 <!--		<property name="jdbcUrl" value="jdbc:postgresql://demo.geo-solutions.it:5432/sem_geobatch" />-->
 <!--		<property name="user" value="postgres" />-->
-<!--		<property name="password" value="fucktheworld" />-->
-<!--
-		<property name="driverClass" value="org.postgresql.Driver" />
-		<property name="jdbcUrl" value="jdbc:postgresql://whale.nurc.nato.int:5432/sem_geobatch" />
-		<property name="user" value="postgres" />
-		<property name="password" value="fucktheworld" />
--->
+<!--		<property name="password" value="...." />-->
+
 		<property name="minPoolSize" value="4" />
 		<property name="maxPoolSize" value="10" />
 		<property name="maxStatements" value="100" />

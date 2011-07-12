@@ -100,46 +100,49 @@
 	<div id="accordion">
 		<div class="accordionInfo">
 			<c:forEach var="ec" items="${fm.eventConsumers}">
-			    <h4>
-			    	<a href="#">
-				    	<c:out value="${ec.id}"/>
-					</a>
-			    </h4>
-			    <div>
-				    <UL>
-					    <LI> - <B>status</B>:
-					    	<c:choose> 
-								<c:when test="${ec.status == 'FAILED'}">
+				<hr/>
+			    <h6>
+			    	<B><c:out value="${ec.id}"/></B>
+			    	- status :
+					    	<c:set var="status" value="${ec.status}"/>
+					    	<c:choose>
+								<c:when test="${status == 'FAILED'}">
 									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: red">
 								</c:when>
 								<c:otherwise>
 									<font style="font-style: italic; font-weight: bold; font-size: 12px; color: green">
 								</c:otherwise>
 							</c:choose>
-					    	<c:out value="${ec.status}"/></font>
+					    		<c:out value="${status}"/>
+					    		</font>
 								<c:choose>
-							        <c:when test="${ec.paused}">
+							        <c:when test="${status == 'PAUSED'}">
 	  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
 	  										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
-							            		<a href='consumerResume.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_play.png' border='0' title='resume instance' alt='resume' width='16' height='16'/></a>
-											</c:if>
-										</c:forEach>									
-	  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
-	  										<c:if test="${role.authority == 'ROLE_ADMIN'}">
-							    				<a href="consumerDispose.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/cancel.png' border='0' title='cancel instance' alt='cancel' width='16' height='16'/></a>
+							            		 <a href='consumerResume.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_play.png' border='0' title='resume instance' alt='resume' width='16' height='16'/></a>
 											</c:if>
 										</c:forEach>
 							        </c:when>
-							        <c:otherwise>
+							        <c:when test="${status == 'EXECUTING'}">
 	  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
 	  										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
-							            		<a href='consumerPause.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_pause.png' border='0' title='pause instance' alt='pause' width='16' height='16'/></a>
+							            		 <a href='consumerPause.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_pause.png' border='0' title='pause instance' alt='pause' width='16' height='16'/></a>
 											</c:if>
 										</c:forEach>
-							        </c:otherwise>
+							        </c:when>
+							        <c:when test="${status == 'COMPLETED' || status == 'FAILED'}">
+							        	<c:forEach var="role" items="${currentUser.grantedAuthorities}">
+	 										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
+						    					<a href="consumerDispose.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/cancel.png' border='0' title='cancel instance' alt='cancel' width='16' height='16'/></a>
+											</c:if>
+										</c:forEach>
+							        </c:when>
 							    </c:choose>
 							    <a class="actions" href="consumerInfo.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/page_white_text.png' border='0' title='instance logs' alt='logs' width='16' height='16'/></a>
-					    </LI>
+			    </h6>
+			    <div>
+				    <UL>
+					    
 					    <LI> - <B>created</B>: <fmt:formatDate value="${ec.creationTimestamp.time}" type="both" dateStyle="SHORT" timeStyle="FULL"/></LI>
 					    <LI> - <B>consumer info</B>: <c:out value="${ec}"/><br/></LI>
 				    </UL>

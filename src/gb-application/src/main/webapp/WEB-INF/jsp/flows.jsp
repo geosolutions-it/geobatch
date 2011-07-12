@@ -135,7 +135,6 @@
         	<img src="img/manageFlows-small.png" style="vertical-align: middle"/>
         	<a href="j_spring_security_logout"><img src="img/logout.png" title="Logout" alt="Logout" width="40" height="40" style="vertical-align: middle"/></a>
         </p>
-        
 			<!-- Accordion -->
 			<div id="accordion">
 				<!-- Pagination -->
@@ -201,7 +200,8 @@
 			  										<c:if test="${role.authority == 'ROLE_ADMIN'}">
 														<a href="dispose.do?fmId=${fm.id}"><image src='img/cancel.png' border='0' title='cancel' alt='cancel' width='16' height='16'/></a>
 													</c:if>
-												</c:forEach>									
+													<a href='flowManagerClear.do?fmId=${fm.id}'><image src='img/erase.png' border='0' title='clear all consumer instances' alt='clear all consumers' width='16' height='16'/></a>
+												</c:forEach>						
 											</p>
 										</div>
 										<div id="tab-instances-<%= i %>">
@@ -231,6 +231,6 @@
     </div><!-- /.wrap> -->
   </div><!-- /#main -->
   <center><p><img src="img/geoSolutions-logo.png" /></p>
-  <p>Copyright &copy; 2005 - 2009 GeoSolutions.</p></center>
+  <p>Copyright &copy; 2005 - 2011 GeoSolutions.</p></center>
 </body>
 </html>

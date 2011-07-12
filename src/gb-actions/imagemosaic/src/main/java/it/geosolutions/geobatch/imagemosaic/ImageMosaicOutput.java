@@ -1,12 +1,33 @@
+/*
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  http://code.google.com/p/geobatch/
+ *  Copyright (C) 2007-2011 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package it.geosolutions.geobatch.imagemosaic;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -16,8 +37,6 @@ import org.geotools.factory.Hints;
 import org.geotools.gce.imagemosaic.ImageMosaicFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.crs.DefaultGeocentricCRS;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -178,13 +197,22 @@ class ImageMosaicOutput {
                 LOGGER.info("Acquiring a reader for the provided directory...");
             }
 
-            if (!IMAGEMOSAIC_FORMAT.accepts(directory))
-                throw new IOException("PUPPA");
+            if (!IMAGEMOSAIC_FORMAT.accepts(directory)) {
+                final String message = "ImageMosaicOutput.setReaderData(): IMAGEMOSAIC_FORMAT do not accept the directory: "
+                        + directory.getAbsolutePath();
+                final IOException ioe = new IOException(message);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message, ioe);
+                throw ioe;
+            }
             reader = (AbstractGridCoverage2DReader) IMAGEMOSAIC_FORMAT.getReader(directory,
                     new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
             if (reader == null) {
-                final IOException ioe = new IOException(
-                        "Unable to find a reader for the provided file: " + inputFileName);
+                final String message = "Unable to find a reader for the provided file: "
+                        + inputFileName;
+                final IOException ioe = new IOException(message);
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message, ioe);
                 throw ioe;
             }
 
@@ -194,10 +222,11 @@ class ImageMosaicOutput {
             if (reader.getMetadataValue(HAS_TIME_DOMAIN_KEY) == "true") {
                 map.put(HAS_TIME_DOMAIN_KEY, Boolean.TRUE);
                 final String times = reader.getMetadataValue(TIME_DOMAIN_KEY);
-                final List<String> timesList = new ArrayList<String>();
+                final Set<String> timesList = new TreeSet<String>();
                 for (String time : times.split(",")) {
                     timesList.add(time);
                 }
+//                Collections.sort(timesList);
                 map.put(TIME_DOMAIN_KEY, timesList);
             } else {
                 map.put(HAS_TIME_DOMAIN_KEY, Boolean.FALSE);
@@ -205,14 +234,14 @@ class ImageMosaicOutput {
 
             final GeneralEnvelope originalEnvelope = reader.getOriginalEnvelope();
             // Setting BoundingBox
-            DirectPosition position=originalEnvelope.getLowerCorner();
+            DirectPosition position = originalEnvelope.getLowerCorner();
             double[] lowerCorner = position.getCoordinate();
-            map.put(NATIVE_LOWER_CORNER_FIRST_KEY, (Double)lowerCorner[0]);
-            map.put(NATIVE_LOWER_CORNER_SECOND_KEY,(Double)lowerCorner[1]);
-            position=originalEnvelope.getUpperCorner();
+            map.put(NATIVE_LOWER_CORNER_FIRST_KEY, (Double) lowerCorner[0]);
+            map.put(NATIVE_LOWER_CORNER_SECOND_KEY, (Double) lowerCorner[1]);
+            position = originalEnvelope.getUpperCorner();
             double[] upperCorner = position.getCoordinate();
-            map.put(NATIVE_UPPER_CORNER_FIRST_KEY, (Double)upperCorner[0]);
-            map.put(NATIVE_UPPER_CORNER_SECOND_KEY, (Double)upperCorner[1]);
+            map.put(NATIVE_UPPER_CORNER_FIRST_KEY, (Double) upperCorner[0]);
+            map.put(NATIVE_UPPER_CORNER_SECOND_KEY, (Double) upperCorner[1]);
 
             // Setting crs
             map.put(CRS_KEY, reader.getCrs());
@@ -224,14 +253,14 @@ class ImageMosaicOutput {
                 final GeneralEnvelope lonLatBBOX = (GeneralEnvelope) CRS.transform(
                         originalEnvelope, wgs84);
                 // Setting BoundingBox
-                position=lonLatBBOX.getLowerCorner();
+                position = lonLatBBOX.getLowerCorner();
                 lowerCorner = position.getCoordinate();
-                map.put(LONLAT_LOWER_CORNER_FIRST_KEY, (Double)lowerCorner[0]);
-                map.put(LONLAT_LOWER_CORNER_SECOND_KEY, (Double)lowerCorner[1]);
-                position=lonLatBBOX.getUpperCorner();
+                map.put(LONLAT_LOWER_CORNER_FIRST_KEY, (Double) lowerCorner[0]);
+                map.put(LONLAT_LOWER_CORNER_SECOND_KEY, (Double) lowerCorner[1]);
+                position = lonLatBBOX.getUpperCorner();
                 upperCorner = position.getCoordinate();
-                map.put(LONLAT_UPPER_CORNER_FIRST_KEY, (Double)upperCorner[0]);
-                map.put(LONLAT_UPPER_CORNER_SECOND_KEY, (Double)upperCorner[1]);
+                map.put(LONLAT_UPPER_CORNER_FIRST_KEY, (Double) upperCorner[0]);
+                map.put(LONLAT_UPPER_CORNER_SECOND_KEY, (Double) upperCorner[1]);
             } catch (NoSuchAuthorityCodeException e) {
                 if (LOGGER.isWarnEnabled())
                     LOGGER.warn(e.getLocalizedMessage(), e);

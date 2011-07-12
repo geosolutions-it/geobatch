@@ -59,8 +59,9 @@ public class FileBasedEventGeneratorService extends
      */
     public boolean canCreateEventGenerator(FileBasedEventGeneratorConfiguration configuration) {
         final OsType osType = configuration.getOsType();
-        if (osType == null)
-            return false;
+        if (osType == null){
+        	configuration.setOsType(OsType.OS_UNDEFINED);
+        }
         final File sensedDir = Path.findLocation(configuration.getWatchDirectory(), 
                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
         if (sensedDir != null) {

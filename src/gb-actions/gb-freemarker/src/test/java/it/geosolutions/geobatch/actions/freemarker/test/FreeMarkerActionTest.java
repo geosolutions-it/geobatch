@@ -133,7 +133,69 @@ public class FreeMarkerActionTest {
         fmc.setServiceID("serviceID");
         fmc.setWorkingDirectory("src/test/resources/data/");
         fmc.setInput("test.xml");
-        fmc.setOutput("test_out.xml");
+        fmc.setOutput("out");
+        // 2 incoming events generates 2 output files
+        fmc.setNtoN(true);
+        Map<String,Object> m=new HashMap<String, Object>();
+        m.put("SHEET_NAME", "MY_NEW_SHEET_NAME");
+        fmc.setRoot(m);
+        
+        // SIMULATE THE EventObject on the queue 
+        Map<String,Object> mev=new HashMap<String, Object>();
+        mev.put("SOURCE_PATH", "/path/to/source");
+        mev.put("WORKING_DIR", "/absolute/working/dir");
+        mev.put("FILE_IN", "in_test_file.dat");
+        mev.put("FILE_OUT", "out_test_file.dat");
+        List<String> list=new ArrayList<String>(4);
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        mev.put("LIST", list);
+        
+        // SIMULATE THE 2nd EventObject on the queue 
+        Map<String,Object> mev2=new HashMap<String, Object>();
+        mev2.put("SOURCE_PATH", "/path/to/source_2");
+        mev2.put("WORKING_DIR", "/absolute/working/dir_2");
+        mev2.put("FILE_IN", "in_test_file_2.dat");
+        mev2.put("FILE_OUT", "out_test_file_2.dat");
+        mev2.put("LIST", list);
+        
+        Queue<EventObject> q=new ArrayBlockingQueue<EventObject>(2);
+        
+        // 2 incoming events generates 2 output files
+        q.add(new TemplateModelEvent(mev));
+        q.add(new TemplateModelEvent(mev2));
+        
+        FreeMarkerAction fma=new FreeMarkerAction(fmc);
+        
+        q=fma.execute(q);
+        try{
+            FileSystemEvent res=(FileSystemEvent)q.remove();
+            File out=res.getSource();
+            if (!out.exists())
+                Assert.fail("FAIL: unable to create output file");
+            
+        }
+        catch (ClassCastException cce){
+            Assert.fail("FAIL: "+cce.getLocalizedMessage());
+        }
+
+        
+        return;
+    }
+    
+    @Test
+    public void multipleTest() throws ActionException {
+        
+        FreeMarkerConfiguration fmc=new FreeMarkerConfiguration("ID","NAME","DESC");
+        // SIMULATE THE XML FILE CONFIGURATION OF THE ACTION
+        fmc.setDirty(false);
+        fmc.setFailIgnored(false);
+        fmc.setServiceID("serviceID");
+        fmc.setWorkingDirectory("src/test/resources/data/");
+        fmc.setInput("test.xml");
+        fmc.setOutput("out");
         Map<String,Object> m=new HashMap<String, Object>();
         m.put("SHEET_NAME", "MY_NEW_SHEET_NAME");
         fmc.setRoot(m);
@@ -145,9 +207,6 @@ public class FreeMarkerActionTest {
         mev.put("FILE_IN", "in_test_file.dat");
         mev.put("FILE_OUT", "out_test_file.dat");
         
-        mev.put("FILE_OUT", "out_test_file.dat");
-        
-        
         List<String> list=new ArrayList<String>(4);
         list.add("1");
         list.add("2");
@@ -158,7 +217,7 @@ public class FreeMarkerActionTest {
         Queue<EventObject> q=new ArrayBlockingQueue<EventObject>(2);
         
         q.add(new TemplateModelEvent(mev));
-        q.add(new FileSystemEvent(new File("TEST.txt"), FileSystemEventType.FILE_ADDED));
+        q.add(new FileSystemEvent(new File("src/test/resources/data/"), FileSystemEventType.FILE_ADDED));
         
         FreeMarkerAction fma=new FreeMarkerAction(fmc);
         

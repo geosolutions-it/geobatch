@@ -153,16 +153,42 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             throw new IllegalArgumentException(
                     "FileBasedEventGenerator.initialize(): Unable to initialize "
                             + "FileBasedEventGenerator using a null EventType");
+        
+        this.keepFiles = configuration.getKeepFiles();
 
-        final File watchDirectory = Path.findLocation(configuration.getWatchDirectory(), 
-                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());        
+        File watchDirectory = Path.findLocation(configuration.getWatchDirectory(), 
+                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());  
         if (watchDirectory != null)
             this.watchDirectory = watchDirectory;
-        else
-            throw new IllegalArgumentException(
-                    "FileBasedEventGenerator.initialize(): Unable to initialize "
-                            + "FileBasedEventGenerator using a null watchingDirectory");
+     // WORKAROUND
+//        else
+//          throw new IllegalArgumentException(
+//                  "FileBasedEventGenerator.initialize(): Unable to initialize "
+//                          + "FileBasedEventGenerator using a null watchingDirectory");
 
+        
+        /*
+         * 1Giu2011 Carlo:<br>
+         * to implement a Quartz EventGenerator using quartz file system.
+         * Here we implement logic to make possible to hide:<br>
+         * - path<br>
+         * - wildcard<br>
+         * into the EventGenerator configuration.
+         * This should be possible only if the event is a:<br>
+         * FileSystemEventType.POLLING_EVENT
+         */
+		else if (this.acceptedEvent!=FileSystemEventType.POLLING_EVENT){
+			throw new IllegalArgumentException(
+                  "FileBasedEventGenerator.initialize(): Unable to initialize "
+                          + "FileBasedEventGenerator using a null watchingDirectory");
+		}
+		else {
+			// really important otherwise GEOBATCH_DATA_DIR will be empty
+			this.keepFiles=true;
+			this.watchDirectory=watchDirectory=((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
+		}
+//WORKAROUND
+        
         if (this.watchDirectory.isDirectory() && this.watchDirectory.exists()
                 && this.watchDirectory.canRead()) {
 
@@ -189,7 +215,6 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
                     "FileBasedEventGenerator.initialize(): Unable to start the "
                             + "FileSystemMonitor on the watchingDirectory:" + watchDirectory);
 
-        this.keepFiles = configuration.getKeepFiles();
     }
 
     /**
@@ -208,7 +233,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
         initialize(configuration);
     }
 
-    /**
+	/**
      * @return the watchDirectory
      */
     public File getWatchDirectory() {
@@ -401,7 +426,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
     }
 
     /**
-     * Sending an event by putting it inside the Swing dispatching thred. This might be useless in
+     * Sending an event by putting it inside the Swing dispatching thread. This might be useless in
      * command line app but it is important in GUi apps. I might change this though.
      * 
      * @param file

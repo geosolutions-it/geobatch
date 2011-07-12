@@ -10,7 +10,5 @@
 
 	<import resource="applicationContext-database.xml" />
 	<import resource="applicationContext-DAO.xml" />
-<!--	<import resource="ftp-server.xml" /> -->
-<!--	<import resource="applicationContext-service.xml" /> -->
 
 </beans>

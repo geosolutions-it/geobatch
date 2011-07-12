@@ -85,6 +85,8 @@ public class GeoServerRESTHelper {
     static public final String LATLON_MINY = "llminy";
 
     static public final String LATLON_MAXY = "llmaxx";
+    
+    static public final String PROJECTION_POLICY="projectionPolicy";
 
     /**
      *
@@ -1048,10 +1050,11 @@ public class GeoServerRESTHelper {
     private static File buildCoverageXMLConfiguration(final Map<String, String> coverageElements,
             final Map<String, String> metadataElements, final Map<String, String> configElements)
             throws ParserConfigurationException, IOException, TransformerException {
+        
         final DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
         // Get the DocumentBuilder
-        DocumentBuilder parser = dfactory.newDocumentBuilder();
+        final DocumentBuilder parser = dfactory.newDocumentBuilder();
         // Create blank DOM Document
         Document doc = parser.newDocument();
         Element root = doc.createElement("coverage");
@@ -1114,7 +1117,7 @@ public class GeoServerRESTHelper {
         latLonBB.appendChild(maxy2);
         maxy2.insertBefore(doc.createTextNode(coverageElements.get(LATLON_MAXX)), null);
 
-        Element crs2 = doc.createElement("crs");
+        Element crs2 = doc.createElement(CRS);
         latLonBB.appendChild(crs2);
         crs2.insertBefore(doc.createTextNode(coverageElements.get(CRS)), null);
         
@@ -1122,10 +1125,13 @@ public class GeoServerRESTHelper {
          * <projectionPolicy>REPROJECT_TO_DECLARED</projectionPolicy>
 NOTE: it works
 TODO Add the option to the configuration!!!
-        Element projectionPolicy= doc.createElement("projectionPolicy");
-        root.appendChild(projectionPolicy);
-        projectionPolicy.insertBefore(doc.createTextNode("REPROJECT_TO_DECLARED"), null); //TODO
+KEEP_NATIVE
+REPROJECT_TO_DECLARED
+FORCE_DECLARED
         */
+        Element projectionPolicy= doc.createElement(PROJECTION_POLICY);
+        root.appendChild(projectionPolicy);
+        projectionPolicy.insertBefore(doc.createTextNode(coverageElements.get(PROJECTION_POLICY)), null);
         
         /*
          * <coverage> ... <enabled>true</enabled> ... </coverage>
@@ -1144,6 +1150,11 @@ TODO Add the option to the configuration!!!
         entry.setAttribute("key", "timeDimEnabled");
         entry.appendChild(doc.createTextNode(metadataElements.get("timeDimEnabled")));
         parametersElement.appendChild(entry);
+        
+        entry = doc.createElement("entry");
+        entry.setAttribute("key", "elevDimEnabled");
+        entry.appendChild(doc.createTextNode(metadataElements.get("elevDimEnabled")));
+        parametersElement.appendChild(entry);
 
         // TODO remove 'dirName'
         entry = doc.createElement("entry");
@@ -1151,6 +1162,11 @@ TODO Add the option to the configuration!!!
         entry.appendChild(doc.createTextNode(metadataElements.get("dirName")));
         parametersElement.appendChild(entry);
 
+        entry = doc.createElement("entry");
+        entry.setAttribute("key", "elevationPresentationMode");
+        entry.appendChild(doc.createTextNode(metadataElements.get("elevationPresentationMode")));
+        parametersElement.appendChild(entry);
+        
         entry = doc.createElement("entry");
         entry.setAttribute("key", "timePresentationMode");
         entry.appendChild(doc.createTextNode(metadataElements.get("timePresentationMode")));
@@ -1176,10 +1192,17 @@ TODO Add the option to the configuration!!!
 
         final TransformerFactory factory = TransformerFactory.newInstance();
         final Transformer transformer = factory.newTransformer();
-        final File file = File.createTempFile("config", ".xml");
+        final File file = File.createTempFile("config_", ".xml");
         final Result result = new StreamResult(file);
         final Source xmlSource = new DOMSource(doc);
-        transformer.transform(xmlSource, result);
+        try{
+            transformer.transform(xmlSource, result);
+        }
+        catch (TransformerException e){
+            //TransformerException - If an unrecoverable error occurs during the course of the transformation.
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(),e);
+        }
         return file;
     }
 

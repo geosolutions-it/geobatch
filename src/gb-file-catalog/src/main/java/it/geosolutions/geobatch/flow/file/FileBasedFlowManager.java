@@ -25,7 +25,6 @@ package it.geosolutions.geobatch.flow.file;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.catalog.impl.BasePersistentResource;
-import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 import it.geosolutions.geobatch.flow.FlowManager;
@@ -53,7 +52,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
@@ -70,7 +68,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         implements FlowManager<FileSystemEvent, FileBasedFlowConfiguration>, Runnable, Job {
 
     /** Default Logger **/
-    private final static Logger LOGGER = LoggerFactory.getLogger(FlowManager.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(FlowManager.class);
 
     private boolean autorun = false;
 
@@ -228,16 +226,18 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         if (fbec.getStatus() != EventConsumerStatus.COMPLETED
                 && fbec.getStatus() != EventConsumerStatus.FAILED) {
             if (LOGGER.isWarnEnabled())
-                LOGGER.warn("FileBasedFlowManager:dispose(): Disposing uncompleted consumer "
+                LOGGER.warn("FileBasedFlowManager:dispose(): Trying to dispose and uncompleted consumer "
                         + fbec);
+            fbec.cancel();
         }
 
         synchronized (eventConsumers) {
             eventConsumers.remove(fbec);
         }
-
+        
         // dunno if we should also force a fbec.dispose();
         // it's called at the end of the consumer thread automatically
+        // fbec.dispose();
     }
 
     /**
@@ -323,8 +323,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     private void createGenerator() {
-        final EventGeneratorConfiguration generatorConfig = getConfiguration()
-                .getEventGeneratorConfiguration();
+        final EventGeneratorConfiguration generatorConfig = getConfiguration().getEventGeneratorConfiguration();
         final String serviceID = generatorConfig.getServiceID();
         if (LOGGER.isInfoEnabled())
             LOGGER.info("FileBasedFlowManager:createGenerator(): EventGeneratorCreationServiceID: "
@@ -512,7 +511,6 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
     /**
      * @return
-     * @uml.property name="autorun"
      */
     public boolean isAutorun() {
         return autorun;
@@ -520,7 +518,6 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
     /**
      * @param autorun
-     * @uml.property name="autorun"
      */
     public void setAutorun(boolean autorun) {
         this.autorun = autorun;

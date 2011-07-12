@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
@@ -67,26 +69,17 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements Acti
 
             listenerForwarder.started();
 
-            // looking for file
-            if (events.size() != 1) {
-                throw new IllegalArgumentException("Wrong number of elements for this action: "
-                        + events.size());
-            }
-            FileSystemEvent event = events.remove();
-
             // //
             // data flow configuration and dataStore name must not be null.
             // //
             if (configuration == null) {
-                final String message = "Conf is null.";
+                final String message = "Configuration is null.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
                 throw new IllegalStateException(message);
             }
 
-            // final String configId = configuration.getName();
-
-            listenerForwarder.setTask("Processing event " + event);
+            listenerForwarder.setTask("dynamic class loading ...");
 
             /**
              * Dynamic class-loading ...
@@ -98,7 +91,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements Acti
                 LOGGER.info("Runtime class-loading from moduleFolder -> " + moduleFolder);
             }
 
-            File moduleDirectory = new File(moduleFolder);
+            final File moduleDirectory = new File(moduleFolder);
             try {
                 addFile(moduleDirectory.getParentFile());
                 addFile(moduleDirectory);
@@ -106,14 +99,17 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements Acti
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error("Error, could not add URL to system classloader", e);
             }
-            String classpath = System.getProperty("java.class.path");
-            File[] moduleFiles = moduleDirectory.listFiles();
+            final String classpath = System.getProperty("java.class.path");
+            final File[] moduleFiles = moduleDirectory.listFiles();
             if (moduleFiles != null) {
                 for (int i = 0; i < moduleFiles.length; i++) {
-                    File moduleFile = moduleFiles[i];
-                    if (moduleFile.getName().endsWith(".jar")) {
-                        if (classpath.indexOf(moduleFiles[i].getName()) == -1) {
+                    final File moduleFile = moduleFiles[i];
+                    final String name=moduleFiles[i].getName();
+                    if (name.endsWith(".jar")) {
+                        if (classpath.indexOf(name) == -1) {
                             try {
+                            	if (LOGGER.isInfoEnabled())
+                                    LOGGER.info("Adding: "+name);
                                 addFile(moduleFiles[i]);
                             } catch (IOException e) {
                                 if (LOGGER.isErrorEnabled())
@@ -124,41 +120,54 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements Acti
                     }
                 }
             }
-
             /**
              * Evaluating script ...
              */
+            listenerForwarder.setTask("evaluating script ...");
+            final Queue<FileSystemEvent> ret=new LinkedList<FileSystemEvent>();
             try {
                 // Now, pass a different script context
-                ScriptContext newContext = new SimpleScriptContext();
-                Bindings engineScope = newContext.getBindings(ScriptContext.ENGINE_SCOPE);
+                final ScriptContext newContext = new SimpleScriptContext();
+                final Bindings engineScope = newContext.getBindings(ScriptContext.ENGINE_SCOPE);
 
-                // add new variable "scriptingConfiguration" to the new
-                // engineScope
-                engineScope.put("scriptingConfiguration", configuration);
+                // add variables to the new engineScope
+                engineScope.put("eventList", events);
 
                 engine.eval(new FileReader(script), engineScope);
 
-                Invocable inv = (Invocable) engine;
-                List<String> outputFiles = (List<String>) inv.invokeFunction("execute",
+                final Invocable inv = (Invocable) engine;
+                
+                listenerForwarder.setTask("Executing script: "+script.getName());
+                
+                final FileSystemEvent event = events.peek();
+                final List<String> outputFiles = (List<String>) inv.invokeFunction("execute",
                         new Object[] { configuration, event.getSource().getAbsolutePath(),
                                 listenerForwarder });
-
+                
+                // optionally clear input queue
+                events.clear();
+                
                 // FORWARDING EVENTS
-                for (String outputFile : outputFiles) {
-                    events.add(new FileSystemEvent(new File(outputFile),
-                            FileSystemEventType.FILE_ADDED));
+                final Iterator<String> it=outputFiles.listIterator();
+                while (it.hasNext()) {
+                	final String outputFile=it.next();
+                	if (outputFile!=null){
+                		ret.add(new FileSystemEvent(new File(outputFile),FileSystemEventType.FILE_ADDED));
+                	}
                 }
+
+                listenerForwarder.completed();
             } catch (FileNotFoundException e) {
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error("Can't create an Action for " + configuration, e);
+                listenerForwarder.failed(e);
             } catch (ScriptException e) {
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error("Can't create an Action for " + configuration, e);
+                listenerForwarder.failed(e);
             }
 
-            listenerForwarder.completed();
-            return events;
+            return ret;
         } catch (Throwable t) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(t.getLocalizedMessage(), t); // no need to

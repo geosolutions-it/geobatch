@@ -39,82 +39,81 @@ import org.slf4j.LoggerFactory;
  * @param <XEO>
  *            Kind of EventObject to be eXecuted
  */
-public abstract class BaseAction<XEO extends EventObject> extends BaseIdentifiable implements
-        Action<XEO>, Job {
+public abstract class BaseAction<XEO extends EventObject> extends
+		BaseIdentifiable implements Action<XEO>, Job {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(BaseAction.class.toString());
+	private final static Logger LOGGER = LoggerFactory
+			.getLogger(BaseAction.class);
 
-    
-    final protected ProgressListenerForwarder listenerForwarder;
+	final protected ProgressListenerForwarder listenerForwarder;
 
-    
-    protected boolean failIgnored = false;
-    
-    public BaseAction(String id, String name, String description) {
-        super(id, name, description);
-        listenerForwarder=new ProgressListenerForwarder(this);
-        failIgnored = false;
-    }
+	protected boolean failIgnored = false;
 
+	public BaseAction(String id, String name, String description) {
+		super(id, name, description);
+		listenerForwarder = new ProgressListenerForwarder(this);
+		failIgnored = false;
+	}
 
+	public BaseAction(ActionConfiguration actionConfiguration) {
+		super(actionConfiguration.getId(), actionConfiguration.getName(),
+				actionConfiguration.getDescription());
+		listenerForwarder = new ProgressListenerForwarder(this);
+		failIgnored = actionConfiguration.isFailIgnored();
+	}
 
-    public BaseAction(ActionConfiguration actionConfiguration) {
-        super(actionConfiguration.getId(), actionConfiguration.getName(), actionConfiguration.getDescription());
-        listenerForwarder=new ProgressListenerForwarder(this);
-        failIgnored = actionConfiguration.isFailIgnored();
-    }
+	public void destroy() {
+	}
 
-    public void destroy() {
-    }
+	public boolean isPaused() {
+		return false;
+	}
 
-    public boolean isPaused() {
-        return false;
-    }
+	public boolean pause() {
+		if (LOGGER.isInfoEnabled())
+			LOGGER.info("Pause request for " + getClass().getSimpleName());
+		return false; // pause has not been honoured
+	}
 
-    public boolean pause() {
-        LOGGER.info("Pause request for " + getClass().getSimpleName());
-        return false; // pause has not been honoured
-    }
+	public boolean pause(boolean sub) {
+		if (LOGGER.isInfoEnabled())
+			LOGGER.info("Pause(" + sub + ") request for "
+					+ getClass().getSimpleName());
+		return false; // pause has not been honoured
+	}
 
-    public boolean pause(boolean sub) {
-        LOGGER.info("Pause(" + sub + ") request for " + getClass().getSimpleName());
-        return false; // pause has not been honoured
-    }
+	public void resume() {
+		if (LOGGER.isInfoEnabled())
+			LOGGER.info("Resuming " + getClass().getSimpleName());
+	}
 
-    public void resume() {
-        LOGGER.info("Resuming " + getClass().getSimpleName());
-    }
+	/**
+	 * @return
+	 */
+	public boolean isFailIgnored() {
+		return failIgnored;
+	}
 
-    /**
-     * @return
-     * @uml.property  name="failIgnored"
-     */
-    public boolean isFailIgnored() {
-        return failIgnored;
-    }
+	/**
+	 * @param failIgnored
+	 */
+	public void setFailIgnored(boolean failIgnored) {
+		this.failIgnored = failIgnored;
+	}
 
-    /**
-     * @param failIgnored
-     * @uml.property  name="failIgnored"
-     */
-    public void setFailIgnored(boolean failIgnored) {
-        this.failIgnored = failIgnored;
-    }
+	public void removeListener(ProgressListener listener) {
+		this.listenerForwarder.removeListener(listener);
+	}
 
-    public void removeListener(ProgressListener listener) {
-        this.listenerForwarder.removeListener(listener);
-    }
+	public void addListener(ProgressListener listener) {
+		this.listenerForwarder.addListener(listener);
+	}
 
-    public void addListener(ProgressListener listener) {
-        this.listenerForwarder.addListener(listener);
-    }
-
-    public <PL extends IProgressListener> PL getProgressListener(Class<PL> clazz) {
-        for (IProgressListener ipl : listenerForwarder.getListeners()) {
-            if (clazz.isAssignableFrom(ipl.getClass()))
-                return (PL) ipl;
-        }
-
-        return null;
-    }
+	public <PL extends IProgressListener> PL getProgressListener(Class<PL> clazz) {
+		for (IProgressListener ipl : listenerForwarder.getListeners()) {
+			if (clazz.isAssignableFrom(ipl.getClass()))
+				return (PL) ipl;
+		}
+		return null;
+	}
 }

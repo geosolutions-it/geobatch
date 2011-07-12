@@ -34,15 +34,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Comments here ...
  * 
  * @author AlFa
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  * @version $ ImageMosaicService.java $ Revision: 0.1 $ 12/feb/07 12:07:32
+ * @version $ ImageMosaicService.java $ Revision: 0.2 $ 12/may/11 12:00:22
+ * 
  */
 public abstract class ImageMosaicService<T extends EventObject, C extends ActionConfiguration>
         extends BaseService implements ActionService<T, C> {
-    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicService.class.toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicService.class);
 
     public ImageMosaicService(String id, String name, String description) {
         super(id, name, description);

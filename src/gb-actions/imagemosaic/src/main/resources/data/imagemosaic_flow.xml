@@ -42,8 +42,6 @@
 			
 			<wmsPath>/</wmsPath>
 			
-			<defaultNamespace>geosolutions</defaultNamespace>
-			<defaultStyle>contrast</defaultStyle>
 			<backgroundValue>-9999</backgroundValue>
 			<outputTransparentColor></outputTransparentColor>
 			<inputTransparentColor></inputTransparentColor>
@@ -52,11 +50,15 @@
 			<tileSizeH>256</tileSizeH>
 			<tileSizeW>256</tileSizeW>
 			
-			<!-- METADATA -->			
-			<timeDimEnabled>true</timeDimEnabled>
-<!--		<dirName>DIR</dirName>-->
-<!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
+			<!--NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED-->
+			<projectionPolicy>NONE</projectionPolicy>
+			<!-- METADATA -->
+			<timeDimEnabled>false</timeDimEnabled>
+			<!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
 			<timePresentationMode>LIST</timePresentationMode>
+			<elevDimEnabled>false</elevDimEnabled>
+			<elevationPresentationMode>LIST</elevationPresentationMode>
+			<!--  <dirName>DIR</dirName>-->
 			
 			<styles/>
 			<datastorePropertiesPath>imagemosaic_work/config/datastore.properties</datastorePropertiesPath>

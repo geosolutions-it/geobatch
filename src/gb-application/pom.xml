@@ -6,12 +6,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<!-- START APPLICATION DESCRIPTION -->
+	<!-- Please do not remove the above placeholder -->
 	<parent>
 		<groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb</artifactId>
 		<version>1.1-SNAPSHOT</version>
 	</parent>
-
 
 	<!-- =========================================================== -->
 	<!-- Module Description -->
@@ -19,7 +20,10 @@
 	<groupId>it.geosolutions.geobatch</groupId>
 	<artifactId>gb-application</artifactId>
 	<packaging>war</packaging>
-
+	
+	<!-- Please do not remove the following placeholder -->
+	<!-- STOP APPLICATION DESCRIPTION -->
+	
 	<name>GeoBatch Application</name>
 	<description>GeoSolutions GeoBatch Application</description>
 
@@ -60,7 +64,7 @@
 			<artifactId>log4j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		
+
 		<!-- ============================== -->
 		<!-- Platform -->
 		<!-- ============================== -->
@@ -88,7 +92,7 @@
 			<artifactId>javassist</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 
@@ -162,8 +166,8 @@
 			</dependencies>
 		</profile>
 
-		<!-- GB-SERVICES================================================= -->
-		<!-- JMS ======================================================== -->
+		<!-- GB-SERVICES==================================================== -->
+		<!-- JMS =========================================================== -->
 		<profile>
 			<id>jms</id>
 			<activation>
@@ -179,7 +183,6 @@
 				</dependency>
 			</dependencies>
 		</profile>
-
 		<!-- Octave ======================================================== -->
 		<profile>
 			<id>octave</id>
@@ -241,6 +244,58 @@
 										<artifactItem>
 											<groupId>it.geosolutions.geobatch</groupId>
 											<artifactId>gb-action-geonetwork</artifactId>
+											<classifier>flowdata</classifier>
+											<type>jar</type>
+											<overWrite>false</overWrite>
+											<outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+											<includes>data/**</includes>
+										</artifactItem>
+									</artifactItems>
+									<overWriteReleases>true</overWriteReleases>
+									<overWriteSnapshots>true</overWriteSnapshots>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- Xstream ================================================== -->
+
+		<profile>
+			<id>xstream</id>
+			<activation>
+				<property>
+					<name>all</name>
+					<value>true</value>
+				</property>
+			</activation>
+
+			<dependencies>
+				<dependency>
+					<groupId>it.geosolutions.geobatch</groupId>
+					<artifactId>gb-action-xstream</artifactId>
+				</dependency>
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>unpack_xstream</id>
+								<phase>package</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>it.geosolutions.geobatch</groupId>
+											<artifactId>gb-action-xstream</artifactId>
 											<classifier>flowdata</classifier>
 											<type>jar</type>
 											<overWrite>false</overWrite>
@@ -322,10 +377,6 @@
 			</activation>
 
 			<dependencies>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-action-geoserver-restclient</artifactId>
-				</dependency>
 				<dependency>
 					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-geotiff</artifactId>
@@ -428,10 +479,6 @@
 			</activation>
 
 			<dependencies>
-				<dependency>
-					<groupId>it.geosolutions</groupId>
-					<artifactId>gb-action-geoserver-restclient</artifactId>
-				</dependency>
 				<dependency>
 					<groupId>it.geosolutions.geobatch</groupId>
 					<artifactId>gb-action-shapefile</artifactId>

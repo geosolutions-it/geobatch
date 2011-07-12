@@ -26,6 +26,8 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geonetwork.GNClient;
 import it.geosolutions.geonetwork.exception.GNException;
+import it.geosolutions.geonetwork.exception.GNLibException;
+import it.geosolutions.geonetwork.exception.GNServerException;
 import it.geosolutions.geonetwork.util.GNInsertConfiguration;
 import it.geosolutions.geonetwork.util.GNPrivConfiguration;
 
@@ -43,20 +45,22 @@ import org.slf4j.LoggerFactory;
  * <h3>Insert metadata</h3>
  * The input file may be a pure metadata to be inserted into GN, or a full GN
  * insert metadata request. The full request requires some more meta-metadata.
- * <br/>If such further data are not provided in the input file, they may be specified 
- * in the configuration, and the Action will compile the full request to 
+ * <br/>If such further data are not provided in the input file, they may be specified
+ * in the configuration, and the Action will compile the full request to
  * be sent to GN.
- * 
- * 
+ *
+ *
  * @author ETj (etj at geo-solutions.it)
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ *
  */
-public class GeonetworkAction 
+public class GeonetworkAction
         extends BaseAction<FileSystemEvent> {
-    
-    
+
+
     private final static Logger LOGGER = LoggerFactory.getLogger(GeonetworkAction.class);
 
-    GeonetworkInsertConfiguration cfg;
+    final GeonetworkInsertConfiguration cfg;
 
     public GeonetworkAction(GeonetworkInsertConfiguration configuration) {
         super(configuration);
@@ -64,52 +68,85 @@ public class GeonetworkAction
     }
 
     /**
-     * 
+     * @param events the queue containing metadata to send to the configured GN server
+     * @return events (if success) the empty queue else the remaining events.
+     * @note: <br>
+     *  1. Handle multiple metadata file events.
+     *  2. This action do not set any output.
      */
-//    @Override
-    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
-        
-        // get the input event
-        FileSystemEvent event = events.poll();
-        File inputFile = event.getSource();
-                
-        
-        GNClient gnClient = new GNClient(cfg.getGeonetworkServiceURL()) ;        
+    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException{
+        /*
+         * TODO check configuration
+         *  cfg.getGeonetworkServiceURL()
+         *  cfg.getLoginUsername()
+         *  cfg.getLoginPassword()
+         */
+        final String user=cfg.getLoginUsername();
+        final String pass=cfg.getLoginPassword();
+        final String url=cfg.getGeonetworkServiceURL();
 
-        try {
-            // perform a login into GeoNetwork
-            LOGGER.debug("Logging in");
-            boolean logged = gnClient.login(cfg.getLoginUsername(), cfg.getLoginPassword());
-            if (!logged) {
-                throw new ActionException(this, "Login failed");
+        if (events==null){
+            final String message="GeoNetworkAction.execute(): FATAL -> Action list is NULL.";
+            if(LOGGER.isErrorEnabled())
+                LOGGER.error(message);
+            // fatal error!!!
+            throw new ActionException(this, message);
+        }
+
+        GNClient gnClient = new GNClient(cfg.getGeonetworkServiceURL());
+        boolean loggedin = false;
+
+        //TODO return -> List<EventObject> ret=new LinkedList<EventObject>();
+        while ( ! events.isEmpty() ){
+            // get the input event
+            File inputFile = sanitizeInput(events.poll());
+            if(inputFile == null)
+                continue;
+
+            if( ! loggedin) {
+                if(LOGGER.isDebugEnabled())
+                    LOGGER.debug("GeoNetworkAction.execute(): Logging in");
+                loggedin = gnClient.login(user, pass);
+                if( ! loggedin ) {
+                    LOGGER.error("Login failed");
+                    if (LOGGER.isDebugEnabled()){
+                        LOGGER.debug("\nUser: "+user+"\nPass: "+pass+"\nURL: "+url); // FIXME: password nel file di log?!?
+                    }
+                    // fatal error!!!
+                    throw new ActionException(this, "Login failed"); // CHECKME: this error will leave next events in the queue
+                }
             }
 
             long metadataId;
+            try {
+                if (cfg.isOnlyMetadataInput()) { // only metadata available: we have to build the full request packet
+                    if (LOGGER.isInfoEnabled()) {
+                        LOGGER.info("Handling pure metadata file " + inputFile);
+                    }
 
-            if (cfg.isOnlyMetadataInput()) { // only metadata available: we have to build the full request packet
-                if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info("Handling pure metadata file " + inputFile);
+                    GNInsertConfiguration gncfg = new GNInsertConfiguration();
+                    gncfg.setCategory(cfg.getCategory());
+                    gncfg.setGroup(cfg.getGroup());
+                    gncfg.setStyleSheet(cfg.getStyleSheet());
+                    gncfg.setValidate(cfg.getValidate());
+
+                    LOGGER.debug("Creating metadata");
+                    metadataId = gnClient.insertMetadata(gncfg, inputFile);
+                    LOGGER.info("Created metadata " + metadataId);
+
+                } else { // the full xml request is ready in the file to be sent to GN; just parse it
+                    if (LOGGER.isInfoEnabled()) {
+                        LOGGER.info("Handling full request file " + inputFile);
+                    }
+
+                    LOGGER.debug("Creating metadata");
+                    metadataId = gnClient.insertRequest(inputFile);
+                    LOGGER.info("Created metadata " + metadataId);
+
                 }
-
-                GNInsertConfiguration gncfg = new GNInsertConfiguration();
-                gncfg.setCategory(cfg.getCategory());
-                gncfg.setGroup(cfg.getGroup());
-                gncfg.setStyleSheet(cfg.getStyleSheet());
-                gncfg.setValidate(cfg.getValidate());
-
-                LOGGER.debug("Creating metadata");
-                metadataId = gnClient.insertMetadata(gncfg, inputFile);
-                LOGGER.info("Created metadata " + metadataId);
-
-            } else { // the full xml request is ready in the file to be sent to GN; just parse it
-                if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info("Handling full request file " + inputFile);
-                }
-
-                LOGGER.debug("Creating metadata");
-                metadataId = gnClient.insertRequest(inputFile);
-                LOGGER.info("Created metadata " + metadataId);
-
+            } catch (GNException ex) {
+                LOGGER.error("Metadata not created: " + inputFile, ex);
+                continue;
             }
 
             // set the metadata privileges if needed
@@ -121,15 +158,34 @@ public class GeonetworkAction
                 }
 
                 LOGGER.debug("Setting privileges");
-                gnClient.setPrivileges(metadataId, pcfg);
-                LOGGER.info("Set privileges for " + privs.size() + " groups");
+                try {
+                    gnClient.setPrivileges(metadataId, pcfg);
+                    LOGGER.info("Set privileges for " + privs.size() + " groups");
+                } catch (GNException ex) {
+                    LOGGER.error("Privileges not set for metadata id:" + metadataId +" file:" + inputFile, ex);
+                }
             }
-
-            return events;
-        } catch (GNException ex) {
-            throw new ActionException(this, "Error performing a GeoNetwork call", ex);
         }
+
+        // should be an empty queue
+        return events;
     }
 
+    private File sanitizeInput(FileSystemEvent event) {
+        if (event == null) {
+            LOGGER.error("GeoNetworkAction.execute(): NUll event encountered: SKIPPING...");
+            return null;
+        }
+        final File inputFile = event.getSource();
+        if (inputFile == null) {
+            LOGGER.error("GeoNetworkAction.execute(): Incoming file event refer to a null file object: SKIPPING...");
+            return null;
+        } else if (!inputFile.exists() || !inputFile.canRead()) {
+            LOGGER.error("GeoNetworkAction.execute(): Incoming file event refer"
+                    + " to a not readable or not existent file: SKIPPING...");
+            return null;
+        }
+        return inputFile;
 
+    }
 }

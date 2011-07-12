@@ -59,7 +59,7 @@
 			
 			<workingDirectory>briseide_2</workingDirectory>
 			<serviceID>GeotiffRetilerService</serviceID>
-			
+			<forceToBigTiff>false</forceToBigTiff>
 			<tileH>256</tileH>
 			<tileW>256</tileW>
 			

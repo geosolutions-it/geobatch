@@ -39,86 +39,90 @@ import it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration;
  */
 public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
 
-    /**
-     * workingDirectory: this attribute represents the configuring directory for this flow. It can be relative to the catalog.xml directory or absolute. Attention: the configuring directory should be different from the one containing the configuration files.
-     * @uml.property  name="workingDirectory"
-     */
-    private String workingDirectory;
+	/**
+	 * workingDirectory: this attribute represents the configuring directory for
+	 * this flow. It can be relative to the catalog.xml directory or absolute.
+	 * Attention: the configuring directory should be different from the one
+	 * containing the configuration files.
+	 */
+	private String workingDirectory;
 
-    /**
-     * autorun: this attribute is used to autorun a flow on startup.
-     * @uml.property  name="autorun"
-     */
-    private boolean autorun = false;
+	/**
+	 * autorun: this attribute is used to autorun a flow on startup.
+	 */
+	private boolean autorun = false;
 
-    /**
-     * 
-     * @param id
-     * @param name
-     * @param eventGeneratorConfiguration
-     * @param description
-     * @param eventConsumerConfiguration
-     */
-    public FileBasedFlowConfiguration(String id, String name,
-            FileBasedEventGeneratorConfiguration eventGeneratorConfiguration, String description,
-            FileBasedEventConsumerConfiguration eventConsumerConfiguration) {
-        super(id, name, eventGeneratorConfiguration, description, eventConsumerConfiguration);
-    }
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @param eventGeneratorConfiguration
+	 * @param description
+	 * @param eventConsumerConfiguration
+	 */
+	public FileBasedFlowConfiguration(String id, String name,
+			FileBasedEventGeneratorConfiguration eventGeneratorConfiguration,
+			String description,
+			FileBasedEventConsumerConfiguration eventConsumerConfiguration) {
+		super(id, name, eventGeneratorConfiguration, description,
+				eventConsumerConfiguration);
+	}
 
-    /**
-     * 
-     * @param id
-     * @param name
-     * @param eventGeneratorConfiguration
-     * @param description
-     * @param eventConsumerConfiguration
-     * @param workingDirectory
-     */
-    public FileBasedFlowConfiguration(String id, String name,
-            EventGeneratorConfiguration eventGeneratorConfiguration, String description,
-            EventConsumerConfiguration eventConsumerConfiguration, String workingDirectory) {
-        super(id, name, eventGeneratorConfiguration, description, eventConsumerConfiguration);
-        this.workingDirectory = workingDirectory;
-    }
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @param eventGeneratorConfiguration
+	 * @param description
+	 * @param eventConsumerConfiguration
+	 * @param workingDirectory
+	 */
+	public FileBasedFlowConfiguration(String id, String name,
+			EventGeneratorConfiguration eventGeneratorConfiguration,
+			String description,
+			EventConsumerConfiguration eventConsumerConfiguration,
+			String workingDirectory) {
+		super(id, name, eventGeneratorConfiguration, description,
+				eventConsumerConfiguration);
+		this.workingDirectory = workingDirectory;
+	}
 
-    /**
-     * Getter for the workingDirectory
-     * @uml.property  name="workingDirectory"
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
+	/**
+	 * Getter for the workingDirectory
+	 */
+	public String getWorkingDirectory() {
+		return workingDirectory;
+	}
 
-    /**
-     * Setter for the workingDirectory.
-     * @param  workingDirectory
-     * @uml.property  name="workingDirectory"
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
-        setDirty(true);
-    }
+	/**
+	 * Setter for the workingDirectory.
+	 * 
+	 * @param workingDirectory
+	 */
+	public void setWorkingDirectory(String workingDirectory) {
+		this.workingDirectory = workingDirectory;
+		setDirty(true);
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[" + "id:" + getId() + ", name:" + getName()
-                + ", sid:" + getServiceID() + ", wdir:" + getWorkingDirectory() + ", egcfg:"
-                + getEventGeneratorConfiguration() + "]";
-    }
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[" + "id:" + getId() + ", name:"
+				+ getName() + ", sid:" + getServiceID() + ", wdir:"
+				+ getWorkingDirectory() + ", egcfg:"
+				+ getEventGeneratorConfiguration() + "]";
+	}
 
-    /**
-     * @return
-     * @uml.property  name="autorun"
-     */
-    public boolean isAutorun() {
-        return autorun;
-    }
+	/**
+	 * @return
+	 */
+	public boolean isAutorun() {
+		return autorun;
+	}
 
-    /**
-     * @param autorun
-     * @uml.property  name="autorun"
-     */
-    public void setAutorun(boolean autorun) {
-        this.autorun = autorun;
-    }
+	/**
+	 * @param autorun
+	 */
+	public void setAutorun(boolean autorun) {
+		this.autorun = autorun;
+	}
 }

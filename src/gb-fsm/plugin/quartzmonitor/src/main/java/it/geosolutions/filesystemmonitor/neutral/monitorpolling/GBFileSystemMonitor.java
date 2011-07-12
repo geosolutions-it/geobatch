@@ -54,42 +54,38 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
 
     // JOB
 
-    String jobName = null;
+    final private String jobName;
 
-    String jobGroup = null;
+    final private String jobGroup;
 
-    JobDetail jobDetail = null;
+    final private JobDetail jobDetail;
 
-    JobDataMap jdm = null;
+    final private JobDataMap jdm;
 
     // TRIGGER
 
-    Trigger trigger = null;
+    private Trigger trigger = null;
 
-    String triggerName = null;
 
-    /*
+    /**
      * status (means isPaused() or !isPaused() do not regard start() or stop() status
      */
-
     private boolean pause = false;
 
     // the stateful GBFileSystemMonitorJob job
 
     // private GBFileSystemMonitorJob fsm=null;
 
-    /*
+    /**
      * The list of reveled events. this is used to detach the poller thread job from the event
      * delivery
      */
-
     private EventListenerList listeners = new EventListenerList();
 
-    /*
+    /**
      * the event consumer, this is used to pass events to the events listener list
      */
-
-    GBEventNotifier consumer = null;
+    private GBEventNotifier consumer = null;
 
     /*
      * This is discussed on 17 jan 2011 with Carlo Cancellieri and Alessio Fabiani
@@ -147,10 +143,28 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
         return sched;
     }
 
-    public GBFileSystemMonitor(final String path, final String wildcard,
+    public GBFileSystemMonitor(String path, String wildcard,
             final FileSystemEventType type, final String pollingInterval,
             final boolean lockInputFiles, final long maxLockingWait) throws SchedulerException,
             NullPointerException {
+    	
+// WORKAROUND
+        /*
+         * 1Giu2011 Carlo:<br>
+         * to implement a Quartz EventGenerator using quartz file system.
+         * Here we implement logic to make possible to hide:<br>
+         * - path<br>
+         * - wildcard<br>
+         * into the EventGenerator configuration.
+         * This should be possible only if the event is a:<br>
+         * FileSystemEventType.POLLING_EVENT
+         */
+if (type==FileSystemEventType.POLLING_EVENT){
+	// is checked for file existent (can be sub-folder of the base).
+	path+="";
+	wildcard+=Thread.currentThread().getId();
+}
+//WORKAROUND
 
         /*
          * Discussed on 17 01 2011 with Carlo Cancellieri and Simone Giannecchini
@@ -185,7 +199,14 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
         if (jdm != null) {
             jdm.put(FileSystemMonitorSPI.SOURCE_KEY, path);
             jdm.put(FileSystemMonitorSPI.WILDCARD_KEY, wildcard);
-            // jdm.put(FileSystemMonitorSPI.TYPE_KEY, type); // this is only used by the notifier
+            
+            /*
+             * 1Giu2011 Carlo: added to the map to check if the event
+             * is POLLING_EVENT. to implement a Quartz EventGenerator without
+             * file observer.
+             * So this is used also into the GBFileSystemMonitorJob.execute()
+             */
+            jdm.put(FileSystemMonitorSPI.TYPE_KEY, type); // this is only used by the notifier
             jdm.put(GBFileSystemMonitorJob.WAITING_LOCK_TIME_KEY, maxLockingWait);
             jdm.put(GBFileSystemMonitorJob.EVENT_NOTIFIER_KEY, consumer);
         } else
@@ -315,6 +336,7 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
      * performed.
      * 
      * @see getScheduler().rescheduleJob(triggerName, jobGroup,trigger);
+     * @deprecated not implemented
      */
     public void reset() {
         // System.out.print("RESET");
@@ -346,9 +368,6 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
 
     public void dispose() {
         try {
-
-            // System.out.print("DISPOSE");
-
             /*
              * if the job is NOT the last in its group do not stop the scheduler
              */

@@ -101,9 +101,9 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                     "GeotiffRetiler::reTile(): Unable to find the GridFormat for the provided file: "
                             + inputFileName);
         }
-
-        final File tiledTiffFile = new File(inFile.getParent(), inputFileName + "_"
-                + Thread.currentThread().getId() + "_tiled.tif");
+        
+        // throws IOException
+        final File tiledTiffFile = File.createTempFile(inputFileName, "_tiled.tif", inFile.getParentFile());
 
         try {
             if (tiledTiffFile.exists()) {
@@ -178,6 +178,8 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                 wp.setCompressionType(compressionType);
                 wp.setCompressionQuality((float) compressionRatio);
             }
+            wp.setForceToBigTIFF(configuration.isForceToBigTiff());
+            
             wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
             wp.setTiling(configuration.getTileW(), configuration.getTileH());
             final ParameterValueGroup wparams = wformat.getWriteParameters();
@@ -270,7 +272,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
         try {
 
             if (configuration == null) {
-                final String message = "GeotiffRetiler::execute(): DataFlowConfig is null.";
+                final String message = "GeotiffRetiler::execute(): flow configuration is null.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
                 throw new ActionException(this, message);
@@ -286,7 +288,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
             listenerForwarder.started();
 
             // The return
-            Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
+            final Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
 
             while (events.size() > 0) {
 
@@ -317,7 +319,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                                  * COMMENTED OUT 21 Feb 2011: simone: If the event represents a Dir
                                  * we have to return a Dir. Do not matter failing files.
                                  * 
-                                 * calo: we may also want to check if a file is already tiled!
+                                 * carlo: we may also want to check if a file is already tiled!
                                  * 
                                  * File outputFile=reTile(inFile); if (outputFile!=null){ //TODO:
                                  * here we use the same event for each file in the ret.add(new
@@ -360,7 +362,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                             outFile = reTile(eventFile);
                             if (outFile != null) {
                                 if (LOGGER.isInfoEnabled())
-                                    LOGGER.info("GeotiffRetiler::execute(): SUCCESFULLY completed work on: "
+                                    LOGGER.info("GeotiffRetiler::execute(): SUCCESSFULLY completed work on: "
                                             + event.getSource());
                                 listenerForwarder.setProgress(100);
                                 ret.add(new FileSystemEvent(outFile, eventType));
