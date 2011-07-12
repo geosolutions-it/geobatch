@@ -22,22 +22,17 @@
 package it.geosolutions.geobatch.actions.geonetwork;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.actions.geonetwork.util.HTTPUtils;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geonetwork.GNClient;
+import it.geosolutions.geonetwork.exception.GNException;
+import it.geosolutions.geonetwork.util.GNInsertConfiguration;
+import it.geosolutions.geonetwork.util.GNPrivConfiguration;
 
 import java.io.File;
-import java.io.StringReader;
 import java.util.List;
 import java.util.Queue;
-import org.apache.commons.httpclient.HttpStatus;
-import org.jdom.CDATA;
-import org.jdom.Document;
 
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,274 +72,64 @@ public class GeonetworkAction
         // get the input event
         FileSystemEvent event = events.poll();
         File inputFile = event.getSource();
-        
-        
-        Element insertRequest;
-        
-        if(cfg.isOnlyMetadataInput()) { // only metadata available: we have to build the full request packet
-            if(LOGGER.isInfoEnabled()) 
-                LOGGER.info("Handling pure metadata file " + inputFile);
-            insertRequest = buildInsertRequest(inputFile);
-        } else { // the full xml request is ready in the file to be sent to GN; just parse it
-            if(LOGGER.isInfoEnabled()) 
-                LOGGER.info("Handling full request file " + inputFile);
-            insertRequest = parseFile(inputFile);
-        }
-        
-        // create stateful (we need the cookies) connection handler 
-        HTTPUtils connection = new HTTPUtils();
-        
-        // perform a login into GeoNetwork
-        LOGGER.debug("Logging in");
-        boolean logged = gnLogin(connection, 
-                cfg.getGeonetworkServiceURL(), 
-                cfg.getLoginUsername(), cfg.getLoginPassword());
-        
-        if( ! logged ) 
-            throw new ActionException(this, "Login failed");
-        
-        // insert the metadata
-        LOGGER.debug("Creating metadata");
-        long metadataId = gnInsertMetadata(connection, cfg.getGeonetworkServiceURL(), insertRequest);
-        LOGGER.info("Created metadata " + metadataId);
-               
-        // set the metadata privileges if needed
-        List<GeonetworkInsertConfiguration.Privileges> privs = cfg.getPrivileges();
-        if(privs != null && ! privs.isEmpty()) {
-            LOGGER.debug("Setting privileges");
-            Element adminRequest = buildAdminRequest(metadataId, privs);
-            gnAdminMetadata(connection, cfg.getGeonetworkServiceURL(), adminRequest);
-            LOGGER.info("Set privileges for " + privs.size() + " groups");
-        }
-            
-        
-        return events;
-    }
-
-    /**
-     * Creates a Request document for the geonetwork <tt>metadata.insert</tt> operation.
-     * <br/>The metadata is read from the file, the other params are read from
-     * the configuration.
-     * 
-     * <ul>
-     * <li><b><tt>data</tt></b>: (mandatory) Contains the metadata record</li>
-     * <li><b><tt>group</tt></b> (mandatory): Owner group identifier for metadata</li>
-     * <li><b><tt>isTemplate</tt></b>: indicates if the metadata content is a new template or not. Default value: "n"</li>
-     * <li><b><tt>title</tt></b>: Metadata title. Only required if isTemplate = "y"</li>
-     * <li><b><tt>category</tt></b> (mandatory): Metadata category. Use "_none_" value to don't assign any category</li>
-     * <li><b><tt>styleSheet</tt></b> (mandatory): Stylesheet name to transform the metadata before inserting in the catalog. Use "_none_" value to don't apply any stylesheet</li>
-     * <li><b><tt>validate</tt></b>: Indicates if the metadata should be validated before inserting in the catalog. Values: on, off (default)    </li>
-     * </ul>
-     */
-    private Element buildInsertRequest(File inputFile) throws ActionException {
-        if(LOGGER.isDebugEnabled()) 
-            LOGGER.debug("Compiling request document");
-        
-        Element metadataFromFile = parseFile(inputFile);
-
-        XMLOutputter outputter = new XMLOutputter(Format.getRawFormat());
-        CDATA cdata = new CDATA(outputter.outputString(metadataFromFile)); // CDATA format is required by GN
-        
-        Element request = new Element("request");
-        request.addContent(new Element("data").addContent(cdata));
-        request.addContent(new Element("group").setText(cfg.getGroup()));
-        request.addContent(new Element("category").setText(cfg.getCategory()==null?"_none":cfg.getCategory()));
-        request.addContent(new Element("styleSheet").setText(cfg.getStyleSheet()==null?"_none":cfg.getStyleSheet()));
-        request.addContent(new Element("validate").setText(cfg.getValidate()==null?"off":cfg.getValidate().booleanValue()?"on":"off"));
-                    
-        return request;
-    }
-    
-    /**
-     * 
-     * @see {@link http://geonetwork-opensource.org/latest/developers/xml_services/metadata_xml_services.html#update-operations-allowed-for-a-metadata-metadata-admin }
-     */
-
-    private Element buildAdminRequest(long metadataId, List<GeonetworkInsertConfiguration.Privileges> privs) throws ActionException {
-        if(LOGGER.isDebugEnabled()) 
-            LOGGER.debug("Compiling admin request document");
                 
-        Element request = new Element("request");
-        request.addContent(new Element("id").setText(Long.toString(metadataId)));
-        for (GeonetworkInsertConfiguration.Privileges grant : privs) {
-            Integer groupId = grant.getGroup();
-            String ops = grant.getOps();
-            for (char c : "012345".toCharArray()) {
-                if(ops.indexOf(c)!=-1) {
-                    String op = new StringBuilder()
-                            .append('_').append(groupId)
-                            .append('_').append(c)
-                            .toString();
-                    request.addContent(new Element(op));
-                }
-            }
-        }
-                    
-        return request;
-    }
+        
+        GNClient gnClient = new GNClient(cfg.getGeonetworkServiceURL()) ;        
 
-    /**
-     * Perform a GN login.<br/>
-     * GN auth is carried out via a JSESSIONID cookie returned by a successful login
-     * call.<br/>
-     * 
-     * <ul>
-     * <li>Url: <tt>http://<i>server</i>:<i>port</i>/geonetwork/srv/en/xml.user.login</tt></li>
-     * <li>Mime-type: <tt>application/xml</tt></li>
-     * <li>Post request: <pre>{@code
-     *   <?xml version="1.0" encoding="UTF-8"?>
-     *   <request>
-     *       <username>admin</username>
-     *       <password>admin</password>
-     *   </request>
-     * }</pre></li>
-     * </ul>
-     * 
-     * @return true if login was successful
-     * 
-     * @see <a href="http://geonetwork-opensource.org/manuals/trunk/developer/xml_services/login_xml_services.html#login-services" >GeoNetwork documentation about login</a>
-     */
-    private static boolean gnLogin(HTTPUtils connection, String serviceURL, String username, String password) {
-        Element request = new Element("request");
-        request.addContent(new Element("username").setText(username));
-        request.addContent(new Element("password").setText(password));
-        
-        XMLOutputter outputter = new XMLOutputter(Format.getCompactFormat());
-        String xml = outputter.outputString(request);
-        
-        String loginURL = serviceURL+"/srv/en/xml.user.login";
-        String out = connection.postXml(loginURL, xml);
-        
-        return connection.getLastHttpStatus() == HttpStatus.SC_OK;
-    }
-
-    /**
-     * Insert a metadata in GN.<br/>
-     * 
-     * <ul>
-     * <li>Url: <tt>http://<i>server</i>:<i>port</i>/geonetwork/srv/en/metadata.insert</tt></li>
-     * <li>Mime-type: <tt>application/xml</tt></li>
-     * <li>Post request: <pre>{@code 
-     * <?xml version="1.0" encoding="UTF-8"?>
-     * <request>
-     *    <group>2</group>
-     *    <category>_none_</category>
-     *    <styleSheet>_none_</styleSheet>
-     *    <data><![CDATA[
-     *       <gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd"
-     *                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     *       ...
-     *          </gmd:DQ_DataQuality>
-     *         </gmd:dataQualityInfo>
-     *       </gmd:MD_Metadata>]]>
-     *    </data>
-     * </request> }</pre></li>
-     * </ul>
-     * 
-     * @return the id of the metadata created in geonetwork
-     * 
-     * @see <a href="http://geonetwork-opensource.org/latest/developers/xml_services/metadata_xml_services.html#insert-metadata-metadata-insert" >GeoNetwork documentation about inserting metadata</a>
-     */
-    private int gnInsertMetadata(HTTPUtils connection, String baseURL, final Element gnRequest) throws ActionException {
-
-        String serviceURL = baseURL + "/srv/en/xml.metadata.insert";                
-        String res = gnPut(connection, serviceURL, gnRequest);
-        if(connection.getLastHttpStatus() != HttpStatus.SC_OK)
-            throw new ActionException(this, "Error inserting metadata in GeoNetwork (HTTP code "+connection.getLastHttpStatus()+")");
-        
-        Element rese = parse(res);
         try {
-            return Integer.parseInt(rese.getChildText("id"));
-        } catch (Exception e) {
-            LOGGER.error("Error parsing metadata id from: " + res);
-            throw new ActionException(this, "Error parsing metadata id", e);
+            // perform a login into GeoNetwork
+            LOGGER.debug("Logging in");
+            boolean logged = gnClient.login(cfg.getLoginUsername(), cfg.getLoginPassword());
+            if (!logged) {
+                throw new ActionException(this, "Login failed");
+            }
+
+            long metadataId;
+
+            if (cfg.isOnlyMetadataInput()) { // only metadata available: we have to build the full request packet
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("Handling pure metadata file " + inputFile);
+                }
+
+                GNInsertConfiguration gncfg = new GNInsertConfiguration();
+                gncfg.setCategory(cfg.getCategory());
+                gncfg.setGroup(cfg.getGroup());
+                gncfg.setStyleSheet(cfg.getStyleSheet());
+                gncfg.setValidate(cfg.getValidate());
+
+                LOGGER.debug("Creating metadata");
+                metadataId = gnClient.insertMetadata(gncfg, inputFile);
+                LOGGER.info("Created metadata " + metadataId);
+
+            } else { // the full xml request is ready in the file to be sent to GN; just parse it
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("Handling full request file " + inputFile);
+                }
+
+                LOGGER.debug("Creating metadata");
+                metadataId = gnClient.insertRequest(inputFile);
+                LOGGER.info("Created metadata " + metadataId);
+
+            }
+
+            // set the metadata privileges if needed
+            List<GeonetworkInsertConfiguration.Privileges> privs = cfg.getPrivileges();
+            if (privs != null && !privs.isEmpty()) {
+                GNPrivConfiguration pcfg = new GNPrivConfiguration();
+                for (GeonetworkInsertConfiguration.Privileges priv : privs) {
+                    pcfg.addPrivileges(priv.getGroup(), priv.getOps());
+                }
+
+                LOGGER.debug("Setting privileges");
+                gnClient.setPrivileges(metadataId, pcfg);
+                LOGGER.info("Set privileges for " + privs.size() + " groups");
+            }
+
+            return events;
+        } catch (GNException ex) {
+            throw new ActionException(this, "Error performing a GeoNetwork call", ex);
         }
     }
-    
-    private void gnAdminMetadata(HTTPUtils connection, String baseURL, final Element gnRequest) throws ActionException {
 
-        String serviceURL = baseURL + "/srv/en/metadata.admin";                
-        gnPut(connection, serviceURL, gnRequest);
-        if(connection.getLastHttpStatus() != HttpStatus.SC_OK)
-            throw new ActionException(this, "Error setting metadata privileges in GeoNetwork");
-    }
-    
-    private String gnPut(HTTPUtils connection, String serviceURL, final Element gnRequest) throws ActionException {
-        
-        final XMLOutputter outputter = new XMLOutputter(Format.getCompactFormat());
-        String s = outputter.outputString(gnRequest);
-        
-        connection.setIgnoreResponseContentOnSuccess(false);
-        String res = connection.postXml(serviceURL, s);
-//        if(LOGGER.isInfoEnabled())
-//            LOGGER.info(serviceURL + " returned --> " + res);
-        return res;
-    }
-//    private String gnPut(HTTPUtils connection, String serviceURL, final Element gnRequest) throws ActionException {
-//        
-//        final XMLOutputter outputter = new XMLOutputter(Format.getCompactFormat());
-//        final PipedInputStream pis = new PipedInputStream();
-//        final PipedOutputStream pos;
-//        try {
-//            pos = new PipedOutputStream(pis);
-//        } catch (IOException ex) {
-//            throw new ActionException(this, "Error setting up streams", ex);
-//        }
-//        final String thid = "GN_PUT_"+System.currentTimeMillis() ; // TODO: set a unique action instance id
-//        
-//        Thread t = new Thread(new Runnable() {
-//
-////            @Override
-//            public void run() {
-//                try {
-//                    String s = outputter.outputString(gnRequest);
-//                    outputter.output(gnRequest, pos);        
-//                    pos.flush();
-//                    if(LOGGER.isInfoEnabled())
-//                        LOGGER.info("Data sent to GeoNetwork successfully");
-//                } catch (IOException ex) {
-//                    LOGGER.error("Error while sending data to GeoNetwork", ex);
-//                } finally {
-//                    IOUtils.closeQuietly(pis);
-//                    IOUtils.closeQuietly(pos);
-//                }
-//            }
-//        }, thid) ;
-//        t.start();
-//        Thread.yield();
-////        try {
-////            Thread.sleep(50);
-////        } catch (InterruptedException ex) {
-////            java.util.logging.Logger.getLogger(GeonetworkAction.class.getName()).log(Level.SEVERE, null, ex);
-////        }
-//                
-//        connection.setIgnoreResponseContentOnSuccess(false);
-//        String res = connection.postXml(serviceURL, pis);
-//        if(LOGGER.isInfoEnabled())
-//            LOGGER.info(serviceURL + " returned --> " + res);
-//        return res;
-//    }
-    
-    private Element parseFile(File file) throws ActionException {
-        try{
-			SAXBuilder builder = new SAXBuilder();
-			Document doc = builder.build(file);
-			return  (Element)doc.getRootElement().detach();
-		} catch (Exception ex) {
-			LOGGER.warn("Error parsing input file " + file);
-            throw new ActionException(this, "Error parsing input file " + file, ex);
-		}
-    }    
-    
-    private Element parse(String s) throws ActionException {
-        try{
-			SAXBuilder builder = new SAXBuilder();
-            s = s.trim();
-			Document doc = builder.build(new StringReader(s));
-			return  (Element)doc.getRootElement().detach();
-		} catch (Exception ex) {
-			LOGGER.warn("Error parsing input string: >>>" + s +"<<<");
-            throw new ActionException(this, "Error parsing input string", ex);
-		}
-    }    
+
 }
