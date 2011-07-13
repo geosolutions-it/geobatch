@@ -114,8 +114,7 @@
         <test.maxHeapSize>512M</test.maxHeapSize>
         <src.output>${basedir}/target</src.output>       
         <gt.version>8-SNAPSHOT</gt.version>
-<!--        <opengis.version>2.3-M1</opengis.version>-->
-        <imageio-ext.version>1.1</imageio-ext.version>
+        <imageio-ext.version>1.1.0</imageio-ext.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <spring.security.version>3.0.3.RELEASE</spring.security.version>
         <camel.version>2.6.0</camel.version>
