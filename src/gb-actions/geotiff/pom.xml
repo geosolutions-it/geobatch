@@ -60,7 +60,7 @@
             <artifactId>gb-core-impl</artifactId>
         </dependency>
 
-        <dependency>
+        <!-- dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geotiff</artifactId>
             <exclusions>
@@ -69,7 +69,7 @@
             		<artifactId>imageio-ext-tiff</artifactId>
             	</exclusion>
             </exclusions>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>it.geosolutions.geobatch</groupId>
@@ -88,18 +88,18 @@
 
             <!-- imageio-ext ================================================-->
 
-            <dependency>
+            <!-- dependency>
 		<groupId>it.geosolutions.imageio-ext</groupId>
 		<artifactId>imageio-ext-tiff</artifactId>
             </dependency>
             <dependency>
                 <groupId>it.geosolutions.imageio-ext</groupId>
                 <artifactId>imageio-ext-utilities</artifactId>
-            </dependency>
+            </dependency-->
 
             <!-- Java Advanced Imaging (JAI) ================================-->
 
-            <dependency>
+            <!-- dependency>
                 <groupId>javax.media</groupId>
                 <artifactId>jai_core</artifactId>
             </dependency>
@@ -110,7 +110,7 @@
             <dependency>
                 <groupId>javax.media</groupId>
                 <artifactId>jai_imageio</artifactId>
-            </dependency>
+            </dependency-->
 
     </dependencies>
 
