@@ -30,8 +30,9 @@ import it.geosolutions.geobatch.configuration.CatalogConfiguration;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 import it.geosolutions.geobatch.xstream.Alias;
 
-public class XStreamDAOService<T extends Configuration> extends BaseService implements
-        DAOService<T, String> {
+public class XStreamDAOService<T extends Configuration>
+    extends BaseService
+    implements DAOService<T, String> {
 
     private String baseDirectory;
 
@@ -41,16 +42,6 @@ public class XStreamDAOService<T extends Configuration> extends BaseService impl
         super(id, name, description);
         this.alias = alias;
     }
-//    public XStreamDAOService(Alias alias) {
-//        super(true);
-//        this.alias = alias;
-//    }
-
-//    public XStreamDAOService(String baseDirectory, Alias alias) {
-//        super(true);
-//        this.baseDirectory = baseDirectory;
-//        this.alias = alias;
-//    }
 
     public DAO createDAO(Class<T> clazz) {
         if (clazz.isAssignableFrom(FlowConfiguration.class))

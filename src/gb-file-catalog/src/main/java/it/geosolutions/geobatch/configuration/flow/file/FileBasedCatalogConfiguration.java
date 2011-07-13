@@ -45,18 +45,18 @@ public class FileBasedCatalogConfiguration extends BaseConfiguration implements
 
 	// private List<FlowConfiguration> flowConfigurations;
 
-	public FileBasedCatalogConfiguration(String id, String name,
-			String description, boolean dirty) {
+	public FileBasedCatalogConfiguration(String id, String name, String description, boolean dirty) {
 		super(id, name, description, dirty);
 	}
 
-	/**
-	 * workingDirectory: this attribute represents the configuring directory for
-	 * this flow. It can be relative to the catalog.xml directory or absolute.
-	 * Attention: the configuring directory should be different from the one
-	 * containing the configuration files.
-	 */
-	private String workingDirectory;
+    /**
+     * workingDirectory: this attribute represents the configuring directory for this flow.
+     * It can be relative to the catalog.xml directory or absolute.
+     * <P>
+     * <B>Attention: the configuring directory should be different from the one containing the configuration files.</B>
+     * @uml.property  name="workingDirectory"
+     */
+    private String workingDirectory;
 
 	/**
 	 * Getter for the workingDirectory
@@ -82,18 +82,13 @@ public class FileBasedCatalogConfiguration extends BaseConfiguration implements
 	 * @note it should be a sub-dir of ...
 	 * @TODO open a ticket to get getBaseDirectory() into Catalog interface
 	 */
-	public static String getAbsolutePath(String working_dir) /*
-															 * throws
-															 * FileNotFoundException
-															 */{
-		FileBasedCatalogImpl c = (FileBasedCatalogImpl) CatalogHolder
-				.getCatalog();
+	public static String getAbsolutePath(String working_dir) /* throws FileNotFoundException */{
+		FileBasedCatalogImpl c = (FileBasedCatalogImpl) CatalogHolder.getCatalog();
 		File fo = Path.findLocation(working_dir, c.getBaseDirectory());
 		if (fo != null) {
 			return fo.toString();
 		} else {
-			// TODO LOG throw new
-			// FileNotFoundException("Unable to locate the working dir");
+			// TODO LOG throw new FileNotFoundException("Unable to locate the working dir");
 			// throw new FileNotFoundException();
 			return null;
 		}

@@ -53,7 +53,16 @@
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-fs-catalog</artifactId>
         </dependency>
-		
+
+		<!-- ============================== -->
+		<!--     GN Manager                 -->
+		<!-- ============================== -->
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>geonetwork-manager</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
 		<!-- ============================== -->
 		<!--     Spring                     -->
 		<!-- ============================== -->
