@@ -31,6 +31,7 @@ import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
+import it.geosolutions.geobatch.settings.GBSettingsDAO;
 import it.geosolutions.geobatch.xstream.Alias;
 
 import java.io.File;
@@ -167,4 +168,10 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
 
     }
 
+    //==========================================================================
+
+    public void setSettingsDAO(GBSettingsDAO settingsDAO) {
+        super.setSettingsDAO(settingsDAO);
+    }
+    
 }

@@ -102,8 +102,8 @@ public class GeonetworkActionTest extends TestCase {
         cfg.setCategory("datasets");
         cfg.setGeonetworkServiceURL("http://localhost:8080/geonetwork");
         cfg.setGroup("1"); // group 1 is usually "all"
-        cfg.setLoginPassword("admin");
         cfg.setLoginUsername("admin");
+        cfg.setLoginPassword("admin");
         cfg.setOnlyMetadataInput(true);
         cfg.setStyleSheet("_none_");
         cfg.setValidate(Boolean.FALSE);

@@ -362,7 +362,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                             outFile = reTile(eventFile);
                             if (outFile != null) {
                                 if (LOGGER.isInfoEnabled())
-                                    LOGGER.info("GeotiffRetiler::execute(): SUCCESFULLY completed work on: "
+                                    LOGGER.info("GeotiffRetiler::execute(): SUCCESSFULLY completed work on: "
                                             + event.getSource());
                                 listenerForwarder.setProgress(100);
                                 ret.add(new FileSystemEvent(outFile, eventType));

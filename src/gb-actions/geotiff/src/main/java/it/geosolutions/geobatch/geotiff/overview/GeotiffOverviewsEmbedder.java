@@ -35,6 +35,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import javax.media.jai.JAI;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,7 +111,8 @@ public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
             final OverviewsEmbedder oe = new OverviewsEmbedder();
             oe.setDownsampleStep(downsampleStep);
             oe.setNumSteps(configuration.getNumSteps());
-            // oe.setInterp(Interpolation.getInstance(configuration.getInterp()));
+            // SG: this way we are sure we use the standard tile cache
+            oe.setTileCache(JAI.getDefaultInstance().getTileCache());
             oe.setScaleAlgorithm(configuration.getScaleAlgorithm());
             oe.setTileHeight(configuration.getTileH());
             oe.setTileWidth(configuration.getTileW());

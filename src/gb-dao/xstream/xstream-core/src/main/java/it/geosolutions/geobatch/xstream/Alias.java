@@ -53,25 +53,23 @@ public class Alias {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Setting aliases.");
         }
-        xstream
-                .alias(
-                        "CatalogConfiguration",
+        xstream.alias( "CatalogConfiguration",
                         it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration.class);
 
-        xstream.alias("FlowConfiguration",
+        xstream.alias( "JAISettings",
+                        it.geosolutions.geobatch.settings.JAISettings.class);
+
+        xstream.alias( "FlowConfiguration",
                 it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class);
-        xstream.alias("FileEventRule",
+
+        xstream.alias( "FileEventRule",
                 it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
 
-        xstream
-                .alias(
-                        "EventConsumerConfiguration",
+        xstream.alias( "EventConsumerConfiguration",
                         it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration.class,
                         it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class);
 
-        xstream
-                .alias(
-                        "EventGeneratorConfiguration",
+        xstream.alias( "EventGeneratorConfiguration",
                         it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration.class,
                         it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration.class);
 
@@ -87,20 +85,17 @@ public class Alias {
                 it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
                 "progressListenerConfigurations");
 
-        xstream
-                .addImplicitCollection(
+        xstream.addImplicitCollection(
                         it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
                         "rules",
                         it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
 
-        xstream
-                .addImplicitCollection(
+        xstream.addImplicitCollection(
                         it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
                         "actions",
                         it.geosolutions.geobatch.configuration.event.action.ActionConfiguration.class);
 
-        xstream
-                .addImplicitCollection(
+        xstream.addImplicitCollection(
                         it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
                         "listenerIds", "listenerId", String.class);
 

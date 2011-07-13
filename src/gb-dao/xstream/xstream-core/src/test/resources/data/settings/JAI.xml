@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JAISettings>
+    <id>JAI</id>
+    <memoryCapacity>42</memoryCapacity>
+    <pngNative>true</pngNative>
+    <jpegNative>false</jpegNative>
+</JAISettings>

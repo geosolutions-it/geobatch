@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 public class GeonetworkActionLoadTest extends TestCase {
     private final static Logger LOGGER = LoggerFactory.getLogger(GeonetworkActionLoadTest.class);
 
-    boolean runIntegrationTest = true;
+    boolean runIntegrationTest = false;
     
     public GeonetworkActionLoadTest() {
     }
