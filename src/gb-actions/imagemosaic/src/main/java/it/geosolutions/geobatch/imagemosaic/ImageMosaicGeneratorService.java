@@ -24,7 +24,6 @@ package it.geosolutions.geobatch.imagemosaic;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,34 +49,58 @@ public class ImageMosaicGeneratorService extends
      * @return new JGSFLoDeSSSWANFileConfigurator()
      */
     public ImageMosaicAction createAction(ImageMosaicConfiguration configuration) {
-        try {
             // absolutize working dir
-            String wd=Path.getAbsolutePath(configuration.getWorkingDirectory());
-            if (wd!=null){
-                configuration.setWorkingDirectory(wd);
-                return new ImageMosaicAction(configuration);
-            }
-            else
-                return null;
-        } catch (Throwable e) {
-            if (LOGGER.isInfoEnabled())
-                LOGGER.info(e.getLocalizedMessage(), e);
-            return null;
-        }
+            return new ImageMosaicAction(configuration);
     }
 
     @Override
     public boolean canCreateAction(ImageMosaicConfiguration configuration) {
-        try {
-            // absolutize working dir
-            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
-            if (wd != null) {
-                configuration.setWorkingDirectory(wd);
-                return true;
+        try {            
+            // //
+            // data flow configuration and dataStore name must not be null.
+            // //
+
+            if (configuration == null) {
+                final String message = "ImageMosaicAction: DataFlowConfig is null.";
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message,new IllegalStateException(message));
+            } else if ((configuration.getGeoserverURL() == null)) {
+                final String message = "GeoServerURL is null.";
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message,new IllegalStateException(message));
+            } else if ("".equals(configuration.getGeoserverURL())) {
+                final String message = "GeoServerURL is empty.";
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message,new IllegalStateException(message));
             } else {
-                if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("ImageMosaicGeneratorService::canCreateAction(): " +
-                                "unable to create action, it's not possible to get an absolute working dir.");
+            	//other checks
+            	
+	            
+	        	if (configuration.getWorkingDirectory()==null) {
+	        		if (LOGGER.isWarnEnabled())
+	                    LOGGER.warn("ImageMosaicGeneratorService::canCreateAction(): " +
+	                                "unable to create action, working dir is NULL.");
+	            }
+	            else {
+	            	// all checks are OK
+	            	// do some stuff
+
+	            	// absolutize working dir
+		        	final String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+		        	if (wd==null) {
+		        		if (LOGGER.isWarnEnabled())
+		                    LOGGER.warn("ImageMosaicGeneratorService::canCreateAction(): " +
+		                                "unable to create action, it's not possible to get an absolute working dir using: "+
+		                                configuration.getWorkingDirectory());
+		        		return false;
+		        	}
+		        	
+	                configuration.setWorkingDirectory(wd);
+	                
+	                // and return OK status
+	                return true;
+	            }
+	            
             }
         } catch (Throwable e) {
             if (LOGGER.isErrorEnabled())
