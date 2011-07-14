@@ -20,10 +20,10 @@
 
 	<!-- Environment Initialization -->
 	<bean id="globalConfig" class="it.geosolutions.geobatch.global.XStreamCatalogLoader"
-		depends-on="catalog,settingsDAO">
+		depends-on="catalog,settingsProcessor">
 		<constructor-arg ref="catalog" />
 		<constructor-arg ref="alias" />
-        <property name="settingsDAO" ref="settingsDAO"/>
+        <property name="settingsCatalog" ref="settingsCatalog"/>
 	</bean>
 
 	<!-- XStream flow manager DAO -->

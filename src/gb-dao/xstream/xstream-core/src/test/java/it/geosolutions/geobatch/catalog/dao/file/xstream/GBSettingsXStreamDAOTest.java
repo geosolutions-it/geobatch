@@ -25,8 +25,9 @@ package it.geosolutions.geobatch.catalog.dao.file.xstream;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.settings.GBSettings;
+import it.geosolutions.geobatch.settings.GBSettingsCatalog;
 import it.geosolutions.geobatch.settings.GBSettingsDAO;
-import it.geosolutions.geobatch.settings.JAISettings;
+import it.geosolutions.geobatch.settings.jai.JAISettings;
 import it.geosolutions.geobatch.xstream.Alias;
 
 import java.io.IOException;
@@ -56,7 +57,11 @@ public class GBSettingsXStreamDAOTest extends TestCase {
 
     @Before
     public void setUp() throws Exception {
-        this.context = new ClassPathXmlApplicationContext("classpath*:applicationContext.xml");
+        this.context = new ClassPathXmlApplicationContext(
+                new String[]{
+                        "classpath*:applicationContext.xml",
+                        "classpath*:applicationContext-xstream-test.xml"
+                });
     }
 
     private Alias createAlias() {
@@ -68,13 +73,13 @@ public class GBSettingsXStreamDAOTest extends TestCase {
 
     @Test
     public void testDAO() throws IOException, Exception {
-        GBSettingsDAO settingsDAO = CatalogHolder.getSettingsDAO();
-        assertNotNull("settingsDAO not set", settingsDAO);
+        GBSettingsCatalog settingsCatalog = CatalogHolder.getSettingsCatalog();
+        assertNotNull("settingsCatalog not set", settingsCatalog);
 
-        GBSettings s1 = settingsDAO.find("UNK");
+        GBSettings s1 = settingsCatalog.find("UNK");
         assertNull(s1);
 
-        GBSettings s2 = settingsDAO.find("JAI");
+        GBSettings s2 = settingsCatalog.find("JAI");
         assertNotNull("JAI config not loaded", s2);
         assertTrue(s2 instanceof JAISettings);
         
@@ -85,7 +90,7 @@ public class GBSettingsXStreamDAOTest extends TestCase {
         assertFalse(js.isJpegNative());
 
         try {
-            settingsDAO.find("BAD");
+            settingsCatalog.find("BAD");
             fail("Untrapped error");
         } catch (Exception exception) {
             LOGGER.info("Exception properly trapped: " + exception.getMessage());

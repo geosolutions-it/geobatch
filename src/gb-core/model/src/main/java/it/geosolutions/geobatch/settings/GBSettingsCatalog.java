@@ -22,13 +22,15 @@
 
 package it.geosolutions.geobatch.settings;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
  * 
  * @author ETj (etj at geo-solutions.it)
  */
-public interface GBSettingsDAO {
+public interface GBSettingsCatalog {
+
 
     List<String> getIds();
 
@@ -42,4 +44,27 @@ public interface GBSettingsDAO {
      * @return true on success.
      */
     boolean save(GBSettings settings);
+
+    /**
+     * clear internal cache and force reloading when needed.
+     */
+    void flush();
+
+    //==========================================================================
+    /**
+     * catalog listeners.
+     *
+     */
+    Collection<GBSettingsListener> getListeners();
+
+    /**
+     * Adds a listener to the catalog.
+     */
+    void addListener(GBSettingsListener listener);
+
+    /**
+     * Removes a listener from the catalog.
+     */
+    boolean removeListener(GBSettingsListener listener);
+
 }
