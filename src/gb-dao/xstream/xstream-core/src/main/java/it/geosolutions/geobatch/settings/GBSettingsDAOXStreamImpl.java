@@ -89,16 +89,39 @@ public class GBSettingsDAOXStreamImpl implements GBSettingsDAO  {
                 return obj;
             }
         } catch (Exception e) {
-            final IOException ioe = new IOException("Unable to load settings with id:" + id + " ("+e.getMessage()+")");
-            ioe.initCause(e);
-            throw ioe;
+            throw new IOException("Unable to load settings with id:" + id + " ("+e.getMessage()+")", e);
         } finally {
             IOUtils.closeQuietly(inStream);
         }
     }
 
-    public void save(GBSettings settings) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean save(GBSettings settings) {
+        String id =settings.getId();
+        if(id == null)
+            throw new NullPointerException("Id is null");
+
+        try {
+            final File outFile = new File(settingsDir, id + ".xml");
+            if (! outFile.canWrite()) {
+                LOGGER.warn("Unwritable file " + outFile);
+                return false;
+            } else if (outFile.isDirectory()) {
+                LOGGER.warn("Output file " + outFile + " is a dir");
+                return false;
+            } else {
+                XStream xstream = new XStream();
+                alias.setAliases(xstream);
+                String xml = xstream.toXML(settings);
+                FileUtils.write(outFile, xml);
+
+                if (LOGGER.isInfoEnabled())
+                    LOGGER.info("Stored settings " + id);
+                return true;
+            }
+        } catch (IOException e) {
+            LOGGER.error("Unable to store settings with id:" + id, e);
+            return false;
+        }
     }
 
     //==========================================================================

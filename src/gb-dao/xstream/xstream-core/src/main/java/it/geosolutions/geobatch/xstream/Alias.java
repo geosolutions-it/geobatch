@@ -57,7 +57,7 @@ public class Alias {
                         it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration.class);
 
         xstream.alias( "JAISettings",
-                        it.geosolutions.geobatch.settings.JAISettings.class);
+                        it.geosolutions.geobatch.settings.jai.JAISettings.class);
 
         xstream.alias( "FlowConfiguration",
                 it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class);

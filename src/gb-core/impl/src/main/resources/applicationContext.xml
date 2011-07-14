@@ -45,4 +45,21 @@
 <!--        <property name="description"><value> Instantiates ProgressListeners that will hold the latest received events.</value></property>-->
     </bean>
 
+    <!-- GB Global Settings ================================================ -->
+
+    <bean id="settingsCatalog" class="it.geosolutions.geobatch.settings.GBSettingsCatalogImpl">
+        <property name="settingsDAO" ref="settingsDAO"/>
+    </bean>
+
+    <bean id="settingsProcessor" class="it.geosolutions.geobatch.settings.GBSettingsProcessor" lazy-init="false">
+        <property name="settingsDAO" ref="settingsDAO"/>
+        <property name="settingsCatalog" ref="settingsCatalog"/>
+    </bean>
+
+    <!-- GB Global Settings ================================================ -->
+
+    <bean id="jaiSettingsListener" class="it.geosolutions.geobatch.settings.jai.JAISettingsListener" lazy-init="false">
+    </bean>
+
+
 </beans>

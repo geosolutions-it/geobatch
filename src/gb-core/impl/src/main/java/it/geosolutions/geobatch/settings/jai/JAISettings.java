@@ -20,7 +20,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.settings;
+package it.geosolutions.geobatch.settings.jai;
+
+import it.geosolutions.geobatch.settings.GBSettings;
 
 /**
  * 

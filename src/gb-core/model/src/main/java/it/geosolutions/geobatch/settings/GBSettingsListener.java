@@ -20,33 +20,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package it.geosolutions.geobatch.global;
-
-import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.settings.GBSettingsCatalog;
+package it.geosolutions.geobatch.settings;
 
 /**
- * @author Alessio Fabiani, GeoSolutions
  * 
+ * @author ETj (etj at geo-solutions.it)
  */
-public abstract class CatalogHolder {
-    private static Catalog catalog;
-    private static GBSettingsCatalog settingsCatalog;
+public abstract class GBSettingsListener<T extends GBSettings> {
 
-    public synchronized static Catalog getCatalog() {
-        return catalog;
-    }
-
-    protected synchronized static void setCatalog(Catalog catalog) {
-        CatalogHolder.catalog = catalog;
-    }
-
-    public static GBSettingsCatalog getSettingsCatalog() {
-        return settingsCatalog;
-    }
-
-    protected void setSettingsCatalog(GBSettingsCatalog settingsCatalog) {
-        CatalogHolder.settingsCatalog = settingsCatalog;
-    }
-
+    public abstract void onStartup(GBSettingsDAO settingsDAO);
+    public abstract void beforeSave(T settings);
+    public abstract void afterSave(T settings, boolean success);
 }

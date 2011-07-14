@@ -3,7 +3,6 @@
 
 <beans default-init-method="init" default-destroy-method="dispose">
 
-
 	<bean id="fakeDataDirHandler" class="it.geosolutions.geobatch.catalog.dao.file.xstream.FakeDataDirHandler">
 	</bean>
 
