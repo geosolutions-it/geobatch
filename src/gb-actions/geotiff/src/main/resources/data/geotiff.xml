@@ -15,7 +15,7 @@
 
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>briseide_2/in</watchDirectory>
+		<watchDirectory>geotiff/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<interval>0 * * * * ?</interval><!-- CRON: every minute at sec 0 -->
@@ -57,7 +57,7 @@
 			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 			
-			<workingDirectory>briseide_2</workingDirectory>
+			<workingDirectory>geotiff</workingDirectory>
 			<serviceID>GeotiffRetilerService</serviceID>
 			<forceToBigTiff>false</forceToBigTiff>
 			<tileH>256</tileH>
@@ -96,7 +96,7 @@
 			
 			<workingDirectory>geotiff</workingDirectory>
 			
-			<crs>EPSG:3765</crs>
+			<crs>EPSG:4326</crs>
 			
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>

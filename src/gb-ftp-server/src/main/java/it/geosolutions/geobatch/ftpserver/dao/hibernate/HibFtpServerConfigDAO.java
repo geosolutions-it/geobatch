@@ -26,11 +26,11 @@
 package it.geosolutions.geobatch.ftpserver.dao.hibernate;
 
 import it.geosolutions.geobatch.ftpserver.dao.FtpServerConfigDAO;
-
 import it.geosolutions.geobatch.ftpserver.model.FtpServerConfig;
 import it.geosolutions.geobatch.users.dao.DAOException;
 
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;

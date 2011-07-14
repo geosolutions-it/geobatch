@@ -22,8 +22,8 @@
 package it.geosolutions.geobatch.flow.event.consumer;
 
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
-import it.geosolutions.geobatch.misc.ListenerRegistry;
 import it.geosolutions.geobatch.flow.Job;
+import it.geosolutions.geobatch.misc.ListenerRegistry;
 
 import java.util.EventObject;
 

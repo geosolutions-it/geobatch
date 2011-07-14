@@ -30,6 +30,7 @@
 package it.geosolutions.geobatch.ftpserver.dao;
 
 import it.geosolutions.geobatch.users.dao.DAOException;
+
 import java.io.Serializable;
 
 /**

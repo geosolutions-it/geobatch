@@ -40,9 +40,6 @@ import java.util.List;
 import java.util.Queue;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOCase;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -24,16 +24,17 @@ package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemListener;
+
 import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.swing.event.EventListenerList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.swing.event.EventListenerList;
 
 /**
  * 

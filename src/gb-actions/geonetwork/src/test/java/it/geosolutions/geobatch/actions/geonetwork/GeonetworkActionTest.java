@@ -21,14 +21,16 @@ package it.geosolutions.geobatch.actions.geonetwork;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.Queue;
+
 import junit.framework.TestCase;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

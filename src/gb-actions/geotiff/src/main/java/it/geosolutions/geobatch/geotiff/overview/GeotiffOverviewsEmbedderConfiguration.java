@@ -22,10 +22,10 @@
 
 package it.geosolutions.geobatch.geotiff.overview;
 
-import javax.media.jai.Interpolation;
-
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+
+import javax.media.jai.Interpolation;
 
 import org.geotools.utils.CoverageToolsConstants;
 

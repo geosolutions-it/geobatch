@@ -26,7 +26,6 @@ import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.settings.GBSettings;
 import it.geosolutions.geobatch.settings.GBSettingsCatalog;
-import it.geosolutions.geobatch.settings.GBSettingsDAO;
 import it.geosolutions.geobatch.settings.jai.JAISettings;
 import it.geosolutions.geobatch.xstream.Alias;
 

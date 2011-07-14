@@ -19,15 +19,10 @@
  */
 package it.geosolutions.geobatch.tools.string;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
-import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.slf4j.Logger;

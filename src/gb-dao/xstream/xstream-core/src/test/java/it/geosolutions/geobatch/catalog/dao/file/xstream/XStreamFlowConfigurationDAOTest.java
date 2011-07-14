@@ -22,24 +22,16 @@
 
 package it.geosolutions.geobatch.catalog.dao.file.xstream;
 
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
-import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
-import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
-import it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.xstream.Alias;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.Resource;
 
 /**
  * 

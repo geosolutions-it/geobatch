@@ -29,6 +29,7 @@ import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 
 import java.util.EventObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

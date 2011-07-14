@@ -21,20 +21,22 @@
  */
 package it.geosolutions.geobatch.ftpserver.ftp;
 
-import it.geosolutions.geobatch.ftpserver.model.*;
+import it.geosolutions.geobatch.ftpserver.model.FtpProps;
 import it.geosolutions.geobatch.users.model.GBUser;
 import it.geosolutions.geobatch.users.model.GBUserRole;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.AuthorizationRequest;
 import org.apache.ftpserver.ftplet.User;
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
 import org.apache.ftpserver.usermanager.impl.TransferRatePermission;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a GBuser merged with its related FTP props

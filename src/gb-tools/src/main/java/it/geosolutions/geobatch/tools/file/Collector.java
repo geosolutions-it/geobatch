@@ -29,11 +29,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A collector which wraps the DirectoryWalker to define a Collector which is able to collect

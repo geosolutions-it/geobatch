@@ -25,7 +25,6 @@ import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.global.CatalogHolder;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * 

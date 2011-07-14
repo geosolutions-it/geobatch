@@ -28,11 +28,11 @@ import it.geosolutions.geobatch.flow.event.action.ActionService;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates an Action from a scripting language.

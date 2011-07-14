@@ -23,7 +23,6 @@ package it.geosolutions.geobatch.actions.freemarker;
 
 import it.geosolutions.geobatch.tools.system.Property;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

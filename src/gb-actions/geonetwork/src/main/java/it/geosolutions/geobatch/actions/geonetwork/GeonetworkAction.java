@@ -26,8 +26,6 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geonetwork.GNClient;
 import it.geosolutions.geonetwork.exception.GNException;
-import it.geosolutions.geonetwork.exception.GNLibException;
-import it.geosolutions.geonetwork.exception.GNServerException;
 import it.geosolutions.geonetwork.util.GNInsertConfiguration;
 import it.geosolutions.geonetwork.util.GNPrivConfiguration;
 

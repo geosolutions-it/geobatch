@@ -1,13 +1,5 @@
 package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
-import static org.junit.Assert.fail;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
-
 import org.junit.Test;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
-import org.quartz.impl.StdSchedulerFactory;
 
 
 public class GBFSMQuartzTest {

@@ -25,6 +25,7 @@ package it.geosolutions.geobatch.settings.jai;
 import it.geosolutions.geobatch.settings.GBSettings;
 import it.geosolutions.geobatch.settings.GBSettingsDAO;
 import it.geosolutions.geobatch.settings.GBSettingsListener;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -8,12 +8,14 @@ import it.geosolutions.geobatch.ftpserver.model.FtpProps;
 import it.geosolutions.geobatch.users.dao.DAOException;
 import it.geosolutions.geobatch.users.dao.GBUserDAO;
 import it.geosolutions.geobatch.users.model.GBUser;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.hibernate.Hibernate;
 import org.hibernate.ObjectNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

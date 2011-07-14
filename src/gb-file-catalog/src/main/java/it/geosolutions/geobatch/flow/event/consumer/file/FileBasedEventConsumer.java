@@ -47,13 +47,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.TimeZone;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Simone Giannecchini, GeoSolutions S.A.S.

@@ -37,14 +37,13 @@ import java.util.Queue;
 
 import javax.media.jai.JAI;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.geotools.utils.imageoverviews.OverviewsEmbedder;
 import org.geotools.utils.progress.ExceptionEvent;
 import org.geotools.utils.progress.ProcessingEvent;
 import org.geotools.utils.progress.ProcessingEventListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Action to add overview to an input geotif image. NOTE: only one image is available.

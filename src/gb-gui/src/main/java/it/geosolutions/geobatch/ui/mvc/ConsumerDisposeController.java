@@ -24,14 +24,14 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import java.util.List;
-
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+
+import java.util.List;
 
 import org.springframework.web.servlet.ModelAndView;
 

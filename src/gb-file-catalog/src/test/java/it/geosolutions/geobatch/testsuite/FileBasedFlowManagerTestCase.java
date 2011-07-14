@@ -22,26 +22,18 @@
 
 package it.geosolutions.geobatch.testsuite;
 
-import it.geosolutions.filesystemmonitor.OsType;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
-import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
-import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
-import it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule;
-import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**

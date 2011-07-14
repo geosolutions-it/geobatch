@@ -237,7 +237,7 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
             final String outputFileSuffix = "." + FilenameUtils.getExtension(conf.getInput());
             outputFile = File.createTempFile(outputFilePrefix, outputFileSuffix, outputDir);
             if (LOGGER.isInfoEnabled())
-                LOGGER.info("FreeMarkerAction.buildOutput(): Output directory name: "
+                LOGGER.info("FreeMarkerAction.buildOutput(): Output file name: "
                         + outputFile.toString());
             fw = new FileWriter(outputFile);
         } catch (IOException ioe) {

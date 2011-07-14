@@ -25,10 +25,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.commons.io.FileCleaningTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.apache.commons.io.FileCleaningTracker;
 
 public final class FileGarbageCollector {
     private static final Logger LOGGER=LoggerFactory.getLogger(FileGarbageCollector.class);

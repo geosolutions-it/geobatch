@@ -21,13 +21,14 @@
  */
 package it.geosolutions.geobatch.xstream;
 
-import com.thoughtworks.xstream.XStream;
-
 import it.geosolutions.geobatch.registry.AliasRegistry;
+
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  * TODO: We need to have one (or more) XML file and to bind aliases dynamically.

@@ -19,21 +19,24 @@
  */
 package it.geosolutions.geobatch.actions.geonetwork;
 
-import com.thoughtworks.xstream.XStream;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.tools.file.IOUtils;
 import it.geosolutions.geobatch.xstream.Alias;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import junit.framework.TestCase;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  *
