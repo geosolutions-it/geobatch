@@ -84,10 +84,10 @@ public class GBSettingsXStreamDAOTest extends TestCase {
         
         JAISettings js = (JAISettings) s2;
 
-        assertEquals(42.0f, js.getMemoryCapacity());
-        assertTrue(js.isPngNative());
-        assertFalse(js.isJpegNative());
-
+        assertEquals(0.5, js.getMemoryCapacity());
+        
+        assertTrue(js.isPngAcceleration());
+        assertFalse(js.isJpegAcceleration());
         try {
             settingsCatalog.find("BAD");
             fail("Untrapped error");

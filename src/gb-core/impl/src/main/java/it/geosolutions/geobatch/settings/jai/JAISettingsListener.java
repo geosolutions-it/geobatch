@@ -26,12 +26,23 @@ import it.geosolutions.geobatch.settings.GBSettings;
 import it.geosolutions.geobatch.settings.GBSettingsDAO;
 import it.geosolutions.geobatch.settings.GBSettingsListener;
 
+import javax.media.jai.JAI;
+import javax.media.jai.RecyclingTileFactory;
+import javax.media.jai.TileCache;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+//you have to link the tilecachetool project!!!
+//import tilecachetool.TCTool;
+
 
 /**
  * 
  * @author ETj (etj at geo-solutions.it)
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * 
+ * @see http://svn.codehaus.org/geoserver/trunk/src/main/src/main/java/org/geoserver/jai/JAIInitializer.java
  */
 public class JAISettingsListener extends GBSettingsListener<JAISettings> {
     private static Logger LOGGER = LoggerFactory.getLogger(JAISettingsListener.class);
@@ -40,18 +51,21 @@ public class JAISettingsListener extends GBSettingsListener<JAISettings> {
     public void onStartup(GBSettingsDAO settingsDAO) {
         JAISettings settings = null;
         try {
-            GBSettings loaded = settingsDAO.find("JAI");
+            final GBSettings loaded = settingsDAO.find("JAI");
             settings = (JAISettings)loaded;
         } catch (Exception ex) {
-            LOGGER.warn("Could not read JAI settings.", ex);
+        	if (LOGGER.isWarnEnabled())
+        		LOGGER.warn("Could not read JAI settings.", ex);
         }
 
         if(settings == null) {
-            LOGGER.info("Using default JAI settings");
+        	if (LOGGER.isInfoEnabled())
+        		LOGGER.info("Using default JAI settings");
             settings = new JAISettings();
         }
-
-        LOGGER.info("Initializing JAI settings");
+        
+        if (LOGGER.isInfoEnabled())
+        	LOGGER.info("Initializing JAI settings");
         setJAIProperties(settings);
     }
 
@@ -62,14 +76,52 @@ public class JAISettingsListener extends GBSettingsListener<JAISettings> {
 
     @Override
     public void afterSave(JAISettings settings, boolean success) {
-        LOGGER.info("Applying new JAI settings");
+    	if (LOGGER.isInfoEnabled())
+    		LOGGER.info("Applying new JAI settings");
         setJAIProperties(settings);
     }
 
 
-    private void setJAIProperties(JAISettings settings) {
-        LOGGER.warn("*** DO SOMETHING WITH JAI PROPERTIES HERE!");
-        LOGGER.warn(settings.toString());
+    private void setJAIProperties(JAISettings jai) {
+    	
+    	JAI jaiDef = JAI.getDefaultInstance();
+        jai.setJai( jaiDef );
+        
+        // setting JAI wide hints
+        jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED, jai.isRecycling());
+        
+        // tile factory and recycler
+        if(jai.isRecycling()) {
+            final RecyclingTileFactory recyclingFactory = new RecyclingTileFactory();
+            jaiDef.setRenderingHint(JAI.KEY_TILE_FACTORY, recyclingFactory);
+            jaiDef.setRenderingHint(JAI.KEY_TILE_RECYCLER, recyclingFactory);
+        }
+        
+        // Setting up Cache Capacity
+        final TileCache jaiCache =  jaiDef.getTileCache();
+        jai.setTileCache( jaiCache );
+        
+        long jaiMemory = (long) (jai.getMemoryCapacity() * Runtime.getRuntime().maxMemory());
+        jaiCache.setMemoryCapacity(jaiMemory);
+        
+        // Setting up Cache Threshold
+        jaiCache.setMemoryThreshold((float) jai.getMemoryThreshold());
+        
+        jaiDef.getTileScheduler().setParallelism(jai.getTileThreads());
+        jaiDef.getTileScheduler().setPrefetchParallelism(jai.getTileThreads());
+        jaiDef.getTileScheduler().setPriority(jai.getTilePriority());
+        jaiDef.getTileScheduler().setPrefetchPriority(jai.getTilePriority());
+        
+        // Workaround for native mosaic BUG
+//        Registry.setNativeAccelerationAllowed("Mosaic", jai.isAllowNativeMosaic(), jaiDef);
+        
+
+      //you have to link the tilecachetool project!!!
+//      new TCTool((SunTileCache)JAI.getDefaultInstance().getTileCache());
+      
+
+    	if (LOGGER.isInfoEnabled())
+    		LOGGER.info("JAI is set as following: "+jai.toString());
     }
 
 }

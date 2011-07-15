@@ -46,14 +46,8 @@
 			<failIgnored>false</failIgnored>
 		  
 			<workingDirectory>shp2pg</workingDirectory>
-			<!--dbServerIp>briseide02.ingr.briseide.eu</dbServerIp>
-			<dbUID>geonetwork</dbUID>
-			<dbPWD>briseide</dbPWD>
-			<dbPort>5432</dbPort>
-			<dbName>geonetwork</dbName>
-			<dbType>postgis</dbType-->
 			
-			<dbServerIp>briseide.med.core.it</dbServerIp>
+			<dbServerIp>localhost</dbServerIp>
 			<dbUID>postgres</dbUID>
 			<dbPWD>postgres</dbPWD>
 			<dbPort>5432</dbPort>
