@@ -24,14 +24,10 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
-import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
-
-import java.util.List;
 
 import org.springframework.web.servlet.ModelAndView;
 
@@ -52,26 +48,16 @@ public class ConsumerDisposeController extends ConsumerAbstractController {
 					|| status.equals(EventConsumerStatus.CANCELED)
 					|| status.equals(EventConsumerStatus.FAILED)) {
 				
-				// Progress Logging...
-				CumulatingProgressListener cpl;
+				if (consumer instanceof FileBasedEventConsumer){
+					final FileBasedEventConsumer fileConsumer=(FileBasedEventConsumer)consumer;
 
-				cpl = (CumulatingProgressListener) consumer
-						.getProgressListener(CumulatingProgressListener.class);
-				if (cpl != null)
-					cpl.clearMessages();
-
-				// Current Action Status...
-				final List<BaseAction> actions = consumer.getActions();
-				if (actions != null) {
-					for (BaseAction action : actions) {
-						// try the most interesting information holder
-						cpl = (CumulatingProgressListener) action
-								.getProgressListener(CumulatingProgressListener.class);
-						if (cpl != null)
-							cpl.clearMessages();
-					}
+					// dispose the object
+					fm.dispose(fileConsumer);
+					
+					// start manually clear action instances and cumulators
+					fileConsumer.clear();
 				}
-				fm.dispose((FileBasedEventConsumer) consumer);
+				
 			}
 		}
 

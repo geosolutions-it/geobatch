@@ -27,6 +27,7 @@ package it.geosolutions.geobatch.ui.mvc;
 import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+import it.geosolutions.geobatch.flow.tools.FileBasedFlowManagerUtils;
 
 import java.util.List;
 
@@ -52,25 +53,30 @@ public class FlowManagerClearController extends AbstractController {
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		
 		Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
-		String fmId = request.getParameter("fmId");
-
+		
+		final String fmId = request.getParameter("fmId");
+		
+		FileBasedFlowManagerUtils.clear(fmId);
+		
 		ModelAndView mav = new ModelAndView("flows");
-		if (fmId != null) {
-			FileBasedFlowManager fm = catalog.getResource(fmId,
-					FileBasedFlowManager.class);
-			if (fm != null) {
-
-				List<FileBasedEventConsumer> consumers = fm.getEventConsumers();
-				synchronized (consumers) {
-					final int size = consumers.size();
-					final ConsumerDisposeController cdc=new ConsumerDisposeController();
-					for (int index=size-1; index >= 0; --index) {
-						cdc.runStuff(mav, fm, consumers.get(index));
-					}	
-				}
-			}
-		}
+		
+//		if (fmId != null) {
+//			FileBasedFlowManager fm = catalog.getResource(fmId,
+//					FileBasedFlowManager.class);
+//			if (fm != null) {
+//
+//				List<FileBasedEventConsumer> consumers = fm.getEventConsumers();
+//				synchronized (consumers) {
+//					final int size = consumers.size();
+//					final ConsumerDisposeController cdc=new ConsumerDisposeController();
+//					for (int index=size-1; index >= 0; --index) {
+//						cdc.runStuff(mav, fm, consumers.get(index));
+//					}	
+//				}
+//			}
+//		}
 
 		mav.addObject("flowManagers",
 				catalog.getFlowManagers(FileBasedFlowManager.class));

@@ -28,12 +28,16 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerService;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
+import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
+import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.IOUtils;
 import it.geosolutions.geobatch.tools.file.Path;
@@ -589,7 +593,46 @@ public class FileBasedEventConsumer
         this.commonPrefixRegex = null;
         this.mandatoryRules.clear();
         this.optionalRules.clear();
+        
+    }
 
+    /**
+     * 
+     * remove all Cumulating progress listener from the Consumer and containing action(s)
+     * remove all the actions from the action list
+     * 
+     */
+    public void clear(){
+
+        // Progress Logging...
+   		final ProgressListenerForwarder lf= this.getListenerForwarder();
+   		final List <? extends IProgressListener> listeners=lf.getListeners();
+   		if (listeners!=null){
+   			for (IProgressListener listener : listeners){
+   				
+   				if (listener instanceof CumulatingProgressListener){
+   					((CumulatingProgressListener)listener).clearMessages();
+   				}
+   			}
+   		}
+   		
+   		// Current Action Status...
+//   		final List<? extends Action<FileSystemEvent>> actions = getActions();
+   		if (actions != null) {
+   			for (Action action : this.actions) {
+   				
+   				if (action instanceof BaseAction<?>){
+   					final BaseAction<?> baseAction=(BaseAction)action;
+   					// try the most interesting information holder
+   					final CumulatingProgressListener cpl= (CumulatingProgressListener) baseAction
+   							.getProgressListener(CumulatingProgressListener.class);
+   					if (cpl != null)
+   						cpl.clearMessages();
+
+   				}
+   			}
+   			this.actions.clear();
+   		}
     }
 
     @Override

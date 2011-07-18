@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +87,8 @@ public final class FileRemover extends Thread {
     		cal.set(Calendar.DAY_OF_YEAR, (354+(days-daysAgo)));
     		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR)-1);
     	}
-    	Collector coll=new Collector(FileFilterUtils.ageFileFilter(cal.getTime(), true));
+//    	cal.getTime().toString()
+    	final Collector coll=new Collector(FileFilterUtils.andFileFilter(FileFilterUtils.directoryFileFilter(),FileFilterUtils.ageFileFilter(cal.getTime(), true)),1);
     	return coll.collect(root);
     }
 

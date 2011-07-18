@@ -63,7 +63,7 @@ public class Collector extends DirectoryWalker<File> {
     }
 
     /**
-     * Set a new filter for this colletctor. (can be null)
+     * Set a new filter for this collector. (can be null)
      * @param filter
      */
     public void setFilter(FileFilter filter) {
@@ -106,19 +106,19 @@ public class Collector extends DirectoryWalker<File> {
             
     }
 
-//    @Override
-//    protected boolean handleDirectory(File directory, int depth, Collection<File> results)
-//            throws IOException {
-//        if (this.filter != null) {
-//            if (this.filter.accept(directory)) {
-//                results.add(directory);
-//            }
-//        }
-//        else {
-//            results.add(directory);
-//        }
-//        return true; // process ALL directory
-//    }
+    @Override
+    protected boolean handleDirectory(File directory, int depth, Collection<File> results)
+            throws IOException {
+        if (this.filter != null) {
+            if (this.filter.accept(directory)) {
+                results.add(directory);
+            }
+        }
+        else {
+            results.add(directory);
+        }
+        return true; // process ALL directory
+    }
 
     @Override
     protected File[] filterDirectoryContents(File directory, int depth, File[] files)
