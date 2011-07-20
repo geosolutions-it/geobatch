@@ -12,31 +12,36 @@
 			<description>description</description>
 			<name>test</name>
 		</FileEventRule>
-<!--		<GeoServerActionConfiguration>-->
-<!--		 	<serviceID>geotiffGeoServerGeneratorService</serviceID>-->
-<!--			<workingDirectory>flow1workingdir</workingDirectory>-->
-<!--			<crs>EPSG:4326</crs>-->
-<!--			<envelope/>-->
-<!--			<dataTransferMethod>URL</dataTransferMethod>-->
-<!--			<geoserverPWD>geoserver</geoserverPWD>-->
-<!--			<geoserverUID>admin</geoserverUID>-->
-<!--			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>-->
-<!--			 storeFilePrefix>c41078a</storeFilePrefix -->
-<!--			<wmsPath>/</wmsPath>-->
-<!--			<defaultStyle>raster</defaultStyle>-->
-<!--			<styles/>-->
-<!--			 styles>-->
-<!--				<style>raster.sld</style>-->
-<!--			</styles -->
-<!--			<id>a1</id>-->
-<!--			<description>description</description>-->
-<!--			<name>test</name>-->
-<!--		</GeoServerActionConfiguration>		-->
-<!--		<id>id</id>-->
-<!--		<description>description</description>-->
-<!--		<name>test</name>-->
-<!--	</EventConsumerConfiguration>-->
-	<eventGeneratorConfiguration class="FsEventGeneratorConfiguration">
+		<!-- <GeoServerActionConfiguration>
+			<serviceID>GeotiffGeoServerService</serviceID>
+			<id>geotiff</id>
+			<description>Action to ingest GeoTIFF on GeoServer</description>
+			<name>geotiff action</name>
+
+			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
+			<listenerId>GeoTIFFActionLogger0</listenerId>
+			
+			<workingDirectory>geotiff</workingDirectory>
+			
+			<crs>EPSG:4326</crs>
+			
+			<envelope/>
+			<dataTransferMethod>EXTERNAL</dataTransferMethod>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:9999/geoserver</geoserverURL>
+			<defaultNamespace>ciok</defaultNamespace>
+
+			<wmsPath>/</wmsPath>
+			<defaultStyle>raster</defaultStyle>
+			<styles/>
+		</GeoServerActionConfiguration> -->
+		<id>id</id>
+		<description>description</description>
+		<name>test</name>
+	</EventConsumerConfiguration>
+	<EventGeneratorConfiguration>
+		<serviceID>fsEventGeneratorService</serviceID>
 		<wildCard>*.*</wildCard>
 		<watchDirectory>flow1workingdir/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
@@ -44,8 +49,8 @@
 		<id>id</id>
 		<description>description</description>
 		<name>test</name>
-	</eventGeneratorConfiguration>
-	<id>flow1id</id>
+	</EventGeneratorConfiguration>
+	<id>flow1</id>
 	<description>flow1desc</description>
 	<name>flow1name</name>
 </FlowConfiguration>

@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.settings;
 
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;

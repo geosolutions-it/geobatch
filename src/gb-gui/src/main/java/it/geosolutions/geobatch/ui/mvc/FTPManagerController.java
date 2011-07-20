@@ -28,17 +28,17 @@ import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
 import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
 
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.ftplet.FtpStatistics;
 import org.apache.ftpserver.impl.DefaultFtpServer;
 import org.apache.ftpserver.impl.DefaultFtpServerContext;
 import org.apache.ftpserver.impl.FtpServerContext;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 

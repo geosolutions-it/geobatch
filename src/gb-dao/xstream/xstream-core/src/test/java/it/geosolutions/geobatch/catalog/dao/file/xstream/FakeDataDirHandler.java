@@ -20,10 +20,10 @@
 package it.geosolutions.geobatch.catalog.dao.file.xstream;
 
 import it.geosolutions.geobatch.catalog.file.DataDirHandler;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.ApplicationContext;
@@ -37,7 +37,7 @@ import org.springframework.core.io.Resource;
 public class FakeDataDirHandler extends DataDirHandler implements ApplicationContextAware {
 
     private File dataDirectory;
-    private ApplicationContext applicationContext;
+//    private ApplicationContext applicationContext;
 
     public void setDataDirectory(File dataDirectory) {
         this.dataDirectory = dataDirectory;

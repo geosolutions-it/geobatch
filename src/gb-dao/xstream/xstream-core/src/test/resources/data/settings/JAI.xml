@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <JAISettings>
     <id>JAI</id>
-    <memoryCapacity>42</memoryCapacity>
-    <pngNative>true</pngNative>
-    <jpegNative>false</jpegNative>
+    
+    <allowInterpolation>false</allowInterpolation>
+    <recycling>false</recycling>
+    <tilePriority>5</tilePriority>
+    <tileThreads>7</tileThreads>
+    <memoryCapacity>0.5</memoryCapacity>
+    <memoryThreshold>0.45</memoryThreshold>
+    <imageIOCache>true</imageIOCache>
+    <pngAcceleration>true</pngAcceleration>
+    <jpegAcceleration>false</jpegAcceleration>
+    <allowNativeMosaic>false</allowNativeMosaic>
 </JAISettings>

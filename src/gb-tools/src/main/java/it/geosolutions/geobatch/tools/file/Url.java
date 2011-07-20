@@ -26,10 +26,9 @@ import it.geosolutions.geobatch.tools.check.Objects;
 import java.io.File;
 import java.net.URL;
 
+import org.geotools.data.DataUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.geotools.data.DataUtilities;
 
 public class Url {
     private final static Logger LOGGER = LoggerFactory.getLogger(Url.class.toString());

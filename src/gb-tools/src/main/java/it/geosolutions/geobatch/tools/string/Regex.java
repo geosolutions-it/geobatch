@@ -29,8 +29,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import ucar.units.Prefix;
-
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it

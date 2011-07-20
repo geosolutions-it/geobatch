@@ -117,8 +117,9 @@
         <imageio-ext.version>1.1.0</imageio-ext.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <spring.security.version>3.0.3.RELEASE</spring.security.version>
-        <camel.version>2.6.0</camel.version>
+        <camel.version>2.7.2</camel.version>
         <slf4j.version>1.5.11</slf4j.version>
+        <jt.version>1.2.0</jt.version>
     </properties>
 
     <distributionManagement>
@@ -355,10 +356,17 @@
                 <version>${gb.version}</version>
             </dependency>
 
-<!-- CAMEL -->            
+<!-- CAMEL -->
             <dependency>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-camel</artifactId>
+                <version>${gb.version}</version>
+            </dependency>
+            
+<!-- SHP2POSTGIS -->
+            <dependency>
+		<groupId>it.geosolutions.geobatch</groupId>
+		<artifactId>gb-action-shp2pg</artifactId>
                 <version>${gb.version}</version>
             </dependency>
             
@@ -531,8 +539,8 @@
             <dependency> <!-- NEW LIBRARY-->
                 <groupId>it.geosolutions</groupId>
                 <artifactId>geoserver-manager</artifactId>
-                <version>1.1-SNAPSHOT</version>
-            </dependency>            
+                <version>1.2-SNAPSHOT</version>
+            </dependency>
             
             <!--=============================================================-->
             <!-- Spring Framework ===========================================-->
@@ -833,12 +841,6 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-geotiff</artifactId>
                 <version>${gt.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>it.geosolutions.imageio-ext</groupId>
-                        <artifactId>imageio-ext-tiff</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.geotools.jdbc</groupId>
@@ -896,6 +898,13 @@
                 <version>1.1</version>
             </dependency>
 
+            <!-- JAI TOols -->
+            <dependency>
+              <!--<groupId>com.googlecode.jaitools</groupId>-->
+              <groupId>org.jaitools</groupId>
+              <artifactId>jt-zonalstats</artifactId>
+              <version>${jt.version}</version>
+            </dependency>
             <!--=============================================================-->
             <!-- Mathematic, geometries, SVG... =============================-->
             <!--=============================================================-->
@@ -1663,11 +1672,12 @@
 			<name>Camel internal Maven Repo</name>
 			<url>http://svn.apache.org/repos/asf/camel/m2-repo</url>
 		</repository> 
-
+<!-- TOO LONG TIMEOUT
         <repository>
             <id>JBoss</id>
             <url>http://repository.jboss.com/maven2</url>
         </repository>
+        -->
 
         <repository>
             <id>Hibernate Spatial repo</id>

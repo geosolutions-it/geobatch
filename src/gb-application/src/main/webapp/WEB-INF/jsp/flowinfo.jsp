@@ -130,7 +130,7 @@
 											</c:if>
 										</c:forEach>
 							        </c:when>
-							        <c:when test="${status == 'COMPLETED' || status == 'FAILED'}">
+							        <c:when test="${status == 'COMPLETED' || status == 'FAILED' || status == 'PAUSED'}">
 							        	<c:forEach var="role" items="${currentUser.grantedAuthorities}">
 	 										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
 						    					<a href="consumerDispose.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/cancel.png' border='0' title='cancel instance' alt='cancel' width='16' height='16'/></a>

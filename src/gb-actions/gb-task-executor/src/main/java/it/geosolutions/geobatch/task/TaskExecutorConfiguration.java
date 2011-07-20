@@ -22,7 +22,6 @@
 
 package it.geosolutions.geobatch.task;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.Map;

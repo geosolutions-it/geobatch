@@ -27,15 +27,9 @@ import it.geosolutions.geobatch.actions.freemarker.FreeMarkerAction;
 import it.geosolutions.geobatch.actions.freemarker.FreeMarkerConfiguration;
 import it.geosolutions.geobatch.actions.freemarker.TemplateModelEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.tools.time.TimeParser;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
@@ -45,8 +39,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.thoughtworks.xstream.XStream;
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it

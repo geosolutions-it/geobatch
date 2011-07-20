@@ -25,6 +25,7 @@ package it.geosolutions.geobatch.gwc;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.util.EventObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

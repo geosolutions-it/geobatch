@@ -29,11 +29,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A collector which wraps the DirectoryWalker to define a Collector which is able to collect
@@ -64,7 +63,7 @@ public class Collector extends DirectoryWalker<File> {
     }
 
     /**
-     * Set a new filter for this colletctor. (can be null)
+     * Set a new filter for this collector. (can be null)
      * @param filter
      */
     public void setFilter(FileFilter filter) {
@@ -107,19 +106,19 @@ public class Collector extends DirectoryWalker<File> {
             
     }
 
-//    @Override
-//    protected boolean handleDirectory(File directory, int depth, Collection<File> results)
-//            throws IOException {
-//        if (this.filter != null) {
-//            if (this.filter.accept(directory)) {
-//                results.add(directory);
-//            }
-//        }
-//        else {
-//            results.add(directory);
-//        }
-//        return true; // process ALL directory
-//    }
+    @Override
+    protected boolean handleDirectory(File directory, int depth, Collection<File> results)
+            throws IOException {
+        if (this.filter != null) {
+            if (this.filter.accept(directory)) {
+                results.add(directory);
+            }
+        }
+        else {
+            results.add(directory);
+        }
+        return true; // process ALL directory
+    }
 
     @Override
     protected File[] filterDirectoryContents(File directory, int depth, File[] files)

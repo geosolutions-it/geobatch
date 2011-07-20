@@ -32,15 +32,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class Compressor {
     private final static Logger LOGGER = LoggerFactory.getLogger(Compressor.class.toString());

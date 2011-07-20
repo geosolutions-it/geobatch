@@ -42,7 +42,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Queue;
 
-
 import org.apache.commons.io.FilenameUtils;
 import org.codehaus.jettison.json.JSONObject;
 import org.restlet.Client;

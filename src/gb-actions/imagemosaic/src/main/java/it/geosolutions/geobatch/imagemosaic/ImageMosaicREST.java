@@ -21,13 +21,15 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
+import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
+import it.geosolutions.geoserver.rest.encoder.coverage.GSCoverageEncoder;
+import it.geosolutions.geoserver.rest.encoder.coverage.GSImageMosaicEncoder;
+import it.geosolutions.geoserver.rest.encoder.metadata.GSDimensionInfoEncoder;
+import it.geosolutions.geoserver.rest.encoder.metadata.GSDimensionInfoEncoder.Presentation;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -35,9 +37,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -80,29 +79,17 @@ public abstract class ImageMosaicREST {
      * @throws IOException
      * @throws TransformerException
      */
-    protected static boolean createNewImageMosaicLayer(File inputDir,
-            ImageMosaicGranulesDescriptor mosaicDescriptor, ImageMosaicConfiguration config,
-            ImageMosaicCommand cmd, Collection<FileSystemEvent> layers)
-            throws ParserConfigurationException, IOException, TransformerException {
+    protected static GSImageMosaicEncoder createGSImageMosaicEncoder(ImageMosaicGranulesDescriptor mosaicDescriptor, ImageMosaicConfiguration config) {
 
-        // ////////////////////////////////////////////////////////////////////
-        //
-        // SENDING data to GeoServer via REST protocol.
-        //
-        // ////////////////////////////////////////////////////////////////////
-        Map<String, String> queryParams = new HashMap<String, String>();
+	    final GSImageMosaicEncoder coverageEnc=new GSImageMosaicEncoder();
 
-        queryParams.put("namespace", config.getDefaultNamespace());
-        queryParams.put("wmspath", config.getWmsPath());
-
-        // ////////////////
-        if (queryParams.containsKey("MaxAllowedTiles")) {
-            // Configuring wmsPath
-            final String maxTiles = queryParams.get("MaxAllowedTiles");
-            queryParams.put("MaxAllowedTiles", maxTiles);
-        } else {
-            queryParams.put("MaxAllowedTiles", Integer.toString(Integer.MAX_VALUE));
-        }
+	    coverageEnc.addName(mosaicDescriptor.getCoverageStoreId());
+	    coverageEnc.addTitle(mosaicDescriptor.getCoverageStoreId());
+	    coverageEnc.addSRS(config.getCrs()!=null?config.getCrs():"");
+	    
+//	    coverageEnc.setMaxAllowedTiles(config.get) //TODO
+	    coverageEnc.addMaxAllowedTiles(Integer.MAX_VALUE);
+	    
 
         final String noData;
         if (mosaicDescriptor.getFileListNameParts() == null) {
@@ -121,69 +108,73 @@ public abstract class ImageMosaicREST {
         // flow.xml.
         // therefore, there is no way to set the background values a runtime
         // for the moment, we take the nodata from the file name.
-        queryParams.put("BackgroundValues", noData);// NoData
-
+        coverageEnc.addBackgroundValues(noData);// NoData
+        
         String param = config.getOutputTransparentColor();
-        queryParams.put("OutputTransparentColor", (param != null) ? param : "");
+        coverageEnc.addOutputTransparentColor((param != null) ? param : "");
         param = config.getInputTransparentColor();
-        queryParams.put("InputTransparentColor", (param != null) ? param : "");
+        coverageEnc.addInputTransparentColor((param != null) ? param : "");
         param = null;
 
         /*
          * note: setting - AllowMultithreading to true - USE_JAI_IMAGEREAD to true make no sense!
          * Simone on 23 Mar 2011: this check should be done by the user configurator or by GeoServer
          */
+        coverageEnc.addAllowMultithreading(config.isAllowMultithreading());
 
-        queryParams.put("AllowMultithreading", config.isAllowMultithreading() ? "true" : "false");
-
-        queryParams.put("USE_JAI_IMAGEREAD", config.isUseJaiImageRead() ? "true" : "false");
+        coverageEnc.addUSE_JAI_IMAGEREAD(config.isUseJaiImageRead());
 
         if (config.getTileSizeH() < 1 || config.getTileSizeW() < 1) {
-            queryParams.put("SUGGESTED_TILE_SIZE", "256,256");
+        	coverageEnc.addSUGGESTED_TILE_SIZE("256,256");
         } else {
-            queryParams.put("SUGGESTED_TILE_SIZE",
-                    config.getTileSizeH() + "," + config.getTileSizeW());
+        	coverageEnc.addSUGGESTED_TILE_SIZE(config.getTileSizeH() + "," + config.getTileSizeW());
         }
 
-        /**
-         * will contain the following elements:<br>
-         * result[0]: the storename<br>
-         * result[1]: the namespace<br>
-         * result[2]: the layername<br>
-         */
-        final String[] layerResponse = GeoServerRESTHelper.sendCoverage(inputDir, inputDir,
-                decurtSlash(config.getGeoserverURL()), config.getGeoserverUID(),
-                config.getGeoserverPWD(), mosaicDescriptor.getCoverageStoreId(),
-                mosaicDescriptor.getCoverageStoreId(), queryParams, "", "EXTERNAL", "imagemosaic",
-                GEOSERVER_VERSION, config.getStyles(), config.getDefaultStyle());
-
-        if (layerResponse != null && layerResponse.length > 2) {
-
-            final String storename = layerResponse[0];
-            final String workspace = layerResponse[1];
-            final String layername = layerResponse[2];
-
-            LOGGER.info("ImageMosaicREST.createNewImageMosaicLayer() layer: " + layername);
-
-            Map<String, String> metadataParams = new HashMap<String, String>();
-
-            metadataParams.put("timeDimEnabled",
-                    config.getTimeDimEnabled() != null ? config.getTimeDimEnabled() : "true");
-            metadataParams.put("timePresentationMode",
-                    config.getTimePresentationMode() != null ? config.getTimePresentationMode()
-                            : "LIST");
-
-            metadataParams.put("elevDimEnabled",
-                    config.getElevDimEnabled() != null ? config.getElevDimEnabled() : "true");
-            metadataParams.put(
-                    "elevationPresentationMode",
-                    config.getElevationPresentationMode() != null ? config
-                            .getElevationPresentationMode() : "LIST");
-
-            metadataParams.put("dirName", config.getDirName() != null ? config.getDirName() : "");
-
-            Map<String, String> coverageParams = new HashMap<String, String>();
-
+//        final GSMetadataEncoder<GSDimensionInfoEncoder> metadata=new GSMetadataEncoder<GSDimensionInfoEncoder>();
+        
+        if (config.getTimeDimEnabled()!=null && config.getTimeDimEnabled().equals("true")){
+        	final GSDimensionInfoEncoder timeDimensionInfo=new GSDimensionInfoEncoder(true);
+	        final String presentation=config.getTimePresentationMode();
+	        if (presentation != null){
+	        	if (presentation.equals(Presentation.LIST.toString())){
+	    			timeDimensionInfo.addPresentation(Presentation.LIST);
+	        	}
+	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
+	//        			timeDimensionInfo.addPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
+	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
+        			timeDimensionInfo.addPresentation(Presentation.CONTINUOUS_INTERVAL);
+	        	}
+	        }
+	        else {
+	            timeDimensionInfo.addPresentation(Presentation.LIST);
+	        }
+	        coverageEnc.addMetadata("time", timeDimensionInfo);
+        }
+        else
+        	coverageEnc.addMetadata("time", new GSDimensionInfoEncoder());
+        
+        if (config.getElevDimEnabled()!=null && config.getElevDimEnabled().equals("true")){
+        	final GSDimensionInfoEncoder elevationDimensionInfo=new GSDimensionInfoEncoder(true);
+	        final String presentation=config.getElevationPresentationMode();
+	        if (presentation != null){
+	        	if (presentation.equals(Presentation.LIST.toString())){
+	    			elevationDimensionInfo.addPresentation(Presentation.LIST);
+	        	}
+	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
+	//        			timeDimensionInfo.addPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
+	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
+        			elevationDimensionInfo.addPresentation(Presentation.CONTINUOUS_INTERVAL);
+	        	}
+	        }
+	        else {
+	            elevationDimensionInfo.addPresentation(Presentation.LIST);
+	        }
+	        coverageEnc.addMetadata("elevation", elevationDimensionInfo);
+        }
+        else
+        	coverageEnc.addMetadata("elevation", new GSDimensionInfoEncoder());
+        
+//        coverageEnc.addNativeBoundingBox(minx, maxy, maxx, miny, crs)
             // coverageParams.put(GeoServerRESTHelper.NATIVE_MAXX,
             // config.getNativeMaxBoundingBoxX() != null ? config.getNativeMaxBoundingBoxX()
             // .toString() : "180");
@@ -202,55 +193,154 @@ public abstract class ImageMosaicREST {
             /*
              * NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED
              */
-            coverageParams.put(GeoServerRESTHelper.PROJECTION_POLICY,
-                    config.getProjectionPolicy() != null ? config.getProjectionPolicy()
-                            : "NONE");
-
-            coverageParams.put(GeoServerRESTHelper.LATLON_MAXX,
-                    config.getLatLonMaxBoundingBoxX() != null ? config.getLatLonMaxBoundingBoxX()
-                            .toString() : "180");
-
-            coverageParams.put(GeoServerRESTHelper.LATLON_MINX,
-                    config.getLatLonMinBoundingBoxX() != null ? config.getLatLonMinBoundingBoxX()
-                            .toString() : "-180");
-
-            coverageParams.put(GeoServerRESTHelper.LATLON_MINY,
-                    config.getLatLonMinBoundingBoxY() != null ? config.getLatLonMinBoundingBoxY()
-                            .toString() : "-90");
-
-            coverageParams.put(GeoServerRESTHelper.LATLON_MAXY,
-                    config.getLatLonMaxBoundingBoxY() != null ? config.getLatLonMaxBoundingBoxY()
-                            .toString() : "90");
-
-            if (config.getCrs() != null)
-                coverageParams.put(GeoServerRESTHelper.CRS, config.getCrs().toString());
-            else
-                coverageParams.put(GeoServerRESTHelper.CRS, ""); // TODO check default value!!!
-
-            GeoServerRESTHelper.sendCoverageConfiguration(coverageParams, metadataParams,
-                    queryParams, decurtSlash(config.getGeoserverURL()), config.getGeoserverUID(),
-                    config.getGeoserverPWD(), workspace, mosaicDescriptor.getCoverageStoreId(),
-                    storename);
-
-            final File layerDescriptor;
-
-            // generate a RETURN file and append it to the return queue
-            if ((layerDescriptor = ImageMosaicOutput.writeReturn(inputDir, layerResponse,
-                    mosaicDescriptor, cmd)) != null) {
-                layers.add(new FileSystemEvent(layerDescriptor, FileSystemEventType.FILE_ADDED));
-            }
-
-            return true;
-        } else {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error("Bad response from the GeoServer:GeoServerRESTHelper.sendCoverage()");
-            return false;
+        final String proj=config.getProjectionPolicy();
+        if (proj != null){
+        	if (proj.equalsIgnoreCase(ProjectionPolicy.REPROJECT_TO_DECLARED.toString())){
+        		coverageEnc.addProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
+        	}
+        	else if (proj.equalsIgnoreCase(ProjectionPolicy.FORCE_DECLARED.toString())){
+        		coverageEnc.addProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+        	}
+        	else if (proj.equalsIgnoreCase(ProjectionPolicy.NONE.toString())){
+        		coverageEnc.addProjectionPolicy(ProjectionPolicy.NONE);
+        	}
         }
-    }
+        else {
+        	coverageEnc.addProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);	
+        }
+        
+        coverageEnc.addLatLonBoundingBox(
+        		config.getLatLonMinBoundingBoxX() != null ? config.getLatLonMinBoundingBoxX(): -180,
+				config.getLatLonMaxBoundingBoxY() != null ? config.getLatLonMaxBoundingBoxY(): 90,
+        		config.getLatLonMaxBoundingBoxX() != null ? config.getLatLonMaxBoundingBoxX(): 180,
+        		config.getLatLonMinBoundingBoxY() != null ? config.getLatLonMinBoundingBoxY() : -90,
+        		config.getCrs());
+
+
+        if (LOGGER.isDebugEnabled()){
+        	LOGGER.debug("ImageMosaicREST.createGSCoverageEncoder(): Coverage configuration:\n"+coverageEnc.toString());
+        }
+        
+        return coverageEnc;
+    }    		
+    
 
     /**
-     * @throws MalformedURLException
+     * Create Mosaic Method
      * 
+     * @param layers
+     * @param inputDir
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws TransformerException
+     */
+    protected static GSCoverageEncoder createGSCoverageEncoder(final String coverageID, ImageMosaicConfiguration config) {
+
+	    final GSCoverageEncoder coverageEnc=new GSCoverageEncoder();
+
+	    coverageEnc.addName(coverageID);
+	    coverageEnc.addTitle(coverageID);
+	    coverageEnc.addSRS(config.getCrs()!=null?config.getCrs():"");
+	    
+
+//        final GSMetadataEncoder<GSDimensionInfoEncoder> metadata=new GSMetadataEncoder<GSDimensionInfoEncoder>();
+        
+        if (config.getTimeDimEnabled()!=null && config.getTimeDimEnabled().equals("true")){
+        	final GSDimensionInfoEncoder timeDimensionInfo=new GSDimensionInfoEncoder(true);
+	        final String presentation=config.getTimePresentationMode();
+	        if (presentation != null){
+	        	if (presentation.equals(Presentation.LIST.toString())){
+	    			timeDimensionInfo.addPresentation(Presentation.LIST);
+	        	}
+	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
+	//        			timeDimensionInfo.addPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
+	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
+        			timeDimensionInfo.addPresentation(Presentation.CONTINUOUS_INTERVAL);
+	        	}
+	        }
+	        else {
+	            timeDimensionInfo.addPresentation(Presentation.LIST);
+	        }
+	        coverageEnc.addMetadata("time", timeDimensionInfo);
+        }
+        else
+        	coverageEnc.addMetadata("time", new GSDimensionInfoEncoder());
+        
+        if (config.getElevDimEnabled()!=null && config.getElevDimEnabled().equals("true")){
+        	final GSDimensionInfoEncoder elevationDimensionInfo=new GSDimensionInfoEncoder(true);
+	        final String presentation=config.getElevationPresentationMode();
+	        if (presentation != null){
+	        	if (presentation.equals(Presentation.LIST.toString())){
+	    			elevationDimensionInfo.addPresentation(Presentation.LIST);
+	        	}
+	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
+	//        			timeDimensionInfo.addPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
+	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
+        			elevationDimensionInfo.addPresentation(Presentation.CONTINUOUS_INTERVAL);
+	        	}
+	        }
+	        else {
+	            elevationDimensionInfo.addPresentation(Presentation.LIST);
+	        }
+	        coverageEnc.addMetadata("elevation", elevationDimensionInfo);
+        }
+        else
+        	coverageEnc.addMetadata("elevation", new GSDimensionInfoEncoder());
+        
+//        coverageEnc.addNativeBoundingBox(minx, maxy, maxx, miny, crs)
+            // coverageParams.put(GeoServerRESTHelper.NATIVE_MAXX,
+            // config.getNativeMaxBoundingBoxX() != null ? config.getNativeMaxBoundingBoxX()
+            // .toString() : "180");
+            //
+            // coverageParams.put(GeoServerRESTHelper.NATIVE_MINX,
+            // config.getNativeMinBoundingBoxX() != null ? config.getNativeMinBoundingBoxX()
+            // .toString() : "-180");
+            //
+            // coverageParams.put(GeoServerRESTHelper.NATIVE_MINY,
+            // config.getNativeMinBoundingBoxY() != null ? config.getNativeMinBoundingBoxY()
+            // .toString() : "-90");
+            //
+            // coverageParams.put(GeoServerRESTHelper.NATIVE_MAXY,
+            // config.getNativeMaxBoundingBoxY() != null ? config.getNativeMaxBoundingBoxY()
+            // .toString() : "90");
+            /*
+             * NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED
+             */
+        final String proj=config.getProjectionPolicy();
+        if (proj != null){
+        	if (proj.equalsIgnoreCase(ProjectionPolicy.REPROJECT_TO_DECLARED.toString())){
+        		coverageEnc.addProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
+        	}
+        	else if (proj.equalsIgnoreCase(ProjectionPolicy.FORCE_DECLARED.toString())){
+        		coverageEnc.addProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+        	}
+        	else if (proj.equalsIgnoreCase(ProjectionPolicy.NONE.toString())){
+        		coverageEnc.addProjectionPolicy(ProjectionPolicy.NONE);
+        	}
+        }
+        else {
+        	coverageEnc.addProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);	
+        }
+        
+        coverageEnc.addLatLonBoundingBox(
+        		config.getLatLonMinBoundingBoxX() != null ? config.getLatLonMinBoundingBoxX(): -180,
+				config.getLatLonMaxBoundingBoxY() != null ? config.getLatLonMaxBoundingBoxY(): 90,
+        		config.getLatLonMaxBoundingBoxX() != null ? config.getLatLonMaxBoundingBoxX(): 180,
+        		config.getLatLonMinBoundingBoxY() != null ? config.getLatLonMinBoundingBoxY() : -90,
+        		config.getCrs());
+
+
+        if (LOGGER.isDebugEnabled()){
+        	LOGGER.debug("ImageMosaicREST.createGSCoverageEncoder(): Coverage configuration:\n"+coverageEnc.toString());
+        }
+        
+        return coverageEnc;
+    }    		
+
+    
+    /**
+     * @throws MalformedURLException
+     * @deprecated will be removed soon (use GS REST manager) 
      */
     public static boolean reloadCatalog(ImageMosaicConfiguration conf) throws MalformedURLException {
         boolean ret = true;
@@ -277,6 +367,7 @@ public abstract class ImageMosaicREST {
      * @param user
      * @param passwd
      * @return true if SUCCESS
+     * @deprecated will be removed soon (use GS REST manager)
      */
     protected static boolean resetGeoserver(final String geoserverURL, final String user,
             final String passwd) {

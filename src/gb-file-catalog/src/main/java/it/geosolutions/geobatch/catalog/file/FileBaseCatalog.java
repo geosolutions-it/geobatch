@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.catalog.file;
 
 import it.geosolutions.geobatch.catalog.Catalog;
+
 import java.io.File;
 
 /**

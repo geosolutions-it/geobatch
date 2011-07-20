@@ -24,6 +24,7 @@
 package it.geosolutions.geobatch.users.dao;
 
 import it.geosolutions.geobatch.users.model.UserFlowAccess;
+
 import java.util.List;
 
 /**

@@ -24,13 +24,17 @@ package it.geosolutions.geobatch.tools.file;
 import it.geosolutions.geobatch.tools.Conf;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +72,25 @@ public final class FileRemover extends Thread {
     
     private final static Set<String> FILES_PATH = Collections
     .synchronizedSet(new HashSet<String>());
+    
+    public static List<File> collectOlder(final long time,final int daysAgo,final File root){
+    	if (daysAgo<0){
+    		return null;
+    	}
+    	Calendar cal=Calendar.getInstance();
+    	cal.setTimeInMillis(time);
+    	int days=cal.get(Calendar.DAY_OF_YEAR);
+    	if (days>=daysAgo)
+    		cal.set(Calendar.DAY_OF_YEAR, days-daysAgo);
+    	else {
+    		// TODO use  getActualMaximum for days
+    		cal.set(Calendar.DAY_OF_YEAR, (354+(days-daysAgo)));
+    		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR)-1);
+    	}
+//    	cal.getTime().toString()
+    	final Collector coll=new Collector(FileFilterUtils.andFileFilter(FileFilterUtils.directoryFileFilter(),FileFilterUtils.ageFileFilter(cal.getTime(), true)),1);
+    	return coll.collect(root);
+    }
 
     /**
      * Asks this {@link FileRemover} to clean up this file.

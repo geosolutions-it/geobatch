@@ -19,19 +19,19 @@
  */
 package it.geosolutions.geobatch.actions.geonetwork;
 
-import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkInsertConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.thoughtworks.xstream.XStream;
+import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkInsertConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistry;
-import it.geosolutions.geobatch.tools.file.IOUtils;
 import it.geosolutions.geobatch.xstream.Alias;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *

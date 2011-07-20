@@ -32,7 +32,6 @@ import it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfigur
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.settings.GBSettingsCatalog;
-import it.geosolutions.geobatch.settings.GBSettingsDAO;
 import it.geosolutions.geobatch.xstream.Alias;
 
 import java.io.File;
@@ -40,10 +39,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

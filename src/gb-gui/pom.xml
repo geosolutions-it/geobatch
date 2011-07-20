@@ -56,6 +56,10 @@
 			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-ftp-server</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-action-tools</artifactId>
+		</dependency>
 
 		<!-- ============================== -->
 		<!-- Spring -->

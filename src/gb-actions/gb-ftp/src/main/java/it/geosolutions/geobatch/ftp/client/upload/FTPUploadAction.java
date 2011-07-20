@@ -22,9 +22,10 @@
 
 package it.geosolutions.geobatch.ftp.client.upload;
 
-import com.enterprisedt.net.ftp.FTPException;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPBaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
@@ -37,12 +38,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-
 import com.enterprisedt.net.ftp.FTPConnectMode;
+import com.enterprisedt.net.ftp.FTPException;
 import com.enterprisedt.net.ftp.FTPTransferType;
 import com.enterprisedt.net.ftp.WriteMode;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
 
 /**
  * This class represent an extended FTP action to upload local files or directory.

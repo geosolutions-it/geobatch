@@ -49,17 +49,24 @@
 			<failIgnored>false</failIgnored>
 		  
 			<workingDirectory>freemarker/</workingDirectory>
+			
 			<input>test.xml</input>
-			<output>test_out.xml</output>
+			
+			<output>out/</output>
+			
+			<nToN>true</nToN>
+			
+			<!-- Static data into DataModel --> 
+			<!--
 			<root>
 				<entry>
 					<string>KEY</string>
 					<string>value</string>
 				</entry>
 			</root>
+			 -->
 		</FreeMarker>
 		
-		<!-- ${KEY} -->
 	</EventConsumerConfiguration>
 
 </FlowConfiguration>

@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.configuration.event.action;
 
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
+
 import java.util.ArrayList;
 import java.util.List;
 

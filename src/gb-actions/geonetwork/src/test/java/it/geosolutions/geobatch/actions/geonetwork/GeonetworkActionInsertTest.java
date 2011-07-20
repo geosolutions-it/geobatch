@@ -22,11 +22,11 @@ package it.geosolutions.geobatch.actions.geonetwork;
 import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkInsertConfiguration;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+
 import java.io.File;
 import java.util.LinkedList;
 import java.util.Queue;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -30,7 +30,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sun.org.apache.xerces.internal.xs.XSException;
 import com.thoughtworks.xstream.InitializationException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
@@ -103,7 +102,7 @@ public class ImageMosaicCommand implements Serializable {
      * @throws XStreamException
      *             - if the object cannot be serialized
      */
-    public static File serialize(ImageMosaicCommand cmd, String path) throws XSException,
+    public static File serialize(ImageMosaicCommand cmd, String path) throws 
             FileNotFoundException, SecurityException {
         final File outFile = new File(path);
         final FileOutputStream fos = new FileOutputStream(outFile);
@@ -128,7 +127,7 @@ public class ImageMosaicCommand implements Serializable {
      * @throws XStreamException
      *             - if the object cannot be serialized
      */
-    public static ImageMosaicCommand deserialize(File file) throws XSException,
+    public static ImageMosaicCommand deserialize(File file) throws
             FileNotFoundException, SecurityException {
         // try {
         final InputStream is = new FileInputStream(file);
