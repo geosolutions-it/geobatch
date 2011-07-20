@@ -38,7 +38,7 @@
 			<name>test</name>
 		</FileEventRule>
 		
-		<Geonetwork>
+		<GeonetworkInsert>
 			<serviceID>GeonetworkGeneratorService</serviceID>
 			<id>GeonetworkGeneratorService</id>
 			<name>GeonetworkConfiguration</name>
@@ -47,19 +47,21 @@
 			<dirty>false</dirty>
 			<failIgnored>false</failIgnored>
 			<listenerConfigurations/>
-		  
+
 			<workingDirectory>sample_geonetwork/</workingDirectory>
 
-            <!-- geonetwork action's specific params -->
+            <!-- geonetwork generic params -->
             <geonetworkServiceURL>http://localhost:8080/geonetwork</geonetworkServiceURL>
 			<loginUsername>admin</loginUsername>
 			<loginPassword>admin</loginPassword>
+
+            <!-- geonetwork action's specific params -->
 			<onlyMetadataInput>true</onlyMetadataInput>
 			<group>1</group>
 			<category>_none_</category>
 			<styleSheet>_none_</styleSheet>
 			<validate>false</validate>
-		</Geonetwork>
+		</GeonetworkInsert>
 		
 	</EventConsumerConfiguration>
 

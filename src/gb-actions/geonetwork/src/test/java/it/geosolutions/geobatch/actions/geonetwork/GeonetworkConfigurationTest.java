@@ -19,6 +19,7 @@
  */
 package it.geosolutions.geobatch.actions.geonetwork;
 
+import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkInsertConfiguration;
 import com.thoughtworks.xstream.XStream;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.tools.file.IOUtils;
@@ -27,9 +28,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import junit.framework.TestCase;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.slf4j.Logger;
@@ -39,18 +37,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class GeonetworkActionLoadTest extends TestCase {
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeonetworkActionLoadTest.class);
+public class GeonetworkConfigurationTest extends GeonetworkAbstractTest {
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeonetworkConfigurationTest.class);
 
-    boolean runIntegrationTest = false;
     
-    public GeonetworkActionLoadTest() {
-    }
-
-//    @Before 
-    public void setUp() throws Exception {
-        super.setUp();
-        LOGGER.info("====================> " + getName());
+    public GeonetworkConfigurationTest() {
     }
     
     @Test
@@ -121,29 +112,17 @@ public class GeonetworkActionLoadTest extends TestCase {
     protected GeonetworkInsertConfiguration createConfiguration() {
         GeonetworkInsertConfiguration cfg = new GeonetworkInsertConfiguration("GNIC", "TestGeoNetworkInsert", "test configuration");
         cfg.setWorkingDirectory("/tmp");
-        
+
+        cfg.setGeonetworkServiceURL(gnServiceUrl);
+        cfg.setLoginUsername(gnUsername);
+        cfg.setLoginPassword(gnPassword);
+
         cfg.setCategory("datasets");
-        cfg.setGeonetworkServiceURL("http://localhost:8080/geonetwork");
         cfg.setGroup("1"); // group 1 is usually "all"
-        cfg.setLoginUsername("admin");
-        cfg.setLoginPassword("admin");
         cfg.setOnlyMetadataInput(true);
         cfg.setStyleSheet("_none_");
         cfg.setValidate(Boolean.FALSE);
         return cfg;
     }
-    
-    private File loadFile(String name) {        
-        try {
-            URL url = this.getClass().getClassLoader().getResource(name);
-            if(url == null)
-                throw new IllegalArgumentException("Cant get file '"+name+"'");
-            File file = new File(url.toURI());
-            return file;
-        } catch (URISyntaxException e) {
-            LOGGER.error("Can't load file " + name + ": " + e.getMessage(), e);
-            return null;
-        }    
-    }
-    
+        
 }

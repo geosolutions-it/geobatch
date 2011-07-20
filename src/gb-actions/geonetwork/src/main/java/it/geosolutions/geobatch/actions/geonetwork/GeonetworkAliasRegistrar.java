@@ -22,6 +22,8 @@
 
 package it.geosolutions.geobatch.actions.geonetwork;
 
+import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkDeleteConfiguration;
+import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkInsertConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 
@@ -34,8 +36,14 @@ public class GeonetworkAliasRegistrar extends AliasRegistrar {
 
     public GeonetworkAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-        
+
+        // this alias is here for backward compatibility: it should be renamed to GeonetworkInsert
         registry.putAlias("Geonetwork",GeonetworkInsertConfiguration.class);
+
+        // this alias should replace the obsoleted "Geonetowrk" alias.
+        registry.putAlias("GeonetworkInsert",GeonetworkInsertConfiguration.class);
+
+        registry.putAlias("GeonetworkDelete",GeonetworkDeleteConfiguration.class);
         registry.putAlias("grant",GeonetworkInsertConfiguration.Privileges.class);
     }
 }

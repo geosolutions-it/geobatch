@@ -19,14 +19,12 @@
  */
 package it.geosolutions.geobatch.actions.geonetwork;
 
+import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkInsertConfiguration;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.Queue;
-import junit.framework.TestCase;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.slf4j.Logger;
@@ -36,23 +34,17 @@ import org.slf4j.LoggerFactory;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class GeonetworkActionTest extends TestCase {
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeonetworkActionTest.class);
-
-    boolean runIntegrationTest = false;
+public class GeonetworkActionInsertTest extends GeonetworkAbstractTest {
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeonetworkActionInsertTest.class);
     
-    public GeonetworkActionTest() {
+    public GeonetworkActionInsertTest() {
     }
 
-//    @Before 
-    public void setUp() throws Exception {
-        super.setUp();
-        LOGGER.info("====================> " + getName());
-    }
     
     @Test
     public void testInsertPureMetadata() throws Exception {
         if( ! runIntegrationTest ) return;
+        removeAllMetadata();
         
         GeonetworkInsertConfiguration cfg = createConfiguration();
         cfg.setOnlyMetadataInput(true);
@@ -78,6 +70,7 @@ public class GeonetworkActionTest extends TestCase {
     @Test
     public void testInsertRequest() throws Exception {
         if( ! runIntegrationTest ) return;
+        removeAllMetadata();
         
         GeonetworkInsertConfiguration cfg = createConfiguration();
         cfg.setOnlyMetadataInput(false);
@@ -98,29 +91,18 @@ public class GeonetworkActionTest extends TestCase {
     protected GeonetworkInsertConfiguration createConfiguration() {
         GeonetworkInsertConfiguration cfg = new GeonetworkInsertConfiguration("GNIC", "TestGeoNetworkInsert", "test configuration");
         cfg.setWorkingDirectory("/tmp");
-        
+
+        cfg.setGeonetworkServiceURL(gnServiceUrl);
+        cfg.setLoginUsername(gnUsername);
+        cfg.setLoginPassword(gnPassword);
+
         cfg.setCategory("datasets");
-        cfg.setGeonetworkServiceURL("http://localhost:8080/geonetwork");
         cfg.setGroup("1"); // group 1 is usually "all"
-        cfg.setLoginUsername("admin");
-        cfg.setLoginPassword("admin");
         cfg.setOnlyMetadataInput(true);
         cfg.setStyleSheet("_none_");
         cfg.setValidate(Boolean.FALSE);
         return cfg;
     }
     
-    private File loadFile(String name) {        
-        try {
-            URL url = this.getClass().getClassLoader().getResource(name);
-            if(url == null)
-                throw new IllegalArgumentException("Cant get file '"+name+"'");
-            File file = new File(url.toURI());
-            return file;
-        } catch (URISyntaxException e) {
-            LOGGER.error("Can't load file " + name + ": " + e.getMessage(), e);
-            return null;
-        }    
-    }
     
 }

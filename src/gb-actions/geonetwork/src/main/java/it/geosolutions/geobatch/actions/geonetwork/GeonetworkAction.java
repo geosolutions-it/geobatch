@@ -21,13 +21,16 @@
  */
 package it.geosolutions.geobatch.actions.geonetwork;
 
+import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkInsertConfiguration;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkConfiguration;
+import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkDeleteConfiguration;
+import it.geosolutions.geobatch.actions.geonetwork.op.GNDelete;
+import it.geosolutions.geobatch.actions.geonetwork.op.GNInsert;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geonetwork.GNClient;
 import it.geosolutions.geonetwork.exception.GNException;
-import it.geosolutions.geonetwork.exception.GNLibException;
-import it.geosolutions.geonetwork.exception.GNServerException;
 import it.geosolutions.geonetwork.util.GNInsertConfiguration;
 import it.geosolutions.geonetwork.util.GNPrivConfiguration;
 
@@ -57,12 +60,11 @@ import org.slf4j.LoggerFactory;
 public class GeonetworkAction
         extends BaseAction<FileSystemEvent> {
 
-
     private final static Logger LOGGER = LoggerFactory.getLogger(GeonetworkAction.class);
 
-    final GeonetworkInsertConfiguration cfg;
+    final GeonetworkConfiguration cfg;
 
-    public GeonetworkAction(GeonetworkInsertConfiguration configuration) {
+    public GeonetworkAction(GeonetworkConfiguration configuration) {
         super(configuration);
         cfg = configuration;
     }
@@ -75,15 +77,14 @@ public class GeonetworkAction
      *  2. This action do not set any output.
      */
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException{
-        /*
-         * TODO check configuration
-         *  cfg.getGeonetworkServiceURL()
-         *  cfg.getLoginUsername()
-         *  cfg.getLoginPassword()
-         */
-        final String user=cfg.getLoginUsername();
-        final String pass=cfg.getLoginPassword();
-        final String url=cfg.getGeonetworkServiceURL();
+        final String user  = cfg.getLoginUsername();
+        final String pass  = cfg.getLoginPassword();
+        final String gnurl = cfg.getGeonetworkServiceURL();
+
+        boolean loginNeeded = user != null || pass != null;
+        if(! loginNeeded )
+            if(LOGGER.isInfoEnabled())
+                LOGGER.info("Login not needed");
 
         if (events==null){
             final String message="GeoNetworkAction.execute(): FATAL -> Action list is NULL.";
@@ -103,68 +104,36 @@ public class GeonetworkAction
             if(inputFile == null)
                 continue;
 
-            if( ! loggedin) {
+            // perform login (not more than once)
+            if( loginNeeded && ! loggedin) {
                 if(LOGGER.isDebugEnabled())
                     LOGGER.debug("GeoNetworkAction.execute(): Logging in");
                 loggedin = gnClient.login(user, pass);
                 if( ! loggedin ) {
-                    LOGGER.error("Login failed");
-                    if (LOGGER.isDebugEnabled()){
-                        LOGGER.debug("\nUser: "+user+"\nPass: "+pass+"\nURL: "+url); // FIXME: password nel file di log?!?
-                    }
+                    LOGGER.error("Login failed " + user + " @ " + gnurl);
                     // fatal error!!!
                     throw new ActionException(this, "Login failed"); // CHECKME: this error will leave next events in the queue
                 }
             }
 
-            long metadataId;
+            // dispatch to the requested operation
             try {
-                if (cfg.isOnlyMetadataInput()) { // only metadata available: we have to build the full request packet
-                    if (LOGGER.isInfoEnabled()) {
-                        LOGGER.info("Handling pure metadata file " + inputFile);
-                    }
-
-                    GNInsertConfiguration gncfg = new GNInsertConfiguration();
-                    gncfg.setCategory(cfg.getCategory());
-                    gncfg.setGroup(cfg.getGroup());
-                    gncfg.setStyleSheet(cfg.getStyleSheet());
-                    gncfg.setValidate(cfg.getValidate());
-
-                    LOGGER.debug("Creating metadata");
-                    metadataId = gnClient.insertMetadata(gncfg, inputFile);
-                    LOGGER.info("Created metadata " + metadataId);
-
-                } else { // the full xml request is ready in the file to be sent to GN; just parse it
-                    if (LOGGER.isInfoEnabled()) {
-                        LOGGER.info("Handling full request file " + inputFile);
-                    }
-
-                    LOGGER.debug("Creating metadata");
-                    metadataId = gnClient.insertRequest(inputFile);
-                    LOGGER.info("Created metadata " + metadataId);
-
+                if(cfg instanceof GeonetworkInsertConfiguration ) {
+                    GeonetworkInsertConfiguration gic = (GeonetworkInsertConfiguration)cfg;
+                    GNInsert op = new GNInsert(gic);
+                    op.run(gnClient, inputFile);
+                } else if (cfg instanceof GeonetworkDeleteConfiguration) {
+                    GeonetworkDeleteConfiguration gc = (GeonetworkDeleteConfiguration)cfg;
+                    GNDelete op = new GNDelete(gc);
+                    op.run(gnClient, inputFile);
+                } else {
+                    throw new UnsupportedOperationException("Configuration not supported yet: " + cfg.getClass().getName());
                 }
-            } catch (GNException ex) {
-                LOGGER.error("Metadata not created: " + inputFile, ex);
+            } catch (Exception ex) {
+                LOGGER.error("Error processing file: " + inputFile, ex);
                 continue;
             }
 
-            // set the metadata privileges if needed
-            List<GeonetworkInsertConfiguration.Privileges> privs = cfg.getPrivileges();
-            if (privs != null && !privs.isEmpty()) {
-                GNPrivConfiguration pcfg = new GNPrivConfiguration();
-                for (GeonetworkInsertConfiguration.Privileges priv : privs) {
-                    pcfg.addPrivileges(priv.getGroup(), priv.getOps());
-                }
-
-                LOGGER.debug("Setting privileges");
-                try {
-                    gnClient.setPrivileges(metadataId, pcfg);
-                    LOGGER.info("Set privileges for " + privs.size() + " groups");
-                } catch (GNException ex) {
-                    LOGGER.error("Privileges not set for metadata id:" + metadataId +" file:" + inputFile, ex);
-                }
-            }
         }
 
         // should be an empty queue

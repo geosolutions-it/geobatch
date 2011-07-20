@@ -19,10 +19,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.actions.geonetwork;
+package it.geosolutions.geobatch.actions.geonetwork.configuration;
 
-import it.geosolutions.geobatch.catalog.Configuration;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,26 +32,11 @@ import java.util.List;
  * @author ETj (etj at geo-solutions.it)
  */
 public class GeonetworkInsertConfiguration 
-        extends ActionConfiguration 
-        implements Configuration {
+        extends GeonetworkConfiguration {
     
     public GeonetworkInsertConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
-
-    /**
-     * URL where the GN services can be accessed.
-     */
-    private String geonetworkServiceURL;
-
-    /**
-     * Credential for accessing to GeoNetwork services.
-     */
-    private String loginUsername;
-    /**
-     * Credential for accessing to GeoNetwork services.
-     */
-    private String loginPassword;
 
     /**
      * The provided data only has the metadata information?
@@ -122,36 +105,12 @@ validate: Indicates if the metadata should be validated before inserting in the 
         this.category = category;
     }
 
-    public String getGeonetworkServiceURL() {
-        return geonetworkServiceURL;
-    }
-
-    public void setGeonetworkServiceURL(String geonetworkServiceURL) {
-        this.geonetworkServiceURL = geonetworkServiceURL;
-    }
-
     public String getGroup() {
         return group;
     }
 
     public void setGroup(String group) {
         this.group = group;
-    }
-
-    public String getLoginPassword() {
-        return loginPassword;
-    }
-
-    public void setLoginPassword(String loginPassword) {
-        this.loginPassword = loginPassword;
-    }
-
-    public String getLoginUsername() {
-        return loginUsername;
-    }
-
-    public void setLoginUsername(String loginUsername) {
-        this.loginUsername = loginUsername;
     }
 
     public boolean isOnlyMetadataInput() {

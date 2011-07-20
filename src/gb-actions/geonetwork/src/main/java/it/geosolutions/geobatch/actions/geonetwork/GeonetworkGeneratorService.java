@@ -21,7 +21,9 @@
  */
 package it.geosolutions.geobatch.actions.geonetwork;
 
+import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkInsertConfiguration;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkConfiguration;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
@@ -35,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GeonetworkGeneratorService 
         extends BaseService 
-        implements ActionService<FileSystemEvent, GeonetworkInsertConfiguration> {
+        implements ActionService<FileSystemEvent, GeonetworkConfiguration> {
 
     public GeonetworkGeneratorService(String id, String name, String description) {
         super(id, name, description);
@@ -44,7 +46,7 @@ public class GeonetworkGeneratorService
     private final static Logger LOGGER = LoggerFactory.getLogger(GeonetworkGeneratorService.class);
     
 //    @Override
-    public GeonetworkAction createAction(GeonetworkInsertConfiguration configuration) {
+    public GeonetworkAction createAction(GeonetworkConfiguration configuration) {
         try {
             return new GeonetworkAction(configuration);
         } catch (Exception e) {
@@ -55,7 +57,7 @@ public class GeonetworkGeneratorService
     }
 
 //    @Override
-    public boolean canCreateAction(GeonetworkInsertConfiguration configuration) {
+    public boolean canCreateAction(GeonetworkConfiguration configuration) {
         //TODO check input and output file existence
         return true;
     }
