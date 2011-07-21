@@ -34,7 +34,11 @@ import javax.media.jai.TileCache;
 public class JAISettings extends GBSettings {
 
 	private static final long serialVersionUID = 7121137497699361776L;
-    
+	
+	public JAISettings(){
+		super("JAI");
+	}
+	
     private transient JAI jai;
     private transient TileCache tileCache;
     

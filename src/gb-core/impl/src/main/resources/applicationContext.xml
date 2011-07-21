@@ -61,5 +61,7 @@
     <bean id="jaiSettingsListener" class="it.geosolutions.geobatch.settings.jai.JAISettingsListener" lazy-init="false">
     </bean>
 
+	<bean id="FlowSettingsListener" class="it.geosolutions.geobatch.settings.flow.FlowSettingsListener" lazy-init="false">
+    </bean>
 
 </beans>

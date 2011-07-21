@@ -35,11 +35,16 @@ import it.geosolutions.geobatch.flow.event.generator.EventGenerator;
 import it.geosolutions.geobatch.flow.event.generator.EventGeneratorService;
 import it.geosolutions.geobatch.flow.event.generator.FlowEventListener;
 import it.geosolutions.geobatch.global.CatalogHolder;
+import it.geosolutions.geobatch.settings.GBSettings;
+import it.geosolutions.geobatch.settings.GBSettingsCatalog;
+import it.geosolutions.geobatch.settings.flow.FlowSettings;
 import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -110,6 +115,11 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     private EventGenerator<FileSystemEvent> eventGenerator; // FileBasedEventGenerator<FileSystemEvent>
 
     private final List<FileBasedEventConsumer> eventConsumers = new ArrayList<FileBasedEventConsumer>();
+    
+    /**
+     * maximum numbers of executed (see Consumer.getStatus()) consumers 
+     */
+    private int maxStoredConsumers;
 
     private ThreadPoolExecutor executor;
 
@@ -139,53 +149,80 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      */
     private void initialize(FileBasedFlowConfiguration configuration) throws IOException,
             NullPointerException {
-        this.initialized = false;
-        this.paused = false;
-        this.terminationRequest = false;
+    	final GBSettingsCatalog settingsCatalog = CatalogHolder.getSettingsCatalog();
+		final GBSettings settings;
+		final FlowSettings fs;
+		try {
+			settings = settingsCatalog.find("FLOW");
+			if (settings != null && settings instanceof FlowSettings) {
+				fs = (FlowSettings) settings;
+			}
+			else
+			{
+				fs=new FlowSettings();
+				// store the file for further flow loads
+				settingsCatalog.save(fs);
+			}
 
-        File baseDir = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
+	        this.initialized = false;
+	        this.paused = false;
+	        this.terminationRequest = false;
+	        
+	        maxStoredConsumers=configuration.getMaxStoredConsumers();
+	        if (maxStoredConsumers<1)
+	        	maxStoredConsumers=fs.getMaxStoredConsumers(); // default value
 
-        if (baseDir == null)
-            throw new NullPointerException(
-                    "FileBasedFlowManager:initialize(): Base Working dir is null");
+	        final File baseDir = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
 
-        this.workingDirectory = Path.findLocation(configuration.getWorkingDirectory(), baseDir);
+	        if (baseDir == null)
+	            throw new NullPointerException(
+	                    "FileBasedFlowManager:initialize(): Base Working dir is null");
 
-        if (workingDirectory == null)
-            throw new IllegalArgumentException(new StringBuilder(
-                    "FileBasedFlowManager:initialize(): Working dir is invalid: ").append('>')
-                    .append(baseDir).append("< ").append('>')
-                    .append(configuration.getWorkingDirectory()).append("< ").toString());
+	        this.workingDirectory = Path.findLocation(configuration.getWorkingDirectory(), baseDir);
 
-        if (!workingDirectory.canWrite() || !workingDirectory.isDirectory())
-            throw new IllegalArgumentException(new StringBuilder(
-                    "FileBasedFlowManager:initialize(): Working dir is invalid: ").append('>')
-                    .append(baseDir).append("< ").append('>')
-                    .append(configuration.getWorkingDirectory()).append("< ").toString());
+	        if (workingDirectory == null)
+	            throw new IllegalArgumentException(new StringBuilder(
+	                    "FileBasedFlowManager:initialize(): Working dir is invalid: ").append('>')
+	                    .append(baseDir).append("< ").append('>')
+	                    .append(configuration.getWorkingDirectory()).append("< ").toString());
 
-        this.autorun = configuration.isAutorun();
+	        if (!workingDirectory.canWrite() || !workingDirectory.isDirectory())
+	            throw new IllegalArgumentException(new StringBuilder(
+	                    "FileBasedFlowManager:initialize(): Working dir is invalid: ").append('>')
+	                    .append(baseDir).append("< ").append('>')
+	                    .append(configuration.getWorkingDirectory()).append("< ").toString());
 
-        final int queueSize = configuration.getWorkQueueSize() > 0 ? configuration
-                .getWorkQueueSize() : 100;
-        final int corePoolSize = configuration.getCorePoolSize() > 0 ? configuration
-                .getCorePoolSize() : 10;
-        final int maximumPoolSize = configuration.getMaximumPoolSize() > 0 ? configuration
-                .getMaximumPoolSize() : 30;
-        final long keepAlive = configuration.getKeepAliveTime() > 0 ? configuration
-                .getKeepAliveTime() : 150; // seconds
+	        this.autorun = configuration.isAutorun();
 
-        final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueSize);
+	        final int queueSize = configuration.getWorkQueueSize() > 0 ? configuration
+	                .getWorkQueueSize() : fs.getWorkQueueSize();
+	        final int corePoolSize = configuration.getCorePoolSize() > 0 ? configuration
+	                .getCorePoolSize() : fs.getCorePoolSize();
+	        final int maximumPoolSize = configuration.getMaximumPoolSize() > 0 ? configuration
+	                .getMaximumPoolSize() : fs.getMaximumPoolSize();
+	        final long keepAlive = configuration.getKeepAliveTime() > 0 ? configuration
+	                .getKeepAliveTime() : fs.getKeepAliveTime(); // seconds
 
-        this.executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAlive,
-                TimeUnit.SECONDS, queue);
+	        final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueSize);
 
-        if (this.autorun) {
-            if (LOGGER.isInfoEnabled())
-                LOGGER.info("FileBasedFlowManager:initialize(): Automatic Flow Startup for '"
-                        + getName() + "'");
-            this.resume();
-        }
-    }
+	        this.executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAlive,
+	                TimeUnit.SECONDS, queue);
+
+	        if (this.autorun) {
+	            if (LOGGER.isInfoEnabled())
+	                LOGGER.info("FileBasedFlowManager:initialize(): Automatic Flow Startup for '"
+	                        + getName() + "'");
+	            this.resume();
+	        }
+
+		} catch (Exception e) {
+			if (LOGGER.isErrorEnabled())
+				LOGGER.error("Failed to save the flow settings");
+			final IOException ioe=new IOException();
+			ioe.initCause(e.getCause());
+			throw ioe;
+		}
+	}
 
     /*
      * (non-Javadoc)
@@ -444,7 +481,6 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
     /**
      * @return the paused
-     * @uml.property name="paused"
      */
     public boolean isPaused() {
         return paused;
@@ -459,7 +495,6 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
     /**
      * @return the workingDirectory
-     * @uml.property name="workingDirectory"
      */
     public File getWorkingDirectory() {
         return workingDirectory;
@@ -468,7 +503,6 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     /**
      * @param workingDirectory
      *            the workingDirectory to set
-     * @uml.property name="workingDirectory"
      */
     public void setWorkingDirectory(File outputDir) {
         this.workingDirectory = outputDir;
@@ -533,6 +567,23 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @param consumer
      */
     void add(FileBasedEventConsumer consumer) {
+    	int size=eventConsumers.size();
+    	if (size>=maxStoredConsumers){
+    		final Iterator<FileBasedEventConsumer> it=eventConsumers.iterator();
+    		final Collection<FileBasedEventConsumer> removeList=new ArrayList<FileBasedEventConsumer>();
+    		while (it.hasNext() && size>=maxStoredConsumers){
+    			final FileBasedEventConsumer nextConsumer=it.next();
+    			final EventConsumerStatus status=nextConsumer.getStatus();
+    			if (status==EventConsumerStatus.CANCELED || status==EventConsumerStatus.COMPLETED || status==EventConsumerStatus.FAILED){
+    				nextConsumer.clear();
+    				removeList.add(nextConsumer);
+    				--size;
+    			}
+    		}
+    		eventConsumers.removeAll(removeList);
+    		removeList.clear();
+    	}
+    	
         eventConsumers.add(consumer);
     }
 

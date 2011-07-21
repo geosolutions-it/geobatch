@@ -62,11 +62,12 @@ public class JAISettingsListener extends GBSettingsListener<JAISettings> {
         	if (LOGGER.isInfoEnabled())
         		LOGGER.info("Using default JAI settings");
             settings = new JAISettings();
+            settingsDAO.save(settings);
         }
         
         if (LOGGER.isInfoEnabled())
         	LOGGER.info("Initializing JAI settings");
-        setJAIProperties(settings);
+        applyJAIProperties(settings);
     }
 
     @Override
@@ -78,11 +79,14 @@ public class JAISettingsListener extends GBSettingsListener<JAISettings> {
     public void afterSave(JAISettings settings, boolean success) {
     	if (LOGGER.isInfoEnabled())
     		LOGGER.info("Applying new JAI settings");
-        setJAIProperties(settings);
+        applyJAIProperties(settings);
     }
 
 
-    private void setJAIProperties(JAISettings jai) {
+    private void applyJAIProperties(JAISettings jai) {
+    	if (jai!=null){
+    		jai=new JAISettings();
+    	}
     	
     	JAI jaiDef = JAI.getDefaultInstance();
         jai.setJai( jaiDef );

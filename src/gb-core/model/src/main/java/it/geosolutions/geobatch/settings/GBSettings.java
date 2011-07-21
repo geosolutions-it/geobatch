@@ -25,17 +25,22 @@ package it.geosolutions.geobatch.settings;
 /**
  * 
  * @author ETj (etj at geo-solutions.it)
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public abstract class GBSettings {
 
-    private String id;
+    private final String id;
+    
+    public GBSettings(final String id){
+    	this.id=id;
+    }
 
     public String getId() {
         return id;
     }
 
-    protected void setId(String id) {
-        this.id = id;
-    }
+//    protected void setId(String id) {
+//        this.id = id;
+//    }
 
 }

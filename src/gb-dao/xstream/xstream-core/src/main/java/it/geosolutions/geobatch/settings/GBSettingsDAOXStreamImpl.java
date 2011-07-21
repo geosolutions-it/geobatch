@@ -104,8 +104,15 @@ public class GBSettingsDAOXStreamImpl implements GBSettingsDAO  {
             throw new NullPointerException("Id is null");
 
         try {
+        	if (!settingsDir.exists()){
+        		if (!settingsDir.mkdirs()){
+        			LOGGER.warn("Unable to build settings dir: " + settingsDir.getAbsolutePath());
+        			return false;
+        		}
+        	}
             final File outFile = new File(settingsDir, id + ".xml");
-            if (! outFile.canWrite()) {
+            
+            if (!(outFile.createNewFile() && outFile.canWrite())) {
                 LOGGER.warn("Unwritable file " + outFile);
                 return false;
             } else if (outFile.isDirectory()) {

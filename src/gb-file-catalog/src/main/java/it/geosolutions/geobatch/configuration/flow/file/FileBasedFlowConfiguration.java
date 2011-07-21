@@ -46,12 +46,24 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
 	 * containing the configuration files.
 	 */
 	private String workingDirectory;
+	
+	/**
+     * maximum numbers of stored executed (see Consumer.getStatus()) consumers
+     */
+    private int maxStoredConsumers;
 
 	/**
 	 * autorun: this attribute is used to autorun a flow on startup.
 	 */
 	private boolean autorun = false;
 
+	/**
+	 * @return the maxStoredConsumers
+	 */
+	public int getMaxStoredConsumers() {
+		return maxStoredConsumers;
+	}
+	
 	/**
 	 * 
 	 * @param id
