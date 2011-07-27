@@ -156,6 +156,10 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 										+ input.getAbsolutePath());
 							continue;
 						}
+						
+						// override local configuration with the command one
+						cmd.overrideImageMosaicConfiguration(configuration);
+						
 					}
 					else if (input.isDirectory()) {
 						if (LOGGER.isInfoEnabled()) {

@@ -2,4 +2,8 @@
   <base>src/test/resources/data</base>
   <del>test2.txt</del>
   <add>test1.txt</add>
+  <allowMultithreading>false</allowMultithreading>
+  <useJaiImageRead>false</useJaiImageRead>
+  <tileSizeH>0</tileSizeH>
+  <tileSizeW>0</tileSizeW>
 </ImageMosaic>
