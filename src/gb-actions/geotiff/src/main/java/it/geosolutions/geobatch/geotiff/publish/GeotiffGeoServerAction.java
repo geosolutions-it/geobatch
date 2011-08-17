@@ -69,15 +69,6 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
         try {
             listenerForwarder.started();
 
-            // looking for file
-            if (events.size() != 1) {
-                final String message = "GeotiffGeoServerAction.execute(): Wrong number of elements for this action: "
-                        + events.size();
-                if (LOGGER.isErrorEnabled())
-                    LOGGER.error(message);
-                throw new IllegalArgumentException(message);
-            }
-
             // //
             // data flow configuration and dataStore name must not be null.
             // //
@@ -87,129 +78,124 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
                     LOGGER.error(message);
                 throw new IllegalStateException(message);
             }
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // Initializing input variables
-            //
-            // ////////////////////////////////////////////////////////////////////
-            final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
-                    ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
 
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // Checking input files.
-            //
-            // ////////////////////////////////////////////////////////////////////
-            if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                final String message = "GeotiffGeoServerAction.execute(): GeoServerDataDirectory is null or does not exist.";
-                if (LOGGER.isErrorEnabled())
-                    LOGGER.error(message);
-                throw new IllegalStateException(message);
-            }
-
-            final FileSystemEvent event = events.remove();
-            final File inputFile = event.getSource();
-            // TODO checks on input file
-            final String inputFileName = inputFile.getName();
-            final String filePrefix = FilenameUtils.getBaseName(inputFile.getName());
-            final String fileSuffix = FilenameUtils.getExtension(inputFile.getName());
-
-            String baseFileName = null;
-            final String fileNameFilter = getConfiguration().getStoreFilePrefix();
-            if (fileNameFilter != null) {
-                if ((filePrefix.equals(fileNameFilter) || filePrefix.matches(fileNameFilter))
-                        && ("tif".equalsIgnoreCase(fileSuffix) || "tiff"
-                                .equalsIgnoreCase(fileSuffix))) {
-                    // etj: are we missing something here?
-                    baseFileName = filePrefix;
-                }
-            } else if ("tif".equalsIgnoreCase(fileSuffix) || "tiff".equalsIgnoreCase(fileSuffix)) {
-                baseFileName = filePrefix;
-            }
-
-            if (baseFileName == null) {
-                final String message = "GeotiffGeoServerAction.execute(): Unexpected file '"
-                        + inputFileName + "'";
-                if (LOGGER.isErrorEnabled())
-                    LOGGER.error(message);
-                throw new IllegalStateException(message);
-            }
-
-            final String coverageStoreId = FilenameUtils.getBaseName(inputFileName);
-
-            // //
-            // creating coverageStore
-            // //
-            final GeoTiffFormat format = new GeoTiffFormat();
-            GeoTiffReader coverageReader = null;
-
-            // //
-            // Trying to read the GeoTIFF
-            // //
-            /**
-             * GeoServer url: "file:data/" + coverageStoreId + "/" + geoTIFFFileName
-             */
-            try {
-                coverageReader = (GeoTiffReader) format.getReader(inputFile);
-
-                if (coverageReader == null) {
-                    final String message = "GeotiffGeoServerAction.execute(): No valid GeoTIFF File found for this Data Flow!";
-                    if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error(message);
-                    }
-                    throw new IllegalStateException(message);
-                }
-            } finally {
-                if (coverageReader != null) {
-                    try {
-                        coverageReader.dispose();
-                    } catch (Throwable e) {
-                        if (LOGGER.isTraceEnabled()) {
-                            LOGGER.trace(
-                                    "GeotiffGeoServerAction.execute(): "
-                                            + e.getLocalizedMessage(), e);
-                        }
-                    }
-                }
-            }
-
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // SENDING data to GeoServer via REST protocol.
-            //
-            // ////////////////////////////////////////////////////////////////////
-            boolean sent = false;
-            GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(getConfiguration()
-                    .getGeoserverURL(), getConfiguration().getGeoserverUID(), getConfiguration()
-                    .getGeoserverPWD());
-
-            if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
-                // TODO Deprecated: to be tested
-                sent = publisher.publishGeoTIFF(getConfiguration().getDefaultNamespace(),
-                        coverageStoreId, inputFile);
-            } else if ("EXTERNAL".equals(getConfiguration().getDataTransferMethod())) {
-                // String workspace, String coverageStore, File geotiff, String srs, String
-                // defaultStyle
-                RESTCoverageStore store = publisher.publishExternalGeoTIFF(getConfiguration()
-                        .getDefaultNamespace(), coverageStoreId, inputFile, getConfiguration()
-                        .getCrs(), getConfiguration().getDefaultStyle());
-                sent = store != null;
-            } else {
-                final String message = "GeotiffGeoServerAction.execute(): FATAL -> Unknown transfer method "
-                        + getConfiguration().getDataTransferMethod();
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error(message);
-                }
-
-                if (sent) {
-                    if (LOGGER.isInfoEnabled()) {
-                        LOGGER.info("GeotiffGeoServerAction.execute(): coverage SUCCESSFULLY sent to GeoServer!");
-                    }
-                } else {
-                    if (LOGGER.isInfoEnabled()) {
-                        LOGGER.info("GeotiffGeoServerAction.execute(): coverage was NOT sent to GeoServer due to connection errors!");
-                    }
-                }
+            while (events.size()>0){
+	            final FileSystemEvent event = events.remove();
+	            final File inputFile = event.getSource();
+	            // TODO checks on input file
+	            final String inputFileName = inputFile.getName();
+	            listenerForwarder.setTask("Working on: "+inputFileName);
+	            
+	            final String filePrefix = FilenameUtils.getBaseName(inputFile.getName());
+	            final String fileSuffix = FilenameUtils.getExtension(inputFile.getName());
+	
+	            String baseFileName = null;
+	            final String fileNameFilter = getConfiguration().getStoreFilePrefix();
+	            if (fileNameFilter != null) {
+	                if ((filePrefix.equals(fileNameFilter) || filePrefix.matches(fileNameFilter))
+	                        && ("tif".equalsIgnoreCase(fileSuffix) || "tiff"
+	                                .equalsIgnoreCase(fileSuffix))) {
+	                    // etj: are we missing something here?
+	                    baseFileName = filePrefix;
+	                }
+	            } else if ("tif".equalsIgnoreCase(fileSuffix) || "tiff".equalsIgnoreCase(fileSuffix)) {
+	                baseFileName = filePrefix;
+	            }
+	
+	            if (baseFileName == null) {
+	                final String message = "GeotiffGeoServerAction.execute(): Unexpected file '"
+	                        + inputFileName + "'";
+	                if (LOGGER.isErrorEnabled())
+	                    LOGGER.error(message);
+//	                throw new IllegalStateException(message);
+	                continue;
+	            }
+	
+	            final String coverageStoreId = FilenameUtils.getBaseName(inputFileName);
+	
+	            // //
+	            // creating coverageStore
+	            // //
+	            final GeoTiffFormat format = new GeoTiffFormat();
+	            GeoTiffReader coverageReader = null;
+	
+	            // //
+	            // Trying to read the GeoTIFF
+	            // //
+	            /**
+	             * GeoServer url: "file:data/" + coverageStoreId + "/" + geoTIFFFileName
+	             */
+	            try {
+	            	if (!format.accepts(inputFile)){
+	            		final String message = "GeotiffGeoServerAction.execute(): No valid GeoTIFF File found for this Data Flow!";
+	                    if (LOGGER.isErrorEnabled()) {
+	                        LOGGER.error(message);
+	                    }
+	//                    throw new IllegalStateException(message);
+	                    continue;
+	            	}
+	                coverageReader = (GeoTiffReader) format.getReader(inputFile);
+	
+	                if (coverageReader == null) {
+	                    final String message = "GeotiffGeoServerAction.execute(): No valid GeoTIFF File found for this Data Flow!";
+	                    if (LOGGER.isErrorEnabled()) {
+	                        LOGGER.error(message);
+	                    }
+//	                    throw new IllegalStateException(message);
+	                    continue;
+	                }
+	            } finally {
+	                if (coverageReader != null) {
+	                    try {
+	                        coverageReader.dispose();
+	                    } catch (Throwable e) {
+	                        if (LOGGER.isTraceEnabled()) {
+	                            LOGGER.trace(
+	                                    "GeotiffGeoServerAction.execute(): "
+	                                            + e.getLocalizedMessage(), e);
+	                        }
+	                    }
+	                }
+	            }
+	
+	            // ////////////////////////////////////////////////////////////////////
+	            //
+	            // SENDING data to GeoServer via REST protocol.
+	            //
+	            // ////////////////////////////////////////////////////////////////////
+	            boolean sent = false;
+	            GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(getConfiguration()
+	                    .getGeoserverURL(), getConfiguration().getGeoserverUID(), getConfiguration()
+	                    .getGeoserverPWD());
+	
+	            if ("DIRECT".equals(getConfiguration().getDataTransferMethod())) {
+	                // TODO Deprecated: to be tested
+	                sent = publisher.publishGeoTIFF(getConfiguration().getDefaultNamespace(),
+	                        coverageStoreId, inputFile);
+	            } else if ("EXTERNAL".equals(getConfiguration().getDataTransferMethod())) {
+	                // String workspace, String coverageStore, File geotiff, String srs, String
+	                // defaultStyle
+	                RESTCoverageStore store = publisher.publishExternalGeoTIFF(getConfiguration()
+	                        .getDefaultNamespace(), coverageStoreId, inputFile, getConfiguration()
+	                        .getCrs(), getConfiguration().getDefaultStyle());
+	                sent = store != null;
+	            } else {
+	                final String message = "GeotiffGeoServerAction.execute(): FATAL -> Unknown transfer method "
+	                        + getConfiguration().getDataTransferMethod();
+	                if (LOGGER.isErrorEnabled()) {
+	                    LOGGER.error(message);
+	                }
+	
+	                if (sent) {
+	                    if (LOGGER.isInfoEnabled()) {
+	                        LOGGER.info("GeotiffGeoServerAction.execute(): coverage SUCCESSFULLY sent to GeoServer!");
+	                    }
+	                } else {
+	                    if (LOGGER.isInfoEnabled()) {
+	                        LOGGER.info("GeotiffGeoServerAction.execute(): coverage was NOT sent to GeoServer due to connection errors!");
+	                    }
+	                }
+	            }
             }
 
             listenerForwarder.completed();

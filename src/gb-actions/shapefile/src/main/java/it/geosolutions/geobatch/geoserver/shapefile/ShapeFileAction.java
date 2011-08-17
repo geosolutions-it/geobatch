@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Queue;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,7 +164,7 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
                 }
 
                 // collect extracted files
-                final Collector c = new Collector(null); // no filter
+                final Collector c = new Collector(FileFilterUtils.notFileFilter(FileFilterUtils.nameFileFilter(tmpDirName))); // no filter
                 final List<File> fileList = c.collect(tmpDirFile);
                 if (fileList != null) {
                     files = fileList.toArray(new File[1]);
@@ -200,11 +201,11 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
                 throw new IllegalStateException("The file list do not contains mondadory files");
             }
 
-            zippedFile = Compressor.deflate(new File(configuration.getWorkingDirectory()),
-                    shapeName, files);
-            if (zippedFile == null) {
-                throw new IllegalStateException("Unable to create the zip file");
-            }
+//            zippedFile = Compressor.deflate(new File(configuration.getWorkingDirectory()),
+//                    shapeName, files);
+//            if (zippedFile == null) {
+//                throw new IllegalStateException("Unable to create the zip file");
+//            }
 
             listenerForwarder.progressing(10, "In progress");
 

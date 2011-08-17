@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 public final class Extract {
     
-    private final static Logger LOGGER = LoggerFactory.getLogger(Extract.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(Extract.class);
     
     
     private static MimeTypes mimeTypes=TikaConfig.getDefaultConfig().getMimeRepository();
@@ -260,7 +260,7 @@ public final class Extract {
                         LOGGER.info("Input file is a tar file.");
                     
                     File tar_file=null;
-                    if (in_name.contains("tar")){
+                    if (in_name.endsWith("tar")){
                         tar_file=new File(in_name);
                         // filename
                         end_name=getName(m);
@@ -286,6 +286,12 @@ public final class Extract {
                     }
                     
                     TarReader.readTar(tar_file,end_file);
+                    
+                    if(LOGGER.isInfoEnabled()) {
+                        LOGGER.info("tar extracted to "+end_file.getAbsolutePath());
+                    }
+                    
+                    end_name=extract(end_name);
                     
                 break;
                 case BZIP2:

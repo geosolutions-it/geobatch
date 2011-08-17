@@ -72,13 +72,12 @@ public class FreeMarkerFilter {
      * Constructor
      * @param wd workingDir (Set the explicit directory from which to load templates)
      * @param r the reader of a FreeMarker template
-     * @param data data structure (containing variable to substitute)
      * @see Freemarker documentation for detailed accepted data types.
      */
-    public FreeMarkerFilter(String wd, Reader r){
+    public FreeMarkerFilter(String workingDir, Reader reader){
         super();
         if (!initted){
-            initted=(initConfig(wd)&&initTemplate(r));
+            initted=(initConfig(workingDir)&&initTemplate(reader));
         }
     }
     
