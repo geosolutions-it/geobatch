@@ -80,6 +80,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>data/</exclude>
+                                <exclude>settings/</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -98,6 +99,7 @@
                             </includes>
                         </configuration>
                     </execution>
+                    
                 </executions>
             </plugin>
 
@@ -109,7 +111,7 @@
     <!-- =========================================================== -->
     <profiles>
     
-		<profile>
+	<profile>
             <id>freemarker</id>
             <activation>
                 <property>

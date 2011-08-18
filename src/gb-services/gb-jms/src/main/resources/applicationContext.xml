@@ -2,8 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jms="http://www.springframework.org/schema/jms"
-	xmlns:broker="http://activemq.apache.org/schema/core"
+	xmlns:jms="http://www.springframework.org/schema/jms" xmlns:broker="http://activemq.apache.org/schema/core"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
@@ -11,39 +10,22 @@
         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
         http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd
         http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
-<!-- -->
-	<!-- Catalog Initialization <bean id="catalog" class="it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl"> 
-		<property name="id" value="catalog" /> <property name="description" value="File 
-		system based catalog" /> <property name="name" value="catalog" /> </bean> -->
-
+	<!-- -->
+	
 	<!-- let Spring do its IoC stuff in this package -->
 	<context:component-scan base-package="it.geosolutions.geobatch.camel" />
-	
-	<!-- <context:property-override location="classpath:jms.properties" ignore-resource-not-found="true" />-->
-	
+
 	<bean id="propertyOverrideConfigurer"
 		class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
 		<property name="ignoreResourceNotFound" value="true" />
 		<property name="locations">
 			<list>
 				<value>classpath:jms.properties</value>
-				<value>${GEOBATCH_DATA_DIR}/settings/jms.properties</value>
+				<value>file:${GEOBATCH_DATA_DIR}/settings/jms.properties</value>
 			</list>
 		</property>
 	</bean>
-	<!-- 
-	<bean id="propertyConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="ignoreUnresolvablePlaceholders" value="true"/>
-		<property name="locations">
-			<list>
-				<value>classpath:jms.properties</value>
-				<value>${GEOBATCH_DATA_DIR}/settings/jms.properties</value>
-			</list>
-		</property>
-	</bean>
-	-->
-	 
+
 	<!-- In camel you need two things to configure JMS. A ConnectionFactory 
 		and a JMSComponent. As ConnectionFactory you can simply set up the normal 
 		Factory your JMS provider offers or bind a JNDI ConnectionFactory. We use 
@@ -52,9 +34,17 @@
 		<property name="brokerURL" value="tcp://localhost:61611" />
 	</bean>
 
-	<bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
-		<property name="maxConnections" value="8" />
-		<property name="maximumActive" value="500" />
+	<!--  The Camel JMS component -->
+	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+		<property name="configuration" ref="jmsConfig" />
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+		<property name="useMessageIDAsCorrelationID" value="true" />
+		<property name="explicitQosEnabled" value="true" />
+	</bean>
+	
+		<bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+		<property name="maxConnections" value="50" />
+		<property name="maximumActive" value="10" />
 		<property name="connectionFactory" ref="jmsConnectionFactory" />
 	</bean>
 
@@ -64,97 +54,52 @@
 		<property name="concurrentConsumers" value="10" />
 	</bean>
 
-	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
-		<property name="configuration" ref="jmsConfig" />
-		<property name="connectionFactory" ref="jmsConnectionFactory" />
-		<property name="useMessageIDAsCorrelationID" value="true" />
-		<property name="explicitQosEnabled" value="true" />
+	<!--  The broker  -->
+	<!-- lets configure the ActiveMQ JMS broker server to listen on TCP 61611 -->
+	<bean id="broker" class="org.apache.activemq.broker.BrokerService"
+		init-method="start" destroy-method="stop" >
+		<property name="persistent" value="false" />
+		<property name="brokerName" value="brokerURL" />
+		<property name="useJmx" value="false" />
+		<property name="deleteAllMessagesOnStartup" value="true" />
+		<!--<property name="useShutdownHook" value="false"/> -->
+		<property name="transportConnectorURIs">
+			<array>
+				<value>tcp://localhost:61611</value>
+			</array>
+		</property>
 	</bean>
 
-	<!-- <bean id="jmsTransactionManager" class="org.springframework.jms.connection.JmsTransactionManager"> 
-		<property name="connectionFactory" ref="jmsConnectionFactory" /> </bean> -->
-	<!-- The JMS component allows messages to be sent to (or consumed from) 
-		a JMS Queue or Topic. The implementation of the JMS Component uses Spring's 
-		JMS support for declarative transactions, using Spring's JmsTemplate for 
-		sending and a MessageListenerContainer for consuming. -->
-	<!-- <bean id="jms" class="org.apache.camel.component.jms.JmsComponent"> 
-		<property name="connectionFactory" ref="jmsConnectionFactory" /> <property 
-		name="useMessageIDAsCorrelationID" value="true" /> <property name="explicitQosEnabled" 
-		value="true" /> </bean> -->
 
-	<!-- lets configure the ActiveMQ JMS broker server to listen on TCP 61610 -->
-  	
-<!--	<broker:broker useJmx="false" persistent="false" brokerName="brokerURL">-->
-<!--		<broker:transportConnectors>-->
-<!--			<broker:transportConnector ><property name="broker" ref="transportConnector"></property></broker:transportConnector>-->
-<!--		</broker:transportConnectors>-->
-<!--	</broker:broker>-->
+<!--	<bean id="transportConnector" class="org.apache.activemq.broker.TransportConnector">--> 
+<!--		<property name="name" value="tcp" />-->
+<!--		<property name="uri" value="tcp://localhost:61611" />-->
+<!--	</bean>-->
 
 
-<bean id="broker" class="org.apache.activemq.broker.BrokerService" init-method="start">
-    <property name="persistent" value="false"/>
-    <property name="brokerName" value="brokerURL"/>
-    <property name="useJmx" value="false"/>
-    <property name="deleteAllMessagesOnStartup" value="true"/>
-    <!--<property name="useShutdownHook" value="false"/>-->
-    <property name="transportConnectorURIs">
-      <list>
-        <value>tcp://localhost:61611</value>
-      </list>
-    </property>
-  </bean>
-
-<!--  <bean id="brokerManager" class="com.company.ActiveMQBrokerManager">-->
-<!--    <constructor-arg ref="broker"/>   -->
-<!--  </bean>-->
-
-	<!--
-	<bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean" >
-	    <property name="config" value="classpath:org/activemq/xbean/activemq.xml" />
-	    <property name="start" value="true" />
-	</bean>-->
-	
-	
-	<bean id="transportConnector" class="org.apache.activemq.broker.TransportConnector" init-method="start">
-<!--		<property name="start" value="true" />-->
-		<property name="name" value="tcp" />
-		<property name="uri" value="tcp://localhost:61611" />
-	</bean>
-    
-    
-	<!-- The processor -->
-	<bean id="JMSFlowManager" class="it.geosolutions.geobatch.camel.JMSFlowManager">
-		<!-- <constructor-arg ref="jmsConnectionFactory" /> -->
+	<!-- The route -->
+	<bean id="JmsRoute" class="it.geosolutions.geobatch.camel.JmsRoute">
+		<property name="queueName">
+			<value>fileSevice</value>
+		</property>
+		<property name="poolSize">
+			<value>1</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>10</value>
+		</property>
 	</bean>
 
 	<!-- declare a camel context that scans for classes that is RouteBuilder -->
 	<camel:camelContext id="camel-server">
 		<camel:package>it.geosolutions.geobatch.camel</camel:package>
+		
 		<!-- enable JMX connector so we can connect to the server and browse mbeans -->
-		<!-- Camel will log at INFO level the service URI to use for connecting 
-			with jconsole -->
-		<camel:jmxAgent id="agent" createConnector="true" />
-		<!-- <camel:endpoint uri="jms:queue:fileSevice"/> -->
+		<!-- Camel will log at INFO level the service URI to use for connecting with jconsole -->
+<!--		 <camel:jmxAgent id="agent" createConnector="true" registryPort="1099" /> -->
 
-<!-- TODO: id taskExecutor -->
-		<camel:route id="JMSFlowManagerRoute">
-			<camel:from uri="activemq:queue:fileSevice?preserveMessageQos=true" /> <!-- &amp;replyTo=jms:temp:queue:fileSevice&amp;transferExchange=true;"/> -->
-			<!-- <camel:to pattern="InOnly" uri="log:it.geosolutions.geobatch.camel.test?level=INFO" 
-				/> -->
-			<camel:threads maxPoolSize="10">
-				<camel:doTry>
-					<camel:process ref="JMSFlowManager" />
-				</camel:doTry>
-				<camel:doCatch>
-					<camel:exception>java.lang.Exception</camel:exception>
-					<camel:handled>
-						<camel:constant>true</camel:constant>
-					</camel:handled>
-				</camel:doCatch>
-			</camel:threads>
-			<!-- <camel:to uri="activemq:queue:fileSevice?preserveMessageQos=true" 
-				/> -->
-			<!-- <camel:to uri="activemq:queue:fileSevice_out" /> -->
-		</camel:route>
+		<camel:routeBuilder ref="JmsRoute" />
+
 	</camel:camelContext>
 </beans>
+

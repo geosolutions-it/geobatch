@@ -53,7 +53,7 @@ public class JMSClient {
     static {
         queueName = "fileSevice";
         ackMode = Session.AUTO_ACKNOWLEDGE;
-        broker="tcp://localhost:61611";
+        broker="tcp://localhost:61612";
         transacted = false;
     }
     
