@@ -13,12 +13,6 @@
 		<property name="jdbcUrl" value="jdbc:h2:gbusers" />
 		<property name="user" value="geobatch" />
 		<property name="password" value="geobatch" />
-
-<!--		<property name="driverClass" value="org.postgresql.Driver" />-->
-<!--		<property name="jdbcUrl" value="jdbc:postgresql://demo.geo-solutions.it:5432/sem_geobatch" />-->
-<!--		<property name="user" value="postgres" />-->
-<!--		<property name="password" value="...." />-->
-
 		<property name="minPoolSize" value="4" />
 		<property name="maxPoolSize" value="10" />
 		<property name="maxStatements" value="100" />
@@ -47,7 +41,7 @@
 				<!--prop key="dialect">
 					org.hibernate.dialect.PostgreSQLDialect
                 </prop-->
-				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.connection.autocommit">false</prop>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>

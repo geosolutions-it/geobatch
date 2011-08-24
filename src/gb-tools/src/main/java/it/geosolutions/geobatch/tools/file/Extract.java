@@ -221,6 +221,10 @@ public final class Extract {
         
     }
     
+    public static String extract(String in_name) throws Exception{
+    	return extract(in_name,false);
+    }
+    
     /**
      * @warning read the todo note
      * @TODO fix zip file extraction to make possible to extract not only 'simple' zip file
@@ -237,7 +241,7 @@ public final class Extract {
      * @return the output dir where files are extracted
      * @throws Exception 
      */
-    public static String extract(String in_name) throws Exception{
+    public static String extract(final String in_name, final boolean remove_source) throws Exception{
         File in_file=null;
         if (in_name!=null){
             in_file=new File(in_name);
@@ -287,11 +291,14 @@ public final class Extract {
                     
                     TarReader.readTar(tar_file,end_file);
                     
+                    if (remove_source)
+                    	tar_file.delete();
+                    
                     if(LOGGER.isInfoEnabled()) {
                         LOGGER.info("tar extracted to "+end_file.getAbsolutePath());
                     }
                     
-                    end_name=extract(end_name);
+                    end_name=extract(end_name,true);
                     
                 break;
                 case BZIP2:
@@ -305,11 +312,14 @@ public final class Extract {
                     // uncompress BZ2 to the tar file
                     Extractor.extractBz2(in_file,end_file);
                     
+                    if (remove_source)
+                    	in_file.delete();
+                    
                     if(LOGGER.isInfoEnabled()) {
                         LOGGER.info("BZ2 uncompressed to "+end_file.getAbsolutePath());
                     }
                     
-                    end_name=extract(end_name);
+                    end_name=extract(end_name,true);
                 break;
                 case GZIP:
                     if(LOGGER.isInfoEnabled())
@@ -321,13 +331,16 @@ public final class Extract {
                     
                     // uncompress BZ2 to the tar file
                     Extractor.extractGzip(in_file,end_file);
+                    
+                    if (remove_source)
+                    	in_file.delete();
         
                     if(LOGGER.isInfoEnabled()) {
                         LOGGER.info("GZ uncompressed to "+end_name);
                     }
                     
                     // recursion
-                    end_name=extract(end_name);
+                    end_name=extract(end_name,true);
 
                 break;
                 case ZIP:
@@ -349,12 +362,15 @@ public final class Extract {
 //                    Extractor.unzipFlat(in_file,end_file);
                     Extractor.unZip(in_name,end_name);
                     
+                    if (remove_source)
+                    	in_file.delete();
+                    
                     if(LOGGER.isInfoEnabled()) {
                         LOGGER.info("Zip file uncompressed to "+end_name);
                     }
                     
                     // recursion
-                    end_name=extract(end_name);
+                    end_name=extract(end_name,remove_source);
                 break;
                 case NORMAL:
                     
