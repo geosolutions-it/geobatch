@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.misc.PauseHandler;
 
 import java.util.ArrayList;
@@ -45,47 +46,56 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Alessio Fabiani, GeoSolutions
  * @author Simone Giannecchini, GeoSolutions
+ * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * 
+ * @version r1 - date: 2007<br>
+ *          r2 - date: 26 Aug 2011 <br>
  */
 public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends EventConsumerConfiguration>
 		extends BaseResource implements Callable<Queue<XEO>>,
 		EventConsumer<XEO, ECC> {
 
 	private static Logger LOGGER = LoggerFactory
-			.getLogger(BaseEventConsumer.class.toString());
-
-	// private static Counter counter = new Counter();
+			.getLogger(BaseEventConsumer.class);
 
 	private final Calendar creationTimestamp = Calendar.getInstance(TimeZone
 			.getTimeZone("UTC"));
 
 	private volatile EventConsumerStatus eventConsumerStatus;
+	
+	/*
+	 * the context where action is running in...<br> this is initialized by the
+	 * FlowManager
+	 */
+	private String runningContext;
+
+	/**
+	 * @return the runningContext
+	 */
+	public String getRunningContext() {
+		return runningContext;
+	}
+
+	/**
+	 * @param runningContext
+	 *            the runningContext to set
+	 */
+	public void setRunningContext(String runningContext) {
+		this.runningContext = runningContext;
+	}
 
 	/**
 	 * The MailBox
-	 * 
-	 * @uml.property name="eventsQueue"
 	 */
 	protected final Queue<XEO> eventsQueue = new LinkedList<XEO>();
 
-	protected final List<Action<XEO>> actions = new ArrayList<Action<XEO>>();
+	protected final List<BaseAction<XEO>> actions = new ArrayList<BaseAction<XEO>>();
 
-	protected volatile Action<XEO> currentAction = null;
+	protected volatile BaseAction<XEO> currentAction = null;
 
-	// private EventListenerList listeners = new EventListenerList();
-	/**
-	 * @uml.property name="listenerForwarder"
-	 * @uml.associationEnd multiplicity="(1 1)" inverse=
-	 *                     "this$0:it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer$EventConsumerListenerForwarder"
-	 */
 	final protected EventConsumerListenerForwarder listenerForwarder;
 
 	protected PauseHandler pauseHandler = new PauseHandler(false);
-
-	// public BaseEventConsumer() {
-	// super();
-	// this.setStatus(EventConsumerStatus.IDLE);
-	// this.setId(getClass().getSimpleName() + "_" + counter.getNext());
-	// }
 
 	public BaseEventConsumer(String id, String name, String description) {
 		super(id, name, description);
@@ -113,10 +123,11 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 	protected void setStatus(EventConsumerStatus eventConsumerStatus) {
 
 		if (this.eventConsumerStatus != eventConsumerStatus) {
-			listenerForwarder.fireStatusChanged(this.eventConsumerStatus, eventConsumerStatus);
+			listenerForwarder.fireStatusChanged(this.eventConsumerStatus,
+					eventConsumerStatus);
 			listenerForwarder.setTask(eventConsumerStatus.toString());
 		}
-		
+
 		this.eventConsumerStatus = eventConsumerStatus;
 	}
 
@@ -147,8 +158,15 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 	 * out from the loop. <BR>
 	 * We may need to specify on a per-action basis if an error in the action
 	 * should stop the whole flow.</I>
+	 * 
+	 * @param events
+	 *            The incoming event queue to pass to the first action
+	 * @param runningContext
+	 *            The context in which the actions should be executed
+	 * 
 	 */
-	protected Queue<XEO> applyActions(Queue<XEO> events) throws ActionException {
+	protected Queue<XEO> applyActions(Queue<XEO> events)
+			throws ActionException {
 		if (LOGGER.isTraceEnabled()) {
 			LOGGER.trace("Applying " + actions.size() + " actions on "
 					+ events.size() + " events.");
@@ -157,7 +175,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 		// apply all the actions
 		int step = 0;
 
-		for (Action<XEO> action : this.actions) {
+		for (BaseAction<XEO> action : this.actions) {
 			try {
 				pauseHandler.waitUntilResumed();
 
@@ -166,10 +184,16 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 				listenerForwarder.setTask("Running "
 						+ action.getClass().getSimpleName() + "(" + (step + 1)
 						+ "/" + this.actions.size() + ")");
-				listenerForwarder.progressing(); // notify there has been some
-				// progressing
+				// notify there has been some progressing
+				listenerForwarder.progressing();
 
+				// setting the action context same as the event consumer
+				action.setRunningContext(getRunningContext());
+
+				// setting current action
 				currentAction = action;
+
+				// execute the action
 				events = action.execute(events);
 
 				if (events == null) {
@@ -254,16 +278,16 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 	}
 
 	public boolean pause(boolean sub) {
-		final EventConsumerStatus status=getStatus();
+		final EventConsumerStatus status = getStatus();
 		if (status.equals(EventConsumerStatus.EXECUTING)
 				|| status.equals(EventConsumerStatus.WAITING)
 				|| status.equals(EventConsumerStatus.IDLE)) {
-			
-			if (LOGGER.isInfoEnabled()){
+
+			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info("Pausing consumer " + getName() + " ["
 						+ creationTimestamp + "]");
 			}
-			
+
 			pauseHandler.pause();
 			// set new status
 			setStatus(EventConsumerStatus.PAUSED);
@@ -275,11 +299,10 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 						+ creationTimestamp + "]");
 				currentAction.pause();
 			}
-		}
-		else {
-			if (LOGGER.isInfoEnabled()){
-				LOGGER.info("Consumer " + getName() + " ["
-						+ creationTimestamp + "] is already in state: "+getStatus());
+		} else {
+			if (LOGGER.isInfoEnabled()) {
+				LOGGER.info("Consumer " + getName() + " [" + creationTimestamp
+						+ "] is already in state: " + getStatus());
 			}
 		}
 		return true; // we'll pause asap
@@ -311,11 +334,11 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 	 * 
 	 *         TODO: returned list should be unmodifiable
 	 */
-	public List<Action<XEO>> getActions() {
+	public List<BaseAction<XEO>> getActions() {
 		return actions;
 	}
 
-	protected void addActions(final List<Action<XEO>> actions) {
+	protected void addActions(final List<BaseAction<XEO>> actions) {
 		this.actions.addAll(actions);
 	}
 

@@ -56,13 +56,23 @@ public abstract class ConsumerAbstractController extends AbstractController {
             fm = catalog.getResource(fmId, FileBasedFlowManager.class);
 
             if (fm != null) {
-                List<? extends EventConsumer> ecList = fm.getEventConsumers();
-                for (EventConsumer eventConsumer : ecList) {
-                    if (((BaseEventConsumer) eventConsumer).getId().equals(ecId)) {
-                        consumer = (BaseEventConsumer) eventConsumer;
-                        break;
-                    }
+                final List<? extends EventConsumer> ecList = fm.getEventConsumers();
+                final int size=ecList.size();
+                final int index;
+                try {
+                	index=Integer.parseInt(ecId);
+                	if (index<size){
+	                	final EventConsumer eventConsumer = ecList.get(index);
+	                    consumer = (BaseEventConsumer) eventConsumer;
+                	}
+//                	else
+                    	//TODO log?                		
+                }catch (NumberFormatException n){
+                	//TODO log?
+                	throw n;
                 }
+                
+                
             }
         }
 

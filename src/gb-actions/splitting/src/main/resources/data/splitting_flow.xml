@@ -45,7 +45,7 @@
 			
 			<listenerId>SplitActionLogger0</listenerId>
 			<listenerId>SplitActionStatus0</listenerId>
-						
+			
 			<serviceID>splittingService</serviceID>
 
 		    <serviceIDs>

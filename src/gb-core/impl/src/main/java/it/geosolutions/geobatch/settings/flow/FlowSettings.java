@@ -37,8 +37,9 @@ public class FlowSettings extends GBSettings {
 	/**
      * maximum numbers of stored executed (see Consumer.getStatus()) consumers
      */
-	public static final int DEFAULT_maxStoredConsumers=10;
+	private static final int DEFAULT_maxStoredConsumers=10;
     private int maxStoredConsumers=DEFAULT_maxStoredConsumers;
+    
     
 //	/**
 //	 * autorun: this attribute is used to autorun a flow on startup.
@@ -46,19 +47,41 @@ public class FlowSettings extends GBSettings {
 //    public static final boolean DEFAULT_autorun = true;
 //	private boolean autorun = DEFAULT_autorun;
 
-	public static final int DEFAULT_workQueueSize=100;
+    private static final int DEFAULT_workQueueSize=100;
     private int workQueueSize=DEFAULT_workQueueSize;
     
-    public static final int DEFAULT_corePoolSize=10;
+    private static final int DEFAULT_corePoolSize=10;
     private int corePoolSize=DEFAULT_corePoolSize;
     
     
-    public static final int DEFAULT_maximumPoolSize=30;
+    private static final int DEFAULT_maximumPoolSize=30;
     private int maximumPoolSize=DEFAULT_maximumPoolSize;
     
     // secs
-    public static final int DEFAULT_keepAliveTime=150;
+    private static final int DEFAULT_keepAliveTime=150;
     private int keepAliveTime=DEFAULT_keepAliveTime;
+    
+	/**
+	 * do not remove ContextDirectory when consumer is disposed
+	 */
+    private static final boolean DEFAULT_keepContextDir=false;
+	private boolean keepContextDir = DEFAULT_keepContextDir;
+
+	/**
+	 * @return the keepContextDir
+	 */
+	public boolean isKeepContextDir() {
+		return keepContextDir;
+	}
+
+	/**
+	 * @param keepContextDir the keepContextDir to set
+	 */
+	public void setKeepContextDir(boolean keepContextDir) {
+		this.keepContextDir = keepContextDir;
+	}
+
+    
 	/**
 	 * @return the maxStoredConsumers
 	 */

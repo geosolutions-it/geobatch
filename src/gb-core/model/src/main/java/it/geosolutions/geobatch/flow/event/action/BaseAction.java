@@ -36,6 +36,10 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author Simone Giannecchini, GeoSolutions S.A.S.
+ * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * 
+ * @version r1<br>
+ *          r2 - on: 26 Aug 2011<br>
  * 
  * @param <XEO>
  *            Kind of EventObject to be eXecuted
@@ -45,6 +49,27 @@ public abstract class BaseAction<XEO extends EventObject> extends
 
 	private final static Logger LOGGER = LoggerFactory
 			.getLogger(BaseAction.class);
+
+	/**
+	 * the context where action is running in...<br>
+	 * this is initialized by the FlowManager
+	 */
+	private String runningContext;
+
+	/**
+	 * @return the runningContext
+	 */
+	public String getRunningContext() {
+		return runningContext;
+	}
+
+	/**
+	 * @param runningContext
+	 *            the runningContext to set
+	 */
+	public void setRunningContext(String runningContext) {
+		this.runningContext = runningContext;
+	}
 
 	final protected ProgressListenerForwarder listenerForwarder;
 

@@ -280,7 +280,7 @@ public class FileBasedEventConsumer
         // ACTIONS
         // ////////////////////////////////////////////////////////////////////
 
-        final List<Action<FileSystemEvent>> loadedActions = new ArrayList<Action<FileSystemEvent>>();
+        final List<BaseAction<FileSystemEvent>> loadedActions = new ArrayList<BaseAction<FileSystemEvent>>();
         for (ActionConfiguration actionConfig : configuration.getActions()) {
             final String actionServiceID = actionConfig.getServiceID();
             final ActionService<FileSystemEvent, ActionConfiguration> actionService = CatalogHolder.getCatalog().getResource(actionServiceID, ActionService.class);
@@ -290,20 +290,19 @@ public class FileBasedEventConsumer
                     action = actionService.createAction(actionConfig);
                     if (action == null) {
                         if (LOGGER.isErrorEnabled()) {
-                            LOGGER.error("FileBasedEventConsumer::initialize(): Unable to load the action using the service "
+                            LOGGER.error("Unable to load the action using the service "
                                     + actionServiceID);
                         }
                         throw new IllegalArgumentException(
-                                "FileBasedEventConsumer::initialize(): Action could not be instantiated for config "
+                                "Action could not be instantiated for config "
                                         + actionConfig);
                     }
                 } else {
                     if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error("FileBasedEventConsumer::initialize(): Cannot create the action using the service "
+                        LOGGER.error("Cannot create the action using the service "
                                 + actionServiceID + " check the configuration.");
                     }
-                    throw new IllegalArgumentException(
-                            "FileBasedEventConsumer::initialize(): Action could not be created for config "
+                    throw new IllegalArgumentException("Action could not be created for config "
                                     + actionConfig);
                 }
 
@@ -319,7 +318,7 @@ public class FileBasedEventConsumer
                                 .createProgressListener(plConfig, action);
                         action.addListener(progressListener);
                     } else {
-                        final String message="FileBasedEventConsumer::initialize(): Could not find '" + listenerServiceID
+                        final String message="Could not find '" + listenerServiceID
                         + "' listener," + " declared in " + actionConfig.getId()
                         + " action configuration," + " in " + configuration.getId()
                         + " consumer";
@@ -330,9 +329,9 @@ public class FileBasedEventConsumer
                     }
                 }
 
-                loadedActions.add(action);
+                loadedActions.add((BaseAction<FileSystemEvent>)action);
             } else {
-                final String message="FileBasedEventConsumer::initialize(): ActionService not found '" + actionServiceID
+                final String message="ActionService not found '" + actionServiceID
                 + "' for ActionConfig '" + actionConfig.getName() + "'";
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(message);
@@ -344,7 +343,7 @@ public class FileBasedEventConsumer
 
         if (loadedActions.isEmpty()) {
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("FileBasedEventConsumer::initialize(): "+getClass().getSimpleName() + " initialized with "
+                LOGGER.info(getClass().getSimpleName() + " initialized with "
                         + mandatoryRules.size() + " mandatory rules, " + optionalRules.size()
                         + " optional rules, " + loadedActions.size() + " actions");
             }
@@ -390,14 +389,17 @@ public class FileBasedEventConsumer
             final File currentRunDirectory = new File(this.workingDir, timeStamp);
             if (configuration.isPerformBackup() || !configuration.isPreserveInput())
                 if (!currentRunDirectory.exists() && !currentRunDirectory.mkdirs())
-                    throw new IllegalStateException("FileBasedEventConsumer::call(): Could not create consumer backup directory!");
+                    throw new IllegalStateException("Could not create consumer backup directory!");
+            
+			// set the consumer running context
+			setRunningContext(currentRunDirectory.getAbsolutePath());
 
             // create backup dir. Creation is deferred until first usage
             getListenerForwarder().progressing(20, "Creating backup dir");
             final File backupDirectory = new File(currentRunDirectory, "backup");
             if (configuration.isPerformBackup())
                 if (!backupDirectory.exists() && !backupDirectory.mkdirs())
-                    throw new IllegalStateException("FileBasedEventConsumer::call(): Could not create consumer backup directory!");
+                    throw new IllegalStateException("Could not create consumer backup directory!");
 
             //
             // Cycling on all the input events
@@ -406,7 +408,7 @@ public class FileBasedEventConsumer
             int numProcessedFiles = 0;
             for (FileSystemEvent event : this.eventsQueue) {
                 if (LOGGER.isInfoEnabled())
-                    LOGGER.info("FileBasedEventConsumer::call(): [" + Thread.currentThread().getName()
+                    LOGGER.info("[" + Thread.currentThread().getName()
                             + "]: new element retrieved from the MailBox.");
 
                 // get info for the input file event
@@ -463,12 +465,12 @@ public class FileBasedEventConsumer
 	
 	                    }
 	                    if (LOGGER.isInfoEnabled()){
-	                        LOGGER.info("FileBasedEventConsumer::call():  [" + Thread.currentThread().getName()
+	                        LOGGER.info("[" + Thread.currentThread().getName()
 	                            + "]: accepted file " + sourceDataFile);
 	                    }
 	                } else {
 	                    if (LOGGER.isErrorEnabled()){
-	                        LOGGER.error(new StringBuilder("FileBasedEventConsumer::call(): [")
+	                        LOGGER.error(new StringBuilder("[")
 	                                .append(Thread.currentThread().getName())
 	                                .append("]: could not lock file ").append(sourceDataFile).toString());
 	                    }
@@ -495,7 +497,7 @@ public class FileBasedEventConsumer
             // Failure. (etj: ???)
             // //
             if (LOGGER.isInfoEnabled()){
-                LOGGER.info("FileBasedEventConsumer::call(): [" + Thread.currentThread().getName()
+                LOGGER.info("[" + Thread.currentThread().getName()
                     + "]: new element processed.");
             }
 
@@ -503,6 +505,7 @@ public class FileBasedEventConsumer
             getListenerForwarder().progressing(50, "Running actions");
 
             try {
+            	// apply actions into the actual context (currentRunDirectory)
                 fileEventList = this.applyActions(fileEventList);
                 this.setStatus(EventConsumerStatus.COMPLETED);
                 jobResultSuccessful = true;
@@ -617,7 +620,6 @@ public class FileBasedEventConsumer
    		}
    		
    		// Current Action Status...
-//   		final List<? extends Action<FileSystemEvent>> actions = getActions();
    		if (actions != null) {
    			for (Action action : this.actions) {
    				

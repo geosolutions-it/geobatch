@@ -56,6 +56,25 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
 	 * autorun: this attribute is used to autorun a flow on startup.
 	 */
 	private boolean autorun = false;
+	
+	/**
+	 * do not remove ContextDirectory when consumer is disposed
+	 */
+	private boolean keepContextDir = false;
+
+	/**
+	 * @return the keepContextDir
+	 */
+	public boolean isKeepContextDir() {
+		return keepContextDir;
+	}
+
+	/**
+	 * @param keepContextDir the keepContextDir to set
+	 */
+	public void setKeepContextDir(boolean keepContextDir) {
+		this.keepContextDir = keepContextDir;
+	}
 
 	/**
 	 * @return the maxStoredConsumers
