@@ -132,6 +132,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements Acti
 
                 // add variables to the new engineScope
                 engineScope.put("eventList", events);
+                engineScope.put("runningContext", getRunningContext());
 
                 engine.eval(new FileReader(script), engineScope);
 
