@@ -51,11 +51,11 @@ public class ConsumerDisposeController extends ConsumerAbstractController {
 				if (consumer instanceof FileBasedEventConsumer){
 					final FileBasedEventConsumer fileConsumer=(FileBasedEventConsumer)consumer;
 
-					// dispose the object
-					fm.dispose(fileConsumer);
-					
 					// start manually clear action instances and cumulators
 					fileConsumer.clear();
+					
+					// dispose the object
+					fm.dispose(fileConsumer);
 				}
 				
 			}

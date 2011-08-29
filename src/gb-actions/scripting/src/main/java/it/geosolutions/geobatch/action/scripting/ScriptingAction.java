@@ -5,6 +5,7 @@ package it.geosolutions.geobatch.action.scripting;
  **/
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
@@ -76,17 +77,20 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements Acti
                 final String message = "Configuration is null.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
-                throw new IllegalStateException(message);
+                throw new ActionException(this,message);
             }
 
-            listenerForwarder.setTask("dynamic class loading ...");
+            final String scriptName=Path.getAbsolutePath(configuration.getScriptFile());
+            if (scriptName==null)
+            	throw new ActionException(this, "Unable to locate the script file name: "+configuration.getScriptFile());
+            
+            final File script = new File(scriptName);
 
             /**
              * Dynamic class-loading ...
              */
-            final File script = new File(configuration.getScriptFile());
+            listenerForwarder.setTask("dynamic class loading ...");
             final String moduleFolder = new File(script.getParentFile(), "jars").getAbsolutePath();
-
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Runtime class-loading from moduleFolder -> " + moduleFolder);
             }

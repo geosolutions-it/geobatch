@@ -90,6 +90,11 @@ public class FileBasedEventConsumer
 
     
     private File workingDir;
+    
+	/**
+	 * do not remove ContextDirectory when consumer is disposed
+	 */
+	private boolean keepContextDir = false;
 
     
     private FileBasedEventConsumerConfiguration configuration;
@@ -233,6 +238,7 @@ public class FileBasedEventConsumer
             throws InterruptedException {
         this.configuration = configuration;
         this.workingDir = workingDir;
+		this.keepContextDir = configuration.isKeepContextDir();
         this.commonPrefixRegex = null;
         this.mandatoryRules.clear();
         this.optionalRules.clear();
@@ -588,8 +594,9 @@ public class FileBasedEventConsumer
      * @see it.geosolutions.geobatch.manager.Manager#dispose()
      */
     public void dispose() {
-        LOGGER.info(Thread.currentThread().getName() + " DISPOSING!");
-
+    	if (LOGGER.isInfoEnabled())
+    		LOGGER.info(Thread.currentThread().getName() + " DISPOSING!");
+        
         super.dispose();
         this.numInputFiles = 0;
         this.configuration = null;
@@ -603,11 +610,13 @@ public class FileBasedEventConsumer
      * 
      * remove all Cumulating progress listener from the Consumer and containing action(s)
      * remove all the actions from the action list
+     * remove contextRunningDir
      * 
      */
     public void clear(){
 
         // Progress Logging...
+   		// remove all Cumulating progress listener from the Consumer and containing action(s)
    		final ProgressListenerForwarder lf= this.getListenerForwarder();
    		final List <? extends IProgressListener> listeners=lf.getListeners();
    		if (listeners!=null){
@@ -620,6 +629,7 @@ public class FileBasedEventConsumer
    		}
    		
    		// Current Action Status...
+   		// remove all the actions from the action list
    		if (actions != null) {
    			for (Action action : this.actions) {
    				
@@ -635,6 +645,20 @@ public class FileBasedEventConsumer
    			}
    			this.actions.clear();
    		}
+   		
+   		// remove contextRunningDir
+   		if (!keepContextDir){
+			// removing running context directory
+			try {
+				FileUtils.deleteDirectory(new File(getRunningContext()));
+			} catch (IOException e) {
+				if (LOGGER.isWarnEnabled())
+					LOGGER.warn("Problem trying to remove the running context directory: "
+							+ getRunningContext()
+							+ ".\n "
+							+ e.getLocalizedMessage());
+			}
+		}
     }
 
     @Override
@@ -683,9 +707,10 @@ public class FileBasedEventConsumer
     public String toString() {
         return getClass().getSimpleName()
                 + "["
-                + "name:" + getName()
+                + " name:" + getName()
                 + " status:"+ getStatus()
                 + " actions:"+ actions.size()
+                + " context: "+ getRunningContext()
                 + " events:" + eventsQueue.size()
                 + " still missing:"+ numInputFiles
                 + (isPaused() ? " PAUSED" : "")

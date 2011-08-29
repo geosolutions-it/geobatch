@@ -79,11 +79,6 @@ public class FileBasedFlowManager extends
 			.getLogger(FlowManager.class);
 
 	private boolean autorun = false;
-	
-	/**
-	 * do not remove ContextDirectory when consumer is disposed
-	 */
-	private boolean keepContextDir = false;
 
 	private File workingDirectory;
 
@@ -210,8 +205,6 @@ public class FileBasedFlowManager extends
 								.append("< ").toString());
 
 			this.autorun = configuration.isAutorun();
-			
-			this.keepContextDir = configuration.isKeepContextDir();
 
 			final int queueSize = configuration.getWorkQueueSize() > 0 ? configuration
 					.getWorkQueueSize() : fs.getWorkQueueSize();
@@ -291,20 +284,6 @@ public class FileBasedFlowManager extends
 				LOGGER.warn("FileBasedFlowManager:dispose(): Trying to dispose and uncompleted consumer "
 						+ fbec);
 			fbec.cancel();
-
-		}
-		
-		if (!keepContextDir){
-			// removing running context directory
-			try {
-				FileUtils.deleteDirectory(new File(fbec.getRunningContext()));
-			} catch (IOException e) {
-				if (LOGGER.isWarnEnabled())
-					LOGGER.warn("Problem trying to remove the running context directory: "
-							+ fbec.getRunningContext()
-							+ ".\n "
-							+ e.getLocalizedMessage());
-			}
 		}
 
 		// dunno if we should also force a fbec.dispose();

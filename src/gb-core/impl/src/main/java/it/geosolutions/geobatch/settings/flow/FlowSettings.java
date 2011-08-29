@@ -61,25 +61,25 @@ public class FlowSettings extends GBSettings {
     private static final int DEFAULT_keepAliveTime=150;
     private int keepAliveTime=DEFAULT_keepAliveTime;
     
-	/**
-	 * do not remove ContextDirectory when consumer is disposed
-	 */
-    private static final boolean DEFAULT_keepContextDir=false;
-	private boolean keepContextDir = DEFAULT_keepContextDir;
-
-	/**
-	 * @return the keepContextDir
-	 */
-	public boolean isKeepContextDir() {
-		return keepContextDir;
-	}
-
-	/**
-	 * @param keepContextDir the keepContextDir to set
-	 */
-	public void setKeepContextDir(boolean keepContextDir) {
-		this.keepContextDir = keepContextDir;
-	}
+//	/**
+//	 * do not remove ContextDirectory when consumer is disposed
+//	 */
+//    private static final boolean DEFAULT_keepContextDir=false;
+//	private boolean keepContextDir = DEFAULT_keepContextDir;
+//
+//	/**
+//	 * @return the keepContextDir
+//	 */
+//	public boolean isKeepContextDir() {
+//		return keepContextDir;
+//	}
+//
+//	/**
+//	 * @param keepContextDir the keepContextDir to set
+//	 */
+//	public void setKeepContextDir(boolean keepContextDir) {
+//		this.keepContextDir = keepContextDir;
+//	}
 
     
 	/**
