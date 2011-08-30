@@ -107,8 +107,10 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 	                        + inputFileName + "'";
 	                if (LOGGER.isErrorEnabled())
 	                    LOGGER.error(message);
-//	                throw new IllegalStateException(message);
-	                continue;
+	                if (configuration.isFailIgnored())
+		                continue;
+	                else
+	                	throw new IllegalStateException(message);
 	            }
 	
 	            final String coverageStoreId = FilenameUtils.getBaseName(inputFileName);
@@ -119,9 +121,9 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 	            final GeoTiffFormat format = new GeoTiffFormat();
 	            GeoTiffReader coverageReader = null;
 	
-	            // //
+	            ////
 	            // Trying to read the GeoTIFF
-	            // //
+	            ////
 	            /**
 	             * GeoServer url: "file:data/" + coverageStoreId + "/" + geoTIFFFileName
 	             */
@@ -131,8 +133,10 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 	                    if (LOGGER.isErrorEnabled()) {
 	                        LOGGER.error(message);
 	                    }
-	//                    throw new IllegalStateException(message);
-	                    continue;
+	                    if (configuration.isFailIgnored())
+			                continue;
+		                else
+		                	throw new IllegalStateException(message);
 	            	}
 	                coverageReader = (GeoTiffReader) format.getReader(inputFile);
 	
@@ -141,8 +145,10 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 	                    if (LOGGER.isErrorEnabled()) {
 	                        LOGGER.error(message);
 	                    }
-//	                    throw new IllegalStateException(message);
-	                    continue;
+	                    if (configuration.isFailIgnored())
+			                continue;
+		                else
+		                	throw new IllegalStateException(message);
 	                }
 	            } finally {
 	                if (coverageReader != null) {
@@ -150,9 +156,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 	                        coverageReader.dispose();
 	                    } catch (Throwable e) {
 	                        if (LOGGER.isTraceEnabled()) {
-	                            LOGGER.trace(
-	                                    "GeotiffGeoServerAction.execute(): "
-	                                            + e.getLocalizedMessage(), e);
+	                            LOGGER.trace(e.getLocalizedMessage(), e);
 	                        }
 	                    }
 	                }
@@ -180,27 +184,33 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 	                        .getCrs(), getConfiguration().getDefaultStyle());
 	                sent = store != null;
 	            } else {
-	                final String message = "GeotiffGeoServerAction.execute(): FATAL -> Unknown transfer method "
+	                final String message = "FATAL -> Unknown transfer method "
 	                        + getConfiguration().getDataTransferMethod();
 	                if (LOGGER.isErrorEnabled()) {
 	                    LOGGER.error(message);
 	                }
-	
-	                if (sent) {
-	                    if (LOGGER.isInfoEnabled()) {
-	                        LOGGER.info("GeotiffGeoServerAction.execute(): coverage SUCCESSFULLY sent to GeoServer!");
-	                    }
-	                } else {
-	                    if (LOGGER.isInfoEnabled()) {
-	                        LOGGER.info("GeotiffGeoServerAction.execute(): coverage was NOT sent to GeoServer due to connection errors!");
-	                    }
-	                }
+	                sent=false;
 	            }
+	            if (sent) {
+                    if (LOGGER.isInfoEnabled()) {
+                        LOGGER.info("Coverage SUCCESSFULLY sent to GeoServer!");
+                    }
+                } else {
+                	final String message="Coverage was NOT sent to GeoServer due to connection errors!";
+                	if (LOGGER.isInfoEnabled()) {
+                        LOGGER.info(message);
+                    }
+                	if (configuration.isFailIgnored())
+		                continue;
+	                else
+	                	throw new IllegalStateException(message);
+                    
+                }
             }
 
             listenerForwarder.completed();
             return events;
-        } catch (Exception t) {
+        } catch (Throwable t) {
             final String message = "GeotiffGeoServerAction.execute(): FATAL -> "
                     + t.getLocalizedMessage();
             if (LOGGER.isErrorEnabled()) {

@@ -180,8 +180,7 @@ public class FileBasedFlowManager extends
 					.getBaseDirectory();
 
 			if (baseDir == null)
-				throw new NullPointerException(
-						"FileBasedFlowManager:initialize(): Base Working dir is null");
+				throw new NullPointerException("Base Working dir is null");
 
 			this.workingDirectory = Path.findLocation(
 					configuration.getWorkingDirectory(), baseDir);
@@ -189,7 +188,7 @@ public class FileBasedFlowManager extends
 			if (workingDirectory == null)
 				throw new IllegalArgumentException(
 						new StringBuilder(
-								"FileBasedFlowManager:initialize(): Working dir is invalid: ")
+								"Working dir is invalid: ")
 								.append('>').append(baseDir).append("< ")
 								.append('>')
 								.append(configuration.getWorkingDirectory())
@@ -198,7 +197,7 @@ public class FileBasedFlowManager extends
 			if (!workingDirectory.canWrite() || !workingDirectory.isDirectory())
 				throw new IllegalArgumentException(
 						new StringBuilder(
-								"FileBasedFlowManager:initialize(): Working dir is invalid: ")
+								"Working dir is invalid: ")
 								.append('>').append(baseDir).append("< ")
 								.append('>')
 								.append(configuration.getWorkingDirectory())
@@ -223,16 +222,14 @@ public class FileBasedFlowManager extends
 
 			if (this.autorun) {
 				if (LOGGER.isInfoEnabled())
-					LOGGER.info("FileBasedFlowManager:initialize(): Automatic Flow Startup for '"
-							+ getName() + "'");
+					LOGGER.info("Automatic Flow Startup for '"+ getName() + "'");
 				this.resume();
 			}
 
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			if (LOGGER.isErrorEnabled())
 				LOGGER.error("Failed to save the flow settings");
-			final IOException ioe = new IOException();
-			ioe.initCause(e.getCause());
+			final IOException ioe = new IOException(e);
 			throw ioe;
 		}
 	}

@@ -287,6 +287,7 @@ public class FileBasedEventConsumer
         // ////////////////////////////////////////////////////////////////////
 
         final List<BaseAction<FileSystemEvent>> loadedActions = new ArrayList<BaseAction<FileSystemEvent>>();
+        
         for (ActionConfiguration actionConfig : configuration.getActions()) {
             final String actionServiceID = actionConfig.getServiceID();
             final ActionService<FileSystemEvent, ActionConfiguration> actionService = CatalogHolder.getCatalog().getResource(actionServiceID, ActionService.class);
@@ -312,6 +313,9 @@ public class FileBasedEventConsumer
                                     + actionConfig);
                 }
 
+                // add default status listener (Used by the GUI to track action stat)
+                // TODO
+                
                 // attach listeners to actions
                 for (ProgressListenerConfiguration plConfig : actionConfig
                         .getListenerConfigurations()) {

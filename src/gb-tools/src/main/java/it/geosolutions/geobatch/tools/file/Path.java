@@ -346,8 +346,8 @@ public class Path {
 				if (source.equals(dest)) {
 					// YES
 					// (dest.exists, !overwrite, source==dest) -> return source
-					if (LOGGER.isInfoEnabled())
-						LOGGER.info("Unable to copy file to: \'"
+					if (LOGGER.isErrorEnabled())
+						LOGGER.error("Unable to copy file to: \'"
 								+ dest.getAbsolutePath()
 								+ "\' source and destination are the same! (overwrite is set to \'"
 								+ overwrite + "\'). Returning source.");
@@ -360,8 +360,8 @@ public class Path {
 					if (!dest.exists()) {
 						// NO
 						// (dest.exists, !overwrite, source!=dest) -> fail
-						if (LOGGER.isWarnEnabled())
-							LOGGER.warn("Failed to copy file to: \'"
+						if (LOGGER.isErrorEnabled())
+							LOGGER.error("Failed to copy file to: \'"
 									+ dest.getAbsolutePath()
 									+ "\' destination exists! (overwrite is set to \'"
 									+ overwrite + "\').");
@@ -411,16 +411,16 @@ public class Path {
 			try {
 				copyFile(source, dest);
 			} catch (OverlappingFileLockException o) {
-				if (LOGGER.isWarnEnabled())
-					LOGGER.warn("Problem writing the file: \'"
+				if (LOGGER.isErrorEnabled())
+					LOGGER.error("Problem writing the file: \'"
 							+ source
 							+ "\' to \'"
 							+ dest
 							+ "\'.\nA lock that overlaps the requested region is already held by this Java virtual machine, or if another thread is already blocked in this method and is attempting to lock an overlapping region of the same file.");
 				return null;
 			} catch (Throwable t) {
-				if (LOGGER.isWarnEnabled())
-					LOGGER.warn("Problem writing the file: \'" + source
+				if (LOGGER.isErrorEnabled())
+					LOGGER.error("Problem writing the file: \'" + source
 							+ "\' to \'" + dest + "\'.", t);
 				return null;
 			}
