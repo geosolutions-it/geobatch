@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+		 
+	<!-- Environment Initialization -->
+		
+	<!-- OctaveFreeMarkerGeneratorService -->
+	<bean id="OctaveFreeMarkerGeneratorService" class="it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMarkerGeneratorService">
+		<constructor-arg type="String"><value>OctaveFreeMarkerGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>OctaveFreeMarkerGeneratorService</value></constructor-arg>	
+		<constructor-arg type="String"><value>OctaveFreeMarkerGeneratorService</value></constructor-arg>	
+	</bean>
+		
+	<bean id="OctaveFreeMarkerAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMarkerAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+    
+    <bean id="OctaveAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.OctaveAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+  	
+</beans>

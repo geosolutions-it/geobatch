@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+	<!-- Environment Initialization -->
+	<bean id="Shp2pgGeneratorService" class="it.geosolutions.geobatch.postgres.shp2pg.Shp2pgGeneratorService">
+		<constructor-arg type="String"><value>Shp2pgGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>Shp2pgGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>Shp2pgGeneratorService</value></constructor-arg>
+	</bean>
+	<bean id="Shp2pgAliasRegistrar" class="it.geosolutions.geobatch.postgres.shp2pg.Shp2pgAliasRegistrar" lazy-init="false">
+		<constructor-arg ref="aliasRegistry" />
+	</bean>
+</beans>
