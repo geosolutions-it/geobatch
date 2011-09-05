@@ -70,12 +70,8 @@
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-action-geoserver</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-epsg-hsql</artifactId>          
-        </dependency>
         
+        <!-- including coverage tools that brings in most of the things we need -->
         <dependency>
             <groupId>org.geotools</groupId>
             <!-- contains geotiff -->
@@ -100,6 +96,11 @@
             </exclusions>            
         </dependency>
 
+		<!-- including the standard hsql EPSG db -->
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-epsg-hsql</artifactId>          
+        </dependency>
 
     </dependencies>
 
