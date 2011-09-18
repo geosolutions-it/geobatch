@@ -2,8 +2,7 @@
 <FlowConfiguration>
 	<id>geotiff</id>
 	<name>Prepare GeoTIFF and publish</name>
-	<description>Create overviews, retile the image and publish on
-		GeoServer</description>
+	<description>Create overviews, retile the image and publish on GeoServer</description>
 
 	<workingDirectory>geotiff</workingDirectory>
 	<autorun>true</autorun>
@@ -51,40 +50,40 @@
 
 		<GeotiffRetilerConfiguration>
 			<id>GeoTiffRetiler</id>
-			<description>Action to retile the geotif</description>
-			<name>GdalTranslate action</name>
-			
+			<description>Action to retile a geotif</description>
+			<name>GeoTiffRetiler action</name>
+
 			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
-			
+
 			<workingDirectory>geotiff</workingDirectory>
 			<serviceID>GeotiffRetilerService</serviceID>
 			<forceToBigTiff>false</forceToBigTiff>
 			<tileH>256</tileH>
 			<tileW>256</tileW>
-			
+
 		</GeotiffRetilerConfiguration>
-		
+
 		<GeotiffOverviewsEmbedderConfiguration>
 			<id>GeoTiffOverviewsEmbedder</id>
-			<description>Action to add overview to the geotif</description>
+			<description>Action to add overviews to a geotif</description>
 			<name>GeotiffOverview embedder action</name>
-			
+
 			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
-			
+
 			<workingDirectory>geotiff</workingDirectory>
 			<serviceID>GeotiffOverviewsEmbedderService</serviceID>
-			
+
 			<downsampleStep>2</downsampleStep>
 			<scaleAlgorithm>Average</scaleAlgorithm>
 			<numSteps>15</numSteps>
 			<tileH>256</tileH>
 			<tileW>256</tileW>
-			
+
 		</GeotiffOverviewsEmbedderConfiguration>
-		
-		
+
+
 		<GeoServerActionConfiguration>
 			<serviceID>GeotiffGeoServerService</serviceID>
 			<id>geotiff</id>
@@ -93,12 +92,12 @@
 
 			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
-			
+
 			<workingDirectory>geotiff</workingDirectory>
-			
+
 			<crs>EPSG:4326</crs>
-			
-			<envelope/>
+
+			<envelope />
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
 			<geoserverPWD>geoserver</geoserverPWD>
 			<geoserverUID>admin</geoserverUID>
@@ -107,7 +106,7 @@
 
 			<wmsPath>/</wmsPath>
 			<defaultStyle>raster</defaultStyle>
-			<styles/>
+			<styles />
 		</GeoServerActionConfiguration>
 	</EventConsumerConfiguration>
 
