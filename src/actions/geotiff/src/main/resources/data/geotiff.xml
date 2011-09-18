@@ -17,8 +17,8 @@
 		<watchDirectory>geotiff/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<interval>0 * * * * ?</interval><!-- CRON: every minute at sec 0 -->
-		<!--<interval>20</interval> each 20 sec -->
+		<!--interval>0 * * * * ?</interval--> <!-- CRON: every minute at sec 0 -->
+		<interval>20</interval>  <!--  each 20 sec -->
 		<id>id</id>
 		<serviceID>fsEventGeneratorService</serviceID>
 		<description>description</description>
