@@ -33,22 +33,26 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+
 /**
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- * 
+ *
  */
-public class MemoryController extends AbstractController {
+public class MemoryController extends AbstractController
+{
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
      * (javax.servlet .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected ModelAndView handleRequestInternal(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+        HttpServletResponse response) throws Exception
+    {
         ModelAndView mav = new ModelAndView("memory"); // jsp
-        final MemoryMXBean mmxbean=ManagementFactory.getMemoryMXBean();
+        final MemoryMXBean mmxbean = ManagementFactory.getMemoryMXBean();
         mav.addObject("objectPendingFinalizationCount", mmxbean.getObjectPendingFinalizationCount());
         mav.addObject("nonHeapMemoryUsage", mmxbean.getNonHeapMemoryUsage());
         mav.addObject("heapMemoryUsage", mmxbean.getHeapMemoryUsage());

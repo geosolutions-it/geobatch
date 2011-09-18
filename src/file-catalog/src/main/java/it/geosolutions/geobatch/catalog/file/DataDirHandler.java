@@ -33,129 +33,173 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
 
+
 /**
  * Check the configuration to find out where the data dir is located.
- * 
+ *
  * @author Etj
  */
-public class DataDirHandler 
-    implements ApplicationContextAware {
+public class DataDirHandler implements ApplicationContextAware
+{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataDirHandler.class);
-        
-    public final static String GEOBATCH_DATA_DIR = "GEOBATCH_DATA_DIR";
-    
+
+    public static final String GEOBATCH_DATA_DIR = "GEOBATCH_DATA_DIR";
+
     private ApplicationContext applicationContext;
-    
+
     /**
-     * The base directory where the configuration files are located. 
-     * <br/>The workingDirectory will be relative to this base directory unless 
+     * The base directory where the configuration files are located.
+     * <br/>The workingDirectory will be relative to this base directory unless
      * an absolute path will be specified.
      */
     private File dataDir;
 
-    public DataDirHandler() {
+    public DataDirHandler()
+    {
     }
 
     /**
      * init method called by Spring
      * @throws Exception if could not init data dir
      */
-    public void init() throws Exception {
+    public void init() throws Exception
+    {
         dataDir = retrieveDataDir();
 
         System.out.println("----------------------------------");
         System.out.println("- GEOBATCH_DATA_DIR: " + dataDir.getAbsolutePath());
         System.out.println("----------------------------------");
     }
-    
-    
-    public File getDataDirectory() {
+
+
+    public File getDataDirectory()
+    {
         return this.dataDir;
     }
-    
+
     /**
      * Try to retrieve the info about where the data dir is located.
      * <br/>
      * On exit, the <tt>datadir</tt> var will be set, or an exception will be thrown.
-     * 
+     *
      * @throws NullPointerException
-     * @throws IllegalStateException 
+     * @throws IllegalStateException
      */
-    protected File retrieveDataDir() throws NullPointerException, IllegalStateException {
+    protected File retrieveDataDir() throws NullPointerException, IllegalStateException
+    {
         File ret = null;
-        
-        try {
 
-            if (ret == null) {
+        try
+        {
+
+            if (ret == null)
+            {
                 String prop = System.getProperty(GEOBATCH_DATA_DIR);
-                if (prop != null) {
-                    ret = new File(prop); 
-                    if(LOGGER.isInfoEnabled()) 
+                if (prop != null)
+                {
+                    ret = new File(prop);
+                    if (LOGGER.isInfoEnabled())
+                    {
                         LOGGER.info("data dir read from property");
-                } else {
+                    }
+                }
+                else
+                {
                     prop = System.getenv(GEOBATCH_DATA_DIR);
-                    if (prop != null) {
+                    if (prop != null)
+                    {
                         ret = new File(prop);
-                        if(LOGGER.isInfoEnabled()) 
-                            LOGGER.info("data dir read from environment var");                        
-                    } else {
-                        if (this.applicationContext instanceof WebApplicationContext) {
+                        if (LOGGER.isInfoEnabled())
+                        {
+                            LOGGER.info("data dir read from environment var");
+                        }
+                    }
+                    else
+                    {
+                        if (this.applicationContext instanceof WebApplicationContext)
+                        {
                             final WebApplicationContext wContext = (WebApplicationContext) applicationContext;
                             final ServletContext servletContext = wContext.getServletContext();
                             String rootDir = servletContext.getInitParameter(GEOBATCH_DATA_DIR);
-                            if (rootDir != null) {
-                                ret = new File(rootDir); 
-                                if(LOGGER.isInfoEnabled()) 
+                            if (rootDir != null)
+                            {
+                                ret = new File(rootDir);
+                                if (LOGGER.isInfoEnabled())
+                                {
                                     LOGGER.info("data dir read from servlet init param");
-                            }else {
-                                rootDir = ((WebApplicationContext) applicationContext).getServletContext().getRealPath("/WEB-INF/data");
-                                if (rootDir != null) {
-                                    ret = new File(rootDir);
-                                    if(LOGGER.isInfoEnabled()) 
-                                        LOGGER.info("data dir automatically set inside webapp");
-                                    
                                 }
                             }
-                        } else {
+                            else
+                            {
+                                rootDir = ((WebApplicationContext) applicationContext).getServletContext().getRealPath(
+                                        "/WEB-INF/data");
+                                if (rootDir != null)
+                                {
+                                    ret = new File(rootDir);
+                                    if (LOGGER.isInfoEnabled())
+                                    {
+                                        LOGGER.info("data dir automatically set inside webapp");
+                                    }
+
+                                }
+                            }
+                        }
+                        else
+                        {
                             ret = new File("./data");
-                            if(LOGGER.isInfoEnabled()) 
+                            if (LOGGER.isInfoEnabled())
+                            {
                                 LOGGER.info("data dir automatically set in current dir");
+                            }
                         }
                     }
                 }
             }
 
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e)
+        {
             // gobble exception
             if (LOGGER.isInfoEnabled())
+            {
                 LOGGER.info(e.getLocalizedMessage(), e);
+            }
         }
 
         if (ret == null)
+        {
             throw new NullPointerException(
-                    "Could not initialize Data Directory: The provided path is null.");
+                "Could not initialize Data Directory: The provided path is null.");
+        }
 
         if (!ret.exists())
+        {
             throw new IllegalStateException(
-                    "Could not initialize Data Directory: The provided path does not exists ("
-                            + ret + ").");
+                "Could not initialize Data Directory: The provided path does not exists (" +
+                ret + ").");
+        }
 
         if (!ret.isDirectory() || !ret.canRead())
+        {
             throw new IllegalStateException(
-                    "Could not initialize Data Directory: The provided path is not a readable directory ("
-                            + ret + ")");
+                "Could not initialize Data Directory: The provided path is not a readable directory (" +
+                ret + ")");
+        }
+
         return ret;
     }
-    
+
     @Override
-    public String toString() {
+    public String toString()
+    {
         return getClass().getSimpleName() + " [" + dataDir + "]";
     }
 
-    //==========================================================================
-    
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    // ==========================================================================
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
+    {
         this.applicationContext = applicationContext;
     }
 

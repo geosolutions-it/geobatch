@@ -22,6 +22,9 @@
 
 package it.geosolutions.geobatch.flow.event.generator.file;
 
+import java.io.File;
+import java.io.IOException;
+
 import it.geosolutions.filesystemmonitor.OsType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
@@ -30,71 +33,90 @@ import it.geosolutions.geobatch.flow.event.generator.BaseEventGeneratorService;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * @author Simone Giannecchini, GeoSolutions
  * @author Ivano Picco
- * 
+ *
  */
-public class FileBasedEventGeneratorService extends
-        BaseEventGeneratorService<FileSystemEvent, FileBasedEventGeneratorConfiguration> {
+public class FileBasedEventGeneratorService
+    extends BaseEventGeneratorService<FileSystemEvent, FileBasedEventGeneratorConfiguration>
+{
 
-    public FileBasedEventGeneratorService(String id, String name, String description) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedEventGeneratorService.class.toString());
+
+    public FileBasedEventGeneratorService(String id, String name, String description)
+    {
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = LoggerFactory
-            .getLogger(FileBasedEventGeneratorService.class.toString());
-
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seeit.geosolutions.geobatch.flow.event.generator.EventGeneratorService#
      * canCreateEventGenerator (java.util.Map)
      */
-    public boolean canCreateEventGenerator(FileBasedEventGeneratorConfiguration configuration) {
+    public boolean canCreateEventGenerator(FileBasedEventGeneratorConfiguration configuration)
+    {
         final OsType osType = configuration.getOsType();
-        if (osType == null){
-        	configuration.setOsType(OsType.OS_UNDEFINED);
+        if (osType == null)
+        {
+            configuration.setOsType(OsType.OS_UNDEFINED);
         }
-        final File sensedDir = Path.findLocation(configuration.getWatchDirectory(), 
+
+        final File sensedDir = Path.findLocation(configuration.getWatchDirectory(),
                 ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
-        if (sensedDir != null) {
-            if (sensedDir.exists() && sensedDir.isDirectory() && sensedDir.canRead()) {
+        if (sensedDir != null)
+        {
+            if (sensedDir.exists() && sensedDir.isDirectory() && sensedDir.canRead())
+            {
                 configuration.setWatchDirectory(sensedDir.getAbsolutePath());
+
                 return true;
             }
 
         }
         if (LOGGER.isErrorEnabled())
-            LOGGER.error("FileBasedEventGenerator:canCreateEventGenerator(): "
-                    + "failed to create event generator ID: " + configuration.getId());
+        {
+            LOGGER.error("FileBasedEventGenerator:canCreateEventGenerator(): " +
+                "failed to create event generator ID: " + configuration.getId());
+        }
+
         return false;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seeit.geosolutions.geobatch.flow.event.generator.EventGeneratorService#
      * createEventGenerator(java .util.Map)
      */
     public FileBasedEventGenerator<FileSystemEvent> createEventGenerator(
-            FileBasedEventGeneratorConfiguration configuration) {
+        FileBasedEventGeneratorConfiguration configuration)
+    {
 
-        try {
+        try
+        {
             return new FileBasedEventGenerator<FileSystemEvent>(configuration);
-        } catch (IOException ex) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(ex.getLocalizedMessage(), ex);
-        } catch (Throwable e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
         }
+        catch (IOException ex)
+        {
+            if (LOGGER.isErrorEnabled())
+            {
+                LOGGER.error(ex.getLocalizedMessage(), ex);
+            }
+        }
+        catch (Throwable e)
+        {
+            if (LOGGER.isErrorEnabled())
+            {
+                LOGGER.error(e.getLocalizedMessage(), e);
+            }
+        }
+
         return null;
     }
 

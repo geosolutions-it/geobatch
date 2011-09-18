@@ -22,15 +22,17 @@
 
 package it.geosolutions.geobatch.catalog.file;
 
+import java.io.File;
+
 import it.geosolutions.geobatch.catalog.Catalog;
 
-import java.io.File;
 
 /**
  * <p> A Catalog based on an xml marshalled file. </p>
  * @author  Simone Giannecchini, GeoSolutions
  */
-public interface FileBaseCatalog extends Catalog {
+public interface FileBaseCatalog extends Catalog
+{
 
     /**
      * Getter for the base directory.

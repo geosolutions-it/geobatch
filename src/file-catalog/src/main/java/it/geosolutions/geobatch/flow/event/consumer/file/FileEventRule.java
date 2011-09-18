@@ -22,34 +22,37 @@
 
 package it.geosolutions.geobatch.flow.event.consumer.file;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileEventRule extends BaseConfiguration implements Cloneable {
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 
-    
+
+public class FileEventRule extends BaseConfiguration implements Cloneable
+{
+
+
     private String regex;
 
-    
+
     private int originalOccurrencies;
 
-    
+
     private int actualOccurrencies;
 
-    
+
     private boolean optional;
 
-    
+
     private List<FileSystemEventType> acceptableNotifications;
 
 //    public FileEventRule() {
 //        super();
 //    }
 
-    public FileEventRule(String id, String name, String description, boolean dirty) {
+    public FileEventRule(String id, String name, String description, boolean dirty)
+    {
         super(id, name, description, dirty);
     }
 
@@ -57,7 +60,8 @@ public class FileEventRule extends BaseConfiguration implements Cloneable {
      * @return
      * @uml.property  name="regex"
      */
-    public String getRegex() {
+    public String getRegex()
+    {
         return regex;
     }
 
@@ -65,7 +69,8 @@ public class FileEventRule extends BaseConfiguration implements Cloneable {
      * @param regex
      * @uml.property  name="regex"
      */
-    public void setRegex(String regex) {
+    public void setRegex(String regex)
+    {
         this.regex = regex;
     }
 
@@ -73,7 +78,8 @@ public class FileEventRule extends BaseConfiguration implements Cloneable {
      * @return
      * @uml.property  name="originalOccurrencies"
      */
-    public int getOriginalOccurrencies() {
+    public int getOriginalOccurrencies()
+    {
         return originalOccurrencies;
     }
 
@@ -81,7 +87,8 @@ public class FileEventRule extends BaseConfiguration implements Cloneable {
      * @param occurrencies
      * @uml.property  name="actualOccurrencies"
      */
-    public void setActualOccurrencies(int occurrencies) {
+    public void setActualOccurrencies(int occurrencies)
+    {
         this.actualOccurrencies = occurrencies;
     }
 
@@ -89,7 +96,8 @@ public class FileEventRule extends BaseConfiguration implements Cloneable {
      * @return
      * @uml.property  name="optional"
      */
-    public boolean isOptional() {
+    public boolean isOptional()
+    {
         return optional;
     }
 
@@ -97,16 +105,18 @@ public class FileEventRule extends BaseConfiguration implements Cloneable {
      * @param optional
      * @uml.property  name="optional"
      */
-    public void setOptional(boolean optional) {
+    public void setOptional(boolean optional)
+    {
         this.optional = optional;
     }
 
-    public List<FileSystemEventType> getAcceptableNotifications() {
+    public List<FileSystemEventType> getAcceptableNotifications()
+    {
         return acceptableNotifications;
     }
 
-    public void setAcceptableNotifications(
-            List<FileSystemEventType> acceptableNotifications) {
+    public void setAcceptableNotifications(List<FileSystemEventType> acceptableNotifications)
+    {
         this.acceptableNotifications = acceptableNotifications;
     }
 
@@ -114,7 +124,8 @@ public class FileEventRule extends BaseConfiguration implements Cloneable {
      * @return
      * @uml.property  name="actualOccurrencies"
      */
-    public int getActualOccurrencies() {
+    public int getActualOccurrencies()
+    {
         return actualOccurrencies;
     }
 
@@ -122,39 +133,48 @@ public class FileEventRule extends BaseConfiguration implements Cloneable {
      * @param originalOccurrencies
      * @uml.property  name="originalOccurrencies"
      */
-    public void setOriginalOccurrencies(int originalOccurrencies) {
+    public void setOriginalOccurrencies(int originalOccurrencies)
+    {
         this.originalOccurrencies = originalOccurrencies;
     }
 
     @Override
-    public FileEventRule clone() { // throws CloneNotSupportedException {
+    public FileEventRule clone()
+    { // throws CloneNotSupportedException {
+
         // final FileEventRule rule = new FileEventRule();
         final FileEventRule rule = (FileEventRule) super.clone();
         // rule.setId(getId());
         // rule.setName(getName());
         // rule.setDescription(getDescription());
         if (acceptableNotifications != null)
+        {
             rule.setAcceptableNotifications(new ArrayList<FileSystemEventType>(
                     acceptableNotifications));
+        }
         rule.setOptional(optional);
         rule.setRegex(regex);
         rule.setOriginalOccurrencies(originalOccurrencies);
         rule.setActualOccurrencies(actualOccurrencies);
+
         return rule;
     }
 
     // ??? why is it overridden?
-    public void setServiceID(String serviceID) {
+    public void setServiceID(String serviceID)
+    {
 
     }
 
     // ??? why is it overridden?
-    public String getServiceID() {
+    public String getServiceID()
+    {
         return null;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         final StringBuilder builder = new StringBuilder();
         builder.append(getClass().getSimpleName());
         builder.append("[");
@@ -163,6 +183,7 @@ public class FileEventRule extends BaseConfiguration implements Cloneable {
         builder.append(", name:" + getName());
         builder.append(", regex:" + getRegex());
         builder.append("]");
+
         return builder.toString();
     }
 }

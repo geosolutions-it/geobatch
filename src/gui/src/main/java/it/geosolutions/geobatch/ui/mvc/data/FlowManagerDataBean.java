@@ -24,9 +24,10 @@ package it.geosolutions.geobatch.ui.mvc.data;
 
 /**
  * @author Alessio Fabiani
- * 
+ *
  */
-public class FlowManagerDataBean {
+public class FlowManagerDataBean
+{
     private String descriptorId;
 
     private String id;
@@ -40,7 +41,8 @@ public class FlowManagerDataBean {
     /**
      * @return the descriptorId
      */
-    public String getDescriptorId() {
+    public String getDescriptorId()
+    {
         return descriptorId;
     }
 
@@ -48,14 +50,16 @@ public class FlowManagerDataBean {
      * @param descriptorId
      *            the descriptorId to set
      */
-    public void setDescriptorId(String descriptorId) {
+    public void setDescriptorId(String descriptorId)
+    {
         this.descriptorId = descriptorId;
     }
 
     /**
      * @return the id
      */
-    public String getId() {
+    public String getId()
+    {
         return id;
     }
 
@@ -63,14 +67,16 @@ public class FlowManagerDataBean {
      * @param id
      *            the id to set
      */
-    public void setId(String id) {
+    public void setId(String id)
+    {
         this.id = id;
     }
 
     /**
      * @return the name
      */
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
@@ -78,14 +84,16 @@ public class FlowManagerDataBean {
      * @param name
      *            the name to set
      */
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
     /**
      * @return the inputDir
      */
-    public String getInputDir() {
+    public String getInputDir()
+    {
         return inputDir;
     }
 
@@ -93,14 +101,16 @@ public class FlowManagerDataBean {
      * @param inputDir
      *            the inputDir to set
      */
-    public void setInputDir(String inputDir) {
+    public void setInputDir(String inputDir)
+    {
         this.inputDir = inputDir;
     }
 
     /**
      * @return the workingDirectory
      */
-    public String getOutputDir() {
+    public String getOutputDir()
+    {
         return outputDir;
     }
 
@@ -108,7 +118,8 @@ public class FlowManagerDataBean {
      * @param workingDirectory
      *            the workingDirectory to set
      */
-    public void setOutputDir(String outputDir) {
+    public void setOutputDir(String outputDir)
+    {
         this.outputDir = outputDir;
     }
 }

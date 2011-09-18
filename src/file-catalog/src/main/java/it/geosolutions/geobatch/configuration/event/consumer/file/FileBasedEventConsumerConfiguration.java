@@ -22,25 +22,26 @@
 
 package it.geosolutions.geobatch.configuration.event.consumer.file;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Conf for the event consumers based on xml marshalled files.
- * 
+ *
  * <P>
  * TODO: we may need another hierarchy level for a <B>BaseEventConsumerConfiguration</B> class
- * 
+ *
  * @author Simone Giannecchini, GeoSolutions
  */
-public class FileBasedEventConsumerConfiguration extends BaseConfiguration implements
-        EventConsumerConfiguration {
+public class FileBasedEventConsumerConfiguration extends BaseConfiguration implements EventConsumerConfiguration
+{
 
     /**
      * List of configurable actions that will be sequentially performed at the end of event consumption.
@@ -57,7 +58,7 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     private List<FileEventRule> rules;
 
     /**
-     * workingDirectory: this attribute represents the configuring directory for this flow. 
+     * workingDirectory: this attribute represents the configuring directory for this flow.
      * It can be relative to the catalog.xml directory or absolute.
      * The configuring directory. This is the directory where the consumer will store the input data.
      */
@@ -69,7 +70,7 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      */
     private boolean performBackup;
 
-    
+
     private boolean preserveInput;
 
     /**
@@ -83,73 +84,84 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      * @uml.property  name="listenerConfigurations"
      * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration"
      */
-    protected List<ProgressListenerConfiguration> listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
+    protected List<ProgressListenerConfiguration> listenerConfigurations =
+        new ArrayList<ProgressListenerConfiguration>();
 
-	/**
-	 * do not remove ContextDirectory when consumer is disposed
-	 */
-	private boolean keepContextDir = false;
+    /**
+     * do not remove ContextDirectory when consumer is disposed
+     */
+    private boolean keepContextDir = false;
 
-	/**
-	 * @return the keepContextDir
-	 */
-	public boolean isKeepContextDir() {
-		return keepContextDir;
-	}
 
-	/**
-	 * @param keepContextDir the keepContextDir to set
-	 */
-	public void setKeepContextDir(boolean keepContextDir) {
-		this.keepContextDir = keepContextDir;
-	}
-
-    
     /**
      * Default Constructor.
      */
-    protected FileBasedEventConsumerConfiguration(String id, String name, String description) {
+    protected FileBasedEventConsumerConfiguration(String id, String name, String description)
+    {
         super(id, name, description);
     }
 
     /**
+     * @return the keepContextDir
+     */
+    public boolean isKeepContextDir()
+    {
+        return keepContextDir;
+    }
+
+    /**
+     * @param keepContextDir the keepContextDir to set
+     */
+    public void setKeepContextDir(boolean keepContextDir)
+    {
+        this.keepContextDir = keepContextDir;
+    }
+
+    /**
      * Getter for the consumer actions.
-     * 
+     *
      * @return actions
      */
-    public List<? extends ActionConfiguration> getActions() {
+    public List<? extends ActionConfiguration> getActions()
+    {
         return this.actions;
     }
 
     /**
      * Setter for the consumer actions.
-     * 
+     *
      * @param actions
      */
-    public void setActions(List<? extends ActionConfiguration> actions) {
+    public void setActions(List<? extends ActionConfiguration> actions)
+    {
         this.actions = new ArrayList<ActionConfiguration>(actions);
     }
 
     /**
      * Getter for the consumer rules.
-     * 
+     *
      * @return rules
      */
-    public List<FileEventRule> getRules() {
+    public List<FileEventRule> getRules()
+    {
         return rules;
     }
 
     /**
      * Setter for the consumer rules.
-     * 
+     *
      * @param rules
      */
-    public void setRules(List<FileEventRule> rules) {
-    	if(rules!=null){
-    		this.rules = new ArrayList<FileEventRule>(rules);
-    	} else {
-    		this.rules = null;
-    	}
+    public void setRules(List<FileEventRule> rules)
+    {
+        if (rules != null)
+        {
+            this.rules = new ArrayList<FileEventRule>(rules);
+        }
+        else
+        {
+            this.rules = null;
+        }
     }
 
     /**
@@ -157,7 +169,8 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      * @return  workingDirectory
      * @uml.property  name="workingDirectory"
      */
-    public String getWorkingDirectory() {
+    public String getWorkingDirectory()
+    {
         return workingDirectory;
     }
 
@@ -166,7 +179,8 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      * @param  workingDirectory
      * @uml.property  name="workingDirectory"
      */
-    public void setWorkingDirectory(String workingDirectory) {
+    public void setWorkingDirectory(String workingDirectory)
+    {
         this.workingDirectory = workingDirectory;
     }
 
@@ -175,7 +189,8 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      * @return  performBackup
      * @uml.property  name="performBackup"
      */
-    public boolean isPerformBackup() {
+    public boolean isPerformBackup()
+    {
         return performBackup;
     }
 
@@ -184,7 +199,8 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      * @param  performBackup
      * @uml.property  name="performBackup"
      */
-    public void setPerformBackup(boolean performBackup) {
+    public void setPerformBackup(boolean performBackup)
+    {
         this.performBackup = performBackup;
     }
 
@@ -192,29 +208,36 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      * @return
      * @uml.property  name="preserveInput"
      */
-    public boolean isPreserveInput() {
+    public boolean isPreserveInput()
+    {
         return this.preserveInput;
     }
-    
+
     /**
      * @param preserveInput
      * @uml.property  name="preserveInput"
      */
-    public void setPreserveInput(boolean preserveInput) {
+    public void setPreserveInput(boolean preserveInput)
+    {
         this.preserveInput = preserveInput;
     }
-    
-    public List<String> getListenerIds() {
+
+    public List<String> getListenerIds()
+    {
         return listenerIds;
     }
 
-    public void setListenerId(List<String> ids) {
+    public void setListenerId(List<String> ids)
+    {
         this.listenerIds = ids;
     }
 
-    public void addListenerConfiguration(ProgressListenerConfiguration plc) {
-        synchronized (this) {
-            if (listenerConfigurations == null) { // this may happen when
+    public void addListenerConfiguration(ProgressListenerConfiguration plc)
+    {
+        synchronized (this)
+        {
+            if (listenerConfigurations == null) // this may happen when
+            {
                 // loading via XStream
                 listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
             }
@@ -222,18 +245,24 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
         listenerConfigurations.add(plc);
     }
 
-    public List<ProgressListenerConfiguration> getListenerConfigurations() {
-        synchronized (this) {
-            if (listenerConfigurations == null) { // this may happen when
+    public List<ProgressListenerConfiguration> getListenerConfigurations()
+    {
+        synchronized (this)
+        {
+            if (listenerConfigurations == null) // this may happen when
+            {
                 // loading via XStream
                 listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
             }
         }
+
         return listenerConfigurations;
     }
 
     @Override
-    public FileBasedEventConsumerConfiguration clone() { // throws
+    public FileBasedEventConsumerConfiguration clone()
+    { // throws
+
         // CloneNotSupportedException
         // {
 
@@ -246,23 +275,32 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
         object.setWorkingDirectory(workingDirectory);
 
         // clone its elements
-        if(rules!=null){
-	        final List<FileEventRule> clonedRules = new ArrayList<FileEventRule>(rules.size());
-	        for (FileEventRule rule : rules)
-	            clonedRules.add(rule.clone());
-	        object.setRules(clonedRules);
-        } else
-        	object.setRules(null);
-        
-        final List<ActionConfiguration> clonedActions = new ArrayList<ActionConfiguration>(actions
-                .size());
+        if (rules != null)
+        {
+            final List<FileEventRule> clonedRules = new ArrayList<FileEventRule>(rules.size());
+            for (FileEventRule rule : rules)
+            {
+                clonedRules.add(rule.clone());
+            }
+            object.setRules(clonedRules);
+        }
+        else
+        {
+            object.setRules(null);
+        }
+
+        final List<ActionConfiguration> clonedActions = new ArrayList<ActionConfiguration>(actions.size());
         for (ActionConfiguration action : actions)
+        {
             clonedActions.add(action.clone());
+        }
         object.setActions(clonedActions);
 
         // clone listeners
-        if (listenerConfigurations != null) { // tricks from xstream
-            for (ProgressListenerConfiguration progressListenerConfiguration : listenerConfigurations) {
+        if (listenerConfigurations != null) // tricks from xstream
+        {
+            for (ProgressListenerConfiguration progressListenerConfiguration : listenerConfigurations)
+            {
                 object.addListenerConfiguration(progressListenerConfiguration);
             }
         }

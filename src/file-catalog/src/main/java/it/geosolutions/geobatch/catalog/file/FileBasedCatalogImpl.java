@@ -22,9 +22,9 @@
 
 package it.geosolutions.geobatch.catalog.file;
 
-import it.geosolutions.geobatch.catalog.impl.BaseCatalog;
-
 import java.io.File;
+
+import it.geosolutions.geobatch.catalog.impl.BaseCatalog;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,31 +32,32 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+
 /**
  * A Catalog based on an xml marshalled file.
- * 
+ *
  * @author Simone Giannecchini, GeoSolutions
  */
 @SuppressWarnings("unchecked")
-public class FileBasedCatalogImpl 
-    extends BaseCatalog 
-    implements FileBaseCatalog, ApplicationContextAware {
+public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog, ApplicationContextAware
+{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedCatalogImpl.class);
-        
+
     public DataDirHandler dataDirHandler;
-    
+
     private ApplicationContext applicationContext;
 //    private File dataDir = null;
-    
+
     /**
-     * The base directory where the configuration files are located. 
-     * <br/>The workingDirectory will be relative to this base directory unless 
+     * The base directory where the configuration files are located.
+     * <br/>The workingDirectory will be relative to this base directory unless
      * an absolute path will be specified.
      */
     private File dataDir;
 
-    public FileBasedCatalogImpl(String id, String name, String description) {
+    public FileBasedCatalogImpl(String id, String name, String description)
+    {
         super(id, name, description);
     }
 
@@ -64,38 +65,45 @@ public class FileBasedCatalogImpl
      * init method called by Spring
      * @throws Exception if could not init data dir
      */
-    public void init() throws Exception {
+    public void init() throws Exception
+    {
         dataDir = dataDirHandler.getDataDirectory();
     }
-    
-    
-    public File getBaseDirectory() {
+
+
+    public File getBaseDirectory()
+    {
         return this.dataDir;
     }
 
-    protected void setBaseDirectory(final File baseDirectory) {
-        LOGGER.warn("Setting datadir to '"+baseDirectory+"', was '"+this.dataDir+"'");
-        this.dataDir = baseDirectory;        
+    protected void setBaseDirectory(final File baseDirectory)
+    {
+        LOGGER.warn("Setting datadir to '" + baseDirectory + "', was '" + this.dataDir + "'");
+        this.dataDir = baseDirectory;
     }
-    
-    
+
+
     @Override
-    public String toString() {
+    public String toString()
+    {
         return getClass().getSimpleName() + " [" + dataDir + "]";
     }
 
-    //==========================================================================
-    
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    // ==========================================================================
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
+    {
         this.applicationContext = applicationContext;
     }
 
-    public DataDirHandler getDataDirHandler() {
+    public DataDirHandler getDataDirHandler()
+    {
         return dataDirHandler;
     }
 
-    public void setDataDirHandler(DataDirHandler dataDirHandler) {
+    public void setDataDirHandler(DataDirHandler dataDirHandler)
+    {
         this.dataDirHandler = dataDirHandler;
     }
-    
+
 }

@@ -21,30 +21,34 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
-import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
-import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
-
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
+import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+
 /**
  * Base controller for action targeted to Consumer instances
- * 
+ *
  * @author ETj <etj at geo-solutions.it>
  */
-public abstract class ConsumerAbstractController extends AbstractController {
+public abstract class ConsumerAbstractController extends AbstractController
+{
+
     /*
      */
     @Override
     protected ModelAndView handleRequestInternal(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+        HttpServletResponse response) throws Exception
+    {
         Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
         String fmId = request.getParameter("fmId");
         String ecId = request.getParameter("ecId");
@@ -52,36 +56,45 @@ public abstract class ConsumerAbstractController extends AbstractController {
         BaseEventConsumer consumer = null;
         FileBasedFlowManager fm = null;
 
-        if (fmId != null) {
+        if (fmId != null)
+        {
             fm = catalog.getResource(fmId, FileBasedFlowManager.class);
 
-            if (fm != null) {
+            if (fm != null)
+            {
                 final List<? extends EventConsumer> ecList = fm.getEventConsumers();
-                final int size=ecList.size();
+                final int size = ecList.size();
                 final int index;
-                try {
-                	index=Integer.parseInt(ecId);
-                	if (index<size){
-	                	final EventConsumer eventConsumer = ecList.get(index);
-	                    consumer = (BaseEventConsumer) eventConsumer;
-                	}
-//                	else
-                    	//TODO log?                		
-                }catch (NumberFormatException n){
-                	//TODO log?
-                	throw n;
+                try
+                {
+                    index = Integer.parseInt(ecId);
+                    if (index < size)
+                    {
+                        final EventConsumer eventConsumer = ecList.get(index);
+                        consumer = (BaseEventConsumer) eventConsumer;
+                    }
+//                      else
+                    // TODO log?
                 }
-                
-                
+                catch (NumberFormatException n)
+                {
+                    // TODO log?
+                    throw n;
+                }
+
+
             }
         }
 
         ModelAndView mav = new ModelAndView("flows");
         mav.addObject("flowManagers", catalog.getFlowManagers(FileBasedFlowManager.class));
 
-        if (consumer != null) {
+        if (consumer != null)
+        {
             runStuff(mav, fm, consumer);
-        } else {
+        }
+        else
+        {
             mav.addObject("error", "Flow instance '" + ecId + "' not found");
         }
 
@@ -89,5 +102,5 @@ public abstract class ConsumerAbstractController extends AbstractController {
     }
 
     protected abstract void runStuff(ModelAndView mav, FileBasedFlowManager fm,
-            BaseEventConsumer consumer);
+        BaseEventConsumer consumer);
 }

@@ -53,6 +53,16 @@
 			int pages = Math.round(flowManagers.size() / (float)flowsPerPage);
 			pages = (pages == 0 ? 1 : pages+1);
 		%>
+
+		function showLoading() {
+		  $("#loaded").hide();
+		  $("#loading").show();
+		}
+
+		function hideLoading() {
+		  $("#loading").hide();
+		  $("#loaded").show();
+		}
 		
 		$(function(){
 
@@ -78,7 +88,9 @@
 			// Refresh Button
 			$("a.autorefresh").click(
 				function() {
+					showLoading();
 					$("#tab-instances-"+this.id).load(this.title);
+					hideLoading();
 				}
 			);
 					
@@ -168,8 +180,10 @@
 									<font style="font-style: italic; font-size: 12px"><c:out value="${fm.configuration.description}"/></font>
 									<div class="tabs">
 										<ul>
-											<li><a href="#tab-config-<%= i %>">Configuration</a></li>
-											<li><a href="flowinfo.do?fmId=${fm.id}" title="tab-instances-<%= i %>">Instances</a> <a class="autorefresh" id="<%= i %>" title="flowinfo.do?fmId=${fm.id}"><img src="img/arrow_refresh.png"/></a></li>
+											<li><a href="#tab-config-<%= i %>" style="cursor: default">Configuration</a></li>
+											<li>
+												<a href="flowinfo.do?fmId=${fm.id}" title="tab-instances-<%= i %>" style="cursor: default">Instances</a> <a class="autorefresh" id="<%= i %>" title="flowinfo.do?fmId=${fm.id}"><div id="loading" style="display:none;"><img src="img/arrow_refresh.png" style="cursor: pointer; cursor: hand"/></div><div id="loaded"><img src="img/arrow_refresh.png" style="cursor: pointer; cursor: hand"/></div></a>
+											</li>
 										</ul>
 										<div id="tab-config-<%= i %>">
 											<p>

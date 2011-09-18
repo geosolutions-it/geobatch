@@ -22,10 +22,10 @@
 
 package it.geosolutions.geobatch.testsuite;
 
-import it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService;
-
 import java.io.File;
 import java.io.IOException;
+
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManagerService;
 
 import junit.framework.Assert;
 
@@ -36,26 +36,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+
 /**
  * @author Simone Giannecchini, GeoSolutions
- * 
+ *
  */
-public class FileBasedFlowManagerTestCase {
+public class FileBasedFlowManagerTestCase
+{
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(FileBasedFlowManagerTestCase.class
-            .toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedFlowManagerTestCase.class.toString());
 
-    
+
     private ClassPathXmlApplicationContext context;
 
-    
+
     private boolean caughtEvent;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception
+    {
         this.context = new ClassPathXmlApplicationContext("applicationContext.xml");
     }
 
@@ -63,11 +65,13 @@ public class FileBasedFlowManagerTestCase {
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws Exception
+    {
     }
 
     @Test
-    public void testFSFlowManagerService() throws IOException, InterruptedException {
+    public void testFSFlowManagerService() throws IOException, InterruptedException
+    {
         // //
         //
         // get the FileBasedEventGeneratorService bean service from the context
@@ -76,6 +80,7 @@ public class FileBasedFlowManagerTestCase {
         Object o = context.getBean("fsFlowManagerService", FileBasedFlowManagerService.class);
         Assert.assertNotNull(o);
         Assert.assertTrue(o instanceof FileBasedFlowManagerService);
+
         final FileBasedFlowManagerService service = (FileBasedFlowManagerService) o;
 
         // //
@@ -146,7 +151,8 @@ public class FileBasedFlowManagerTestCase {
         //
         final File file = TestData.temp(this, "test");
         // if(file.exists()) {
-        synchronized (this) {
+        synchronized (this)
+        {
             this.wait(5000);
         }
         // Assert.assertTrue("unable to create test",this.caughtEvent);
@@ -154,6 +160,6 @@ public class FileBasedFlowManagerTestCase {
         // else
         // Assert.assertTrue("unable to create test",false);
 
-    };
+    }
 
 }

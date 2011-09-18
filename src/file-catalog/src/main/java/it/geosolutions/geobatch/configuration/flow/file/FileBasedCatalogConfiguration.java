@@ -22,6 +22,8 @@
 
 package it.geosolutions.geobatch.configuration.flow.file;
 
+import java.io.File;
+
 import it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl;
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import it.geosolutions.geobatch.configuration.CatalogConfiguration;
@@ -29,25 +31,42 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.tools.file.Path;
 
-import java.io.File;
 
 /**
  * A Conf for the Catalog based on xml marshalled files.
- * 
+ *
  * @author Simone Giannecchini, GeoSolutions
  * @author Alessio Fabiani, GeoSolutions
- * 
+ *
  * @todo: take a look to
  * @see ActionConfiguration
  */
-public class FileBasedCatalogConfiguration extends BaseConfiguration implements
-		CatalogConfiguration {
+public class FileBasedCatalogConfiguration extends BaseConfiguration implements CatalogConfiguration
+{
 
-	// private List<FlowConfiguration> flowConfigurations;
-
-	public FileBasedCatalogConfiguration(String id, String name, String description, boolean dirty) {
-		super(id, name, description, dirty);
-	}
+    /**
+     * Obtaining the Absolute path of the working dir
+     *
+     * @param working_dir
+     *            the relative (or absolute) path to absolutize
+     * @note it should be a sub-dir of ...
+     * @TODO open a ticket to get getBaseDirectory() into Catalog interface
+     */
+    public static String getAbsolutePath(String working_dir) /* throws FileNotFoundException */
+    {
+        FileBasedCatalogImpl c = (FileBasedCatalogImpl) CatalogHolder.getCatalog();
+        File fo = Path.findLocation(working_dir, c.getBaseDirectory());
+        if (fo != null)
+        {
+            return fo.toString();
+        }
+        else
+        {
+            // TODO LOG throw new FileNotFoundException("Unable to locate the working dir");
+            // throw new FileNotFoundException();
+            return null;
+        }
+    }
 
     /**
      * workingDirectory: this attribute represents the configuring directory for this flow.
@@ -58,46 +77,36 @@ public class FileBasedCatalogConfiguration extends BaseConfiguration implements
      */
     private String workingDirectory;
 
-	/**
-	 * Getter for the workingDirectory
-	 */
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
+    // private List<FlowConfiguration> flowConfigurations;
 
-	/**
-	 * Setter for the workingDirectory.
-	 * 
-	 * @param workingDirectory
-	 */
-	public void setWorkingDirectory(String workingDirectory) {
-		this.workingDirectory = workingDirectory;
-	}
+    public FileBasedCatalogConfiguration(String id, String name, String description, boolean dirty)
+    {
+        super(id, name, description, dirty);
+    }
 
-	/**
-	 * Obtaining the Absolute path of the working dir
-	 * 
-	 * @param working_dir
-	 *            the relative (or absolute) path to absolutize
-	 * @note it should be a sub-dir of ...
-	 * @TODO open a ticket to get getBaseDirectory() into Catalog interface
-	 */
-	public static String getAbsolutePath(String working_dir) /* throws FileNotFoundException */{
-		FileBasedCatalogImpl c = (FileBasedCatalogImpl) CatalogHolder.getCatalog();
-		File fo = Path.findLocation(working_dir, c.getBaseDirectory());
-		if (fo != null) {
-			return fo.toString();
-		} else {
-			// TODO LOG throw new FileNotFoundException("Unable to locate the working dir");
-			// throw new FileNotFoundException();
-			return null;
-		}
-	}
+    /**
+     * Getter for the workingDirectory
+     */
+    public String getWorkingDirectory()
+    {
+        return workingDirectory;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + "id:" + getId()
-				+ ", workingDirectory:" + getWorkingDirectory() + ", name:"
-				+ getName() + "]";
-	}
+    /**
+     * Setter for the workingDirectory.
+     *
+     * @param workingDirectory
+     */
+    public void setWorkingDirectory(String workingDirectory)
+    {
+        this.workingDirectory = workingDirectory;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getClass().getSimpleName() + "[" + "id:" + getId() +
+            ", workingDirectory:" + getWorkingDirectory() + ", name:" +
+            getName() + "]";
+    }
 }

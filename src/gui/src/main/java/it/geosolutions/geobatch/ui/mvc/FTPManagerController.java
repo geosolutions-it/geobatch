@@ -24,13 +24,13 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
-import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
-
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import it.geosolutions.geobatch.ftpserver.ftp.FtpUser;
+import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
 
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.ftplet.FtpStatistics;
@@ -42,11 +42,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+
 /**
- * 
+ *
  */
-public class FTPManagerController extends AbstractController {
-    private final static Logger LOGGER = LoggerFactory.getLogger(FlowManagerController.class.getName());
+public class FTPManagerController extends AbstractController
+{
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlowManagerController.class.getName());
 
     private GeoBatchServer server;
 
@@ -54,25 +56,33 @@ public class FTPManagerController extends AbstractController {
      * @param server
      *            the server to set
      */
-    public void setServer(GeoBatchServer server) {
+    public void setServer(GeoBatchServer server)
+    {
         this.server = server;
     }
 
     /*
-	 */
+     */
     @Override
     protected ModelAndView handleRequestInternal(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+        HttpServletResponse response) throws Exception
+    {
 
         // Selecting output page
         String viewName;
         String view = request.getParameter("view");
         if ("users".equalsIgnoreCase(view))
+        {
             viewName = "ftpUsers";
+        }
         else if ("status".equalsIgnoreCase(view))
+        {
             viewName = "ftp";
+        }
         else
+        {
             viewName = "ftp"; // default view
+        }
 
         ModelAndView mav = new ModelAndView(viewName);
 
@@ -80,29 +90,47 @@ public class FTPManagerController extends AbstractController {
 
         // Selecting action, if any
         String action = request.getParameter("action");
-        if ("stop".equalsIgnoreCase(action)) {
+        if ("stop".equalsIgnoreCase(action))
+        {
             LOGGER.info("Requested STOP for ftp server.");
-            if (server.isStopped()) {
+            if (server.isStopped())
+            {
                 errMsg = "Server is not running";
-            } else {
+            }
+            else
+            {
                 server.stop();
             }
-        } else if ("start".equalsIgnoreCase(action)) {
+        }
+        else if ("start".equalsIgnoreCase(action))
+        {
             LOGGER.info("Requested START for ftp server.");
-            if (server.isStopped()) {
+            if (server.isStopped())
+            {
                 server.start();
-            } else if (server.isSuspended()) {
+            }
+            else if (server.isSuspended())
+            {
                 server.resume();
-            } else {
+            }
+            else
+            {
                 errMsg = "Server is already running";
             }
-        } else if ("pause".equalsIgnoreCase(action)) {
+        }
+        else if ("pause".equalsIgnoreCase(action))
+        {
             LOGGER.info("Requested PAUSE for ftp server.");
-            if (server.isSuspended()) {
+            if (server.isSuspended())
+            {
                 errMsg = "Server is already suspended";
-            } else if (server.isStopped()) {
+            }
+            else if (server.isStopped())
+            {
                 errMsg = "Server is not running";
-            } else {
+            }
+            else
+            {
                 server.suspend();
             }
         }
@@ -115,15 +143,19 @@ public class FTPManagerController extends AbstractController {
         // add statistics
         FtpStatistics stats = null;
         final FtpServer ftp = server.getFtpServer();
-        if (ftp instanceof DefaultFtpServer) {
+        if (ftp instanceof DefaultFtpServer)
+        {
             // get the context and check if the context is of the right type
             final FtpServerContext context = ((DefaultFtpServer) ftp).getServerContext();
             if (context instanceof DefaultFtpServerContext)
+            {
                 stats = ((DefaultFtpServerContext) context).getFtpStatistics();
+            }
         }
         mav.addObject("ftpStats", stats);
 
-        if (errMsg != null) {
+        if (errMsg != null)
+        {
             mav.addObject("errMsg", errMsg);
             LOGGER.info(errMsg);
         }

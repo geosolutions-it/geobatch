@@ -24,9 +24,10 @@ package it.geosolutions.geobatch.ui.mvc.data;
 
 /**
  * @author Alessio Fabiani
- * 
+ *
  */
-public class FtpConfigDataBean {
+public class FtpConfigDataBean
+{
 
     private int id;
 
@@ -51,7 +52,8 @@ public class FtpConfigDataBean {
     /**
      * @return the id
      */
-    public int getId() {
+    public int getId()
+    {
         return id;
     }
 
@@ -59,14 +61,16 @@ public class FtpConfigDataBean {
      * @param id
      *            the id to set
      */
-    public void setId(int id) {
+    public void setId(int id)
+    {
         this.id = id;
     }
 
     /**
      * @return the maxLogins
      */
-    public int getMaxLogins() {
+    public int getMaxLogins()
+    {
         return maxLogins;
     }
 
@@ -74,14 +78,16 @@ public class FtpConfigDataBean {
      * @param maxLogins
      *            the maxLogins to set
      */
-    public void setMaxLogins(int maxLogins) {
+    public void setMaxLogins(int maxLogins)
+    {
         this.maxLogins = maxLogins;
     }
 
     /**
      * @return the anonEnabled
      */
-    public boolean isAnonEnabled() {
+    public boolean isAnonEnabled()
+    {
         return anonEnabled;
     }
 
@@ -89,14 +95,16 @@ public class FtpConfigDataBean {
      * @param anonEnabled
      *            the anonEnabled to set
      */
-    public void setAnonEnabled(boolean anonEnabled) {
+    public void setAnonEnabled(boolean anonEnabled)
+    {
         this.anonEnabled = anonEnabled;
     }
 
     /**
      * @return the maxAnonLogins
      */
-    public int getMaxAnonLogins() {
+    public int getMaxAnonLogins()
+    {
         return maxAnonLogins;
     }
 
@@ -104,14 +112,16 @@ public class FtpConfigDataBean {
      * @param maxAnonLogins
      *            the maxAnonLogins to set
      */
-    public void setMaxAnonLogins(int maxAnonLogins) {
+    public void setMaxAnonLogins(int maxAnonLogins)
+    {
         this.maxAnonLogins = maxAnonLogins;
     }
 
     /**
      * @return the maxLoginFailures
      */
-    public int getMaxLoginFailures() {
+    public int getMaxLoginFailures()
+    {
         return maxLoginFailures;
     }
 
@@ -119,14 +129,16 @@ public class FtpConfigDataBean {
      * @param maxLoginFailures
      *            the maxLoginFailures to set
      */
-    public void setMaxLoginFailures(int maxLoginFailures) {
+    public void setMaxLoginFailures(int maxLoginFailures)
+    {
         this.maxLoginFailures = maxLoginFailures;
     }
 
     /**
      * @return the loginFailureDelay
      */
-    public int getLoginFailureDelay() {
+    public int getLoginFailureDelay()
+    {
         return loginFailureDelay;
     }
 
@@ -134,14 +146,16 @@ public class FtpConfigDataBean {
      * @param loginFailureDelay
      *            the loginFailureDelay to set
      */
-    public void setLoginFailureDelay(int loginFailureDelay) {
+    public void setLoginFailureDelay(int loginFailureDelay)
+    {
         this.loginFailureDelay = loginFailureDelay;
     }
 
     /**
      * @return the port
      */
-    public int getPort() {
+    public int getPort()
+    {
         return port;
     }
 
@@ -149,14 +163,16 @@ public class FtpConfigDataBean {
      * @param port
      *            the port to set
      */
-    public void setPort(int port) {
+    public void setPort(int port)
+    {
         this.port = port;
     }
 
     /**
      * @return the ssl
      */
-    public boolean isSsl() {
+    public boolean isSsl()
+    {
         return ssl;
     }
 
@@ -164,14 +180,16 @@ public class FtpConfigDataBean {
      * @param ssl
      *            the ssl to set
      */
-    public void setSsl(boolean ssl) {
+    public void setSsl(boolean ssl)
+    {
         this.ssl = ssl;
     }
 
     /**
      * @return the autoStart
      */
-    public boolean isAutoStart() {
+    public boolean isAutoStart()
+    {
         return autoStart;
     }
 
@@ -179,14 +197,16 @@ public class FtpConfigDataBean {
      * @param autoStart
      *            the autoStart to set
      */
-    public void setAutoStart(boolean autoStart) {
+    public void setAutoStart(boolean autoStart)
+    {
         this.autoStart = autoStart;
     }
 
     /**
      * @return the ftpBaseDir
      */
-    public String getFtpBaseDir() {
+    public String getFtpBaseDir()
+    {
         return ftpBaseDir;
     }
 
@@ -194,102 +214,124 @@ public class FtpConfigDataBean {
      * @param ftpBaseDir
      *            the ftpBaseDir to set
      */
-    public void setFtpBaseDir(String ftpBaseDir) {
+    public void setFtpBaseDir(String ftpBaseDir)
+    {
         this.ftpBaseDir = ftpBaseDir;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder builder = new StringBuilder();
-        builder.append("FtpConfigDataBean [anonEnabled=").append(anonEnabled)
-                .append(", autoStart=").append(autoStart).append(", ");
+        builder.append("FtpConfigDataBean [anonEnabled=").append(anonEnabled).append(", autoStart=").append(autoStart).append(", ");
         if (ftpBaseDir != null)
+        {
             builder.append("ftpBaseDir=").append(ftpBaseDir).append(", ");
-        builder.append("id=").append(id).append(", loginFailureDelay=").append(loginFailureDelay)
-                .append(", maxAnonLogins=").append(maxAnonLogins).append(", maxLoginFailures=")
-                .append(maxLoginFailures).append(", maxLogins=").append(maxLogins)
-                .append(", port=").append(port).append(", ssl=").append(ssl).append("]");
+        }
+        builder.append("id=").append(id).append(", loginFailureDelay=").append(loginFailureDelay).append(", maxAnonLogins=").append(maxAnonLogins).append(", maxLoginFailures=").append(maxLoginFailures).append(", maxLogins=").append(maxLogins).append(", port=").append(port).append(", ssl=").append(ssl).append("]");
+
         return builder.toString();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (anonEnabled ? 1231 : 1237);
-        result = prime * result + (autoStart ? 1231 : 1237);
-        result = prime * result + ((ftpBaseDir == null) ? 0 : ftpBaseDir.hashCode());
-        result = prime * result + id;
-        result = prime * result + loginFailureDelay;
-        result = prime * result + maxAnonLogins;
-        result = prime * result + maxLoginFailures;
-        result = prime * result + maxLogins;
-        result = prime * result + port;
-        result = prime * result + (ssl ? 1231 : 1237);
+        result = (prime * result) + (anonEnabled ? 1231 : 1237);
+        result = (prime * result) + (autoStart ? 1231 : 1237);
+        result = (prime * result) + ((ftpBaseDir == null) ? 0 : ftpBaseDir.hashCode());
+        result = (prime * result) + id;
+        result = (prime * result) + loginFailureDelay;
+        result = (prime * result) + maxAnonLogins;
+        result = (prime * result) + maxLoginFailures;
+        result = (prime * result) + maxLogins;
+        result = (prime * result) + port;
+        result = (prime * result) + (ssl ? 1231 : 1237);
+
         return result;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
             return true;
         }
-        if (obj == null) {
+        if (obj == null)
+        {
             return false;
         }
-        if (!(obj instanceof FtpConfigDataBean)) {
+        if (!(obj instanceof FtpConfigDataBean))
+        {
             return false;
         }
+
         FtpConfigDataBean other = (FtpConfigDataBean) obj;
-        if (anonEnabled != other.anonEnabled) {
+        if (anonEnabled != other.anonEnabled)
+        {
             return false;
         }
-        if (autoStart != other.autoStart) {
+        if (autoStart != other.autoStart)
+        {
             return false;
         }
-        if (ftpBaseDir == null) {
-            if (other.ftpBaseDir != null) {
+        if (ftpBaseDir == null)
+        {
+            if (other.ftpBaseDir != null)
+            {
                 return false;
             }
-        } else if (!ftpBaseDir.equals(other.ftpBaseDir)) {
+        }
+        else if (!ftpBaseDir.equals(other.ftpBaseDir))
+        {
             return false;
         }
-        if (id != other.id) {
+        if (id != other.id)
+        {
             return false;
         }
-        if (loginFailureDelay != other.loginFailureDelay) {
+        if (loginFailureDelay != other.loginFailureDelay)
+        {
             return false;
         }
-        if (maxAnonLogins != other.maxAnonLogins) {
+        if (maxAnonLogins != other.maxAnonLogins)
+        {
             return false;
         }
-        if (maxLoginFailures != other.maxLoginFailures) {
+        if (maxLoginFailures != other.maxLoginFailures)
+        {
             return false;
         }
-        if (maxLogins != other.maxLogins) {
+        if (maxLogins != other.maxLogins)
+        {
             return false;
         }
-        if (port != other.port) {
+        if (port != other.port)
+        {
             return false;
         }
-        if (ssl != other.ssl) {
+        if (ssl != other.ssl)
+        {
             return false;
         }
+
         return true;
     }
 

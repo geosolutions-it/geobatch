@@ -28,113 +28,123 @@ import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConf
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration;
 
+
 /**
  * A Conf for the Flow based on xml marshalled files.
- * 
+ *
  * @author Simone Giannecchini, GeoSolutions
  * @author Alessio Fabiani, GeoSolutions
  * @author Ivano Picco
  * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- * 
+ *
  */
-public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
+public class FileBasedFlowConfiguration extends BaseFlowConfiguration
+{
 
-	/**
-	 * workingDirectory: this attribute represents the configuring directory for
-	 * this flow. It can be relative to the catalog.xml directory or absolute.
-	 * Attention: the configuring directory should be different from the one
-	 * containing the configuration files.
-	 */
-	private String workingDirectory;
-	
-	/**
-     * maximum numbers of stored executed (see Consumer.getStatus()) consumers
+    /**
+     * workingDirectory: this attribute represents the configuring directory for
+     * this flow. It can be relative to the catalog.xml directory or absolute.
+     * Attention: the configuring directory should be different from the one
+     * containing the configuration files.
      */
+    private String workingDirectory;
+
+    /**
+    * maximum numbers of stored executed (see Consumer.getStatus()) consumers
+    */
     private int maxStoredConsumers;
 
-	/**
-	 * autorun: this attribute is used to autorun a flow on startup.
-	 */
-	private boolean autorun = false;
-	
-	/**
-	 * @return the maxStoredConsumers
-	 */
-	public int getMaxStoredConsumers() {
-		return maxStoredConsumers;
-	}
-	
-	/**
-	 * 
-	 * @param id
-	 * @param name
-	 * @param eventGeneratorConfiguration
-	 * @param description
-	 * @param eventConsumerConfiguration
-	 */
-	public FileBasedFlowConfiguration(String id, String name,
-			FileBasedEventGeneratorConfiguration eventGeneratorConfiguration,
-			String description,
-			FileBasedEventConsumerConfiguration eventConsumerConfiguration) {
-		super(id, name, eventGeneratorConfiguration, description,
-				eventConsumerConfiguration);
-	}
+    /**
+     * autorun: this attribute is used to autorun a flow on startup.
+     */
+    private boolean autorun = false;
 
-	/**
-	 * 
-	 * @param id
-	 * @param name
-	 * @param eventGeneratorConfiguration
-	 * @param description
-	 * @param eventConsumerConfiguration
-	 * @param workingDirectory
-	 */
-	public FileBasedFlowConfiguration(String id, String name,
-			EventGeneratorConfiguration eventGeneratorConfiguration,
-			String description,
-			EventConsumerConfiguration eventConsumerConfiguration,
-			String workingDirectory) {
-		super(id, name, eventGeneratorConfiguration, description,
-				eventConsumerConfiguration);
-		this.workingDirectory = workingDirectory;
-	}
+    /**
+     *
+     * @param id
+     * @param name
+     * @param eventGeneratorConfiguration
+     * @param description
+     * @param eventConsumerConfiguration
+     */
+    public FileBasedFlowConfiguration(String id, String name,
+        FileBasedEventGeneratorConfiguration eventGeneratorConfiguration,
+        String description,
+        FileBasedEventConsumerConfiguration eventConsumerConfiguration)
+    {
+        super(id, name, eventGeneratorConfiguration, description,
+            eventConsumerConfiguration);
+    }
 
-	/**
-	 * Getter for the workingDirectory
-	 */
-	public String getWorkingDirectory() {
-		return workingDirectory;
-	}
+    /**
+     *
+     * @param id
+     * @param name
+     * @param eventGeneratorConfiguration
+     * @param description
+     * @param eventConsumerConfiguration
+     * @param workingDirectory
+     */
+    public FileBasedFlowConfiguration(String id, String name,
+        EventGeneratorConfiguration eventGeneratorConfiguration,
+        String description,
+        EventConsumerConfiguration eventConsumerConfiguration,
+        String workingDirectory)
+    {
+        super(id, name, eventGeneratorConfiguration, description,
+            eventConsumerConfiguration);
+        this.workingDirectory = workingDirectory;
+    }
 
-	/**
-	 * Setter for the workingDirectory.
-	 * 
-	 * @param workingDirectory
-	 */
-	public void setWorkingDirectory(String workingDirectory) {
-		this.workingDirectory = workingDirectory;
-		setDirty(true);
-	}
+    /**
+     * @return the maxStoredConsumers
+     */
+    public int getMaxStoredConsumers()
+    {
+        return maxStoredConsumers;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + "id:" + getId() + ", name:"
-				+ getName() + ", sid:" + getServiceID() + ", wdir:"
-				+ getWorkingDirectory() + ", egcfg:"
-				+ getEventGeneratorConfiguration() + "]";
-	}
+    /**
+     * Getter for the workingDirectory
+     */
+    public String getWorkingDirectory()
+    {
+        return workingDirectory;
+    }
 
-	/**
-	 * @return
-	 */
-	public boolean isAutorun() {
-		return autorun;
-	}
+    /**
+     * Setter for the workingDirectory.
+     *
+     * @param workingDirectory
+     */
+    public void setWorkingDirectory(String workingDirectory)
+    {
+        this.workingDirectory = workingDirectory;
+        setDirty(true);
+    }
 
-	/**
-	 * @param autorun
-	 */
-	public void setAutorun(boolean autorun) {
-		this.autorun = autorun;
-	}
+    @Override
+    public String toString()
+    {
+        return getClass().getSimpleName() + "[" + "id:" + getId() + ", name:" +
+            getName() + ", sid:" + getServiceID() + ", wdir:" +
+            getWorkingDirectory() + ", egcfg:" +
+            getEventGeneratorConfiguration() + "]";
+    }
+
+    /**
+     * @return
+     */
+    public boolean isAutorun()
+    {
+        return autorun;
+    }
+
+    /**
+     * @param autorun
+     */
+    public void setAutorun(boolean autorun)
+    {
+        this.autorun = autorun;
+    }
 }

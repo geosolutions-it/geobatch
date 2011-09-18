@@ -22,12 +22,12 @@
 
 package it.geosolutions.geobatch.testsuite;
 
+import java.io.File;
+import java.io.IOException;
+
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.flow.event.generator.FlowEventListener;
 import it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGeneratorService;
-
-import java.io.File;
-import java.io.IOException;
 
 import junit.framework.Assert;
 
@@ -38,25 +38,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+
 /**
  * @author Simone Giannecchini, GeoSolutions
- * 
+ *
  */
-public class EventGeneratorTestCase implements FlowEventListener<FileSystemEvent> {
+public class EventGeneratorTestCase implements FlowEventListener<FileSystemEvent>
+{
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(EventGeneratorTestCase.class.toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventGeneratorTestCase.class.toString());
 
-    
+
     private ClassPathXmlApplicationContext context;
 
-    
+
     private boolean caughtEvent;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception
+    {
         this.context = new ClassPathXmlApplicationContext("applicationContext.xml");
     }
 
@@ -64,11 +67,13 @@ public class EventGeneratorTestCase implements FlowEventListener<FileSystemEvent
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws Exception
+    {
     }
 
     @Test
-    public void testFileBasedEventGeneratorService() throws IOException, InterruptedException {
+    public void testFileBasedEventGeneratorService() throws IOException, InterruptedException
+    {
         // //
         //
         // get the FileBasedEventGeneratorService bean service from the context
@@ -77,6 +82,7 @@ public class EventGeneratorTestCase implements FlowEventListener<FileSystemEvent
         Object o = context.getBean("fsEventGeneratorService", FileBasedEventGeneratorService.class);
         Assert.assertNotNull(o);
         Assert.assertTrue(o instanceof FileBasedEventGeneratorService);
+
         final FileBasedEventGeneratorService service = (FileBasedEventGeneratorService) o;
 
         // //
@@ -109,36 +115,46 @@ public class EventGeneratorTestCase implements FlowEventListener<FileSystemEvent
 
         //
         final File file = TestData.temp(this, "test");
-        if (file.exists()) {
-            synchronized (this) {
+        if (file.exists())
+        {
+            synchronized (this)
+            {
                 this.wait(5000);
             }
             Assert.assertTrue("unable to create test", this.caughtEvent);
-        } else
+        }
+        else
+        {
             Assert.assertTrue("unable to create test", false);
+        }
 
     }
 
-    public void eventGenerated(FileSystemEvent event) {
-        try {
+    public void eventGenerated(FileSystemEvent event)
+    {
+        try
+        {
             Thread.sleep(5000);
-        } catch (InterruptedException e1) {
+        }
+        catch (InterruptedException e1)
+        {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         LOGGER.info(event.toString());
 //        try {
-            Assert.assertTrue(event.getSource().getAbsolutePath().equalsIgnoreCase(
-                    TestData.file(this, "test").getAbsolutePath()));
+        Assert.assertTrue(event.getSource().getAbsolutePath().equalsIgnoreCase(
+                TestData.file(this, "test").getAbsolutePath()));
 //        } catch (IOException e) {
 //            Assert.assertTrue("unable to create test", false);
 //            return;
 //        }
-        synchronized (this) {
+        synchronized (this)
+        {
             this.notify();
         }
         this.caughtEvent = true;
 
-    };
+    }
 
 }

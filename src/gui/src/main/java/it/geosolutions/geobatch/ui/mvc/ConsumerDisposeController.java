@@ -31,36 +31,42 @@ import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
 import org.springframework.web.servlet.ModelAndView;
 
+
 /**
- * 
+ *
  * @author ETj <etj at geo-solutions.it>
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
-public class ConsumerDisposeController extends ConsumerAbstractController {
+public class ConsumerDisposeController extends ConsumerAbstractController
+{
 
-	@Override
-	protected void runStuff(ModelAndView mav, FileBasedFlowManager fm,
-			BaseEventConsumer consumer) {
-		if (fm != null && consumer != null) {
-			final EventConsumerStatus status = consumer.getStatus();
-			
-			if (status.equals(EventConsumerStatus.COMPLETED)
-					|| status.equals(EventConsumerStatus.CANCELED)
-					|| status.equals(EventConsumerStatus.FAILED)) {
-				
-				if (consumer instanceof FileBasedEventConsumer){
-					final FileBasedEventConsumer fileConsumer=(FileBasedEventConsumer)consumer;
+    @Override
+    protected void runStuff(ModelAndView mav, FileBasedFlowManager fm,
+        BaseEventConsumer consumer)
+    {
+        if ((fm != null) && (consumer != null))
+        {
+            final EventConsumerStatus status = consumer.getStatus();
 
-					// start manually clear action instances and cumulators
-					fileConsumer.clear();
-					
-					// dispose the object
-					fm.dispose(fileConsumer);
-				}
-				
-			}
-		}
+            if (status.equals(EventConsumerStatus.COMPLETED) ||
+                    status.equals(EventConsumerStatus.CANCELED) ||
+                    status.equals(EventConsumerStatus.FAILED))
+            {
 
-		mav.addObject("consumer", consumer);
-	}
+                if (consumer instanceof FileBasedEventConsumer)
+                {
+                    final FileBasedEventConsumer fileConsumer = (FileBasedEventConsumer) consumer;
+
+                    // start manually clear action instances and cumulators
+                    fileConsumer.clear();
+
+                    // dispose the object
+                    fm.dispose(fileConsumer);
+                }
+
+            }
+        }
+
+        mav.addObject("consumer", consumer);
+    }
 }

@@ -24,60 +24,65 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.flow.tools.FileBasedFlowManagerUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+
 /**
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- * 
+ *
  */
-public class FlowManagerClearController extends AbstractController {
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
-	 * (javax.servlet .http.HttpServletRequest,
-	 * javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		
-		Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
-		
-		final String fmId = request.getParameter("fmId");
-		
-		FileBasedFlowManagerUtils.clear(fmId);
-		
-		ModelAndView mav = new ModelAndView("flows");
-		
-//		if (fmId != null) {
-//			FileBasedFlowManager fm = catalog.getResource(fmId,
-//					FileBasedFlowManager.class);
-//			if (fm != null) {
+public class FlowManagerClearController extends AbstractController
+{
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
+     * (javax.servlet .http.HttpServletRequest,
+     * javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected ModelAndView handleRequestInternal(HttpServletRequest request,
+        HttpServletResponse response) throws Exception
+    {
+
+        Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
+
+        final String fmId = request.getParameter("fmId");
+
+        FileBasedFlowManagerUtils.clear(fmId);
+
+        ModelAndView mav = new ModelAndView("flows");
+
+//              if (fmId != null) {
+//                      FileBasedFlowManager fm = catalog.getResource(fmId,
+//                                      FileBasedFlowManager.class);
+//                      if (fm != null) {
 //
-//				List<FileBasedEventConsumer> consumers = fm.getEventConsumers();
-//				synchronized (consumers) {
-//					final int size = consumers.size();
-//					final ConsumerDisposeController cdc=new ConsumerDisposeController();
-//					for (int index=size-1; index >= 0; --index) {
-//						cdc.runStuff(mav, fm, consumers.get(index));
-//					}	
-//				}
-//			}
-//		}
+//                              List<FileBasedEventConsumer> consumers = fm.getEventConsumers();
+//                              synchronized (consumers) {
+//                                      final int size = consumers.size();
+//                                      final ConsumerDisposeController cdc=new ConsumerDisposeController();
+//                                      for (int index=size-1; index >= 0; --index) {
+//                                              cdc.runStuff(mav, fm, consumers.get(index));
+//                                      }
+//                              }
+//                      }
+//              }
 
-		mav.addObject("flowManagers",
-				catalog.getFlowManagers(FileBasedFlowManager.class));
-		return mav;
+        mav.addObject("flowManagers",
+            catalog.getFlowManagers(FileBasedFlowManager.class));
 
-	}
+        return mav;
+
+    }
 }

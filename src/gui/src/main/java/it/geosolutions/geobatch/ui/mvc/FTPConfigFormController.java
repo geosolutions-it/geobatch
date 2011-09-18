@@ -24,12 +24,12 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import it.geosolutions.geobatch.ftpserver.model.FtpServerConfig;
 import it.geosolutions.geobatch.ftpserver.server.GeoBatchServer;
 import it.geosolutions.geobatch.ui.mvc.data.FtpConfigDataBean;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.ftplet.FtpStatistics;
@@ -40,12 +40,14 @@ import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+
 /**
  * @author Alessio Fabiani
- * 
+ *
  */
 @SuppressWarnings("deprecation")
-public class FTPConfigFormController extends SimpleFormController {
+public class FTPConfigFormController extends SimpleFormController
+{
 
     private GeoBatchServer server;
 
@@ -53,22 +55,25 @@ public class FTPConfigFormController extends SimpleFormController {
      * @param server
      *            the server to set
      */
-    public void setServer(GeoBatchServer server) {
+    public void setServer(GeoBatchServer server)
+    {
         this.server = server;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.springframework.web.servlet.mvc.AbstractFormController#formBackingObject
      * (javax.servlet .http.HttpServletRequest)
      */
     @Override
-    protected Object formBackingObject(HttpServletRequest request) throws Exception {
+    protected Object formBackingObject(HttpServletRequest request) throws Exception
+    {
         FtpConfigDataBean backingObject = new FtpConfigDataBean();
 
         FtpServerConfig config = server.getLastConfig();
-        if (config != null) {
+        if (config != null)
+        {
             backingObject.setId(config.getId());
 
             backingObject.setAnonEnabled(config.isAnonEnabled());
@@ -87,16 +92,17 @@ public class FTPConfigFormController extends SimpleFormController {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.springframework.web.servlet.mvc.SimpleFormController#onSubmit(java .lang.Object,
      * org.springframework.validation.BindException)
      */
     @Override
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response,
-            Object command, BindException errors) throws Exception {
+        Object command, BindException errors) throws Exception
+    {
         FtpConfigDataBean givenData = (FtpConfigDataBean) command;
 
-        //LOGGER.debug(givenData.toString());
+        // LOGGER.debug(givenData.toString());
 
         FtpServerConfig config = new FtpServerConfig();
         config.setAnonEnabled(givenData.isAnonEnabled());
@@ -119,11 +125,14 @@ public class FTPConfigFormController extends SimpleFormController {
         // add statistics
         FtpStatistics stats = null;
         final FtpServer ftp = server.getFtpServer();
-        if (ftp instanceof DefaultFtpServer) {
+        if (ftp instanceof DefaultFtpServer)
+        {
             // get the context and check if the context is of the right type
             final FtpServerContext context = ((DefaultFtpServer) ftp).getServerContext();
             if (context instanceof DefaultFtpServerContext)
+            {
                 stats = ((DefaultFtpServerContext) context).getFtpStatistics();
+            }
         }
         mav.addObject("ftpStats", stats);
 //        logger.debug("Form data successfully submitted");
@@ -132,42 +141,56 @@ public class FTPConfigFormController extends SimpleFormController {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.springframework.web.servlet.mvc.BaseCommandController#onBindAndValidate
      * (javax.servlet.http.HttpServletRequest, java.lang.Object,
      * org.springframework.validation.BindException)
      */
     @Override
     protected void onBindAndValidate(HttpServletRequest request, Object command,
-            BindException errors) throws Exception {
+        BindException errors) throws Exception
+    {
 
         FtpConfigDataBean givenData = (FtpConfigDataBean) command;
-        if (givenData == null) {
+        if (givenData == null)
+        {
             errors.reject("error.nullpointer", "Null data received");
-        } else {
+        }
+        else
+        {
+
             /* VALIDATE ALL FIELDS */
             if (request.getParameter("ssl") == null)
+            {
                 givenData.setSsl(false);
+            }
 
             if (request.getParameter("autoStart") == null)
+            {
                 givenData.setAutoStart(false);
+            }
 
             if (request.getParameter("anonEnabled") == null)
+            {
                 givenData.setAnonEnabled(false);
+            }
 
-            if (givenData.getMaxLogins() < 0) {
+            if (givenData.getMaxLogins() < 0)
+            {
                 errors.rejectValue("maxLogins", "error.code",
-                        "Ftp Max Logins must be greater than 0.");
+                    "Ftp Max Logins must be greater than 0.");
             }
 
-            if (givenData.getMaxLoginFailures() < 0) {
+            if (givenData.getMaxLoginFailures() < 0)
+            {
                 errors.rejectValue("maxLoginFailures", "error.code",
-                        "Ftp Max Logins Failuers must be greater than 0.");
+                    "Ftp Max Logins Failuers must be greater than 0.");
             }
 
-            if (givenData.getLoginFailureDelay() < 0) {
+            if (givenData.getLoginFailureDelay() < 0)
+            {
                 errors.rejectValue("loginFailureDelay", "error.code",
-                        "Ftp Login Failuers Delay must be greater than 0.");
+                    "Ftp Login Failuers Delay must be greater than 0.");
             }
 
         }

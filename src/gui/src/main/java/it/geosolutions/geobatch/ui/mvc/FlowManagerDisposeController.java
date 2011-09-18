@@ -24,36 +24,42 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+
 /**
  * @author Alessio
- * 
+ *
  */
-public class FlowManagerDisposeController extends AbstractController {
+public class FlowManagerDisposeController extends AbstractController
+{
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
      * (javax.servlet .http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected ModelAndView handleRequestInternal(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+        HttpServletResponse response) throws Exception
+    {
         Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
         String fmId = request.getParameter("fmId");
 
-        if (fmId != null) {
+        if (fmId != null)
+        {
             FileBasedFlowManager fm = catalog.getResource(fmId, FileBasedFlowManager.class);
 
-            if (fm != null) {
+            if (fm != null)
+            {
                 fm.dispose();
                 // catalog.getResourceThreadPool().remove((Runnable) fm);
                 catalog.remove(fm);
@@ -62,6 +68,7 @@ public class FlowManagerDisposeController extends AbstractController {
 
         ModelAndView mav = new ModelAndView("flows");
         mav.addObject("flowManagers", catalog.getFlowManagers(FileBasedFlowManager.class));
+
         return mav;
     }
 }

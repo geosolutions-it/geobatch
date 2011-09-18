@@ -28,174 +28,190 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
 
+
 /**
  * Conf for the event generators based on xml marshalled files.
- * 
+ *
  * @author Simone Giannecchini, GeoSolutions
  */
-public class FileBasedEventGeneratorConfiguration extends
-		EventGeneratorConfiguration implements Configuration {
+public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfiguration implements Configuration
+{
 
-	/**
-	 * The type of OS which will be used by the embedded File System Watcher.
-	 */
-	private OsType osType;
+    /**
+     * The type of OS which will be used by the embedded File System Watcher.
+     */
+    private OsType osType;
 
-	/**
-	 * The type of File System Event accepted by the generator. The events can
-	 * be of kind FILE_ADDED, FILE_REMOVED, FILE_MODIFIED, etc...
-	 */
-	private FileSystemEventType eventType;
+    /**
+     * The type of File System Event accepted by the generator. The events can
+     * be of kind FILE_ADDED, FILE_REMOVED, FILE_MODIFIED, etc...
+     */
+    private FileSystemEventType eventType;
 
-	private FileSystemMonitorType monitorType;
+    private FileSystemMonitorType monitorType;
 
-	/**
-	 * The configuring directory.
-	 */
-	private String watchDirectory;
+    /**
+     * The configuring directory.
+     */
+    private String watchDirectory;
 
-	public void setWatchDirectory(String watchDirectory) {
-		this.watchDirectory = watchDirectory;
-	}
+    /**
+     * A flag used to keep files in watchDirectory when flow is started.
+     */
+    private boolean keepFiles = false;
 
-	/**
-	 * A flag used to keep files in watchDirectory when flow is started.
-	 */
-	private boolean keepFiles = false;
+    /**
+     * The wild-card used to catch the kind of input files.
+     */
+    private String wildCard;
 
-	/**
-	 * The wild-card used to catch the kind of input files.
-	 */
-	private String wildCard;
+    /**
+     * The polling interval in millisec can be: - a cron string - an integer -
+     * null
+     */
+    private String interval;
 
-	/**
-	 * The polling interval in millisec can be: - a cron string - an integer -
-	 * null
-	 */
-	private String interval;
+    /**
+     *
+     * @param id
+     * @param name
+     * @param description
+     * @param dirty
+     * @param osType
+     * @param eventType
+     * @param watchDirectory
+     * @param interval
+     * @param wildCard
+     * @param keepFiles
+     */
+    public FileBasedEventGeneratorConfiguration(String id, String name,
+        String description, boolean dirty, OsType osType,
+        FileSystemEventType eventType, String watchDirectory,
+        String interval, String wildCard, boolean keepFiles)
+    {
+        super(id, name, description, dirty);
+        this.osType = osType;
+        this.eventType = eventType;
+        this.watchDirectory = watchDirectory;
+        this.interval = interval;
+        this.wildCard = wildCard;
+        this.keepFiles = keepFiles;
+    }
 
-	/**
-	 * @return
-	 */
-	public FileSystemMonitorType getMonitorType() {
-		return monitorType;
-	}
+    public void setWatchDirectory(String watchDirectory)
+    {
+        this.watchDirectory = watchDirectory;
+    }
 
-	/**
-	 * @param monitorType
-	 */
-	public void setMonitorType(FileSystemMonitorType monitorType) {
-		this.monitorType = monitorType;
-	}
+    /**
+     * @return
+     */
+    public FileSystemMonitorType getMonitorType()
+    {
+        return monitorType;
+    }
 
-	public String getInterval() {
-		return interval;
-	}
+    /**
+     * @param monitorType
+     */
+    public void setMonitorType(FileSystemMonitorType monitorType)
+    {
+        this.monitorType = monitorType;
+    }
 
-	public void setInterval(String interval) {
-		this.interval = interval;
-	}
+    public String getInterval()
+    {
+        return interval;
+    }
 
-	public String getWatchDirectory() {
-		return watchDirectory;
-	}
+    public void setInterval(String interval)
+    {
+        this.interval = interval;
+    }
 
-	/**
-	 * 
-	 * @param id
-	 * @param name
-	 * @param description
-	 * @param dirty
-	 * @param osType
-	 * @param eventType
-	 * @param watchDirectory
-	 * @param interval
-	 * @param wildCard
-	 * @param keepFiles
-	 */
-	public FileBasedEventGeneratorConfiguration(String id, String name,
-			String description, boolean dirty, OsType osType,
-			FileSystemEventType eventType, String watchDirectory,
-			String interval, String wildCard, boolean keepFiles) {
-		super(id, name, description, dirty);
-		this.osType = osType;
-		this.eventType = eventType;
-		this.watchDirectory = watchDirectory;
-		this.interval = interval;
-		this.wildCard = wildCard;
-		this.keepFiles = keepFiles;
-	}
+    public String getWatchDirectory()
+    {
+        return watchDirectory;
+    }
 
-	/**
-	 * Getter for the OS type attribute.
-	 * 
-	 * @return osType
-	 */
-	public OsType getOsType() {
-		return osType;
-	}
+    /**
+     * Getter for the OS type attribute.
+     *
+     * @return osType
+     */
+    public OsType getOsType()
+    {
+        return osType;
+    }
 
-	/**
-	 * Setter for the OS type attribute.
-	 * 
-	 * @param osType
-	 */
-	public void setOsType(OsType osType) {
-		this.osType = osType;
-	}
+    /**
+     * Setter for the OS type attribute.
+     *
+     * @param osType
+     */
+    public void setOsType(OsType osType)
+    {
+        this.osType = osType;
+    }
 
-	/**
-	 * Getter for the wild card attribute.
-	 * 
-	 * @return wildCard
-	 */
-	public String getWildCard() {
-		return wildCard;
-	}
+    /**
+     * Getter for the wild card attribute.
+     *
+     * @return wildCard
+     */
+    public String getWildCard()
+    {
+        return wildCard;
+    }
 
-	/**
-	 * Setter for the wild card attribute.
-	 * 
-	 * @param wildCard
-	 */
-	public void setWildCard(String wildCard) {
-		this.wildCard = wildCard;
-	}
+    /**
+     * Setter for the wild card attribute.
+     *
+     * @param wildCard
+     */
+    public void setWildCard(String wildCard)
+    {
+        this.wildCard = wildCard;
+    }
 
-	/**
-	 * Getter for the event type attribute.
-	 * 
-	 * @return eventType
-	 */
-	public FileSystemEventType getEventType() {
-		return eventType;
-	}
+    /**
+     * Getter for the event type attribute.
+     *
+     * @return eventType
+     */
+    public FileSystemEventType getEventType()
+    {
+        return eventType;
+    }
 
-	/**
-	 * Setter for the event type attribute.
-	 * 
-	 * @param eventType
-	 */
-	public void setEventType(FileSystemEventType eventType) {
-		this.eventType = eventType;
-	}
+    /**
+     * Setter for the event type attribute.
+     *
+     * @param eventType
+     */
+    public void setEventType(FileSystemEventType eventType)
+    {
+        this.eventType = eventType;
+    }
 
-	/**
-	 * Getter for the keep files in watchDirectory flag.
-	 * 
-	 * @return keepFiles
-	 */
-	public boolean getKeepFiles() {
-		return keepFiles;
-	}
+    /**
+     * Getter for the keep files in watchDirectory flag.
+     *
+     * @return keepFiles
+     */
+    public boolean getKeepFiles()
+    {
+        return keepFiles;
+    }
 
-	/**
-	 * Setter for the keep files in watchDirectory flag.
-	 * 
-	 * @param keepFiles
-	 */
-	public void setKeepFiles(boolean keepFiles) {
-		this.keepFiles = keepFiles;
-	}
+    /**
+     * Setter for the keep files in watchDirectory flag.
+     *
+     * @param keepFiles
+     */
+    public void setKeepFiles(boolean keepFiles)
+    {
+        this.keepFiles = keepFiles;
+    }
 
 }

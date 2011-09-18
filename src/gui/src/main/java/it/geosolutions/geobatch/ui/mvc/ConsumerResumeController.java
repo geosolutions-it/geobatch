@@ -29,16 +29,21 @@ import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
 import org.springframework.web.servlet.ModelAndView;
 
+
 /**
- * 
+ *
  * @author ETj <etj at geo-solutions.it>
  */
-public class ConsumerResumeController extends ConsumerAbstractController {
+public class ConsumerResumeController extends ConsumerAbstractController
+{
 
     @Override
-    protected void runStuff(ModelAndView mav, FileBasedFlowManager fm, BaseEventConsumer consumer) {
-        if (fm != null && consumer != null)
+    protected void runStuff(ModelAndView mav, FileBasedFlowManager fm, BaseEventConsumer consumer)
+    {
+        if ((fm != null) && (consumer != null))
+        {
             consumer.resume();
+        }
 
         mav.addObject("consumer", consumer);
     }

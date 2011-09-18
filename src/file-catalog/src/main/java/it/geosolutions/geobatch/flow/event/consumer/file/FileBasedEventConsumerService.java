@@ -22,47 +22,65 @@
 
 package it.geosolutions.geobatch.flow.event.consumer.file;
 
-import it.geosolutions.geobatch.catalog.impl.BaseService;
-import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
-
 import java.io.File;
 import java.io.IOException;
+
+import it.geosolutions.geobatch.catalog.impl.BaseService;
+import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileBasedEventConsumerService extends BaseService {
 
-    public FileBasedEventConsumerService(String id, String name, String description) {
+public class FileBasedEventConsumerService extends BaseService
+{
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedEventConsumerService.class.toString());
+
+    public FileBasedEventConsumerService(String id, String name, String description)
+    {
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(FileBasedEventConsumerService.class
-            .toString());
-
-    public boolean canCreateEventConsumer(FileBasedEventConsumerConfiguration configuration) {
+    public boolean canCreateEventConsumer(FileBasedEventConsumerConfiguration configuration)
+    {
 
         final String workingDir = configuration.getWorkingDirectory();
-        if (workingDir != null) {
+        if (workingDir != null)
+        {
             final File dir = new File((String) workingDir);
             if (!dir.exists() || !dir.isDirectory() || !dir.canRead())
+            {
                 // TODO message
                 return false;
+            }
         }
+
         return true;
     }
 
     public FileBasedEventConsumer createEventConsumer(
-            FileBasedEventConsumerConfiguration configuration) {
-        try {
+        FileBasedEventConsumerConfiguration configuration)
+    {
+        try
+        {
             return new FileBasedEventConsumer(configuration);
-        } catch (IOException e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-        } catch (InterruptedException e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
         }
+        catch (IOException e)
+        {
+            if (LOGGER.isErrorEnabled())
+            {
+                LOGGER.error(e.getLocalizedMessage(), e);
+            }
+        }
+        catch (InterruptedException e)
+        {
+            if (LOGGER.isErrorEnabled())
+            {
+                LOGGER.error(e.getLocalizedMessage(), e);
+            }
+        }
+
         return null;
     }
 
