@@ -182,7 +182,7 @@
 										<ul>
 											<li><a href="#tab-config-<%= i %>" style="cursor: default">Configuration</a></li>
 											<li>
-												<a href="flowinfo.do?fmId=${fm.id}" title="tab-instances-<%= i %>" style="cursor: default">Instances</a> <a class="autorefresh" id="<%= i %>" title="flowinfo.do?fmId=${fm.id}"><div id="loading" style="display:none;"><img src="img/arrow_refresh.png" style="cursor: pointer; cursor: hand"/></div><div id="loaded"><img src="img/arrow_refresh.png" style="cursor: pointer; cursor: hand"/></div></a>
+												<a href="flowinfo.do?fmId=${fm.id}" title="tab-instances-<%= i %>" style="cursor: default">Instances</a> <a class="autorefresh" id="<%= i %>" title="flowinfo.do?fmId=${fm.id}"><img id="loading" src="img/arrow_refresh.png" style="display:none;cursor: wait"/><img id="loaded" src="img/arrow_refresh.png" style="cursor: pointer; cursor: hand"/></a>
 											</li>
 										</ul>
 										<div id="tab-config-<%= i %>">
