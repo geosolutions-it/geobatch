@@ -6,4 +6,16 @@
         <constructor-arg ref="aliasRegistry" />
     </bean>
 
+
+
+	<bean id="geoserverReloadRegistrar" class="it.geosolutions.geobatch.geoserver.reload.GeoServerReloadAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+    
+    <bean id="GeoServerReloadService" class="it.geosolutions.geobatch.geoserver.reload.GeoServerReloadService">
+		<constructor-arg type="String"><value>GeoServerReloadService</value></constructor-arg>
+		<constructor-arg type="String"><value>GeoServerReloadService</value></constructor-arg>
+		<constructor-arg type="String"><value>GeoServerReloadService</value></constructor-arg>
+	</bean>
+
 </beans>

@@ -51,9 +51,15 @@
     </licenses>
 
     <!-- =========================================================== -->
-    <!--     Dependency Management                                   -->
+    <!--     Dependencies						                     -->
     <!-- =========================================================== -->
     <dependencies>
+	<!-- Reload (to deserialize geoserverList -->
+	<dependency>
+	    <groupId>com.thoughtworks.xstream</groupId>
+	    <artifactId>xstream</artifactId>
+	</dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -64,6 +70,7 @@
 	    <artifactId>slf4j-log4j12</artifactId>
 	    <scope>test</scope>
 	</dependency>
+
 
         <!-- JSON lib -->
 

@@ -1,0 +1,32 @@
+<list>
+<!-- VM localhost -->
+  <map>
+    <entry>
+      <string>user</string>
+      <string>admin</string>
+    </entry>
+    <entry>
+      <string>url</string>
+      <string>http://localhost:8080/geoserver</string>
+    </entry>
+    <entry>
+      <string>pass</string>
+      <string>geoserver</string>
+    </entry>
+  </map>
+  <map>
+    <entry>
+      <string>user</string>
+      <string>admin</string>
+    </entry>
+    <entry>
+      <string>url</string>
+      <string>http://localhost:8181/geoserver</string>
+    </entry>
+    <entry>
+      <string>pass</string>
+      <string>geoserver</string>
+    </entry>
+  </map>
+  <!-- VM Other -->
+</list> 

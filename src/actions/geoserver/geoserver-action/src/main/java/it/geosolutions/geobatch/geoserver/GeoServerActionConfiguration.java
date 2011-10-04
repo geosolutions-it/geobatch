@@ -21,28 +21,17 @@
  */
 package it.geosolutions.geobatch.geoserver;
 
-import it.geosolutions.geobatch.catalog.Configuration;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-
 import java.util.List;
 
-public class GeoServerActionConfiguration extends ActionConfiguration implements Configuration {
+public class GeoServerActionConfiguration extends GeoServerActionConfig {
 
     public GeoServerActionConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
 
-    private String workingDirectory;
-
     private String crs;
 
     private String envelope; // set BB comma separated
-
-    private String geoserverPWD;
-
-    private String geoserverUID;
-
-    private String geoserverURL;
 
     private String storeFilePrefix; // store name
 
@@ -62,20 +51,6 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
 
     private String dataTransferMethod; // DIRECT, URL, EXTERNAL
 
-    /**
-     * @return the workingDirectory
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
-
-    /**
-     * @param workingDirectory
-     *            the workingDirectory to set
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
-    }
 
     public String getCrs() {
         return crs;
@@ -91,30 +66,6 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
 
     public void setEnvelope(String envelope) {
         this.envelope = envelope;
-    }
-
-    public String getGeoserverPWD() {
-        return geoserverPWD;
-    }
-
-    public void setGeoserverPWD(String geoserverPWD) {
-        this.geoserverPWD = geoserverPWD;
-    }
-
-    public String getGeoserverUID() {
-        return geoserverUID;
-    }
-
-    public void setGeoserverUID(String geoserverUID) {
-        this.geoserverUID = geoserverUID;
-    }
-
-    public String getGeoserverURL() {
-        return geoserverURL;
-    }
-
-    public void setGeoserverURL(String geoserverURL) {
-        this.geoserverURL = geoserverURL;
     }
 
     public String getStoreFilePrefix() {
@@ -201,14 +152,10 @@ public class GeoServerActionConfiguration extends ActionConfiguration implements
         configuration.setDefaultNamespaceUri(defaultNamespaceUri);
         configuration.setDefaultStyle(defaultStyle);
         configuration.setEnvelope(envelope);
-        configuration.setGeoserverPWD(geoserverPWD);
-        configuration.setGeoserverUID(geoserverUID);
-        configuration.setGeoserverURL(geoserverURL);
 //        configuration.setServiceID(getServiceID());
         configuration.setStoreFilePrefix(storeFilePrefix);
         configuration.setStyles(styles);
         configuration.setWmsPath(wmsPath);
-        configuration.setWorkingDirectory(workingDirectory);
 
         return configuration;
     }
