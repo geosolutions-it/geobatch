@@ -154,10 +154,19 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 
 			listenerForwarder.setTask("Executing script: " + script.getName());
 
-			final FileSystemEvent event = events.peek();
+			// check for incoming event list
+			Object ev = null;
+			if (events != null) {
+				final FileSystemEvent event = events.peek();
+				if (event != null) {
+					final File eventFile = event.getSource();
+					if (eventFile != null) {
+						ev = eventFile.getAbsolutePath();
+					}
+				}
+			}
 			final List<String> outputFiles = (List<String>) inv.invokeFunction(
-					"execute", new Object[] { configuration,
-							event.getSource().getAbsolutePath(),
+					"execute", new Object[] { configuration, ev,
 							listenerForwarder });
 
 			// optionally clear input queue
@@ -176,7 +185,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			listenerForwarder.completed();
 
 			return ret;
-			
+
 		} catch (Throwable t) {
 			if (LOGGER.isErrorEnabled())
 				LOGGER.error(t.getLocalizedMessage(), t); // no need to

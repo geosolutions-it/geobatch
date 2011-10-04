@@ -83,7 +83,7 @@ public class XstreamConfiguration extends ActionConfiguration implements Configu
 
     @Override
     public XstreamConfiguration clone(){
-        final XstreamConfiguration ret=new XstreamConfiguration(this.getId(), this.getName(), this.getDescription());
+        final XstreamConfiguration ret=(XstreamConfiguration)super.clone();
         ret.setWorkingDirectory(this.getWorkingDirectory());
         ret.setServiceID(this.getServiceID());
         ret.setOutput(this.getOutput());

@@ -123,7 +123,7 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
     
     @Override
     public FreeMarkerConfiguration clone(){
-        final FreeMarkerConfiguration ret=new FreeMarkerConfiguration(this.getId(), this.getName(), this.getDescription());
+        final FreeMarkerConfiguration ret=(FreeMarkerConfiguration)super.clone();
         ret.setNtoN(this.isNtoN());
         ret.setWorkingDirectory(this.getWorkingDirectory());
         ret.setServiceID(this.getServiceID());

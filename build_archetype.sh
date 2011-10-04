@@ -214,14 +214,14 @@ APP_START_DELIM="<!-- START APPLICATION DESCRIPTION -->"
 APPLICATION_DES="\
 	<parent>\n\
 		<groupId>it.geosolutions.geobatch.$NAME_APP</groupId>\n\
-		<artifactId>gb-$NAME_APP</artifactId>\n\
+		<artifactId>$NAME_APP</artifactId>\n\
 		<version>$PROJ_VER</version>\n\
 	</parent>\n\
 	<!-- =========================================================== -->\n\
 	<!-- Module Description -->\n\
 	<!-- =========================================================== -->\n\
 	<groupId>it.geosolutions.geobatch.$NAME_APP</groupId>\n\
-	<artifactId>gb-application-$NAME_APP</artifactId>\n\
+	<artifactId>application-$NAME_APP</artifactId>\n\
 	<packaging>war</packaging>\n"
 APP_STOP_DELIM="<!-- STOP APPLICATION DESCRIPTION -->"
 ACTION_PROFILE="\
@@ -236,7 +236,7 @@ ACTION_PROFILE="\
 			<dependencies>\n\
 				<dependency>\n\
 					<groupId>it.geosolutions.geobatch.$NAME_APP</groupId>\n\
-					<artifactId>gb-action-$NAME_APP-$NAME_ACT_LOWER</artifactId>\n\
+					<artifactId>action-$NAME_APP-$NAME_ACT_LOWER</artifactId>\n\
 				</dependency>\n\
 			</dependencies>\n\
 			<build>\n\
@@ -255,7 +255,7 @@ ACTION_PROFILE="\
 									<artifactItems>\n\
 										<artifactItem>\n\
 											<groupId>it.geosolutions.geobatch.$NAME_APP</groupId>\n\
-											<artifactId>gb-action-$NAME_APP-$NAME_ACT_LOWER</artifactId>\n\
+											<artifactId>action-$NAME_APP-$NAME_ACT_LOWER</artifactId>\n\
 											<classifier>flowdata</classifier>\n\
 											<type>jar</type>\n\
 											<overWrite>false</overWrite>\n\
@@ -286,15 +286,15 @@ mkdir -p "$DEST_DIR/src"
 replace_pom ".build/src-pom.xml" "$DEST_DIR/src/pom.xml" -p
 cp ".build/build.sh" "$DEST_DIR/src/build.sh" -p
 # copy webapp
-cp "$GB_DIR/gb-application" "$DEST_DIR/src/gb-application-$NAME_APP" -Rp
-#cp ".build/application-pom.xml" "$DEST_DIR/src/gb-application-$NAME_APP/pom.xml" -p
-replace_application_pom "$GB_DIR/gb-application/pom.xml" "$DEST_DIR/src/gb-application-$NAME_APP/pom.xml"
+cp "$GB_DIR/application" "$DEST_DIR/src/application-$NAME_APP" -Rp
+#cp ".build/application-pom.xml" "$DEST_DIR/src/application-$NAME_APP/pom.xml" -p
+replace_application_pom "$GB_DIR/application/pom.xml" "$DEST_DIR/src/application-$NAME_APP/pom.xml"
 
 #################################################################################################
 # ACTION(s) FOLDER STRUCTURE
 ################
-mkdir "$DEST_DIR/src/gb-actions-$NAME_APP" -p
-replace_pom ".build/actions-pom.xml" "$DEST_DIR/src/gb-actions-$NAME_APP/pom.xml"
+mkdir "$DEST_DIR/src/actions-$NAME_APP" -p
+replace_pom ".build/actions-pom.xml" "$DEST_DIR/src/actions-$NAME_APP/pom.xml"
 
 #################################################################################################
 # function replace_java
@@ -311,7 +311,7 @@ function replace_java {
 # ACTION SOURCES
 ################
 #remove double slash
-ACTION_DIR="$DEST_DIR/src/gb-actions-$NAME_APP/$NAME_ACT_LOWER/"
+ACTION_DIR="$DEST_DIR/src/actions-$NAME_APP/$NAME_ACT_LOWER/"
 mkdir -p "$ACTION_DIR"
 
 #place pom replacing keys
@@ -364,5 +364,5 @@ echo -e "\
 \nApplication $NAME_APP SUCCESFULLY build!!!\n\
 \nIf you want to activate the action ($NAME_ACT) you still have to uncomment:\n\
 \t- Action dependency version into the dependency management of the $DEST_DIR/src/pom.xml\n\
-\t- Action profile into the profiles node of the $DEST_DIR/src/gb-actions-$NAME_APP/pom.xml\n\
-\t- Action profile into the profiles node of the $DEST_DIR/src/gb-application-$NAME_APP/pom.xml\n"
+\t- Action profile into the profiles node of the $DEST_DIR/src/actions-$NAME_APP/pom.xml\n\
+\t- Action profile into the profiles node of the $DEST_DIR/src/application-$NAME_APP/pom.xml\n"

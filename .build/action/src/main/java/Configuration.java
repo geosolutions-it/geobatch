@@ -41,11 +41,11 @@ public class ##NAME_ACT##Configuration extends ActionConfiguration implements Co
     
     @Override
     public ##NAME_ACT##Configuration clone(){
-        final ##NAME_ACT##Configuration ret=new ##NAME_ACT##Configuration(this.getId(), this.getName(), this.getDescription());
+        final ##NAME_ACT##Configuration ret=(##NAME_ACT##Configuration)super.clone();
         
-		// TODO CLONE YOUR MEMBERS
+	// TODO CLONE YOUR MEMBERS
 	
-		ret.setWorkingDirectory(this.getWorkingDirectory());
+	ret.setWorkingDirectory(this.getWorkingDirectory());
         ret.setServiceID(this.getServiceID());
         ret.setListenerConfigurations(ret.getListenerConfigurations());
         return ret;

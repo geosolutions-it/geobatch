@@ -70,28 +70,42 @@ public class XstreamAction extends BaseAction<EventObject> {
 
         // the output
         final Queue<EventObject> ret = new LinkedList<EventObject>();
-
+		listenerForwarder.started();
         while (events.size() > 0) {
             final EventObject event = events.remove();
             if (event == null) {
+            	final String message="The passed event object is null";
                 if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("XstreamAction.adapter(): The passed event object is null");
-                continue;
+                    LOGGER.warn(message);
+                if (conf.isFailIgnored()){
+                	continue;
+                } else {
+                	final ActionException e=new ActionException(this, message);
+                	listenerForwarder.failed(e);
+                	throw e;
+                }
             }
-            try {
 
                 if (event instanceof FileSystemEvent) {
                     // generate an object
                     final File sourceFile = File.class.cast(event.getSource());
                     if (!sourceFile.exists() || !sourceFile.canRead()) {
+                    	final String message="XstreamAction.adapter(): The passed FileSystemEvent "
+                            + "reference to a not readable or not existent file: "
+                            + sourceFile.getAbsolutePath();
                         if (LOGGER.isWarnEnabled())
-                            LOGGER.warn("XstreamAction.adapter(): The passed FileSystemEvent "
-                                    + "reference to a not readable or not existent file: "
-                                    + sourceFile.getAbsolutePath());
-                        continue;
+                            LOGGER.warn(message);
+                        if (conf.isFailIgnored()){
+                        	continue;
+                        } else {
+                        	final ActionException e=new ActionException(this, message);
+                        	listenerForwarder.failed(e);
+                        	throw e;
+                        }
                     }
-                    final FileInputStream inputStream = new FileInputStream(sourceFile);
+                    FileInputStream inputStream = null;
                     try {
+                    	inputStream = new FileInputStream(sourceFile);
                         final Map<String, String> aliases = conf.getAlias();
                         if (aliases != null && aliases.size() > 0) {
                             for (String alias : aliases.keySet()) {
@@ -99,6 +113,9 @@ public class XstreamAction extends BaseAction<EventObject> {
                                 xstream.alias(alias, clazz);
                             }
                         }
+
+                    	listenerForwarder.setTask("Converting file to a java object");
+                    	
                         // deserialize
                         final Object res = xstream.fromXML(inputStream);
                         // generate event
@@ -109,22 +126,31 @@ public class XstreamAction extends BaseAction<EventObject> {
                     } catch (XStreamException e) {
                         // the object cannot be deserialized
                         if (LOGGER.isErrorEnabled())
-                            LOGGER.error(
-                                    "XstreamAction.adapter(): The passed FileSystemEvent "
-                                            + "reference to a not deserializable file: "
+                            LOGGER.error("The passed FileSystemEvent reference to a not deserializable file: "
                                             + sourceFile.getAbsolutePath(), e);
-                        continue;
+                        if (conf.isFailIgnored()){
+                        	continue;
+                        } else {
+                        	listenerForwarder.failed(e);
+                        	throw new ActionException(this, e.getLocalizedMessage());
+                        }
                     } catch (Throwable e) {
                         // the object cannot be deserialized
                         if (LOGGER.isErrorEnabled())
                             LOGGER.error(
                                     "XstreamAction.adapter(): " + e.getLocalizedMessage(), e);
-                        continue;
+                        if (conf.isFailIgnored()){
+                        	continue;
+                        } else {
+                        	listenerForwarder.failed(e);
+                        	throw new ActionException(this, e.getLocalizedMessage());
+                        }
                     } finally {
                         IOUtils.closeQuietly(inputStream);
                     }
 
                 } else {
+                	
                     // try to serialize
                     // build the output absolute file name
                     final File outputDir;
@@ -135,37 +161,56 @@ public class XstreamAction extends BaseAction<EventObject> {
 
                         if (!outputDir.exists()) {
                             if (!outputDir.mkdirs()) {
+                            	final String message="Unable to create the ouptut dir named: "
+                                    + outputDir.toString();
                                 if (LOGGER.isInfoEnabled())
-                                    LOGGER.info("XstreamAction.execute(): Unable to create the ouptut dir named: "
-                                            + outputDir.toString());
-                                continue;
+                                    LOGGER.info(message);
+                                if (conf.isFailIgnored()){
+                                	continue;
+                                } else {
+                                	final ActionException e=new ActionException(this, message);
+                                	listenerForwarder.failed(e);
+                                	throw e;
+                                }
                             }
                         }
                         if (LOGGER.isInfoEnabled()) {
-                            LOGGER.info("XstreamAction.execute(): Output dir name: "
+                            LOGGER.info("Output dir name: "
                                     + outputDir.toString());
                         }
 
                     } catch (NullPointerException npe) {
-                        final String message = "XstreamAction.execute(): Unable to get the output file path from :"
+                        final String message = "Unable to get the output file path from :"
                                 + conf.getOutput();
                         if (LOGGER.isErrorEnabled())
                             LOGGER.error(message, npe);
-                        continue;
+                        if (conf.isFailIgnored()){
+                        	continue;
+                        } else {
+                        	listenerForwarder.failed(npe);
+                        	throw new ActionException(this, npe.getLocalizedMessage());
+                        }
                     }
 
                     final File outputFile = new File(outputDir, conf.getOutput());
-
+                    
+                    listenerForwarder.setTask("Serializing java object to "+outputFile);
+                    
                     // try to open the file to write into
                     FileWriter fw = null;
                     try {
                         fw = new FileWriter(outputFile);
                     } catch (IOException ioe) {
-                        final String message = "XstreamAction.execute(): Unable to build the output file writer: "
+                        final String message = "Unable to build the output file writer: "
                                 + ioe.getLocalizedMessage();
                         if (LOGGER.isErrorEnabled())
                             LOGGER.error(message, ioe);
-                        continue;
+                        if (conf.isFailIgnored()){
+                        	continue;
+                        } else {
+                        	listenerForwarder.failed(ioe);
+                        	throw new ActionException(this, ioe.getLocalizedMessage());
+                        }
                     }
 
                     try {
@@ -179,16 +224,24 @@ public class XstreamAction extends BaseAction<EventObject> {
                         xstream.toXML(event.getSource(), fw);
                     } catch (XStreamException e) {
                         if (LOGGER.isErrorEnabled())
-                            LOGGER.error(
-                                    "XstreamAction.adapter(): The passed event object cannot be serialized to: "
+                            LOGGER.error("The passed event object cannot be serialized to: "
                                             + outputFile.getAbsolutePath(), e);
-                        continue;
+                        if (conf.isFailIgnored()){
+                        	continue;
+                        } else {
+                        	listenerForwarder.failed(e);
+                        	throw new ActionException(this, e.getLocalizedMessage());
+                        }
                     } catch (Throwable e) {
                         // the object cannot be deserialized
                         if (LOGGER.isErrorEnabled())
-                            LOGGER.error(
-                                    "XstreamAction.adapter(): " + e.getLocalizedMessage(), e);
-                        continue;
+                            LOGGER.error(e.getLocalizedMessage(), e);
+                        if (conf.isFailIgnored()){
+                        	continue;
+                        } else {
+                        	listenerForwarder.failed(e);
+                        	throw new ActionException(this, e.getLocalizedMessage());
+                        }
                     } finally {
                         IOUtils.closeQuietly(fw);
                     }
@@ -198,14 +251,8 @@ public class XstreamAction extends BaseAction<EventObject> {
                             FileSystemEventType.FILE_ADDED));
 
                 }
-
-            } catch (Exception e) {
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error("XstreamAction.execute(): " + e.getLocalizedMessage(), e);
-                }
-            }
         }
-
+		listenerForwarder.completed();
         return ret;
     }
 }
