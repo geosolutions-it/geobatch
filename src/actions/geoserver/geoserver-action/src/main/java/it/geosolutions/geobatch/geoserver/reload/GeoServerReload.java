@@ -204,20 +204,9 @@ public class GeoServerReload extends BaseAction<EventObject> {
 			final GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
 					url, user, pass);
 
-			/*
-			 * WORKAROUND http://jira.codehaus.org/browse/GEOS-4782
-			 */
-			if (!publisher.reset()) {
-				if (LOGGER.isInfoEnabled())
-					LOGGER.info("Failed reset GS:" + url + " user " + user
-							+ " pass " + pass);
-				return false;
-			}
-			// END WORKAROUND
-
 			if (!publisher.reload()) {
-				if (LOGGER.isInfoEnabled())
-					LOGGER.info("Failed reload GS:" + url + " user " + user
+				if (LOGGER.isWarnEnabled())
+					LOGGER.warn("Failed reload GS:" + url + " user " + user
 							+ " pass " + pass);
 				return false;
 			} else {
