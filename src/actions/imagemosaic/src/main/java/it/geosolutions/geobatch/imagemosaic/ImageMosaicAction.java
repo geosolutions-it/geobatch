@@ -248,11 +248,12 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 							getConfiguration().getGeoserverUID(),
 							getConfiguration().getGeoserverPWD());
 
+					final String workspace=configuration.getDefaultNamespace()!=null?configuration.getDefaultNamespace():"";
+					
 					/*
 					 * Check if ImageMosaic layer already exists...
 					 */
 					final boolean layerExists;
-					
 					final RESTLayer layer= gsReader.getLayer(layerID);
 					if (layer == null)
 						layerExists = false;
@@ -347,7 +348,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 					    
 					    // TODO create workspace
 					    final GSWorkspaceEncoder workspaceEnc=new GSWorkspaceEncoder();
-					    final String workspace=configuration.getDefaultNamespace()!=null?configuration.getDefaultNamespace():"";
+					    
 					    workspaceEnc.addName(workspace);
 
 						// create a new ImageMosaic layer...
@@ -476,7 +477,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 
 		            // generate a RETURN file and append it to the return queue
 					// TODO get info about store and workspace name...
-		            if ((layerDescriptor = ImageMosaicOutput.writeReturn(baseDir, baseDir,layerID,layerID,layerID)) != null) {
+		            if ((layerDescriptor = ImageMosaicOutput.writeReturn(baseDir, baseDir,layerID,workspace,layerID)) != null) {
 		                ret.add(new FileSystemEvent(layerDescriptor, FileSystemEventType.FILE_ADDED));
 		            }
 		            
