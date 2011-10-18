@@ -114,7 +114,7 @@
         <test.maxHeapSize>512M</test.maxHeapSize>
         <src.output>${basedir}/target</src.output>       
         <gt.version>8-SNAPSHOT</gt.version>
-        <imageio-ext.version>1.2-M092011</imageio-ext.version>
+        <imageio-ext.version>1.2-M102011</imageio-ext.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <spring.security.version>3.0.3.RELEASE</spring.security.version>
         <camel.version>2.8.0</camel.version>
