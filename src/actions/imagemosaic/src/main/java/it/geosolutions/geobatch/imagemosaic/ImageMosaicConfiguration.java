@@ -26,7 +26,7 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
 public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
-	protected ImageMosaicConfiguration(String id, String name,
+	public ImageMosaicConfiguration(String id, String name,
 			String description) {
 		super(id, name, description);
 	}
