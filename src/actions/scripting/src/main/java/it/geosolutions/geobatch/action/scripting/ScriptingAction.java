@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Queue;
 
 import javax.script.Bindings;
@@ -82,8 +82,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 				throw new ActionException(this, message);
 			}
 
-			final String scriptName = Path.getAbsolutePath(configuration
-					.getScriptFile());
+			final String scriptName = Path.getAbsolutePath(configuration.getScriptFile());
 			if (scriptName == null)
 				throw new ActionException(this,
 						"Unable to locate the script file name: "
@@ -95,11 +94,9 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			 * Dynamic class-loading ...
 			 */
 			listenerForwarder.setTask("dynamic class loading ...");
-			final String moduleFolder = new File(script.getParentFile(), "jars")
-					.getAbsolutePath();
+			final String moduleFolder = new File(script.getParentFile(), "jars").getAbsolutePath();
 			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("Runtime class-loading from moduleFolder -> "
-						+ moduleFolder);
+				LOGGER.info("Runtime class-loading from moduleFolder -> " + moduleFolder);
 			}
 
 			final File moduleDirectory = new File(moduleFolder);
@@ -108,26 +105,22 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 				addFile(moduleDirectory);
 			} catch (IOException e) {
 				if (LOGGER.isErrorEnabled())
-					LOGGER.error(
-							"Error, could not add URL to system classloader", e);
+					LOGGER.error("Error, could not add URL to system classloader", e);
 			}
 			final String classpath = System.getProperty("java.class.path");
 			final File[] moduleFiles = moduleDirectory.listFiles();
 			if (moduleFiles != null) {
-				for (int i = 0; i < moduleFiles.length; i++) {
-					final File moduleFile = moduleFiles[i];
-					final String name = moduleFiles[i].getName();
+                for (File moduleFile : moduleFiles) {
+					final String name = moduleFile.getName();
 					if (name.endsWith(".jar")) {
 						if (classpath.indexOf(name) == -1) {
 							try {
 								if (LOGGER.isInfoEnabled())
 									LOGGER.info("Adding: " + name);
-								addFile(moduleFiles[i]);
+								addFile(moduleFile);
 							} catch (IOException e) {
 								if (LOGGER.isErrorEnabled())
-									LOGGER.error(
-											"Error, could not add URL to system classloader",
-											e);
+									LOGGER.error("Error, could not add URL to system classloader", e);
 							}
 						}
 					}
@@ -137,7 +130,6 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			 * Evaluating script ...
 			 */
 			listenerForwarder.setTask("evaluating script ...");
-			final Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
 
 			// Now, pass a different script context
 			final ScriptContext newContext = new SimpleScriptContext();
@@ -147,6 +139,15 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			// add variables to the new engineScope
 			engineScope.put("eventList", events);
 			engineScope.put("runningContext", getRunningContext());
+
+            // add properties as free vars in script
+            if(configuration.getProperties() != null) {
+                for (Entry<String, String> prop : configuration.getProperties().entrySet()) {
+                    if(LOGGER.isInfoEnabled())
+                        LOGGER.info(" Adding script property: " + prop.getKey() + " : " + prop.getValue());
+                    engineScope.put(prop.getKey(), prop.getValue());
+                }
+            }
 
 			engine.eval(new FileReader(script), engineScope);
 
@@ -173,12 +174,11 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			events.clear();
 
 			// FORWARDING EVENTS
-			final Iterator<String> it = outputFiles.listIterator();
-			while (it.hasNext()) {
-				final String outputFile = it.next();
-				if (outputFile != null) {
-					ret.add(new FileSystemEvent(new File(outputFile),
-							FileSystemEventType.FILE_ADDED));
+			final Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
+            
+            for (String out : outputFiles) {
+				if (out != null) {
+					ret.add(new FileSystemEvent(new File(out), FileSystemEventType.FILE_ADDED));
 				}
 			}
 
@@ -186,13 +186,9 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 
 			return ret;
 
-		} catch (Throwable t) {
+		} catch (Exception t) {
 			if (LOGGER.isErrorEnabled())
 				LOGGER.error(t.getLocalizedMessage(), t); // no need to
-			// log,
-			// we're
-			// rethrowing
-			// it
 			listenerForwarder.failed(t);
 			throw new ActionException(this, t.getMessage(), t);
 		} finally {
