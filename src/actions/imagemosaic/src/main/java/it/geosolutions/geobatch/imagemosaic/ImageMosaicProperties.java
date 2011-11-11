@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.imagemosaic;
 import it.geosolutions.geobatch.tools.file.Path;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -51,15 +52,16 @@ public abstract class ImageMosaicProperties {
      * @param properties
      *            the file referring to the prop file to load
      * @return
-     * @throws UnsatisfiedLinkError
+     * @throws NullPointerException TODO
+     * @throws IOException 
      */
-    protected static Properties getProperty(File properties) throws UnsatisfiedLinkError {
+    protected static Properties getProperty(File properties) throws NullPointerException, IOException {
         URL url = DataUtilities.fileToURL(properties);
         Properties props = null;
         if (url != null) {
             props = Utils.loadPropertiesFromURL(url);
         } else {
-            throw new UnsatisfiedLinkError("unable to resolve the URL: "
+            throw new NullPointerException("Unable to resolve the URL: "
                     + properties.getAbsolutePath());
         }
 
@@ -73,9 +75,10 @@ public abstract class ImageMosaicProperties {
      * @param regexFile
      * @param configuration
      * @return
-     * @throws UnsatisfiedLinkError
+     * @throws NullPointerException
+     * @throws IOException 
      */
-    private static Properties build(File regexFile, String regex) throws UnsatisfiedLinkError {
+    private static Properties build(File regexFile, String regex) throws NullPointerException, IOException {
 
         if (!regexFile.exists()) {
             FileWriter outFile = null;
@@ -121,8 +124,10 @@ public abstract class ImageMosaicProperties {
      * @param indexer
      * @param configuration
      * @return
+     * @throws NullPointerException 
+     * @throws IOException 
      */
-    protected static Properties buildIndexer(File indexer, ImageMosaicConfiguration configuration) {
+    protected static Properties buildIndexer(File indexer, ImageMosaicConfiguration configuration) throws NullPointerException, IOException {
         // ////
         // INDEXER
         // ////

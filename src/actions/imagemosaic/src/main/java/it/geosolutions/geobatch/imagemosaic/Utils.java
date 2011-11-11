@@ -80,8 +80,9 @@ public class Utils {
      * 
      * @param propsURL
      * @return
+     * @throws IOException 
      */
-    public static Properties loadPropertiesFromURL(URL propsURL) {
+    public static Properties loadPropertiesFromURL(URL propsURL) throws IOException {
         final Properties properties = new Properties();
         InputStream stream = null;
         InputStream openStream = null;
@@ -92,11 +93,11 @@ public class Utils {
         } catch (FileNotFoundException e) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(e.getLocalizedMessage(), e);
-            return null;
+            throw e;
         } catch (IOException e) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(e.getLocalizedMessage(), e);
-            return null;
+            throw e;
         } finally {
 
             if (stream != null)

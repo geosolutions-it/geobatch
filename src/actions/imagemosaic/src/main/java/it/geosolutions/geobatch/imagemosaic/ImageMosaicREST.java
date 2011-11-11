@@ -108,26 +108,26 @@ public abstract class ImageMosaicREST {
         // flow.xml.
         // therefore, there is no way to set the background values a runtime
         // for the moment, we take the nodata from the file name.
-        coverageEnc.addBackgroundValues(noData);// NoData
+        coverageEnc.setBackgroundValues(noData);// NoData
         
         String param = config.getOutputTransparentColor();
-        coverageEnc.addOutputTransparentColor((param != null) ? param : "");
+        coverageEnc.setOutputTransparentColor((param != null) ? param : "");
         param = config.getInputTransparentColor();
-        coverageEnc.addInputTransparentColor((param != null) ? param : "");
+        coverageEnc.setInputTransparentColor((param != null) ? param : "");
         param = null;
 
         /*
          * note: setting - AllowMultithreading to true - USE_JAI_IMAGEREAD to true make no sense!
          * Simone on 23 Mar 2011: this check should be done by the user configurator or by GeoServer
          */
-        coverageEnc.addAllowMultithreading(config.isAllowMultithreading());
+        coverageEnc.setAllowMultithreading(config.isAllowMultithreading());
 
-        coverageEnc.addUSE_JAI_IMAGEREAD(config.isUseJaiImageRead());
+        coverageEnc.setUSE_JAI_IMAGEREAD(config.isUseJaiImageRead());
 
         if (config.getTileSizeH() < 1 || config.getTileSizeW() < 1) {
-        	coverageEnc.addSUGGESTED_TILE_SIZE("256,256");
+        	coverageEnc.setSUGGESTED_TILE_SIZE("256,256");
         } else {
-        	coverageEnc.addSUGGESTED_TILE_SIZE(config.getTileSizeH() + "," + config.getTileSizeW());
+        	coverageEnc.setSUGGESTED_TILE_SIZE(config.getTileSizeH() + "," + config.getTileSizeW());
         }
 
 //        final GSMetadataEncoder<GSDimensionInfoEncoder> metadata=new GSMetadataEncoder<GSDimensionInfoEncoder>();
@@ -137,42 +137,42 @@ public abstract class ImageMosaicREST {
 	        final String presentation=config.getTimePresentationMode();
 	        if (presentation != null){
 	        	if (presentation.equals(Presentation.LIST.toString())){
-	    			timeDimensionInfo.addPresentation(Presentation.LIST);
+	    			timeDimensionInfo.setPresentation(Presentation.LIST);
 	        	}
 	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
 	//        			timeDimensionInfo.addPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
 	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
-        			timeDimensionInfo.addPresentation(Presentation.CONTINUOUS_INTERVAL);
+        			timeDimensionInfo.setPresentation(Presentation.CONTINUOUS_INTERVAL);
 	        	}
 	        }
 	        else {
-	            timeDimensionInfo.addPresentation(Presentation.LIST);
+	            timeDimensionInfo.setPresentation(Presentation.LIST);
 	        }
-	        coverageEnc.addMetadata("time", timeDimensionInfo);
+	        coverageEnc.setMetadata("time", timeDimensionInfo);
         }
         else
-        	coverageEnc.addMetadata("time", new GSDimensionInfoEncoder());
+        	coverageEnc.setMetadata("time", new GSDimensionInfoEncoder());
         
         if (config.getElevDimEnabled()!=null && config.getElevDimEnabled().equals("true")){
         	final GSDimensionInfoEncoder elevationDimensionInfo=new GSDimensionInfoEncoder(true);
 	        final String presentation=config.getElevationPresentationMode();
 	        if (presentation != null){
 	        	if (presentation.equals(Presentation.LIST.toString())){
-	    			elevationDimensionInfo.addPresentation(Presentation.LIST);
+	    			elevationDimensionInfo.setPresentation(Presentation.LIST);
 	        	}
 	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
 	//        			timeDimensionInfo.addPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
 	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
-        			elevationDimensionInfo.addPresentation(Presentation.CONTINUOUS_INTERVAL);
+        			elevationDimensionInfo.setPresentation(Presentation.CONTINUOUS_INTERVAL);
 	        	}
 	        }
 	        else {
-	            elevationDimensionInfo.addPresentation(Presentation.LIST);
+	            elevationDimensionInfo.setPresentation(Presentation.LIST);
 	        }
-	        coverageEnc.addMetadata("elevation", elevationDimensionInfo);
+	        coverageEnc.setMetadata("elevation", elevationDimensionInfo);
         }
         else
-        	coverageEnc.addMetadata("elevation", new GSDimensionInfoEncoder());
+        	coverageEnc.setMetadata("elevation", new GSDimensionInfoEncoder());
         
 //        coverageEnc.addNativeBoundingBox(minx, maxy, maxx, miny, crs)
             // coverageParams.put(GeoServerRESTHelper.NATIVE_MAXX,
@@ -196,24 +196,24 @@ public abstract class ImageMosaicREST {
         final String proj=config.getProjectionPolicy();
         if (proj != null){
         	if (proj.equalsIgnoreCase(ProjectionPolicy.REPROJECT_TO_DECLARED.toString())){
-        		coverageEnc.addProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
+        		coverageEnc.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
         	}
         	else if (proj.equalsIgnoreCase(ProjectionPolicy.FORCE_DECLARED.toString())){
-        		coverageEnc.addProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+        		coverageEnc.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
         	}
         	else if (proj.equalsIgnoreCase(ProjectionPolicy.NONE.toString())){
-        		coverageEnc.addProjectionPolicy(ProjectionPolicy.NONE);
+        		coverageEnc.setProjectionPolicy(ProjectionPolicy.NONE);
         	}
         }
         else {
-        	coverageEnc.addProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);	
+        	coverageEnc.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);	
         }
         
-        coverageEnc.addLatLonBoundingBox(
+        coverageEnc.setLatLonBoundingBox(
         		config.getLatLonMinBoundingBoxX() != null ? config.getLatLonMinBoundingBoxX(): -180,
-				config.getLatLonMaxBoundingBoxY() != null ? config.getLatLonMaxBoundingBoxY(): 90,
+                		config.getLatLonMinBoundingBoxY() != null ? config.getLatLonMinBoundingBoxY() : -90,
         		config.getLatLonMaxBoundingBoxX() != null ? config.getLatLonMaxBoundingBoxX(): 180,
-        		config.getLatLonMinBoundingBoxY() != null ? config.getLatLonMinBoundingBoxY() : -90,
+        				config.getLatLonMaxBoundingBoxY() != null ? config.getLatLonMaxBoundingBoxY(): 90,
         		config.getCrs());
 
 
@@ -238,9 +238,9 @@ public abstract class ImageMosaicREST {
 
 	    final GSCoverageEncoder coverageEnc=new GSCoverageEncoder();
 
-	    coverageEnc.addName(coverageID);
-	    coverageEnc.addTitle(coverageID);
-	    coverageEnc.addSRS(config.getCrs()!=null?config.getCrs():"");
+	    coverageEnc.setName(coverageID);
+	    coverageEnc.setTitle(coverageID);
+	    coverageEnc.setSRS(config.getCrs()!=null?config.getCrs():"");
 	    
 
 //        final GSMetadataEncoder<GSDimensionInfoEncoder> metadata=new GSMetadataEncoder<GSDimensionInfoEncoder>();
@@ -250,44 +250,44 @@ public abstract class ImageMosaicREST {
 	        final String presentation=config.getTimePresentationMode();
 	        if (presentation != null){
 	        	if (presentation.equals(Presentation.LIST.toString())){
-	    			timeDimensionInfo.addPresentation(Presentation.LIST);
+	    			timeDimensionInfo.setPresentation(Presentation.LIST);
 	        	}
 	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
 	//        			timeDimensionInfo.addPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
 	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
-        			timeDimensionInfo.addPresentation(Presentation.CONTINUOUS_INTERVAL);
+        			timeDimensionInfo.setPresentation(Presentation.CONTINUOUS_INTERVAL);
 	        	}
 	        }
 	        else {
-	            timeDimensionInfo.addPresentation(Presentation.LIST);
+	            timeDimensionInfo.setPresentation(Presentation.LIST);
 	        }
-	        coverageEnc.addMetadata("time", timeDimensionInfo);
+	        coverageEnc.setMetadata("time", timeDimensionInfo);
         }
         else
-        	coverageEnc.addMetadata("time", new GSDimensionInfoEncoder());
+        	coverageEnc.setMetadata("time", new GSDimensionInfoEncoder());
         
         if (config.getElevDimEnabled()!=null && config.getElevDimEnabled().equals("true")){
         	final GSDimensionInfoEncoder elevationDimensionInfo=new GSDimensionInfoEncoder(true);
 	        final String presentation=config.getElevationPresentationMode();
 	        if (presentation != null){
 	        	if (presentation.equals(Presentation.LIST.toString())){
-	    			elevationDimensionInfo.addPresentation(Presentation.LIST);
+	    			elevationDimensionInfo.setPresentation(Presentation.LIST);
 	        	}
 	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
-	//        			timeDimensionInfo.addPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
+	//        			timeDimensionInfo.setPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
 	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
-        			elevationDimensionInfo.addPresentation(Presentation.CONTINUOUS_INTERVAL);
+        			elevationDimensionInfo.setPresentation(Presentation.CONTINUOUS_INTERVAL);
 	        	}
 	        }
 	        else {
-	            elevationDimensionInfo.addPresentation(Presentation.LIST);
+	            elevationDimensionInfo.setPresentation(Presentation.LIST);
 	        }
-	        coverageEnc.addMetadata("elevation", elevationDimensionInfo);
+	        coverageEnc.setMetadata("elevation", elevationDimensionInfo);
         }
         else
-        	coverageEnc.addMetadata("elevation", new GSDimensionInfoEncoder());
+        	coverageEnc.setMetadata("elevation", new GSDimensionInfoEncoder());
         
-//        coverageEnc.addNativeBoundingBox(minx, maxy, maxx, miny, crs)
+//        coverageEnc.setNativeBoundingBox(minx, maxy, maxx, miny, crs)
             // coverageParams.put(GeoServerRESTHelper.NATIVE_MAXX,
             // config.getNativeMaxBoundingBoxX() != null ? config.getNativeMaxBoundingBoxX()
             // .toString() : "180");
@@ -309,24 +309,24 @@ public abstract class ImageMosaicREST {
         final String proj=config.getProjectionPolicy();
         if (proj != null){
         	if (proj.equalsIgnoreCase(ProjectionPolicy.REPROJECT_TO_DECLARED.toString())){
-        		coverageEnc.addProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
+        		coverageEnc.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
         	}
         	else if (proj.equalsIgnoreCase(ProjectionPolicy.FORCE_DECLARED.toString())){
-        		coverageEnc.addProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+        		coverageEnc.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
         	}
         	else if (proj.equalsIgnoreCase(ProjectionPolicy.NONE.toString())){
-        		coverageEnc.addProjectionPolicy(ProjectionPolicy.NONE);
+        		coverageEnc.setProjectionPolicy(ProjectionPolicy.NONE);
         	}
         }
         else {
-        	coverageEnc.addProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);	
+        	coverageEnc.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);	
         }
         
-        coverageEnc.addLatLonBoundingBox(
+        coverageEnc.setLatLonBoundingBox(
         		config.getLatLonMinBoundingBoxX() != null ? config.getLatLonMinBoundingBoxX(): -180,
-				config.getLatLonMaxBoundingBoxY() != null ? config.getLatLonMaxBoundingBoxY(): 90,
+                		config.getLatLonMinBoundingBoxY() != null ? config.getLatLonMinBoundingBoxY() : -90,
         		config.getLatLonMaxBoundingBoxX() != null ? config.getLatLonMaxBoundingBoxX(): 180,
-        		config.getLatLonMinBoundingBoxY() != null ? config.getLatLonMinBoundingBoxY() : -90,
+        				config.getLatLonMaxBoundingBoxY() != null ? config.getLatLonMaxBoundingBoxY(): 90,
         		config.getCrs());
 
 
