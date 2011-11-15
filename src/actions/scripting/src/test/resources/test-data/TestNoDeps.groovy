@@ -47,6 +47,8 @@ public List<String> execute(Object configuration, String eventFilePath, Object l
         /// Extract explicit values
         ret.add(k1!=null?k1:"null");
         ret.add(k2!=null?k2:"null");
+		intVar++;
+		ret.add(intVar!=null?intVar.toString():"null");
         //ret.add(pippo!=null?pippo:"null");
 
         return ret;

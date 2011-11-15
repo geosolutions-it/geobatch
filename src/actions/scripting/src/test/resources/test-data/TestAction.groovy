@@ -16,7 +16,7 @@ import ucar.nc2.NetcdfFile
  * Script execute function
  **/
 public String execute(ScriptingConfiguration configuration, String eventFilePath, ProgressListenerForwarder listenerForwarder) throws ActionException {
-	  final Logger LOGGER = Logger.getLogger(GroovyAction.class.toString());
+	  final Logger LOGGER = Logger.getLogger(GroovyAction.class);
 	  
     try {
         listenerForwarder.started();

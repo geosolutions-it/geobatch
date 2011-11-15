@@ -36,10 +36,12 @@ public class ScriptingActionTest extends Assert {
 
         File script = new ClassPathResource("test-data/TestNoDeps.groovy").getFile();
 
-        Map<String, String> props = new HashMap<String, String>();
+        Map<String, Object> props = new HashMap<String, Object>();
         props.put("k1", "v1");
         props.put("k2", "v2");
         props.put("k3", "v3");
+        Integer intVar=Integer.valueOf(12);
+        props.put("intVar", intVar);
                 
         ScriptingConfiguration cfg = new ScriptingConfiguration("testId", "testName", "testDesc");
         cfg.setScriptFile(script.getAbsolutePath());
@@ -64,6 +66,10 @@ public class ScriptingActionTest extends Assert {
 
         assertEquals("v1", outs.get(2));
         assertEquals("v2", outs.get(3));
+        // modified copy by the script
+        assertEquals("13", outs.get(4));
+        // unchanged local variable
+        assertEquals(intVar, Integer.valueOf(12));
     }
 
 }

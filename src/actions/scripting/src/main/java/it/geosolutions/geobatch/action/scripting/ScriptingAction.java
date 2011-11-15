@@ -11,15 +11,19 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.Set;
 
 import javax.script.Bindings;
 import javax.script.Invocable;
@@ -28,6 +32,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.SimpleScriptContext;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +87,8 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 				throw new ActionException(this, message);
 			}
 
-			final String scriptName = Path.getAbsolutePath(configuration.getScriptFile());
+			final String scriptName = Path.getAbsolutePath(configuration
+					.getScriptFile());
 			if (scriptName == null)
 				throw new ActionException(this,
 						"Unable to locate the script file name: "
@@ -94,9 +100,11 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			 * Dynamic class-loading ...
 			 */
 			listenerForwarder.setTask("dynamic class loading ...");
-			final String moduleFolder = new File(script.getParentFile(), "jars").getAbsolutePath();
+			final String moduleFolder = new File(script.getParentFile(), "jars")
+					.getAbsolutePath();
 			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("Runtime class-loading from moduleFolder -> " + moduleFolder);
+				LOGGER.info("Runtime class-loading from moduleFolder -> "
+						+ moduleFolder);
 			}
 
 			final File moduleDirectory = new File(moduleFolder);
@@ -105,12 +113,13 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 				addFile(moduleDirectory);
 			} catch (IOException e) {
 				if (LOGGER.isErrorEnabled())
-					LOGGER.error("Error, could not add URL to system classloader", e);
+					LOGGER.error(
+							"Error, could not add URL to system classloader", e);
 			}
 			final String classpath = System.getProperty("java.class.path");
 			final File[] moduleFiles = moduleDirectory.listFiles();
 			if (moduleFiles != null) {
-                for (File moduleFile : moduleFiles) {
+				for (File moduleFile : moduleFiles) {
 					final String name = moduleFile.getName();
 					if (name.endsWith(".jar")) {
 						if (classpath.indexOf(name) == -1) {
@@ -120,7 +129,9 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 								addFile(moduleFile);
 							} catch (IOException e) {
 								if (LOGGER.isErrorEnabled())
-									LOGGER.error("Error, could not add URL to system classloader", e);
+									LOGGER.error(
+											"Error, could not add URL to system classloader",
+											e);
 							}
 						}
 					}
@@ -140,16 +151,34 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			engineScope.put("eventList", events);
 			engineScope.put("runningContext", getRunningContext());
 
-            // add properties as free vars in script
-            if(configuration.getProperties() != null) {
-                for (Entry<String, String> prop : configuration.getProperties().entrySet()) {
-                    if(LOGGER.isInfoEnabled())
-                        LOGGER.info(" Adding script property: " + prop.getKey() + " : " + prop.getValue());
-                    engineScope.put(prop.getKey(), prop.getValue());
-                }
-            }
-
-			engine.eval(new FileReader(script), engineScope);
+			// add properties as free vars in script
+			final Map<String, Object> props = configuration.getProperties();
+			if (props != null) {
+				final Set<Entry<String, Object>> set = props.entrySet();
+				final Iterator<Entry<String, Object>> it = set.iterator();
+				while (it.hasNext()) {
+					final Entry<String, ?> prop = it.next();
+					if (prop == null) {
+						continue;
+					}
+					if (LOGGER.isInfoEnabled())
+						LOGGER.info(" Adding script property: " + prop.getKey()
+								+ " : " + prop.getValue());
+					engineScope.put(prop.getKey(), prop.getValue());
+				}
+			}
+			// read the script
+			FileReader reader = null;
+			try {
+				reader = new FileReader(script);
+				engine.eval(reader, engineScope);
+			} catch (FileNotFoundException e) {
+				if (LOGGER.isErrorEnabled())
+					LOGGER.error(e.getLocalizedMessage(), e);
+				throw e;
+			} finally {
+				IOUtils.closeQuietly(reader);
+			}
 
 			final Invocable inv = (Invocable) engine;
 
@@ -175,10 +204,11 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 
 			// FORWARDING EVENTS
 			final Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
-            
-            for (String out : outputFiles) {
+
+			for (String out : outputFiles) {
 				if (out != null) {
-					ret.add(new FileSystemEvent(new File(out), FileSystemEventType.FILE_ADDED));
+					ret.add(new FileSystemEvent(new File(out),
+							FileSystemEventType.FILE_ADDED));
 				}
 			}
 
