@@ -34,9 +34,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 import javax.media.jai.PlanarImage;
-import javax.media.jai.RenderedOp;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -74,7 +72,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffRetiler.class);
 
-    protected GeotiffRetiler(GeotiffRetilerConfiguration configuration) throws IOException {
+    public GeotiffRetiler(GeotiffRetilerConfiguration configuration) throws IOException {
         super(configuration);
         this.configuration = configuration;
     }

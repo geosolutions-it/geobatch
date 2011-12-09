@@ -26,10 +26,6 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.settings.GBSettings;
-import it.geosolutions.geobatch.settings.GBSettingsCatalog;
-import it.geosolutions.geobatch.settings.jai.JAISettings;
 import it.geosolutions.geobatch.tools.file.Collector;
 
 import java.io.File;
@@ -70,8 +66,7 @@ public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 			GeotiffOverviewsEmbedderConfiguration configuration)
 			throws IOException {
 		super(configuration);
-		this.configuration = configuration;
-		
+		this.configuration = configuration;		
 	}
 
 	public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
