@@ -190,21 +190,6 @@
                 <module>geoserver</module>
             </modules>
         </profile>
-        
-        <profile>
-            <id>ascii-grids</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>ascii-grids</module>
-                <module>geoserver</module>
-            </modules>
-        </profile>
-
         <profile>
             <id>shapefile</id>
             <activation>
