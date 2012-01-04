@@ -26,7 +26,7 @@ import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveFunctionFile;
 import it.geosolutions.geobatch.octave.SheetBuilder;
-import it.geosolutions.geobatch.tools.filter.FreeMarkerFilter;
+import it.geosolutions.tools.freemarker.filter.FreeMarkerFilter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

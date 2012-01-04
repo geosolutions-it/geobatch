@@ -28,11 +28,10 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.tools.file.Collector;
-import it.geosolutions.geobatch.tools.file.Compressor;
-import it.geosolutions.geobatch.tools.file.Extract;
-import it.geosolutions.geobatch.tools.file.Path;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
+import it.geosolutions.tools.io.file.Collector;
+import it.geosolutions.tools.compress.file.Extract;
+import it.geosolutions.tools.commons.file.Path;
 
 import java.io.File;
 import java.io.IOException;

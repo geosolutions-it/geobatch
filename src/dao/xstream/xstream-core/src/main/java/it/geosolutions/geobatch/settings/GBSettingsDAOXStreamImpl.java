@@ -23,7 +23,7 @@
 package it.geosolutions.geobatch.settings;
 
 import it.geosolutions.geobatch.catalog.file.DataDirHandler;
-import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.tools.io.file.IOUtils;
 import it.geosolutions.geobatch.xstream.Alias;
 
 import java.io.File;

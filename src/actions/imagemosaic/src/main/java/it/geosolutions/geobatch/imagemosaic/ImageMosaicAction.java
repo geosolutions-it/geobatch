@@ -25,8 +25,6 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.tools.file.Collector;
-import it.geosolutions.geobatch.tools.file.Path;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTCoverageStore;
@@ -34,6 +32,8 @@ import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
 import it.geosolutions.geoserver.rest.encoder.GSWorkspaceEncoder;
 import it.geosolutions.geoserver.rest.encoder.coverage.GSCoverageEncoder;
+import it.geosolutions.tools.io.file.Collector;
+import it.geosolutions.tools.io.file.Copy;
 
 import java.io.File;
 import java.io.IOException;
@@ -296,7 +296,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 								// copy files from the addFile list to the
 								// baseDir (do not
 								// preventing overwrite)
-								addedFiles = Path.copyListFileToNFS(
+								addedFiles = Copy.copyListFileToNFS(
 										cmd.getAddFiles(),
 										cmd.getBaseDir(), true, WAIT);
 								if (addedFiles == null

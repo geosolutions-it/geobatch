@@ -21,8 +21,8 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
-import it.geosolutions.geobatch.tools.file.Path;
-import it.geosolutions.geobatch.tools.time.TimeParser;
+import it.geosolutions.tools.io.file.Copy;
+import it.geosolutions.tools.commons.time.TimeParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -181,6 +181,13 @@ abstract class ImageMosaicUpdater {
                     + " " + bb.getMinY() + "))");
 
             Integer SRID = CRS.lookupEpsgCode(bb.getCoordinateReferenceSystem(), true);
+            /*
+             * TODO ETJ suggestion:
+             * String crsId = CRS.lookupIdentifier(bb.getCoordinateReferenceSystem(), true);
+             */
+            if (SRID==null){
+            	throw new IllegalArgumentException("Unable to get the EPSG code for the granule: "+granule);
+            }
             the_geom.setSRID(SRID);
 
             feature.setAttribute(geometryName, the_geom);
@@ -583,7 +590,7 @@ abstract class ImageMosaicUpdater {
             // store copied file for rollback purpose
             List<File> addedFile=null;
             if (!absolute) {
-                addedFile=Path.copyListFileToNFS(cmd.getAddFiles(), cmd.getBaseDir(), false,
+                addedFile=Copy.copyListFileToNFS(cmd.getAddFiles(), cmd.getBaseDir(), false,
                         ImageMosaicAction.WAIT);
             }
 

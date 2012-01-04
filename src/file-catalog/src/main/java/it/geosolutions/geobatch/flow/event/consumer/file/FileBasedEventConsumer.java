@@ -50,8 +50,8 @@ import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.tools.file.IOUtils;
-import it.geosolutions.geobatch.tools.file.Path;
+import it.geosolutions.tools.io.file.IOUtils;
+import it.geosolutions.tools.commons.file.Path;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -622,7 +622,7 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
             if (LOGGER.isErrorEnabled())
             {
                 LOGGER.error("FileBasedEventConsumer " + Thread.currentThread().getName() +
-                    " Error during " + e.getAction().getClass().getSimpleName() +
+                    " Error during " + e.getType().getSimpleName() +
                     " execution: " + e.getLocalizedMessage(), e);
             }
             this.setStatus(EventConsumerStatus.FAILED);

@@ -28,7 +28,7 @@ import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfig
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
-import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.tools.io.file.IOUtils;
 import it.geosolutions.geobatch.xstream.Alias;
 
 import java.io.BufferedInputStream;

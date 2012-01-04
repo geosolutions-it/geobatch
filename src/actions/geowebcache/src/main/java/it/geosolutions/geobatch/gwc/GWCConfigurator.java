@@ -25,9 +25,9 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.tools.file.IOUtils;
-import it.geosolutions.geobatch.tools.file.Path;
-import it.geosolutions.geobatch.tools.file.reader.TextReader;
+import it.geosolutions.tools.io.file.IOUtils;
+import it.geosolutions.tools.commons.file.Path;
+import it.geosolutions.tools.io.file.reader.TextReader;
 
 import java.io.File;
 import java.io.IOException;

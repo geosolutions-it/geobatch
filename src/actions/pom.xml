@@ -7,65 +7,51 @@
             http://geobatch.codehaus.org
       =======================================================================
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb</artifactId>
-        <version>1.1-SNAPSHOT</version>
-    </parent>
-
-    <!-- =========================================================== -->
-    <!--     Module Description                                      -->
-    <!-- =========================================================== -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0          http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
     <groupId>it.geosolutions.geobatch</groupId>
-    <artifactId>gb-actions</artifactId>
-    <packaging>pom</packaging>
-
-    <name>GeoBatch actions</name>
-    <description>GeoSolutions GeoBatch actions.</description>
-
-    <url>http://www.geo-solutions.it/maven_reports/gb/flow-managers/</url>
-
-    <scm>
-        <connection>
+    <artifactId>gb</artifactId>
+    <version>1.1.0</version>
+  </parent>
+  <!-- =========================================================== -->
+  <!--     Module Description                                      -->
+  <!-- =========================================================== -->
+  <groupId>it.geosolutions.geobatch</groupId>
+  <artifactId>gb-actions</artifactId>
+  <packaging>pom</packaging>
+  <name>GeoBatch actions</name>
+  <description>GeoSolutions GeoBatch actions.</description>
+  <url>http://www.geo-solutions.it/maven_reports/gb/flow-managers/</url>
+  <scm>
+    <connection>
             scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flow-managers/
         </connection>
-        <url>http://svn.geotools.org/geotools/trunk/gt/modules/flow-managers/</url>
-    </scm>
-
-
-    <licenses>
-        <license>
-            <name>Lesser General Public License (LGPL)</name>
-            <url>http://www.gnu.org/copyleft/lesser.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <dependencies>
-	<dependency>
-		<groupId>it.geosolutions.geobatch</groupId>
-		<artifactId>gb-action-tools</artifactId>
-	</dependency>
-    </dependencies>		
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-
-                <inherited>true</inherited>
-
-                <executions>
-                    <!-- Remove the flowdata files from the base jar ========-->
-                    <execution>
-                        <!--
+    <url>http://svn.geotools.org/geotools/trunk/gt/modules/flow-managers/</url>
+  </scm>
+  <licenses>
+    <license>
+      <name>Lesser General Public License (LGPL)</name>
+      <url>http://www.gnu.org/copyleft/lesser.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <dependencies>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-tools</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <inherited>true</inherited>
+        <executions>
+          <!-- Remove the flowdata files from the base jar ========-->
+          <execution>
+            <!--
                           setting the phase as prep-pack is the only way I::etj found
                           to have the excludes work.
                           Once the basic jar is created with the exclusions,
@@ -73,244 +59,223 @@
 
                           This exclusion will work with maven 2.1.0 but not with 2.0.9 or 2.0.10.
                         -->
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>data/</exclude>
-                                <exclude>settings/</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-
-                    <!-- Creates a jar containing only the flowdata files ===-->
-                    <execution>
-                        <id>packFlowData</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>flowdata</classifier>
-                            <includes>
-                                <include>data/**</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                    
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
-
-    <!-- =========================================================== -->
-    <!--     Modules for the build in approximate dependency order   -->
-    <!-- =========================================================== -->
-    <profiles>
-    
-	<profile>
-            <id>freemarker</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>freemarker</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>octave-fileinfileout</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-		<module>octave-fileinfileout</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>ftp</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>ftp</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>geotiff</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>geoserver</module>
-                <module>geotiff</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>geowebcache</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>geowebcache</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>imagemosaic</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>imagemosaic</module>
-                <module>geoserver</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>ascii-grids</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>ascii-grids</module>
-                <module>geoserver</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>shapefile</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>geoserver</module>
-                <module>shapefile</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>task-executor</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>geoserver</module>
-                <module>task-executor</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>scripting</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>scripting</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>geoserver</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>geoserver</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>splitting</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>splitting</module>
-            </modules>
-        </profile>
-
-	<profile>
-            <id>geonetwork</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>geonetwork</module>
-            </modules>
-        </profile>
-        
-        <profile>
-            <id>xstream</id>
-            <activation>
-                <property>
-                    <name>all</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <modules>
-                <module>xstream</module>
-            </modules>
-        </profile>
-        
-	<profile>
-		<id>shp2pg</id>
-		<activation>
-			<property>
-				<name>all</name>
-				<value>true</value>
-			</property>
-		</activation>
-		<modules>
-			<module>shp2pg</module>
-		</modules>
-	</profile>
-
-    </profiles>
-        
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>data/</exclude>
+                <exclude>settings/</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <!-- Creates a jar containing only the flowdata files ===-->
+          <execution>
+            <id>packFlowData</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>flowdata</classifier>
+              <includes>
+                <include>data/**</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <!-- =========================================================== -->
+  <!--     Modules for the build in approximate dependency order   -->
+  <!-- =========================================================== -->
+  <profiles>
+    <profile>
+      <id>freemarker</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>freemarker</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>octave-fileinfileout</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>octave-fileinfileout</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>ftp</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>ftp</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>geotiff</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>geoserver</module>
+        <module>geotiff</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>geowebcache</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>geowebcache</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>imagemosaic</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>imagemosaic</module>
+        <module>geoserver</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>ascii-grids</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>ascii-grids</module>
+        <module>geoserver</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>shapefile</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>geoserver</module>
+        <module>shapefile</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>task-executor</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>geoserver</module>
+        <module>task-executor</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>scripting</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>scripting</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>geoserver</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>geoserver</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>splitting</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>splitting</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>geonetwork</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>geonetwork</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>xstream</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>xstream</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>shp2pg</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>shp2pg</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

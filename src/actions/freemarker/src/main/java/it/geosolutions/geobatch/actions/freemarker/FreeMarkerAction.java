@@ -29,7 +29,7 @@ import it.geosolutions.geobatch.actions.tools.adapter.EventAdapter;
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.tools.filter.FreeMarkerFilter;
+import it.geosolutions.tools.freemarker.filter.FreeMarkerFilter;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -86,13 +86,24 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 		File outputDir;
 		if (conf.getOutput() != null) {
 			final File out = new File(conf.getOutput());
-			if (!out.isAbsolute()) {
+			if (out.isAbsolute()) {
+				if (!out.exists()) {
+					if (!out.mkdirs()) {
+						final String message = "FreeMarkerAction.execute(): Unable create the output dir : "
+								+ out.getAbsolutePath();
+						if (LOGGER.isErrorEnabled())
+							LOGGER.error(message);
+						throw new ActionException(this, message);
+					}
+				}
+				outputDir=out;
+			} else {
 				try {
 
 					// the output
-					outputDir = it.geosolutions.geobatch.tools.file.Path
-							.findLocation(conf.getOutput(),
-									new File(conf.getWorkingDirectory()));
+					outputDir = it.geosolutions.tools.commons.file.Path.findLocation(
+							conf.getOutput(),
+							new File(conf.getWorkingDirectory()));
 					if (LOGGER.isInfoEnabled())
 						LOGGER.info("Output directory name: "
 								+ outputDir.toString());
@@ -123,16 +134,6 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 						throw new ActionException(this,
 								npe.getLocalizedMessage());
 					}
-				}
-			} else {
-				outputDir = new File(conf.getWorkingDirectory(),
-						conf.getOutput());
-				if (!outputDir.mkdirs()) {
-					final String message = "FreeMarkerAction.execute(): Unable create the output dir : "
-							+ outputDir.getAbsolutePath();
-					if (LOGGER.isErrorEnabled())
-						LOGGER.error(message);
-					throw new ActionException(this, message);
 				}
 			}
 		} else {
@@ -165,14 +166,14 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 		// append the list of adapted event objects
 		root.put(TemplateModelEvent.EVENT_KEY, list);
 
-		
 		while (events.size() > 0) {
 			// the adapted event
 			final TemplateModelEvent ev;
 			final TemplateModel dataModel;
 			try {
 				if ((ev = adapter(events.remove())) != null) {
-					listenerForwarder.setTask("Try to get a Template DataModel from the Adapted event");
+					listenerForwarder
+							.setTask("Try to get a Template DataModel from the Adapted event");
 					// try to get a Template DataModel from the Adapted event
 					dataModel = ev.getModel(filter);
 

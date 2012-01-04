@@ -5,52 +5,42 @@
 
          Version: $Id: pom.xml 20565 2006-07-17 03:26:28Z AlFa $
      ======================================================================= -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb-fsm</artifactId>
-        <version>1.1-SNAPSHOT</version>
-    </parent>
-
-
-    <!-- ===================================================================== -->
-    <!--     Module description                                                -->
-    <!-- ===================================================================== -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
     <groupId>it.geosolutions.geobatch</groupId>
-    <artifactId>gb-fsm-module</artifactId>
-    <version>1.1-SNAPSHOT</version>
-
-    <packaging>pom</packaging>
-
-    <name>File System Monitor Core modules</name>
-    <description>File System Monitor Core modules</description>
-
-    <url>http://www.geo-solutions.it/reports/module/</url>
-    <scm>
-        <connection>scm:svn:https://svn.codehaus.org/geobatch/trunk/</connection>
-        <url>https://svn.codehaus.org/geobatch/trunk/</url>
-    </scm>
-
-    <!-- ===================================================================== -->
-    <!--     External dependencies.                                            -->
-    <!--     POM in subdirectories will inherit them.                          -->
-    <!-- ===================================================================== -->
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-    <!-- ===================================================================== -->
+    <artifactId>gb-fsm</artifactId>
+    <version>1.1.0</version>
+  </parent>
+  <!-- ===================================================================== -->
+  <!--     Module description                                                -->
+  <!-- ===================================================================== -->
+  <groupId>it.geosolutions.geobatch</groupId>
+  <artifactId>gb-fsm-module</artifactId>
+  <version>1.1.0</version>
+  <packaging>pom</packaging>
+  <name>File System Monitor Core modules</name>
+  <description>File System Monitor Core modules</description>
+  <url>http://www.geo-solutions.it/reports/module/</url>
+  <scm>
+    <connection>scm:svn:https://svn.codehaus.org/geobatch/trunk/</connection>
+    <url>https://svn.codehaus.org/geobatch/trunk/</url>
+  </scm>
+  <!-- ===================================================================== -->
+  <!--     External dependencies.                                            -->
+  <!--     POM in subdirectories will inherit them.                          -->
+  <!-- ===================================================================== -->
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <!-- ===================================================================== -->
   <!--     All modules included in the build                                 -->
   <!-- ===================================================================== -->
-    <modules>
-        <module>monitor</module>
-    </modules>
-
+  <modules>
+    <module>monitor</module>
+  </modules>
 </project>

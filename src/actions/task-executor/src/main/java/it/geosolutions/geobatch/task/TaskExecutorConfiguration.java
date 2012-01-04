@@ -73,14 +73,6 @@ public class TaskExecutorConfiguration extends ActionConfiguration {
         this.variables = variables;
     }
 
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
-
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
-    }
-
     public String getDefaultScript() {
         return defaultScript;
     }
@@ -96,8 +88,6 @@ public class TaskExecutorConfiguration extends ActionConfiguration {
     public String getOutputName() {
         return outputName;
     }
-
-    private String workingDirectory;
 
     private String executable;
 
@@ -127,41 +117,19 @@ public class TaskExecutorConfiguration extends ActionConfiguration {
 
     public TaskExecutorConfiguration clone() { // throws
         // CloneNotSupportedException {
-        final TaskExecutorConfiguration copy=new TaskExecutorConfiguration(this.getId(),this.getName(),this.getDescription());
+        final TaskExecutorConfiguration copy=(TaskExecutorConfiguration)super.clone();
         
         copy.setDefaultScript(getDefaultScript());
         copy.setErrorFile(getErrorFile());
         copy.setExecutable(getExecutable());
-        copy.setFailIgnored(isFailIgnored());
-        copy.setListenerConfigurations(getListenerConfigurations());
         copy.setOutput(getOutput());
         copy.setOutputName(getOutputName());
-        copy.setServiceID(getServiceID());
+//        copy.setServiceID(getServiceID());
         copy.setTimeOut(getTimeOut());
         copy.setVariables(getVariables());
-        copy.setWorkingDirectory(getWorkingDirectory());
         copy.setXsl(getXsl());
         
         return copy;
-//        try {
-//            return (TaskExecutorConfiguration) BeanUtils.cloneBean(this);
-//        } catch (IllegalAccessException e) {
-//            final RuntimeException cns = new RuntimeException();
-//            cns.initCause(e);
-//            throw cns;
-//        } catch (InstantiationException e) {
-//            final RuntimeException cns = new RuntimeException();
-//            cns.initCause(e);
-//            throw cns;
-//        } catch (InvocationTargetException e) {
-//            final RuntimeException cns = new RuntimeException();
-//            cns.initCause(e);
-//            throw cns;
-//        } catch (NoSuchMethodException e) {
-//            final RuntimeException cns = new RuntimeException();
-//            cns.initCause(e);
-//            throw cns;
-//        }
     }
 
     /**

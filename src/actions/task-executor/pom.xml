@@ -7,19 +7,13 @@
                                                                                             
         Version: $Id: pom.xml 329 2009-12-17 17:24:49Z dany111 $              
      ======================================================================= -->
-  <project xmlns="http://maven.apache.org/POM/4.0.0" 
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-                               http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                                 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-actions</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1.0</version>
   </parent>
-  
-
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
@@ -28,18 +22,15 @@
   <packaging>jar</packaging>
   <name>GeoBatch action: Task Executor</name>
   <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
-  
   <scm>
     <connection>
       scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
     </connection>
     <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
   </scm>
-  
   <description>
     GeoSolutions GeoBatch flow managers - Task Executor.
   </description>
-
   <licenses>
     <license>
       <name>Lesser General Public License (LGPL)</name>
@@ -47,28 +38,25 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->
   <dependencies>
-       <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-fs-catalog</artifactId>
-        </dependency>
-        
-        <dependency>
-	        <groupId>org.apache.ant</groupId>
-	        <artifactId>ant</artifactId>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.apache.ant</groupId>
-	        <artifactId>ant-launcher</artifactId>
-	    </dependency>
-	    
-	    <dependency>
-	        <groupId>it.geosolutions.geobatch</groupId>
-	        <artifactId>gb-tools</artifactId>
-	    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-fs-catalog</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant-launcher</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-tools</artifactId>
+    </dependency>
   </dependencies>
 </project>

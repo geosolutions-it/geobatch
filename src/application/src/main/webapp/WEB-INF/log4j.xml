@@ -22,9 +22,9 @@
 
 	<logger name="it.geosolutions" additivity="true">
 		<!-- <level value="warning" /> -->
-		<level value="info" /><!--  DEBUG  -->
+		<level value="debug" /><!--  DEBUG  -->
 		<appender-ref ref="rolling" />
-		<!--<appender-ref ref="console" />  DEBUG  -->
+		<appender-ref ref="console" />
 	</logger>
 
 	<logger name="org.quartz" additivity="true">
@@ -52,10 +52,7 @@
 	</logger>
 
 	<root>
-		<!-- <priority value="debug" />-->
-		<level value="info" />
-		<appender-ref ref="rolling" />
-		<appender-ref ref="console" />
+		<level value="debug" />
 	</root>
 
 </log4j:configuration>

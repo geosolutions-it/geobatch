@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.actions.freemarker;
 
-import it.geosolutions.geobatch.tools.filter.FreeMarkerFilter;
+import it.geosolutions.tools.freemarker.filter.FreeMarkerFilter;
 
 import java.util.EventObject;
 

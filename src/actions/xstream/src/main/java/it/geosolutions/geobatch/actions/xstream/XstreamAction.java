@@ -156,7 +156,7 @@ public class XstreamAction extends BaseAction<EventObject> {
                     final File outputDir;
                     try {
                         // the output
-                        outputDir = it.geosolutions.geobatch.tools.file.Path.findLocation(
+                        outputDir = it.geosolutions.tools.commons.file.Path.findLocation(
                                 conf.getOutput(), new File(conf.getWorkingDirectory()));
 
                         if (!outputDir.exists()) {

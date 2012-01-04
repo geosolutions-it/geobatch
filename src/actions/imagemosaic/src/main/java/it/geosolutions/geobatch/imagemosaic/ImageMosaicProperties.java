@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
-import it.geosolutions.geobatch.tools.file.Path;
+import it.geosolutions.tools.commons.file.Path;
 
 import java.io.File;
 import java.io.FileNotFoundException;

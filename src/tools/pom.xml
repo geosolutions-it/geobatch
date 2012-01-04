@@ -7,19 +7,13 @@
                                                                                             
         Version: $Id: pom.xml 329 2009-12-17 17:24:49Z dany111 $              
      ======================================================================= -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-                               http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                                 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1.0</version>
   </parent>
-  
-
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
@@ -27,19 +21,17 @@
   <artifactId>gb-tools</artifactId>
   <packaging>jar</packaging>
   <name>GeoBatch tools</name>
-  <url>http://www.geo-solutions.it/maven_reports/gb/</url><!--<url>flowmanagers/</url>-->
-  
+  <url>http://www.geo-solutions.it/maven_reports/gb/</url>
+  <!--<url>flowmanagers/</url>-->
   <scm>
     <connection>
       scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/<!--flowmanagers-->
     </connection>
     <url>http://svn.geotools.org/geotools/trunk/gt/modules/<!--flowmanagers--></url>
   </scm>
-  
   <description>
     GeoSolutions GeoBatch tools.
   </description>
-
   <licenses>
     <license>
       <name>Lesser General Public License (LGPL)</name>
@@ -47,52 +39,42 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->
   <dependencies>
-		
-  
-        <!-- file.IOUtils -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        
-        <!-- BZ2, TAR compressor utility-->
-        <dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-compress</artifactId>
-		</dependency>
-	<!--
-	<dependency>
-		<groupId>org.apache.ant</groupId>
-		<artifactId>ant</artifactId>
-	</dependency>
-	-->
-		<!-- File MIME explorer -->
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-core</artifactId>
-		</dependency>
-
-        <dependency>
-			<groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
-        </dependency>
-        
-		<!-- tools.netcdf -->
-		<dependency>
-			<groupId>essi-unidata</groupId>
-			<artifactId>netcdf-java</artifactId>
-		</dependency>
-		
-        <!-- [FreeMarker] -->
-        <dependency>
-			<groupId>org.freemarker</groupId>
-			<artifactId>freemarker</artifactId>
-		</dependency>
-		
+    <!--=================================================================-->
+    <!-- TOOLS MODULES -->
+    <!--=================================================================-->
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-commons</artifactId>
+      <version>${tools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-io</artifactId>
+      <version>${tools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-compress</artifactId>
+      <version>${tools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-netcdf</artifactId>
+      <version>${tools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-geotools</artifactId>
+      <version>${tools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-freemarker</artifactId>
+      <version>${tools.version}</version>
+    </dependency>
   </dependencies>
 </project>

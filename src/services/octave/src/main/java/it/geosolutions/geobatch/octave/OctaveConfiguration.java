@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.octave;
 
-import it.geosolutions.geobatch.tools.system.Property;
+import it.geosolutions.tools.commons.system.Property;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;

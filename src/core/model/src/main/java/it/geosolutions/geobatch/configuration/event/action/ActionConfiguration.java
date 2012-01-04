@@ -130,6 +130,8 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
         
         setWorkingDirectory(bc.getWorkingDirectory());
 
+        setFailIgnored(bc.isFailIgnored());
+
         bc.listenerIds = listenerIds == null ? new ArrayList<String>() : new ArrayList<String>(
                 listenerIds);
 

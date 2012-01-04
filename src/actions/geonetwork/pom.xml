@@ -6,128 +6,109 @@
             http://geobatch.codehaus.org
                                                                                             
      ======================================================================= -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-                               http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb-actions</artifactId>
-        <version>1.1-SNAPSHOT</version>
-    </parent>
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                                 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>it.geosolutions.geobatch</groupId>
+    <artifactId>gb-actions</artifactId>
+    <version>1.1.0</version>
+  </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
   <!-- =========================================================== -->
-    <groupId>it.geosolutions.geobatch</groupId>
-    <artifactId>gb-action-geonetwork</artifactId>
-    <packaging>jar</packaging>
-    <name>GeoBatch action: GeoNetwork</name>
-    <url>http://www.geo-solutions.it/maven_reports/gb/</url><!--<url>flowmanagers/</url>-->
-    
-    <description>
+  <groupId>it.geosolutions.geobatch</groupId>
+  <artifactId>gb-action-geonetwork</artifactId>
+  <packaging>jar</packaging>
+  <name>GeoBatch action: GeoNetwork</name>
+  <url>http://www.geo-solutions.it/maven_reports/gb/</url>
+  <!--<url>flowmanagers/</url>-->
+  <description>
     GeoSolutions GeoBatch - Actions for GeoNetwork integration.
     </description>
-
-    <licenses>
-        <license>
-            <name>Lesser General Public License (LGPL)</name>
-            <url>http://www.gnu.org/copyleft/lesser.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
+  <licenses>
+    <license>
+      <name>Lesser General Public License (LGPL)</name>
+      <url>http://www.gnu.org/copyleft/lesser.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->
-    
-    <dependencies>
-		<!-- GeoBatch CORE -->
-        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-core-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-fs-catalog</artifactId>
-        </dependency>
-
-		<!-- ============================== -->
-		<!--     GN Manager                 -->
-		<!-- ============================== -->
-        <dependency>
-            <groupId>it.geosolutions</groupId>
-            <artifactId>geonetwork-manager</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-		<!-- ============================== -->
-		<!--     Spring                     -->
-		<!-- ============================== -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-        </dependency>
-
-		<!-- ============================== -->
-		<!--     Apache commons             -->
-		<!-- ============================== -->
-
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-        </dependency>
-        
-		<!-- ============================== -->
-		<!--     Platform                   -->
-		<!-- ============================== -->
-        <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-        </dependency>
-        
-        <!-- dependency>
+  <dependencies>
+    <!-- GeoBatch CORE -->
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-core-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-fs-catalog</artifactId>
+    </dependency>
+    <!-- ============================== -->
+    <!--     GN Manager                 -->
+    <!-- ============================== -->
+    <dependency>
+      <groupId>it.geosolutions</groupId>
+      <artifactId>geonetwork-manager</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <!-- ============================== -->
+    <!--     Spring                     -->
+    <!-- ============================== -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+    </dependency>
+    <!-- ============================== -->
+    <!--     Apache commons             -->
+    <!-- ============================== -->
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+    </dependency>
+    <!-- ============================== -->
+    <!--     Platform                   -->
+    <!-- ============================== -->
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+    </dependency>
+    <!-- dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
         </dependency-->
-        
-        <!-- dependency>
+    <!-- dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <scope>test</scope>
         </dependency-->
-        
-        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-dao-xstream</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-        
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-dao-xstream</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

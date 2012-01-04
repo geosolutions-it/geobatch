@@ -30,7 +30,7 @@ import it.geosolutions.geobatch.geoserver.GeoServerAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.tools.file.Path;
+import it.geosolutions.tools.commons.file.Path;
 
 import java.io.File;
 import java.io.FileWriter;

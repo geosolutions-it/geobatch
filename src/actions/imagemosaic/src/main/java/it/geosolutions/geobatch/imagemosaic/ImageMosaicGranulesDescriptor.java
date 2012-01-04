@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
-import it.geosolutions.geobatch.tools.file.Collector;
+import it.geosolutions.tools.io.file.Collector;
 
 import java.io.File;
 import java.util.ArrayList;

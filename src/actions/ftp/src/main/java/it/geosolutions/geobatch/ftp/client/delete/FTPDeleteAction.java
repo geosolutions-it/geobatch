@@ -29,7 +29,7 @@ import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPBaseAction;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.tools.file.Path;
+import it.geosolutions.tools.commons.file.Path;
 
 import java.io.File;
 import java.io.IOException;

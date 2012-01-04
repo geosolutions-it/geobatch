@@ -22,214 +22,193 @@
 
 package it.geosolutions.geobatch.flow.file;
 
-import java.io.IOException;
-import java.util.concurrent.BlockingQueue;
-
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 
+import java.io.IOException;
+import java.util.concurrent.BlockingQueue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Fetch events and feed them to Consumers.
- *
+ * 
  * <P>
- * For every incoming event, existing consumers are checked if they are waiting for it. <BR>
- * If the new event is not consumed by any existing consumer, a new consumer will be created.
- *
+ * For every incoming event, existing consumers are checked if they are waiting
+ * for it. <BR>
+ * If the new event is not consumed by any existing consumer, a new consumer
+ * will be created.
+ * 
  * @author AlFa
  */
-/*package private */ class FileBasedEventDispatcher extends Thread
-{
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedEventDispatcher.class.getName());
+/* package private */class FileBasedEventDispatcher extends Thread {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(FileBasedEventDispatcher.class.getName());
 
-    private final BlockingQueue<FileSystemEvent> eventMailBox;
+	private final BlockingQueue<FileSystemEvent> eventMailBox;
 
-    private final FileBasedFlowManager flowManager;
+	private final FileBasedFlowManager flowManager;
 
-    // ----------------------------------------------- PUBLIC METHODS
-    /**
-     * Default Constructor
-     */
-    public FileBasedEventDispatcher(FileBasedFlowManager fm, BlockingQueue<FileSystemEvent> eventMailBox)
-    {
-        super(new StringBuilder("FileBasedEventDispatcher: EventDispatcherThread-").append(fm.getId()).toString());
+	// ----------------------------------------------- PUBLIC METHODS
+	/**
+	 * Default Constructor
+	 */
+	public FileBasedEventDispatcher(FileBasedFlowManager fm,
+			BlockingQueue<FileSystemEvent> eventMailBox) {
+		super(new StringBuilder(
+				"FileBasedEventDispatcher: EventDispatcherThread-").append(
+				fm.getId()).toString());
 
-        this.eventMailBox = eventMailBox;
-        this.flowManager = fm;
+		this.eventMailBox = eventMailBox;
+		this.flowManager = fm;
 
-        setDaemon(true); // shut me down when parent shutdown
-        // reset interrupted flag
-        interrupted();
-    }
+		setDaemon(true); // shut me down when parent shutdown
+		// reset interrupted flag
+		interrupted();
+	}
 
-    /**
-     * Shutdown the dispatcher.
-     */
-    public void shutdown()
-    {
-        if (LOGGER.isInfoEnabled())
-        {
-            LOGGER.info("FileBasedEventDispatcher: Shutting down the dispatcher ... NOW!");
-        }
-        interrupt();
-    }
+	/**
+	 * Shutdown the dispatcher.
+	 */
+	public void shutdown() {
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("Shutting down the dispatcher ... NOW!");
+		}
+		interrupt();
+	}
 
-    // ----------------------------------------------- UTILITY METHODS
+	// ----------------------------------------------- UTILITY METHODS
 
-    /**
+	/**
      *
      */
-    public void run()
-    {
-        try
-        {
-            if (LOGGER.isInfoEnabled())
-            {
-                LOGGER.info("FileBasedEventDispatcher is ready to dispatch Events to flow " + flowManager.getId() + "(" + flowManager.getName() + ")");
-            }
+	public void run() {
+		try {
+			if (LOGGER.isInfoEnabled()) {
+				LOGGER.info("Ready to dispatch Events to flow "
+						+ flowManager.getId() + "(" + flowManager.getName()
+						+ ")");
+			}
 
-            while (!isInterrupted())
-            {
+			while (!isInterrupted()) {
 
-                // //
-                // waiting for a new event
-                // //
-                final FileSystemEvent event;
-                try
-                {
-                    event = eventMailBox.take(); // blocking call
-                }
-                catch (InterruptedException e)
-                {
-                    this.interrupt();
+				// //
+				// waiting for a new event
+				// //
+				final FileSystemEvent event;
+				try {
+					event = eventMailBox.take(); // blocking call
+				} catch (InterruptedException e) {
+					this.interrupt();
 
-                    return;
-                }
+					return;
+				}
 
-                if (LOGGER.isTraceEnabled())
-                {
-                    LOGGER.trace("FileBasedEventDispatcher:run() processing incoming event " +
-                        event);
-                }
+				if (LOGGER.isTraceEnabled()) {
+					LOGGER.trace("Processing incoming event " + event);
+				}
 
-                // //
-                // is there any BaseEventConsumer waiting for this particular
-                // event?
-                // //
-                boolean eventServed = false;
+				// //
+				// is there any BaseEventConsumer waiting for this particular
+				// event?
+				// //
+				boolean eventServed = false;
 
-                for (FileBasedEventConsumer consumer : flowManager.getEventConsumers())
-                {
+				for (FileBasedEventConsumer consumer : flowManager
+						.getEventConsumers()) {
 
-                    if (LOGGER.isTraceEnabled())
-                    {
-                        LOGGER.trace("FileBasedEventDispatcher:run() Checking consumer " +
-                            consumer + " for " + event);
-                    }
+					if (LOGGER.isTraceEnabled()) {
+						LOGGER.trace("Checking consumer " + consumer + " for "
+								+ event);
+					}
 
-                    if (consumer.getStatus() == EventConsumerStatus.EXECUTING)
-                    {
-                        if (consumer.consume(event))
-                        {
-                            // //
-                            // we have found an Event BaseEventConsumer waiting for
-                            // this event, if
-                            // we have changed state we remove it from the list
-                            // //
-                            if (LOGGER.isTraceEnabled())
-                            {
-                                LOGGER.trace("FileBasedEventDispatcher:run()" + event +
-                                    " was the last needed event for " + consumer);
-                            }
+					if (consumer.getStatus() == EventConsumerStatus.EXECUTING) {
+						if (consumer.consume(event)) {
+							// //
+							// we have found an Event BaseEventConsumer waiting
+							// for
+							// this event, if
+							// we have changed state we remove it from the list
+							// //
+							if (LOGGER.isTraceEnabled()) {
+								LOGGER.trace(event
+										+ " was the last needed event for "
+										+ consumer);
+							}
 
-                            // are we executing? If we are, let's trigger a
-                            // thread!
-                            flowManager.execute(consumer);
-                            // event served
-                            eventServed = true;
+							// are we executing? If we are, let's trigger a
+							// thread!
+							flowManager.execute(consumer);
+							// event served
+							eventServed = true;
 
-                            break;
-                        }
-                    }
-                    else if (LOGGER.isTraceEnabled())
-                    {
-                        LOGGER.trace("FileBasedEventDispatcher:run()" + event +
-                            " was consumed by " + consumer);
-                    }
-                }
+							break;
+						}
+					} else if (LOGGER.isTraceEnabled()) {
+						LOGGER.trace(event + " was consumed by " + consumer);
+					}
+				}
 
-                if (LOGGER.isTraceEnabled())
-                {
-                    LOGGER.trace("FileBasedEventDispatcher:run() " + event +
-                        (eventServed ? "" : " not") + " served");
-                }
+				if (LOGGER.isTraceEnabled()) {
+					LOGGER.trace(event + (eventServed ? "" : " not")
+							+ " served");
+				}
 
-                if (!eventServed)
-                {
-                    // //
-                    // if no EventConsumer is found, we need to create a new one
-                    // //
-                    final FileBasedEventConsumerConfiguration configuration =
-                        ((FileBasedEventConsumerConfiguration) flowManager.getConfiguration().getEventConsumerConfiguration()).clone();
-                    final FileBasedEventConsumer brandNewConsumer = new FileBasedEventConsumer(
-                            configuration);
+				if (!eventServed) {
+					// //
+					// if no EventConsumer is found, we need to create a new one
+					// //
+					final FileBasedEventConsumerConfiguration configuration = ((FileBasedEventConsumerConfiguration) flowManager
+							.getConfiguration().getEventConsumerConfiguration())
+							.clone();
+					final FileBasedEventConsumer brandNewConsumer = new FileBasedEventConsumer(
+							configuration);
 
-                    if (brandNewConsumer.consume(event))
-                    {
-                        // //
-                        // We just created a brand new BaseEventConsumer which
-                        // can handle this event.
-                        // If it needs some other events to complete, we'll put
-                        // it in the EventConsumers waiting list.
-                        // //
-                        if (brandNewConsumer.getStatus() != EventConsumerStatus.EXECUTING)
-                        {
-                            if (LOGGER.isTraceEnabled())
-                            {
-                                LOGGER.trace("FileBasedEventDispatcher:run() " +
-                                    brandNewConsumer + " created on event " + event);
-                            }
-                            flowManager.add(brandNewConsumer);
-                        }
-                        else
-                        {
-                            if (LOGGER.isTraceEnabled())
-                            {
-                                LOGGER.trace("FileBasedEventDispatcher:run() " + event +
-                                    " was the only needed event for " + brandNewConsumer);
-                            }
+					if (brandNewConsumer.consume(event)) {
+						// //
+						// We just created a brand new BaseEventConsumer which
+						// can handle this event.
+						// If it needs some other events to complete, we'll put
+						// it in the EventConsumers waiting list.
+						// //
+						if (brandNewConsumer.getStatus() != EventConsumerStatus.EXECUTING) {
+							if (LOGGER.isTraceEnabled()) {
+								LOGGER.trace(brandNewConsumer
+										+ " created on event " + event);
+							}
+							flowManager.add(brandNewConsumer);
+						} else {
+							if (LOGGER.isTraceEnabled()) {
+								LOGGER.trace(event
+										+ " was the only needed event for "
+										+ brandNewConsumer);
+							}
 
-                            flowManager.add(brandNewConsumer);
-                            // etj: shouldn't we call executor.execute(consumer); here?
-                            // carlo: probably this is a good idea
-                            flowManager.execute(brandNewConsumer);
-                        }
+							flowManager.add(brandNewConsumer);
+							// etj: shouldn't we call
+							// executor.execute(consumer); here?
+							// carlo: probably this is a good idea
+							flowManager.execute(brandNewConsumer);
+						}
 
-                        eventServed = true;
+						eventServed = true;
 
-                    }
-                    else if (LOGGER.isWarnEnabled())
-                    {
-                        LOGGER.warn("FileBasedEventDispatcher:run() No consumer could serve " +
-                            event + " (neither " + brandNewConsumer + " could)");
-                    }
-                }
-            }
-        }
-        catch (InterruptedException e) // may be thrown by the "stop" button
-        {
-            // on web interface
-            LOGGER.error("FileBasedEventDispatcher:run(): " + e.getLocalizedMessage(), e);
-        }
-        catch (IOException e)
-        {
-            LOGGER.error("FileBasedEventDispatcher:run(): " + e.getLocalizedMessage(), e);
-        }
+					} else if (LOGGER.isWarnEnabled()) {
+						LOGGER.warn("No consumer could serve " + event
+								+ " (neither " + brandNewConsumer + " could)");
+					}
+				}
+			}
+		} catch (InterruptedException e) // may be thrown by the "stop" button
+		{
+			// on web interface
+			LOGGER.error(e.getLocalizedMessage(), e);
+		} catch (IOException e) {
+			LOGGER.error(e.getLocalizedMessage(), e);
+		}
 
-    }
+	}
 }

@@ -62,7 +62,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 			.getTimeZone("UTC"));
 
 	private volatile EventConsumerStatus eventConsumerStatus;
-	
+
 	/*
 	 * the context where action is running in...<br> this is initialized by the
 	 * FlowManager
@@ -135,11 +135,8 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 		return currentAction;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeit.geosolutions.geobatch.flow.event.consumer.EventConsumer#put(it.
-	 * geosolutions .filesystemmonitor .monitor.FileSystemEvent)
+	/**
+	 * {@link it.geosolutions.geobatch.flow.event.consumer.EventConsumer}
 	 */
 	public boolean consume(XEO event) {
 		if (!eventsQueue.offer(event)) {
@@ -165,8 +162,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 	 *            The context in which the actions should be executed
 	 * 
 	 */
-	protected Queue<XEO> applyActions(Queue<XEO> events)
-			throws ActionException {
+	protected Queue<XEO> applyActions(Queue<XEO> events) throws ActionException {
 		if (LOGGER.isTraceEnabled()) {
 			LOGGER.trace("Applying " + actions.size() + " actions on "
 					+ events.size() + " events.");

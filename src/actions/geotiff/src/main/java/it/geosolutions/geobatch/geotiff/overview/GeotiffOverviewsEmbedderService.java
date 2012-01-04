@@ -50,31 +50,27 @@ public class GeotiffOverviewsEmbedderService extends BaseService implements
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffOverviewsEmbedder.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffOverviewsEmbedderService.class);
 
     public boolean canCreateAction(GeotiffOverviewsEmbedderConfiguration configuration) {
-        try {
-            // absolutize working dir
-            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
-            if (wd != null) {
-                configuration.setWorkingDirectory(wd);
-                return true;
-            } else {
-                if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("GeotiffOverviewsEmbedderService::canCreateAction(): "
-                                    + "unable to create action, it's not possible to get an absolute working dir.");
-            }
-        } catch (Throwable e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-        }
-        return false;
+        
+        return true;
     }
 
     public GeotiffOverviewsEmbedder createAction(GeotiffOverviewsEmbedderConfiguration configuration) {
         try {
-            return new GeotiffOverviewsEmbedder(configuration);
-        } catch (IOException e) {
+                // absolutize working dir
+                String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+                if (wd == null) {
+                	final String message="Unable to create action, it's not possible to get an absolute working dir.";
+                	if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(message);
+                	throw new IllegalArgumentException(message);
+                }
+                configuration.setWorkingDirectory(wd);
+                return new GeotiffOverviewsEmbedder(configuration);
+            
+        } catch (Exception e) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(e.getLocalizedMessage(), e);
         }

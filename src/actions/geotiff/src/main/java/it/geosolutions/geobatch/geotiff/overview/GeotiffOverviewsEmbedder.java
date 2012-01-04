@@ -26,7 +26,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.tools.file.Collector;
+import it.geosolutions.tools.io.file.Collector;
 
 import java.io.File;
 import java.io.FileFilter;

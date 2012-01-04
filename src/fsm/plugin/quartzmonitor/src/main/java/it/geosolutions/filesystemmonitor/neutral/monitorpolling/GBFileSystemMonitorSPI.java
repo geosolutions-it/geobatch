@@ -25,7 +25,7 @@ import it.geosolutions.filesystemmonitor.OsType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorType;
-import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
 import java.util.Map;

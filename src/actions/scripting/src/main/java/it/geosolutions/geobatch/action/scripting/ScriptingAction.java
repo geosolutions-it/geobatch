@@ -1,3 +1,25 @@
+/*
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  http://code.google.com/p/geobatch/
+ *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package it.geosolutions.geobatch.action.scripting;
 
 /** 
@@ -32,16 +54,29 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.SimpleScriptContext;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * ScriptingAction Class definition ...
+ * 
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  **/
 public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 		Action<FileSystemEvent> {
 
+	/**
+	 * set of well known keys
+	 */
+	public static final String CONFIG_KEY="configuration";
+	public static final String CONTEXT_KEY="context";
+	public static final String LISTENER_KEY="listenerForwarder";
+	public static final String EVENTS_KEY="events";
+	public static final String RETURN_KEY="return";
+	
+	
 	/**
 	 * Default Logger
 	 */
@@ -81,10 +116,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			// data flow configuration and dataStore name must not be null.
 			// //
 			if (configuration == null) {
-				final String message = "Configuration is null.";
-				if (LOGGER.isErrorEnabled())
-					LOGGER.error(message);
-				throw new ActionException(this, message);
+				throw new ActionException(this, "Configuration is null.");
 			}
 
 			final String scriptName = Path.getAbsolutePath(configuration
@@ -112,9 +144,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 				addFile(moduleDirectory.getParentFile());
 				addFile(moduleDirectory);
 			} catch (IOException e) {
-				if (LOGGER.isErrorEnabled())
-					LOGGER.error(
-							"Error, could not add URL to system classloader", e);
+				throw new ActionException(this, e.getLocalizedMessage(),e);
 			}
 			final String classpath = System.getProperty("java.class.path");
 			final File[] moduleFiles = moduleDirectory.listFiles();
@@ -128,10 +158,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 									LOGGER.info("Adding: " + name);
 								addFile(moduleFile);
 							} catch (IOException e) {
-								if (LOGGER.isErrorEnabled())
-									LOGGER.error(
-											"Error, could not add URL to system classloader",
-											e);
+								throw new ActionException(this, e.getLocalizedMessage(),e);
 							}
 						}
 					}
@@ -148,8 +175,8 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 					.getBindings(ScriptContext.ENGINE_SCOPE);
 
 			// add variables to the new engineScope
-			engineScope.put("eventList", events);
-			engineScope.put("runningContext", getRunningContext());
+//			engineScope.put("eventList", events);
+//			engineScope.put("runningContext", getRunningContext());
 
 			// add properties as free vars in script
 			final Map<String, Object> props = configuration.getProperties();
@@ -173,9 +200,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 				reader = new FileReader(script);
 				engine.eval(reader, engineScope);
 			} catch (FileNotFoundException e) {
-				if (LOGGER.isErrorEnabled())
-					LOGGER.error(e.getLocalizedMessage(), e);
-				throw e;
+				throw new ActionException(this, e.getLocalizedMessage(),e);
 			} finally {
 				IOUtils.closeQuietly(reader);
 			}
@@ -185,31 +210,77 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			listenerForwarder.setTask("Executing script: " + script.getName());
 
 			// check for incoming event list
-			Object ev = null;
-			if (events != null) {
-				final FileSystemEvent event = events.peek();
-				if (event != null) {
-					final File eventFile = event.getSource();
-					if (eventFile != null) {
-						ev = eventFile.getAbsolutePath();
+			if (events == null) {
+				throw new ActionException(this, "Unable to start the script using a null incoming list of events");
+			}
+
+			// call the script
+			final Map<String,Object> argsMap = new HashedMap();
+			argsMap.put(ScriptingAction.CONFIG_KEY,configuration);
+			argsMap.put(ScriptingAction.CONTEXT_KEY,getRunningContext());
+			argsMap.put(ScriptingAction.EVENTS_KEY,events);
+			argsMap.put(ScriptingAction.LISTENER_KEY,listenerForwarder);
+			
+			final Map<String,Object> mapOut = (Map<String,Object>) inv.invokeFunction(
+					"execute", new Object[] { argsMap });
+
+			// checking output
+			final Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
+			if (mapOut == null) {
+				if (LOGGER.isWarnEnabled()) {
+					LOGGER.warn("Caution returned map from script "
+							+ configuration.getScriptFile()
+							+ " is null.\nSimulating an empty return list.");
+				}
+				return ret;
+			}
+			
+			final Object obj=mapOut.get(ScriptingAction.RETURN_KEY);
+			if (obj == null) {
+				if (LOGGER.isErrorEnabled()) {
+					LOGGER.error("Caution returned object from script "
+							+ configuration.getScriptFile()
+							+ " is null.\nPassing an empty list to the next action!");
+				}
+				return ret;
+			}
+			
+			if (obj instanceof List){
+				final List<Object> list=(List<Object>)obj;
+				for (final Object out : list) {
+					if (out == null) {
+						if (LOGGER.isWarnEnabled()) {
+							LOGGER.warn("Caution returned object from script "
+									+ configuration.getScriptFile()
+									+ " is null.\nContinue with the next one.");
+						}
+						continue;
+					}
+
+					if (out instanceof FileSystemEvent) {
+						FileSystemEvent ev = (FileSystemEvent) out;
+						ret.add(ev);
+					} else if (out instanceof File) {
+						ret.add(new FileSystemEvent((File) out,
+								FileSystemEventType.FILE_ADDED));
+					} else {
+						final File file = new File(out.toString());
+						if (!file.exists() && LOGGER.isWarnEnabled()) {
+							LOGGER.warn("Caution returned object from script "
+									+ configuration.getScriptFile()
+									+ "do not points to an existent file!");
+						}
+						ret.add(new FileSystemEvent(file,
+								FileSystemEventType.FILE_ADDED));
 					}
 				}
-			}
-			final List<String> outputFiles = (List<String>) inv.invokeFunction(
-					"execute", new Object[] { configuration, ev,
-							listenerForwarder });
-
-			// optionally clear input queue
-			events.clear();
-
-			// FORWARDING EVENTS
-			final Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
-
-			for (String out : outputFiles) {
-				if (out != null) {
-					ret.add(new FileSystemEvent(new File(out),
-							FileSystemEventType.FILE_ADDED));
+			} else {
+				if (LOGGER.isErrorEnabled()) {
+					LOGGER.error("Caution returned object from script "
+							+ configuration.getScriptFile()
+							+ " is not a valid List.\nPassing an empty list to the next action!");
 				}
+				return ret;
 			}
 
 			listenerForwarder.completed();
@@ -217,8 +288,6 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			return ret;
 
 		} catch (Exception t) {
-			if (LOGGER.isErrorEnabled())
-				LOGGER.error(t.getLocalizedMessage(), t); // no need to
 			listenerForwarder.failed(t);
 			throw new ActionException(this, t.getMessage(), t);
 		} finally {

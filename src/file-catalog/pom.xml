@@ -7,117 +7,98 @@
 
         Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $
 ======================================================================= -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                                 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb</artifactId>
-        <version>1.1-SNAPSHOT</version>
-    </parent>
-
-    <!-- =========================================================== -->
-    <!--     Module Description                                      -->
-    <!-- =========================================================== -->
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
     <groupId>it.geosolutions.geobatch</groupId>
-    <artifactId>gb-fs-catalog</artifactId>
-
-    <name>GeoBatch filesystem catalog</name>
-    <description>GeoSolutions GeoBatch catalog file system persistence</description>
-    
-    <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
-
-    <scm>
-        <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/data/</connection>
-        <url>http://svn.geotools.org/geotools/trunk/gt/modules/data/</url>
-    </scm>
-
-    <licenses>
-        <license>
-            <name>Lesser General Public License (LGPL)</name>
-            <url>http://www.gnu.org/copyleft/lesser.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <organization>
-        <name>GeoSolutions</name>
-        <url>http://www.geo-solutions.it</url>
-    </organization>
-
-    <!-- =========================================================== -->
-    <!--     Dependency Management                                   -->
-    <!-- =========================================================== -->
-    <dependencies>
-
-        <!-- ============================== -->
-        <!--     Platform                   -->
-        <!-- ============================== -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-pool</groupId>
-            <artifactId>commons-pool</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-fsm-quartz</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-fsm-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-core-impl</artifactId>
-        </dependency>
-        
-     	<dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-tools</artifactId>
-        </dependency>
-    </dependencies>
-
-
+    <artifactId>gb</artifactId>
+    <version>1.1.0</version>
+  </parent>
+  <!-- =========================================================== -->
+  <!--     Module Description                                      -->
+  <!-- =========================================================== -->
+  <groupId>it.geosolutions.geobatch</groupId>
+  <artifactId>gb-fs-catalog</artifactId>
+  <name>GeoBatch filesystem catalog</name>
+  <description>GeoSolutions GeoBatch catalog file system persistence</description>
+  <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
+  <scm>
+    <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/data/</connection>
+    <url>http://svn.geotools.org/geotools/trunk/gt/modules/data/</url>
+  </scm>
+  <licenses>
+    <license>
+      <name>Lesser General Public License (LGPL)</name>
+      <url>http://www.gnu.org/copyleft/lesser.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <organization>
+    <name>GeoSolutions</name>
+    <url>http://www.geo-solutions.it</url>
+  </organization>
+  <!-- =========================================================== -->
+  <!--     Dependency Management                                   -->
+  <!-- =========================================================== -->
+  <dependencies>
+    <!-- ============================== -->
+    <!--     Platform                   -->
+    <!-- ============================== -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-fsm-quartz</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-fsm-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-core-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-tools</artifactId>
+    </dependency>
+  </dependencies>
 </project>

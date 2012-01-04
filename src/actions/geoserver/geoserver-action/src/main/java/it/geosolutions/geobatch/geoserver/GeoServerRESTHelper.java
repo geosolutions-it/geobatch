@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.geoserver;
 
-import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

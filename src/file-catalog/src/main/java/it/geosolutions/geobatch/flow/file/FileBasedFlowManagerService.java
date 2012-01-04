@@ -42,7 +42,7 @@ public class FileBasedFlowManagerService extends BaseService
     // public final static Param WORKING_DIR = new Param("WorkingDir", String.class, "WorkingDir",
     // true);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedFlowManagerService.class.toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedFlowManagerService.class);
 
     // private FileBasedFlowManagerService() {
     // super(true);

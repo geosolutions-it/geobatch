@@ -21,7 +21,7 @@
  */
 package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 
-import it.geosolutions.geobatch.tools.file.Producer;
+import it.geosolutions.tools.commons.file.Producer;
 
 import java.io.PipedWriter;
 import java.util.concurrent.ExecutorService;
@@ -69,7 +69,7 @@ public class ObjectProducer extends Producer {
     }
     
     /* (non-Javadoc)
-     * @see it.geosolutions.geobatch.tools.file.Producer#producer(java.io.PipedWriter)
+     * @see it.geosolutions.tools.file.Producer#producer(java.io.PipedWriter)
      */
     @Override
     protected void producer(PipedWriter pw) throws Exception {

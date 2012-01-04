@@ -31,7 +31,7 @@ import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveFunctionSheet;
 import it.geosolutions.geobatch.octave.SheetBuilder;
 import it.geosolutions.geobatch.octave.actions.OctaveAction;
-import it.geosolutions.geobatch.tools.file.Extract;
+import it.geosolutions.tools.compress.file.Extract;
 
 import java.io.File;
 import java.io.IOException;

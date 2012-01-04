@@ -23,7 +23,7 @@ package it.geosolutions.filesystemmonitor.neutral.monitorpolling;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemMonitorSPI;
-import it.geosolutions.geobatch.tools.file.IOUtils;
+import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;

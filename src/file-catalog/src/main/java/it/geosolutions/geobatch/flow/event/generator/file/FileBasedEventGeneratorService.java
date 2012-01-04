@@ -31,7 +31,7 @@ import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.flow.event.generator.BaseEventGeneratorService;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.tools.file.Path;
+import it.geosolutions.tools.commons.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

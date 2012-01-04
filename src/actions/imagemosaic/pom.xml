@@ -7,155 +7,131 @@
 
         Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $
      ======================================================================= -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb-actions</artifactId>
-        <version>1.1-SNAPSHOT</version>
-    </parent>
-
-    <!-- =========================================================== -->
-    <!--     Module Description                                      -->
-    <!-- =========================================================== -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0          http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
     <groupId>it.geosolutions.geobatch</groupId>
-    <artifactId>gb-action-imagemosaic</artifactId>
-    <packaging>jar</packaging>
-
-    <name>GeoBatch action: ImageMosaic ingester</name>
-    <description>GeoSolutions GeoBatch flow managers - ImageMosaic ingester.</description>
-
-    <url>http://mvn.geo-solutions.it/maven_reports/ie/flowmanagers/</url>
-
-    <scm>
-        <connection>
+    <artifactId>gb-actions</artifactId>
+    <version>1.1.0</version>
+  </parent>
+  <!-- =========================================================== -->
+  <!--     Module Description                                      -->
+  <!-- =========================================================== -->
+  <groupId>it.geosolutions.geobatch</groupId>
+  <artifactId>gb-action-imagemosaic</artifactId>
+  <packaging>jar</packaging>
+  <name>GeoBatch action: ImageMosaic ingester</name>
+  <description>GeoSolutions GeoBatch flow managers - ImageMosaic ingester.</description>
+  <url>http://mvn.geo-solutions.it/maven_reports/ie/flowmanagers/</url>
+  <scm>
+    <connection>
             scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
         </connection>
-        <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
-    </scm>
-
-    <licenses>
-        <license>
-            <name>Lesser General Public License (LGPL)</name>
-            <url>http://www.gnu.org/copyleft/lesser.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-
-    <dependencies>
-
-        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-action-geoserver</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.vividsolutions</groupId>
-            <artifactId>jts</artifactId>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-imagemosaic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-data</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-cql</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-epsg-hsql</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-geotiff</artifactId>
-            <exclusions>
-            	<exclusion>
-            		<groupId>it.geosolutions.imageio-ext</groupId>
-            		<artifactId>imageio-ext-tiff</artifactId>
-            	</exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-      		<groupId>org.geotools.jdbc</groupId>
-      		<artifactId>gt-jdbc-postgis</artifactId>
-    	</dependency>
-
-        <dependency>
-            <groupId>commons-cli</groupId>
-            <artifactId>commons-cli</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-pool</groupId>
-            <artifactId>commons-pool</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>java3d</groupId>
-            <artifactId>vecmath</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-core-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-fs-catalog</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>it.geosolutions.geobatch</groupId>
-            <artifactId>gb-tools</artifactId>
-        </dependency>
-
-            <!-- imageio-ext ================================================-->
-
-            <dependency>
-				<groupId>it.geosolutions.imageio-ext</groupId>
-				<artifactId>imageio-ext-tiff</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>it.geosolutions.imageio-ext</groupId>
-                <artifactId>imageio-ext-utilities</artifactId>
-            </dependency>
-
-            <!-- Java Advanced Imaging (JAI) ================================-->
-
-            <dependency>
-                <groupId>javax.media</groupId>
-                <artifactId>jai_core</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>javax.media</groupId>
-                <artifactId>jai_codec</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>javax.media</groupId>
-                <artifactId>jai_imageio</artifactId>
-            </dependency>
-
-    </dependencies>
-
+    <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
+  </scm>
+  <licenses>
+    <license>
+      <name>Lesser General Public License (LGPL)</name>
+      <url>http://www.gnu.org/copyleft/lesser.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <dependencies>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-geoserver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vividsolutions</groupId>
+      <artifactId>jts</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-imagemosaic</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-main</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-data</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-cql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-epsg-hsql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-geotiff</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>it.geosolutions.imageio-ext</groupId>
+          <artifactId>imageio-ext-tiff</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools.jdbc</groupId>
+      <artifactId>gt-jdbc-postgis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>java3d</groupId>
+      <artifactId>vecmath</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-core-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-fs-catalog</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-tools</artifactId>
+    </dependency>
+    <!-- imageio-ext ================================================-->
+    <dependency>
+      <groupId>it.geosolutions.imageio-ext</groupId>
+      <artifactId>imageio-ext-tiff</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.imageio-ext</groupId>
+      <artifactId>imageio-ext-utilities</artifactId>
+    </dependency>
+    <!-- Java Advanced Imaging (JAI) ================================-->
+    <dependency>
+      <groupId>javax.media</groupId>
+      <artifactId>jai_core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.media</groupId>
+      <artifactId>jai_codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.media</groupId>
+      <artifactId>jai_imageio</artifactId>
+    </dependency>
+  </dependencies>
 </project>
