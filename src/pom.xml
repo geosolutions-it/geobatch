@@ -16,7 +16,7 @@
   <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb</artifactId>
   <packaging>pom</packaging>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
   <name>GeoSolutions GeoBatch</name>
   <!--    <url>http://www.geo-solutions.it/maven_reports/gb/</url>-->
   <description>
