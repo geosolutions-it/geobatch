@@ -4,6 +4,7 @@
 package it.geosolutions.geobatch.action.scripting;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 
@@ -48,10 +49,11 @@ public class ScriptingActionTest extends Assert {
         cfg.setServiceID("scriptingService");
         cfg.setLanguage("groovy");
         cfg.setProperties(props);
-
+        cfg.setWorkingDirectory(Path.getAbsolutePath("./src/test/resources/"));
         
         Queue <FileSystemEvent> inq = new LinkedList<FileSystemEvent>();
         ScriptingAction action = new ScriptingAction(cfg);
+        action.setRunningContext(Path.getAbsolutePath("./src/test/resources/"));
         Queue<FileSystemEvent> out = action.execute(inq);
 
         List<String> outs = new ArrayList<String>();
@@ -61,13 +63,12 @@ public class ScriptingActionTest extends Assert {
             outs.add(s);
         }
 
-        assertEquals("null", outs.get(0));
-        assertEquals("v1", outs.get(1));
+        assertEquals("v1", outs.get(0));
 
-        assertEquals("v1", outs.get(2));
-        assertEquals("v2", outs.get(3));
+        assertEquals("v1", outs.get(1));
+        assertEquals("v2", outs.get(2));
         // modified copy by the script
-        assertEquals("13", outs.get(4));
+        assertEquals("13", outs.get(3));
         // unchanged local variable
         assertEquals(intVar, Integer.valueOf(12));
     }

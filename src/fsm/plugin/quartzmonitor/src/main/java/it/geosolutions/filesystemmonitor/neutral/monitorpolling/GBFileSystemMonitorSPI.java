@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GBFileSystemMonitorSPI implements FileSystemMonitorSPI {
-    private final static Logger LOGGER = LoggerFactory.getLogger(GBFileSystemMonitorSPI.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GBFileSystemMonitorSPI.class);
 
     public final static long DEFAULT_MAX_LOOKING_INTERVAL = IOUtils.MAX_WAITING_TIME_FOR_LOCK; // milliseconds
 

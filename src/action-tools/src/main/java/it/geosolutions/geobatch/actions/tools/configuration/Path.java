@@ -25,36 +25,52 @@ import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.global.CatalogHolder;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  */
 public final class Path {
 
-    /**
-     * Obtaining the Absolute path of the working dir
-     * @param working_dir the relative (or absolute) path to absolutize
-     * @note it should be a relative or absolute path referring to a sub-dir of 
-     * the FileBaseCatalog BaseDirectory
-     * @see FileBaseCatalog
-     * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
-     */
-    public static String getAbsolutePath(String working_dir){ 
-        FileBaseCatalog c = (FileBaseCatalog) CatalogHolder.getCatalog();
-        
-        File fo = it.geosolutions.tools.commons.file.Path.findLocation(working_dir, 
-                        c==null? null : c.getBaseDirectory());
-        
-        if (fo!=null){
-            return fo.toString();
-        }
-        else {
-//TODO LOG            throw new FileNotFoundException("Unable to locate the working dir");
-//            throw new FileNotFoundException();
-            return null;
-        }
-    } 
+	/**
+	 * Obtaining the Absolute path of the working dir
+	 * 
+	 * @param working_dir
+	 *            the relative (or absolute) path to absolutize
+	 * @note it should be a relative or absolute path referring to a sub-dir of
+	 *       the FileBaseCatalog BaseDirectory
+	 * @see FileBaseCatalog
+	 * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+	 */
+	public static String getAbsolutePath(String working_dir) {
+		if (working_dir == null)
+			return null;
+		final File working_dirFile = new File(working_dir);
+		if (working_dirFile.isAbsolute() || working_dirFile.isFile()
+				|| working_dirFile.isDirectory()) {
+			try {
+				return working_dirFile.getCanonicalPath();
+			} catch (IOException e) {
+				return null;
+			}
+		}
+
+		final FileBaseCatalog c = (FileBaseCatalog) CatalogHolder.getCatalog();
+		if (c == null)
+			return null;
+
+		try {
+			File fo = it.geosolutions.tools.commons.file.Path.findLocation(
+					working_dir, c.getBaseDirectory());
+			if (fo != null) {
+				return fo.toString();
+			}
+		} catch (Exception e) {
+			// eat
+		}
+		return null;
+	}
 
 }

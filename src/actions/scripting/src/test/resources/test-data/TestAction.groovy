@@ -15,40 +15,48 @@ import ucar.nc2.NetcdfFile
 /** 
  * Script execute function
  **/
-public String execute(ScriptingConfiguration configuration, String eventFilePath, ProgressListenerForwarder listenerForwarder) throws ActionException {
-	  final Logger LOGGER = Logger.getLogger(GroovyAction.class);
-	  
-    try {
-        listenerForwarder.started();
+public Map execute(Map argsMap) throws Exception {
+	//	DataStoreHandler.jdbcTest("/home/carlo/work/project/ciok/trunk/gaez/GEOBATCH_DATA_DIR/gaez_flow/config/jdbc.properties");
 
-        println(eventFilePath);
+	final ScriptingConfiguration configuration=argsMap.get(ScriptingAction.CONFIG_KEY);
+	final String runningContext=argsMap.get(ScriptingAction.CONTEXT_KEY);
+	final File runningContextDir=new File(runningContext);
+	//	final List events=argsMap.get(ScriptingAction.EVENTS_KEY);
+	final ProgressListenerForwarder listenerForwarder=argsMap.get(ScriptingAction.LISTENER_KEY);
 
-        String inputFileName = eventFilePath;
-        final String filePrefix = FilenameUtils.getBaseName(inputFileName);
-        final String fileSuffix = FilenameUtils.getExtension(inputFileName);
+	final Logger LOGGER = Logger.getLogger(GroovyAction.class);
 
-				NetcdfFile ncGridFile = NetcdfFile.open(eventFilePath);
+	try {
+		listenerForwarder.started();
 
-        listenerForwarder.setTask("Processing event " + eventFilePath)
+		println(eventFilePath);
 
-				// DO SOMETHING HERE
+		String inputFileName = eventFilePath;
+		final String filePrefix = FilenameUtils.getBaseName(inputFileName);
+		final String fileSuffix = FilenameUtils.getExtension(inputFileName);
 
-        // ////////////////////////////////////////////////////////////////////
-        //
-        // Initializing input variables
-        //
-        // ////////////////////////////////////////////////////////////////////
-        Map props = configuration.getProperties();
+		NetcdfFile ncGridFile = NetcdfFile.open(eventFilePath);
 
-        String example0 = props.get("key0");
-        listenerForwarder.progressing(50, example0);
-        String example1 = props.get("key1");
-        listenerForwarder.progressing(90, example1);
+		listenerForwarder.setTask("Processing event " + eventFilePath)
 
-        return new File(example0).getAbsolutePath();
-    } catch (Exception t) {
-        LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to log, we're rethrowing it
-        listenerForwarder.failed(t);
-        throw new ActionException(this, t.getMessage(), t);
-    }
+		// DO SOMETHING HERE
+
+		// ////////////////////////////////////////////////////////////////////
+		//
+		// Initializing input variables
+		//
+		// ////////////////////////////////////////////////////////////////////
+		Map props = configuration.getProperties();
+
+		String example0 = props.get("key0");
+		listenerForwarder.progressing(50, example0);
+		String example1 = props.get("key1");
+		listenerForwarder.progressing(90, example1);
+
+		return null;
+	} catch (Exception t) {
+		LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t); // no need to log, we're rethrowing it
+		listenerForwarder.failed(t);
+		throw new ActionException(this, t.getMessage(), t);
+	}
 }

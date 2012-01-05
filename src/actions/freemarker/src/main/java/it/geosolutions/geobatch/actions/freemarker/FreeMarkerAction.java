@@ -68,11 +68,22 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 	// the filter
 	final FreeMarkerFilter filter;
 
-	public FreeMarkerAction(FreeMarkerConfiguration configuration) {
+	/**
+	 * 
+	 * @param configuration
+	 * @throws IllegalAccessException if input template file cannot be resolved
+	 * 
+	 */
+	public FreeMarkerAction(FreeMarkerConfiguration configuration) throws IllegalAccessException {
 		super(configuration);
 		conf = configuration;
-		filter = new FreeMarkerFilter(Path.getAbsolutePath(conf
-				.getWorkingDirectory()), conf.getInput());
+		final String workingDirFileName=Path.getAbsolutePath(conf.getWorkingDirectory());
+		
+		if (workingDirFileName==null)
+			throw new IllegalAccessException("Unable to resolve the working dir->"+conf.getWorkingDirectory());
+		
+		final File workingDirFile=new File(workingDirFileName);
+		filter = new FreeMarkerFilter(workingDirFileName,conf.getInput());
 	}
 
 	/**
@@ -89,7 +100,7 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 			if (out.isAbsolute()) {
 				if (!out.exists()) {
 					if (!out.mkdirs()) {
-						final String message = "FreeMarkerAction.execute(): Unable create the output dir : "
+						final String message = "Unable create the output dir : "
 								+ out.getAbsolutePath();
 						if (LOGGER.isErrorEnabled())
 							LOGGER.error(message);
@@ -138,7 +149,7 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 			}
 		} else {
 			if (LOGGER.isErrorEnabled())
-				LOGGER.error("FreeMarkerAction.execute(): Output dir : "
+				LOGGER.error("Output dir : "
 						+ conf.getWorkingDirectory());
 			outputDir = new File(conf.getWorkingDirectory());
 		}
@@ -192,7 +203,7 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 					}
 				}
 			} catch (TemplateModelException tme) {
-				final String message = "FreeMarkerAction.execute(): Unable to wrap the passed object: "
+				final String message = "Unable to wrap the passed object: "
 						+ tme.getLocalizedMessage();
 				if (LOGGER.isErrorEnabled())
 					LOGGER.error(message);
@@ -203,7 +214,7 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 					throw new ActionException(this, tme.getLocalizedMessage());
 				}
 			} catch (Exception ioe) {
-				final String message = "FreeMarkerAction.execute(): Unable to produce the output: "
+				final String message = "Unable to produce the output: "
 						+ ioe.getLocalizedMessage();
 				if (LOGGER.isErrorEnabled())
 					LOGGER.error(message);

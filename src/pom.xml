@@ -48,8 +48,8 @@
   <!--       modify the build process in certain conditions.       -->
   <!-- =========================================================== -->
   <!--   Available properties are:                                 -->
-  <!--     all        build and pack all the available 		     -->
-  <!--                        actions 							 -->
+  <!--     all        build and pack all the available 		   -->
+  <!--                        actions 				   -->
   <!--                                                             -->
   <!-- =========================================================== -->
   <!--   Available profiles are:                                   -->
@@ -95,7 +95,7 @@
   <!--     manner relevant to the purpose of the "site" goal.      -->
   <!-- =========================================================== -->
   <properties>
-    <gb.version>1.1-SNAPSHOT</gb.version>
+    <gb.version>1.2.0</gb.version>
     <tools.version>1.0-SNAPSHOT</tools.version>
     <dao.type>xstream</dao.type>
     <!-- the default dao type -->

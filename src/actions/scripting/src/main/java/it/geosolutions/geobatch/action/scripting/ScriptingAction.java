@@ -268,7 +268,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 						if (!file.exists() && LOGGER.isWarnEnabled()) {
 							LOGGER.warn("Caution returned object from script "
 									+ configuration.getScriptFile()
-									+ "do not points to an existent file!");
+									+ " do not points to an existent file!");
 						}
 						ret.add(new FileSystemEvent(file,
 								FileSystemEventType.FILE_ADDED));
