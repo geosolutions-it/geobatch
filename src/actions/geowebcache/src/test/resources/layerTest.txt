@@ -1,1 +1,0 @@
-namespace=it.geosolutions&store=muscle&layername=muscle_col2_090322_1_1_p_6044_6214_40_150

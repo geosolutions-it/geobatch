@@ -142,18 +142,6 @@
       </modules>
     </profile>
     <profile>
-      <id>geowebcache</id>
-      <activation>
-        <property>
-          <name>all</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <modules>
-        <module>geowebcache</module>
-      </modules>
-    </profile>
-    <profile>
       <id>imagemosaic</id>
       <activation>
         <property>
