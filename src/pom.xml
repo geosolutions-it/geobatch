@@ -37,12 +37,14 @@
     </license>
   </licenses>
   <scm>
-    <!-- old stuff here -->
-    <connection>
-            scm:svn:https://svn.codehaus.org/geobatch/trunk/
-        </connection>
-    <url>https://svn.codehaus.org/geobatch/trunk/</url>
+	<connection>scm:git:[fetch=]git@geosolutions.sourcerepo.com:geosolutions/geobatch.git[push=]git@geosolutions.sourcerepo.com:geosolutions/geobatch.git</connection>
   </scm>
+
+  <ciManagement>
+        <system>jenkins</system>
+	<url>http://ci.geo-solutions.it/</url>
+  </ciManagement>
+
   <!-- =========================================================== -->
   <!--   Properties and Profiles                                   -->
   <!--       modify the build process in certain conditions.       -->
@@ -95,7 +97,7 @@
   <!--     manner relevant to the purpose of the "site" goal.      -->
   <!-- =========================================================== -->
   <properties>
-    <gb.version>1.2.0</gb.version>
+    <gb.version>@{project.version}</gb.version>
     <tools.version>1.0-SNAPSHOT</tools.version>
     <dao.type>xstream</dao.type>
     <!-- the default dao type -->
@@ -1560,8 +1562,19 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
+	</plugin>
+	<!-- versioning -->
+	<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+        	<version>2.2.2</version>
+	        <configuration>
+	        <tagNameFormat>v@{project.version}</tagNameFormat>
+		</configuration>
+	</plugin>
     </plugins>
+
+    <!-- EXTENSIONS -->
     <extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
@@ -1579,6 +1592,11 @@
       <id>geosolutions</id>
       <name>GeoSolutions Repository</name>
       <url>http://maven.geo-solutions.it</url>
+    </repository>
+    <repository>
+      <id>osgeo</id>
+      <name>OsGEO Repository</name>
+      <url>http://download.osgeo.org/webdav/geotools/</url>
     </repository>
     <repository>
       <id>java.net</id>
