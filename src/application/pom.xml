@@ -453,56 +453,7 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <!-- ASCII GRIDS ==================================================== -->
-    <profile>
-      <id>ascii</id>
-      <activation>
-        <property>
-          <name>all</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>it.geosolutions.geobatch</groupId>
-          <artifactId>gb-action-ascii</artifactId>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack_ascii</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>it.geosolutions.geobatch</groupId>
-                      <artifactId>gb-action-ascii</artifactId>
-                      <version>${gb.version}</version>
-                      <classifier>flowdata</classifier>
-                      <type>jar</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
-                      <includes>data/**</includes>
-                    </artifactItem>
-                  </artifactItems>
-                  <overWriteReleases>true</overWriteReleases>
-                  <overWriteSnapshots>true</overWriteSnapshots>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
+    </profile>    
     <!-- ShapeFile ====================================================== -->
     <profile>
       <id>shapefile</id>
@@ -641,55 +592,6 @@
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
                       <artifactId>gb-action-octave-fileinfileout</artifactId>
-                      <version>${gb.version}</version>
-                      <classifier>flowdata</classifier>
-                      <type>jar</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
-                      <includes>data/**</includes>
-                    </artifactItem>
-                  </artifactItems>
-                  <overWriteReleases>true</overWriteReleases>
-                  <overWriteSnapshots>true</overWriteSnapshots>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- GWC ============================================================ -->
-    <profile>
-      <id>geowebcache</id>
-      <activation>
-        <property>
-          <name>all</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>it.geosolutions.geobatch</groupId>
-          <artifactId>gb-action-geowebcache</artifactId>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack_gwc</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>it.geosolutions.geobatch</groupId>
-                      <artifactId>gb-action-geowebcache</artifactId>
                       <version>${gb.version}</version>
                       <classifier>flowdata</classifier>
                       <type>jar</type>
