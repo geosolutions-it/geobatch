@@ -9,7 +9,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!-- Module Description -->
@@ -161,6 +161,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_jms</id>
@@ -233,6 +234,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_shp2pg</id>
@@ -280,6 +282,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_geonetwork</id>
@@ -328,6 +331,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_xstream</id>
@@ -376,6 +380,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_freemarker</id>
@@ -388,7 +393,7 @@
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
                       <artifactId>gb-action-freemarker</artifactId>
-                      <version>${gb.version}</version>
+                      <version>${project.version}</version>
                       <classifier>flowdata</classifier>
                       <type>jar</type>
                       <overWrite>false</overWrite>
@@ -425,6 +430,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_geotiff</id>
@@ -437,7 +443,7 @@
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
                       <artifactId>gb-action-geotiff</artifactId>
-                      <version>${gb.version}</version>
+                      <version>${project.version}</version>
                       <classifier>flowdata</classifier>
                       <type>jar</type>
                       <overWrite>false</overWrite>
@@ -474,6 +480,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_shape</id>
@@ -486,7 +493,7 @@
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
                       <artifactId>gb-action-shapefile</artifactId>
-                      <version>${gb.version}</version>
+                      <version>${project.version}</version>
                       <classifier>flowdata</classifier>
                       <type>jar</type>
                       <overWrite>false</overWrite>
@@ -523,6 +530,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_taskexec</id>
@@ -535,7 +543,7 @@
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
                       <artifactId>gb-action-taskexecutor</artifactId>
-                      <version>${gb.version}</version>
+                      <version>${project.version}</version>
                       <classifier>flowdata</classifier>
                       <type>jar</type>
                       <overWrite>false</overWrite>
@@ -580,6 +588,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_octave_fileinfileout</id>
@@ -592,7 +601,7 @@
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
                       <artifactId>gb-action-octave-fileinfileout</artifactId>
-                      <version>${gb.version}</version>
+                      <version>${project.version}</version>
                       <classifier>flowdata</classifier>
                       <type>jar</type>
                       <overWrite>false</overWrite>
@@ -629,6 +638,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_ftp</id>
@@ -641,7 +651,7 @@
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
                       <artifactId>gb-action-ftp</artifactId>
-                      <version>${gb.version}</version>
+                      <version>${project.version}</version>
                       <classifier>flowdata</classifier>
                       <type>jar</type>
                       <overWrite>false</overWrite>
@@ -678,6 +688,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_scripting</id>
@@ -690,7 +701,7 @@
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
                       <artifactId>gb-action-scripting</artifactId>
-                      <version>${gb.version}</version>
+                      <version>${project.version}</version>
                       <classifier>flowdata</classifier>
                       <type>jar</type>
                       <overWrite>false</overWrite>
@@ -727,6 +738,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_splitting</id>
@@ -739,7 +751,7 @@
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
                       <artifactId>gb-action-splitting</artifactId>
-                      <version>${gb.version}</version>
+                      <version>${project.version}</version>
                       <classifier>flowdata</classifier>
                       <type>jar</type>
                       <overWrite>false</overWrite>
@@ -776,6 +788,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
             <executions>
               <execution>
                 <id>unpack_imagemosaic</id>
@@ -788,7 +801,7 @@
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
                       <artifactId>gb-action-imagemosaic</artifactId>
-                      <version>${gb.version}</version>
+                      <version>${project.version}</version>
                       <classifier>flowdata</classifier>
                       <type>jar</type>
                       <overWrite>false</overWrite>
