@@ -49,32 +49,26 @@
     <dependency>
       <groupId>it.geosolutions.tools</groupId>
       <artifactId>tools-commons</artifactId>
-      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>it.geosolutions.tools</groupId>
       <artifactId>tools-io</artifactId>
-      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>it.geosolutions.tools</groupId>
       <artifactId>tools-compress</artifactId>
-      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>it.geosolutions.tools</groupId>
       <artifactId>tools-netcdf</artifactId>
-      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>it.geosolutions.tools</groupId>
       <artifactId>tools-geotools</artifactId>
-      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>it.geosolutions.tools</groupId>
       <artifactId>tools-freemarker</artifactId>
-      <version>1.0.1</version>
     </dependency>
   </dependencies>
 </project>

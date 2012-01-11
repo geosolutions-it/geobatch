@@ -45,7 +45,7 @@
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt-postgis</artifactId>
+      <artifactId>gt-postgis-versioned</artifactId>
     </dependency>
     <!-- GeoBatch CORE -->
     <dependency>
