@@ -111,7 +111,7 @@ public class TaskExecutorConfiguration extends ActionConfiguration {
 //        super();
 //    }
 
-    protected TaskExecutorConfiguration(String id, String name, String description) {
+    public TaskExecutorConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
 
