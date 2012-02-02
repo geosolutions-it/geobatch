@@ -139,8 +139,6 @@
         <stress.skip.pattern>**/*StressTest.java</stress.skip.pattern>
         <test.maxHeapSize>512M</test.maxHeapSize>
         <src.output>${basedir}/target</src.output>
-		        
-        <project.version>##PROJ_VER##</project.version>
     </properties>
 
     <!-- =========================================================== -->
@@ -153,8 +151,8 @@
     </parent>
 
     <groupId>it.geosolutions.geobatch.##NAME_APP##</groupId>
-    <artifactId>gb-##NAME_APP##</artifactId>
-    <version>##PROJ_VER##</version>
+    <artifactId>##NAME_APP##</artifactId>
+    <version>##GB_VER##</version>
     <packaging>pom</packaging>
     
     
@@ -170,7 +168,7 @@
 	    <dependency>
 		<groupId>it.geosolutions.geobatch</groupId>
 		<artifactId>gb</artifactId>
-		<version>${gb.version}</version>
+		<version>##GB_VER##</version>
 		<type>pom</type>
 		<scope>import</scope>
 	    </dependency>
@@ -271,8 +269,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.5</source>  <!-- The -source argument for the Java compiler. -->
-                    <target>1.5</target>  <!-- The -target argument for the Java compiler. -->
+                    <source>1.6</source>  <!-- The -source argument for the Java compiler. -->
+                    <target>1.6</target>  <!-- The -target argument for the Java compiler. -->
                     <debug>true</debug>   <!-- Whether to include debugging information.   -->
                     <encoding>UTF-8</encoding> <!-- The -encoding argument for the Java compiler. -->
                 </configuration>
@@ -377,7 +375,7 @@
 		<extension>
 			<groupId>org.apache.maven.wagon</groupId>
 			<artifactId>wagon-ftp</artifactId>
-			<version>1.0-beta-2</version>
+			<version>1.0-beta-7</version>
 		</extension>
 	</extensions>
     </build>
@@ -467,8 +465,8 @@
     <!--     Modules for the build in approximate dependency order   -->
     <!-- =========================================================== -->
     <modules>
-        <module>gb-actions-##NAME_APP##</module>
-        <module>gb-application-##NAME_APP##</module>
+        <module>actions-##NAME_APP##</module>
+        <module>application-##NAME_APP##</module>
     </modules>
     
     <distributionManagement>

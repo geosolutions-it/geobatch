@@ -15,7 +15,7 @@
 
     <parent>
         <groupId>it.geosolutions.geobatch.##NAME_APP##</groupId>
-	<artifactId>gb-##NAME_APP##</artifactId>
+	<artifactId>##NAME_APP##</artifactId>
         <version>##PROJ_VER##</version>
     </parent>
 
@@ -23,7 +23,7 @@
     <!--     Module Description                                      -->
     <!-- =========================================================== -->
     <groupId>it.geosolutions.geobatch.##NAME_APP##</groupId>
-    <artifactId>gb-actions-##NAME_APP##</artifactId>
+    <artifactId>actions-##NAME_APP##</artifactId>
     <version>##PROJ_VER##</version>
     <packaging>pom</packaging>
 

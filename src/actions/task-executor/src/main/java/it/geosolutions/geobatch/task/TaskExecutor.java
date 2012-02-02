@@ -214,7 +214,10 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 
 				// XML parsing to setup a command line
 				final String argument = buildArgument(xmlSource, is);
-
+				if (LOGGER.isDebugEnabled()){
+					LOGGER.debug("Arguments: "+argument);
+				}
+				
 				final Project project = new Project();
 				project.init();
 

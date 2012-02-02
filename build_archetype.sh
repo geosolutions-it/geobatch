@@ -43,16 +43,12 @@ echo -e "
 	  Any valid path pointing to a directory\n\
   [-b]  The version of GeoBatch to use \n\
 	ACCEPTED VALUE: [default: '1.0']\n\
-	  1.0 or 1.1-SNAPSHOT\n\
+	  1.0 or 1.2-SNAPSHOT\n\
 \n\
   [-n]	The application name\n\
 	ACCEPTED VALUE: [default: 'my_application']
 	  Any valid mvn project name (lowercase '_' or '-' separed)\n\
 \n\
-  [-v]	The application project version\n\
-	ACCEPTED VALUE: [default: '0.1-SNAPSHOT']\n\
-	  A valid version (mvn project application version)\n\
-  \n\
   [-a]	The name of the action to prepare\n\
 	ACCEPTED VALUE: [default: 'MyAction']\n\
 	  Any valid java class name (CamelCase format)\n";
@@ -72,8 +68,6 @@ DEST_DIR="./out/"
 
 # The application name [-n]
 NAME_APP="my_application"
-# The application project version [-v]
-PROJ_VER="0.1-SNAPSHOT"
 # The name of the action to prepare [-a]
 NAME_ACT="MyAction"
 # used for folder and pom.xml stuff
@@ -106,7 +100,7 @@ for ((i=0; i<$#; i++)){
 	  case $GB_VER in
 	  "1.0")
 		  ;;
-	  "1.1-SNAPSHOT")
+	  "1.2-SNAPSHOT")
 		  ;;
 	  *)
 	    echo -e "ERROR:\n Bad GeoBatch source variable! ($GB_VER)"
@@ -140,20 +134,6 @@ for ((i=0; i<$#; i++)){
 	      ;;
 	  *)
 	      echo "Application name set to-> $NAME_APP"
-	  esac
-	  ;;
-  "-v")
-	  echo "Setting Application project version (-v)"
-	  i=$((++i));
-	  PROJ_VER=${args[$i]}
-	  case $PROJ_VER in
-	  -*)
-	      echo -e "ERROR:\n Bad application project version ! ($PROJ_VER)"
-	      usage;
-	      exit -1;  
-	      ;;
-	  *)
-	      echo "Application project version set to-> $PROJ_VER"
 	  esac
 	  ;;
   "-a")
@@ -195,13 +175,14 @@ for ((i=0; i<$#; i++)){
 #KEYS (do not modify)
 GB_VER_KEY="##GB_VER##"
 NAME_APP_KEY="##NAME_APP##"
+# will be set to $GB_VER
 PROJ_VER_KEY="##PROJ_VER##"
 NAME_ACT_KEY="##NAME_ACT##"
 function replace_pom {
 cat "$1" | \
   awk '{if ($0 ~ /.*'"$GB_VER_KEY"'.*/)  { gsub(/'"$GB_VER_KEY"'/,"'"$GB_VER"'",$0);} \
   if ($0 ~ /.*'"$NAME_APP_KEY"'.*/) { gsub(/'"$NAME_APP_KEY"'/,"'"$NAME_APP"'",$0);} \
-  if ($0 ~ /.*'"$PROJ_VER_KEY"'.*/){ gsub(/'"$PROJ_VER_KEY"'/,"'"$PROJ_VER"'",$0);} \
+  if ($0 ~ /.*'"$PROJ_VER_KEY"'.*/){ gsub(/'"$PROJ_VER_KEY"'/,"'"$GB_VER"'",$0);} \
   if ($0 ~ /.*'"$NAME_ACT_KEY"'.*/){ gsub(/'"$NAME_ACT_KEY"'/,"'"$NAME_ACT_LOWER"'",$0);} \
   { print $0}}' > "$2"
 }
@@ -215,7 +196,7 @@ APPLICATION_DES="\
 	<parent>\n\
 		<groupId>it.geosolutions.geobatch.$NAME_APP</groupId>\n\
 		<artifactId>$NAME_APP</artifactId>\n\
-		<version>$PROJ_VER</version>\n\
+		<version>$GB_VER</version>\n\
 	</parent>\n\
 	<!-- =========================================================== -->\n\
 	<!-- Module Description -->\n\
