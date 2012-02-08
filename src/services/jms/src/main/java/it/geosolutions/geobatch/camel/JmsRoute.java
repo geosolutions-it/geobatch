@@ -35,6 +35,7 @@ public class JmsRoute extends RouteBuilder {
 	
 	public JmsRoute(){
 		super();
+		
 	}
 
 	@Override

@@ -151,9 +151,10 @@ public class JMSClient {
                     } catch (IOException e) {
                         System.out.println(e.getMessage());
                     }
+                } else {
+                	System.out.println("File: "+file+" doesn't exists locally");
+                	System.exit(1);
                 }
-                
-                
             }
             else
                 System.out.println("Unable to run the client:\n" +

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jms="http://www.springframework.org/schema/jms" xmlns:broker="http://activemq.apache.org/schema/core"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -20,8 +20,8 @@
 		<property name="ignoreResourceNotFound" value="true" />
 		<property name="locations">
 			<list>
-				<value>classpath:jms.properties</value>
 				<value>file:${GEOBATCH_DATA_DIR}/settings/jms.properties</value>
+				<value>classpath:jms.properties</value>
 			</list>
 		</property>
 	</bean>
@@ -91,15 +91,15 @@
 	</bean>
 
 	<!-- declare a camel context that scans for classes that is RouteBuilder -->
-	<camel:camelContext id="camel-server">
-		<camel:package>it.geosolutions.geobatch.camel</camel:package>
+	<camelContext id="camel-server"  xmlns="http://camel.apache.org/schema/spring" autoStartup="true">
+		<!--package>it.geosolutions.geobatch.camel</package-->
 		
 		<!-- enable JMX connector so we can connect to the server and browse mbeans -->
 		<!-- Camel will log at INFO level the service URI to use for connecting with jconsole -->
 <!--		 <camel:jmxAgent id="agent" createConnector="true" registryPort="1099" /> -->
 
-		<camel:routeBuilder ref="JmsRoute" />
+		<routeBuilder ref="JmsRoute" />
 
-	</camel:camelContext>
+	</camelContext>
 </beans>
 
