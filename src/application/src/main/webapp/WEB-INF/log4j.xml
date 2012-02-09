@@ -20,9 +20,17 @@
 		</layout>
 	</appender>
 
-	<logger name="it.geosolutions" additivity="true">
+
+	<!-- CAMEL -->
+	<logger name="org.apache.camel" additivity="true">
 		<!-- <level value="warning" /> -->
-		<level value="debug" /><!--  DEBUG  -->
+		<level value="debug" /><!-- DEBUG -->
+		<appender-ref ref="rolling" />
+		<appender-ref ref="console" />
+	</logger>
+	<logger name="it.geosolutions.geobatch" additivity="true">
+		<!-- <level value="warning" /> -->
+		<level value="trace" /><!--  DEBUG  -->
 		<appender-ref ref="rolling" />
 		<appender-ref ref="console" />
 	</logger>
@@ -39,20 +47,22 @@
 
 	<!-- SPRING  -->
 	<logger name="org.springframework" additivity="true">
-		<level value="info" />
+		<level value="debug" />
 		<appender-ref ref="rolling" />
-		<!-- <appender-ref ref="console" />-->
+		<appender-ref ref="console" />
 	</logger>
 	
 	<!-- JETTY  -->
 	<logger name="org.mortbay.jetty"  additivity="true">
 		<level value="info" />
 		<appender-ref ref="rolling" />
-		<!-- <appender-ref ref="console" />-->
+		<appender-ref ref="console" />
 	</logger>
 
 	<root>
 		<level value="debug" />
+		<appender-ref ref="rolling" />
+		<appender-ref ref="console" />
 	</root>
 
 </log4j:configuration>

@@ -30,21 +30,23 @@ import org.apache.camel.builder.RouteBuilder;
  */
 public class JmsRoute extends RouteBuilder {
 	
-	private String queueName="fileSevice";
+	private final String queueName;
 	private int poolSize=1, maxPoolSize=10; 
 	
-	public JmsRoute(){
+	public JmsRoute(final String queueName){
 		super();
-		
+		this.queueName=queueName;
 	}
 
 	@Override
 	public void configure() throws Exception {
+		
 		from("activemq:queue:"+queueName+"?preserveMessageQos=true").
 			threads(poolSize, maxPoolSize).
 			doTry().
 				process(new JMSFlowManager()).
-			doCatch(java.lang.Exception.class);
+			doCatch(java.lang.Exception.class).
+			end();
 	}
 
 	/**
@@ -52,13 +54,6 @@ public class JmsRoute extends RouteBuilder {
 	 */
 	public String getQueueName() {
 		return queueName;
-	}
-
-	/**
-	 * @param queueName the queueName to set
-	 */
-	public void setQueueName(String queueName) {
-		this.queueName = queueName;
 	}
 
 	/**

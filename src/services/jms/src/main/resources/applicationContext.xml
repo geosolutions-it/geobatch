@@ -2,62 +2,70 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:camel="http://camel.apache.org/schema/spring"
 	xmlns:jms="http://www.springframework.org/schema/jms" xmlns:broker="http://activemq.apache.org/schema/core"
-	xsi:schemaLocation="
+	xsi:schemaLocation=" 
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
         http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd
         http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
-	<!-- -->
-	
+	<!-- xmlns:camel="http://camel.apache.org/schema/spring" -->
+	<!--http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd -->
+
 	<!-- let Spring do its IoC stuff in this package -->
 	<context:component-scan base-package="it.geosolutions.geobatch.camel" />
 
-	<bean id="propertyOverrideConfigurer"
-		class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+	<bean id="propertyPlaceholderConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="ignoreResourceNotFound" value="true" />
 		<property name="locations">
 			<list>
-				<value>file:${GEOBATCH_DATA_DIR}/settings/jms.properties</value>
 				<value>classpath:jms.properties</value>
+				<value>file:${GEOBATCH_DATA_DIR}/settings/jms.properties</value>
 			</list>
 		</property>
 	</bean>
+
+	<!-- bean id="propertyOverrideConfigurer" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer"> 
+		<property name="ignoreResourceNotFound" value="true" /> <property name="locations"> 
+		<list> <value>file:${GEOBATCH_DATA_DIR}/settings/jms.properties</value> <value>classpath:jms.properties</value> 
+		</list> </property> </bean -->
 
 	<!-- In camel you need two things to configure JMS. A ConnectionFactory 
 		and a JMSComponent. As ConnectionFactory you can simply set up the normal 
 		Factory your JMS provider offers or bind a JNDI ConnectionFactory. We use 
 		the ConnectionFactory provided by ActiveMQ. -->
 	<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-		<property name="brokerURL" value="tcp://localhost:61611" />
+		<property name="brokerURL" value="${brokerURL}" />
 	</bean>
 
-	<!--  The Camel JMS component -->
+	<!-- The Camel JMS component -->
 	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
 		<property name="configuration" ref="jmsConfig" />
 		<property name="connectionFactory" ref="jmsConnectionFactory" />
 		<property name="useMessageIDAsCorrelationID" value="true" />
 		<property name="explicitQosEnabled" value="true" />
 	</bean>
-	
-		<bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
-		<property name="maxConnections" value="50" />
-		<property name="maximumActive" value="10" />
+
+	<bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+		<property name="maxConnections" value="${pooledConnectionFactory.maxConnections}" />
+		<property name="maximumActive" value="${pooledConnectionFactory.maximumActive}" />
 		<property name="connectionFactory" ref="jmsConnectionFactory" />
 	</bean>
 
 	<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
 		<property name="connectionFactory" ref="pooledConnectionFactory" />
 		<property name="transacted" value="false" />
-		<property name="concurrentConsumers" value="10" />
+		<property name="concurrentConsumers" value="${jmsConfig.concurrentConsumers}" />
 	</bean>
 
-	<!--  The broker  -->
+	<!-- The broker -->
 	<!-- lets configure the ActiveMQ JMS broker server to listen on TCP 61611 -->
 	<bean id="broker" class="org.apache.activemq.broker.BrokerService"
-		init-method="start" destroy-method="stop" >
+		init-method="start" destroy-method="stop">
 		<property name="persistent" value="false" />
 		<property name="brokerName" value="brokerURL" />
 		<property name="useJmx" value="false" />
@@ -65,40 +73,45 @@
 		<!--<property name="useShutdownHook" value="false"/> -->
 		<property name="transportConnectorURIs">
 			<array>
-				<value>tcp://localhost:61611</value>
+				<value>${brokerURL}</value><!-- tcp://localhost:61611</value -->
 			</array>
 		</property>
 	</bean>
 
 
-<!--	<bean id="transportConnector" class="org.apache.activemq.broker.TransportConnector">--> 
-<!--		<property name="name" value="tcp" />-->
-<!--		<property name="uri" value="tcp://localhost:61611" />-->
-<!--	</bean>-->
+	<!-- <bean id="transportConnector" class="org.apache.activemq.broker.TransportConnector"> -->
+	<!-- <property name="name" value="tcp" /> -->
+	<!-- <property name="uri" value="tcp://localhost:61611" /> -->
+	<!-- </bean> -->
 
 
 	<!-- The route -->
 	<bean id="JmsRoute" class="it.geosolutions.geobatch.camel.JmsRoute">
-		<property name="queueName">
-			<value>fileSevice</value>
-		</property>
+		<constructor-arg type="String" value="${JmsRoute.queueName}"/>
+	<!-- TODO use Spring DSL routing to use PropertySubstitution -->
 		<property name="poolSize">
-			<value>1</value>
+			<value>${JmsRoute.poolSize}</value><!-- 1</value -->
 		</property>
 		<property name="maxPoolSize">
-			<value>10</value>
+			<value>${JmsRoute.maxPoolSize}</value><!-- 10</value -->
 		</property>
 	</bean>
 
 	<!-- declare a camel context that scans for classes that is RouteBuilder -->
-	<camelContext id="camel-server"  xmlns="http://camel.apache.org/schema/spring" autoStartup="true">
-		<!--package>it.geosolutions.geobatch.camel</package-->
-		
-		<!-- enable JMX connector so we can connect to the server and browse mbeans -->
-		<!-- Camel will log at INFO level the service URI to use for connecting with jconsole -->
-<!--		 <camel:jmxAgent id="agent" createConnector="true" registryPort="1099" /> -->
+	<camelContext id="camel-server"
+		xmlns="http://camel.apache.org/schema/spring" autoStartup="true">
+		<!--package>it.geosolutions.geobatch.camel</package -->
 
-		<routeBuilder ref="JmsRoute" />
+		<!-- enable JMX connector so we can connect to the server and browse mbeans -->
+		<!-- Camel will log at INFO level the service URI to use for connecting 
+			with jconsole -->
+		<!-- <camel:jmxAgent id="agent" createConnector="true" registryPort="1099" 
+			/> -->
+
+		<routeBuilder ref="JmsRoute"></routeBuilder>
+
+		<!-- from("activemq:queue:"+queueName+"?preserveMessageQos=true"). threads(poolSize, 
+			maxPoolSize). doTry(). process(new JMSFlowManager()). doCatch(java.lang.Exception.class); -->
 
 	</camelContext>
 </beans>
