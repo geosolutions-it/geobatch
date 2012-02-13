@@ -123,7 +123,7 @@ public abstract class ImageMosaicProperties {
      * 
      * @param indexer
      * @param configuration
-     * @return
+     * @return 
      * @throws NullPointerException 
      * @throws IOException 
      */
@@ -153,17 +153,18 @@ public abstract class ImageMosaicProperties {
 
                 // Write text to file
                 // setting caching of file to false
-                out.println("Caching=false");
+                
+                out.println(org.geotools.gce.imagemosaic.Utils.Prop.CACHING+"=false");
 
                 if (configuration.getTimeRegex() != null) {
-                    out.println("TimeAttribute=ingestion");
+                    out.println(org.geotools.gce.imagemosaic.Utils.Prop.TIME_ATTRIBUTE+"=ingestion");
 
                     final File timeregex = new File(baseDir, "timeregex.properties");
                     ImageMosaicProperties.build(timeregex, configuration.getTimeRegex());
                 }
 
                 if (configuration.getElevationRegex() != null) {
-                    out.println("ElevationAttribute=elevation");
+                    out.println(org.geotools.gce.imagemosaic.Utils.Prop.ELEVATION_ATTRIBUTE+"=elevation");
 
                     final File elevationRegex = new File(baseDir, "elevationregex.properties");
                     ImageMosaicProperties.build(elevationRegex, configuration.getElevationRegex());
@@ -193,7 +194,7 @@ public abstract class ImageMosaicProperties {
             } catch (IOException e) {
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(
-                            "ImageMosaicProperties.buildIndexer(): Error occurred while writing indexer.properties file at URL: "
+                            "Error occurred while writing indexer.properties file at URL: "
                                     + indexer.getAbsolutePath(), e);
                 return null;
             } finally {
@@ -221,7 +222,7 @@ public abstract class ImageMosaicProperties {
                 }
             } else {
                 if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("ImageMosaicProperty:buildIndexer():Unable to get the "
+                    LOGGER.warn("Unable to get the "
                             + CACHING_KEY + " property into the " + indexer.getAbsolutePath()
                             + " file.");
             }
@@ -248,7 +249,7 @@ public abstract class ImageMosaicProperties {
                 
                 if (dsFile == null) {
                     if (LOGGER.isWarnEnabled()) {
-                        LOGGER.warn("ImageMosaicProperties.checkDataStore(): unable to get the absolute "
+                        LOGGER.warn("Unable to get the absolute "
                                 + "path of the 'datastore.properties'");
                     }
                     return null;
@@ -256,19 +257,19 @@ public abstract class ImageMosaicProperties {
                 if (dsFile != null) {
                     if (!dsFile.isDirectory()) {
                         if (LOGGER.isInfoEnabled()) {
-                            LOGGER.info("ImageMosaicProperties.checkDataStore() Configuration DataStore file found: '"
+                            LOGGER.info("Configuration DataStore file found: '"
                                     + dsFile.getAbsolutePath() + "'.");
                         }
                         try {
                             FileUtils.copyFileToDirectory(dsFile, baseDir);
                         } catch (IOException e) {
                             if (LOGGER.isWarnEnabled())
-                                LOGGER.warn("ImageMosaicProperties.checkDataStore() " + e.getMessage());
+                                LOGGER.warn(e.getMessage(),e);
                             return null;
                         }
                     } else {
                         if (LOGGER.isWarnEnabled()) {
-                            LOGGER.warn("ImageMosaicProperties.checkDataStore() DataStoreProperties file points to a directory! "
+                            LOGGER.warn("DataStoreProperties file points to a directory! "
                                     + dsFile.getAbsolutePath() + "'. Skipping event");
                         }
                         return null;
@@ -276,7 +277,7 @@ public abstract class ImageMosaicProperties {
                 }
             } else {
                 if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn("ImageMosaicProperties DataStoreProperties file not configured "
+                    LOGGER.warn("DataStoreProperties file not configured "
                             + "nor found into destination dir. A shape file will be used.");
                 }
             }

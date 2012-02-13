@@ -214,7 +214,7 @@ final class ImageMosaicGranulesDescriptor {
 
         if (fileNameList == null) {
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("ImageMosaicGranulesDescriptor:buildDescriptor(): unable to collect files from the dir: "
+                LOGGER.info("Unable to collect files from the dir: "
                         + inputDir.getAbsolutePath());
             }
             return null;
@@ -239,7 +239,7 @@ final class ImageMosaicGranulesDescriptor {
 
         if (fileNameList == null) {
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("ImageMosaicGranulesDescriptor:buildDescriptor(): unable to collect files from the dir: "
+                LOGGER.info("Unable to collect files from the dir: "
                         + inputDir.getAbsolutePath());
             }
             return null;
@@ -292,7 +292,7 @@ final class ImageMosaicGranulesDescriptor {
                     return mosaicDescriptor;
                 } else {
                     if (LOGGER.isWarnEnabled()) {
-                        LOGGER.warn("ImageMosaicGranulesDescriptor:buildDescriptor(): Unable to use COARDS naming convention for file: "
+                        LOGGER.warn("Unable to use COARDS naming convention for file: "
                                 + fileNameList.get(0)
                                 + "\nLet's use default configuration parameters.");
                     }
@@ -304,7 +304,7 @@ final class ImageMosaicGranulesDescriptor {
 
         } else {
             if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn("ImageMosaicGranulesDescriptor:buildDescriptor(): The passed base dir is empty! Dir:"
+                LOGGER.warn("The passed base dir is empty! Dir:"
                         + inputDir.getAbsolutePath());
             }
 
@@ -380,8 +380,7 @@ final class ImageMosaicGranulesDescriptor {
                 } catch (NumberFormatException nfe) {
                     // if the string does not contain a parsable float.
                     if (LOGGER.isWarnEnabled()) {
-                        LOGGER.warn("ImageMosaicGranulesDescriptor:buildCOARDS(): "
-                                + "\nSome of the name parts don't contain a parsable number: "
+                        LOGGER.warn("Some of the name parts don't contain a parsable number: "
                                 + nfe.getLocalizedMessage(), nfe);
                     }
                 }

@@ -89,15 +89,18 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 			throws ActionException {
 
 		if (LOGGER.isInfoEnabled())
-			LOGGER.info("ImageMosaicAction: Starting with processing...");
+			LOGGER.info("Start processing...");
 
 		listenerForwarder.started();
 
 		try {
 			// looking for file
+			if (events == null)
+				throw new IllegalArgumentException(
+						"Uanble execute action with incoming null parameter");
 			if (events.size() == 0)
 				throw new IllegalArgumentException(
-						"ImageMosaicAction: Wrong number of elements for this action: "
+						"Wrong number of elements for this action: "
 								+ events.size());
 
 			/*
@@ -119,378 +122,369 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 				 */
 				final ImageMosaicCommand cmd;
 
-
 				/*
 				 * Checking input files.
 				 */
 				final File input = event.getSource();
 				if (input == null) {
 					if (LOGGER.isWarnEnabled())
-						LOGGER.warn("ImageMosaicAction: The input file event points to a null file object.");
-					// no file is found for this event try with the next one
+						LOGGER.warn("Input null file object.");
 					continue;
-				}
-				
-				// if the input exists
-				if (input.exists()) {
-					
-					/**
-					 * the file event points to an XML file...
-					 * 
-					 * @see ImageMosaicCommand
-					 */
-					if (input.isFile()
-							&& FilenameUtils.getExtension(input.getName())
-									.equalsIgnoreCase("xml"))
-					{
-						if (LOGGER.isInfoEnabled()) {
-							LOGGER.info("ImageMosaicAction: working on an XML command file: "
-									+ input.getAbsolutePath());
-						}
-
-						// try to deserialize
-						cmd = ImageMosaicCommand.deserialize(input.getAbsoluteFile());
-						if (cmd == null) {
-							if (LOGGER.isWarnEnabled())
-								LOGGER.warn("ImageMosaicAction: Unable to deserialize the passed file: "
-										+ input.getAbsolutePath());
-							continue;
-						}
-						
-						// override local configuration with the command one
-						cmd.overrideImageMosaicConfiguration(configuration);
-						
-					}
-					else if (input.isDirectory()) {
-						if (LOGGER.isInfoEnabled()) {
-							LOGGER.info("ImageMosaicAction: Input file event points to a directory: "
-									+ input.getAbsolutePath());
-						}
-						final Collector coll=new Collector(null);
-						// try to deserialize
-						cmd = new ImageMosaicCommand(input,coll.collect(input),null);
-					}
-					else {
-						// the file event do not point to a directory nor to an
-						// xml file
-						if (LOGGER.isWarnEnabled()) {
-							LOGGER.warn("ImageMosaicAction: the file event do not point to a directory nor to an xml file: "
-									+ input.getAbsolutePath());
-						}
-						continue;
-					}
-
-					/**
-					 * the file pointing to the directory which the layer will refer
-					 * to.
-					 */
-					final File baseDir= cmd.getBaseDir();
-					final String layerID= baseDir.getName();
-					
-										/**
-					 * a descriptor for the mosaic to handle
-					 */
-					final ImageMosaicGranulesDescriptor mosaicDescriptor = ImageMosaicGranulesDescriptor
-							.buildDescriptor(baseDir, configuration);
-
-					if (mosaicDescriptor == null) {
-						if (LOGGER.isWarnEnabled()) {
-							LOGGER.warn("ImageMosaicAction: Unable to build the imageMosaic descriptor"
-									+ input.getAbsolutePath());
-						}
-						continue;
-					}
-
-
-					// Perform tests on the base dir file
-					if (!baseDir.exists() || !baseDir.isDirectory()) {
-						// no base dir exists try to build a new one using
-						// addList()
-						if (cmd.getAddFiles() != null) {
-							if (cmd.getAddFiles().size() > 0) {
-								// try build the baseDir
-								if (!baseDir.mkdirs()) {
-									if (LOGGER.isWarnEnabled())
-										LOGGER.warn("ImageMosaicAction: unable to create the base directory named \'"
-												+ baseDir.getAbsolutePath()
-												+ "\'.");
-									continue;
-								}
-							} else {
-								if (LOGGER.isWarnEnabled())
-									LOGGER.warn("ImageMosaicAction: Unexpected not existent baseDir for this layer '"
-											+ baseDir.getAbsolutePath()
-											+ "'.\n If you want to build a new layer try using an "
-											+ "existent or writeable baseDir and append a list of file to use to the addFile list.");
-								continue;
-							}
-						} else {
-							if (LOGGER.isWarnEnabled())
-								LOGGER.warn("ImageMosaicAction: Unexpected not existent baseDir for this layer '"
-										+ baseDir.getAbsolutePath()
-										+ "'.\n If you want to build a new layer try using an "
-										+ "existent or writeable baseDir and append a list of file to use to the addFile list.");
-							continue;
-						}
-					}
-					
-					/*
-					 * TODO HERE WE HAVE A 'cmd' COMMAND FILE WHICH MAY
-					 * HAVE GETADDFILE OR GETDELFILE !=NULL USING THOSE
-					 * LIST WE MAY: DEL ->LOG WARNING--- ADD ->INSERT
-					 * INTO THE DATASTORE AN IMAGE USING THE ABSOLUTE
-					 * PATH.
-					 */
-					
-					// REST library
-					GeoServerRESTReader gsReader = new GeoServerRESTReader(
-							getConfiguration().getGeoserverURL(),
-							getConfiguration().getGeoserverUID(),
-							getConfiguration().getGeoserverPWD());
-
-					final String workspace=configuration.getDefaultNamespace()!=null?configuration.getDefaultNamespace():"";
-					
-					/*
-					 * Check if ImageMosaic layer already exists...
-					 */
-					final boolean layerExists;
-					final RESTLayer layer= gsReader.getLayer(layerID);
-					if (layer == null)
-						layerExists = false;
-					else
-						layerExists = true;
-
-					if (!layerExists) {
-					
-						/*
-						 * CHECKING FOR datastore.properties
-						 */
-						final File datastore = ImageMosaicProperties.checkDataStore(configuration, baseDir);
-						if (datastore == null) {
-							if (LOGGER.isWarnEnabled()) {
-								LOGGER.warn("ImageMosaicAction: failed to check for datastore.properties");
-							}
-							// error occurred
-							continue;
-						}
-						/*
-						 * CHECKING FOR indexer.properties
-						 */
-						final File indexer = new File(baseDir,"indexer.properties");
-						final Properties indexerProp=ImageMosaicProperties.buildIndexer(indexer,configuration);
-						if (indexerProp == null) {
-							if (LOGGER.isWarnEnabled()) {
-								LOGGER.warn("ImageMosaicAction: failed to check for indexer.properties");
-							}
-							// error occurred
-							continue;
-						}
-
-
-						// store addeddFiles for rollback purposes
-						List<File> addedFiles = null;
-						// no base dir exists try to build a new one using
-						// addList()
-						if (cmd.getAddFiles() != null) {
-							if (cmd.getAddFiles().size() > 0) {
-								// copy files from the addFile list to the
-								// baseDir (do not
-								// preventing overwrite)
-								addedFiles = Copy.copyListFileToNFS(
-										cmd.getAddFiles(),
-										cmd.getBaseDir(), true, WAIT);
-								if (addedFiles == null
-										|| addedFiles.size() == 0) {
-									// no file where transfer to the
-									// destination dir
-									if (LOGGER.isWarnEnabled())
-										LOGGER.warn("ImageMosaicAction: no file were transfer to the destination dir,"
-												+ " check your command.");
-									continue;
-								}
-								// files are now into the baseDir and layer
-								// do not exists so
-								cmd.getAddFiles().clear();
-							}
-							// Already checked else {
-							// if (LOGGER.isWarnEnabled())
-							// LOGGER.warn("ImageMosaicAction: Unexpected not existent baseDir for this layer '"
-							// + baseDir.getAbsolutePath()
-							// +
-							// "'. If you want to build a new layer try using an "
-							// +
-							// "existent or writeable baseDir and append a list of file to use to the addFile list.");
-							// continue;
-							// }
-							// TODO!!!!
-							if (cmd.getDelFiles() != null) {
-								if (LOGGER.isWarnEnabled())
-									LOGGER.warn("ImageMosaicAction: unable to delete files from a not existent layer,"
-											+ " delFile list will be ignored.");
-								// files are now into the baseDir and layer
-								// do not exists so
-								cmd.getDelFiles().clear();
-							}
-						} // build baseDir using AddFiles
-
-						// layer do not exists so try to create a new one
-						// STARTING Switch to the new REST library
-						final GeoServerRESTPublisher gsPublisher = new GeoServerRESTPublisher(
-								getConfiguration().getGeoserverURL(),
-								getConfiguration().getGeoserverUID(),
-								getConfiguration().getGeoserverPWD());
-
-						final GSCoverageEncoder coverageEnc=ImageMosaicREST.createGSImageMosaicEncoder(mosaicDescriptor,configuration);
-						
-					    final GSLayerEncoder layerEnc=new GSLayerEncoder();
-					    layerEnc.addDefaultStyle(configuration.getDefaultStyle());
-					    //layerEnc.setWmsPath(configuration.getWmsPath()!=null?configuration.getWmsPath():"");
-					    
-					    // TODO create workspace
-					    final GSWorkspaceEncoder workspaceEnc=new GSWorkspaceEncoder();
-					    
-					    workspaceEnc.addName(workspace);
-
-						// create a new ImageMosaic layer...
-					    final RESTCoverageStore store = gsPublisher.publishExternalMosaic(workspace,layerID,baseDir,coverageEnc,layerEnc);
-					    
-						// STARTING Switch to the new REST library
-
-//						gsPublisher.publishExternalMosaic(???
-//								configuration.getDefaultNamespace(),
-//								layerID,
-//								baseDir, configuration.getCrs(),
-//								configuration.getDefaultStyle());
-						
-						if (store==null) {
-							// layer already exists
-							if (LOGGER.isWarnEnabled()) {
-								LOGGER.warn("ImageMosaicAction: Error creating the new store: "+ layerID);
-							}
-							continue;
-						} // layer Exists
-						
-						
-
-					} else {
-						// layer exists
-						/**
-						 * If datastore Update ImageMosaic datastore...
-						 */
-						/*
-						 * CHECKING FOR datastore.properties
-						 */
-						final File datastore = ImageMosaicProperties.checkDataStore(configuration, baseDir);
-						if (datastore == null) {
-							if (LOGGER.isWarnEnabled()) {
-								LOGGER.warn("ImageMosaicAction: failed to check for datastore.properties");
-							}
-							// error occurred
-							continue;
-						}
-						if (Utils.checkFileReadable(datastore)) {
-
-							// read the properties file
-							Properties dataStoreProp = null;
-							try {
-								dataStoreProp = ImageMosaicProperties.getProperty(datastore);
-							} catch (UnsatisfiedLinkError ule) {
-								// unrecoverable error
-								throw ule;
-							}
-
-							/**
-							 * This file is generated by the GeoServer and
-							 * we need it to get: LocationAttribute -> the
-							 * name of the attribute indicating the file
-							 * location AbsolutePath -> a boolean indicating
-							 * if file locations (paths) are absolutes
-							 * 
-							 * 20101014T030000_pph.properties
-							 * 
-							 * AbsolutePath=false Name=20101014T030000_pph
-							 * ExpandToRGB=false LocationAttribute=location
-							 */
-							final File mosaicPropFile = new File(baseDir,layerID+ ".properties");
-
-							Properties mosaicProp = null;
-							try {
-								mosaicProp = ImageMosaicProperties
-										.getProperty(mosaicPropFile);
-							} catch (UnsatisfiedLinkError ule) {
-								// unrecoverable error
-								throw ule;
-							}
-
-							// update
-							if (ImageMosaicUpdater.updateDataStore(mosaicProp, dataStoreProp,mosaicDescriptor, cmd)) {
-								// SUCCESS update the store
-								if (LOGGER.isInfoEnabled()) {
-									LOGGER.info("ImageMosaicAction: reset GeoServer Cache");
-								}
-								// clear GeoServer cached readers
-								if (ImageMosaicREST.resetGeoserver(
-										configuration.getGeoserverURL(),
-										configuration.getGeoserverUID(),
-										configuration.getGeoserverPWD())) {
-									// SUCCESS update the Catalog
-									if (LOGGER.isInfoEnabled()) {
-										LOGGER.info("ImageMosaicAction: reset DONE");
-									}
-								} else {
-									if (LOGGER.isWarnEnabled()) {
-										LOGGER.warn("ImageMosaicAction: GeoServer failed to reset cached readers.");
-									}
-									continue;
-								}
-							} else {
-								if (LOGGER.isWarnEnabled()) {
-									LOGGER.warn("ImageMosaicAction: The following command FAILED:\n"
-											+ cmd.toString() + "\n");
-								}
-								continue;
-							}
-
-						} // datastore.properties
-						else {
-							/*
-							 * File 'datastore.properties' do not exists.
-							 * Probably we have a ShapeFile as datastore for
-							 * this layer. Error unable to UPDATE the shape
-							 * file.
-							 */
-
-							if (LOGGER.isWarnEnabled()) {
-								LOGGER.warn("ImageMosaicAction: STILL NOT IMPLEMENTED: unable to UPDATE a shape file.");
-							}
-							continue;
-						} // shapefile
-					
-					} // layer exists
-				
-					
-					/**
-					 * The returned file: - one for each event - .layer file - will
-					 * be added to the output queue
-					 */
-					final File layerDescriptor;
-
-		            // generate a RETURN file and append it to the return queue
-					// TODO get info about store and workspace name...
-		            if ((layerDescriptor = ImageMosaicOutput.writeReturn(baseDir, baseDir,layerID,workspace,layerID)) != null) {
-		                ret.add(new FileSystemEvent(layerDescriptor, FileSystemEventType.FILE_ADDED));
-		            }
-		            
-				} // input file event exists
-				else {
+				} else if (!input.exists()) {
 					// no file is found for this event try with the next one
 					if (LOGGER.isWarnEnabled()) {
-						LOGGER.warn("ImageMosaicAction: Unable to handle the passed file event: "
+						LOGGER.warn("The input file does not exists at url: "
 								+ input.getAbsolutePath());
 					}
 					continue;
 				}
 
+				/**
+				 * the file event points to an XML file...
+				 * 
+				 * @see ImageMosaicCommand
+				 */
+				if (input.isFile()
+						&& FilenameUtils.getExtension(input.getName())
+								.equalsIgnoreCase("xml")) {
+					if (LOGGER.isInfoEnabled()) {
+						LOGGER.info("Working on an XML command file: "
+								+ input.getAbsolutePath());
+					}
+
+					// try to deserialize
+					cmd = ImageMosaicCommand.deserialize(input
+							.getAbsoluteFile());
+					if (cmd == null) {
+						if (LOGGER.isWarnEnabled())
+							LOGGER.warn("Unable to deserialize the passed file: "
+									+ input.getAbsolutePath());
+						continue;
+					}
+
+					// override local configuration with the command one
+					cmd.overrideImageMosaicConfiguration(configuration);
+
+				} else if (input.isDirectory()) {
+					if (LOGGER.isInfoEnabled()) {
+						LOGGER.info("Input file event points to a directory: "
+								+ input.getAbsolutePath());
+					}
+					final Collector coll = new Collector(null);
+					// try to deserialize
+					cmd = new ImageMosaicCommand(input, coll.collect(input),
+							null);
+				} else {
+					// the file event does not point to a directory nor to an
+					// xml file
+					if (LOGGER.isWarnEnabled()) {
+						LOGGER.warn("The file event do not point to a directory nor to an xml file: "
+								+ input.getAbsolutePath());
+					}
+					continue;
+				}
+
+				/**
+				 * the file pointing to the directory which the layer will refer
+				 * to.
+				 */
+				final File baseDir = cmd.getBaseDir();
+				final String layerID = baseDir.getName();
+
+				/**
+				 * a descriptor for the mosaic to handle
+				 */
+				final ImageMosaicGranulesDescriptor mosaicDescriptor = ImageMosaicGranulesDescriptor
+						.buildDescriptor(baseDir, configuration);
+
+				if (mosaicDescriptor == null) {
+					if (LOGGER.isWarnEnabled()) {
+						LOGGER.warn("Unable to build the imageMosaic descriptor"
+								+ input.getAbsolutePath());
+					}
+					continue;
+				}
+
+				// Perform tests on the base dir file
+				if (!baseDir.exists() || !baseDir.isDirectory()) {
+					// no base dir exists try to build a new one using
+					// addList()
+					if (cmd.getAddFiles() != null) {
+						if (cmd.getAddFiles().size() > 0) {
+							// try build the baseDir
+							if (!baseDir.mkdirs()) {
+								if (LOGGER.isWarnEnabled())
+									LOGGER.warn("Unable to create the base directory named \'"
+											+ baseDir.getAbsolutePath() + "\'.");
+								continue;
+							}
+						} else {
+							if (LOGGER.isWarnEnabled())
+								LOGGER.warn("Unexpected not existent baseDir for this layer '"
+										+ baseDir.getAbsolutePath()
+										+ "'.\n If you want to build a new layer try using an "
+										+ "existent or writeable baseDir and append a list of file to use to the addFile list.");
+							continue;
+						}
+					} else {
+						if (LOGGER.isWarnEnabled())
+							LOGGER.warn("Unexpected not existent baseDir for this layer '"
+									+ baseDir.getAbsolutePath()
+									+ "'.\n If you want to build a new layer try using an "
+									+ "existent or writeable baseDir and append a list of file to use to the addFile list.");
+						continue;
+					}
+				}
+
+				/**
+				 * HERE WE HAVE A 'cmd' COMMAND FILE WHICH MAY HAVE GETADDFILE
+				 * OR GETDELFILE !=NULL USING THOSE LIST WE MAY:<br>
+				 * DEL ->DELETE FROM THE DATASTORE AN IMAGE USING THE ABSOLUTE
+				 * PATH.<br>
+				 * ADD ->INSERT INTO THE DATASTORE AN IMAGE USING THE ABSOLUTE
+				 * PATH.<br>
+				 */
+
+				// REST library read
+				GeoServerRESTReader gsReader = new GeoServerRESTReader(
+						getConfiguration().getGeoserverURL(),
+						getConfiguration().getGeoserverUID(),
+						getConfiguration().getGeoserverPWD());
+				// REST library write
+				final GeoServerRESTPublisher gsPublisher = new GeoServerRESTPublisher(
+						getConfiguration().getGeoserverURL(),
+						getConfiguration().getGeoserverUID(),
+						getConfiguration().getGeoserverPWD());
+
+				final String workspace = configuration.getDefaultNamespace() != null ? configuration
+						.getDefaultNamespace() : "";
+
+				/*
+				 * Check if ImageMosaic layer already exists...
+				 */
+				final boolean layerExists;
+				final RESTLayer layer = gsReader.getLayer(layerID);
+				if (layer == null)
+					layerExists = false;
+				else
+					layerExists = true;
+
+				if (!layerExists) {
+					// layer does not exists so try to create a new one
+
+					/*
+					 * CHECKING FOR datastore.properties
+					 */
+					final File datastore = ImageMosaicProperties
+							.checkDataStore(configuration, baseDir);
+					if (datastore == null) {
+						if (LOGGER.isWarnEnabled()) {
+							LOGGER.warn("Failed to check for datastore.properties into:"+baseDir);
+						}
+						// error occurred
+						continue;
+					}
+					
+					/*
+					 * CHECKING FOR indexer.properties
+					 */
+					final File indexer = new File(baseDir, "indexer.properties");
+					final Properties indexerProp = ImageMosaicProperties
+							.buildIndexer(indexer, configuration);
+					if (indexerProp == null) {
+						if (LOGGER.isWarnEnabled()) {
+							LOGGER.warn("Failed to check for indexer.properties into:"+baseDir);
+						}
+						// error occurred
+						continue;
+					}
+
+					// store addeddFiles for rollback purposes
+					List<File> addedFiles = null;
+					// no base dir exists try to build a new one using
+					// addList()
+					if (cmd.getAddFiles() != null) {
+						if (cmd.getAddFiles().size() > 0) {
+							// copy files from the addFile list to the
+							// baseDir (do not
+							// preventing overwrite)
+							addedFiles = Copy.copyListFileToNFS(
+									cmd.getAddFiles(), cmd.getBaseDir(), true,
+									WAIT);
+							if (addedFiles == null || addedFiles.size() == 0) {
+								// no file where transfer to the
+								// destination dir
+								if (LOGGER.isWarnEnabled())
+									LOGGER.warn("No file were transfer to the destination dir,"
+											+ " check your command.");
+								continue;
+							}
+							// files are now into the baseDir and layer
+							// do not exists so
+							cmd.getAddFiles().clear();
+						}
+						// Already checked else {
+						// if (LOGGER.isWarnEnabled())
+						// LOGGER.warn("ImageMosaicAction: Unexpected not existent baseDir for this layer '"
+						// + baseDir.getAbsolutePath()
+						// +
+						// "'. If you want to build a new layer try using an "
+						// +
+						// "existent or writeable baseDir and append a list of file to use to the addFile list.");
+						// continue;
+						// }
+						// TODO!!!!
+						if (cmd.getDelFiles() != null) {
+							if (LOGGER.isWarnEnabled())
+								LOGGER.warn("Unable to delete files from a not existent layer,"
+										+ " delFile list will be ignored.");
+							// files are now into the baseDir and layer
+							// do not exists so
+							cmd.getDelFiles().clear();
+						}
+					} // build baseDir using AddFiles
+
+					// workspace encoder
+					final GSWorkspaceEncoder workspaceEnc = new GSWorkspaceEncoder();
+					workspaceEnc.setName(workspace);
+
+					// coverage encoder
+					final GSCoverageEncoder coverageEnc = ImageMosaicREST
+							.createGSImageMosaicEncoder(mosaicDescriptor,
+									configuration);
+
+//					layerEnc.setWmsPath(configuration.getWmsPath()!=null?configuration.getWmsPath():"");
+					
+					// layer encoder
+					final GSLayerEncoder layerEnc = new GSLayerEncoder();
+					layerEnc.setDefaultStyle(configuration.getDefaultStyle());
+
+					// create a new ImageMosaic layer...
+					final RESTCoverageStore store = gsPublisher
+							.publishExternalMosaic(workspace, layerID, baseDir,
+									coverageEnc, layerEnc);
+
+					/**
+					 * TODO gsPublisher.createExternalMosaic TODO
+					 * gsPublisher.publishLayer
+					 * gsPublisher.publishExternalMosaic(???
+					 * configuration.getDefaultNamespace(), layerID,baseDir,
+					 * configuration.getCrs(), configuration.getDefaultStyle());
+					 */
+
+					if (store == null) {
+						// layer already exists
+						if (LOGGER.isWarnEnabled()) {
+							LOGGER.warn("Error creating the new store: "
+									+ layerID);
+						}
+						continue;
+					} // layer Exists
+
+				} else {
+					// layer exists
+					/**
+					 * If datastore Update ImageMosaic datastore...
+					 */
+					/*
+					 * CHECKING FOR datastore.properties
+					 */
+					final File datastore = ImageMosaicProperties
+							.checkDataStore(configuration, baseDir);
+					if (datastore == null) {
+						if (LOGGER.isWarnEnabled()) {
+							LOGGER.warn("Failed to check for datastore.properties");
+						}
+						// error occurred
+						continue;
+					}
+					
+					
+					if (!Utils.checkFileReadable(datastore)) {
+						/*
+						 * File 'datastore.properties' do not exists. Probably
+						 * we have a ShapeFile as datastore for this layer.
+						 * Error unable to UPDATE the shape file.
+						 */
+						
+						// SHAPEFILE
+						if (LOGGER.isWarnEnabled()) {
+							LOGGER.warn("STILL NOT IMPLEMENTED: unable to UPDATE a shape file.");
+						}
+						continue;
+					}
+
+					// read the properties file
+					final Properties dataStoreProp = ImageMosaicProperties
+							.getProperty(datastore);
+					
+					/**
+					 * This file is generated by the GeoServer and we need
+					 * it to get: LocationAttribute -> the name of the
+					 * attribute indicating the file location AbsolutePath
+					 * -> a boolean indicating if file locations (paths) are
+					 * absolutes
+					 * 
+					 * 20101014T030000_pph.properties
+					 * 
+					 * AbsolutePath=false Name=20101014T030000_pph
+					 * ExpandToRGB=false LocationAttribute=location
+					 */
+					final File mosaicPropFile = new File(baseDir, layerID
+							+ ".properties");
+
+					if (!Utils.checkFileReadable(mosaicPropFile)) {
+						if (LOGGER.isWarnEnabled()) {
+							LOGGER.warn("Unable to locate the imagemosaic properties file at: "+mosaicPropFile.getCanonicalPath());
+						}
+						continue;
+					}
+					
+					final Properties mosaicProp = ImageMosaicProperties
+								.getProperty(mosaicPropFile);
+
+					// update
+					if (ImageMosaicUpdater.updateDataStore(mosaicProp,
+							dataStoreProp, mosaicDescriptor, cmd)) {
+						// SUCCESS update the store
+						if (LOGGER.isInfoEnabled()) {
+							LOGGER.info("Reset GeoServer Cache");
+						}
+						// clear GeoServer cached readers
+						if (gsPublisher.reset()) {
+							// SUCCESS update the Catalog
+							if (LOGGER.isInfoEnabled()) {
+								LOGGER.info("Reset DONE");
+							}
+						} else {
+							if (LOGGER.isWarnEnabled()) {
+								LOGGER.warn("GeoServer failed to reset cached readers.");
+							}
+							continue;
+						}
+					} else {
+						if (LOGGER.isWarnEnabled()) {
+							LOGGER.warn("The following command FAILED:\n"
+									+ cmd.toString() + "\n");
+						}
+						continue;
+					}
+
+				} // layer exists
+
+				/**
+				 * The returned file: - one for each event - .layer file - will
+				 * be added to the output queue
+				 */
+				final File layerDescriptor;
+
+				// generate a RETURN file and append it to the return queue
+				// TODO get info about store and workspace name...
+				if ((layerDescriptor = ImageMosaicOutput.writeReturn(baseDir,
+						baseDir, layerID, workspace, layerID)) != null) {
+					ret.add(new FileSystemEvent(layerDescriptor,
+							FileSystemEventType.FILE_ADDED));
+				}
 
 			} // while
 

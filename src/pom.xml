@@ -486,11 +486,71 @@
         <artifactId>gb-action-registry</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- scripting Action ================================-->
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-action-scripting</artifactId>
         <version>${project.version}</version>
       </dependency>
+      
+      <dependency>
+	<groupId>javax.script</groupId>
+	<artifactId>script-api</artifactId>
+	<version>1.0</version>
+	<classifier>jdk14</classifier>
+      </dependency>
+      <dependency>
+	<groupId>net.sf.retrotranslator</groupId>
+	<artifactId>retrotranslator-runtime</artifactId>
+	<version>1.2.1</version>
+      </dependency>
+      <!-- JS -->
+      <dependency>
+	<groupId>javax.script</groupId>
+	<artifactId>js-engine</artifactId>
+	<version>1.0</version>
+      </dependency>
+      <dependency>
+	<groupId>rhino</groupId>
+	<artifactId>js</artifactId>
+	<version>1.7R2</version>
+      </dependency>
+      <!-- groovy -->
+      <dependency>
+	<groupId>javax.script</groupId>
+	<artifactId>groovy-engine</artifactId>
+	<version>1.0</version>
+	<classifier>jdk14</classifier>
+      </dependency>
+      <dependency>
+	<groupId>groovy</groupId>
+	<artifactId>groovy-all</artifactId>
+	<version>1.0</version>
+      </dependency>
+      <!-- ruby -->
+      <dependency>
+	<groupId>javax.script</groupId>
+	<artifactId>jruby-engine</artifactId>
+	<version>1.0</version>
+      </dependency>
+      <dependency>
+	<groupId>jruby</groupId>
+	<artifactId>jruby</artifactId>
+	<version>0.9.8</version>
+      </dependency>
+      <!-- jython -->
+      <dependency>
+	<groupId>javax.script</groupId>
+	<artifactId>jython-engine</artifactId>
+	<version>1.0</version>
+      </dependency>
+      <dependency>
+	<groupId>org.python</groupId>
+	<artifactId>jython</artifactId>
+	<version>2.2</version>
+      </dependency>
+      <!-- END Scripting ===========================================-->
+      
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-action-splitting</artifactId>
@@ -1250,10 +1310,19 @@
           </exclusion>
         </exclusions>
       </dependency>
+       <!--================================================================= -->
+      <!-- TEST -->
+      <!--================================================================= -->
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-sample-data</artifactId>
+        <version>${gt.version}</version>
+        <scope>test</scope>
+      </dependency>
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.5</version>
+        <version>4.8.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -1323,6 +1392,11 @@
       <artifactId>log4j</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-sample-data</artifactId>
+        <scope>test</scope>
+      </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

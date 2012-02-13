@@ -2,125 +2,121 @@
 <!-- ======================================================================= 
 	Maven Project Configuration File GeoSolutions GeoBatch Project http://geobatch.codehaus.org 
 	======================================================================= -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>it.geosolutions.geobatch</groupId>
-    <artifactId>gb-actions</artifactId>
-    <version>1.2-SNAPSHOT</version>
-  </parent>
-  <!-- =========================================================== -->
-  <!-- Module Description -->
-  <!-- =========================================================== -->
-  <groupId>it.geosolutions.geobatch</groupId>
-  <artifactId>gb-action-scripting</artifactId>
-  <packaging>jar</packaging>
-  <name>GeoBatch action: scripting</name>
-  <description>GeoSolutions GeoBatch flow managers - Scripting</description>
-  <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
-  <scm>
-    <connection>
-            scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
-		</connection>
-    <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
-  </scm>
-  <licenses>
-    <license>
-      <name>Lesser General Public License (LGPL)</name>
-      <url>http://www.gnu.org/copyleft/lesser.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <!-- =========================================================== -->
-  <!--                                                             -->
-  <!-- =========================================================== -->
-  <repositories>
-    <repository>
-      <id>mule-deps</id>
-      <name>Mule Dependencies</name>
-      <url>http://dist.codehaus.org/mule/dependencies/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-  <dependencies>
-    <!-- =========================================================== -->
-    <!-- GeoBatch                                                    -->
-    <!-- =========================================================== -->
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-core-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-fs-catalog</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-fsm-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-core-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
-    </dependency>
-    <!-- =========================================================== -->
-    <!--                                                             -->
-    <!-- =========================================================== -->
-    <dependency>
-      <groupId>org.apache.bsf</groupId>
-      <artifactId>bsf-api</artifactId>
-      <!-- the javax.script API -->
-      <version>3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.bsf</groupId>
-      <artifactId>bsf-utils</artifactId>
-      <!-- CLI tool and helper classes -->
-      <version>3.1</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.bsf</groupId>
-          <artifactId>bsf-engines</artifactId>
-          <!-- CLI tool and helper classes -->
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>javax.script</groupId>
-      <artifactId>groovy-engine</artifactId>
-      <version>1.0</version>
-      <classifier>jdk14</classifier>
-    </dependency>
-    <dependency>
-      <groupId>groovy</groupId>
-      <artifactId>groovy-all</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <!-- 11 Jan 2011 COMMENTED OUT DUE TO THE BSF SUBSTITUTION This is done 
-			to keep the jdk5 compatibility (which is supported by Apache bsf) -->
-    <!--dependency> <groupId>javax.script</groupId> <artifactId>script-api</artifactId> 
-			<version>1.0</version> <classifier>jdk14</classifier> </dependency> <dependency> 
-			<groupId>net.sf.retrotranslator</groupId> <artifactId>retrotranslator-runtime</artifactId> 
-			<version>1.2.1</version> </dependency> <dependency> <groupId>javax.script</groupId> 
-			<artifactId>js-engine</artifactId> <version>1.0</version> </dependency> <dependency> 
-			<groupId>rhino</groupId> <artifactId>js</artifactId> <version>1.7R2</version> 
-			</dependency> <dependency> <groupId>javax.script</groupId> <artifactId>groovy-engine</artifactId> 
-			<version>1.0</version> <classifier>jdk14</classifier> </dependency> <dependency> 
-			<groupId>groovy</groupId> <artifactId>groovy-all</artifactId> <version>1.0</version> 
-			</dependency> <dependency> <groupId>javax.script</groupId> <artifactId>jruby-engine</artifactId> 
-			<version>1.0</version> </dependency> <dependency> <groupId>jruby</groupId> 
-			<artifactId>jruby</artifactId> <version>0.9.8</version> </dependency> <dependency> 
-			<groupId>javax.script</groupId> <artifactId>jython-engine</artifactId> <version>1.0</version> 
-			</dependency> <dependency> <groupId>org.python</groupId> <artifactId>jython</artifactId> 
-			<version>2.2</version> </dependency! -->
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>it.geosolutions.geobatch</groupId>
+		<artifactId>gb-actions</artifactId>
+		<version>1.2-SNAPSHOT</version>
+	</parent>
+	<!-- =========================================================== -->
+	<!-- Module Description -->
+	<!-- =========================================================== -->
+	<groupId>it.geosolutions.geobatch</groupId>
+	<artifactId>gb-action-scripting</artifactId>
+	<packaging>jar</packaging>
+	<name>GeoBatch action: scripting</name>
+	<description>GeoSolutions GeoBatch flow managers - Scripting</description>
+	<url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
+	<scm>
+		<url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
+		<connection>scm:git:[fetch=]git@geosolutions.sourcerepo.com:geosolutions/geobatch.git[push=]git@geosolutions.sourcerepo.com:geosolutions/geobatch.git</connection>
+	</scm>
+	<licenses>
+		<license>
+			<name>Lesser General Public License (LGPL)</name>
+			<url>http://www.gnu.org/copyleft/lesser.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<!-- =========================================================== -->
+	<!-- -->
+	<!-- =========================================================== -->
+	<repositories>
+		<repository>
+			<id>mule-deps</id>
+			<name>Mule Dependencies</name>
+			<url>http://dist.codehaus.org/mule/dependencies/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<dependencies>
+		<!-- =========================================================== -->
+		<!-- GeoBatch -->
+		<!-- =========================================================== -->
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-core-impl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-fs-catalog</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-fsm-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-core-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.geosolutions.geobatch</groupId>
+			<artifactId>gb-action-tools</artifactId>
+		</dependency>
+		<!-- =========================================================== -->
+		<!-- -->
+		<!-- =========================================================== -->
+
+		<dependency>
+			<groupId>javax.script</groupId>
+			<artifactId>script-api</artifactId>
+			<classifier>jdk14</classifier>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.retrotranslator</groupId>
+			<artifactId>retrotranslator-runtime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.script</groupId>
+			<artifactId>js-engine</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>rhino</groupId>
+			<artifactId>js</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.script</groupId>
+			<artifactId>groovy-engine</artifactId>
+			<classifier>jdk14</classifier>
+		</dependency>
+		<dependency>
+			<groupId>groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.script</groupId>
+			<artifactId>jruby-engine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jruby</groupId>
+			<artifactId>jruby</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.script</groupId>
+			<artifactId>jython-engine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.python</groupId>
+			<artifactId>jython</artifactId>
+		</dependency>
+
+	</dependencies>
 </project>

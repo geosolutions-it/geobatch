@@ -27,8 +27,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.beanutils.BeanUtils;
 
 import com.thoughtworks.xstream.InitializationException;
 import com.thoughtworks.xstream.XStream;
@@ -73,6 +76,10 @@ public class ImageMosaicCommand implements Serializable {
 	@XStreamOmitField
 	private static XStream stream;
 	static {
+		init();
+	}
+	
+	public ImageMosaicCommand(){
 		init();
 	}
 
@@ -209,33 +216,45 @@ public class ImageMosaicCommand implements Serializable {
 	}
 
 	/**
-	 * @deprecated todo clone for most of ImageMosaic members
+	 * clone
 	 */
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
-		List<File> addList = null;
-		List<File> getAddList = this.getAddFiles();
-		if (getAddList != null) {
-			addList = new ArrayList<File>();
-			for (File add : getAddList) {
-				addList.add(new File(add.getAbsolutePath()));
-			}
+		
+		try {
+			return BeanUtils.cloneBean(this);
+		} catch (IllegalAccessException e) {
+			throw new CloneNotSupportedException(e.getLocalizedMessage());
+		} catch (InstantiationException e) {
+			throw new CloneNotSupportedException(e.getLocalizedMessage());
+		} catch (InvocationTargetException e) {
+			throw new CloneNotSupportedException(e.getLocalizedMessage());
+		} catch (NoSuchMethodException e) {
+			throw new CloneNotSupportedException(e.getLocalizedMessage());
 		}
-
-		List<File> delList = null;
-		List<File> getDelList = this.getDelFiles();
-		if (getDelList != null) {
-			delList = new ArrayList<File>();
-			for (File del : getDelList) {
-				delList.add(new File(del.getAbsolutePath()));
-			}
-		}
-		// TODO clone
-
-		ImageMosaicCommand cmd = new ImageMosaicCommand(new File(this
-				.getBaseDir().getAbsolutePath()), addList, delList);
-
-		return cmd;
+//		List<File> addList = null;
+//		List<File> getAddList = this.getAddFiles();
+//		if (getAddList != null) {
+//			addList = new ArrayList<File>();
+//			for (File add : getAddList) {
+//				addList.add(new File(add.getAbsolutePath()));
+//			}
+//		}
+//
+//		List<File> delList = null;
+//		List<File> getDelList = this.getDelFiles();
+//		if (getDelList != null) {
+//			delList = new ArrayList<File>();
+//			for (File del : getDelList) {
+//				delList.add(new File(del.getAbsolutePath()));
+//			}
+//		}
+//		// TODO clone
+//
+//		ImageMosaicCommand cmd = new ImageMosaicCommand(new File(this
+//				.getBaseDir().getAbsolutePath()), addList, delList);
+//
+//		return cmd;
 	}
 
 	/*
