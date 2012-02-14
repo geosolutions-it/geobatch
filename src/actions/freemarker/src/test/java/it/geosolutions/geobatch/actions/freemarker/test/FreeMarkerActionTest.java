@@ -30,6 +30,8 @@ import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -38,7 +40,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import org.geotools.test.TestData;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 /**
  * 
@@ -115,18 +119,24 @@ public class FreeMarkerActionTest {
 //        
 //    }
     
+	File workingDir; 
+	
+	@Before
+	public void setUP() throws FileNotFoundException, IOException{
+		workingDir=TestData.file(this,null);
+	}
     
     @Test
-    public void test() throws ActionException, IllegalAccessException {
+    public void test() throws ActionException, IllegalAccessException, FileNotFoundException, IOException {
         
         FreeMarkerConfiguration fmc=new FreeMarkerConfiguration("ID","NAME","DESC");
         // SIMULATE THE XML FILE CONFIGURATION OF THE ACTION
         fmc.setDirty(false);
         fmc.setFailIgnored(false);
         fmc.setServiceID("serviceID");
-        fmc.setWorkingDirectory("./src/test/resources/data/");
+        fmc.setWorkingDirectory(workingDir.getAbsolutePath());
         fmc.setInput("test.xml");
-        fmc.setOutput("out");
+        fmc.setOutput(workingDir.getAbsolutePath()+"/out");
         // 2 incoming events generates 2 output files
         fmc.setNtoN(true);
         Map<String,Object> m=new HashMap<String, Object>();
@@ -135,8 +145,8 @@ public class FreeMarkerActionTest {
         
         // SIMULATE THE EventObject on the queue 
         Map<String,Object> mev=new HashMap<String, Object>();
-        mev.put("SOURCE_PATH", "/path/to/source/");
-        mev.put("WORKING_DIR", "/absolute/working/dir/");
+        mev.put("SOURCE_PATH", workingDir.getAbsolutePath()+"/in");
+        mev.put("WORKING_DIR", workingDir.getAbsolutePath());
         mev.put("FILE_IN", "in_test_file.dat");
         mev.put("FILE_OUT", "out_test_file.dat");
         List<String> list=new ArrayList<String>(4);
@@ -148,8 +158,8 @@ public class FreeMarkerActionTest {
         
         // SIMULATE THE 2nd EventObject on the queue 
         Map<String,Object> mev2=new HashMap<String, Object>();
-        mev2.put("SOURCE_PATH", "/path/to/source_2/");
-        mev2.put("WORKING_DIR", "/absolute/working/dir_2/");
+        mev2.put("SOURCE_PATH", workingDir.getAbsolutePath()+"/in2");
+        mev2.put("WORKING_DIR", workingDir.getAbsolutePath());
         mev2.put("FILE_IN", "in_test_file_2.dat");
         mev2.put("FILE_OUT", "out_test_file_2.dat");
         mev2.put("LIST", list);
@@ -161,14 +171,13 @@ public class FreeMarkerActionTest {
         q.add(new TemplateModelEvent(mev2));
         
         FreeMarkerAction fma=new FreeMarkerAction(fmc);
-        fma.setRunningContext("./src/test/resources/");
+        fma.setRunningContext(workingDir.getAbsolutePath());
         
         q=fma.execute(q);
         try{
             FileSystemEvent res=(FileSystemEvent)q.remove();
             File out=res.getSource();
-            if (!out.exists())
-                Assert.fail("FAIL: unable to create output file");
+            Assert.assertTrue("FAIL: unable to create output file",out.exists());
             
         }
         catch (ClassCastException cce){
@@ -185,7 +194,9 @@ public class FreeMarkerActionTest {
         fmc.setDirty(false);
         fmc.setFailIgnored(false);
         fmc.setServiceID("serviceID");
-        fmc.setWorkingDirectory(Path.getAbsolutePath("./src/test/resources/data/"));
+        
+        fmc.setWorkingDirectory(workingDir.getAbsolutePath());
+        
         fmc.setInput("test.xml");
         fmc.setOutput("out");
         Map<String,Object> m=new HashMap<String, Object>();
@@ -194,8 +205,8 @@ public class FreeMarkerActionTest {
         
         // SIMULATE THE EventObject on the queue 
         Map<String,Object> mev=new HashMap<String, Object>();
-        mev.put("SOURCE_PATH", "/path/to/source");
-        mev.put("WORKING_DIR", "/absolute/working/dir");
+        mev.put("SOURCE_PATH", workingDir.getAbsolutePath()+"/in");
+        mev.put("WORKING_DIR", workingDir.getAbsolutePath());
         mev.put("FILE_IN", "in_test_file.dat");
         mev.put("FILE_OUT", "out_test_file.dat");
         
@@ -209,7 +220,7 @@ public class FreeMarkerActionTest {
         Queue<EventObject> q=new ArrayBlockingQueue<EventObject>(2);
         
         q.add(new TemplateModelEvent(mev));
-        q.add(new FileSystemEvent(new File("./src/test/resources/data/"), FileSystemEventType.FILE_ADDED));
+        q.add(new FileSystemEvent(workingDir, FileSystemEventType.FILE_ADDED));
         
         FreeMarkerAction fma=new FreeMarkerAction(fmc);
         
@@ -217,8 +228,7 @@ public class FreeMarkerActionTest {
         try{
             FileSystemEvent res=(FileSystemEvent)q.remove();
             File out=res.getSource();
-            if (!out.exists())
-                Assert.fail("FAIL: unable to create output file");
+            Assert.assertTrue("FAIL: unable to create output file",out.exists());
             
         }
         catch (ClassCastException cce){
