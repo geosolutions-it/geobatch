@@ -24,6 +24,10 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.apache.commons.beanutils.BeanUtils;
+
 public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
 	public ImageMosaicConfiguration(String id, String name,
@@ -332,50 +336,18 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
 	@Override
 	public ImageMosaicConfiguration clone() {
-		final ImageMosaicConfiguration configuration = (ImageMosaicConfiguration) super
-				.clone();
-
-		configuration.setAllowMultithreading(isAllowMultithreading());
-		configuration.setBackgroundValue(getBackgroundValue());
-		configuration.setCOARDS(isCOARDS());
-		configuration.setConfigId(getConfigId());
-		configuration.setCrs(getCrs());
-
-		configuration.setDatastorePropertiesPath(getDatastorePropertiesPath());
-		// super.clone
-		// configuration.setDataTransferMethod(getDataTransferMethod());
-		// super.clone configuration.setDatatype(getDatatype());
-
-		configuration.setElevationRegex(getElevationRegex());
-		configuration.setElevDimEnabled(getElevDimEnabled());
-		configuration
-				.setElevationPresentationMode(getElevationPresentationMode());
-
-		configuration.setInputTransparentColor(getInputTransparentColor());
-		configuration.setLatLonMaxBoundingBoxX(getLatLonMaxBoundingBoxX());
-		configuration.setLatLonMaxBoundingBoxY(getLatLonMaxBoundingBoxY());
-		configuration.setLatLonMinBoundingBoxX(getLatLonMinBoundingBoxX());
-		configuration.setLatLonMinBoundingBoxY(getLatLonMinBoundingBoxY());
-		configuration.setListenerId(getListenerIds());
-		// configuration.setNativeMaxBoundingBoxX(getNativeMaxBoundingBoxX());
-		// configuration.setNativeMaxBoundingBoxY(getNativeMaxBoundingBoxY());
-		// configuration.setNativeMinBoundingBoxX(getNativeMinBoundingBoxX());
-		// configuration.setNativeMinBoundingBoxY(getNativeMinBoundingBoxY());
-		configuration.setOutputTransparentColor(getOutputTransparentColor());
-		configuration.setProjectionPolicy(getProjectionPolicy());
-		configuration.setRuntimeRegex(getRuntimeRegex());
-		configuration.setServiceID(getServiceID()); // unused but formally
-													// correct clone
-		// super.clone configuration.setStoreFilePrefix(storeFilePrefix)
-		configuration.setTileSizeH(getTileSizeH());
-		configuration.setTileSizeW(getTileSizeW());
-		configuration.setTimeDimEnabled(getTimeDimEnabled());
-		configuration.setTimePresentationMode(getTimePresentationMode());
-		configuration.setTimeRegex(getTimeRegex());
-		configuration.setUseJaiImageRead(isUseJaiImageRead());
-		configuration.setWorkingDirectory(getWorkingDirectory());
-
-		return configuration;
+		try {
+			return (ImageMosaicCommand) BeanUtils.cloneBean(this);
+		} catch (IllegalAccessException e) {
+			
+		} catch (InstantiationException e) {
+			
+		} catch (InvocationTargetException e) {
+			
+		} catch (NoSuchMethodException e) {
+		
+		}
+		return null;
 	}
 
 	@Override

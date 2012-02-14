@@ -20,68 +20,80 @@ import com.sun.org.apache.xerces.internal.xs.XSException;
 
 /**
  * Test the ImageMosaicCommand
+ * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  */
 public class ImageMosaicCommandTest {
-    ImageMosaicCommand cmd=null;
-    File cmdFile;
+	ImageMosaicCommand cmd = null;
+	File cmdFile;
 
-    @Before
-    public void setUp() throws Exception {
-        // create in memory object
-        List<File> addList = new ArrayList<File>();
-        addList.add(TestData.file(this,"time_mosaic/world.200406.3x5400x2700.tiff"));
-        List<File> delList = new ArrayList<File>();
-        delList.add(TestData.file(this,"time_mosaic/world.200406.3x5400x2700.tiff"));
-        cmd=new ImageMosaicCommand(new File(TestData.file(this,null),"test"), addList, delList);
-        cmdFile=new File(TestData.file(this,null),"test_cmd_out.xml");
-    }
+	@Before
+	public void setUp() throws Exception {
+		// create in memory object
+		List<File> addList = new ArrayList<File>();
+		addList.add(TestData.file(this,
+				"time_mosaic/world.200406.3x5400x2700.tiff"));
+		List<File> delList = new ArrayList<File>();
+		delList.add(TestData.file(this,
+				"time_mosaic/world.200406.3x5400x2700.tiff"));
+		cmd = new ImageMosaicCommand(
+				new File(TestData.file(this, null), "test"), addList, delList);
+		
+		cmdFile = new File(TestData.file(this, null), "test_cmd_out.xml");
+	}
 
-    @After
-    public void tearDown() throws Exception {
-        cmd=null;
-        FileUtils.deleteQuietly(cmdFile);
-    }
+	@After
+	public void tearDown() throws Exception {
+		cmd = null;
+		FileUtils.deleteQuietly(cmdFile);
+	}
 
-    @Test
-    public final void testSerialize() throws IOException {
-        try {
-        	final String path=cmdFile.getAbsolutePath();
-            
-            File out=ImageMosaicCommand.serialize(cmd, path);
-            
-            if (!out.exists())
-                fail("Unable to serialize object to: "+path);
-            
-            ImageMosaicCommand cmd2=ImageMosaicCommand.deserialize(cmdFile);
-            if (cmd2==null)
-                fail("Unable to deserialize object from: "+path);
-            
-        } catch (XSException e) {
-            fail(e.getMessage());
-        } catch (FileNotFoundException e) {
-            fail(e.getMessage());
-        } catch (SecurityException e) {
-            fail(e.getMessage());
-        }
-        
-    }
+	@Test
+	public final void testSerialize() throws IOException {
+		try {
+			final String path = cmdFile.getAbsolutePath();
 
-    @Test
-    public final void testToString() {
-        Assert.assertNotNull("null cmd object", cmd);
-        
-        Assert.assertNotNull(cmd.toString());
-    }
+			// change params
+			
+			// GeoServerActionConfig
+			cmd.setGeoserverUID("admin");
+			
+			// GeoServerActionConfiguration
+			cmd.setCrs("EPSG:4326");
+			
+			// ImageMosaicConfiguration
+			cmd.setAllowMultithreading(true);
+			
+			File out = ImageMosaicCommand.serialize(cmd, path);
 
-    @Test
-    public final void testClone() {
-        try {
-            ImageMosaicCommand cmd2=(ImageMosaicCommand) cmd.clone();
-        } catch (CloneNotSupportedException e) {
-            fail(e.getMessage());
-        }
-    }
+			if (!out.exists())
+				fail("Unable to serialize object to: " + path);
+
+			ImageMosaicCommand cmd2 = ImageMosaicCommand.deserialize(cmdFile);
+			if (cmd2 == null)
+				fail("Unable to deserialize object from: " + path);
+
+		} catch (XSException e) {
+			fail(e.getMessage());
+		} catch (FileNotFoundException e) {
+			fail(e.getMessage());
+		} catch (SecurityException e) {
+			fail(e.getMessage());
+		}
+
+	}
+
+	@Test
+	public final void testToString() {
+		Assert.assertNotNull("null cmd object", cmd);
+		Assert.assertNotNull(cmd.toString());
+	}
+
+	@Test
+	public final void testClone() {
+		ImageMosaicCommand cmd2 = cmd.clone();
+		Assert.assertNotNull(cmd2);
+	}
 
 }

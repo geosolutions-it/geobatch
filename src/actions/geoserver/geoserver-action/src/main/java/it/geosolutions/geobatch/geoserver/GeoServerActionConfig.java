@@ -3,28 +3,10 @@ package it.geosolutions.geobatch.geoserver;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 public abstract class GeoServerActionConfig extends ActionConfiguration {
-
-	protected String workingDirectory;
 	
 	protected String geoserverPWD;
 	protected String geoserverUID;
-	protected String geoserverURL;
-
-    /**
-     * @return the workingDirectory
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
-
-    /**
-     * @param workingDirectory
-     *            the workingDirectory to set
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
-    }
-    
+	protected String geoserverURL;    
 
 	/**
 	 * @return the geoserverPWD
@@ -88,7 +70,6 @@ public abstract class GeoServerActionConfig extends ActionConfiguration {
         configuration.setGeoserverUID(geoserverUID);
         configuration.setGeoserverURL(geoserverURL);
 //        configuration.setServiceID(getServiceID());
-        configuration.setWorkingDirectory(workingDirectory);
 
         return configuration;
     }
