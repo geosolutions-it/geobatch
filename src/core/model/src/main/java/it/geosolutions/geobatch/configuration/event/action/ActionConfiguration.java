@@ -85,8 +85,10 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
      * @deprecated use {@link #setConfigDir(java.io.File)}  or {@link BaseAction#setTempDir() }
      */
     public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
-        this.configDir = new File(workingDirectory);
+    	if (workingDirectory!=null){
+	        this.workingDirectory = workingDirectory;
+	        this.configDir = new File(workingDirectory);
+    	}
     }
 
     /**
@@ -106,8 +108,10 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
      * @deprecated use {@link #setConfigDir(java.io.File)}  or {@link BaseAction#setTempDir() }
      */
     public void setConfigDir(File configDir) {
-        this.configDir = configDir;
-        this.workingDirectory = configDir.getAbsolutePath();
+    	if (configDir!=null){
+	        this.configDir = configDir;
+	        this.workingDirectory = configDir.getAbsolutePath();
+    	}
     }
 
     /**
