@@ -22,12 +22,8 @@ import org.junit.Test;
 
 /**
  * Junit test case which make use of {@link GeoServerTests} class to tests the
- * mosaic functionalities.<br> To use datastore set following variables:<br>
- * <ul>
- * <li><b>postgis</b>=true</li>
- * <li><b>datastore_path</b>="${ABSOLUTE_PATH}"</li>
- * </ul>
- * <br>
+ * mosaic functionalities.<br>
+ * To use datastore ref {@link PostGisDataStoreTests}.
  * 
  * @see GeoServerTests
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
@@ -45,18 +41,6 @@ public class ImageMosaicUpdateTest {
 
 	private static String workspace = "topp";
 	private static String store = "external";
-
-	/**
-	 * check if postgis datastore is enabled
-	 */
-	private static boolean postgis;
-	private static String datastore_path;
-	static {
-		postgis = GeoServerTests.getenv("postgis", "false").equalsIgnoreCase(
-				"true");
-		datastore_path = GeoServerTests.getenv("datastore_path",
-				"time_mosaic/datastore.properties");
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -101,17 +85,11 @@ public class ImageMosaicUpdateTest {
 		conf.setGeoserverPWD(GeoServerTests.PWD);
 
 		// check for postgis
-		if (postgis) {
-			File datastoreFile = new File(datastore_path);
-			if (datastoreFile.isAbsolute()) {
-				conf.setDatastorePropertiesPath(datastore_path);
-			} else {
-				conf.setDatastorePropertiesPath(TestData.file(this,
-						"time_mosaic/datastore.properties").getAbsolutePath());
-			}
+		if (PostGisDataStoreTests.existsPostgis()) {
+			conf.setDatastorePropertiesPath(PostGisDataStoreTests.getDatastoreProperties().getAbsolutePath());
 		}
 
-		conf.setDefaultNamespace("topp");
+		conf.setDefaultNamespace(workspace);
 		conf.setDefaultStyle("raster");
 		conf.setCrs("EPSG:4326");
 		// conf.addListenerConfiguration(TesD);
@@ -158,6 +136,10 @@ public class ImageMosaicUpdateTest {
 	@Test
 	public void updateTest() throws IOException {
 		if (GeoServerTests.skipTest()) {
+			return;
+		}
+		if (!PostGisDataStoreTests.existsPostgis()){
+			// could not update a shape file
 			return;
 		}
 		// update command

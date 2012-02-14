@@ -34,7 +34,7 @@ public class ImageMosaicCommandTest {
         addList.add(TestData.file(this,"time_mosaic/world.200406.3x5400x2700.tiff"));
         List<File> delList = new ArrayList<File>();
         delList.add(TestData.file(this,"time_mosaic/world.200406.3x5400x2700.tiff"));
-        cmd=new ImageMosaicCommand(TestData.file(this,"external"), addList, delList);
+        cmd=new ImageMosaicCommand(new File(TestData.file(this,null),"test"), addList, delList);
         cmdFile=new File(TestData.file(this,null),"test_cmd_out.xml");
     }
 
