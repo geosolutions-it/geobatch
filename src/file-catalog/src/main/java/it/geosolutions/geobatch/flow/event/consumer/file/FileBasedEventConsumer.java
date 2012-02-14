@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -53,6 +53,7 @@ import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.tools.io.file.IOUtils;
 import it.geosolutions.tools.commons.file.Path;
 
+import java.text.Format;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -61,6 +62,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Simone Giannecchini, GeoSolutions S.A.S.
+ * @author Emanuele Tajariol <etj AT geo-solutions DOT it>, GeoSolutions S.A.S.
  * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
@@ -72,23 +74,6 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedEventConsumer.class.toString());
 
-    private static boolean checkEvent(FileSystemEventType eventType, List<FileSystemEventType> eventTypes)
-    {
-        if (eventTypes == null)
-        {
-            return true;
-        }
-        for (FileSystemEventType notification : eventTypes)
-        {
-            if (notification.equals(eventType))
-            {
-                return true;
-            }
-
-        }
-
-        return false;
-    }
 
     /**
      * Common file prefix (unless the rule specify another one)
@@ -116,6 +101,11 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
     private File workingDir;
 
     /**
+     * Temporary dir for this flow instance
+     */
+    private File runtimeDir;
+
+    /**
      * do not remove ContextDirectory when consumer is disposed
      */
     private boolean keepContextDir = false;
@@ -135,16 +125,17 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
 
         final File catalogFile = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
 
-        final File workingDir = Path.findLocation(configuration.getWorkingDirectory(), catalogFile);
+        final File initDir = Path.findLocation(configuration.getWorkingDirectory(), catalogFile);
 
-        if (workingDir == null)
+        if (initDir == null)
         {
             throw new IllegalArgumentException("Invalid configuring directory");
         }
 
-        if (workingDir.exists() && (workingDir.isDirectory() & workingDir.canRead()))
+        if (initDir.exists() && (initDir.isDirectory() & initDir.canRead()))
         {
-            initialize(configuration, workingDir);
+            runtimeDir = createTempDir(initDir);
+            initialize(configuration, initDir);
 
             return;
         }
@@ -253,6 +244,25 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
         }
 
         return false;
+    }
+
+    /**
+     * Called by ctor
+     */
+    private static File createTempDir(File baseDir) {
+
+        // Dateformat for creating working dirs.
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
+        TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
+        dateFormatter.setTimeZone(TZ_UTC);
+
+        final String timeStamp = dateFormatter.format(new Date());
+
+        // current directory inside working dir, specifically created for this execution.
+        // Creation is eager
+        final File currentRunDirectory = new File(baseDir, timeStamp);
+        currentRunDirectory.mkdirs();
+        return currentRunDirectory;
     }
 
     /**
@@ -445,31 +455,31 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
             // perform
             // a backup
 
-            // Dateformat for creating working dirs.
-            final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
-            TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
-            dateFormatter.setTimeZone(TZ_UTC);
-
-            final String timeStamp = dateFormatter.format(new Date());
-
-            // current directory inside working dir, specifically created for this execution.
-            // Creation is deferred until first usage
-            final File currentRunDirectory = new File(this.workingDir, timeStamp);
+//            // Dateformat for creating working dirs.
+//            final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
+//            TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
+//            dateFormatter.setTimeZone(TZ_UTC);
+//
+//            final String timeStamp = dateFormatter.format(new Date());
+//
+//            // current directory inside working dir, specifically created for this execution.
+//            // Creation is deferred until first usage
+//            final File currentRunDirectory = new File(this.workingDir, timeStamp);
             if (configuration.isPerformBackup() || !configuration.isPreserveInput())
             {
-                if (!currentRunDirectory.exists() && !currentRunDirectory.mkdirs())
+                if (!runtimeDir.exists() && !runtimeDir.mkdirs())
                 {
                     throw new IllegalStateException("Could not create consumer backup directory!");
                 }
             }
 
             // set the consumer running context
-            setRunningContext(currentRunDirectory.getAbsolutePath());
+            setRunningContext(runtimeDir.getAbsolutePath());
 
             // create backup dir. Creation is deferred until first usage
             getListenerForwarder().progressing(20, "Creating backup dir");
 
-            final File backupDirectory = new File(currentRunDirectory, "backup");
+            final File backupDirectory = new File(runtimeDir, "backup");
             if (configuration.isPerformBackup())
             {
                 if (!backupDirectory.exists() && !backupDirectory.mkdirs())
@@ -538,7 +548,7 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
 
                             // In case we do not work on the input as is, we move it to our
                             // current working directory
-                            final File destDataFile = new File(currentRunDirectory, fileBareName);
+                            final File destDataFile = new File(runtimeDir, fileBareName);
                             if (sourceDataFile.isDirectory())
                             {
                                 FileUtils.moveDirectory(sourceDataFile, destDataFile);
@@ -844,6 +854,35 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
         // // are we executing? If yes, let's trigger a thread!
         // if (eventConsumerStatus == EventConsumerStatus.EXECUTING)
         // getCatalog().getExecutor().execute(this);
+    }
+
+    private static boolean checkEvent(FileSystemEventType eventType, List<FileSystemEventType> eventTypes)
+    {
+        if (eventTypes == null)
+        {
+            return true;
+        }
+        for (FileSystemEventType notification : eventTypes)
+        {
+            if (notification.equals(eventType))
+            {
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
+    /**
+     * Create a temp dir for an action in a flow.<br/>
+     */
+    @Override
+    protected void setupAction(BaseAction action, int step) {
+        String dirName = step + "_" + action.getClass().getSimpleName();
+        File tempDir = new File(runtimeDir, dirName);
+        tempDir.mkdir(); // TODO: check if dir has been properly created
+        action.setTempDir(tempDir);
     }
 
     @Override

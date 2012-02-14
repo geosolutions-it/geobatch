@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.flow.Job;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
+import java.io.File;
 
 import java.util.EventObject;
 
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author Simone Giannecchini, GeoSolutions S.A.S.
+ * @author Emanuele Tajariol <etj AT geo-solutions DOT it>, GeoSolutions S.A.S.
  * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  * @version r1<br>
@@ -57,19 +59,12 @@ public abstract class BaseAction<XEO extends EventObject> extends
 	private String runningContext;
 
 	/**
-	 * @return the runningContext
+	 * Directory where temp files can be stored.
+     * It should be automatically cleaned up by the GB engine when an Action ends successfully.<br>
+	 * This should be initialized by the FlowManager
+     * <br/><b>WORK IN PROGRESS</b>
 	 */
-	public String getRunningContext() {
-		return runningContext;
-	}
-
-	/**
-	 * @param runningContext
-	 *            the runningContext to set
-	 */
-	public void setRunningContext(String runningContext) {
-		this.runningContext = runningContext;
-	}
+    private File tempDir;
 
 	final protected ProgressListenerForwarder listenerForwarder;
 
@@ -87,6 +82,29 @@ public abstract class BaseAction<XEO extends EventObject> extends
 		listenerForwarder = new ProgressListenerForwarder(this);
 		failIgnored = actionConfiguration.isFailIgnored();
 	}
+
+	/**
+	 * @return the runningContext
+	 */
+	public String getRunningContext() {
+		return runningContext;
+	}
+
+	/**
+	 * @param runningContext
+	 *            the runningContext to set
+	 */
+	public void setRunningContext(String runningContext) {
+		this.runningContext = runningContext;
+	}
+
+    public File getTempDir() {
+        return tempDir;
+    }
+
+    public void setTempDir(File tempDir) {
+        this.tempDir = tempDir;
+    }
 
 	public void destroy() {
 	}

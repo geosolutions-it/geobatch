@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -31,6 +31,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.misc.PauseHandler;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.EventObject;
@@ -46,6 +47,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Alessio Fabiani, GeoSolutions
  * @author Simone Giannecchini, GeoSolutions
+ * @author Emanuele Tajariol <etj AT geo-solutions DOT it>, GeoSolutions S.A.S.
  * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  * @version r1 - date: 2007<br>
@@ -185,6 +187,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
 				// setting the action context same as the event consumer
 				action.setRunningContext(getRunningContext());
+                setupAction(currentAction, step);
 
 				// setting current action
 				currentAction = action;
@@ -377,6 +380,20 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 		}
 		return null;
 	}
+
+    /**
+     * Create a temp dir for an action in a flow.<br/>
+     * FIXME: Quick'n'dirty implementation; 
+     *    - should this info be set only by FileBasedEventCOnsumer? 
+     * Overridable method so that child classes may perform further setup on actions.
+     *
+     * @param action
+     * @param aThis
+     * @param step
+     * @return 
+     */
+    protected void setupAction(BaseAction action, int step) {
+    }
 
 	protected class EventConsumerListenerForwarder extends
 			ProgressListenerForwarder {

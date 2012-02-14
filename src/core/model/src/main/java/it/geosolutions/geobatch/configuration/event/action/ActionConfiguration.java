@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -24,7 +24,9 @@ package it.geosolutions.geobatch.configuration.event.action;
 
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,7 @@ import java.util.List;
  * @see FileBasedCatalogConfiguration
  * 
  * @author Simone Giannecchini
+ * @author Emanuele Tajariol <etj AT geo-solutions DOT it>, GeoSolutions S.A.S.
  * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
@@ -51,26 +54,60 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
      * workingDirectory: this attribute represents the configuring directory for this flow. 
      * It can be relative to the catalog.xml directory or absolute. Attention: the configuring 
      * directory should be different from the one containing the configuration files.
+     *
+     * @deprecated use {@link #configDir}
      */
     private String workingDirectory;
 
     /**
+     * Action configuration directory
+     */
+    private File configDir;
+
+
+    public ActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
+
+    /**
      * Getter for the workingDirectory
+     * @deprecated use {@link #getConfigDir()} or {@link BaseAction#getTempDir() }
      */
     public String getWorkingDirectory() {
         return workingDirectory;
     }
-    
+
     /**
-     * Setter for the workingDirectory.
+     * Setter for the workingDirectory.<br/>
+     * Note that when this setter is called, {@link #configDir} is set as well.
+     *
      * @param  workingDirectory
+     * @deprecated use {@link #setConfigDir(java.io.File)}  or {@link BaseAction#setTempDir() }
      */
     public void setWorkingDirectory(String workingDirectory) {
         this.workingDirectory = workingDirectory;
+        this.configDir = new File(workingDirectory);
     }
 
-    public ActionConfiguration(String id, String name, String description) {
-        super(id, name, description);
+    /**
+     *
+     * @return the directory where the Action can find its static configuration files.
+     */
+    public File getConfigDir() {
+        return configDir;
+    }
+
+    /**
+     * Setter for the configuration directory.<br/>
+     * Note that when this setter is called, {@link #workingDirectory} is set as well.
+     *
+     * @param  configDir the directory where the Action can find its static configuration files.
+     *
+     * @deprecated use {@link #setConfigDir(java.io.File)}  or {@link BaseAction#setTempDir() }
+     */
+    public void setConfigDir(File configDir) {
+        this.configDir = configDir;
+        this.workingDirectory = configDir.getAbsolutePath();
     }
 
     /**
