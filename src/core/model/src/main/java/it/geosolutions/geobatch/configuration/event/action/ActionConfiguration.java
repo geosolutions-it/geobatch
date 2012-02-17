@@ -104,8 +104,6 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
      * Note that when this setter is called, {@link #workingDirectory} is set as well.
      *
      * @param  configDir the directory where the Action can find its static configuration files.
-     *
-     * @deprecated use {@link #setConfigDir(java.io.File)}  or {@link BaseAction#setTempDir() }
      */
     public void setConfigDir(File configDir) {
     	if (configDir!=null){
