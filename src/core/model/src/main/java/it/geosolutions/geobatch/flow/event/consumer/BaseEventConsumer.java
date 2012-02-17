@@ -187,10 +187,12 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
 				// setting the action context same as the event consumer
 				action.setRunningContext(getRunningContext());
-                setupAction(currentAction, step);
 
 				// setting current action
 				currentAction = action;
+
+                // let child classes perform their init
+                setupAction(action, step);
 
 				// execute the action
 				events = action.execute(events);
