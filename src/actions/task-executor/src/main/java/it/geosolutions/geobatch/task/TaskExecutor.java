@@ -126,8 +126,7 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 			}
 			final String inputFilePath = inputFile.getAbsolutePath();
 
-			final String inputFileExt = FilenameUtils
-					.getExtension(inputFilePath);
+			final String inputFileExt = FilenameUtils.getExtension(inputFilePath);
 
 			// Getting XSL file definition
 			final String xslPath = configuration.getXsl();
@@ -141,8 +140,7 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 				useDefaultScript = false;
 			} else {
 				if (LOGGER.isInfoEnabled())
-					LOGGER.info("Using default script: "
-							+ configuration.getDefaultScript());
+					LOGGER.info("Using default script: " + configuration.getDefaultScript());
 				useDefaultScript = true;
 			}
 
@@ -154,11 +152,10 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 			try {
 
 				if (xslPath != null && xslPath.trim().length() > 0) {
-					final String path=Path.findLocation(xslPath,configuration.getWorkingDirectory());
+					final String path=Path.findLocation(xslPath,configuration.getWorkingDirectory()); // todo: use getConfigDir()
 					if (path==null){
 						final ActionException e = new ActionException(this,
-								"The specified XSL file hasn't been found: "
-										+ path);
+								"The specified XSL file hasn't been found: " + path);
 						listenerForwarder.failed(e);
 						throw e;
 					}
@@ -166,8 +163,7 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 				}
 				if (!xslFile.exists()) {
 					final ActionException e = new ActionException(this,
-							"The specified XSL file hasn't been found: "
-									+ xslPath);
+							"The specified XSL file hasn't been found: " + xslPath);
 					listenerForwarder.failed(e);
 					throw e;
 				}
@@ -177,7 +173,7 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 				if (useDefaultScript) {
 					if (defaultScriptPath != null
 							&& defaultScriptPath.trim().length() > 0) {
-						final String path=Path.findLocation(xslPath,configuration.getWorkingDirectory());
+						final String path=Path.findLocation(xslPath,configuration.getWorkingDirectory()); // todo: use getConfigDir()
 						if (path==null){
 							final ActionException e = new ActionException(this,
 									"The specified XSL file hasn't been found: "
@@ -187,9 +183,8 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 						}
 						xmlFile = new File(path);
 						
-						final File outXmlFile = File.createTempFile("script",
-								".xml");
-						outXmlFile.deleteOnExit();
+						final File outXmlFile = File.createTempFile("script",".xml", getTempDir());
+//						outXmlFile.deleteOnExit();
 						outputFile = setScriptArguments(
 								xmlFile.getAbsolutePath(), inputFilePath,
 								outputName, outXmlFile);
@@ -245,8 +240,7 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 				// Setting Error logging
 				final String errorPath = configuration.getErrorFile();
 				if (errorPath != null && errorPath.trim().length() > 0) {
-					File errorFile = Path.findLocation(errorPath, new File(
-							getRunningContext()));
+					File errorFile = Path.findLocation(errorPath, getTempDir());
 					if (errorFile != null) {
 						if (!errorFile.exists()) {
 							try {
@@ -259,6 +253,8 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 							}
 						}
 						if (errorFile.exists()) {
+                            if(LOGGER.isDebugEnabled())
+                                LOGGER.debug("Using error file: " + errorFile);
 							execTask.setLogError(true);
 							execTask.setAppend(true);
 							execTask.setError(errorFile);
@@ -280,22 +276,14 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 				if (configuration.getOutput() != null) {
 					output = new File(configuration.getOutput());
 					if (output.exists() && output.isDirectory()) {
-						final File outXmlFile = File.createTempFile("script",
-								".xml");
-						outXmlFile.deleteOnExit();
-						String destFile = getScriptArguments(
-								xmlFile.getAbsolutePath(), "srcfile");
+						final File outXmlFile = File.createTempFile("script",".xml",getTempDir()); // TODO CHECKME: is this var used?
+//						outXmlFile.deleteOnExit();
+						String destFile = getScriptArguments(xmlFile.getAbsolutePath(), "srcfile");
 						if (output.isAbsolute()) {
-							output = new File(
-									output,
-									FilenameUtils.getBaseName(destFile)
-											+ configuration
-													.getOutputName()
-													.substring(
-															configuration
-																	.getOutputName()
-																	.indexOf(
-																			".")));
+//                            String basename = 
+							output = new File(output,
+                                                FilenameUtils.getBaseName(destFile)
+                                                    + configuration.getOutputName().substring(configuration.getOutputName().indexOf(".")));
 						} else {
 							output = Path.findLocation(
 									configuration.getOutput(),
@@ -319,22 +307,21 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 				// Executing
 				execTask.execute();
 
-				File outFile = (outputFile != null ? new File(outputFile)
-						: null);
+				File outFile = (outputFile != null ? new File(outputFile) : null);
+
 				if (configuration.getOutput() != null) {
 					if (new File(configuration.getOutput()).isAbsolute()) {
 						if (output.exists() && output.isFile()) {
 							// outFile = output;
-							final File outXmlFile = File.createTempFile(
-									"script", ".xml");
-							outXmlFile.deleteOnExit();
+							final File outXmlFile = File.createTempFile("script", ".xml", getTempDir());
+//							outXmlFile.deleteOnExit();
 							outputFile = setScriptArguments(
 									xmlFile.getAbsolutePath(),
-									output.getAbsolutePath(), outputName,
+									output.getAbsolutePath(),
+                                    outputName,
 									outXmlFile);
 							outFile = new File(configuration.getOutput(),
-									FilenameUtils.getBaseName(outputFile)
-											+ ".xml");
+									FilenameUtils.getBaseName(outputFile)+ ".xml");
 							FileUtils.copyFile(outXmlFile, outFile);
 						}
 					} else {
@@ -345,9 +332,8 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 					outFile = inputFile;
 				}
 
-				outEvents.add(new FileSystemEvent(outFile,
-						FileSystemEventType.FILE_ADDED));
-			} catch (Throwable e) {
+				outEvents.add(new FileSystemEvent(outFile, FileSystemEventType.FILE_ADDED));
+			} catch (Exception e) {
 				listenerForwarder.failed(e);
 				throw new ActionException(this, e.getMessage(), e);
 			} finally {
@@ -368,7 +354,7 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 		final Templates transformation = f.newTemplates(new StreamSource(is));
 		final Transformer transformer = transformation.newTransformer();
 		transformer.transform(xmlSource, new StreamResult(result));
-		final String argument = result.toString();
+		final String argument = result.toString().replace("\n", " ");
 		return argument;
 	}
 
@@ -380,8 +366,7 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 		if (outputName != null && outputName.trim().length() > 0) {
 			overwriteOutput = true;
 			if (outputName.startsWith("*.")) {
-				final String outputExt = outputName.substring(2,
-						outputName.length());
+				final String outputExt = outputName.substring(2,outputName.length());
 				destFilePath = new StringBuilder(
 						FilenameUtils.getFullPath(inputFilePath))
 						.append(File.separator)
@@ -451,26 +436,19 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 					} else {
 						while ((inLine = inputStream.readLine()) != null) {
 							if (overwriteOutput) {
-								if (inLine.trim().endsWith(
-										DESTINATION_TAG_CLOSE)) {
+								if (inLine.trim().endsWith(DESTINATION_TAG_CLOSE)) {
 									// source file specified on different lines
-									inLine = new StringBuilder(
-											DESTINATION_TAG_OPEN)
+									inLine = new StringBuilder(DESTINATION_TAG_OPEN)
 											.append(destFilePath)
 											.append(DESTINATION_TAG_CLOSE)
 											.toString();
 								}
 							} else {
 								String newLine = inLine.trim();
-								if (newLine.trim().endsWith(
-										DESTINATION_TAG_CLOSE)) {
+								if (newLine.trim().endsWith(DESTINATION_TAG_CLOSE)) {
 									// source file specified on different lines
-									if (!newLine.trim().startsWith(
-											DESTINATION_TAG_CLOSE)) {
-										destFilePath = newLine
-												.substring(
-														0,
-														newLine.indexOf(DESTINATION_TAG_CLOSE));
+									if (!newLine.trim().startsWith(DESTINATION_TAG_CLOSE)) {
+										destFilePath = newLine.substring(0,newLine.indexOf(DESTINATION_TAG_CLOSE));
 									}
 								} else {
 									if (newLine.length() > 0) {
