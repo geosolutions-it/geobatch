@@ -1,0 +1,127 @@
+## ALL THE AVAILABLE PARAMS:
+#String
+# database type
+dbtype=
+
+#String
+# host
+host=
+
+#Integer
+# database server port
+port=
+
+#String
+# database
+database=
+
+#String
+# schema
+schema=
+    
+#String
+# user name to login as
+user=
+
+#String
+# password used to login
+passwd=
+
+#String
+# namespace prefix
+namespace=
+
+#DataSource
+# data source
+Data\ Source=
+
+#Integer
+# maximum number of open connections
+# Default 10
+max\ connections=
+
+#Integer
+# minimum number of pooled connection
+# default 1
+min\ connections=
+
+#Boolean
+# check connection is alive before using it
+# Default Boolean.FALSE
+validate\ connections=
+
+#Integer
+# Number of records read with each iteraction with the dbms.
+# Defatul 1000
+fetch\ size=
+ 
+#Integer
+# number of seconds the connection pool will wait before 
+# timing out attempting to get a new connection
+# Default 20 seconds
+Connection\ timeout=
+
+#String
+# The optional table containing primary key structure and
+# sequence associations. Can be expressed as 'schema.name'
+# or just 'name'.
+Primary\ key\ metadata\ table=
+
+#Integer 
+# Maximum number of prepared statements kept open and
+# cached for each connection in the pool. 
+# Set to 0 to have unbounded caching, to -1 to disable caching.
+# Default 50.
+Max\ open\ prepared\ statements=
+
+#boolean 
+# Expose primary key columns as attributes of the feature type
+# defatul false.
+Expose\ primary\ keys=
+
+
+#Using Post Gis?
+#If you are using the Post Gis? (PostgreSQL) API: In addition to the above options you can use the below one. Note the 'SPI' key can substitute the 'dbtype'.
+
+#######################
+# PostgreSQL specific #
+#dbtype=postgis
+SPI=org.geotools.data.postgis.PostgisNGDataStoreFactory
+#Boolean
+# perform only primary filter on bbox
+# Default Boolean.TRUE
+Loose\ bbox=true
+
+#Boolean
+# use the spatial index information to quickly get an estimate of the data bounds
+# Default Boolean.TRUE
+Estimated\ extends=false
+
+#Boolean
+# use prepared statements
+#Default Boolean.FALSE
+preparedStatements=false
+
+
+Using JNDI on Post Gis?
+
+If you are using the API for the JNDI:
+
+#################
+# JNDI specific #
+#dbtype=
+SPI=org.geotools.data.postgis.PostgisNGJNDIDataStoreFactory
+#String
+# JNDI data source
+# Default "java:comp/env/"+"jdbc/mydatabase"
+jndiReferenceName=
+
+#Boolean
+# perform only primary filter on bbox
+# Default Boolean.TRUE
+Loose\ bbox=true
+
+#Boolean
+# use prepared statements
+#Default Boolean.FALSE
+preparedStatements=false
