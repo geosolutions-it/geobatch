@@ -238,11 +238,12 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 				execTask.setExecutable(configuration.getExecutable());
 
 				// Setting Error logging
-				final String errorPath = configuration.getErrorFile();
-				if (errorPath != null && errorPath.trim().length() > 0) {
-					File errorFile = Path.findLocation(errorPath, getTempDir());
-					if (errorFile != null) {
-						if (!errorFile.exists()) {
+				final String errorFileName = configuration.getErrorFile();
+				if (errorFileName != null ){
+					File errorFile = new File(errorFileName);
+					if (!errorFile.exists()) {
+						errorFile = Path.findLocation(errorFileName, getTempDir());
+						if (errorFile != null && !errorFile.exists()) {
 							try {
 								errorFile.createNewFile();
 							} catch (Throwable t) {
@@ -252,15 +253,15 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 								throw e;
 							}
 						}
-						if (errorFile.exists()) {
-                            if(LOGGER.isDebugEnabled())
-                                LOGGER.debug("Using error file: " + errorFile);
-							execTask.setLogError(true);
-							execTask.setAppend(true);
-							execTask.setError(errorFile);
-							execTask.setFailonerror(true);
-						}
 					}
+					if (errorFile.exists()) {
+	                    if(LOGGER.isDebugEnabled())
+	                        LOGGER.debug("Using error file: " + errorFile);
+						execTask.setLogError(true);
+						execTask.setAppend(true);
+						execTask.setError(errorFile);
+						execTask.setFailonerror(true);
+					}					
 				}
 
 				// Setting the timeout
