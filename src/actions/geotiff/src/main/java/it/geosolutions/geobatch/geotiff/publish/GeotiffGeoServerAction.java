@@ -29,14 +29,10 @@ import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.decoder.RESTCoverageStore;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Queue;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOCase;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.geotools.gce.geotiff.GeoTiffFormat;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.referencing.CRS;
@@ -100,6 +96,18 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 	    				}
 	    			}
 	            }
+            	// check if is File
+            	if(!inputFile.isFile()){
+	            	// ERROR or LOG
+	    			if (!configuration.isFailIgnored())
+	    				throw new IllegalStateException("File: "+inputFile.getAbsolutePath()+" is not a file!");
+	    			else {
+	    				if(LOGGER.isWarnEnabled()){
+	    					LOGGER.warn("File: "+inputFile.getAbsolutePath()+" is not a file!");
+	    				}
+	    			}
+            	}	
+            	
             	// check if we can read it
             	if(!inputFile.canRead()){
 	            	// ERROR or LOG
@@ -112,25 +120,8 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 	    			}
             	}	            
 	            
-	            // are we working on a single file or on a directory?
-	            if(inputFile.isFile()){
-	            	publishGeoTiff(inputFile);
-	            } else {
-	            	// load all tiff files inside this directory
-	            	IOFileFilter filter = FileFilterUtils.trueFileFilter();
-	            	filter=FileFilterUtils.makeCVSAware(filter);
-	            	filter=FileFilterUtils.makeSVNAware(filter);
-	            	filter=FileFilterUtils.makeFileOnly(filter);
-	            	final IOFileFilter filter2 = FileFilterUtils.or(filter,FileFilterUtils.suffixFileFilter("tif",IOCase.INSENSITIVE),FileFilterUtils.suffixFileFilter("tiff",IOCase.INSENSITIVE));
-	            	filter=FileFilterUtils.and(filter,filter2);
-	            	
-	            	// list the files
-	            	final File[]files=inputFile.listFiles((FileFilter)filter);
-	            	for(File file:files){
-	            		// try to publish as geotiff
-	            		publishGeoTiff(file);
-	            	}
-	            }
+            	// do your magic
+            	publishGeoTiff(inputFile);
             }
             listenerForwarder.completed();
             return events;

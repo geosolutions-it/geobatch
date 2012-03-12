@@ -23,15 +23,13 @@ package it.geosolutions.geobatch.geoserver.shapefile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
-import it.geosolutions.tools.io.file.Collector;
+import it.geosolutions.tools.compress.file.Compressor;
 import it.geosolutions.tools.compress.file.Extract;
-import it.geosolutions.tools.commons.file.Path;
+import it.geosolutions.tools.io.file.Collector;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +38,10 @@ import java.util.Queue;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.geotools.data.FileDataStore;
+import org.geotools.data.shapefile.ShapefileDataStoreFactory;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +72,8 @@ import org.slf4j.LoggerFactory;
 public class ShapeFileAction extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ShapeFileAction.class);
+    
+    private final static ShapefileDataStoreFactory SHP_FACTORY= new ShapefileDataStoreFactory();
 
     // private ShapeFileConfiguration configuration;
     private GeoServerActionConfiguration configuration;
@@ -88,43 +92,19 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
         listenerForwarder.started();
 
         try {
-            // ////////////////////////////////////////////////////////////////////
             //
             // Initializing input variables
             //
-            // ////////////////////////////////////////////////////////////////////
             if (configuration == null) {
                 // LOGGER.error("ActionConfig is null."); // we're
                 // rethrowing it, so don't log
                 throw new IllegalStateException("ActionConfig is null.");
             }
-
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // Initializing input variables
-            //
-            // ////////////////////////////////////////////////////////////////////
-            final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
-                    ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
-
-            // ////////////////////////////////////////////////////////////////////
-            //
-            // Checking input files.
-            //
-            // ////////////////////////////////////////////////////////////////////
-            if (workingDir == null) {
-                // LOGGER.error("Working directory is null."); //
-                // we're rethrowing it, so don't log
-                throw new IllegalStateException("Working directory is null.");
-            }
-
-            if (!workingDir.exists() || !workingDir.isDirectory()) {
-                // LOGGER.error(//
-                // "Working directory does not exist ("+workingDir.getAbsolutePath()+").");
-                // // we're rethrowing it, so don't log
-                throw new IllegalStateException("Working directory does not exist ("
-                        + workingDir.getAbsolutePath() + ").");
-            }
+            
+            // how many files do we have?
+            final int inputSize = events.size();
+            final boolean isZip= inputSize>1?false:FilenameUtils.getExtension(events.peek().getSource().getAbsolutePath()).equalsIgnoreCase("zip");
+            
 
             // Fetch the first event in the queue.
             // We may have one in these 2 cases:
@@ -141,23 +121,30 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             File zippedFile = null;
 
             // list of file to send to the GeoServer
-            final File[] files;
+            File[] files=null;
+            File tmpDirFile=null; 
+            Integer epsgCode=null;            
             if (events.size() == 1) {
 
+            	//
+            	// SINGLE FILE, is a zip
+            	//
                 zippedFile = event.getSource();
 
                 if (LOGGER.isTraceEnabled())
                     LOGGER.trace("Testing for compressed file: " + zippedFile.getAbsolutePath());
 
+                // try to extract
                 final String tmpDirName = Extract.extract(zippedFile.getAbsolutePath());
-
                 listenerForwarder.progressing(5, "File extracted");
 
-                /*
-                 * if the output (Extract) file is not a dir the event was a not compressed file so
-                 * we have to throw and error
-                 */
-                final File tmpDirFile = new File(tmpDirName);
+                
+                //if the output (Extract) file is not a dir the event was a not compressed file so
+                //we have to throw and error
+                if(tmpDirName==null){
+                    throw new IllegalStateException("Not valid input: we need a zip file ");
+                }
+                tmpDirFile = new File(tmpDirName);
                 if (!tmpDirFile.isDirectory()) {
                     throw new IllegalStateException("Not valid input: we need a zip file ");
                 }
@@ -174,60 +161,91 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
                     throw new IllegalStateException(message);
                 }
                 
-            } else if (events.size() >= 3) {
+            } else {
 
+            	//
+            	// Multiple separated files, let's look for the right one
+            	//
                 if (LOGGER.isTraceEnabled())
                     LOGGER.trace("Checking input collection...");
 
                 listenerForwarder.progressing(5, "Checking input collection...");
 
-                /*
-                 * build the collection of files
-                 */
+                // collect files
                 files = new File[events.size()];
                 int i = 0;
+                boolean found=false;
                 for (FileSystemEvent ev : events) {
                     files[i++] = ev.getSource();
+                    if(FilenameUtils.getExtension(files[i-1].getAbsolutePath()).equalsIgnoreCase("shp")){
+                    	
+                    	// is this a real shapefile?
+                    	found=true;
+                    	
+                    	// is it a shape?
+                        //
+                        // check the original CRS
+                        //
+                        FileDataStore store = null;
+                       
+                        try{
+                        	store=SHP_FACTORY.createDataStore(new File(tmpDirFile,shapeName+".shp").toURI().toURL());
+                            CoordinateReferenceSystem crs = store.getSchema().getCoordinateReferenceSystem();
+                            epsgCode= crs!=null?CRS.lookupEpsgCode(crs, true):null;            	
+                        } finally {
+                        	if(store!=null){
+                        		try{
+                        			store.dispose();
+                        		}catch (Exception e) {
+            						if(LOGGER.isTraceEnabled()){
+            							LOGGER.trace(e.getLocalizedMessage(),e);
+            						}
+            					}
+                        	}
+                        }
+                    }
+                }
+                // found any shapefile?
+                if(!found){
+                	 throw new IllegalStateException("Unable to create the zip file");
+                }
+                
+                // zip to a single file if method is not external
+                if(!configuration.getDataTransferMethod().equalsIgnoreCase("external")) {
+	                zippedFile = Compressor.deflate(getTempDir(),shapeName, files);
+	                if (zippedFile == null) {
+	                    throw new IllegalStateException("Unable to create the zip file");
+	                }
                 }
 
-            } else {
-                throw new IllegalStateException(
-                        "Input is not a zipped file nor a valid collection of files");
-            }
-
-            // obtain the shape file name and check for mondatory file
+            } 
+            // obtain the shape file name and check for mandatory file
             if ((shapeName = acceptable(files)) == null) {
-                throw new IllegalStateException("The file list do not contains mondadory files");
+                throw new IllegalStateException("The file list do not contains mandatory files");
             }
-
-//            zippedFile = Compressor.deflate(new File(configuration.getWorkingDirectory()),
-//                    shapeName, files);
-//            if (zippedFile == null) {
-//                throw new IllegalStateException("Unable to create the zip file");
-//            }
-
             listenerForwarder.progressing(10, "In progress");
 
             // TODO: check if the store do not exists and if so create it
-
             // TODO: check if a layer with the same name already exists in GS
             // GeoServerRESTReader reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
             // configuration.getGeoserverUID(), configuration.getGeoserverPWD());
 
-            // ////////////////////////////////////////////////////////////////////
+            
+
             //
             // SENDING data to GeoServer via REST protocol.
             //
-            // ////////////////////////////////////////////////////////////////////
-
             GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
                     configuration.getGeoserverURL(), configuration.getGeoserverUID(),
                     configuration.getGeoserverPWD());
-            /*
-             * Storename - same as layer. Layername - same as file name.
-             */
-            if (publisher.publishShp(configuration.getDefaultNamespace(), shapeName, shapeName,
-                    zippedFile, configuration.getCrs(), configuration.getDefaultStyle())) {
+            // DIRECT Upload
+            if (publisher.publishShp(
+            		configuration.getDefaultNamespace(), 
+            		shapeName, 
+            		shapeName,
+            		zippedFile, 
+                    epsgCode!=null?"EPSG:"+epsgCode:configuration.getCrs(), 
+                    configuration.getDefaultStyle())) {
                 final String message = "Shape file SUCCESFULLY sent";
                 if (LOGGER.isInfoEnabled())
                     LOGGER.info(message);
@@ -240,19 +258,19 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
                 listenerForwarder.failed(ae);
             }
 
-            // Removing old files...
-            events.clear();
-
-            // Adding the zipped file to send...
-            events.add(new FileSystemEvent(zippedFile, FileSystemEventType.FILE_ADDED));
+            if(isZip){
+	            // Removing old files...
+	            events.clear();
+	
+	            // Adding the zipped file we just sent
+	            events.add(new FileSystemEvent(zippedFile, FileSystemEventType.FILE_ADDED));
+            }
             return events;
         } catch (Throwable t) {
             final ActionException ae = new ActionException(this, t.getMessage(), t);
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(ae.getLocalizedMessage(), ae);
-            LOGGER.error(t.getLocalizedMessage(), t); // we're
-            // rethrowing it, so don't log
-            listenerForwarder.failed(t); // fails the Action
+            listenerForwarder.failed(ae); // fails the Action
             throw ae;
         }
     }
