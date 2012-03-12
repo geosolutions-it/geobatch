@@ -47,7 +47,6 @@ public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog
     public DataDirHandler dataDirHandler;
 
     private ApplicationContext applicationContext;
-//    private File dataDir = null;
 
     /**
      * The base directory where the configuration files are located.
@@ -88,8 +87,6 @@ public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog
     {
         return getClass().getSimpleName() + " [" + dataDir + "]";
     }
-
-    // ==========================================================================
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
     {

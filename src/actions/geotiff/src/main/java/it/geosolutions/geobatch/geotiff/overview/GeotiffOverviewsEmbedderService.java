@@ -35,9 +35,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Comments here ...
  * 
- * @author AlFa
- * 
- * @version $ ShapeFileDTOProducerSPI.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
 public class GeotiffOverviewsEmbedderService extends BaseService implements
         ActionService<FileSystemEvent, GeotiffOverviewsEmbedderConfiguration> {

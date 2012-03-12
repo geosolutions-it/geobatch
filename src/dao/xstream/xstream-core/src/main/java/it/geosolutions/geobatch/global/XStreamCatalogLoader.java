@@ -70,19 +70,15 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
     /**
      * GeoBatch data dir. This directory is used by the GeoBatch to store Flows configuration files.
      */
-//    private File dataDir;
 
     public void setApplicationContext(ApplicationContext context) throws BeansException {
         this.context = context;
 
     }
 
-    @SuppressWarnings("unchecked")
     public void init() throws Exception {
 
         File dataDir = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
-
-//        ((FileBaseCatalog) CatalogHolder.getCatalog()).setBaseDirectory(dataDir.getAbsolutePath());
 
         
         // //
