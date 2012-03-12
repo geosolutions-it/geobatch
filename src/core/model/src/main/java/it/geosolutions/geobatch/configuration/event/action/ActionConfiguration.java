@@ -65,6 +65,10 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
     private File configDir;
 
 
+    public ActionConfiguration() {
+        super();
+    }
+    
     public ActionConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
@@ -153,7 +157,8 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
     @Override
     public ActionConfiguration clone() {
         ActionConfiguration bc = (ActionConfiguration) super.clone();
-        
+
+        // setConfigDir(bc.getConfigDir());
         setWorkingDirectory(bc.getWorkingDirectory());
 
         setFailIgnored(bc.isFailIgnored());
