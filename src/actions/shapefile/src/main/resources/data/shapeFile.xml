@@ -13,10 +13,8 @@
         <id>shape_consumer</id>
         <description>Shapefile packer and sender</description>
         <name>shape_consumer</name>
-
         <listenerId>ConsumerLogger0</listenerId>
         <listenerId>Cumulator</listenerId>
-
         <workingDirectory>shapeFile</workingDirectory>
 
 

@@ -33,10 +33,7 @@ import java.util.List;
 
 /**
  * Conf for the event consumers based on xml marshalled files.
- *
- * <P>
- * TODO: we may need another hierarchy level for a <B>BaseEventConsumerConfiguration</B> class
- *
+ * *
  * @author Simone Giannecchini, GeoSolutions
  */
 public class FileBasedEventConsumerConfiguration extends BaseConfiguration implements EventConsumerConfiguration

@@ -35,6 +35,14 @@ public class BaseConfiguration extends BaseIdentifiable implements Configuration
     public BaseConfiguration() {
         super();
     }
+    
+    public BaseConfiguration(String id, String name) {
+        super(id, name, name);
+    }
+    
+    public BaseConfiguration(String id) {
+        super(id, id, id);
+    }
 
     public BaseConfiguration(String id, String name, String description) {
         super(id, name, description);

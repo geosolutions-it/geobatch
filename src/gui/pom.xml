@@ -175,8 +175,4 @@
       </plugin>
     </plugins>
   </build>
-  <profiles>
-	</profiles>
-  <properties>
-	</properties>
 </project>

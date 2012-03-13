@@ -103,9 +103,8 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             
             // how many files do we have?
             final int inputSize = events.size();
-            final boolean isZip= inputSize>1?false:FilenameUtils.getExtension(events.peek().getSource().getAbsolutePath()).equalsIgnoreCase("zip");
-            
 
+            
             // Fetch the first event in the queue.
             // We may have one in these 2 cases:
             // 1) a single event for a .zip file
@@ -124,10 +123,10 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             File[] files=null;
             File tmpDirFile=null; 
             Integer epsgCode=null;            
-            if (events.size() == 1) {
+            if (inputSize == 1) {
 
             	//
-            	// SINGLE FILE, is a zip
+            	// SINGLE FILE, is a zip or throw error
             	//
                 zippedFile = event.getSource();
 
@@ -205,7 +204,7 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
                         }
                     }
                 }
-                // found any shapefile?
+                // found any valid shapefile?
                 if(!found){
                 	 throw new IllegalStateException("Unable to create the zip file");
                 }
@@ -238,7 +237,7 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
                     configuration.getGeoserverURL(), configuration.getGeoserverUID(),
                     configuration.getGeoserverPWD());
-            // DIRECT Upload 	
+            // DIRECT Upload is the only supported method
             if (publisher.publishShp(
             		configuration.getDefaultNamespace(), 
             		shapeName, 
@@ -257,13 +256,6 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
                 listenerForwarder.failed(ae);
             }
 
-            if(isZip){
-	            // Removing old files...
-	            events.clear();
-	
-	            // Adding the zipped file we just sent
-	            events.add(new FileSystemEvent(zippedFile, FileSystemEventType.FILE_ADDED));
-            }
             return events;
         } catch (Throwable t) {
             final ActionException ae = new ActionException(this, t.getMessage(), t);
