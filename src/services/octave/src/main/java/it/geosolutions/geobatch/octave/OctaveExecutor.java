@@ -25,7 +25,6 @@ package it.geosolutions.geobatch.octave;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.apache.commons.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +62,7 @@ public class OctaveExecutor implements Callable<List<OctaveObject>> {
             if (LOGGER.isErrorEnabled()){
                 LOGGER.error(message);
             }
-            throw new NullArgumentException(message);
+            throw new IllegalArgumentException(message);
         }
         /**
          * Objects are extracted from the list

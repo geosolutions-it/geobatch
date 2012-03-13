@@ -39,6 +39,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -53,7 +55,7 @@ import org.springframework.context.ApplicationContextAware;
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public class XStreamCatalogLoader extends CatalogHolder implements ApplicationContextAware {
+public class XStreamCatalogLoader extends CatalogHolder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XStreamCatalogLoader.class);
 
@@ -65,6 +67,7 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
         this.alias = alias;
     }
 
+    @Resource
     private ApplicationContext context;
 
     /**

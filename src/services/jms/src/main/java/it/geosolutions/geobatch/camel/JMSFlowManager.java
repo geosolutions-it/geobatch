@@ -43,7 +43,6 @@ import org.apache.camel.AsyncProcessor;
 import org.apache.camel.Exchange;
 import org.apache.camel.InOut;
 import org.apache.camel.Message;
-import org.apache.commons.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -68,7 +67,7 @@ public class JMSFlowManager implements AsyncProcessor {
         }
         Catalog catalog = CatalogHolder.getCatalog();
         if (catalog == null)
-            throw new NullArgumentException(
+            throw new IllegalArgumentException(
                     "JMSFlowManager: Unable to load the catalog... -> catalog == null.");
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT parent flow manager");
@@ -76,7 +75,7 @@ public class JMSFlowManager implements AsyncProcessor {
         parent = catalog.getResource(FlowManagerID,
                 it.geosolutions.geobatch.flow.file.FileBasedFlowManager.class);
         if (parent == null)
-            throw new NullArgumentException("JMSFlowManager: The flow id \'" + FlowManagerID
+            throw new IllegalArgumentException("JMSFlowManager: The flow id \'" + FlowManagerID
                     + "\' do not exists into catalog... -> parent == null");
 
         if (LOGGER.isInfoEnabled()) {
