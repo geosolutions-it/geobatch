@@ -76,8 +76,6 @@
   <!--                                                             -->
   <!--     pending            Includes modules that are pending    -->
   <!--                                                             -->
-  <!--     dao.xstream        Use XStream in DAO instead of        -->
-  <!--                        default JiBX                         -->
   <!--                                                             -->
   <!--   Examples:                                                 -->
   <!--       mvn -P extensive.tests install                        -->
