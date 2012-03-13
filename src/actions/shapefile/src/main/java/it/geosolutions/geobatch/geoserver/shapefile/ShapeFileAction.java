@@ -238,14 +238,13 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
                     configuration.getGeoserverURL(), configuration.getGeoserverUID(),
                     configuration.getGeoserverPWD());
-            // DIRECT Upload
+            // DIRECT Upload 	
             if (publisher.publishShp(
             		configuration.getDefaultNamespace(), 
             		shapeName, 
             		shapeName,
             		zippedFile, 
-                    epsgCode!=null?"EPSG:"+epsgCode:configuration.getCrs(), 
-                    configuration.getDefaultStyle())) {
+                    epsgCode!=null?"EPSG:"+epsgCode:configuration.getCrs())) {
                 final String message = "Shape file SUCCESFULLY sent";
                 if (LOGGER.isInfoEnabled())
                     LOGGER.info(message);

@@ -4,38 +4,6 @@
 	<EventConsumerConfiguration>
 		<workingDirectory>flow1workingdir</workingDirectory>
 		<performBackup>true</performBackup>
-		<FileEventRule>
-			<optional>false</optional>
-			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.tif.*</regex>
-			<id>r1</id>
-			<description>description</description>
-			<name>test</name>
-		</FileEventRule>
-		<!-- <GeoServerActionConfiguration>
-			<serviceID>GeotiffGeoServerService</serviceID>
-			<id>geotiff</id>
-			<description>Action to ingest GeoTIFF on GeoServer</description>
-			<name>geotiff action</name>
-
-			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
-			<listenerId>GeoTIFFActionLogger0</listenerId>
-			
-			<workingDirectory>geotiff</workingDirectory>
-			
-			<crs>EPSG:4326</crs>
-			
-			<envelope/>
-			<dataTransferMethod>EXTERNAL</dataTransferMethod>
-			<geoserverPWD>geoserver</geoserverPWD>
-			<geoserverUID>admin</geoserverUID>
-			<geoserverURL>http://localhost:9999/geoserver</geoserverURL>
-			<defaultNamespace>ciok</defaultNamespace>
-
-			<wmsPath>/</wmsPath>
-			<defaultStyle>raster</defaultStyle>
-			<styles/>
-		</GeoServerActionConfiguration> -->
 		<id>id</id>
 		<description>description</description>
 		<name>test</name>

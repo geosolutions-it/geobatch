@@ -18,16 +18,7 @@
         <listenerId>Cumulator</listenerId>
 
         <workingDirectory>shapeFile</workingDirectory>
-        
 
-        <FileEventRule>
-            <optional>false</optional>
-            <originalOccurrencies>1</originalOccurrencies>
-            <regex>.*\.zip</regex>
-            <id>r1</id>
-            <description>description</description>
-            <name>test</name>
-        </FileEventRule>
 
         <GeoServerActionConfiguration>
             <serviceID>ShapeFileGeoServerService</serviceID>

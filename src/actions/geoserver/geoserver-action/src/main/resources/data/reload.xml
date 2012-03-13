@@ -33,80 +33,6 @@
 		<workingDirectory>reload</workingDirectory>
 		<performBackup>false</performBackup>
 		<preserveInput>false</preserveInput>
-		<FileEventRule>
-			<optional>false</optional>
-			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\..*</regex>
-			<id>r1</id>
-			<description>reload rule</description>
-			<name>reload</name>
-		</FileEventRule>
-		
-<!-- 
-		<ImageMosaicActionConfiguration>
-			<workingDirectory>reload</workingDirectory>
-
-		        <listenerId>Logger</listenerId>
-			<listenerId>Cumulator</listenerId>
-			<listenerId>Status</listenerId>						
-
-			<crs>EPSG:4326</crs>
-
-			<envelope/>
-			<dataTransferMethod>EXTERNAL</dataTransferMethod>
-			<geoserverUID>admin</geoserverUID>
-			<geoserverPWD>geoserver</geoserverPWD>
-			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
-			<defaultNamespace></defaultNamespace>
-			<defaultStyle>raster</defaultStyle>
-
-			<wmsPath>/</wmsPath>
-			<backgroundValue>NaN</backgroundValue>
-			<outputTransparentColor/>
-			<inputTransparentColor/>
-			<allowMultithreading>true</allowMultithreading>
-			<useJaiImageRead>false</useJaiImageRead>
-
-			<tileSizeH>256</tileSizeH>
-			<tileSizeW>256</tileSizeW>
-			
-			<NativeMinBoundingBoxX>-180</NativeMinBoundingBoxX>
-
-			<NativeMinBoundingBoxY>-90</NativeMinBoundingBoxY>
-
-			<NativeMaxBoundingBoxX>180</NativeMaxBoundingBoxX>
-
-			<NativeMaxBoundingBoxY>90</NativeMaxBoundingBoxY>
-
-			<latLonMinBoundingBoxX>-180</latLonMinBoundingBoxX>
-
-			<latLonMinBoundingBoxY>-90</latLonMinBoundingBoxY>
-
-			<latLonMaxBoundingBoxX>180</latLonMaxBoundingBoxX>
-
-			<latLonMaxBoundingBoxY>90</latLonMaxBoundingBoxY>
-			
-			<projectionPolicy>NONE</projectionPolicy>
-			
-			<timeDimEnabled>true</timeDimEnabled>
-			
-			<timePresentationMode>LIST</timePresentationMode>
-			<elevDimEnabled>true</elevDimEnabled>
-			<elevationPresentationMode>LIST</elevationPresentationMode>
-			
-			<styles/>
-			
-			
-			<timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>
-			<elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>
-
-			<serviceID>ImageMosaicGeneratorService</serviceID>
-			<id>ImageMosaicService</id>
-			<description>ImageMosaicService</description>
-			<name>ImageMosaicService</name>
-		</ImageMosaicActionConfiguration>
-
--->
 
 		<GeoServerReloadConfiguration>
 			<serviceID>GeoServerReloadService</serviceID>
@@ -114,7 +40,7 @@
 			<name>GeoServerReloadAction</name>
 			<description>GeoServerReload</description>
 
-		        <listenerId>Logger</listenerId>
+		    <listenerId>Logger</listenerId>
 			<listenerId>Cumulator</listenerId>
 			<listenerId>Status</listenerId>
 			

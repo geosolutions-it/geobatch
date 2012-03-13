@@ -29,15 +29,6 @@
 		<workingDirectory>splitting_working_dir</workingDirectory>
 		<performBackup>false</performBackup>
 
-		<FileEventRule>
-			<optional>false</optional>
-			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\..*</regex>
-			<id>r1</id>
-			<description>description</description>
-			<name>test</name>
-		</FileEventRule>
-
 		<SplittingConfiguration>
 			<id>splitGroovyTest</id>
 			<description>Split test action</description>

@@ -25,13 +25,11 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 public class GeoServerReloadConfiguration extends ActionConfiguration {
 
-	protected String workingDirectory;
-	
 	// path of the xml file containing the geoserver list to reload
 	protected String geoserverList;
 	
 	// size of the parallel executions 
-	private Integer executorSize;
+	protected Integer executorSize;
 
     /**
 	 * @return the executorSize
@@ -61,22 +59,6 @@ public class GeoServerReloadConfiguration extends ActionConfiguration {
 		this.geoserverList = geoserverList;
 	}
 
-	/**
-     * @return the workingDirectory
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
-
-    /**
-     * @param workingDirectory
-     *            the workingDirectory to set
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
-    }
-
-
 	public GeoServerReloadConfiguration(String id, String name, String description) {
 		super(id, name, description);
 	}
@@ -88,7 +70,7 @@ public class GeoServerReloadConfiguration extends ActionConfiguration {
 
         configuration.setGeoserverList(geoserverList);
 //        configuration.setServiceID(getServiceID());
-        configuration.setWorkingDirectory(workingDirectory);
+        configuration.setConfigDir(getConfigDir());
 
         return configuration;
     }
