@@ -29,15 +29,6 @@
 		<workingDirectory>xstream/</workingDirectory>
 		<performBackup>false</performBackup>
 		
-		<FileEventRule>
-			<optional>false</optional>
-			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.*</regex>
-			<id>r1</id>
-			<description>description</description>
-			<name>test</name>
-		</FileEventRule>
-		
 		<XstreamConfiguration>
 			<serviceID>XstreamGeneratorService</serviceID>
 			<id>XstreamGeneratorService</id>

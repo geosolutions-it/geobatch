@@ -32,7 +32,7 @@ import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.global.CatalogHolder;
-
+import org.apache.commons.beanutils.BeanUtils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;

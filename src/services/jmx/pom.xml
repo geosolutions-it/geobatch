@@ -35,31 +35,11 @@
   <!-- Dependencies -->
   <!-- ==================================================== -->
   <dependencies>
-  <dependency>
-  <groupId>org.apache.camel</groupId>
-  <artifactId>camel-xstream</artifactId>
-  <version>2.9.0</version>
-</dependency>
-<dependency>
-    <groupId>org.apache.camel</groupId>
-    <artifactId>camel-stream</artifactId>
-    <version>2.9.0</version>
-    <!-- use the same version as your Camel core version -->
-</dependency>
 
-<dependency>
-    <groupId>org.apache.camel</groupId>
-    <artifactId>camel-freemarker</artifactId>
-    <version>2.9.0</version> <!-- use the same version as your Camel core version -->
-</dependency>
-
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-context</artifactId>
-    <version>${spring.version}</version> <!-- use the same version as your Camel core version -->
-</dependency>
-
-
+    <dependency>
+        <groupId>commons-beanutils</groupId>
+  		<artifactId>commons-beanutils</artifactId>
+    </dependency>
   
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
@@ -68,34 +48,6 @@
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
-    </dependency>
-    <!-- required by both client and server -->
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-jms</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-spring</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-camel</artifactId>
-    </dependency>
-    <!-- XStream -->
-    <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-    </dependency>
-    <!-- xbean is required for ActiveMQ broker configuration in the spring 
-			xml file -->
-    <dependency>
-      <groupId>org.apache.xbean</groupId>
-      <artifactId>xbean-spring</artifactId>
     </dependency>
     <!-- getApplicationContext() -->
     <dependency>

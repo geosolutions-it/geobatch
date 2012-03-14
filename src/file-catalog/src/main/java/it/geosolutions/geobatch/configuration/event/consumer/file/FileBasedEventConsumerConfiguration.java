@@ -22,22 +22,18 @@
 
 package it.geosolutions.geobatch.configuration.event.consumer.file;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
-import it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Conf for the event consumers based on xml marshalled files.
- *
- * <P>
- * TODO: we may need another hierarchy level for a <B>BaseEventConsumerConfiguration</B> class
- *
+ * *
  * @author Simone Giannecchini, GeoSolutions
  */
 public class FileBasedEventConsumerConfiguration extends BaseConfiguration implements EventConsumerConfiguration
@@ -49,13 +45,6 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.configuration.event.action.ActionConfiguration"
      */
     private List<? extends ActionConfiguration> actions;
-
-    /**
-     * List of rules defining the consumer behavior.
-     * @uml.property  name="rules"
-     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule"
-     */
-    private List<FileEventRule> rules;
 
     /**
      * workingDirectory: this attribute represents the configuring directory for this flow.
@@ -135,33 +124,6 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     public void setActions(List<? extends ActionConfiguration> actions)
     {
         this.actions = new ArrayList<ActionConfiguration>(actions);
-    }
-
-    /**
-     * Getter for the consumer rules.
-     *
-     * @return rules
-     */
-    public List<FileEventRule> getRules()
-    {
-        return rules;
-    }
-
-    /**
-     * Setter for the consumer rules.
-     *
-     * @param rules
-     */
-    public void setRules(List<FileEventRule> rules)
-    {
-        if (rules != null)
-        {
-            this.rules = new ArrayList<FileEventRule>(rules);
-        }
-        else
-        {
-            this.rules = null;
-        }
     }
 
     /**
@@ -274,20 +236,6 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
         object.setPreserveInput(preserveInput);
         object.setWorkingDirectory(workingDirectory);
 
-        // clone its elements
-        if (rules != null)
-        {
-            final List<FileEventRule> clonedRules = new ArrayList<FileEventRule>(rules.size());
-            for (FileEventRule rule : rules)
-            {
-                clonedRules.add(rule.clone());
-            }
-            object.setRules(clonedRules);
-        }
-        else
-        {
-            object.setRules(null);
-        }
 
         final List<ActionConfiguration> clonedActions = new ArrayList<ActionConfiguration>(actions.size());
         for (ActionConfiguration action : actions)

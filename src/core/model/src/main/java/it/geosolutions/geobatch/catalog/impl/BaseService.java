@@ -25,14 +25,9 @@ package it.geosolutions.geobatch.catalog.impl;
 import it.geosolutions.geobatch.catalog.Service;
 
 public class BaseService extends BaseResource implements Service {
-
     
     private boolean available;
 
-//    public BaseService() {
-//        super();
-//        available = true;
-//    }
     /**
      * Constructor forcing initialization of: id ,name and description of this resource 
      * @param id

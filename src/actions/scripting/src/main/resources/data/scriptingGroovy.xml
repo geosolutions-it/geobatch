@@ -31,15 +31,6 @@
 		<workingDirectory>scripting_groovy_work</workingDirectory>
 		<performBackup>false</performBackup>
 
-		<FileEventRule>
-			<optional>false</optional>
-			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.*</regex>
-			<id>r1</id>
-			<description>description</description>
-			<name>test</name>
-		</FileEventRule>
-
 		<ScriptingConfiguration>
 			<id>scriptGroovyTest</id>
 			<description>Groovy test action</description>

@@ -29,25 +29,20 @@ import it.geosolutions.geobatch.camel.beans.JMSFlowStatus;
 import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
-import it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.global.CatalogHolder;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Queue;
 import java.util.concurrent.Future;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.camel.AsyncCallback;
 import org.apache.camel.AsyncProcessor;
 import org.apache.camel.Exchange;
 import org.apache.camel.InOut;
 import org.apache.camel.Message;
-import org.apache.commons.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -72,7 +67,7 @@ public class JMSFlowManager implements AsyncProcessor {
         }
         Catalog catalog = CatalogHolder.getCatalog();
         if (catalog == null)
-            throw new NullArgumentException(
+            throw new IllegalArgumentException(
                     "JMSFlowManager: Unable to load the catalog... -> catalog == null.");
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT parent flow manager");
@@ -80,7 +75,7 @@ public class JMSFlowManager implements AsyncProcessor {
         parent = catalog.getResource(FlowManagerID,
                 it.geosolutions.geobatch.flow.file.FileBasedFlowManager.class);
         if (parent == null)
-            throw new NullArgumentException("JMSFlowManager: The flow id \'" + FlowManagerID
+            throw new IllegalArgumentException("JMSFlowManager: The flow id \'" + FlowManagerID
                     + "\' do not exists into catalog... -> parent == null");
 
         if (LOGGER.isInfoEnabled()) {
@@ -113,29 +108,21 @@ public class JMSFlowManager implements AsyncProcessor {
             return null;
 
         List<FileSystemEvent> list = new ArrayList<FileSystemEvent>();
-        ListIterator<FileEventRule> it = configuration.getRules().listIterator();
-        while (it.hasNext()) {
-            FileEventRule rule = it.next();
-            Pattern p = Pattern.compile(rule.getRegex());
+        for (String file : files) {
 
-            for (String file : files) {
-                Matcher m = p.matcher(file);
-                if (m.matches()) {
 
-                    File theFile = new File(file);
-                    // if not exists or not readable throw exception
-                    if (!theFile.exists() || !theFile.canRead())
-                        throw new IllegalArgumentException("JMSFlowManager: The file \"" + theFile
-                                + "\" not exists or is not readable.");
+                File theFile = new File(file);
+                // if not exists or not readable throw exception
+                if (!theFile.exists() || !theFile.canRead())
+                    throw new IllegalArgumentException("JMSFlowManager: The file \"" + theFile
+                            + "\" not exists or is not readable.");
 
-                    // get the right event from the generator configuration
-                    FileSystemEventType ev = ((FileBasedEventGeneratorConfiguration) parent
-                            .getConfiguration().getEventGeneratorConfiguration()).getEventType();
-                    // add the event to the list
-                    list.add(new FileSystemEvent(theFile, ev));
-                }
+                // get the right event from the generator configuration
+                FileSystemEventType ev = ((FileBasedEventGeneratorConfiguration) parent
+                        .getConfiguration().getEventGeneratorConfiguration()).getEventType();
+                // add the event to the list
+                list.add(new FileSystemEvent(theFile, ev));
             }
-        }
         return list;
     }
 
@@ -271,7 +258,6 @@ public class JMSFlowManager implements AsyncProcessor {
         } catch (Throwable t) {
 //TODO            // exchange.getIn().setFault(true);
 //TODO            // exchange.setException(t);
-            t.printStackTrace();
         } finally {
             callback.done(true);
         }

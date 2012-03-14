@@ -35,7 +35,9 @@ import org.slf4j.LoggerFactory;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class GeoServerReloadService extends BaseService implements ActionService<EventObject, GeoServerReloadConfiguration> {
+//@ServiceConfigurationAliases(configurationAliasName="GeoServerReloadConfiguration",configurationAliasClass=GeoServerReloadConfiguration.class)
+public class GeoServerReloadService extends /**AutoregisteringService*/ BaseService implements ActionService<EventObject, GeoServerReloadConfiguration> {
+	
 	private final static Logger LOGGER = LoggerFactory.getLogger(GeoServerReloadService.class);
 	
 	public GeoServerReload createAction(GeoServerReloadConfiguration configuration) {
@@ -52,6 +54,9 @@ public class GeoServerReloadService extends BaseService implements ActionService
 	
     public GeoServerReloadService(String id, String name, String description) {
         super(id, name, description);
+
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info(getClass().getSimpleName() + ": registering alias.");       
     }
 
     public boolean canCreateAction(GeoServerReloadConfiguration configuration) {

@@ -37,8 +37,6 @@ import org.springframework.core.io.Resource;
 public class FakeDataDirHandler extends DataDirHandler implements ApplicationContextAware {
 
     private File dataDirectory;
-//    private ApplicationContext applicationContext;
-
     public void setDataDirectory(File dataDirectory) {
         this.dataDirectory = dataDirectory;
     }

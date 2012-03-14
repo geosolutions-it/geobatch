@@ -37,7 +37,7 @@ public class AliasRegistry implements Iterable<Map.Entry<String, Class<?>>> {
     private final static Logger LOGGER = LoggerFactory.getLogger(AliasRegistrar.class.getName());
 
     private Map<String, Class<?>> alias = new HashMap<String, Class<?>>();
-
+    
     public AliasRegistry() {
     }
 
