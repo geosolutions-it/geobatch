@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:mbean-export/>
+
+	<bean id="propertyPlaceholderConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:jmx.properties</value>
+				<value>file:${GEOBATCH_DATA_DIR}/settings/jmx.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	
+	
+	<bean id="JMXServiceManager" class="it.geosolutions.geobatch.services.JMXServiceManager" />
+
+	<bean id="JMXActionManager" class="it.geosolutions.geobatch.services.JMXActionManager" depends-on="JMXServiceManager" />
+
+<!-- 	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" -->
+<!-- 		lazy-init="false"> -->
+<!-- 		<property name="autodetect" value="true"></property> -->
+<!-- 		<property name="assembler" ref="assembler"></property> -->
+<!-- 	</bean> -->
+
+
+	<bean id="assembler"
+		class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
+		<property name="attributeSource">
+			<bean
+				class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource" />
+		</property>
+	</bean>
+
+
+<!-- 	<bean id="registry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean" > -->
+<!-- 		<property name="port" value="2099" /> -->
+<!-- 		<property name="host" value="127.0.0.1" /> -->
+<!-- 	</bean> -->
+	
+<!-- depends-on="registry"  -->
+	<!-- Expose JMX over RMI -->
+<!-- 	<bean id="serverConnector" -->
+<!-- 		class="org.springframework.jmx.support.ConnectorServerFactoryBean" > -->
+<!-- 		<property name="objectName" value="connector:name=rmi" /> -->
+<!-- 		<property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://127.0.0.1:1098/jmxrmi" /> -->
+<!-- 	</bean> -->
+	<!-- <bean id="serverConnector" -->
+	<!-- class="org.springframework.jmx.support.ConnectorServerFactoryBean"> -->
+	<!-- <property name="serviceUrl" -->
+	<!-- value="service:jmx:rmi://localhost/jndi/rmi://localhost:1099/jmxrmi/connector" 
+		/> -->
+	<!-- <property name="threaded" value="true" /> -->
+	<!-- <property name="daemon" value="true" /> -->
+	<!-- </bean> -->
+
+
+</beans>
+

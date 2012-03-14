@@ -96,7 +96,7 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     /**
      * Default Constructor.
      */
-    protected FileBasedEventConsumerConfiguration(String id, String name, String description)
+    public FileBasedEventConsumerConfiguration(String id, String name, String description)
     {
         super(id, name, description);
     }

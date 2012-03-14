@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
@@ -72,7 +73,7 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
     /**
      * Default logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedEventConsumer.class.toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedEventConsumer.class);
 
 
     /**
@@ -113,15 +114,14 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
 
     private FileBasedEventConsumerConfiguration configuration;
 
-
     private volatile boolean canceled;
+    
 
     // ----------------------------------------------- PUBLIC CONSTRUCTORS
     public FileBasedEventConsumer(FileBasedEventConsumerConfiguration configuration) throws InterruptedException,
         IOException
     {
-
-        super(configuration.getId(), configuration.getName(), configuration.getDescription());
+        super(UUID.randomUUID().toString(), configuration.getName(), configuration.getDescription());
 
         final File catalogFile = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
 
@@ -454,17 +454,6 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
             // if we work on the input directory, we do not move around anything, unless we want to
             // perform
             // a backup
-
-//            // Dateformat for creating working dirs.
-//            final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
-//            TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
-//            dateFormatter.setTimeZone(TZ_UTC);
-//
-//            final String timeStamp = dateFormatter.format(new Date());
-//
-//            // current directory inside working dir, specifically created for this execution.
-//            // Creation is deferred until first usage
-//            final File currentRunDirectory = new File(this.workingDir, timeStamp);
             if (configuration.isPerformBackup() || !configuration.isPreserveInput())
             {
                 if (!runtimeDir.exists() && !runtimeDir.mkdirs())
@@ -472,7 +461,6 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
                     throw new IllegalStateException("Could not create consumer backup directory!");
                 }
             }
-
             // set the consumer running context
             setRunningContext(runtimeDir.getAbsolutePath());
 
@@ -817,21 +805,29 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
         {
             return false;
         }
-        super.consume(event);
+        if (super.consume(event)){
 
-        // start execution
-        if (numInputFiles == 0)
-        {
-            setStatus(EventConsumerStatus.EXECUTING);
+            // start execution
+            if (numInputFiles == 0)
+            {
+                setStatus(EventConsumerStatus.EXECUTING);
+            }
+    
+            // move to waiting
+            if (getStatus() == EventConsumerStatus.IDLE)
+            {
+                setStatus(EventConsumerStatus.WAITING);
+            }
+    
+            return true;
+        } else {
+            if (LOGGER.isErrorEnabled()){
+                LOGGER.error("Action execution is rejected. Probably execution queue is full.");
+            }
+            setStatus(EventConsumerStatus.CANCELED);
+            return false;
         }
-
-        // move to waiting
-        if (getStatus() == EventConsumerStatus.IDLE)
-        {
-            setStatus(EventConsumerStatus.WAITING);
-        }
-
-        return true;
+        
     }
 
     public void cancel()

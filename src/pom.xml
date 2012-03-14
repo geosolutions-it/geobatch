@@ -1112,6 +1112,11 @@
         <artifactId>xpp3</artifactId>
         <version>1.1.3.4.O</version>
       </dependency>
+      <dependency>
+	<groupId>it.geosolutions.geobatch.services</groupId>
+	<artifactId>gb-jmx</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- CAMEL =============================================-->
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
