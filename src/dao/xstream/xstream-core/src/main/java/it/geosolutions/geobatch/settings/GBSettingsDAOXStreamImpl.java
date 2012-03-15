@@ -134,8 +134,6 @@ public class GBSettingsDAOXStreamImpl implements GBSettingsDAO  {
         }
     }
 
-    //==========================================================================
-
     public void setDataDirHandler(DataDirHandler dataDirHandler) {
         this.dataDirHandler = dataDirHandler;
     }

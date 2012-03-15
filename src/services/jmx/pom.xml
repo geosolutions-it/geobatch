@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- =========================================================================== 
+	Maven 2 Project configuration file for the FileSystemMonitor project. Version: 
+	$Id: pom.xml 20565 2006-07-17 03:26:28Z AlFa $ =========================================================================== -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>it.geosolutions.geobatch</groupId>
+    <artifactId>gb-services</artifactId>
+    <version>1.2-SNAPSHOT</version>
+  </parent>
+  <properties>
+    <!-- <allow.test.skip>true</allow.test.skip> <allow.test.failure.ignore>false</allow.test.failure.ignore> 
+			<extensive.tests>false</extensive.tests> <path.native>/Windows/System32</path.native> -->
+  </properties>
+  <!-- ===================================================================== -->
+  <!-- Project description (including license). -->
+  <!-- ===================================================================== -->
+  <groupId>it.geosolutions.geobatch.services</groupId>
+  <artifactId>gb-jmx</artifactId>
+  <packaging>jar</packaging>
+  <name>JMX Action Manager service</name>
+  <description>JMX Action Manager component</description>
+  <url>http://www.geo-solutions.it/reports/</url>
+  <scm>
+    <connection>scm:svn:https://svn.codehaus.org/geobatch/trunk/</connection>
+    <url>https://svn.codehaus.org/geobatch/trunk/</url>
+  </scm>
+  <organization>
+    <name>GeoSolutions</name>
+    <url>http://www.geo-solutions.it</url>
+  </organization>
+  <inceptionYear>2011</inceptionYear>
+  <!-- ==================================================== -->
+  <!-- Dependencies -->
+  <!-- ==================================================== -->
+  <dependencies>
+
+    <dependency>
+        <groupId>commons-beanutils</groupId>
+  		<artifactId>commons-beanutils</artifactId>
+    </dependency>
+  
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-fsm-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-fs-catalog</artifactId>
+    </dependency>
+    <!-- getApplicationContext() -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <!-- -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+    </dependency>
+  </dependencies>
+  <!-- <profiles> <profile> <id>jms</id> <activation> <property> <name>all</name> 
+		<value>true</value> </property> </activation> <dependencies> <dependency> 
+		<groupId>it.geosolutions.geobatch</groupId> <artifactId>gb-jms</artifactId> </dependency> 
+		</dependencies> </profile> </profiles> -->
+</project>

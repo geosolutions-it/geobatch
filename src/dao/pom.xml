@@ -41,32 +41,7 @@
   <!-- =========================================================== -->
   <!--     Modules for the build in approximate dependency order   -->
   <!-- =========================================================== -->
-  <!--
   <modules>
-    <module>${dao.type}</module>
-
     <module>xstream</module>
-    <module>jibx</module>
   </modules>
--->
-  <profiles>
-    <profile>
-      <id>dao.jibx</id>
-      <modules>
-        <module>jibx</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>dao.xstream</id>
-      <activation>
-        <property>
-          <name>all</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <modules>
-        <module>xstream</module>
-      </modules>
-    </profile>
-  </profiles>
 </project>

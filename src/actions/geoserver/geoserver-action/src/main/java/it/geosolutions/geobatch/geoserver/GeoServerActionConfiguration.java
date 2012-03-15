@@ -163,7 +163,7 @@ public class GeoServerActionConfiguration extends GeoServerActionConfig {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[" + "id:" + getId() + " name:" + getName()
-                + " srvId:" + getServiceID() + " wkdir:" + getWorkingDirectory() + " GSurl:"
+                + " srvId:" + getServiceID() + " wkdir:" + getConfigDir().toURI().toString() + " GSurl:"
                 + getGeoserverURL() + "]";
     }
 

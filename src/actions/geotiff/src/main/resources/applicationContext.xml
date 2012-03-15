@@ -9,12 +9,6 @@
     	<constructor-arg type="String"><value>GeotiffGeoServerService</value></constructor-arg>
         <constructor-arg type="String"><value>GeotiffGeoServerService</value></constructor-arg>
     </bean>	
-    
-    <bean id="GeotiffFolderGeoServerService" class="it.geosolutions.geobatch.geotiff.publish.GeotiffFolderGeoServerService">
-		<constructor-arg type="String"><value>GeotiffFolderGeoServerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffFolderGeoServerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffFolderGeoServerService</value></constructor-arg>
-    </bean>
 
 	<!-- Environment Initialization -->
 	<bean id="GeotiffOverviewsEmbedderService" class="it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderService">

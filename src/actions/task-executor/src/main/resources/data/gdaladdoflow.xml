@@ -4,14 +4,7 @@
 	<EventConsumerConfiguration>
 		<workingDirectory>gdaloperationsworkingdir/gdaladdo</workingDirectory>
 		<performBackup>true</performBackup>
-		<FileEventRule>
-			<optional>false</optional>
-			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.*\.xml</regex>
-			<id>r1</id>
-			<description>description</description>
-			<name>test</name>
-		</FileEventRule>
+		
         <TaskExecutorConfiguration>
 			<workingDirectory>gdaloperationsworkingdir/gdaladdo</workingDirectory>
 			<serviceID>TaskExecutorService</serviceID>

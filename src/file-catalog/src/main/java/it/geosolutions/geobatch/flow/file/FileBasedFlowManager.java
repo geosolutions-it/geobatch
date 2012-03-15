@@ -135,10 +135,23 @@ public class FileBasedFlowManager extends
 		super(configuration.getId(), configuration.getName(), configuration
 				.getDescription());
 		initialize(configuration);
+		super.setConfiguration(configuration);
 	}
 
-	public FileBasedFlowManager(String baseName, String name, String description) {
+	/**
+	 * WARNING this flow manager is not configured nor initialized
+	 * 
+	 * @param baseName
+	 * @param name
+	 * @param description
+	 * @throws NullPointerException
+	 * @throws IOException
+	 */
+        public FileBasedFlowManager(String baseName, String name, String description)
+                        throws NullPointerException, IOException {
 		super(baseName, name, description);
+		// warning this flow manager is not configured nor initialized (working dir related problem)
+//		initialize(new FileBasedFlowConfiguration(baseName, name, null, description, null));
 	}
 
 	@ManagedAttribute

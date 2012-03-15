@@ -40,7 +40,5 @@
   </licenses>
   <modules>
     <module>geoserver-action</module>
-    <!-- legacy stuff -->
-    <module>gsrest-action</module>
   </modules>
 </project>

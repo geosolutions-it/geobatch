@@ -17,10 +17,10 @@
 	<!-- let Spring do its IoC stuff in this package -->
 	<context:component-scan base-package="it.geosolutions.geobatch.camel" />
 
-	<bean id="propertyPlaceholderConfigurer"
+	<bean id="jmsPropertyPlaceholderConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="ignoreUnresolvablePlaceholders" value="true" />
-		<property name="ignoreResourceNotFound" value="true" />
+		<property name="ignoreUnresolvablePlaceholders" value="false" />
+		<property name="ignoreResourceNotFound" value="false" />
 		<property name="locations">
 			<list>
 				<value>classpath:jms.properties</value>
@@ -28,11 +28,6 @@
 			</list>
 		</property>
 	</bean>
-
-	<!-- bean id="propertyOverrideConfigurer" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer"> 
-		<property name="ignoreResourceNotFound" value="true" /> <property name="locations"> 
-		<list> <value>file:${GEOBATCH_DATA_DIR}/settings/jms.properties</value> <value>classpath:jms.properties</value> 
-		</list> </property> </bean -->
 
 	<!-- In camel you need two things to configure JMS. A ConnectionFactory 
 		and a JMSComponent. As ConnectionFactory you can simply set up the normal 
@@ -78,12 +73,15 @@
 		</property>
 	</bean>
 
-
 	<!-- <bean id="transportConnector" class="org.apache.activemq.broker.TransportConnector"> -->
 	<!-- <property name="name" value="tcp" /> -->
 	<!-- <property name="uri" value="tcp://localhost:61611" /> -->
 	<!-- </bean> -->
 
+<!-- 	<bean id="GBRouteManager" class="it.geosolutions.geobatch.camel.GBRouteManager"/> -->
+
+	<!-- The route -->
+	
 
 	<!-- The route -->
 	<bean id="JmsRoute" class="it.geosolutions.geobatch.camel.JmsRoute">
@@ -105,10 +103,25 @@
 		<!-- enable JMX connector so we can connect to the server and browse mbeans -->
 		<!-- Camel will log at INFO level the service URI to use for connecting 
 			with jconsole -->
-		<!-- <camel:jmxAgent id="agent" createConnector="true" registryPort="1099" 
-			/> -->
+<!-- 		<camel:jmxAgent id="agent" createConnector="true" registryPort="1099" /> -->
 
 		<routeBuilder ref="JmsRoute"></routeBuilder>
+		<!-- we define the json xstream data formats to be used (xstream is default) -->
+<!-- 	    <dataFormats> -->
+<!-- 	        <xstream id="xstream-utf8" encoding="UTF-8"/> -->
+<!-- 	        <xstream id="xstream-default"/> -->
+<!-- 	    </dataFormats> -->
+    
+<!-- 		<route id="JmsRoute_1"> -->
+<!-- 			<from uri="file:///home/carlo/work/code/java/geobatch/src/services/jms/src/main/resources/?fileName=data.xml"/> -->
+<!-- 			<to uri="log:it.geosolutions?level=DEBUG"/> -->
+<!-- 			<unmarshal ref="xstream-default"/> -->
+<!-- 			<to uri="log:it.geosolutions?level=DEBUG"/> -->
+<!-- 			<to uri="log:it.geosolutions?level=DEBUG"/> -->
+<!-- 			<to uri="freemarker:file:/home/carlo/work/code/java/geobatch/src/services/jms/src/main/resources/template.xml" /> -->
+<!-- 			<process ref="GBRouteManager" /> -->
+<!-- 			<to uri="log:it.geosolutions?level=DEBUG"/> -->
+<!-- 		</route> -->
 
 		<!-- from("activemq:queue:"+queueName+"?preserveMessageQos=true"). threads(poolSize, 
 			maxPoolSize). doTry(). process(new JMSFlowManager()). doCatch(java.lang.Exception.class); -->

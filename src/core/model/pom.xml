@@ -44,33 +44,7 @@
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->
   <dependencies>
-    <!-- ============================== -->
-    <!--     Platform                   -->
-    <!-- ============================== -->
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <!-- ============================== -->
-    <!--     Junit		                -->
-    <!-- ============================== -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-      <!-- Needed for test, not for running -->
-    </dependency>
-    <!-- ============================== -->
-    <!--     GT  		                -->
-    <!-- ============================== -->
-    <!--        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
-        </dependency>-->
+
     <!-- ============================== -->
     <!-- 		logging					-->
     <!-- ============================== -->
@@ -78,11 +52,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    <!--
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-        </dependency>
-        -->
+
   </dependencies>
 </project>

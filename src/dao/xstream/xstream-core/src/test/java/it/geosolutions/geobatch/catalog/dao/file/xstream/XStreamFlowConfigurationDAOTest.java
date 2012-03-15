@@ -26,7 +26,6 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
-import it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.xstream.Alias;
 
@@ -99,14 +98,7 @@ public class XStreamFlowConfigurationDAOTest extends TestCase {
         
          List<? extends ActionConfiguration> lac = fbecc.getActions();
          assertNull(lac);
-        
-         List<FileEventRule> lfer = fbecc.getRules();
-         assertNotNull(lfer);
-         for (FileEventRule fileEventRule : lfer) {
-         System.out.println(fileEventRule);
-         }
-        
-         assertEquals(1, lfer.size());
+ 
 
     }
 

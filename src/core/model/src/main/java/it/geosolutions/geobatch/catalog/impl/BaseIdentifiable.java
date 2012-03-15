@@ -22,6 +22,8 @@
 
 package it.geosolutions.geobatch.catalog.impl;
 
+import java.util.UUID;
+
 import it.geosolutions.geobatch.catalog.Identifiable;
 
 public abstract class BaseIdentifiable implements Identifiable, Cloneable {
@@ -33,7 +35,7 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
     private String name;
 
     
-    private String description = "No description set.";
+    private String description;
 
     /**
      * A constructor which do not initialize the resource id
@@ -57,7 +59,6 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
 
     /**
      * @return
-     * @uml.property  name="id"
      */
     public String getId() {
         return id;
@@ -65,7 +66,6 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
 
     /**
      * @return
-     * @uml.property  name="name"
      */
     public String getName() {
         return name;
@@ -73,7 +73,6 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
 
     /**
      * @param id  the id to set
-     * @uml.property  name="id"
      */
     public void setId(String id) {
         this.id = id;
@@ -81,7 +80,6 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
 
     /**
      * @param name  the name to set
-     * @uml.property  name="name"
      */
     public void setName(String name) {
         this.name = name;
@@ -89,7 +87,6 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
 
     /**
      * @param description  the description to set
-     * @uml.property  name="description"
      */
     public void setDescription(String description) {
         this.description = description;
@@ -97,7 +94,6 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
 
     /**
      * @return
-     * @uml.property  name="description"
      */
     public String getDescription() {
         return description;
@@ -107,7 +103,7 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
         try {
             BaseIdentifiable bi = (BaseIdentifiable) super.clone();
             bi.description = this.description;
-            bi.id = this.id;
+            bi.id = UUID.randomUUID().toString();
             bi.name = this.name;
             return bi;
         } catch (CloneNotSupportedException e) {
