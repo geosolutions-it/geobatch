@@ -25,6 +25,7 @@ import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
+import java.io.File;
 import java.util.EventObject;
 
 import org.slf4j.Logger;
@@ -62,9 +63,9 @@ public class GeoServerReloadService extends /**AutoregisteringService*/ BaseServ
     public boolean canCreateAction(GeoServerReloadConfiguration configuration) {
         try {
             // absolutize working dir
-            final String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            final String wd = Path.getAbsolutePath(configuration.getConfigDir().getAbsolutePath());
             if (wd != null) {
-                configuration.setWorkingDirectory(wd);
+                configuration.setConfigDir(new File(wd));
                 return true;
             } else {
                 if (LOGGER.isWarnEnabled())

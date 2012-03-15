@@ -7,7 +7,7 @@
 
 	<context:mbean-export/>
 
-	<bean id="propertyPlaceholderConfigurer"
+	<bean id="jmxPropertyPlaceholderConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="ignoreResourceNotFound" value="true" />

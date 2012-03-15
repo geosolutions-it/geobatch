@@ -203,6 +203,11 @@ public class JMXServiceManager implements ApplicationContextAware {
         
         consumerConfig.setActions(actions);
         consumerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
+        //TODO may we want to remove only when getStatus is remotely called???
+//        consumerConfig.setKeepContextDir(true);
+        
+        // if you whant to move the input you may call the action move!
+        consumerConfig.setPreserveInput(true);
         
         // TODO logging progress listener
 //        final LoggingProgressListenerConfiguration loggingProgressListenerConfig=new LoggingProgressListenerConfiguration("logging_listener", "logging_listener", "logging_listener");

@@ -43,6 +43,7 @@ import org.apache.camel.AsyncProcessor;
 import org.apache.camel.Exchange;
 import org.apache.camel.InOut;
 import org.apache.camel.Message;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -59,7 +60,7 @@ public class JMSFlowManager implements AsyncProcessor {
     private FileBasedEventConsumerConfiguration configuration;
     private FileBasedFlowManager parent;
     private GBFileSystemEventConsumer consumer;
-
+    
     private void init(String FlowManagerID) throws Exception {
 
         if (LOGGER.isInfoEnabled()) {
