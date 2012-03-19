@@ -32,20 +32,25 @@ import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import org.apache.commons.beanutils.BeanUtils;
+
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -177,7 +182,13 @@ public class JMXServiceManager implements ApplicationContextAware {
                 final Iterator<String> it = keys.iterator();
                 while (it.hasNext()) {
                     String key = it.next();
-                    org.apache.commons.beanutils.BeanUtils.copyProperty(actionConfig, key, config.get(key));
+                    try {
+                        smartUpdate(actionConfig, key, config.get(key));
+                        } catch (Exception e){
+                            if (LOGGER.isErrorEnabled())
+                                LOGGER.error(e.getLocalizedMessage(),e);
+                            // TODO something else?
+                        }
                 }
                 actionConfig.setConfigDir(configDirFile);
                 actionConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
@@ -230,6 +241,60 @@ public class JMXServiceManager implements ApplicationContextAware {
         flowManager.getExecutor().submit(consumer);
         
         return consumer.getId();
+    }
+    
+    public static <T> void smartUpdate(final T bean , final String propertyName, final String value) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, IllegalArgumentException, SecurityException, InstantiationException{
+        PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean,propertyName);
+        // return null if there is no such descriptor
+        if (pd==null){
+            return;
+        }
+        // T interface doesn't declare setter method for this property
+        // lets use getter methods to get the property reference
+        final Object property=PropertyUtils.getProperty(bean,propertyName);
+        
+        // check type of property to apply new value
+        if(Collection.class.isAssignableFrom(pd.getPropertyType())) {
+
+            final Collection<Object> liveCollection;
+            if (property!=null){
+                liveCollection= (Collection<Object>)property;
+                liveCollection.clear();
+            } else {
+                liveCollection= new LinkedList<Object>();
+            }
+            
+            // value should be a list of string ',' separated
+            String[] listString=value.split(",");
+            for (String s:listString){
+                liveCollection.add(s);
+            }
+            
+        } else if(Map.class.isAssignableFrom(pd.getPropertyType())) {
+            
+            final Map<Object,Object> liveMap;
+            if (property!=null){
+                liveMap= (Map<Object,Object>) property;
+                liveMap.clear();
+            } else {
+                liveMap= new HashMap<Object,Object>();
+            }
+            
+            // value should be a list of key=value string ';' separated
+            String[] listString=value.split(";");
+            for (String kvString:listString){
+                String kv[]=kvString.split("=");
+                liveMap.put(kv[0],kv[1]);
+            }
+            
+        } else {
+            if(pd.getWriteMethod() != null) {
+                PropertyUtils.setProperty(bean, propertyName, value);
+            } else {
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error("Skipping unwritable property " +propertyName + " with property type " + pd.getPropertyType());
+            }
+        }
     }
     
 }
