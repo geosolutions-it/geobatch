@@ -39,6 +39,8 @@ public class GeoServerActionConfiguration extends GeoServerActionConfig {
 
     private String datatype; // ?
     
+    private String layerName;
+
     private String defaultNamespace;
 
     private String defaultNamespaceUri;
@@ -98,6 +100,23 @@ public class GeoServerActionConfiguration extends GeoServerActionConfig {
 
     public void setDatatype(String datatype) {
         this.datatype = datatype;
+    }
+    
+    
+    /**
+     * @return the layerName to set when configuring.<br>
+     * If not set the file name will be used.
+     */
+    public final String getLayerName() {
+        return layerName;
+    }
+
+    /**
+     * @param layerName the layerName to set<br>
+     * If not set the file name will be used.
+     */
+    public final void setLayerName(String layerName) {
+        this.layerName = layerName;
     }
 
     public String getDefaultNamespace() {
