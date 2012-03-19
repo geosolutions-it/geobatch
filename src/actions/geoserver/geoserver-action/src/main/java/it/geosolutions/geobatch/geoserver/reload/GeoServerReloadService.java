@@ -25,6 +25,7 @@ import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
+import java.io.File;
 import java.util.EventObject;
 
 import org.slf4j.Logger;
@@ -35,7 +36,9 @@ import org.slf4j.LoggerFactory;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class GeoServerReloadService extends BaseService implements ActionService<EventObject, GeoServerReloadConfiguration> {
+//@ServiceConfigurationAliases(configurationAliasName="GeoServerReloadConfiguration",configurationAliasClass=GeoServerReloadConfiguration.class)
+public class GeoServerReloadService extends /**AutoregisteringService*/ BaseService implements ActionService<EventObject, GeoServerReloadConfiguration> {
+	
 	private final static Logger LOGGER = LoggerFactory.getLogger(GeoServerReloadService.class);
 	
 	public GeoServerReload createAction(GeoServerReloadConfiguration configuration) {
@@ -52,14 +55,17 @@ public class GeoServerReloadService extends BaseService implements ActionService
 	
     public GeoServerReloadService(String id, String name, String description) {
         super(id, name, description);
+
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info(getClass().getSimpleName() + ": registering alias.");       
     }
 
     public boolean canCreateAction(GeoServerReloadConfiguration configuration) {
         try {
             // absolutize working dir
-            final String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            final String wd = Path.getAbsolutePath(configuration.getConfigDir().getAbsolutePath());
             if (wd != null) {
-                configuration.setWorkingDirectory(wd);
+                configuration.setConfigDir(new File(wd));
                 return true;
             } else {
                 if (LOGGER.isWarnEnabled())

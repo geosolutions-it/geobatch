@@ -21,19 +21,8 @@
  */
 package it.geosolutions.geobatch.flow.event.consumer.file;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.TimeZone;
-import java.util.regex.Pattern;
-
+import java.util.UUID;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
@@ -50,10 +39,19 @@ import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.tools.io.file.IOUtils;
 import it.geosolutions.tools.commons.file.Path;
+import it.geosolutions.tools.io.file.IOUtils;
 
-import java.text.Format;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.TimeZone;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -72,13 +70,8 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
     /**
      * Default logger
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedEventConsumer.class.toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedEventConsumer.class);
 
-
-    /**
-     * Common file prefix (unless the rule specify another one)
-     */
-    private String commonPrefixRegex;
 
     /**
      * The number of expected mandatory files before the flow can be started.
@@ -86,16 +79,6 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
      * is consumed.
      */
     private long numInputFiles = 0;
-
-    /**
-     * Storing mandatory rules and the times they will occur.
-     */
-    private final List<FileEventRule> mandatoryRules = new ArrayList<FileEventRule>();
-
-    /**
-     * Storing optional rules and the times they will occur.
-     */
-    private final List<FileEventRule> optionalRules = new ArrayList<FileEventRule>();
 
 
     private File workingDir;
@@ -113,15 +96,14 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
 
     private FileBasedEventConsumerConfiguration configuration;
 
-
     private volatile boolean canceled;
+    
 
     // ----------------------------------------------- PUBLIC CONSTRUCTORS
     public FileBasedEventConsumer(FileBasedEventConsumerConfiguration configuration) throws InterruptedException,
         IOException
     {
-
-        super(configuration.getId(), configuration.getName(), configuration.getDescription());
+        super(UUID.randomUUID().toString(), configuration.getName(), configuration.getDescription());
 
         final File catalogFile = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
 
@@ -141,110 +123,7 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
         }
 
     }
-
-    // -------------------------------------------------------------------------
-    /**
-     * This method allows the BaseDispatcher to check if an Event can be processed by the current
-     * BaseEventConsumer.
-     *
-     * @return boolean true if the event can be accepted, i.e. this BaseEventConsumer was waiting
-     *         for it.
-     * @throws InterruptedException
-     */
-    private boolean canConsume(FileSystemEvent event)
-    {
-        final String path = event.getSource().getAbsolutePath();
-        final String fileName = FilenameUtils.getName(path);
-        final String filePrefix = FilenameUtils.getBaseName(fileName);
-        // final String fullPath = FilenameUtils.getFullPath(path);
-
-        // check mandatory rules
-        boolean res = this.checkRuleConsistency(event.getEventType(), filePrefix, fileName, true);
-
-        // check optional rules if needed
-        if (!res)
-        {
-            res = this.checkRuleConsistency(event.getEventType(), filePrefix, fileName, false);
-        }
-
-        /*
-         * COMMENTED OUT 19 Jan 2011 Carlo Cancellieri This is a not needed limitation to the fluxes
-         */
-        // res &= this.checkSamePath(fullPath);
-
-        return res;
-    }
-
-    // ----------------------------------------------------------------------------
-    /**
-     * Helper method to check for mandatory rules consistency.
-     *
-     * @param fileName
-     *
-     * @return boolean
-     *
-     */
-    private boolean checkRuleConsistency(final FileSystemEventType eventType, final String prefix,
-        final String fileName, final boolean mandatory)
-    {
-
-        int occurrencies;
-
-        final List<FileEventRule> rules = (mandatory ? this.mandatoryRules : this.optionalRules);
-        if ((rules == null) || rules.isEmpty())
-        {
-            return true;
-        }
-        for (FileEventRule rule : rules)
-        {
-
-            // check event type
-            final List<FileSystemEventType> eventTypes = rule.getAcceptableNotifications();
-            if (!checkEvent(eventType, eventTypes))
-            {
-                return false;
-            }
-
-            // check occurrences for this file in case we have multiple
-            // Occurrences
-            occurrencies = rule.getActualOccurrencies();
-
-            final int originalOccurrences = rule.getOriginalOccurrencies();
-            final Pattern p = Pattern.compile(rule.getRegex());
-            if (p.matcher(fileName).matches())
-            {
-                // we cannot exceed the number of needed occurrences!
-                if (occurrencies > originalOccurrences)
-                {
-                    return false;
-                }
-
-                if (this.commonPrefixRegex == null)
-                {
-                    this.commonPrefixRegex = prefix;
-                    rule.setActualOccurrencies(occurrencies + 1);
-                    if (mandatory)
-                    {
-                        this.numInputFiles--; // WARNING!!!! the numinputfiles should be decreased only when the event is actually consumed, not when checked (TODO)
-                    }
-
-                    return true;
-                }
-                else if (prefix.startsWith(this.commonPrefixRegex))
-                {
-                    rule.setActualOccurrencies(occurrencies + 1);
-                    if (mandatory)
-                    {
-                        this.numInputFiles--; // WARNING!!!! the numinputfiles should be decreased only when the event is actually consumed, not when checked (TODO)
-                    }
-
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
+   
 
     /**
      * Called by ctor
@@ -276,9 +155,6 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
         this.configuration = configuration;
         this.workingDir = workingDir;
         this.keepContextDir = configuration.isKeepContextDir();
-        this.commonPrefixRegex = null;
-        this.mandatoryRules.clear();
-        this.optionalRules.clear();
         this.canceled = false;
 
         // set the same name of the configuration
@@ -305,28 +181,6 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
                     "' listener, declared in " + configuration.getId() + " configuration");
             }
         }
-
-        // ////////////////////////////////////////////////////////////////////
-        // RULES
-        // ////////////////////////////////////////////////////////////////////
-
-        numInputFiles = 0;
-        if (configuration.getRules() != null)
-        {
-            for (FileEventRule rule : configuration.getRules())
-            {
-                if (!rule.isOptional())
-                {
-                    this.mandatoryRules.add(rule);
-                    numInputFiles += rule.getOriginalOccurrencies();
-                }
-                else
-                {
-                    this.optionalRules.add(rule);
-                }
-            }
-        }
-
 
         // ////////////////////////////////////////////////////////////////////
         // ACTIONS
@@ -417,9 +271,7 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
         {
             if (LOGGER.isInfoEnabled())
             {
-                LOGGER.info(getClass().getSimpleName() + " initialized with " +
-                    mandatoryRules.size() + " mandatory rules, " + optionalRules.size() +
-                    " optional rules, " + loadedActions.size() + " actions");
+                LOGGER.info(getClass().getSimpleName() + " initialized with " + loadedActions.size() + " actions");
             }
         }
     }
@@ -454,17 +306,6 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
             // if we work on the input directory, we do not move around anything, unless we want to
             // perform
             // a backup
-
-//            // Dateformat for creating working dirs.
-//            final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
-//            TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
-//            dateFormatter.setTimeZone(TZ_UTC);
-//
-//            final String timeStamp = dateFormatter.format(new Date());
-//
-//            // current directory inside working dir, specifically created for this execution.
-//            // Creation is deferred until first usage
-//            final File currentRunDirectory = new File(this.workingDir, timeStamp);
             if (configuration.isPerformBackup() || !configuration.isPreserveInput())
             {
                 if (!runtimeDir.exists() && !runtimeDir.mkdirs())
@@ -472,7 +313,6 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
                     throw new IllegalStateException("Could not create consumer backup directory!");
                 }
             }
-
             // set the consumer running context
             setRunningContext(runtimeDir.getAbsolutePath());
 
@@ -731,9 +571,6 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
         super.dispose();
         this.numInputFiles = 0;
         this.configuration = null;
-        this.commonPrefixRegex = null;
-        this.mandatoryRules.clear();
-        this.optionalRules.clear();
 
     }
 
@@ -813,25 +650,29 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
         {
             return false;
         }
-        if (!canConsume(event))
-        {
+        if (super.consume(event)){
+
+            // start execution
+            if (numInputFiles == 0)
+            {
+                setStatus(EventConsumerStatus.EXECUTING);
+            }
+    
+            // move to waiting
+            if (getStatus() == EventConsumerStatus.IDLE)
+            {
+                setStatus(EventConsumerStatus.WAITING);
+            }
+    
+            return true;
+        } else {
+            if (LOGGER.isErrorEnabled()){
+                LOGGER.error("Action execution is rejected. Probably execution queue is full.");
+            }
+            setStatus(EventConsumerStatus.CANCELED);
             return false;
         }
-        super.consume(event);
-
-        // start execution
-        if (numInputFiles == 0)
-        {
-            setStatus(EventConsumerStatus.EXECUTING);
-        }
-
-        // move to waiting
-        if (getStatus() == EventConsumerStatus.IDLE)
-        {
-            setStatus(EventConsumerStatus.WAITING);
-        }
-
-        return true;
+        
     }
 
     public void cancel()
@@ -854,24 +695,6 @@ public class FileBasedEventConsumer extends BaseEventConsumer<FileSystemEvent, F
         // // are we executing? If yes, let's trigger a thread!
         // if (eventConsumerStatus == EventConsumerStatus.EXECUTING)
         // getCatalog().getExecutor().execute(this);
-    }
-
-    private static boolean checkEvent(FileSystemEventType eventType, List<FileSystemEventType> eventTypes)
-    {
-        if (eventTypes == null)
-        {
-            return true;
-        }
-        for (FileSystemEventType notification : eventTypes)
-        {
-            if (notification.equals(eventType))
-            {
-                return true;
-            }
-
-        }
-
-        return false;
     }
 
     /**

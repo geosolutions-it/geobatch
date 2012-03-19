@@ -63,9 +63,6 @@ public class Alias {
         xstream.alias( "FlowConfiguration",
                 it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class);
 
-        xstream.alias( "FileEventRule",
-                it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
-
         xstream.alias( "EventConsumerConfiguration",
                         it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration.class,
                         it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class);
@@ -85,11 +82,6 @@ public class Alias {
         xstream.aliasField("ListenerConfigurations",
                 it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration.class,
                 "progressListenerConfigurations");
-
-        xstream.addImplicitCollection(
-                        it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,
-                        "rules",
-                        it.geosolutions.geobatch.flow.event.consumer.file.FileEventRule.class);
 
         xstream.addImplicitCollection(
                         it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration.class,

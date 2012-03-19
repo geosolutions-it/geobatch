@@ -29,24 +29,13 @@
 		<id>geotiff_retile_overview_publish</id>
 		<name>geotiffEventConsumer</name>
 		<description>geotiff EventConsumer</description>
-
 		<listenerId>GeoTIFFConsumerLogger0</listenerId>
 		<listenerId>GeoTIFFCumulator0</listenerId>
-
 		<workingDirectory>geotiff</workingDirectory>
-
 		<performBackup>true</performBackup>
-
 		<preserveInput>false</preserveInput>
 
-		<FileEventRule>
-			<optional>false</optional>
-			<originalOccurrencies>1</originalOccurrencies>
-			<regex>.+</regex>
-			<id>geotiff_r1</id>
-			<description>description</description>
-			<name>geotiff_rule_1</name>
-		</FileEventRule>
+
 
 		<GeotiffRetilerConfiguration>
 			<id>GeoTiffRetiler</id>

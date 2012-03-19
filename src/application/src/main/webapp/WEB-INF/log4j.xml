@@ -24,13 +24,13 @@
 	<!-- CAMEL -->
 	<logger name="org.apache.camel" additivity="true">
 		<!-- <level value="warning" /> -->
-		<level value="debug" /><!-- DEBUG -->
+		<level value="info" /><!-- DEBUG -->
 		<appender-ref ref="rolling" />
 		<appender-ref ref="console" />
 	</logger>
 	<logger name="it.geosolutions.geobatch" additivity="true">
 		<!-- <level value="warning" /> -->
-		<level value="trace" /><!--  DEBUG  -->
+		<level value="info" /><!--  DEBUG  -->
 		<appender-ref ref="rolling" />
 		<appender-ref ref="console" />
 	</logger>
@@ -47,7 +47,7 @@
 
 	<!-- SPRING  -->
 	<logger name="org.springframework" additivity="true">
-		<level value="debug" />
+		<level value="info" />
 		<appender-ref ref="rolling" />
 		<appender-ref ref="console" />
 	</logger>
@@ -60,7 +60,7 @@
 	</logger>
 
 	<root>
-		<level value="debug" />
+		<level value="info" />
 		<appender-ref ref="rolling" />
 		<appender-ref ref="console" />
 	</root>

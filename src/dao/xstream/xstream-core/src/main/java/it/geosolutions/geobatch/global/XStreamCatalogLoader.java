@@ -39,6 +39,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -53,7 +55,7 @@ import org.springframework.context.ApplicationContextAware;
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public class XStreamCatalogLoader extends CatalogHolder implements ApplicationContextAware {
+public class XStreamCatalogLoader extends CatalogHolder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XStreamCatalogLoader.class);
 
@@ -65,24 +67,21 @@ public class XStreamCatalogLoader extends CatalogHolder implements ApplicationCo
         this.alias = alias;
     }
 
+    @Resource
     private ApplicationContext context;
 
     /**
      * GeoBatch data dir. This directory is used by the GeoBatch to store Flows configuration files.
      */
-//    private File dataDir;
 
     public void setApplicationContext(ApplicationContext context) throws BeansException {
         this.context = context;
 
     }
 
-    @SuppressWarnings("unchecked")
     public void init() throws Exception {
 
         File dataDir = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
-
-//        ((FileBaseCatalog) CatalogHolder.getCatalog()).setBaseDirectory(dataDir.getAbsolutePath());
 
         
         // //

@@ -45,7 +45,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * These configurations can be recalled by name by any Action or Consumer that will need them.
-     * @uml.property  name="progressListenerConfigurations"
      */
     private List<ProgressListenerConfiguration> progressListenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
 
@@ -63,7 +62,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * @return
-     * @uml.property  name="workQueueSize"
      */
     public int getWorkQueueSize() {
         return workQueueSize;
@@ -71,7 +69,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * @param workQueueSize
-     * @uml.property  name="workQueueSize"
      */
     public void setWorkQueueSize(int workQueueSize) {
         this.workQueueSize = workQueueSize;
@@ -92,7 +89,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
      */
     /**
      * @return
-     * @uml.property  name="eventGeneratorConfiguration"
      */
     public EventGeneratorConfiguration getEventGeneratorConfiguration() {
         return eventGeneratorConfiguration;
@@ -100,7 +96,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * @param eventGeneratorConfiguration  the eventGeneratorConfiguration to set
-     * @uml.property  name="eventGeneratorConfiguration"
      */
     public void setEventGeneratorConfiguration(
             EventGeneratorConfiguration eventGeneratorConfiguration) {
@@ -119,7 +114,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * @return
-     * @uml.property  name="eventConsumerConfiguration"
      */
     public EventConsumerConfiguration getEventConsumerConfiguration() {
         return eventConsumerConfiguration;
@@ -127,7 +121,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * @param eventConsumerConfiguration
-     * @uml.property  name="eventConsumerConfiguration"
      */
     public void setEventConsumerConfiguration(EventConsumerConfiguration eventConsumerConfiguration) {
         this.eventConsumerConfiguration = eventConsumerConfiguration;
@@ -153,7 +146,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * @return
-     * @uml.property  name="corePoolSize"
      */
     public int getCorePoolSize() {
         return corePoolSize;
@@ -161,7 +153,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * @param corePoolSize
-     * @uml.property  name="corePoolSize"
      */
     public void setCorePoolSize(int corePoolSize) {
         this.corePoolSize = corePoolSize;
@@ -169,7 +160,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * @return
-     * @uml.property  name="maximumPoolSize"
      */
     public int getMaximumPoolSize() {
         return maximumPoolSize;
@@ -177,7 +167,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * @param maximumPoolSize
-     * @uml.property  name="maximumPoolSize"
      */
     public void setMaximumPoolSize(int maximumPoolSize) {
         this.maximumPoolSize = maximumPoolSize;
@@ -185,7 +174,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * @return
-     * @uml.property  name="keepAliveTime"
      */
     public long getKeepAliveTime() {
         return keepAliveTime;
@@ -193,7 +181,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
 
     /**
      * @param keepAliveTime
-     * @uml.property  name="keepAliveTime"
      */
     public void setKeepAliveTime(long keepAliveTime) {
         this.keepAliveTime = keepAliveTime;
