@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://code.google.com/p/geobatch/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -26,7 +26,6 @@ import freemarker.template.TemplateModelException;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.tools.adapter.EventAdapter;
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.tools.freemarker.filter.FreeMarkerFilter;
@@ -48,25 +47,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This action can be used to filter a data structure of type DATA_IN which must
+ * This action can be used to process a data structure of type DATA_IN which must
  * be supported by FreeMarker (see its documentation)
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author ETj - etj at geo-solutions.it
  * 
- * @param <DATA_CONF>
  */
-public class FreeMarkerAction extends BaseAction<EventObject> implements
-		EventAdapter<TemplateModelEvent> {
-	private final static Logger LOGGER = LoggerFactory
-			.getLogger(FreeMarkerAction.class);
+public class FreeMarkerAction
+    extends BaseAction<EventObject>
+    implements EventAdapter<TemplateModelEvent> {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerAction.class);
 
 	/**
 	 * configuration
 	 */
 	private final FreeMarkerConfiguration conf;
 
-	// the filter
-	final FreeMarkerFilter filter;
+	/** the FreeMarker processor */
+	final FreeMarkerFilter processor;
 
 	/**
 	 * 
@@ -77,82 +77,52 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 	public FreeMarkerAction(FreeMarkerConfiguration configuration) throws IllegalAccessException {
 		super(configuration);
 		conf = configuration;
-		final String workingDirFileName=Path.getAbsolutePath(conf.getWorkingDirectory());
+
+        File templateDir = conf.getInput() != null? new File(conf.getInput()).getParentFile() : null;
+		templateDir = resolveDir(templateDir, conf.getConfigDir());
+//		final String templateDir = Path.getAbsolutePath(conf.getConfigDir());
 		
-		if (workingDirFileName==null)
-			throw new IllegalAccessException("Unable to resolve the working dir->"+conf.getWorkingDirectory());
-		
-		final File workingDirFile=new File(workingDirFileName);
-		filter = new FreeMarkerFilter(workingDirFileName,conf.getInput());
+		if (templateDir == null)
+			throw new IllegalArgumentException("Unable to resolve the template dir"
+                    + " (templatePath:"+conf.getInput()
+                    + " configDir:"+configuration.getConfigDir()+")");
+
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("FreeMarker template dir is  " + templateDir);
+            LOGGER.debug("FreeMarker config dir is    " + conf.getConfigDir());
+            LOGGER.debug("FreeMarker conf.getInput is " + conf.getInput());
+        }
+
+		processor = new FreeMarkerFilter(templateDir.toString(), conf.getInput());
 	}
+
+    /**
+     * Return the absolute dir represented by "dir", rooted at "parentDir" if needed.
+     * 
+     * @return the absolute dir represented by "dir", rooted at "parentDir" if needed, or null if no existing dir could be found.
+     */
+    private File resolveDir(File dir, File parentDir) {
+        if(dir == null)
+            return parentDir;
+
+        if(dir.isAbsolute() ) {
+            return dir.exists() ? dir : null;
+        } else {
+            File absDir = new File(parentDir, dir.getPath());
+            return absDir.exists() ? absDir : null;
+        }
+    }
 
 	/**
 	 * Removes TemplateModelEvents from the queue and put
 	 */
-	public Queue<EventObject> execute(Queue<EventObject> events)
-			throws ActionException {
+	public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
+        
 		listenerForwarder.started();
 		listenerForwarder.setTask("build the output absolute file name");
-		// build the output absolute file name
-		File outputDir;
-		if (conf.getOutput() != null) {
-			final File out = new File(conf.getOutput());
-			if (out.isAbsolute()) {
-				if (!out.exists()) {
-					if (!out.mkdirs()) {
-						final String message = "Unable create the output dir : "
-								+ out.getAbsolutePath();
-						if (LOGGER.isErrorEnabled())
-							LOGGER.error(message);
-						throw new ActionException(this, message);
-					}
-				}
-				outputDir=out;
-			} else {
-				try {
 
-					// the output
-					outputDir = it.geosolutions.tools.commons.file.Path.findLocation(
-							conf.getOutput(),
-							new File(conf.getWorkingDirectory()));
-					if (LOGGER.isInfoEnabled())
-						LOGGER.info("Output directory name: "
-								+ outputDir.toString());
-
-				} catch (NullPointerException npe) {
-					outputDir = new File(conf.getWorkingDirectory(),
-							conf.getOutput());
-					// failed to absolutize conf.getOutput()
-					if (!outputDir.exists()) {
-						if (!outputDir.mkdirs()) {
-							final String message = "Unable to build the output dir path from : "
-									+ conf.getOutput();
-							if (LOGGER.isErrorEnabled())
-								LOGGER.error(message);
-
-							final ActionException e = new ActionException(this,
-									message);
-							listenerForwarder.failed(e);
-							throw e;
-
-						}
-					} else if (!outputDir.canWrite()) {
-						final String message = "Output dir is not writeable : "
-								+ conf.getOutput();
-						if (LOGGER.isErrorEnabled())
-							LOGGER.error(message);
-						listenerForwarder.failed(npe);
-						throw new ActionException(this,
-								npe.getLocalizedMessage());
-					}
-				}
-			}
-		} else {
-			if (LOGGER.isErrorEnabled())
-				LOGGER.error("Output dir : "
-						+ conf.getWorkingDirectory());
-			outputDir = new File(conf.getWorkingDirectory());
-		}
+        // build the output absolute file name
+		File outputDir = computeOutputDir(); // may throw ActionEx
 
 		// return
 		final Queue<EventObject> ret = new LinkedList<EventObject>();
@@ -161,11 +131,9 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 		/*
 		 * Building/getting the root data structure
 		 */
-		final Map<String, Object> root;
-		if (conf.getRoot() != null)
-			root = conf.getRoot();
-		else
-			root = new HashMap<String, Object>();
+		final Map<String, Object> root = conf.getRoot() != null ?
+			conf.getRoot():
+			new HashMap<String, Object>();
 
 		// list of incoming event to inject into the root datamodel
 		final List<TemplateModel> list;
@@ -177,16 +145,15 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 		// append the list of adapted event objects
 		root.put(TemplateModelEvent.EVENT_KEY, list);
 
-		while (events.size() > 0) {
+		while ( ! events.isEmpty() ) {
 			// the adapted event
 			final TemplateModelEvent ev;
 			final TemplateModel dataModel;
 			try {
 				if ((ev = adapter(events.remove())) != null) {
-					listenerForwarder
-							.setTask("Try to get a Template DataModel from the Adapted event");
+					listenerForwarder.setTask("Try to get a Template DataModel from the Adapted event");
 					// try to get a Template DataModel from the Adapted event
-					dataModel = ev.getModel(filter);
+					dataModel = ev.getModel(processor);
 
 				} else {
 					final String message = "Unable to append the event: unrecognized format. SKIPPING...";
@@ -196,8 +163,7 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 					if (conf.isFailIgnored()) {
 						continue;
 					} else {
-						final ActionException e = new ActionException(this,
-								message);
+						final ActionException e = new ActionException(this,message);
 						listenerForwarder.failed(e);
 						throw e;
 					}
@@ -285,26 +251,23 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 	private final File buildOutput(final File outputDir,
 			final Map<String, Object> root) throws ActionException {
 		// try to open the file to write into
-		final FileWriter fw;
+		FileWriter fw = null;
 		final File outputFile;
 		try {
-			final String outputFilePrefix = FilenameUtils.getBaseName(conf
-					.getInput()) + "_";
-			final String outputFileSuffix = "."
-					+ FilenameUtils.getExtension(conf.getInput());
-			outputFile = File.createTempFile(outputFilePrefix,
-					outputFileSuffix, outputDir);
+			final String outputFilePrefix = FilenameUtils.getBaseName(conf.getInput()) + "_";
+			final String outputFileSuffix = "."+ FilenameUtils.getExtension(conf.getInput());
+			outputFile = File.createTempFile(outputFilePrefix,outputFileSuffix, outputDir);
 			if (LOGGER.isInfoEnabled())
-				LOGGER.info("FreeMarkerAction.buildOutput(): Output file name: "
-						+ outputFile.toString());
+				LOGGER.info("FreeMarkerAction.buildOutput(): Output file name: "+ outputFile);
 			fw = new FileWriter(outputFile);
 		} catch (IOException ioe) {
+            IOUtils.closeQuietly(fw);
 			final String message = "FreeMarkerAction.buildOutput(): Unable to build the output file writer: "
 					+ ioe.getLocalizedMessage();
 			if (LOGGER.isErrorEnabled())
 				LOGGER.error(message);
 			throw new ActionException(this, message);
-		}
+        }
 
 		/*
 		 * If available, process the output file using the TemplateModel data
@@ -312,7 +275,7 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 		 */
 		try {
 			// process the input template file
-			filter.process(filter.wrapRoot(root), fw);
+			processor.process(processor.wrapRoot(root), fw);
 
 			// flush the buffer
 			if (fw != null)
@@ -385,7 +348,7 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 			return new TemplateModelEvent(map);
 		} else {
 			try {
-				return new TemplateModelEvent(filter.wrapRoot(ieo.getSource()));
+				return new TemplateModelEvent(processor.wrapRoot(ieo.getSource()));
 			} catch (NullPointerException npe) {
 				// NullPointerException - if tm is null
 				if (LOGGER.isErrorEnabled())
@@ -399,5 +362,80 @@ public class FreeMarkerAction extends BaseAction<EventObject> implements
 		}
 		return null;
 	}
+
+    private File computeOutputDir() throws ActionException {
+        File outputDir = null;
+
+        if ( LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Computing output dir");
+            LOGGER.debug(" - tempDir:        " + getTempDir());
+            LOGGER.debug(" - conf.getOutput: " + conf.getOutput());
+        }
+
+
+        if ( conf.getOutput() == null ) {
+
+            // no output path in the configuration: just put the output into the temp dir
+            outputDir = this.getTempDir();
+
+        } else {
+
+            final File out = new File(conf.getOutput());
+            if ( out.isAbsolute() ) {
+                if ( !out.exists() ) {
+                    if ( !out.mkdirs() ) {
+                        final String message = "Unable to create the output dir : " + out.getAbsolutePath();
+                        if ( LOGGER.isErrorEnabled() ) {
+                            LOGGER.error(message);
+                        }
+                        throw new ActionException(this, message);
+                    }
+                }
+                outputDir = out;
+            } else {
+                try {
+
+                    outputDir = it.geosolutions.tools.commons.file.Path.findLocation(conf.getOutput(), this.getTempDir());
+
+                    if ( LOGGER.isInfoEnabled() ) {
+                        LOGGER.info("Output directory name: " + outputDir);
+                    }
+
+                } catch (NullPointerException npe) { // da cosa dovrebbe esser causato? non è meglio fare una verifica == null?
+                    outputDir = new File(this.getTempDir(), conf.getOutput());
+                    // failed to absolutize conf.getOutput()
+                    if ( !outputDir.exists() ) {
+                        if ( !outputDir.mkdirs() ) {
+                            final String message = "Unable to build the output dir path from : " + conf.getOutput();
+
+                            if ( LOGGER.isErrorEnabled() ) {
+                                LOGGER.error(message);
+                            }
+                            final ActionException e = new ActionException(this, message);
+                            listenerForwarder.failed(e);
+                            throw e;
+                        }
+                    } else if ( !outputDir.canWrite() ) {
+                        final String message = "Output dir is not writeable : " + conf.getOutput();
+
+                        if ( LOGGER.isErrorEnabled() ) {
+                            LOGGER.error(message);
+                        }
+
+                        final ActionException e = new ActionException(this, message);
+                        listenerForwarder.failed(e);
+                        throw e;
+                    }
+                }
+            }
+        }
+
+
+        if ( LOGGER.isInfoEnabled() ) {
+            LOGGER.info("Output dir : " + outputDir);
+        }
+
+        return outputDir;
+    }
 
 }

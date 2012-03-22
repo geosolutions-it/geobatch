@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://code.google.com/p/geobatch/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -23,6 +23,7 @@ package it.geosolutions.geobatch.actions.freemarker;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+import java.util.HashMap;
 
 import java.util.Map;
 
@@ -33,6 +34,15 @@ import java.util.Map;
  */
 
 public class FreeMarkerConfiguration extends ActionConfiguration implements Configuration {
+
+    // path where to find the template
+    private String input;
+
+    // out path for the created files
+    private String output;
+
+    // write a file for each incoming event or not
+    private boolean nToN;
 
     public FreeMarkerConfiguration(String id, String name, String description) {
         super(id, name, description);
@@ -58,15 +68,6 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
         output = out;
         root = r;
     }
-
-    // path where to find the template
-    private String input;
-
-    // path where to write
-    private String output;
-    
-    // write a file for each incoming event or not
-    private boolean nToN;
 
     public boolean isNtoN() {
         return nToN;
@@ -111,11 +112,11 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
     }
 
     /**
-     * return the template path
+     * The absolute path where the output should be put into.
+     * Optional.
+     * If not defined, the Action's tempDir will be used.
      * 
-     * @return the template path
-     * @note this object can be null anyway the templateOut should be always present into the
-     *       configuration.
+     * @return the output absolute path where the output files should be created, or null.
      */
     public final String getOutput() {
         return output;
@@ -123,14 +124,10 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
     
     @Override
     public FreeMarkerConfiguration clone(){
-        final FreeMarkerConfiguration ret=(FreeMarkerConfiguration)super.clone();
-        ret.setNtoN(this.isNtoN());
-        ret.setWorkingDirectory(this.getWorkingDirectory());
-        ret.setServiceID(this.getServiceID());
-        ret.setOutput(this.getOutput());
-        ret.setInput(this.getInput());
-        ret.setListenerConfigurations(ret.getListenerConfigurations());
-        ret.setRoot(this.getRoot());
+        final FreeMarkerConfiguration ret = (FreeMarkerConfiguration)super.clone();
+
+        ret.root = new HashMap<String, Object>(this.root);
+
         return ret;
     }
 
