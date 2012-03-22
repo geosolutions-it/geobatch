@@ -61,6 +61,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 
+import sun.java2d.Disposer;
+
 /**
  * 
  * @author Alessio Fabiani, GeoSolutions
@@ -118,9 +120,15 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     private final Map<String, EventConsumer> eventConsumers = new HashMap<String, EventConsumer>();
 
     /**
-     * maximum numbers of executed (see Consumer.getStatus()) consumers
+     * maximum numbers of executed see {@link EventConsumer#getStatus()}
+     * 
+     * @see #purgeConsumers(int)
      */
     private int maxStoredConsumers;
+    /**
+     * @see {@link FileBasedFlowConfiguration#isKeepConsumers()}
+     */
+    private boolean keepConsumers;
 
     private ThreadPoolExecutor executor;
 
@@ -187,6 +195,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                 maxStoredConsumers = fs.getMaxStoredConsumers(); // default
                                                                  // value
             }
+            this.keepConsumers=configuration.isKeepConsumers();
 
             this.autorun = configuration.isAutorun();
 
@@ -253,14 +262,16 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @param fbec the consumer to be removed.
      * @throws IllegalArgumentException
      */
-    public void dispose(EventConsumer fbec) throws IllegalArgumentException {
+    public void disposeConsumer(EventConsumer fbec) throws IllegalArgumentException {
         if (fbec == null) {
             throw new IllegalArgumentException("Unable to dispose a null consumer object");
         }
-        dispose(fbec.getId());
+        disposeConsumer(fbec.getId());
     }
 
+
     /**
+     * 
      * Remove the given consumer instance from the ones handled by this flow.
      * <P>
      * It should only be used on instances that are not running, i.e. in a
@@ -268,7 +279,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * 
      * @param fbec the consumer to be removed.
      */
-    public void dispose(String uuid) throws IllegalArgumentException {
+    @Override
+    public void disposeConsumer(String uuid) throws IllegalArgumentException {
 
         if (uuid == null) {
             throw new IllegalArgumentException("Unable to dispose a null consumer object");
@@ -476,7 +488,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             final Iterator<String> it = keySet.iterator();
             while (it.hasNext()) {
                 final String key = it.next();
-                final EventConsumer<FileSystemEvent, EventConsumerConfiguration> consumer = eventConsumers.get(key);
+                final EventConsumer<FileSystemEvent, EventConsumerConfiguration> consumer = eventConsumers
+                    .get(key);
                 if (consumer != null) {
                     consumer.pause(true);
                 } else {
@@ -592,6 +605,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
     /**
      * returns an unmodifiable list of all the consumers
+     * 
      * @return
      */
     public final Collection<EventConsumer> getEventConsumers() {
@@ -601,7 +615,10 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     /**
-     * returns an unmodifiable set of all the consumers id
+     * Returns an unmodifiable set of all the consumers id, if you want to add
+     * or remove consumers, use the following methods:<br>
+     * {@link FileBasedFlowManager#disposeConsumer(String)}<br>
+     * {@link FileBasedFlowManager#addConsumer(EventConsumer)}<br>
      */
     public final Set<String> getEventConsumersId() {
         synchronized (eventConsumers) {
@@ -617,15 +634,25 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     /**
-     * we don't want to manipulate the list externally. please enforce this.
      * 
-     * @param consumer
+     * Add consumers to this flow
+     * 
+     * @see #disposeConsumer(EventConsumer)
+     * 
+     * @param consumer the consumer to add
+     * @return true if consumer is successfully added. If the
+     *         {@link FileBasedFlowConfiguration#isKeepConsumers()} parameter is
+     *         true, once
+     *         {@link FileBasedFlowConfiguration#getMaxStoredConsumers()} is
+     *         reached this method will return false until a consumer is
+     *         manually removed.
+     * @throws IllegalArgumentException if consumer is null
      */
     @Override
-    public boolean add(final EventConsumer consumer) throws IllegalArgumentException{
-        if (consumer==null)
+    public boolean addConsumer(final EventConsumer consumer) throws IllegalArgumentException {
+        if (consumer == null)
             throw new IllegalArgumentException("Unable to add a null consumer");
-        
+
         synchronized (eventConsumers) {
             if (eventConsumers.size() >= maxStoredConsumers) {
                 if (purgeConsumers(1) > 0) {
@@ -639,9 +666,6 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         }
         return true;
     }
-    
-    
-
 
     /**
      * 
@@ -662,19 +686,27 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
     /**
      * Remove from the consumers map at least a 'quantity' of completed, failed
-     * or canceled consumers. This method is thread-safe
+     * or canceled consumers. This method is thread-safe.<br>
+     * If keep consumers is true Consumers may be removed manually and this
+     * method will return always 0.
+     * 
+     * @see #disposeConsumer(EventConsumer)
+     * @see #addConsumer(EventConsumer)
      * 
      * @return the number of purged of the
      * 
      */
     public int purgeConsumers(int quantity) {
         int size = 0;
+        if (keepConsumers)
+            return 0;
         synchronized (eventConsumers) {
             final Set<String> keySet = eventConsumers.keySet();
             final Iterator<String> it = keySet.iterator();
             while (it.hasNext() && size < quantity) {
                 final String key = it.next();
-                final EventConsumer<FileSystemEvent, EventConsumerConfiguration> nextConsumer = eventConsumers.get(key);
+                final EventConsumer<FileSystemEvent, EventConsumerConfiguration> nextConsumer = eventConsumers
+                    .get(key);
                 if (nextConsumer == null) {
                     eventConsumers.remove(key);
                     ++size;
@@ -759,17 +791,15 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             eventMailBox.put(event);
         } catch (NullPointerException npe) {
             if (LOGGER.isErrorEnabled()) {
-                LOGGER
-                    .error("FileBasedFlowManager:postEvent(): Unable to add a null event to the flow manager (id:"
-                               + this.getId() + ") eventMailBox.\nMessage is:" + npe.getLocalizedMessage(),
-                           npe);
+                LOGGER.error("Unable to add a null event to the flow manager (id:" + this.getId()
+                             + ") eventMailBox.\nMessage is:" + npe.getLocalizedMessage(), npe);
             }
             throw npe;
         } catch (InterruptedException e) {
             if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("FileBasedFlowManager:postEvent(): Unable to add event [" + event.toString()
-                             + "] to the flow manager (id:" + this.getId() + ") eventMailBox.\nMessage is:"
-                             + e.getLocalizedMessage(), e);
+                LOGGER
+                    .error("Unable to add event [" + event.toString() + "] to the flow manager (id:"
+                               + this.getId() + ") eventMailBox.\nMessage is:" + e.getLocalizedMessage(), e);
             }
             throw new RuntimeException(e);
         }

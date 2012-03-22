@@ -55,7 +55,6 @@ public class BaseConfiguration extends BaseIdentifiable implements Configuration
 
     /**
      * @return
-     * @uml.property  name="dirty"
      */
     public boolean isDirty() {
         return dirty;
@@ -63,7 +62,6 @@ public class BaseConfiguration extends BaseIdentifiable implements Configuration
 
     /**
      * @param dirty
-     * @uml.property  name="dirty"
      */
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
@@ -71,7 +69,6 @@ public class BaseConfiguration extends BaseIdentifiable implements Configuration
 
     /**
      * @return  the serviceID
-     * @uml.property  name="serviceID"
      */
     public String getServiceID() {
         return serviceID;
@@ -79,7 +76,6 @@ public class BaseConfiguration extends BaseIdentifiable implements Configuration
 
     /**
      * @param serviceID  the serviceID to set
-     * @uml.property  name="serviceID"
      */
     public void setServiceID(String serviceID) {
         this.serviceID = serviceID;

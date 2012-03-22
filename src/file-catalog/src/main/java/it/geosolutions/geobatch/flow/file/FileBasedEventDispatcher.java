@@ -180,7 +180,10 @@ import org.slf4j.LoggerFactory;
 								LOGGER.trace(brandNewConsumer
 										+ " created on event " + event);
 							}
-							flowManager.add(brandNewConsumer);
+							eventServed = flowManager.addConsumer(brandNewConsumer);
+							if (eventServed!=true){
+							    brandNewConsumer.dispose();
+                                                        }
 						} else {
 							if (LOGGER.isTraceEnabled()) {
 								LOGGER.trace(event
@@ -188,16 +191,19 @@ import org.slf4j.LoggerFactory;
 										+ brandNewConsumer);
 							}
 
-							flowManager.add(brandNewConsumer);
-							// etj: shouldn't we call
-							// executor.execute(consumer); here?
-							// carlo: probably this is a good idea
-							flowManager.execute(brandNewConsumer);
+							eventServed = flowManager.addConsumer(brandNewConsumer);
+							if (eventServed==true){
+	                                                    // etj: shouldn't we call
+	                                                    // executor.execute(consumer); here?
+	                                                    // carlo: probably this is a good idea
+	                                                    flowManager.execute(brandNewConsumer);
+							} else {
+	                                                    brandNewConsumer.dispose();
+							}
 						}
+					}
 
-						eventServed = true;
-
-					} else if (LOGGER.isWarnEnabled()) {
+					if (!eventServed && LOGGER.isWarnEnabled()) {
 						LOGGER.warn("No consumer could serve " + event
 								+ " (neither " + brandNewConsumer + " could)");
 					}

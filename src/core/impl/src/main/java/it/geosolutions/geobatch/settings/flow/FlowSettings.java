@@ -43,6 +43,9 @@ public class FlowSettings extends GBSettings {
     private static final int DEFAULT_maxStoredConsumers = 10;
     private int maxStoredConsumers = DEFAULT_maxStoredConsumers;
 
+    private static final boolean DEFAULT_keepConsumers = false;
+    private boolean keepConsumers = DEFAULT_keepConsumers;
+    
     // /**
     // * autorun: this attribute is used to autorun a flow on startup.
     // */
@@ -62,6 +65,7 @@ public class FlowSettings extends GBSettings {
     private static final int DEFAULT_keepAliveTime = 150;
     private int keepAliveTime = DEFAULT_keepAliveTime;
 
+    
     // /**
     // * do not remove ContextDirectory when consumer is disposed
     // */
@@ -81,6 +85,20 @@ public class FlowSettings extends GBSettings {
     // public void setKeepContextDir(boolean keepContextDir) {
     // this.keepContextDir = keepContextDir;
     // }
+
+    /**
+     * @return the keepConsumers
+     */
+    public final boolean isKeepConsumers() {
+        return keepConsumers;
+    }
+
+    /**
+     * @param keepConsumers the keepConsumers to set
+     */
+    public final void setKeepConsumers(boolean keepConsumers) {
+        this.keepConsumers = keepConsumers;
+    }
 
     /**
      * @return the maxStoredConsumers

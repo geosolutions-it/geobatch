@@ -91,7 +91,7 @@ public class JMSFlowManager implements AsyncProcessor {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT injecting consumer to the parent flow");
         }
-        parent.getEventConsumers().add(consumer);
+        parent.addConsumer(consumer);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT concluded");
         }
@@ -152,7 +152,7 @@ public class JMSFlowManager implements AsyncProcessor {
             // using the Flow manager task executor
             Future<Queue<FileSystemEvent>> future = parent.getExecutor().submit(consumer);
 
-            // waiting for the result            
+            // waiting for the result
             Queue<FileSystemEvent> result = future.get();
 
             // building the response

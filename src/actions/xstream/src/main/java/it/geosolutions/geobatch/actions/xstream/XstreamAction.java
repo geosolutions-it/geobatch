@@ -43,8 +43,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 
 /**
- * This action can be used to filter a data structure of type DATA_IN which must be supported by
- * FreeMarker (see its documentation)
+ * This action can be used to filter a data structure of type DATA_IN which must
+ * be supported by FreeMarker (see its documentation)
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
@@ -70,189 +70,188 @@ public class XstreamAction extends BaseAction<EventObject> {
 
         // the output
         final Queue<EventObject> ret = new LinkedList<EventObject>();
-		listenerForwarder.started();
+        listenerForwarder.started();
         while (events.size() > 0) {
             final EventObject event = events.remove();
             if (event == null) {
-            	final String message="The passed event object is null";
+                final String message = "The passed event object is null";
                 if (LOGGER.isWarnEnabled())
                     LOGGER.warn(message);
-                if (conf.isFailIgnored()){
-                	continue;
+                if (conf.isFailIgnored()) {
+                    continue;
                 } else {
-                	final ActionException e=new ActionException(this, message);
-                	listenerForwarder.failed(e);
-                	throw e;
+                    final ActionException e = new ActionException(this, message);
+                    listenerForwarder.failed(e);
+                    throw e;
                 }
             }
 
-                if (event instanceof FileSystemEvent) {
-                    // generate an object
-                    final File sourceFile = File.class.cast(event.getSource());
-                    if (!sourceFile.exists() || !sourceFile.canRead()) {
-                    	final String message="XstreamAction.adapter(): The passed FileSystemEvent "
-                            + "reference to a not readable or not existent file: "
-                            + sourceFile.getAbsolutePath();
-                        if (LOGGER.isWarnEnabled())
-                            LOGGER.warn(message);
-                        if (conf.isFailIgnored()){
-                        	continue;
-                        } else {
-                        	final ActionException e=new ActionException(this, message);
-                        	listenerForwarder.failed(e);
-                        	throw e;
-                        }
+            if (event instanceof FileSystemEvent) {
+                // generate an object
+                final File sourceFile = File.class.cast(event.getSource());
+                if (!sourceFile.exists() || !sourceFile.canRead()) {
+                    final String message = "XstreamAction.adapter(): The passed FileSystemEvent "
+                                           + "reference to a not readable or not existent file: "
+                                           + sourceFile.getAbsolutePath();
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(message);
+                    if (conf.isFailIgnored()) {
+                        continue;
+                    } else {
+                        final ActionException e = new ActionException(this, message);
+                        listenerForwarder.failed(e);
+                        throw e;
                     }
-                    FileInputStream inputStream = null;
-                    try {
-                    	inputStream = new FileInputStream(sourceFile);
-                        final Map<String, String> aliases = conf.getAlias();
-                        if (aliases != null && aliases.size() > 0) {
-                            for (String alias : aliases.keySet()) {
-                                final Class<?> clazz = Class.forName(aliases.get(alias));
-                                xstream.alias(alias, clazz);
-                            }
-                        }
-
-                    	listenerForwarder.setTask("Converting file to a java object");
-                    	
-                        // deserialize
-                        final Object res = xstream.fromXML(inputStream);
-                        // generate event
-                        final EventObject eo = new EventObject(res);
-                        // append to the output
-                        ret.add(eo);
-
-                    } catch (XStreamException e) {
-                        // the object cannot be deserialized
-                        if (LOGGER.isErrorEnabled())
-                            LOGGER.error("The passed FileSystemEvent reference to a not deserializable file: "
-                                            + sourceFile.getAbsolutePath(), e);
-                        if (conf.isFailIgnored()){
-                        	continue;
-                        } else {
-                        	listenerForwarder.failed(e);
-                        	throw new ActionException(this, e.getLocalizedMessage());
-                        }
-                    } catch (Throwable e) {
-                        // the object cannot be deserialized
-                        if (LOGGER.isErrorEnabled())
-                            LOGGER.error(
-                                    "XstreamAction.adapter(): " + e.getLocalizedMessage(), e);
-                        if (conf.isFailIgnored()){
-                        	continue;
-                        } else {
-                        	listenerForwarder.failed(e);
-                        	throw new ActionException(this, e.getLocalizedMessage());
-                        }
-                    } finally {
-                        IOUtils.closeQuietly(inputStream);
-                    }
-
-                } else {
-                	
-                    // try to serialize
-                    // build the output absolute file name
-                    final File outputDir;
-                    try {
-                        // the output
-                        outputDir = it.geosolutions.tools.commons.file.Path.findLocation(
-                                conf.getOutput(), new File(conf.getWorkingDirectory()));
-
-                        if (!outputDir.exists()) {
-                            if (!outputDir.mkdirs()) {
-                            	final String message="Unable to create the ouptut dir named: "
-                                    + outputDir.toString();
-                                if (LOGGER.isInfoEnabled())
-                                    LOGGER.info(message);
-                                if (conf.isFailIgnored()){
-                                	continue;
-                                } else {
-                                	final ActionException e=new ActionException(this, message);
-                                	listenerForwarder.failed(e);
-                                	throw e;
-                                }
-                            }
-                        }
-                        if (LOGGER.isInfoEnabled()) {
-                            LOGGER.info("Output dir name: "
-                                    + outputDir.toString());
-                        }
-
-                    } catch (NullPointerException npe) {
-                        final String message = "Unable to get the output file path from :"
-                                + conf.getOutput();
-                        if (LOGGER.isErrorEnabled())
-                            LOGGER.error(message, npe);
-                        if (conf.isFailIgnored()){
-                        	continue;
-                        } else {
-                        	listenerForwarder.failed(npe);
-                        	throw new ActionException(this, npe.getLocalizedMessage());
-                        }
-                    }
-
-                    final File outputFile = new File(outputDir, conf.getOutput());
-                    
-                    listenerForwarder.setTask("Serializing java object to "+outputFile);
-                    
-                    // try to open the file to write into
-                    FileWriter fw = null;
-                    try {
-                        fw = new FileWriter(outputFile);
-                    } catch (IOException ioe) {
-                        final String message = "Unable to build the output file writer: "
-                                + ioe.getLocalizedMessage();
-                        if (LOGGER.isErrorEnabled())
-                            LOGGER.error(message, ioe);
-                        if (conf.isFailIgnored()){
-                        	continue;
-                        } else {
-                        	listenerForwarder.failed(ioe);
-                        	throw new ActionException(this, ioe.getLocalizedMessage());
-                        }
-                    }
-
-                    try {
-                        final Map<String, String> aliases = conf.getAlias();
-                        if (aliases != null && aliases.size() > 0) {
-                            for (String alias : aliases.keySet()) {
-                                final Class<?> clazz = Class.forName(aliases.get(alias));
-                                xstream.alias(alias, clazz);
-                            }
-                        }
-                        xstream.toXML(event.getSource(), fw);
-                    } catch (XStreamException e) {
-                        if (LOGGER.isErrorEnabled())
-                            LOGGER.error("The passed event object cannot be serialized to: "
-                                            + outputFile.getAbsolutePath(), e);
-                        if (conf.isFailIgnored()){
-                        	continue;
-                        } else {
-                        	listenerForwarder.failed(e);
-                        	throw new ActionException(this, e.getLocalizedMessage());
-                        }
-                    } catch (Throwable e) {
-                        // the object cannot be deserialized
-                        if (LOGGER.isErrorEnabled())
-                            LOGGER.error(e.getLocalizedMessage(), e);
-                        if (conf.isFailIgnored()){
-                        	continue;
-                        } else {
-                        	listenerForwarder.failed(e);
-                        	throw new ActionException(this, e.getLocalizedMessage());
-                        }
-                    } finally {
-                        IOUtils.closeQuietly(fw);
-                    }
-
-                    // add the file to the queue
-                    ret.add(new FileSystemEvent(outputFile.getAbsoluteFile(),
-                            FileSystemEventType.FILE_ADDED));
-
                 }
+                FileInputStream inputStream = null;
+                try {
+                    inputStream = new FileInputStream(sourceFile);
+                    final Map<String, String> aliases = conf.getAlias();
+                    if (aliases != null && aliases.size() > 0) {
+                        for (String alias : aliases.keySet()) {
+                            final Class<?> clazz = Class.forName(aliases.get(alias));
+                            xstream.alias(alias, clazz);
+                        }
+                    }
+
+                    listenerForwarder.setTask("Converting file to a java object");
+
+                    // deserialize
+                    final Object res = xstream.fromXML(inputStream);
+                    // generate event
+                    final EventObject eo = new EventObject(res);
+                    // append to the output
+                    ret.add(eo);
+
+                } catch (XStreamException e) {
+                    // the object cannot be deserialized
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("The passed FileSystemEvent reference to a not deserializable file: "
+                                     + sourceFile.getAbsolutePath(), e);
+                    if (conf.isFailIgnored()) {
+                        continue;
+                    } else {
+                        listenerForwarder.failed(e);
+                        throw new ActionException(this, e.getLocalizedMessage());
+                    }
+                } catch (Throwable e) {
+                    // the object cannot be deserialized
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("XstreamAction.adapter(): " + e.getLocalizedMessage(), e);
+                    if (conf.isFailIgnored()) {
+                        continue;
+                    } else {
+                        listenerForwarder.failed(e);
+                        throw new ActionException(this, e.getLocalizedMessage());
+                    }
+                } finally {
+                    IOUtils.closeQuietly(inputStream);
+                }
+
+            } else {
+
+                // try to serialize
+                // build the output absolute file name
+                File outputDir;
+                try {
+                    outputDir = new File(conf.getOutput());
+                    // the output
+                    if (!outputDir.isAbsolute())
+                        outputDir = it.geosolutions.tools.commons.file.Path.findLocation(outputDir,
+                                                                                         getTempDir());
+
+                    if (!outputDir.exists()) {
+                        if (!outputDir.mkdirs()) {
+                            final String message = "Unable to create the ouptut dir named: "
+                                                   + outputDir.toString();
+                            if (LOGGER.isInfoEnabled())
+                                LOGGER.info(message);
+                            if (conf.isFailIgnored()) {
+                                continue;
+                            } else {
+                                final ActionException e = new ActionException(this, message);
+                                listenerForwarder.failed(e);
+                                throw e;
+                            }
+                        }
+                    }
+                    if (LOGGER.isInfoEnabled()) {
+                        LOGGER.info("Output dir name: " + outputDir.toString());
+                    }
+
+                } catch (NullPointerException npe) {
+                    final String message = "Unable to get the output file path from :" + conf.getOutput();
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(message, npe);
+                    if (conf.isFailIgnored()) {
+                        continue;
+                    } else {
+                        listenerForwarder.failed(npe);
+                        throw new ActionException(this, npe.getLocalizedMessage());
+                    }
+                }
+
+                final File outputFile;
+                try {
+                    outputFile = File.createTempFile(conf.getOutput(), null, outputDir);
+                } catch (IOException ioe) {
+                    final String message = "Unable to build the output file writer: "
+                                           + ioe.getLocalizedMessage();
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(message, ioe);
+                    if (conf.isFailIgnored()) {
+                        continue;
+                    } else {
+                        listenerForwarder.failed(ioe);
+                        throw new ActionException(this, ioe.getLocalizedMessage());
+                    }
+                }
+                
+                // try to open the file to write into
+                FileWriter fw = null;                
+                try {
+                    listenerForwarder.setTask("Serializing java object to " + outputFile);
+                    fw = new FileWriter(outputFile);
+
+                    final Map<String, String> aliases = conf.getAlias();
+                    if (aliases != null && aliases.size() > 0) {
+                        for (String alias : aliases.keySet()) {
+                            final Class<?> clazz = Class.forName(aliases.get(alias));
+                            xstream.alias(alias, clazz);
+                        }
+                    }
+                    xstream.toXML(event.getSource(), fw);
+
+                } catch (XStreamException e) {
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("The passed event object cannot be serialized to: "
+                                         + outputFile.getAbsolutePath(), e);
+                    if (conf.isFailIgnored()) {
+                        continue;
+                    } else {
+                        listenerForwarder.failed(e);
+                        throw new ActionException(this, e.getLocalizedMessage());
+                    }
+                } catch (Throwable e) {
+                    // the object cannot be deserialized
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(e.getLocalizedMessage(), e);
+                    if (conf.isFailIgnored()) {
+                        continue;
+                    } else {
+                        listenerForwarder.failed(e);
+                        throw new ActionException(this, e.getLocalizedMessage());
+                    }
+                } finally {
+                    IOUtils.closeQuietly(fw);
+                }
+
+                // add the file to the queue
+                ret.add(new FileSystemEvent(outputFile.getAbsoluteFile(), FileSystemEventType.FILE_ADDED));
+
+            }
         }
-		listenerForwarder.completed();
+        listenerForwarder.completed();
         return ret;
     }
 }

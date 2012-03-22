@@ -32,7 +32,6 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-@ManagedResource(objectName = "bean:name=JMXActionManager", description = "My Managed Bean", log = true, logFile = "jmx.log", currencyTimeLimit = 15, persistPolicy = "OnUpdate", persistPeriod = 200, persistLocation = "foo", persistName = "bar")
 public interface ActionManager {
 
     public final static String SERVICE_ID_KEY = "SERVICE_ID";

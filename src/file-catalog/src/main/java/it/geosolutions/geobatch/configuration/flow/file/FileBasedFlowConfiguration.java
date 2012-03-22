@@ -27,19 +27,18 @@ import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEvent
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration;
-
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
 /**
  * A Conf for the Flow based on xml marshalled files.
- *
+ * 
  * @author Simone Giannecchini, GeoSolutions
  * @author Alessio Fabiani, GeoSolutions
  * @author Ivano Picco
  * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  */
-public class FileBasedFlowConfiguration extends BaseFlowConfiguration
-{
+public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
 
     /**
      * workingDirectory: this attribute represents the configuring directory for
@@ -50,9 +49,16 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration
     private String workingDirectory;
 
     /**
-    * maximum numbers of stored executed (see Consumer.getStatus()) consumers
-    */
+     * maximum numbers of stored executed (see Consumer.getStatus()) consumers
+     */
     private int maxStoredConsumers;
+
+    /**
+     * if true once maxStoredConsumer is reached consumers removal is only
+     * manually permitted (using {@link FileBasedFlowManager#disposeConsumer(String)} or via GUI)<br>
+     * Default is false.
+     */
+    private boolean keepConsumers = false;
 
     /**
      * autorun: this attribute is used to autorun a flow on startup.
@@ -60,7 +66,21 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration
     private boolean autorun = false;
 
     /**
-     *
+     * @return the keepConsumers
+     */
+    public final boolean isKeepConsumers() {
+        return keepConsumers;
+    }
+
+    /**
+     * @param keepConsumers the keepConsumers to set
+     */
+    public final void setKeepConsumers(boolean keepConsumers) {
+        this.keepConsumers = keepConsumers;
+    }
+
+    /**
+     * 
      * @param id
      * @param name
      * @param eventGeneratorConfiguration
@@ -68,16 +88,14 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration
      * @param eventConsumerConfiguration
      */
     public FileBasedFlowConfiguration(String id, String name,
-        FileBasedEventGeneratorConfiguration eventGeneratorConfiguration,
-        String description,
-        FileBasedEventConsumerConfiguration eventConsumerConfiguration)
-    {
-        super(id, name, eventGeneratorConfiguration, description,
-            eventConsumerConfiguration);
+                                      FileBasedEventGeneratorConfiguration eventGeneratorConfiguration,
+                                      String description,
+                                      FileBasedEventConsumerConfiguration eventConsumerConfiguration) {
+        super(id, name, eventGeneratorConfiguration, description, eventConsumerConfiguration);
     }
 
     /**
-     *
+     * 
      * @param id
      * @param name
      * @param eventGeneratorConfiguration
@@ -86,65 +104,56 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration
      * @param workingDirectory
      */
     public FileBasedFlowConfiguration(String id, String name,
-        EventGeneratorConfiguration eventGeneratorConfiguration,
-        String description,
-        EventConsumerConfiguration eventConsumerConfiguration,
-        String workingDirectory)
-    {
-        super(id, name, eventGeneratorConfiguration, description,
-            eventConsumerConfiguration);
+                                      EventGeneratorConfiguration eventGeneratorConfiguration,
+                                      String description,
+                                      EventConsumerConfiguration eventConsumerConfiguration,
+                                      String workingDirectory) {
+        super(id, name, eventGeneratorConfiguration, description, eventConsumerConfiguration);
         this.workingDirectory = workingDirectory;
     }
 
     /**
      * @return the maxStoredConsumers
      */
-    public int getMaxStoredConsumers()
-    {
+    public int getMaxStoredConsumers() {
         return maxStoredConsumers;
     }
 
     /**
      * Getter for the workingDirectory
      */
-    public String getWorkingDirectory()
-    {
+    public String getWorkingDirectory() {
         return workingDirectory;
     }
 
     /**
      * Setter for the workingDirectory.
-     *
+     * 
      * @param workingDirectory
      */
-    public void setWorkingDirectory(String workingDirectory)
-    {
+    public void setWorkingDirectory(String workingDirectory) {
         this.workingDirectory = workingDirectory;
         setDirty(true);
     }
 
     @Override
-    public String toString()
-    {
-        return getClass().getSimpleName() + "[" + "id:" + getId() + ", name:" +
-            getName() + ", sid:" + getServiceID() + ", wdir:" +
-            getWorkingDirectory() + ", egcfg:" +
-            getEventGeneratorConfiguration() + "]";
+    public String toString() {
+        return getClass().getSimpleName() + "[" + "id:" + getId() + ", name:" + getName() + ", sid:"
+               + getServiceID() + ", wdir:" + getWorkingDirectory() + ", egcfg:"
+               + getEventGeneratorConfiguration() + "]";
     }
 
     /**
      * @return
      */
-    public boolean isAutorun()
-    {
+    public boolean isAutorun() {
         return autorun;
     }
 
     /**
      * @param autorun
      */
-    public void setAutorun(boolean autorun)
-    {
+    public void setAutorun(boolean autorun) {
         this.autorun = autorun;
     }
 }

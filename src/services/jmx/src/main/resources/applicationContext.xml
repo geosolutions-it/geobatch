@@ -6,6 +6,7 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<context:mbean-export/>
+	<context:annotation-config/>
 
 	<bean id="jmxPropertyPlaceholderConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -18,12 +19,10 @@
 			</list>
 		</property>
 	</bean>
-
-	
 	
 	<bean id="JMXServiceManager" class="it.geosolutions.geobatch.services.JMXServiceManager" />
 
-<!-- 	<bean id="JMXActionManager" class="it.geosolutions.geobatch.services.JMXActionManager" depends-on="JMXServiceManager" /> -->
+	<bean id="JMXActionManager" class="it.geosolutions.geobatch.services.JMXActionManager" depends-on="JMXServiceManager" />
 
 <!-- 	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" -->
 <!-- 		lazy-init="false"> -->

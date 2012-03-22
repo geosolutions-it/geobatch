@@ -52,15 +52,18 @@ import javax.annotation.Resource;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class JMXServiceManager {
+public class JMXServiceManager  implements ApplicationContextAware {
     private final static Logger LOGGER = LoggerFactory.getLogger(JMXServiceManager.class);
 
     public final static String FlowManagerID = "JMX_FLOW_MANAGER";
@@ -73,7 +76,6 @@ public class JMXServiceManager {
 
     private static File configDirFile;
 
-    @Autowired
     private static ApplicationContext context;
 
     public JMXServiceManager() throws Exception {
@@ -136,7 +138,7 @@ public class JMXServiceManager {
      * @return {@link ConsumerStatus}
      */
     static void dispose(String uuid) throws IllegalArgumentException {
-        flowManager.dispose(uuid);
+        flowManager.disposeConsumer(uuid);
     }
 
     /**
@@ -226,7 +228,7 @@ public class JMXServiceManager {
 
         // following ops are atomic
         synchronized (flowManager) {
-            flowManager.add(consumer);
+            flowManager.addConsumer(consumer);
 
             for (FileSystemEvent event : events) {
                 consumer.consume(event);
@@ -293,6 +295,11 @@ public class JMXServiceManager {
                                  + pd.getPropertyType());
             }
         }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+         context=applicationContext;   
     }
 
 }

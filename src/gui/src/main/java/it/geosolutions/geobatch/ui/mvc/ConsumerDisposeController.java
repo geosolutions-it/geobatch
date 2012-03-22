@@ -48,7 +48,7 @@ public class ConsumerDisposeController extends ConsumerAbstractController {
 
             // dispose the object
             if (fm != null) {
-                fm.dispose(consumer.getId());
+                fm.disposeConsumer(consumer.getId());
             } else {
                 throw new IllegalArgumentException("ERROR: Consumer instance '" + consumer.getId()
                                                    + "' not found");

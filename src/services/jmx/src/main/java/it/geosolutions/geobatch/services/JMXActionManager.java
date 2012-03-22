@@ -30,14 +30,14 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Queue;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
+@ManagedResource(objectName = "bean:name=JMXActionManager", description = "My Managed Bean", log = true, logFile = "jmx.log", currencyTimeLimit = 15, persistPolicy = "OnUpdate", persistPeriod = 200, persistLocation = "foo", persistName = "bar")
 public class JMXActionManager implements ActionManager {
 
     public JMXActionManager() {

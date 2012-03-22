@@ -25,23 +25,18 @@ import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.Job;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
-import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
-import java.io.File;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EventObject;
 import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
-
 /**
- * 
  * @author Simone Giannecchini, GeoSolutions S.A.S.
  * @author Emanuele Tajariol <etj AT geo-solutions DOT it>, GeoSolutions S.A.S.
  * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it

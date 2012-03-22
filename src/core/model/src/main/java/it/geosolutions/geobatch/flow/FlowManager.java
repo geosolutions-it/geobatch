@@ -23,7 +23,6 @@
 package it.geosolutions.geobatch.flow;
 
 import it.geosolutions.geobatch.catalog.PersistentResource;
-import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
@@ -32,12 +31,10 @@ import it.geosolutions.geobatch.flow.event.generator.EventGenerator;
 import java.io.File;
 import java.util.Collection;
 import java.util.EventObject;
-import java.util.Set;
-
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
 /**
  * @author  Alessio Fabiani
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public interface FlowManager<EO extends EventObject, FC extends FlowConfiguration> extends PersistentResource<FC>, Job {
     /**
@@ -68,7 +65,7 @@ public interface FlowManager<EO extends EventObject, FC extends FlowConfiguratio
      * @param fbec the consumer to be removed.
      * @throws IllegalArgumentException if param is null 
      */
-    public void dispose(String uuid) throws IllegalArgumentException;
+    public void disposeConsumer(String uuid) throws IllegalArgumentException;
     
     /**
      * @return an unmodifiable Collection of all the consumers
@@ -100,7 +97,7 @@ public interface FlowManager<EO extends EventObject, FC extends FlowConfiguratio
      * @return true if consumer is successfully added to the consumers container, false otherwise
      * @throws IllegalArgumentException if param is null 
      */
-    public boolean add(EventConsumer consumer)  throws IllegalArgumentException;
+    public boolean addConsumer(EventConsumer consumer)  throws IllegalArgumentException;
 
     /**
      * 
