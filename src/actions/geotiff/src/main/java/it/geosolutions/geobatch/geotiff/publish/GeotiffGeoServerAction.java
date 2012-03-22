@@ -183,7 +183,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 		Integer epsgCode = null;
 		try {
 			if (!FORMAT.accepts(inputFile)) {
-				final String message = "GeotiffGeoServerAction.execute(): No valid GeoTIFF File found for this Data Flow!";
+				final String message = "No valid GeoTIFF File found for this Data Flow!";
 				if (LOGGER.isErrorEnabled()) {
 					LOGGER.error(message);
 				}
@@ -193,7 +193,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 			coverageReader = (GeoTiffReader) FORMAT.getReader(inputFile);
 
 			if (coverageReader == null) {
-				final String message = "GeotiffGeoServerAction.execute(): No valid GeoTIFF File found for this Data Flow!";
+				final String message = "No valid GeoTIFF File found for this Data Flow!";
 				if (LOGGER.isErrorEnabled()) {
 					LOGGER.error(message);
 				}
@@ -232,7 +232,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 				.getDataTransferMethod())) {
 			// TODO Deprecated: to be tested
 			sent = publisher.publishGeoTIFF(getConfiguration()
-					.getDefaultNamespace(), coverageStoreId, inputFile);
+					.getDefaultNamespace(), coverageStoreId, getConfiguration().getLayerName(), inputFile);
 		} else if ("EXTERNAL".equalsIgnoreCase(getConfiguration()
 				.getDataTransferMethod())) {
 			final RESTCoverageStore store = publisher.publishExternalGeoTIFF(

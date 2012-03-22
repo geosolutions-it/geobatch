@@ -40,18 +40,22 @@ can be:
 
 * *cumulatingListenerService*
 
-E' un servizio che serve ad istanziare ProgressCumulatingListener(classe), il quale viene utilizzato dall' interfaccia grafica per mandare messaggi di stato all'interfaccia grafica,
-e deve essere configurato a livello di consumer.
+
+It is a service that is used to instantiate ProgressCumulatingListener (class), which is used by' graphical interface to send status messages to the graphical interface, 
+and must be configured at the level of consumer.
+
 
 * *statusListenerService*
 
-E' un servizio che serve ad istanziare ProgressStatusListener(classe), il quale servono per definire delle liste che vengono 
-utilizzate dall'interfaccia grafica per monitorare lo stato delle singole azioni edi conseguenza devono essere utilizzate solo nella configurazione di un' azione.
+It is a service that is used to instantiate ProgressStatusListener (class), which serve to define lists that are
+graphical interface used to monitor the status of individual actions accordingly edition should be used only in the configuration of an 'action.
+
 
 * *loggingListenerService*
 
-E' un servizio che serve ad istanziare ProgressLoggingListener(classe), viene utilizzata per dallle azioni e dal consumer per loggare eventi in progresso,
-ad es.: 
+It is a service that is used to instantiate ProgressLoggingListener (class), is used to dallle actions and by the consumer for logging events in progress,
+
+for example: 
 
 1. *Consumer started*
 2. *Action started*
