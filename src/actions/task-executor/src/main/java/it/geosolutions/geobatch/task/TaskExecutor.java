@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -113,14 +113,12 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 			final FileSystemEvent event = events.remove();
 			final File inputFile = event.getSource();
 			if (inputFile == null) {
-				final ActionException e = new ActionException(this,
-						"Input File is null");
+				final ActionException e = new ActionException(this, "Input File is null");
 				listenerForwarder.failed(e);
 				throw e;
 			}
 			if (!inputFile.exists()) {
-				final ActionException e = new ActionException(this,
-						"Input File doesn't exist");
+				final ActionException e = new ActionException(this, "Input File doesn't exist");
 				listenerForwarder.failed(e);
 				throw e;
 			}
@@ -152,18 +150,16 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 			try {
 
 				if (xslPath != null && xslPath.trim().length() > 0) {
-					final String path=Path.findLocation(xslPath,configuration.getWorkingDirectory()); // todo: use getConfigDir()
+					final String path=Path.findLocation(xslPath,configuration.getConfigDir().getAbsolutePath());
 					if (path==null){
-						final ActionException e = new ActionException(this,
-								"The specified XSL file hasn't been found: " + path);
+						final ActionException e = new ActionException(this, "XSL file not found: " + path);
 						listenerForwarder.failed(e);
 						throw e;
 					}
 					xslFile = new File(path);
 				}
 				if (!xslFile.exists()) {
-					final ActionException e = new ActionException(this,
-							"The specified XSL file hasn't been found: " + xslPath);
+					final ActionException e = new ActionException(this, "XSL file not found: " + xslPath);
 					listenerForwarder.failed(e);
 					throw e;
 				}
@@ -171,13 +167,10 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 				File xmlFile = null;
 				String outputFile = null;
 				if (useDefaultScript) {
-					if (defaultScriptPath != null
-							&& defaultScriptPath.trim().length() > 0) {
-						final String path=Path.findLocation(xslPath,configuration.getWorkingDirectory()); // todo: use getConfigDir()
-						if (path==null){
-							final ActionException e = new ActionException(this,
-									"The specified XSL file hasn't been found: "
-											+ path);
+					if (defaultScriptPath != null && defaultScriptPath.trim().length() > 0) {
+						final String path = Path.findLocation(xslPath, configuration.getConfigDir().getAbsolutePath());
+						if (path == null){
+							final ActionException e = new ActionException(this, "XSL file not found: " + path);
 							listenerForwarder.failed(e);
 							throw e;
 						}
@@ -195,9 +188,7 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 					xmlFile = inputFile;
 				}
 				if (!xmlFile.exists()) {
-					final ActionException e = new ActionException(this,
-							"The specified XML file hasn't been found: "
-									+ xmlFile);
+					final ActionException e = new ActionException(this, "XML file not found: " + xmlFile);
 					listenerForwarder.failed(e);
 					throw e;
 				}

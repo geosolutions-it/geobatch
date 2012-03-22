@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -72,21 +72,6 @@ public class GeotiffRetilerConfiguration extends ActionConfiguration implements 
 //        super();
 //    }
 
-    /**
-     * @return the workingDirectory
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
-
-    /**
-     * @param workingDirectory
-     *            the workingDirectory to set
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
-    }
-
     public final double getCompressionRatio() {
         return compressionRatio;
     }
@@ -131,14 +116,14 @@ public class GeotiffRetilerConfiguration extends ActionConfiguration implements 
         // final GeotiffRetilerConfiguration configuration=
         // new
         // GeotiffRetilerConfiguration(getId(),getName(),getDescription(),isDirty());
-        configuration.setCompressionRatio(compressionRatio);
+/*        configuration.setCompressionRatio(compressionRatio);
         configuration.setCompressionScheme(compressionScheme);
         configuration.setJAICapacity(JAICapacity);
         configuration.setServiceID(serviceID);
         configuration.setForceToBigTiff(forceToBigTiff);
         configuration.setTileH(tileH);
         configuration.setTileW(tileW);
-        configuration.setWorkingDirectory(workingDirectory);
+*/
         return configuration;
     }
 }

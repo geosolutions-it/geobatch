@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://code.google.com/p/geobatch/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -40,16 +40,17 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import org.geotools.test.TestData;
+//import org.geotools.test.TestData;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
-public class FreeMarkerActionTest {
+public class FreeMarkerActionTest extends BaseTest {
     
     /*
      * 
@@ -118,25 +119,22 @@ public class FreeMarkerActionTest {
 //        }
 //        
 //    }
-    
-	File workingDir; 
-	
-	@Before
-	public void setUP() throws FileNotFoundException, IOException{
-		workingDir=TestData.file(this,null);
-	}
-    
+        
     @Test
     public void test() throws ActionException, IllegalAccessException, FileNotFoundException, IOException {
-        
+
+        File testDirAux = loadFile("test-data/test.xml");
+        File testDir = testDirAux.getParentFile();
+
         FreeMarkerConfiguration fmc=new FreeMarkerConfiguration("ID","NAME","DESC");
         // SIMULATE THE XML FILE CONFIGURATION OF THE ACTION
         fmc.setDirty(false);
         fmc.setFailIgnored(false);
         fmc.setServiceID("serviceID");
-        fmc.setWorkingDirectory(workingDir.getAbsolutePath());
+        fmc.setConfigDir(testDir);
+//        fmc.setWorkingDirectory(workingDir.getAbsolutePath());
         fmc.setInput("test.xml");
-        fmc.setOutput(workingDir.getAbsolutePath()+"/out");
+        fmc.setOutput(getTempDir().getAbsolutePath()+"/out");
         // 2 incoming events generates 2 output files
         fmc.setNtoN(true);
         Map<String,Object> m=new HashMap<String, Object>();
@@ -145,8 +143,8 @@ public class FreeMarkerActionTest {
         
         // SIMULATE THE EventObject on the queue 
         Map<String,Object> mev=new HashMap<String, Object>();
-        mev.put("SOURCE_PATH", workingDir.getAbsolutePath()+"/in");
-        mev.put("WORKING_DIR", workingDir.getAbsolutePath());
+        mev.put("SOURCE_PATH", testDir.getAbsolutePath()+"/in");
+        mev.put("WORKING_DIR", getTempDir().getAbsolutePath());
         mev.put("FILE_IN", "in_test_file.dat");
         mev.put("FILE_OUT", "out_test_file.dat");
         List<String> list=new ArrayList<String>(4);
@@ -158,9 +156,9 @@ public class FreeMarkerActionTest {
         
         // SIMULATE THE 2nd EventObject on the queue 
         Map<String,Object> mev2=new HashMap<String, Object>();
-        mev2.put("SOURCE_PATH", workingDir.getAbsolutePath()+"/in2");
-        mev2.put("WORKING_DIR", workingDir.getAbsolutePath());
-        mev2.put("FILE_IN", "in_test_file_2.dat");
+        mev2.put("SOURCE_PATH", testDir.getAbsolutePath()+"/in2");
+        mev2.put("WORKING_DIR", getTempDir().getAbsolutePath());
+        mev2.put("FILE_IN",  "in_test_file_2.dat");
         mev2.put("FILE_OUT", "out_test_file_2.dat");
         mev2.put("LIST", list);
         
@@ -171,7 +169,8 @@ public class FreeMarkerActionTest {
         q.add(new TemplateModelEvent(mev2));
         
         FreeMarkerAction fma=new FreeMarkerAction(fmc);
-        fma.setRunningContext(workingDir.getAbsolutePath());
+//        fma.setRunningContext(workingDir.getAbsolutePath());
+        fma.setTempDir(getTempDir());
         
         q=fma.execute(q);
         try{
@@ -188,25 +187,33 @@ public class FreeMarkerActionTest {
     
     @Test
     public void multipleTest() throws ActionException, IllegalAccessException {
-        
+
+        File testDirAux = loadFile("test-data/test.xml");
+        File testDir = testDirAux.getParentFile();
+
         FreeMarkerConfiguration fmc=new FreeMarkerConfiguration("ID","NAME","DESC");
         // SIMULATE THE XML FILE CONFIGURATION OF THE ACTION
         fmc.setDirty(false);
         fmc.setFailIgnored(false);
         fmc.setServiceID("serviceID");
         
-        fmc.setWorkingDirectory(workingDir.getAbsolutePath());
-        
+//        fmc.setWorkingDirectory(workingDir.getAbsolutePath());
+        fmc.setConfigDir(testDir);
+
+        File outDir = new File(getTempDir(), "out");
+        outDir.mkdir(); // output dir is expected to exist
+
         fmc.setInput("test.xml");
         fmc.setOutput("out");
+        Assert.assertTrue(outDir.exists());
         Map<String,Object> m=new HashMap<String, Object>();
         m.put("SHEET_NAME", "MY_NEW_SHEET_NAME");
         fmc.setRoot(m);
         
         // SIMULATE THE EventObject on the queue 
         Map<String,Object> mev=new HashMap<String, Object>();
-        mev.put("SOURCE_PATH", workingDir.getAbsolutePath()+"/in");
-        mev.put("WORKING_DIR", workingDir.getAbsolutePath());
+        mev.put("SOURCE_PATH", testDir.getAbsolutePath()+"/in");
+        mev.put("WORKING_DIR", getTempDir().getAbsolutePath());
         mev.put("FILE_IN", "in_test_file.dat");
         mev.put("FILE_OUT", "out_test_file.dat");
         
@@ -220,9 +227,10 @@ public class FreeMarkerActionTest {
         Queue<EventObject> q=new ArrayBlockingQueue<EventObject>(2);
         
         q.add(new TemplateModelEvent(mev));
-        q.add(new FileSystemEvent(workingDir, FileSystemEventType.FILE_ADDED));
+        q.add(new FileSystemEvent(getTempDir(), FileSystemEventType.FILE_ADDED));
         
         FreeMarkerAction fma=new FreeMarkerAction(fmc);
+        fma.setTempDir(getTempDir());
         
         q=fma.execute(q);
         try{

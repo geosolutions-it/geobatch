@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -32,21 +32,14 @@ import org.geotools.utils.CoverageToolsConstants;
 public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration implements
         Configuration {
 
+    public GeotiffOverviewsEmbedderConfiguration() {
+    }
+
     public GeotiffOverviewsEmbedderConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
 
     private long JAICapacity;
-
-    public long getJAICapacity() {
-        return JAICapacity;
-    }
-
-    public void setJAICapacity(long JAICapacity) {
-        this.JAICapacity = JAICapacity;
-    }
-
-    private String workingDirectory;
 
     private double compressionRatio = CoverageToolsConstants.DEFAULT_COMPRESSION_RATIO;
 
@@ -71,33 +64,20 @@ public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration i
     private boolean logNotification = true;
 
     /**
-     * 
+     *
      * Interpolation method used througout all the program.
-     * 
+     *
      * @TODO make the interpolation method customizable from the user perpsective.
-     * 
+     *
      */
     private int interp = Interpolation.INTERP_NEAREST;
 
-    private String serviceID;
-
-//    public GeotiffOverviewsEmbedderConfiguration() {
-//        super();
-//    }
-
-    /**
-     * @return the workingDirectory
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
+    public long getJAICapacity() {
+        return JAICapacity;
     }
 
-    /**
-     * @param workingDirectory
-     *            the workingDirectory to set
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
+    public void setJAICapacity(long JAICapacity) {
+        this.JAICapacity = JAICapacity;
     }
 
     public final double getCompressionRatio() {
@@ -180,21 +160,6 @@ public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration i
         this.logNotification = logNotification;
     }
 
-    /**
-     * @return the serviceID
-     */
-    public String getServiceID() {
-        return serviceID;
-    }
-
-    /**
-     * @param serviceID
-     *            the serviceID to set
-     */
-    public void setServiceID(String serviceID) {
-        this.serviceID = serviceID;
-    }
-
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[" + "id:" + getId() + ", name:" + getName()
@@ -202,23 +167,8 @@ public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration i
     }
 
     @Override
-    public GeotiffOverviewsEmbedderConfiguration clone() { 
+    public GeotiffOverviewsEmbedderConfiguration clone() {
         final GeotiffOverviewsEmbedderConfiguration configuration = (GeotiffOverviewsEmbedderConfiguration) super.clone();
-
-        configuration.setCompressionRatio(compressionRatio);
-        configuration.setCompressionScheme(compressionScheme);
-        configuration.setDownsampleStep(downsampleStep);
-        configuration.setInterp(interp);
-        configuration.setJAICapacity(JAICapacity);
-        configuration.setNumSteps(numSteps);
-        configuration.setScaleAlgorithm(scaleAlgorithm);
-        configuration.setTileH(tileH);
-        configuration.setTileW(tileW);
-        configuration.setWildcardString(wildcardString);
-        configuration.setWorkingDirectory(workingDirectory);
-        // configuration.setServiceID(serviceID);
-        configuration.setLogNotification(logNotification);
-
         return configuration;
     }
 }
