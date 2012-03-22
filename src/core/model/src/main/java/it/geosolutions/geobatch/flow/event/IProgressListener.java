@@ -80,7 +80,6 @@ public interface IProgressListener extends EventListener {
 
     /**
      * Get the name of the current task.
-     * @uml.property  name="task"
      */
     String getTask();
 
@@ -91,7 +90,6 @@ public interface IProgressListener extends EventListener {
 
     /**
      * Used by the notifier.
-     * @uml.property  name="task"
      */
     void setTask(String currentTask);
     

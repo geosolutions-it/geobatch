@@ -21,86 +21,106 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import java.util.List;
+import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.flow.FlowManager;
+import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
-import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
-import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
-
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-
 /**
  * Base controller for action targeted to Consumer instances
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
-public abstract class ConsumerAbstractController extends AbstractController
-{
+public abstract class ConsumerAbstractController extends AbstractController {
+
+    protected Catalog catalog;
+
+    public ConsumerAbstractController() {
+    }
+
+    public static final String MAV_NAME_KEY = "flows";
+    public static final String FLOW_MANAGER_ID_KEY = "fmId";
+    public static final String CONSUMER_ID_KEY = "ecId";
 
     /*
      */
     @Override
-    protected ModelAndView handleRequestInternal(HttpServletRequest request,
-        HttpServletResponse response) throws Exception
-    {
-        Catalog catalog = (Catalog) getApplicationContext().getBean("catalog");
-        String fmId = request.getParameter("fmId");
-        String ecId = request.getParameter("ecId");
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response)
+        throws Exception {
 
-        BaseEventConsumer consumer = null;
-        FileBasedFlowManager fm = null;
+        catalog = (Catalog)getApplicationContext().getBean("catalog");
+        
+        final String fmId = request.getParameter(FLOW_MANAGER_ID_KEY);
+        final String ecId = request.getParameter(CONSUMER_ID_KEY);
 
-        if (fmId != null)
-        {
-            fm = catalog.getResource(fmId, FileBasedFlowManager.class);
-
-            if (fm != null)
-            {
-                final List<? extends EventConsumer> ecList = fm.getEventConsumers();
-                final int size = ecList.size();
-                final int index;
-                try
-                {
-                    index = Integer.parseInt(ecId);
-                    if (index < size)
-                    {
-                        final EventConsumer eventConsumer = ecList.get(index);
-                        consumer = (BaseEventConsumer) eventConsumer;
-                    }
-//                      else
-                    // TODO log?
-                }
-                catch (NumberFormatException n)
-                {
-                    // TODO log?
-                    throw n;
-                }
-
-
-            }
+        if (fmId == null || fmId.isEmpty()) {
+            throw new IllegalArgumentException("fmId parameter is null or empty");
+        }
+        if (ecId == null || ecId.isEmpty()) {
+            throw new IllegalArgumentException("ecId parameter is null or empty");
         }
 
-        ModelAndView mav = new ModelAndView("flows");
+        final ModelAndView mav = new ModelAndView(MAV_NAME_KEY);
         mav.addObject("flowManagers", catalog.getFlowManagers(FileBasedFlowManager.class));
 
-        if (consumer != null)
-        {
-            runStuff(mav, fm, consumer);
-        }
-        else
-        {
-            mav.addObject("error", "Flow instance '" + ecId + "' not found");
-        }
+        final FileBasedFlowManager fm = catalog.getResource(fmId, FileBasedFlowManager.class);
+        handleFlowManager(mav, fm);
+
+        final EventConsumer consumer = fm.getConsumer(ecId);
+        handleConsumer(mav, consumer);
+
+        // final Collection<FileBasedEventConsumer>
+        // consumers=fm.getEventConsumers();
+        // final Iterator<FileBasedEventConsumer> it=consumers.iterator();
+        // while (it.hasNext()){
+        // final FileBasedEventConsumer consumer=it.next();
+        // if (consumer == null)
+        // {
+        // mav.addObject("error", "Flow instance '" + consumer.getId() +
+        // "' not found");
+        // } else {
+        // runStuff(mav, consumer);
+        // }
+        //
+        // }
 
         return mav;
     }
 
-    protected abstract void runStuff(ModelAndView mav, FileBasedFlowManager fm,
-        BaseEventConsumer consumer);
+    /**
+     * 
+     * Default handler for a flowManager which simply add it to the MAV using {@link ConsumerAbstractController#FLOW_MANAGER_ID_KEY}
+     * 
+     * @param mav
+     * @param fm
+     * @throws IllegalArgumentException if flow manager is null
+     */
+    protected void handleFlowManager(ModelAndView mav, FlowManager fm) throws IllegalArgumentException {
+        if (fm == null) {
+            throw new IllegalArgumentException("Unable to locate the FlowManager ID:" + fm.getId());
+        }
+        mav.addObject(FLOW_MANAGER_ID_KEY, fm);
+    }
+    
+    /**
+     * 
+     * Default handler for a consumer which simply add it to the MAV using {@link ConsumerAbstractController#CONSUMER_ID_KEY}
+     * 
+     * @param mav
+     * @param consumer
+     * @throws IllegalArgumentException if consumer is null
+     */
+    protected void handleConsumer(ModelAndView mav, EventConsumer consumer) throws IllegalArgumentException {
+        if (consumer == null) {
+            throw new IllegalArgumentException("ERROR: Consumer instance '" + consumer.getId() + "' not found");
+        }
+        mav.addObject(CONSUMER_ID_KEY, consumer);
+    }
 }

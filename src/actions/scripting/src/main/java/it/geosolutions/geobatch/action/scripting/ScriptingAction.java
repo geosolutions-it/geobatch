@@ -217,7 +217,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			// call the script
 			final Map<String,Object> argsMap = new HashedMap();
 			argsMap.put(ScriptingAction.CONFIG_KEY,configuration);
-			argsMap.put(ScriptingAction.CONTEXT_KEY,getRunningContext());
+			argsMap.put(ScriptingAction.CONTEXT_KEY,getTempDir());
 			argsMap.put(ScriptingAction.EVENTS_KEY,events);
 			argsMap.put(ScriptingAction.LISTENER_KEY,listenerForwarder);
 			

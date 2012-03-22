@@ -24,6 +24,8 @@ package it.geosolutions.geobatch.flow.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
+import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
+import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 
@@ -117,8 +119,7 @@ import org.slf4j.LoggerFactory;
 				// //
 				boolean eventServed = false;
 
-				for (FileBasedEventConsumer consumer : flowManager
-						.getEventConsumers()) {
+				for (EventConsumer consumer : flowManager.getEventConsumers()) {
 
 					if (LOGGER.isTraceEnabled()) {
 						LOGGER.trace("Checking consumer " + consumer + " for "
@@ -164,7 +165,7 @@ import org.slf4j.LoggerFactory;
 					final FileBasedEventConsumerConfiguration configuration = ((FileBasedEventConsumerConfiguration) flowManager
 							.getConfiguration().getEventConsumerConfiguration())
 							.clone();
-					final FileBasedEventConsumer brandNewConsumer = new FileBasedEventConsumer(
+					final BaseEventConsumer brandNewConsumer = new FileBasedEventConsumer(
 							configuration);
 
 					if (brandNewConsumer.consume(event)) {

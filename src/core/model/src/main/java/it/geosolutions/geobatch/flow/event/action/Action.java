@@ -23,7 +23,7 @@ package it.geosolutions.geobatch.flow.event.action;
 
 import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.flow.Job;
-import it.geosolutions.geobatch.flow.event.ProgressListener;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.misc.ListenerRegistry;
 
 import java.util.EventObject;
@@ -38,11 +38,11 @@ import java.util.Queue;
  * Event is running
  * 
  * @author Simone Giannecchini, GeoSolutions
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  * @param <XEO>
  */
-public interface Action<XEO extends EventObject> extends Identifiable, Job,
-        ListenerRegistry<ProgressListener> {
+public interface Action<XEO extends EventObject> extends Identifiable, Job, ListenerRegistry<IProgressListener> {
 
     public Queue<XEO> execute(Queue<XEO> events) throws ActionException;
 

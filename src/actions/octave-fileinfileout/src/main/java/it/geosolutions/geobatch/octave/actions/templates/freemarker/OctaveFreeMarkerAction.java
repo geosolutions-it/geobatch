@@ -207,8 +207,6 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
                         +oee.getLocalizedMessage());
         }
         catch(Exception e){
-// DEBUG
-e.printStackTrace();
             throw new ActionException(this,"Unable to run octave script:\n"
                     +e.getLocalizedMessage());
         }

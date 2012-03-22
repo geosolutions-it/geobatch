@@ -25,8 +25,9 @@ import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.misc.ListenerRegistry;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,19 +38,17 @@ import org.slf4j.LoggerFactory;
  * Events are delivered to all the listener in sequence, first to the first registered and so on.
  * 
  * @author ETj <etj at geo-solutions.it>
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public class ProgressListenerForwarder extends ProgressListener implements
         ListenerRegistry<IProgressListener> {
 
-    protected final static Logger LOGGER = LoggerFactory.getLogger(ProgressListenerForwarder.class
-            .toString());
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ProgressListenerForwarder.class);
 
     /**
      * The list of the registered sublisteners that will get the events.
-     * @uml.property  name="listeners"
-     * @uml.associationEnd  multiplicity="(0 -1)" elementType="it.geosolutions.geobatch.flow.event.IProgressListener"
      */
-    protected List<IProgressListener> listeners = new ArrayList<IProgressListener>();
+    protected Collection<IProgressListener> listeners = new ArrayList<IProgressListener>();
     
     public ProgressListenerForwarder(Identifiable owner) {
         super(owner);
@@ -205,7 +204,19 @@ public class ProgressListenerForwarder extends ProgressListener implements
         listeners.remove(listener);
     }
 
-    public List<? extends IProgressListener> getListeners() {
-        return Collections.unmodifiableList(listeners);
+    public Collection<IProgressListener> getListeners() {
+        return Collections.unmodifiableCollection(listeners);
+    }
+    
+    public Collection<IProgressListener> getListeners(Class<IProgressListener> clazz) {
+        final Collection<IProgressListener> c=new ArrayList<IProgressListener>();
+        final Iterator<IProgressListener> it=getListeners().iterator();
+        while (it.hasNext()) {
+            IProgressListener ipl = it.next();
+            if (clazz.isAssignableFrom(ipl.getClass())){
+                c.add(ipl);
+            }
+        }
+        return c;
     }
 }

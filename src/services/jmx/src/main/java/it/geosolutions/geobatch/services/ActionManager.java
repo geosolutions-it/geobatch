@@ -21,10 +21,6 @@
  */
 package it.geosolutions.geobatch.services;
 
-import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
-
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
@@ -41,27 +37,31 @@ public interface ActionManager {
 
     public final static String SERVICE_ID_KEY = "SERVICE_ID";
     public final static String INPUT_KEY = "INPUT";
-    
+
     public final static String FlowManagerID = "JMX_FLOW_MANAGER";
+
     /**
      * @param uuid of the consumer
-     * @return IDLE: return 4<br>
-     *         WAITING: return 3<br>
-     *         PAUSED: return 2<br>
-     *         EXECUTING: return 1<br>
-     *         COMPLETED: return 0<br>
-     *         CANCELED: return -1<br>
-     *         FAILED: return -2<br>
-     *         UUID not found return -3;<br>
-     * @see {@link EventConsumerStatus}
+     * @return IDLE<br>
+     *         WAITING<br>
+     *         PAUSED<br>
+     *         EXECUTING<br>
+     *         COMPLETED<br>
+     *         CANCELED<br>
+     *         FAILED<br>
+     *         UUID not found<br>
+     * @see {@link ConsumerStatus}
      */
     @org.springframework.jmx.export.annotation.ManagedOperation(description = "get the status of the selected consumer")
     @ManagedOperationParameters({@ManagedOperationParameter(name = "uuid", description = "The uuid of the consumer")})
-    public int getStatus(String uuid);
+    public ConsumerStatus getStatus(final String uuid);
 
-    @org.springframework.jmx.export.annotation.ManagedOperation(description = "callAction")
+    @org.springframework.jmx.export.annotation.ManagedOperation(description = "callAction - used to run a consumer")
     @ManagedOperationParameters({@ManagedOperationParameter(name = "config", description = "A map containing the list of needed paramethers, inputs and outputs used by the action")})
-    public String callAction(Map<String, String> config) throws IllegalAccessException,
-        InvocationTargetException, SecurityException, NoSuchMethodException, IllegalArgumentException,
-        InstantiationException, InterruptedException, IOException;
-    }
+    public String callAction(Map<String, String> config) throws Exception;
+
+    @org.springframework.jmx.export.annotation.ManagedOperation(description = "disposeAction - used to dispose the consumer instance from the consumer list")
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "uuid", description = "The uuid of the consumer")})
+    public void disposeAction(final String uuid) throws Exception;
+
+}

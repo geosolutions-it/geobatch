@@ -47,34 +47,34 @@ public abstract class FileBasedFlowManagerUtils {
 		if (fmId != null) {
 			FileBasedFlowManager fm = catalog.getResource(fmId,FileBasedFlowManager.class);
 			if (fm != null) {
-
-				final List<FileBasedEventConsumer> consumers = fm.getEventConsumers();
-				synchronized (consumers) {
-					final int size = consumers.size();
-					for (int index=size-1; index >= 0; --index) {
-						final FileBasedEventConsumer consumer=consumers.get(index);
-						
-						if (fm != null && consumer != null) {
-							final EventConsumerStatus status = consumer.getStatus();
-							
-							if (status.equals(EventConsumerStatus.COMPLETED)
-									|| status.equals(EventConsumerStatus.CANCELED)
-									|| status.equals(EventConsumerStatus.FAILED)) {
-								
-								if (consumer instanceof FileBasedEventConsumer){
-									final FileBasedEventConsumer fileConsumer=(FileBasedEventConsumer)consumer;
-	
-									// start manually clear action instances and cumulators  
-									fileConsumer.clear();
-									
-									// dispose the object
-									fm.dispose(fileConsumer);
-								}
-								
-							}
-						}
-					}	
-				}
+			        fm.purgeConsumers(Integer.MAX_VALUE);
+//				final List<FileBasedEventConsumer> consumers = fm.getEventConsumers();
+//				synchronized (consumers) {
+//					final int size = consumers.size();
+//					for (int index=size-1; index >= 0; --index) {
+//						final FileBasedEventConsumer consumer=consumers.get(index);
+//						
+//						if (fm != null && consumer != null) {
+//							final EventConsumerStatus status = consumer.getStatus();
+//							
+//							if (status.equals(EventConsumerStatus.COMPLETED)
+//									|| status.equals(EventConsumerStatus.CANCELED)
+//									|| status.equals(EventConsumerStatus.FAILED)) {
+//								
+//								if (consumer instanceof FileBasedEventConsumer){
+//									final FileBasedEventConsumer fileConsumer=(FileBasedEventConsumer)consumer;
+//	
+//									// start manually clear action instances and cumulators  
+//									fileConsumer.clear();
+//									
+//									// dispose the object
+//									fm.dispose(fileConsumer);
+//								}
+//								
+//							}
+//						}
+//					}	
+//				}
 			}
 		}
 

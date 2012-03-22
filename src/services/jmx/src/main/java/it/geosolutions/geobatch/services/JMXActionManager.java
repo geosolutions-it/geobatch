@@ -27,22 +27,18 @@ import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Queue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jmx.export.annotation.ManagedResource;
 
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-@ManagedResource(objectName = "bean:name=JMXActionManager", description = "My Managed Bean", log = true, logFile = "jmx.log", currencyTimeLimit = 15, persistPolicy = "OnUpdate", persistPeriod = 200, persistLocation = "foo", persistName = "bar")
 public class JMXActionManager implements ActionManager {
-    private final static Logger LOGGER = LoggerFactory.getLogger(JMXActionManager.class);
 
     public JMXActionManager() {
     }
@@ -60,31 +56,37 @@ public class JMXActionManager implements ActionManager {
      * @see {@link EventConsumerStatus}
      */
     @Override
-    public int getStatus(String uuid) {
+    public ConsumerStatus getStatus(String uuid) {
         return JMXServiceManager.getStatus(uuid); // consumer UUID not found
+
     }
 
     @Override
-    public String callAction(Map<String, String> config) throws IllegalAccessException,
-        InvocationTargetException, SecurityException, NoSuchMethodException, IllegalArgumentException,
-        InstantiationException, InterruptedException, IOException {
+    public String callAction(Map<String, String> config) throws Exception, InstantiationException,
+        InterruptedException, IOException {
         final String serviceId = config.remove(SERVICE_ID_KEY);
         if (serviceId == null || serviceId.isEmpty())
             throw new IllegalArgumentException(
-                                               "Unable to locate the key "+SERVICE_ID_KEY+" matching the serviceId action in the passed paramether table");
+                                               "Unable to locate the key "
+                                                   + SERVICE_ID_KEY
+                                                   + " matching the serviceId action in the passed paramether table");
 
-        final String input=config.remove(INPUT_KEY);
-        if (input==null || input.isEmpty()){
-            throw new IllegalArgumentException(
-                "Unable to locate the key "+INPUT_KEY+" matching input in the passed paramether table.");
+        final String input = config.remove(INPUT_KEY);
+        if (input == null || input.isEmpty()) {
+            throw new IllegalArgumentException("Unable to locate the key " + INPUT_KEY
+                                               + " matching input in the passed paramether table.");
         }
-        FileSystemEvent event=new FileSystemEvent(new File(input), FileSystemEventType.FILE_ADDED);
-        Queue<FileSystemEvent> events=new java.util.LinkedList<FileSystemEvent>();
+        FileSystemEvent event = new FileSystemEvent(new File(input), FileSystemEventType.FILE_ADDED);
+        Queue<FileSystemEvent> events = new java.util.LinkedList<FileSystemEvent>();
         events.add(event);
 
         // TODO remove all 'NOT configuration' param
 
-           
         return JMXServiceManager.callAction(serviceId, config, events);
+    }
+
+    @Override
+    public void disposeAction(String uuid) throws Exception {
+        JMXServiceManager.dispose(uuid);
     }
 }

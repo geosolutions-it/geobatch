@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 public class FileBasedEventConsumerService extends BaseService
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedEventConsumerService.class.toString());
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedEventConsumerService.class);
 
     public FileBasedEventConsumerService(String id, String name, String description)
     {
@@ -51,7 +51,10 @@ public class FileBasedEventConsumerService extends BaseService
             final File dir = new File((String) workingDir);
             if (!dir.exists() || !dir.isDirectory() || !dir.canRead())
             {
-                // TODO message
+                if (LOGGER.isErrorEnabled())
+                {
+                    LOGGER.error("Unable to create the consumer using workingDir: "+dir);
+                }
                 return false;
             }
         }

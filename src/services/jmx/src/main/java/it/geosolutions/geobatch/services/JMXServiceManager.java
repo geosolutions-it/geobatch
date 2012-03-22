@@ -28,16 +28,13 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
-import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.global.CatalogHolder;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,50 +47,47 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class JMXServiceManager implements ApplicationContextAware {
+public class JMXServiceManager {
     private final static Logger LOGGER = LoggerFactory.getLogger(JMXServiceManager.class);
 
-    public final String FlowManagerID = "JMX_FLOW_MANAGER";
+    public final static String FlowManagerID = "JMX_FLOW_MANAGER";
 
     private static Catalog catalog;
 
     private static FileBasedFlowManager flowManager;
+
     final FileBasedFlowConfiguration flowManagerConfig;
-    
+
     private static File configDirFile;
 
-    private static List<FileBasedEventConsumer> consumers;
-
+    @Autowired
     private static ApplicationContext context;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        context = applicationContext;
-    }
-
-    public JMXServiceManager() throws NullPointerException, IOException {
+    public JMXServiceManager() throws Exception {
         catalog = CatalogHolder.getCatalog();
 
         flowManager = catalog.getResource(FlowManagerID,
-                                     it.geosolutions.geobatch.flow.file.FileBasedFlowManager.class);
+                                          it.geosolutions.geobatch.flow.file.FileBasedFlowManager.class);
         if (flowManager == null) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("The flow id \'" + FlowManagerID
                             + "\' does not exists into catalog... -> going to create it");
             }
-            flowManagerConfig = new FileBasedFlowConfiguration(FlowManagerID, FlowManagerID,null,  "Auto generated " + FlowManagerID, null);
+            flowManagerConfig = new FileBasedFlowConfiguration(FlowManagerID, FlowManagerID, null,
+                                                               "Auto generated " + FlowManagerID, null);
             configDirFile = new File(((FileBaseCatalog)catalog).getBaseDirectory(), FlowManagerID);
             if (!configDirFile.exists()) {
                 if (!(configDirFile.getParentFile().canWrite() && configDirFile.mkdir())) {
@@ -103,21 +97,19 @@ public class JMXServiceManager implements ApplicationContextAware {
                 }
             }
             flowManagerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
-            
+
             flowManager = new FileBasedFlowManager(flowManagerConfig);
-            
-            consumers = flowManager.getEventConsumers();
-            
+
             catalog.add(flowManager);
-//            catalog.save(parent);
-//            parent.persist();
-            
+            // TODO persistence (throws NullPointerException)
+            // catalog.save(parent);
+            // parent.persist();
+
         } else {
             configDirFile = flowManager.getWorkingDirectory();
-            consumers = flowManager.getEventConsumers();
             flowManagerConfig = flowManager.getConfiguration();
         }
-        
+
         if (!configDirFile.exists()) {
             if (!(configDirFile.getParentFile().canWrite() && configDirFile.mkdir())) {
                 throw new IllegalArgumentException("Unable to automatically create the " + FlowManagerID
@@ -125,56 +117,51 @@ public class JMXServiceManager implements ApplicationContextAware {
                                                    + configDirFile.getAbsolutePath().toString());
             }
         }
-        
-        // listener config
-//        if ()
-        //flowManagerConfig.getProgressListenerConfigurations();
-        
+
+        // TODO listener config
+        // if ()
+        // flowManagerConfig.getProgressListenerConfigurations();
+
     }
-    
-    static ActionService getActionService(String serviceId){
+
+    static ActionService getActionService(String serviceId) {
         final ActionService service = (ActionService)context.getBean(serviceId);
         return service;
     }
-    
-    static int getStatus(String uuid) {
-        synchronized (consumers) {
-            for (FileBasedEventConsumer consumer : consumers) {
-                if (consumer.getId().equals(uuid)) {
-                    final EventConsumerStatus status = consumer.getStatus();
-                    switch (status) {
-                    case IDLE:
-                        return 4;
-                    case WAITING:
-                        return 3;
-                    case PAUSED:
-                        return 2;
-                    case EXECUTING:
-                        return 1;
-                    case COMPLETED:
-                        return 0;
-                    case CANCELED:
-                        return -1;
-                    case FAILED:
-                        return -2;
-                    }
-                }
-            }
-        }
 
-        return -3; // consumer UUID not found
+    /**
+     * returns the status of the selected consumer
+     * 
+     * @param uuid
+     * @return {@link ConsumerStatus}
+     */
+    static void dispose(String uuid) throws IllegalArgumentException {
+        flowManager.dispose(uuid);
     }
 
-    static String callAction(String serviceId, Map<String, String> config, Queue<FileSystemEvent> events) throws SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, InterruptedException, IOException{
-        
+    /**
+     * returns the status of the selected consumer
+     * 
+     * @param uuid
+     * @return {@link ConsumerStatus}
+     */
+    static ConsumerStatus getStatus(String uuid) {
+        return ConsumerStatus.getStatus(flowManager.getStatus(uuid));
+    }
+
+    static String callAction(String serviceId, Map<String, String> config, Queue<FileSystemEvent> events)
+        throws Exception {
+
         final ActionService service = JMXServiceManager.getActionService(serviceId);
         final Class serviceClass = service.getClass();
-        
+
         ActionConfiguration actionConfig = null;
         for (Method method : serviceClass.getMethods()) {
             if (method.getName().equals("canCreateAction")) {
                 final Class[] classes = method.getParameterTypes();
-                final Constructor constructor = classes[0].getConstructor(new Class[]{String.class, String.class, String.class});
+                final Constructor constructor = classes[0].getConstructor(new Class[] {String.class,
+                                                                                       String.class,
+                                                                                       String.class});
                 actionConfig = (ActionConfiguration)constructor.newInstance(UUID.randomUUID().toString(),
                                                                             "NAME", "DESC");
                 actionConfig.setServiceID(serviceId);
@@ -183,16 +170,15 @@ public class JMXServiceManager implements ApplicationContextAware {
                 while (it.hasNext()) {
                     String key = it.next();
                     try {
-                        smartUpdate(actionConfig, key, config.get(key));
-                        } catch (Exception e){
-                            if (LOGGER.isErrorEnabled())
-                                LOGGER.error(e.getLocalizedMessage(),e);
-                            // TODO something else?
-                        }
+                        smartCopy(actionConfig, key, config.get(key));
+                    } catch (Exception e) {
+                        if (LOGGER.isErrorEnabled())
+                            LOGGER.error(e.getLocalizedMessage(), e);
+                        // TODO something else?
+                    }
                 }
                 actionConfig.setConfigDir(configDirFile);
-                actionConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
-                
+
                 if (actionConfig != null)
                     break;
                 // BeanUtils.instantiate(clazz)
@@ -201,100 +187,112 @@ public class JMXServiceManager implements ApplicationContextAware {
         if (actionConfig == null)
             throw new IllegalArgumentException("Unable to locate the configuration");
 
-        final FileBasedEventConsumerConfiguration consumerConfig = new FileBasedEventConsumerConfiguration("JMX_Consumer_id",
+        final FileBasedEventConsumerConfiguration consumerConfig = new FileBasedEventConsumerConfiguration(
+                                                                                                           "JMX_Consumer_id",
                                                                                                            "JMX_Consumer_name",
                                                                                                            "JMX_Consumer description");
         // TODO Status progress listener
-//        final StatusProgressListenerConfiguration statusProgressListenerConfig=new StatusProgressListenerConfiguration("status_listener", "status_listener", "status_listener");
-//        statusProgressListenerConfig.setServiceID("StatusProgressListener");
-//        actionConfig.addListenerConfiguration(statusProgressListenerConfig);
-        
+        // final StatusProgressListenerConfiguration
+        // statusProgressListenerConfig=new
+        // StatusProgressListenerConfiguration("status_listener",
+        // "status_listener", "status_listener");
+        // statusProgressListenerConfig.setServiceID("StatusProgressListener");
+        // actionConfig.addListenerConfiguration(statusProgressListenerConfig);
+
         final List<ActionConfiguration> actions = new ArrayList<ActionConfiguration>();
         actions.add(actionConfig);
-        
+
         consumerConfig.setActions(actions);
         consumerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
-        //TODO may we want to remove only when getStatus is remotely called???
-//        consumerConfig.setKeepContextDir(true);
-        
+        // TODO may we want to remove only when getStatus is remotely called???
+        // consumerConfig.setKeepContextDir(true);
+
         // if you whant to move the input you may call the action move!
         consumerConfig.setPreserveInput(true);
-        
+
         // TODO logging progress listener
-//        final LoggingProgressListenerConfiguration loggingProgressListenerConfig=new LoggingProgressListenerConfiguration("logging_listener", "logging_listener", "logging_listener");
-//        loggingProgressListenerConfig.setServiceID("LoggingProgressListener");        
-//        loggingProgressListenerConfig.setLoggerName("it.geosolutions.geobatch.services");
-//        consumerConfig.addListenerConfiguration(loggingProgressListenerConfig);
-        
+        // final LoggingProgressListenerConfiguration
+        // loggingProgressListenerConfig=new
+        // LoggingProgressListenerConfiguration("logging_listener",
+        // "logging_listener", "logging_listener");
+        // loggingProgressListenerConfig.setServiceID("LoggingProgressListener");
+        // loggingProgressListenerConfig.setLoggerName("it.geosolutions.geobatch.services");
+        // consumerConfig.addListenerConfiguration(loggingProgressListenerConfig);
+
         final FileBasedEventConsumer consumer = new FileBasedEventConsumer(consumerConfig);
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("INIT injecting consumer to the parent flow. UUID: "+consumer.getId());
+            LOGGER.info("INIT injecting consumer to the parent flow. UUID: " + consumer.getId());
         }
-        synchronized (consumers) {
-            consumers.add(consumer);
+
+        // following ops are atomic
+        synchronized (flowManager) {
+            flowManager.add(consumer);
+
+            for (FileSystemEvent event : events) {
+                consumer.consume(event);
+            }
+
+            // execute
+            flowManager.getExecutor().submit(consumer);
         }
-        for (FileSystemEvent event :events){
-            consumer.consume(event);   
-        }
-        
-        // execute
-        flowManager.getExecutor().submit(consumer);
-        
+
         return consumer.getId();
     }
-    
-    public static <T> void smartUpdate(final T bean , final String propertyName, final String value) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, IllegalArgumentException, SecurityException, InstantiationException{
-        PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean,propertyName);
+
+    public static <T> void smartCopy(final T bean, final String propertyName, final String value)
+        throws Exception {
+        PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean, propertyName);
         // return null if there is no such descriptor
-        if (pd==null){
+        if (pd == null) {
             return;
         }
         // T interface doesn't declare setter method for this property
         // lets use getter methods to get the property reference
-        final Object property=PropertyUtils.getProperty(bean,propertyName);
-        
+        final Object property = PropertyUtils.getProperty(bean, propertyName);
+
         // check type of property to apply new value
-        if(Collection.class.isAssignableFrom(pd.getPropertyType())) {
+        if (Collection.class.isAssignableFrom(pd.getPropertyType())) {
 
             final Collection<Object> liveCollection;
-            if (property!=null){
-                liveCollection= (Collection<Object>)property;
+            if (property != null) {
+                liveCollection = (Collection<Object>)property;
                 liveCollection.clear();
             } else {
-                liveCollection= new LinkedList<Object>();
+                liveCollection = new LinkedList<Object>();
             }
-            
+
             // value should be a list of string ',' separated
-            String[] listString=value.split(",");
-            for (String s:listString){
+            String[] listString = value.split(",");
+            for (String s : listString) {
                 liveCollection.add(s);
             }
-            
-        } else if(Map.class.isAssignableFrom(pd.getPropertyType())) {
-            
-            final Map<Object,Object> liveMap;
-            if (property!=null){
-                liveMap= (Map<Object,Object>) property;
+
+        } else if (Map.class.isAssignableFrom(pd.getPropertyType())) {
+
+            final Map<Object, Object> liveMap;
+            if (property != null) {
+                liveMap = (Map<Object, Object>)property;
                 liveMap.clear();
             } else {
-                liveMap= new HashMap<Object,Object>();
+                liveMap = new HashMap<Object, Object>();
             }
-            
+
             // value should be a list of key=value string ';' separated
-            String[] listString=value.split(";");
-            for (String kvString:listString){
-                String kv[]=kvString.split("=");
-                liveMap.put(kv[0],kv[1]);
+            String[] listString = value.split(";");
+            for (String kvString : listString) {
+                String kv[] = kvString.split("=");
+                liveMap.put(kv[0], kv[1]);
             }
-            
+
         } else {
-            if(pd.getWriteMethod() != null) {
+            if (pd.getWriteMethod() != null) {
                 PropertyUtils.setProperty(bean, propertyName, value);
             } else {
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error("Skipping unwritable property " +propertyName + " with property type " + pd.getPropertyType());
+                    LOGGER.error("Skipping unwritable property " + propertyName + " with property type "
+                                 + pd.getPropertyType());
             }
         }
     }
-    
+
 }

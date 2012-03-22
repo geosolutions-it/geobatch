@@ -29,10 +29,16 @@ import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import java.io.File;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.EventObject;
+import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 /**
  * 
@@ -43,60 +49,57 @@ import org.slf4j.LoggerFactory;
  * @version r1<br>
  *          r2 - on: 26 Aug 2011<br>
  * 
- * @param <XEO>
- *            Kind of EventObject to be eXecuted
+ * @param <XEO> Kind of EventObject to be eXecuted
  */
-public abstract class BaseAction<XEO extends EventObject> extends
-		BaseIdentifiable implements Action<XEO>, Job {
+public abstract class BaseAction<XEO extends EventObject> extends BaseIdentifiable implements Action<XEO>,
+    Job {
 
-	private final static Logger LOGGER = LoggerFactory
-			.getLogger(BaseAction.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 
-	/**
-	 * the context where action is running in...<br>
-	 * this is initialized by the FlowManager
-	 */
-	private String runningContext;
+    /**
+     * the context where action is running in...<br>
+     * this is initialized by the FlowManager
+     */
+    private String runningContext;
 
-	/**
-	 * Directory where temp files can be stored.
-     * It should be automatically cleaned up by the GB engine when an Action ends successfully.<br>
-	 * This should be initialized by the FlowManager
-     * <br/><b>WORK IN PROGRESS</b>
-	 */
+    /**
+     * Directory where temp files can be stored. It should be automatically
+     * cleaned up by the GB engine when an Action ends successfully.<br>
+     * This should be initialized by the FlowManager <br/>
+     * <b>WORK IN PROGRESS</b>
+     */
     private File tempDir;
 
-	final protected ProgressListenerForwarder listenerForwarder;
+    final protected ProgressListenerForwarder listenerForwarder;
 
-	protected boolean failIgnored = false;
+    protected boolean failIgnored = false;
 
-	public BaseAction(String id, String name, String description) {
-		super(id, name, description);
-		listenerForwarder = new ProgressListenerForwarder(this);
-		failIgnored = false;
-	}
+    public BaseAction(String id, String name, String description) {
+        super(id, name, description);
+        listenerForwarder = new ProgressListenerForwarder(this);
+        failIgnored = false;
+    }
 
-	public BaseAction(ActionConfiguration actionConfiguration) {
-		super(actionConfiguration.getId(), actionConfiguration.getName(),
-				actionConfiguration.getDescription());
-		listenerForwarder = new ProgressListenerForwarder(this);
-		failIgnored = actionConfiguration.isFailIgnored();
-	}
+    public BaseAction(ActionConfiguration actionConfiguration) {
+        super(actionConfiguration.getId(), actionConfiguration.getName(), actionConfiguration
+            .getDescription());
+        listenerForwarder = new ProgressListenerForwarder(this);
+        failIgnored = actionConfiguration.isFailIgnored();
+    }
 
-	/**
-	 * @return the runningContext
-	 */
-	public String getRunningContext() {
-		return runningContext;
-	}
+    /**
+     * @return the runningContext
+     */
+    public String getRunningContext() {
+        return runningContext;
+    }
 
-	/**
-	 * @param runningContext
-	 *            the runningContext to set
-	 */
-	public void setRunningContext(String runningContext) {
-		this.runningContext = runningContext;
-	}
+    /**
+     * @param runningContext the runningContext to set
+     */
+    public void setRunningContext(String runningContext) {
+        this.runningContext = runningContext;
+    }
 
     public File getTempDir() {
         return tempDir;
@@ -106,58 +109,65 @@ public abstract class BaseAction<XEO extends EventObject> extends
         this.tempDir = tempDir;
     }
 
-	public void destroy() {
-	}
+    public void destroy() {
+    }
 
-	public boolean isPaused() {
-		return false;
-	}
+    public boolean isPaused() {
+        return false;
+    }
 
-	public boolean pause() {
-		if (LOGGER.isInfoEnabled())
-			LOGGER.info("Pause request for " + getClass().getSimpleName());
-		return false; // pause has not been honoured
-	}
+    public boolean pause() {
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info("Pause request for " + getClass().getSimpleName());
+        return false; // pause has not been honoured
+    }
 
-	public boolean pause(boolean sub) {
-		if (LOGGER.isInfoEnabled())
-			LOGGER.info("Pause(" + sub + ") request for "
-					+ getClass().getSimpleName());
-		return false; // pause has not been honoured
-	}
+    public boolean pause(boolean sub) {
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info("Pause(" + sub + ") request for " + getClass().getSimpleName());
+        return false; // pause has not been honoured
+    }
 
-	public void resume() {
-		if (LOGGER.isInfoEnabled())
-			LOGGER.info("Resuming " + getClass().getSimpleName());
-	}
+    public void resume() {
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info("Resuming " + getClass().getSimpleName());
+    }
 
-	/**
-	 * @return
-	 */
-	public boolean isFailIgnored() {
-		return failIgnored;
-	}
+    /**
+     * @return
+     */
+    public boolean isFailIgnored() {
+        return failIgnored;
+    }
 
-	/**
-	 * @param failIgnored
-	 */
-	public void setFailIgnored(boolean failIgnored) {
-		this.failIgnored = failIgnored;
-	}
+    /**
+     * @param failIgnored
+     */
+    public void setFailIgnored(boolean failIgnored) {
+        this.failIgnored = failIgnored;
+    }
 
-	public void removeListener(ProgressListener listener) {
-		this.listenerForwarder.removeListener(listener);
-	}
+    public void removeListener(IProgressListener listener) {
+        this.listenerForwarder.removeListener(listener);
+    }
 
-	public void addListener(ProgressListener listener) {
-		this.listenerForwarder.addListener(listener);
-	}
+    public void addListener(IProgressListener listener) {
+        this.listenerForwarder.addListener(listener);
+    }
 
-	public <PL extends IProgressListener> PL getProgressListener(Class<PL> clazz) {
-		for (IProgressListener ipl : listenerForwarder.getListeners()) {
-			if (clazz.isAssignableFrom(ipl.getClass()))
-				return (PL) ipl;
-		}
-		return null;
-	}
+    public Collection getListeners() {
+        return this.listenerForwarder.getListeners();
+    }
+
+    public Collection getListeners(Class clazz) {
+        final Collection<IProgressListener> c=new ArrayList<IProgressListener>();
+        final Iterator<IProgressListener> it=getListeners().iterator();
+        while (it.hasNext()) {
+            IProgressListener ipl = it.next();
+            if (clazz.isAssignableFrom(ipl.getClass())){
+                c.add(ipl);
+            }
+        }
+        return c;
+    }
 }

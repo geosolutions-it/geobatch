@@ -66,7 +66,6 @@ public abstract class ProgressListener implements IProgressListener {
 
     /**
      * @return
-     * @uml.property name="progress"
      */
     public float getProgress() {
         return progress;
@@ -85,8 +84,6 @@ public abstract class ProgressListener implements IProgressListener {
 
     /**
      * Used by the notifier.
-     * 
-     * @uml.property name="progress"
      */
     public void setProgress(float progress) {
         this.progress = progress;

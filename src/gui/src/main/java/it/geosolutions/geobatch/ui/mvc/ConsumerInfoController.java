@@ -24,15 +24,17 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
+import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
+import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
 import it.geosolutions.geobatch.flow.event.listeners.status.StatusProgressListener;
-import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.springframework.web.servlet.ModelAndView;
 
@@ -40,87 +42,76 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  *
  * @author ETj <etj at geo-solutions.it>
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public class ConsumerInfoController extends ConsumerAbstractController
 {
 
     @Override
-    protected void runStuff(ModelAndView mav, FileBasedFlowManager fm, BaseEventConsumer consumer)
+    protected void handleConsumer(ModelAndView mav, EventConsumer consumer)
     {
         mav.setViewName("consumerInfo");
 
         List<String> eventlist = new ArrayList<String>();
 
-        if ((fm != null) && (consumer != null))
-        {
-            // Progress Logging...
-            CumulatingProgressListener cpl = (CumulatingProgressListener) consumer.getProgressListener(CumulatingProgressListener.class);
-            if (cpl != null)
-            {
+        // Progress Logging...
+        Collection<IProgressListener> coll= consumer.getListeners();
+        for (IProgressListener listener: coll){
+            if (listener == null){
+                continue;
+                // TODO warn
+            }
+            if (listener instanceof CumulatingProgressListener){
+                CumulatingProgressListener cpl = (CumulatingProgressListener) listener;
                 for (String msg : cpl.getMessages())
                 {
                     eventlist.add("Consumer: " + msg);
                 }
+            } else if (listener instanceof StatusProgressListener){
+                StatusProgressListener spl = (StatusProgressListener) listener;
+                eventlist.add("Consumer status: " + spl.toString());
+            } else {
+                // get any pl
+                ProgressListener anypl = (ProgressListener) listener;
+                eventlist.add("Consumer action task: " + anypl.getTask());
+                eventlist.add("Consumer action progress: " + anypl.getProgress() + "%");
             }
-            else
-            {
-                eventlist.add("NO CumulatingProgressListener found for " + consumer.getName());
+        }
 
-                StatusProgressListener spl = (StatusProgressListener) consumer.getProgressListener(StatusProgressListener.class);
-                if (spl != null)
-                {
-                    eventlist.add("Consumer status: " + spl.toString());
+        // Current Action Status...
+        BaseAction<?> action = (BaseAction) ((FileBasedEventConsumer)consumer).getCurrentAction(); // TODO BETTER USE OF CONSUMER!!!
+        if (action != null)
+        {
+            eventlist.add("Current action name:   " + action.getName() + " [" +
+                action.getClass().getSimpleName() + "]");
+            eventlist.add("Current action status: " +
+                (action.isPaused() ? "SUSPENDED" : "ACTIVE"));
+
+            // try the most interesting information holder
+            Collection<IProgressListener> collAction= action.getListeners();
+            for (IProgressListener listener: collAction){
+                if (listener == null){
+                    continue;
+                    // TODO warn
                 }
-                else
-                {
+                if (listener instanceof CumulatingProgressListener){
+                    CumulatingProgressListener cpl = (CumulatingProgressListener) listener;
+                    for (String msg : cpl.getMessages())
+                    {
+                        eventlist.add("Current action event: " + msg);
+                    }
+                } else if (listener instanceof StatusProgressListener){
+                    StatusProgressListener spl = (StatusProgressListener) listener;
+                    eventlist.add("Current action status: " + spl.toString());
+//                    mav.addObject("acStatus", spl);
+                } else {
                     // get any pl
-                    ProgressListener anypl = (ProgressListener) consumer.getProgressListener(ProgressListener.class);
-                    if (anypl != null)
-                    {
-                        eventlist.add("Consumer action task: " + anypl.getTask());
-                        eventlist.add("Consumer action progress: " + anypl.getProgress() + "%");
-                    }
-                    else
-                    {
-                        eventlist.add("NO ProgressListener found for " + consumer.getName());
-                    }
+                    ProgressListener anypl = (ProgressListener) listener;
+                    eventlist.add("Current action task: " + anypl.getTask());
+                    eventlist.add("Current action progress: " + anypl.getProgress() + "%");
                 }
             }
 
-            // Current Action Status...
-            BaseAction action = (BaseAction) consumer.getCurrentAction();
-            if (action != null)
-            {
-                eventlist.add("Current action name:   " + action.getName() + " [" +
-                    action.getClass().getSimpleName() + "]");
-                eventlist.add("Current action status: " +
-                    (action.isPaused() ? "SUSPENDED" : "ACTIVE"));
-
-                // try the most interesting information holder
-                cpl = (CumulatingProgressListener) action.getProgressListener(CumulatingProgressListener.class);
-                if (cpl != null)
-                {
-                    eventlist.add("Current action eventlist: " + cpl.getMessages());
-                }
-                else
-                {
-                    StatusProgressListener spl = (StatusProgressListener) action.getProgressListener(StatusProgressListener.class);
-                    if (spl != null)
-                    {
-                        eventlist.add("Current action status: " + spl.toString());
-                    }
-                    else
-                    {
-                        // get any pl
-                        ProgressListener anypl = (ProgressListener) action.getProgressListener(ProgressListener.class);
-                        if (anypl != null)
-                        {
-                            eventlist.add("Current action task: " + anypl.getTask());
-                            eventlist.add("Current action progress: " + anypl.getProgress() + "%");
-                        }
-                    }
-                }
-            }
         }
 
         eventlist.add(consumer.toString());

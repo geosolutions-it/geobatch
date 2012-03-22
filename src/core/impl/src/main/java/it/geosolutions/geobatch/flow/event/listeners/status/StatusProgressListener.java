@@ -50,14 +50,6 @@ public class StatusProgressListener extends ProgressListener {
         super(configuration, owner);
     }
 
-    /**
-     * @param source
-     * @uml.property name="source"
-     */
-    // public void setSource(Object source) {
-    // this.source = source;
-    // }
-
     public void started() {
         started = true;
     }
@@ -82,7 +74,6 @@ public class StatusProgressListener extends ProgressListener {
 
     /**
      * @return
-     * @uml.property name="paused"
      */
     public boolean isPaused() {
         return paused;
@@ -98,7 +89,6 @@ public class StatusProgressListener extends ProgressListener {
 
     /**
      * @return
-     * @uml.property name="completed"
      */
     public boolean isCompleted() {
         return completed;
@@ -111,7 +101,6 @@ public class StatusProgressListener extends ProgressListener {
 
     /**
      * @return
-     * @uml.property name="failed"
      */
     public boolean isFailed() {
         return failed;
@@ -119,7 +108,6 @@ public class StatusProgressListener extends ProgressListener {
 
     /**
      * @return
-     * @uml.property name="failException"
      */
     public Throwable getFailException() {
         return failException;
@@ -131,7 +119,6 @@ public class StatusProgressListener extends ProgressListener {
 
     /**
      * @return
-     * @uml.property name="terminated"
      */
     public boolean isTerminated() {
         return terminated;
@@ -139,13 +126,7 @@ public class StatusProgressListener extends ProgressListener {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder()
-        // .append("Status of ")
-        // .append(source!=null?source:"ACTION")
-        // .append('[')
-        ;
-
-        sb.append("Last task: '").append(getTask()).append("' ");
+        StringBuilder sb = new StringBuilder().append("Last task: '").append(getTask()).append("' ");
         sb.append(" at ").append(getProgress()).append("% ");
         if (started)
             sb.append("started ");

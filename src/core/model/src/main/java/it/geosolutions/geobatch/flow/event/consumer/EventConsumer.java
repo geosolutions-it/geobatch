@@ -21,17 +21,21 @@
  */
 package it.geosolutions.geobatch.flow.event.consumer;
 
+import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.flow.Job;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.misc.ListenerRegistry;
 
 import java.util.EventObject;
+import java.util.Queue;
+import java.util.concurrent.Callable;
 
 /**
  * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public interface EventConsumer<EO extends EventObject, ECC extends EventConsumerConfiguration>
-        extends ListenerRegistry<EventConsumerListener>, Job {
+        extends ListenerRegistry<IProgressListener>, Callable<Queue<EO>>, Job, Identifiable {
     /**
      * Clean up code for this {@link EventConsumer}.
      */
@@ -53,10 +57,8 @@ public interface EventConsumer<EO extends EventObject, ECC extends EventConsumer
     public void setConfiguration(ECC configuration);
 
     /**
-     * Retrieves the status for this  {@link EventConsumer} .
-     * @return  the status for this  {@link EventConsumer}  .
-     * @uml.property  name="status"
-     * @uml.associationEnd  
+     * Retrieves the status for this  {@link EventConsumer}
+     * @return  the status for this  {@link EventConsumer}
      */
     public EventConsumerStatus getStatus();
 
@@ -83,5 +85,6 @@ public interface EventConsumer<EO extends EventObject, ECC extends EventConsumer
      *         execution, <code>false</code> otherwise.
      */
     public boolean isCanceled();
+    
 
 }

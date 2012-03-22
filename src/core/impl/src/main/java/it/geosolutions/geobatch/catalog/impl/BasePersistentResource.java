@@ -42,7 +42,7 @@ public abstract class BasePersistentResource<C extends Configuration> extends Ba
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(BasePersistentResource.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(BasePersistentResource.class);
 
     
     private C configuration;

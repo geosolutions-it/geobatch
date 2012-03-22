@@ -23,7 +23,7 @@
 	
 	<bean id="JMXServiceManager" class="it.geosolutions.geobatch.services.JMXServiceManager" />
 
-	<bean id="JMXActionManager" class="it.geosolutions.geobatch.services.JMXActionManager" depends-on="JMXServiceManager" />
+<!-- 	<bean id="JMXActionManager" class="it.geosolutions.geobatch.services.JMXActionManager" depends-on="JMXServiceManager" /> -->
 
 <!-- 	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" -->
 <!-- 		lazy-init="false"> -->

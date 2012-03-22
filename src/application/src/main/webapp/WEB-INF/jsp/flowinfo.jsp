@@ -119,30 +119,29 @@
 							        <c:when test="${status == 'PAUSED'}">
 	  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
 	  										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
-							            		 <a href='consumerResume.do?fmId=${fm.id}&ecId=${ecCounter.count-1}'><image src='img/control_play.png' border='0' title='resume instance' alt='resume' width='16' height='16'/></a>
+							            		<a href='consumerResume.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_play.png' border='0' title='resume instance' alt='resume' width='16' height='16'/></a>
 											</c:if>
 										</c:forEach>
 							        </c:when>
 							        <c:when test="${status == 'EXECUTING'}">
 	  									<c:forEach var="role" items="${currentUser.grantedAuthorities}">
 	  										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
-							            		 <a href='consumerPause.do?fmId=${fm.id}&ecId=${ecCounter.count-1}'><image src='img/control_pause.png' border='0' title='pause instance' alt='pause' width='16' height='16'/></a>
+							            		<a href='consumerPause.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/control_pause.png' border='0' title='pause instance' alt='pause' width='16' height='16'/></a>
 											</c:if>
 										</c:forEach>
 							        </c:when>
 							        <c:when test="${status == 'COMPLETED' || status == 'FAILED' || status == 'PAUSED'}">
 							        	<c:forEach var="role" items="${currentUser.grantedAuthorities}">
 	 										<c:if test="${role.authority == 'ROLE_ADMIN' || role.authority == 'ROLE_POWERUSER'}">
-						    					<a href='consumerDispose.do?fmId=${fm.id}&ecId=${ecCounter.count-1}'><image src='img/cancel.png' border='0' title='cancel instance' alt='cancel' width='16' height='16'/></a>
+						    					<a href='consumerDispose.do?fmId=${fm.id}&ecId=${ec.id}'><image src='img/cancel.png' border='0' title='cancel instance' alt='cancel' width='16' height='16'/></a>
 											</c:if>
 										</c:forEach>
 							        </c:when>
 							    </c:choose>
-							    <a class="actions" href="consumerInfo.do?fmId=${fm.id}&ecId=${ecCounter.count-1}"><image src='img/page_white_text.png' border='0' title='instance logs' alt='logs' width='16' height='16'/></a>
+							    <a class="actions" href="consumerInfo.do?fmId=${fm.id}&ecId=${ec.id}"><image src='img/page_white_text.png' border='0' title='instance logs' alt='logs' width='16' height='16'/></a>
 			    </h6>
 			    <div>
 				    <UL>
-					    
 					    <LI> - <B>created</B>: <fmt:formatDate value="${ec.creationTimestamp.time}" type="both" dateStyle="SHORT" timeStyle="FULL"/></LI>
 					    <LI> - <B>consumer info</B>: <c:out value="${ec}"/><br/></LI>
 				    </UL>
@@ -150,7 +149,10 @@
 				    <c:forEach var="ac" items="${ec.actions}">
 				    	<c:set var="action" value="${ac}" scope="request" />
 				    	<% 
-				    		request.setAttribute("acStatus", ((BaseAction)request.getAttribute("action")).getProgressListener(StatusProgressListener.class));
+				    		Iterator<StatusProgressListener> it = ((BaseAction)request.getAttribute("action")).getListeners(StatusProgressListener.class).iterator();
+					    	if (it.hasNext()){
+					    		request.setAttribute("acStatus", it.next());
+					    	}
 				    	%>
 				    	<c:choose> 
 							<c:when test="${acStatus != null}">

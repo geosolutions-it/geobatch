@@ -24,49 +24,44 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
-import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
+import it.geosolutions.geobatch.flow.FlowManager;
+import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
-import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
-import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
 import org.springframework.web.servlet.ModelAndView;
 
-
 /**
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
-public class ConsumerDisposeController extends ConsumerAbstractController
-{
+public class ConsumerDisposeController extends ConsumerAbstractController {
+
+    private FlowManager fm;
 
     @Override
-    protected void runStuff(ModelAndView mav, FileBasedFlowManager fm,
-        BaseEventConsumer consumer)
-    {
-        if ((fm != null) && (consumer != null))
-        {
-            final EventConsumerStatus status = consumer.getStatus();
+    protected void handleConsumer(ModelAndView mav, EventConsumer consumer) throws IllegalArgumentException {
+        final EventConsumerStatus status = consumer.getStatus();
 
-            if (status.equals(EventConsumerStatus.COMPLETED) ||
-                    status.equals(EventConsumerStatus.CANCELED) ||
-                    status.equals(EventConsumerStatus.FAILED))
-            {
+        if (status.equals(EventConsumerStatus.COMPLETED) || status.equals(EventConsumerStatus.CANCELED)
+            || status.equals(EventConsumerStatus.FAILED)) {
 
-                if (consumer instanceof FileBasedEventConsumer)
-                {
-                    final FileBasedEventConsumer fileConsumer = (FileBasedEventConsumer) consumer;
-
-                    // start manually clear action instances and cumulators
-                    fileConsumer.clear();
-
-                    // dispose the object
-                    fm.dispose(fileConsumer);
-                }
-
+            // dispose the object
+            if (fm != null) {
+                fm.dispose(consumer.getId());
+            } else {
+                throw new IllegalArgumentException("ERROR: Consumer instance '" + consumer.getId()
+                                                   + "' not found");
             }
-        }
 
-        mav.addObject("consumer", consumer);
+        }
     }
+
+    protected void handleFlowManager(ModelAndView mav, FlowManager fm) throws IllegalArgumentException {
+
+        super.handleFlowManager(mav, fm);
+
+        this.fm = fm;
+    }
+
 }

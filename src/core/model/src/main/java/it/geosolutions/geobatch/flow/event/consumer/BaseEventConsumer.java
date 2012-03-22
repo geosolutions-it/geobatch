@@ -31,15 +31,14 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.misc.PauseHandler;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.TimeZone;
-import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,367 +53,359 @@ import org.slf4j.LoggerFactory;
  *          r2 - date: 26 Aug 2011 <br>
  */
 public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends EventConsumerConfiguration>
-		extends BaseResource implements Callable<Queue<XEO>>,
-		EventConsumer<XEO, ECC> {
+    extends BaseResource implements EventConsumer<XEO, ECC> {
 
-	private static Logger LOGGER = LoggerFactory
-			.getLogger(BaseEventConsumer.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(BaseEventConsumer.class);
 
-	private final Calendar creationTimestamp = Calendar.getInstance(TimeZone
-			.getTimeZone("UTC"));
+    private final Calendar creationTimestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-	private volatile EventConsumerStatus eventConsumerStatus;
+    private final Calendar endingTimestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
-	/*
-	 * the context where action is running in...<br> this is initialized by the
-	 * FlowManager
-	 */
-	private String runningContext;
+    private volatile EventConsumerStatus eventConsumerStatus;
 
-	/**
-	 * @return the runningContext
-	 */
-	public String getRunningContext() {
-		return runningContext;
-	}
+    /**
+     * the context where action is running in...<br>
+     * this is initialized by the FlowManager
+     */
+    private String runningContext;
 
-	/**
-	 * @param runningContext
-	 *            the runningContext to set
-	 */
-	public void setRunningContext(String runningContext) {
-		this.runningContext = runningContext;
-	}
+    /**
+     * @return the runningContext
+     */
+    public String getRunningContext() {
+        return runningContext;
+    }
 
-	/**
-	 * The MailBox
-	 */
-	protected final Queue<XEO> eventsQueue = new LinkedList<XEO>();
+    /**
+     * @param runningContext the runningContext to set
+     */
+    public void setRunningContext(String runningContext) {
+        this.runningContext = runningContext;
+    }
 
-	protected final List<BaseAction<XEO>> actions = new ArrayList<BaseAction<XEO>>();
+    /**
+     * The MailBox
+     */
+    protected final Queue<XEO> eventsQueue = new LinkedList<XEO>();
 
-	protected volatile BaseAction<XEO> currentAction = null;
+    protected final List<BaseAction<XEO>> actions = new ArrayList<BaseAction<XEO>>();
 
-	final protected EventConsumerListenerForwarder listenerForwarder;
+    protected volatile BaseAction<XEO> currentAction = null;
 
-	protected PauseHandler pauseHandler = new PauseHandler(false);
+    final protected EventConsumerListenerForwarder listenerForwarder;
 
-	public BaseEventConsumer(String id, String name, String description) {
-		super(id, name, description);
-		this.listenerForwarder = new EventConsumerListenerForwarder(this);
-		this.setStatus(EventConsumerStatus.IDLE);
-	}
+    protected PauseHandler pauseHandler = new PauseHandler(false);
 
-	public Calendar getCreationTimestamp() {
-		return (Calendar) creationTimestamp.clone();
-	}
+    public BaseEventConsumer(String id, String name, String description) {
+        super(id, name, description);
+        this.listenerForwarder = new EventConsumerListenerForwarder(this);
+        this.setStatus(EventConsumerStatus.IDLE);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.geosolutions.geobatch.flow.event.consumer.EventConsumer#getStatus()
-	 */
-	public EventConsumerStatus getStatus() {
-		return this.eventConsumerStatus;
-	}
+    public Calendar getCreationTimestamp() {
+        return (Calendar)creationTimestamp.clone();
+    }
 
-	/**
-	 * Change status and fire events on listeners if status has really changed.
-	 */
-	protected void setStatus(EventConsumerStatus eventConsumerStatus) {
+    public Calendar getEndingTimestamp() {
+        return (Calendar)endingTimestamp.clone();
+    }
 
-		if (this.eventConsumerStatus != eventConsumerStatus) {
-			listenerForwarder.fireStatusChanged(this.eventConsumerStatus,
-					eventConsumerStatus);
-			listenerForwarder.setTask(eventConsumerStatus.toString());
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * it.geosolutions.geobatch.flow.event.consumer.EventConsumer#getStatus()
+     */
+    public EventConsumerStatus getStatus() {
+        return this.eventConsumerStatus;
+    }
 
-		this.eventConsumerStatus = eventConsumerStatus;
-	}
+    /**
+     * Change status and fire events on listeners if status has really changed.
+     */
+    protected void setStatus(EventConsumerStatus eventConsumerStatus) {
 
-	public Action<XEO> getCurrentAction() {
-		return currentAction;
-	}
+        if (this.eventConsumerStatus != eventConsumerStatus) {
+            listenerForwarder.fireStatusChanged(this.eventConsumerStatus, eventConsumerStatus);
+            listenerForwarder.setTask(eventConsumerStatus.toString());
+        }
 
-	/**
-	 * {@link it.geosolutions.geobatch.flow.event.consumer.EventConsumer}
-	 */
-	public boolean consume(XEO event) {
-		if (!eventsQueue.offer(event)) {
-			return false;
-		}
+        this.eventConsumerStatus = eventConsumerStatus;
+    }
 
-		return true;
-	}
+    public Action<XEO> getCurrentAction() {
+        return currentAction;
+    }
 
-	/**
-	 * Once the configuring state has been successfully passed, by collecting
-	 * all the necessary Events, the EventConsumer invokes this method in order
-	 * to run the related actions.
-	 * <P>
-	 * <B>FIXME</B>: <I>on action errors the flow used to go on. Now it bails
-	 * out from the loop. <BR>
-	 * We may need to specify on a per-action basis if an error in the action
-	 * should stop the whole flow.</I>
-	 * 
-	 * @param events
-	 *            The incoming event queue to pass to the first action
-	 * @param runningContext
-	 *            The context in which the actions should be executed
-	 * 
-	 */
-	protected Queue<XEO> applyActions(Queue<XEO> events) throws ActionException {
-		if (LOGGER.isTraceEnabled()) {
-			LOGGER.trace("Applying " + actions.size() + " actions on "
-					+ events.size() + " events.");
-		}
+    /**
+     * {@link it.geosolutions.geobatch.flow.event.consumer.EventConsumer}
+     */
+    public boolean consume(XEO event) {
+        if (!eventsQueue.offer(event)) {
+            return false;
+        }
 
-		// apply all the actions
-		int step = 0;
+        return true;
+    }
 
-		for (BaseAction<XEO> action : this.actions) {
-			try {
-				pauseHandler.waitUntilResumed();
+    /**
+     * Once the configuring state has been successfully passed, by collecting
+     * all the necessary Events, the EventConsumer invokes this method in order
+     * to run the related actions.
+     * <P>
+     * <B>FIXME</B>: <I>on action errors the flow used to go on. Now it bails
+     * out from the loop. <BR>
+     * We may need to specify on a per-action basis if an error in the action
+     * should stop the whole flow.</I>
+     * 
+     * @param events The incoming event queue to pass to the first action
+     * @param runningContext The context in which the actions should be executed
+     * 
+     */
+    protected Queue<XEO> applyActions(Queue<XEO> events) throws ActionException {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Applying " + actions.size() + " actions on " + events.size() + " events.");
+        }
 
-				float progress = 100f * (float) step / this.actions.size();
-				listenerForwarder.setProgress(progress);
-				listenerForwarder.setTask("Running "
-						+ action.getClass().getSimpleName() + "(" + (step + 1)
-						+ "/" + this.actions.size() + ")");
-				// notify there has been some progressing
-				listenerForwarder.progressing();
+        // apply all the actions
+        int step = 0;
+        try {
+            for (BaseAction<XEO> action : this.actions) {
+                try {
+                    pauseHandler.waitUntilResumed();
 
-				// setting the action context same as the event consumer
-				action.setRunningContext(getRunningContext());
+                    float progress = 100f * (float)step / this.actions.size();
+                    listenerForwarder.setProgress(progress);
+                    listenerForwarder.setTask("Running " + action.getClass().getSimpleName() + "("
+                                              + (step + 1) + "/" + this.actions.size() + ")");
+                    // notify there has been some progressing
+                    listenerForwarder.progressing();
 
-				// setting current action
-				currentAction = action;
+                    // setting the action context same as the event consumer
+                    action.setRunningContext(getRunningContext());
 
-                // let child classes perform their init
-                setupAction(action, step);
+                    // setting current action
+                    currentAction = action;
 
-				// execute the action
-				events = action.execute(events);
+                    // // let child classes perform their init
+                    setupAction(action, step);
 
-				if (events == null) {
-					throw new IllegalArgumentException("Action "
-							+ action.getClass().getSimpleName()
-							+ " left no event in queue.");
-				}
-				if (events.isEmpty()) {
-					if (LOGGER.isWarnEnabled()) {
-						LOGGER.warn("Action "
-								+ action.getClass().getSimpleName()
-								+ " left no event in queue.");
-					}
-				}
-				step++;
+                    // execute the action
+                    events = action.execute(events);
 
-			} catch (ActionException e) {
-				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error(e.getLocalizedMessage(), e);
-				}
+                    if (events == null) {
+                        throw new IllegalArgumentException("Action " + action.getClass().getSimpleName()
+                                                           + " left no event in queue.");
+                    }
+                    if (events.isEmpty()) {
+                        if (LOGGER.isWarnEnabled()) {
+                            LOGGER.warn("Action " + action.getClass().getSimpleName()
+                                        + " left no event in queue.");
+                        }
+                    }
+                    step++;
 
-				listenerForwarder.setTask("Action "
-						+ action.getClass().getSimpleName() + " failed (" + e
-						+ ")");
-				listenerForwarder.progressing();
+                } catch (ActionException e) {
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error(e.getLocalizedMessage(), e);
+                    }
 
-				if (!currentAction.isFailIgnored()) {
-					events.clear();
-					throw e;
-				} else {
-					// CHECKME: eventlist is not modified in this case. will it
-					// work?
-				}
+                    listenerForwarder.setTask("Action " + action.getClass().getSimpleName() + " failed (" + e
+                                              + ")");
+                    listenerForwarder.progressing();
 
-			} catch (Exception e) { // exception not handled by the Action
-				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error(
-							"Action threw an unhandled exception: "
-									+ e.getLocalizedMessage(), e);
-				}
+                    if (!currentAction.isFailIgnored()) {
+                        events.clear();
+                        throw e;
+                    } else {
+                        // CHECKME: eventlist is not modified in this case. will
+                        // it
+                        // work?
+                    }
 
-				listenerForwarder.setTask("Action "
-						+ action.getClass().getSimpleName() + " failed (" + e
-						+ ")");
-				listenerForwarder.progressing();
+                } catch (Exception e) { // exception not handled by the Action
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("Action threw an unhandled exception: " + e.getLocalizedMessage(), e);
+                    }
 
-				if (!currentAction.isFailIgnored()) {
-					if (events == null) {
-						throw new IllegalArgumentException("Action "
-								+ action.getClass().getSimpleName()
-								+ " left no event in queue.");
-					} else {
-						events.clear();
-					}
-					// wrap the unhandled exception
-					throw new ActionException(currentAction, e.getMessage(), e);
-				} else {
-					// CHECKME: eventlist is not modified in this case. will it
-					// work?
-				}
-			} finally {
-				// currentAction = null; // don't null the action: we'd like to
-				// read which was the last action run
-			}
-		}
+                    listenerForwarder.setTask("Action " + action.getClass().getSimpleName() + " failed (" + e
+                                              + ")");
+                    listenerForwarder.progressing();
 
-		// end of loop: all actions have been executed
-		// checkme: what shall we do with the events left in the queue?
-		if (events != null && !events.isEmpty()) {
-			LOGGER.info("There are " + events.size()
-					+ " events left in the queue after last action ("
-					+ currentAction.getClass().getSimpleName() + ")");
-		}
-		return events;
-	}
+                    if (!currentAction.isFailIgnored()) {
+                        if (events == null) {
+                            throw new IllegalArgumentException("Action " + action.getClass().getSimpleName()
+                                                               + " left no event in queue.");
+                        } else {
+                            events.clear();
+                        }
+                        // wrap the unhandled exception
+                        throw new ActionException(currentAction, e.getMessage(), e);
+                    } else {
+                        // CHECKME: eventlist is not modified in this case. will
+                        // it
+                        // work?
+                    }
+                } finally {
+                    // currentAction = null; // don't null the action: we'd like
+                    // to
+                    // read which was the last action run
 
-	public boolean pause() {
-		pauseHandler.pause();
-		// set new status
-		setStatus(EventConsumerStatus.PAUSED);
-		return true; // we'll pause asap
-	}
+                }
+            }
+        } catch (Throwable t) {
+            final ActionException ae = new ActionException(currentAction, t.getLocalizedMessage());
+            ae.initCause(t);
+            throw ae;
+        } finally {
+            // set ending time
+            endingTimestamp.setTimeInMillis(System.currentTimeMillis());
+        }
 
-	public boolean pause(boolean sub) {
-		final EventConsumerStatus status = getStatus();
-		if (status.equals(EventConsumerStatus.EXECUTING)
-				|| status.equals(EventConsumerStatus.WAITING)
-				|| status.equals(EventConsumerStatus.IDLE)) {
+        // end of loop: all actions have been executed
+        // checkme: what shall we do with the events left in the queue?
+        if (events != null && !events.isEmpty()) {
+            LOGGER.info("There are " + events.size() + " events left in the queue after last action ("
+                        + currentAction.getClass().getSimpleName() + ")");
+        }
 
-			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("Pausing consumer " + getName() + " ["
-						+ creationTimestamp + "]");
-			}
+        return events;
+    }
 
-			pauseHandler.pause();
-			// set new status
-			setStatus(EventConsumerStatus.PAUSED);
+    public boolean pause() {
+        pauseHandler.pause();
+        // set new status
+        setStatus(EventConsumerStatus.PAUSED);
+        return true; // we'll pause asap
+    }
 
-			if (currentAction != null) {
-				LOGGER.info("Pausing action "
-						+ currentAction.getClass().getSimpleName()
-						+ " in consumer " + getName() + " ["
-						+ creationTimestamp + "]");
-				currentAction.pause();
-			}
-		} else {
-			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("Consumer " + getName() + " [" + creationTimestamp
-						+ "] is already in state: " + getStatus());
-			}
-		}
-		return true; // we'll pause asap
-	}
+    public boolean pause(boolean sub) {
+        final EventConsumerStatus status = getStatus();
+        if (status.equals(EventConsumerStatus.EXECUTING) || status.equals(EventConsumerStatus.WAITING)
+            || status.equals(EventConsumerStatus.IDLE)) {
 
-	public void resume() {
-		LOGGER.info("Resuming consumer " + getName() + " [" + creationTimestamp
-				+ "]");
-		if (currentAction != null) {
-			LOGGER.info("Resuming action "
-					+ currentAction.getClass().getSimpleName()
-					+ " in consumer " + getName() + " [" + creationTimestamp
-					+ "]");
-			currentAction.resume();
-		}
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Pausing consumer " + getName() + " [" + creationTimestamp + "]");
+            }
 
-		pauseHandler.resume();
-		// set new status
-		setStatus(EventConsumerStatus.EXECUTING);
-	}
+            pauseHandler.pause();
+            // set new status
+            setStatus(EventConsumerStatus.PAUSED);
 
-	public boolean isPaused() {
-		return pauseHandler.isPaused();
-	}
+            if (currentAction != null) {
+                LOGGER.info("Pausing action " + currentAction.getClass().getSimpleName() + " in consumer "
+                            + getName() + " [" + creationTimestamp + "]");
+                currentAction.pause();
+            }
+        } else {
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Consumer " + getName() + " [" + creationTimestamp + "] is already in state: "
+                            + getStatus());
+            }
+        }
+        return true; // we'll pause asap
+    }
 
-	/**
-	 * 
-	 * @return the list of the <TT>Action</TT>s associated to this consumer.
-	 * 
-	 *         TODO: returned list should be unmodifiable
-	 */
-	public List<BaseAction<XEO>> getActions() {
-		return actions;
-	}
+    public void resume() {
+        LOGGER.info("Resuming consumer " + getName() + " [" + creationTimestamp + "]");
+        if (currentAction != null) {
+            LOGGER.info("Resuming action " + currentAction.getClass().getSimpleName() + " in consumer "
+                        + getName() + " [" + creationTimestamp + "]");
+            currentAction.resume();
+        }
 
-	protected void addActions(final List<BaseAction<XEO>> actions) {
-		this.actions.addAll(actions);
-	}
+        pauseHandler.resume();
+        // set new status
+        setStatus(EventConsumerStatus.EXECUTING);
+    }
 
-	public void dispose() {
-		eventsQueue.clear();
-		// actions.clear();
-		// currentAction.destroy();
-	}
+    public boolean isPaused() {
+        return pauseHandler.isPaused();
+    }
 
-	/**
-	 * Add listener to this consumer. If the listener is already registered, it
-	 * won't be added again.
-	 * 
-	 * @param fileListener
-	 *            Listener to add.
-	 */
-	public synchronized void addListener(EventConsumerListener listener) {
-		listenerForwarder.addListener(listener);
-	}
+    /**
+     * 
+     * @return the list of the <TT>Action</TT>s associated to this consumer.
+     * 
+     *         TODO: returned list should be unmodifiable
+     */
+    public List<BaseAction<XEO>> getActions() {
+        return actions;
+    }
 
-	/**
-	 * Remove listener from this file monitor.
-	 * 
-	 * @param listener
-	 *            Listener to remove.
-	 */
-	public synchronized void removeListener(EventConsumerListener listener) {
-		listenerForwarder.removeListener(listener);
-	}
+    protected void addActions(final List<BaseAction<XEO>> actions) {
+        this.actions.addAll(actions);
+    }
 
-	protected ProgressListenerForwarder getListenerForwarder() {
-		return listenerForwarder;
-	}
+    public void dispose() {
+        eventsQueue.clear();
+        // actions.clear();
+        // currentAction.destroy();
+    }
 
-	public IProgressListener getProgressListener(Class<IProgressListener> clazz) {
-		for (IProgressListener ipl : getListenerForwarder().getListeners()) {
-			if (clazz.isAssignableFrom(ipl.getClass())) {
-				return ipl;
-			}
-		}
-		return null;
-	}
+    /**
+     * Add listener to this consumer. If the listener is already registered, it
+     * won't be added again.
+     * 
+     * @param fileListener Listener to add.
+     */
+    public synchronized void addListener(IProgressListener listener) {
+        listenerForwarder.addListener(listener);
+    }
+
+    /**
+     * Remove listener from this file monitor.
+     * 
+     * @param listener Listener to remove.
+     */
+    public synchronized void removeListener(IProgressListener listener) {
+        listenerForwarder.removeListener(listener);
+    }
+
+    protected ProgressListenerForwarder getListenerForwarder() {
+        return listenerForwarder;
+    }
+
+    @Override
+    public Collection<IProgressListener> getListeners() {
+        return listenerForwarder.getListeners();
+    }
+
+    @Override
+    public Collection<IProgressListener> getListeners(Class<IProgressListener> clazz) {
+        return listenerForwarder.getListeners(clazz);
+    }
 
     /**
      * Create a temp dir for an action in a flow.<br/>
-     * FIXME: Quick'n'dirty implementation; 
-     *    - should this info be set only by FileBasedEventCOnsumer? 
-     * Overridable method so that child classes may perform further setup on actions.
-     *
+     * FIXME: Quick'n'dirty implementation; - should this info be set only by
+     * FileBasedEventCOnsumer? Overridable method so that child classes may
+     * perform further setup on actions.
+     * 
      * @param action
      * @param aThis
      * @param step
-     * @return 
+     * @return
      */
-    protected void setupAction(BaseAction action, int step) {
+    protected abstract void setupAction(BaseAction action, int step);
+
+    protected class EventConsumerListenerForwarder extends ProgressListenerForwarder {
+
+        protected EventConsumerListenerForwarder(BaseIdentifiable owner) {
+            super(owner);
+        }
+
+        public void fireStatusChanged(EventConsumerStatus olds, EventConsumerStatus news) {
+            for (IProgressListener l : listeners) {
+                try {
+                    if (l instanceof EventConsumerListener) {
+                        ((EventConsumerListener)l).statusChanged(olds, news);
+                    }
+                } catch (Exception e) {
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn("Exception in event forwarder: " + e);
+                }
+            }
+        }
     }
-
-	protected class EventConsumerListenerForwarder extends
-			ProgressListenerForwarder {
-
-		protected EventConsumerListenerForwarder(BaseIdentifiable owner) {
-			super(owner);
-		}
-
-		public void fireStatusChanged(EventConsumerStatus olds,
-				EventConsumerStatus news) {
-			for (IProgressListener l : listeners) {
-				try {
-					if (l instanceof EventConsumerListener) {
-						((EventConsumerListener) l).statusChanged(olds, news);
-					}
-				} catch (Exception e) {
-					LOGGER.warn("Exception in event forwarder: " + e);
-				}
-			}
-		}
-	}
 }

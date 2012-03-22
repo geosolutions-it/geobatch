@@ -90,11 +90,11 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
             throw new IllegalArgumentException(
                     "No ID has been specified for this Flow BaseEventConsumer.");
         }
-
-        if (resource.getWorkingDirectory() == null) {
-            throw new IllegalArgumentException(
-                    "No Output Dir has been specified for this Flow BaseEventConsumer.");
-        }
+//
+//        if (resource.getWorkingDirectory() == null) {
+//            throw new IllegalArgumentException(
+//                    "No Output Dir has been specified for this Flow BaseEventConsumer.");
+//        }
 
         // if (resource.getConfiguration() == null) {
         // throw new IllegalArgumentException(
