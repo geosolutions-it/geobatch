@@ -1,0 +1,3 @@
+grant codeBase "jar:file:${java.home}/jre/lib/rt.jar!/-" {
+permission java.net.SocketPermission "localhost:4446", "connect,read,write";
+};

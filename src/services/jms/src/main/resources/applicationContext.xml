@@ -19,8 +19,8 @@
 
 	<bean id="jmsPropertyPlaceholderConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="ignoreUnresolvablePlaceholders" value="false" />
-		<property name="ignoreResourceNotFound" value="false" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="ignoreResourceNotFound" value="true" />
 		<property name="locations">
 			<list>
 				<value>classpath:jms.properties</value>

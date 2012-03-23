@@ -1,0 +1,34 @@
+
+Compile GeoBatch including profile 'jmx' and all the profile you may want to include (depending on which action do you want to use).
+-------------------------------------------------------
+# mvn clean install -Pdao.xstream,jmx,...
+-------------------------------------------------------
+
+Run GeoBatch setting JAVA_OPTS as following:
+-------------------------------------------------------
+IP=x.x.x.x
+GEOBATCH_DATA_DIR="/opt/gb_data_dir/"
+JAVA_OPTS="	-Xmx1024m \
+	-DGEOBATCH_DATA_DIR=${GEOBATCH_DATA_DIR} \
+	-Djava.rmi.server.hostname=${IP} \
+	-Dcom.sun.management.jmxremote \
+	-Dcom.sun.management.jmxremote.port=1099 \
+	-Dcom.sun.management.jmxremote.authenticate=false \
+	-Dcom.sun.management.jmxremote.ssl=false"
+-------------------------------------------------------
+
+Set the firewall accepting connection on the 1099 port:
+-------------------------------------------------------
+# iptables -A INPUT -i eth0 -p tcp --dport 1099 -j ACCEPT
+-------------------------------------------------------
+
+Set the java policy to accept connection on that port:
+-------------------------------------------------------
+# nano ${JAVA_HOME}/jre/lib/security/java.policy
+-------------------------------------------------------
+permission java.net.SocketPermission "1099", "listen,accept,resolve"
+-------------------------------------------------------
+
+
+Regards,
+Carlo Cancellieri

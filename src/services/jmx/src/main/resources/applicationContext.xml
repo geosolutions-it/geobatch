@@ -3,10 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+	default-autowire="byType">
 
-	<context:mbean-export/>
-	<context:annotation-config/>
+	<context:mbean-export default-domain="it.geosolutions.geobatch.services.jmx"/>
 
 	<bean id="jmxPropertyPlaceholderConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -19,47 +19,72 @@
 			</list>
 		</property>
 	</bean>
-	
-	<bean id="JMXServiceManager" class="it.geosolutions.geobatch.services.JMXServiceManager" />
 
-	<bean id="JMXActionManager" class="it.geosolutions.geobatch.services.JMXActionManager" depends-on="JMXServiceManager" />
+	<bean id="JMXServiceManager" class="it.geosolutions.geobatch.services.jmx.JMXServiceManager" />
 
-<!-- 	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" -->
+
+	<!-- Spring JMX allows you to create proxies that re-route calls to MBeans 
+		registered in a local or remote MBeanServer. These proxies provide you with 
+		a standard Java interface through which you can interact with your MBeans. -->
+<!-- 	<bean id="proxy" class="org.springframework.jmx.access.MBeanProxyFactoryBean"> -->
+<!-- 		<property name="objectName"> -->
+<!-- 			<value>bean:name=JMXServiceManager</value> -->
+<!-- 		</property> -->
+<!-- 		<property name="proxyInterface"> -->
+<!-- 			<value>it.geosolutions.geobatch.services.ActionManager</value> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+
+
+<!-- 	<bean id="jmx-exporter" class="org.springframework.jmx.export.MBeanExporter" -->
 <!-- 		lazy-init="false"> -->
 <!-- 		<property name="autodetect" value="true"></property> -->
-<!-- 		<property name="assembler" ref="assembler"></property> -->
+<!-- 		<property name="namingStrategy" ref="jmx-namingStrategy"></property> -->
+<!-- 		<property name="assembler" ref="jmx-assembler"></property> -->
 <!-- 	</bean> -->
 
+<!-- 	<bean id="jmx-attributeSource" -->
+<!-- 		class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource" /> -->
 
-	<bean id="assembler"
-		class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler">
-		<property name="attributeSource">
-			<bean
-				class="org.springframework.jmx.export.annotation.AnnotationJmxAttributeSource" />
-		</property>
-	</bean>
-
-
-<!-- 	<bean id="registry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean" > -->
-<!-- 		<property name="port" value="2099" /> -->
-<!-- 		<property name="host" value="127.0.0.1" /> -->
+<!-- 	<bean id="jmx-assembler" -->
+<!-- 		class="org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler"> -->
+<!-- 		<property name="attributeSource" ref="jmx-attributeSource" /> -->
 <!-- 	</bean> -->
-	
-<!-- depends-on="registry"  -->
-	<!-- Expose JMX over RMI -->
+
+<!-- 	<bean id="jmx-namingStrategy" -->
+<!-- 		class="org.springframework.jmx.export.naming.MetadataNamingStrategy"> -->
+<!-- 		<property name="attributeSource" ref="jmx-attributeSource" /> -->
+<!-- 	</bean> -->
+
+	<!-- Spring JMX create,start and expose a JSR-160 JMXConnectorServer -->
 <!-- 	<bean id="serverConnector" -->
-<!-- 		class="org.springframework.jmx.support.ConnectorServerFactoryBean" > -->
+<!-- 		class="org.springframework.jmx.support.ConnectorServerFactoryBean"> -->
+		<!-- If the objectName property is set Spring will automatically register
+ 			your connector with the MBeanServer under that ObjectName. -->
+<!-- 		Expose JMX over RMI -->
 <!-- 		<property name="objectName" value="connector:name=rmi" /> -->
-<!-- 		<property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://127.0.0.1:1098/jmxrmi" /> -->
+<!-- 		<property name="serviceUrl" -->
+<!-- 			value="service:jmx:rmi://localhost/jndi/rmi://localhost:4446/jmxrmi/connector" /> -->
+<!-- 		<property name="threaded" value="true" /> -->
+<!-- 		<property name="daemon" value="true" /> -->
+<!-- 		<property name="server" ref="jmx-mbeanServer"></property> -->
+<!-- 		indicate to first look for a server -->
 <!-- 	</bean> -->
-	<!-- <bean id="serverConnector" -->
-	<!-- class="org.springframework.jmx.support.ConnectorServerFactoryBean"> -->
-	<!-- <property name="serviceUrl" -->
-	<!-- value="service:jmx:rmi://localhost/jndi/rmi://localhost:1099/jmxrmi/connector" 
-		/> -->
-	<!-- <property name="threaded" value="true" /> -->
-	<!-- <property name="daemon" value="true" /> -->
-	<!-- </bean> -->
+
+<!-- 	<bean id="jmx-mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean"> -->
+<!-- 		indicate to first look for a server -->
+<!-- 		<property name="locateExistingServerIfPossible" value="true" /> -->
+<!-- 	</bean> -->
+
+	<!-- Note that when using a RMI-based connector you need the lookup service 
+		(tnameserv or rmiregistry) to be started in order for the name registration 
+		to complete. If you are using Spring to export remote services for you via 
+		RMI, then Spring will already have constructed an RMI registry. If not, you 
+		can easily start a registry using the following snippet of configuration: -->
+
+<!-- 	<bean id="registry" class="org.springframework.remoting.rmi.RmiRegistryFactoryBean"> -->
+<!-- 		<property name="port" value="4446" /> -->
+<!-- 	</bean> -->
 
 
 </beans>

@@ -19,9 +19,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.services;
+package it.geosolutions.geobatch.services.jmx;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
@@ -52,18 +53,36 @@ import javax.annotation.Resource;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
+import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 /**
  * 
+ * JMX service which supports:<ul>
+ * <li>
+ * - creating JMX flow on the fly
+ * </li>
+ * <li>
+ * - creating and starting consumers with externally configured action
+ * </li>
+ * <li>
+ * - get status of JMX consumer instances 
+ * </li>
+ * <li>
+ * - dispose JMX consumer instances 
+ * </li>
+ * <li>
+ * - get status of JMX consumer instance 
+ * </li>
+ * </ul>
+ * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class JMXServiceManager  implements ApplicationContextAware {
+@ManagedResource(objectName = "bean:name=JMXServiceManager", description = "JMX Service Manager to start/monitor/dispose GeoBatch action", log = true, logFile = "jmx.log", currencyTimeLimit = 15, persistPolicy = "OnUpdate", persistPeriod = 200, persistLocation = "foo", persistName = "JMXServiceManager")
+public class JMXServiceManager implements ActionManager {
     private final static Logger LOGGER = LoggerFactory.getLogger(JMXServiceManager.class);
 
     public final static String FlowManagerID = "JMX_FLOW_MANAGER";
@@ -76,7 +95,8 @@ public class JMXServiceManager  implements ApplicationContextAware {
 
     private static File configDirFile;
 
-    private static ApplicationContext context;
+    @Resource(type = org.springframework.context.ApplicationContext.class)
+    private ApplicationContext context;
 
     public JMXServiceManager() throws Exception {
         catalog = CatalogHolder.getCatalog();
@@ -126,18 +146,16 @@ public class JMXServiceManager  implements ApplicationContextAware {
 
     }
 
-    static ActionService getActionService(String serviceId) {
-        final ActionService service = (ActionService)context.getBean(serviceId);
-        return service;
-    }
-
     /**
      * returns the status of the selected consumer
      * 
      * @param uuid
      * @return {@link ConsumerStatus}
      */
-    static void dispose(String uuid) throws IllegalArgumentException {
+    @Override
+    @org.springframework.jmx.export.annotation.ManagedOperation(description = "disposeAction - used to dispose the consumer instance from the consumer registry")
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "uuid", description = "The uuid of the consumer")})
+    public void disposeAction(String uuid) throws Exception {
         flowManager.disposeConsumer(uuid);
     }
 
@@ -147,14 +165,42 @@ public class JMXServiceManager  implements ApplicationContextAware {
      * @param uuid
      * @return {@link ConsumerStatus}
      */
-    static ConsumerStatus getStatus(String uuid) {
+    @Override
+    @org.springframework.jmx.export.annotation.ManagedOperation(description = "get the status of the selected consumer")
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "uuid", description = "The uuid of the consumer")})
+    public ConsumerStatus getStatus(String uuid) {
         return ConsumerStatus.getStatus(flowManager.getStatus(uuid));
     }
 
-    static String callAction(String serviceId, Map<String, String> config, Queue<FileSystemEvent> events)
+    @Override
+    @org.springframework.jmx.export.annotation.ManagedOperation(description = "callAction - used to run a consumer")
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "config", description = "A map containing the list of needed paramethers, inputs and outputs used by the action")})
+    public String callAction(java.util.Map<String, String> config) throws Exception {
+        final String serviceId = config.remove(SERVICE_ID_KEY);
+        if (serviceId == null || serviceId.isEmpty())
+            throw new IllegalArgumentException(
+                                               "Unable to locate the key "
+                                                   + SERVICE_ID_KEY
+                                                   + " matching the serviceId action in the passed paramether table");
+
+        final String input = config.remove(INPUT_KEY);
+        if (input == null || input.isEmpty()) {
+            throw new IllegalArgumentException("Unable to locate the key " + INPUT_KEY
+                                               + " matching input in the passed paramether table.");
+        }
+        FileSystemEvent event = new FileSystemEvent(new File(input), FileSystemEventType.FILE_ADDED);
+        Queue<FileSystemEvent> events = new java.util.LinkedList<FileSystemEvent>();
+        events.add(event);
+
+        // TODO remove all 'NOT configuration' param
+
+        return callAction(serviceId, config, events);
+    };
+
+    private String callAction(String serviceId, Map<String, String> config, Queue<FileSystemEvent> events)
         throws Exception {
 
-        final ActionService service = JMXServiceManager.getActionService(serviceId);
+        final ActionService service = (ActionService)context.getBean(serviceId);
         final Class serviceClass = service.getClass();
 
         ActionConfiguration actionConfig = null;
@@ -241,7 +287,7 @@ public class JMXServiceManager  implements ApplicationContextAware {
         return consumer.getId();
     }
 
-    public static <T> void smartCopy(final T bean, final String propertyName, final String value)
+    private static <T> void smartCopy(final T bean, final String propertyName, final String value)
         throws Exception {
         PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean, propertyName);
         // return null if there is no such descriptor
@@ -297,9 +343,10 @@ public class JMXServiceManager  implements ApplicationContextAware {
         }
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-         context=applicationContext;   
-    }
+    // @Override
+    // public void setApplicationContext(ApplicationContext applicationContext)
+    // throws BeansException {
+    // context=applicationContext;
+    // }
 
 }
