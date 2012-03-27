@@ -26,7 +26,6 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.freemarker.FreeMarkerAction;
 import it.geosolutions.geobatch.actions.freemarker.FreeMarkerConfiguration;
 import it.geosolutions.geobatch.actions.freemarker.TemplateModelEvent;
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 
 import java.io.File;
@@ -40,17 +39,15 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
-//import org.geotools.test.TestData;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
-public class FreeMarkerActionTest extends BaseTest {
+
+public class FreeMarkerActionTest extends it.geosolutions.geobatch.testsuite.BaseTest {
     
     /*
      * 

@@ -252,5 +252,17 @@
         <module>shp2pg</module>
       </modules>
     </profile>
+    <profile>
+      <id>commons</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>commons</module>
+      </modules>
+    </profile>
   </profiles>
 </project>

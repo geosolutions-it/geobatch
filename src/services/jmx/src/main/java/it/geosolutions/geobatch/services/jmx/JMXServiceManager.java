@@ -119,6 +119,9 @@ public class JMXServiceManager implements ActionManager {
                 }
             }
             flowManagerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
+            
+            // keep consumer until disposeAction is called
+            flowManagerConfig.setKeepConsumers(true);
 
             flowManager = new FileBasedFlowManager(flowManagerConfig);
 
@@ -255,7 +258,7 @@ public class JMXServiceManager implements ActionManager {
         // TODO may we want to remove only when getStatus is remotely called???
         // consumerConfig.setKeepContextDir(true);
 
-        // if you whant to move the input you may call the action move!
+        // if you want to move the input you may call the action move!
         consumerConfig.setPreserveInput(true);
 
         // TODO logging progress listener

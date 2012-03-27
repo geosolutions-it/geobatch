@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.decoder.RESTCoverageStore;
+import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 
 import java.io.File;
 import java.io.IOException;
@@ -235,13 +236,14 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 					.getDefaultNamespace(), coverageStoreId, getConfiguration().getLayerName(), inputFile);
 		} else if ("EXTERNAL".equalsIgnoreCase(getConfiguration()
 				.getDataTransferMethod())) {
-			final RESTCoverageStore store = publisher.publishExternalGeoTIFF(
+			sent = publisher.publishExternalGeoTIFF(
 					getConfiguration().getDefaultNamespace(),// workspace
 					coverageStoreId, //coverageStore
 					inputFile,
+					getConfiguration().getLayerName(),
 					epsgCode != null ? "EPSG:" + Integer.toString(epsgCode): getConfiguration().getCrs(), // retain original CRS if the code is there
+					ProjectionPolicy.FORCE_DECLARED,
 					getConfiguration().getDefaultStyle());// defaultStyle
-			sent = store != null;
 		} else {
 			final String message = "FATAL -> Unknown transfer method "
 					+ getConfiguration().getDataTransferMethod();

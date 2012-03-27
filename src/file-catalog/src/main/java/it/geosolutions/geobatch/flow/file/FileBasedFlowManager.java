@@ -42,6 +42,7 @@ import it.geosolutions.geobatch.settings.flow.FlowSettings;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -117,7 +118,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      */
     private EventGenerator<FileSystemEvent> eventGenerator; // FileBasedEventGenerator<FileSystemEvent>
 
-    private final Map<String, EventConsumer> eventConsumers = new HashMap<String, EventConsumer>();
+    private final Map<String, EventConsumer> eventConsumers = Collections.synchronizedMap(new HashMap<String, EventConsumer>());
 
     /**
      * maximum numbers of executed see {@link EventConsumer#getStatus()}
