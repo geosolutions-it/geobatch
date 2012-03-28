@@ -290,13 +290,13 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         final EventConsumer<FileSystemEvent, EventConsumerConfiguration> fbec = eventConsumers.get(uuid);
 
         if (fbec == null) {
-            throw new IllegalArgumentException("This flow is not managing " + uuid);
+            throw new IllegalArgumentException("This flow is not managing consumer: " + uuid);
         }
 
         if ((fbec.getStatus() != EventConsumerStatus.COMPLETED)
             && (fbec.getStatus() != EventConsumerStatus.FAILED)) {
             if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn("Trying to dispose and uncompleted consumer " + fbec);
+                LOGGER.warn("Goning to dispose and uncompleted consumer " + fbec);
             }
             fbec.cancel();
         }

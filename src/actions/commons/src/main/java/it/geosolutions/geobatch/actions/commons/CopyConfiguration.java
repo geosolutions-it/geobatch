@@ -33,7 +33,8 @@ import java.io.File;
  */
 public class CopyConfiguration extends ActionConfiguration implements Configuration {
 
-    private File destination;
+
+	private File destination;
     
     private int timeout=30; // seconds
 
@@ -63,6 +64,13 @@ public class CopyConfiguration extends ActionConfiguration implements Configurat
      */
     public final void setDestination(File destination) {
         this.destination = destination;
+    }
+    
+    /**
+     * @param destination the destination to set
+     */
+    public final void setDestination(String destination) {
+        this.destination = new File(destination);
     }
     
     

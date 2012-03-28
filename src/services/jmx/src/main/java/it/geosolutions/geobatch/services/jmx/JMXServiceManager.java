@@ -50,6 +50,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +58,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
+import org.springframework.scheduling.quartz.AdaptableJobFactory;
 
 /**
  * 
@@ -210,11 +212,15 @@ public class JMXServiceManager implements ActionManager {
         for (Method method : serviceClass.getMethods()) {
             if (method.getName().equals("canCreateAction")) {
                 final Class[] classes = method.getParameterTypes();
-                final Constructor constructor = classes[0].getConstructor(new Class[] {String.class,
-                                                                                       String.class,
-                                                                                       String.class});
-                actionConfig = (ActionConfiguration)constructor.newInstance(UUID.randomUUID().toString(),
-                                                                            "NAME", "DESC");
+                
+                Constructor constructor;
+                try {
+                    constructor= classes[0].getConstructor(new Class[]{});
+                    actionConfig = (ActionConfiguration)constructor.newInstance();
+                }catch (NoSuchMethodException e){
+                    constructor= classes[0].getConstructor(new Class[]{String.class,String.class,String.class});
+                    actionConfig = (ActionConfiguration)constructor.newInstance(serviceId,serviceId,serviceId);
+                }
                 actionConfig.setServiceID(serviceId);
                 final Set<String> keys = config.keySet();
                 final Iterator<String> it = keys.iterator();
@@ -292,17 +298,49 @@ public class JMXServiceManager implements ActionManager {
 
     private static <T> void smartCopy(final T bean, final String propertyName, final String value)
         throws Exception {
+    	// try quick way
+    	try {
+    		BeanUtils.copyProperty(bean, propertyName, value);
+    		return;
+    	} catch (Exception e){
+        	if (LOGGER.isWarnEnabled())
+        		LOGGER.warn("Error using ");
+    	}
+    	// special cases
         PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean, propertyName);
         // return null if there is no such descriptor
         if (pd == null) {
             return;
         }
-        // T interface doesn't declare setter method for this property
-        // lets use getter methods to get the property reference
-        final Object property = PropertyUtils.getProperty(bean, propertyName);
+        final Class<?> type=pd.getPropertyType();
+        if (type.isAssignableFrom(value.getClass())){
+	        // try using setter
+	        if (pd.getWriteMethod()!=null){
+	        	PropertyUtils.setProperty(bean, propertyName, value);
+	        } else {
 
+	        	// T interface doesn't declare setter method for this property
+	            // lets use getter methods to get the property reference
+	            Object property = PropertyUtils.getProperty(bean, propertyName);
+	            if (property!=null){
+	            	if (!adapt(type,property,value)){
+	            		// fail
+	            		if (LOGGER.isErrorEnabled())
+	            			LOGGER.error("Skipping unwritable property " + propertyName + " unable to find the adapter for type "
+	                             + type);
+	            	}
+	            } else {
+	            	if (LOGGER.isErrorEnabled())
+            			LOGGER.error("Skipping unwritable property " + propertyName + " with property type "
+                             + type);
+	            }
+		    }
+        }
+    }
+    
+    private static boolean adapt(Class<?> type, Object property, Object value){
         // check type of property to apply new value
-        if (Collection.class.isAssignableFrom(pd.getPropertyType())) {
+    	if (Collection.class.isAssignableFrom(type)) {
 
             final Collection<Object> liveCollection;
             if (property != null) {
@@ -311,14 +349,15 @@ public class JMXServiceManager implements ActionManager {
             } else {
                 liveCollection = new LinkedList<Object>();
             }
-
-            // value should be a list of string ',' separated
-            String[] listString = value.split(",");
-            for (String s : listString) {
-                liveCollection.add(s);
+            if (String.class.isAssignableFrom(value.getClass())){
+	            // value should be a list of string ',' separated
+	            String[] listString = ((String)value).split(",");
+	            for (String s : listString) {
+	                liveCollection.add(s);
+	            }
             }
 
-        } else if (Map.class.isAssignableFrom(pd.getPropertyType())) {
+        } else if (Map.class.isAssignableFrom(type)) {
 
             final Map<Object, Object> liveMap;
             if (property != null) {
@@ -327,23 +366,20 @@ public class JMXServiceManager implements ActionManager {
             } else {
                 liveMap = new HashMap<Object, Object>();
             }
-
-            // value should be a list of key=value string ';' separated
-            String[] listString = value.split(";");
-            for (String kvString : listString) {
-                String kv[] = kvString.split("=");
-                liveMap.put(kv[0], kv[1]);
-            }
-
-        } else {
-            if (pd.getWriteMethod() != null) {
-                PropertyUtils.setProperty(bean, propertyName, value);
+            if (String.class.isAssignableFrom(value.getClass())){
+	            // value should be a list of key=value string ';' separated
+	            String[] listString = ((String)value).split(";");
+	            for (String kvString : listString) {
+	                String kv[] = kvString.split("=");
+	                liveMap.put(kv[0], kv[1]);
+	            }
             } else {
-                if (LOGGER.isErrorEnabled())
-                    LOGGER.error("Skipping unwritable property " + propertyName + " with property type "
-                                 + pd.getPropertyType());
+            	return false;
             }
+        } else {
+        	return false;
         }
+        return true;
     }
 
     // @Override
