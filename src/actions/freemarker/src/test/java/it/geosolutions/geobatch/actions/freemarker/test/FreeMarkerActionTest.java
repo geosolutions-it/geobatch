@@ -47,7 +47,7 @@ import org.junit.Test;
  *
  */
 
-public class FreeMarkerActionTest extends it.geosolutions.geobatch.testsuite.BaseTest {
+public class FreeMarkerActionTest extends BaseTest {
     
     /*
      * 
@@ -174,7 +174,6 @@ public class FreeMarkerActionTest extends it.geosolutions.geobatch.testsuite.Bas
             FileSystemEvent res=(FileSystemEvent)q.remove();
             File out=res.getSource();
             Assert.assertTrue("FAIL: unable to create output file",out.exists());
-            
         }
         catch (ClassCastException cce){
             Assert.fail("FAIL: "+cce.getLocalizedMessage());

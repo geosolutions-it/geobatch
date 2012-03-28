@@ -88,5 +88,11 @@
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    <!-- TESTS -->
+<!--    <dependency>-->
+<!--      <groupId>it.geosolutions.geobatch</groupId>-->
+<!--      <artifactId>gb-fs-catalog</artifactId>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
   </dependencies>
 </project>
