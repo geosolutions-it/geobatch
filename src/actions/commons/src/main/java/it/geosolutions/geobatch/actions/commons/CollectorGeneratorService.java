@@ -34,18 +34,18 @@ import org.slf4j.LoggerFactory;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class CopyGeneratorService extends BaseService implements
-        ActionService<EventObject, CopyConfiguration> {
+public class CollectorGeneratorService extends BaseService implements
+        ActionService<EventObject, CollectorConfiguration> {
 
-    public CopyGeneratorService(String id, String name, String description) {
+    public CollectorGeneratorService(String id, String name, String description) {
         super(id, name, description);
     }
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CopyGeneratorService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CollectorGeneratorService.class);
 
-    public CopyAction createAction(CopyConfiguration configuration) {
+    public CollectorAction createAction(CollectorConfiguration configuration) {
         try {
-            return new CopyAction(configuration);
+            return new CollectorAction(configuration);
         } catch (Exception e) {
             if (LOGGER.isInfoEnabled())
                 LOGGER.info(e.getLocalizedMessage(), e);
@@ -53,12 +53,9 @@ public class CopyGeneratorService extends BaseService implements
         }
     }
 
-    public boolean canCreateAction(CopyConfiguration configuration) {
-    	if (configuration.getDestination()==null){
-    		return false;
-            //throw new IllegalArgumentException("Unable to work with a null dest dir");
-        }
-    	return true;
+    public boolean canCreateAction(CollectorConfiguration configuration) {
+    	
+        return true;
     }
 
 }

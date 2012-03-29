@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://code.google.com/p/geobatch/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -19,32 +19,35 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package it.geosolutions.geobatch.actions.commons;
 
-import it.geosolutions.geobatch.registry.AliasRegistrar;
-import it.geosolutions.geobatch.registry.AliasRegistry;
+import it.geosolutions.geobatch.catalog.Configuration;
+import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 /**
- * Register XStream aliases for the relevant services we ship in this module.
  * 
- * @author Carlo Cancellieri <carlo.cancellieri@geo-solutions.it>
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * 
  */
-public class CommonsAliasRegistrar extends AliasRegistrar {
+public class CollectorConfiguration extends ActionConfiguration implements Configuration {
 
-    public CommonsAliasRegistrar(AliasRegistry registry) {
-        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+	private String wildcard;
+    
+    private int deep=-1; // seconds
 
-        // collector
-        registry.putAlias("CollectorConfiguration", CollectorConfiguration.class);
-        
-        // copy
-        registry.putAlias("CopyConfiguration", CopyConfiguration.class);
+	public String getWildcard() {
+		return wildcard;
+	}
 
-        // move
-        registry.putAlias("MoveConfiguration", MoveConfiguration.class);
+	public void setWildcard(String wildcard) {
+		this.wildcard = wildcard;
+	}
 
-        // extract
-        registry.putAlias("ExtractConfiguration", ExtractConfiguration.class);
-    }
+	public int getDeep() {
+		return deep;
+	}
+
+	public void setDeep(int deep) {
+		this.deep = deep;
+	}
 }

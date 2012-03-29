@@ -26,6 +26,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.tools.commons.file.Path;
+import it.geosolutions.tools.io.file.Collector;
 import it.geosolutions.tools.io.file.Copy;
 import it.geosolutions.tools.io.file.IOUtils;
 
@@ -34,6 +35,12 @@ import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,14 +50,14 @@ import org.slf4j.LoggerFactory;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class CopyAction extends BaseAction<EventObject> {
+public class CollectorAction extends BaseAction<EventObject> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(CopyAction.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CollectorAction.class);
 
     /**
      * configuration
      */
-    private final CopyConfiguration conf;
+    private final CollectorConfiguration conf;
 
     /**
      * 
@@ -58,14 +65,9 @@ public class CopyAction extends BaseAction<EventObject> {
      * @throws IllegalAccessException if input template file cannot be resolved
      * 
      */
-    public CopyAction(CopyConfiguration configuration) throws IllegalArgumentException {
+    public CollectorAction(CollectorConfiguration configuration) throws IllegalArgumentException {
         super(configuration);
         conf = configuration;
-        
-        if (!conf.getDestination().isAbsolute()){
-            // TODO LOG
-            conf.setConfigDir(new File(conf.getConfigDir(),conf.getDestination().getPath()));
-        }
     }
 
     /**
@@ -81,58 +83,39 @@ public class CopyAction extends BaseAction<EventObject> {
 
         listenerForwarder.setTask("Building/getting the root data structure");
         
-        boolean copyMultipleFile;
-        final int size=events.size();
-        if (size==0){
-            throw new ActionException(this, "Empty file list");
-        } else if (size>1){
-            copyMultipleFile=true;
-        } else {
-            copyMultipleFile=false;
-        }
+        if (conf.getWildcard()==null){
+        	LOGGER.warn("Null wildcard: using default\'*\'");
+    		conf.setWildcard("*");
+    	}
         
-        boolean copyToDir;
-        if (!conf.getDestination().isDirectory()){
-            // TODO LOG
-            copyToDir=false;
-            if (copyMultipleFile){
-                throw new ActionException(this, "Unable to run on multiple file with an output file, use directory instead");
-            }
-        } else {
-            copyToDir=true;
-        }
-        
-        
+        Collector collector=new Collector(new WildcardFileFilter(conf.getWildcard(), IOCase.INSENSITIVE), conf.getDeep());
         while (!events.isEmpty()) {
-            listenerForwarder.setTask("Generating the output");
             
             final EventObject event=events.remove();
             if (event==null){
                 // TODO LOG
                 continue;
             }
-            if (event instanceof FileSystemEvent){ 
-                File source = ((FileSystemEvent) event).getSource();
-                File dest;
-                if (copyToDir){
-                    dest=new File(conf.getDestination(),source.getName());
-                } else if (copyMultipleFile){
-                    dest=conf.getDestination();
-                } else {
-                    // LOG continue
-                    continue;
-                }
-                
-                File out=Copy.copyFileToNFS(source, dest, conf.getTimeout());
-                if (out!=null){
-                    // add the file to the return
-                    ret.add(new FileSystemEvent(out, FileSystemEventType.FILE_ADDED));
-                } else {
-//TODO                    LOG
-                }
+            File source=null;
+            if (event.getSource() instanceof File){
+            	source = ((File)event.getSource());
             }
+            
+            if (source==null || !source.exists()){
+            	// LOG
+            	continue;
+            }
+            listenerForwarder.setTask("Collecting from"+ source);    
+            ret.addAll(ListUtils.transformedList(collector.collect(source),new Transformer(){
+				@Override
+				public Object transform(Object input) {
+					if (LOGGER.isDebugEnabled()){
+						LOGGER.debug("Collected file: "+input);
+					}
+					return new FileSystemEvent((File)input, FileSystemEventType.FILE_ADDED);
+				}
+			}));
         }
-
         listenerForwarder.completed();
         return ret;
     }
