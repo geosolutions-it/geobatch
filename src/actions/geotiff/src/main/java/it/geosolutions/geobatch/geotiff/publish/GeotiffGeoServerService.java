@@ -23,7 +23,6 @@
 package it.geosolutions.geobatch.geotiff.publish;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.Service;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerConfiguratorService;
@@ -61,22 +60,21 @@ public class GeotiffGeoServerService extends
     }
 
     public boolean canCreateAction(GeoServerActionConfiguration configuration) {
-        try {
-            // absolutize working dir
-            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
-            if (wd != null) {
-                configuration.setWorkingDirectory(wd);
-                return true;
-            } else {
-                if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("GeotiffGeoServerService::canCreateAction(): "
-                            + "unable to create action, it's not possible to get an absolute working dir.");
-            }
-        } catch (Throwable e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-        }
-        return false;
+        // checks
+    	if (configuration==null){
+    		if(LOGGER.isInfoEnabled()){
+    			LOGGER.info("Null configuration provided");
+    		}
+    		return false;
+    	}
+    	
+    	if(configuration.getDefaultNamespace()==null|| configuration.getDefaultNamespace().length()<=0){
+    		if(LOGGER.isInfoEnabled()){
+    			LOGGER.info("Default Namespace is null");
+    		}
+    		return false;    		
+    	}
+        return true;
     }
 
 }

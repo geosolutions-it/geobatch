@@ -188,7 +188,7 @@ public class FreeMarkerAction
 					continue;
 				} else {
 					listenerForwarder.failed(ioe);
-					throw new ActionException(this, ioe.getLocalizedMessage());
+					throw new ActionException(this, ioe.getLocalizedMessage(),ioe);
 				}
 			}
 

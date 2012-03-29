@@ -40,6 +40,8 @@ public class GeoServerActionConfiguration extends GeoServerActionConfig {
     private String datatype; // ?
     
     private String layerName;
+    
+    private String storeName;
 
     private String defaultNamespace;
 
@@ -171,7 +173,6 @@ public class GeoServerActionConfiguration extends GeoServerActionConfig {
         configuration.setDefaultNamespaceUri(defaultNamespaceUri);
         configuration.setDefaultStyle(defaultStyle);
         configuration.setEnvelope(envelope);
-//        configuration.setServiceID(getServiceID());
         configuration.setStoreFilePrefix(storeFilePrefix);
         configuration.setStyles(styles);
         configuration.setWmsPath(wmsPath);
@@ -185,5 +186,13 @@ public class GeoServerActionConfiguration extends GeoServerActionConfig {
                 + " srvId:" + getServiceID() + " wkdir:" + getConfigDir().toURI().toString() + " GSurl:"
                 + getGeoserverURL() + "]";
     }
+
+	public String getStoreName() {
+		return storeName;
+	}
+
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
+	}
 
 }
