@@ -6,8 +6,11 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd" 
         default-init-method="init" default-destroy-method="dispose">
 
-		 
-	<!-- Environment Initialization -->
+	<bean id="CollectorGeneratorService" class="it.geosolutions.geobatch.actions.commons.CollectorGeneratorService">
+		<constructor-arg type="String"><value>CollectorGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>CollectorGeneratorService</value></constructor-arg>
+    	<constructor-arg type="String"><value>CollectorGeneratorService</value></constructor-arg>
+	</bean>
 	
 	<bean id="ExtractGeneratorService" class="it.geosolutions.geobatch.actions.commons.ExtractGeneratorService">
 		<constructor-arg type="String"><value>ExtractGeneratorService</value></constructor-arg>

@@ -42,27 +42,26 @@ import it.geosolutions.geobatch.settings.flow.FlowSettings;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.collections.collection.UnmodifiableCollection;
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
-
-import sun.java2d.Disposer;
 
 /**
  * 
@@ -118,7 +117,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      */
     private EventGenerator<FileSystemEvent> eventGenerator; // FileBasedEventGenerator<FileSystemEvent>
 
-    private final Map<String, EventConsumer> eventConsumers = Collections.synchronizedMap(new HashMap<String, EventConsumer>());
+    private final ConcurrentMap<String, EventConsumer> eventConsumers = new ConcurrentHashMap<String, EventConsumer>();
+    private volatile static Lock eventConsumersLock=new ReentrantLock();
 
     /**
      * maximum numbers of executed see {@link EventConsumer#getStatus()}
@@ -301,11 +301,13 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             fbec.cancel();
         }
 
-        synchronized (eventConsumers) {
+        try {
+        	this.eventConsumersLock.lock();
             eventConsumers.remove(uuid);
-            fbec.dispose();
+        } finally {
+        	this.eventConsumersLock.unlock();
         }
-
+        fbec.dispose();
     }
 
     /**
@@ -654,16 +656,19 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         if (consumer == null)
             throw new IllegalArgumentException("Unable to add a null consumer");
 
-        synchronized (eventConsumers) {
-            if (eventConsumers.size() >= maxStoredConsumers) {
-                if (purgeConsumers(1) > 0) {
-                    eventConsumers.put(consumer.getId(), consumer);
-                } else {
-                    return false;
-                }
-            } else {
-                eventConsumers.put(consumer.getId(), consumer);
-            }
+        this.eventConsumersLock.lock();  // block until condition holds
+        try {
+        	if (eventConsumers.size() >= maxStoredConsumers) {
+	            if (purgeConsumers(1) > 0) {
+	                eventConsumers.put(consumer.getId(), consumer);
+	            } else {
+	                return false;
+	            }
+	        } else {
+	            eventConsumers.put(consumer.getId(), consumer);
+	        }
+        } finally {
+        	this.eventConsumersLock.unlock();
         }
         return true;
     }
@@ -701,7 +706,9 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         int size = 0;
         if (keepConsumers)
             return 0;
-        synchronized (eventConsumers) {
+        
+    	try {
+    		this.eventConsumersLock.lock();
             final Set<String> keySet = eventConsumers.keySet();
             final Iterator<String> it = keySet.iterator();
             while (it.hasNext() && size < quantity) {
@@ -709,7 +716,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                 final EventConsumer<FileSystemEvent, EventConsumerConfiguration> nextConsumer = eventConsumers
                     .get(key);
                 if (nextConsumer == null) {
-                    eventConsumers.remove(key);
+                    it.remove();
                     ++size;
                     continue;
                 }
@@ -717,10 +724,12 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                 if ((status == EventConsumerStatus.CANCELED) || (status == EventConsumerStatus.COMPLETED)
                     || (status == EventConsumerStatus.FAILED)) {
                     nextConsumer.dispose();
-                    eventConsumers.remove(key);
+                    it.remove();
                     ++size;
                 }
             }
+        } finally {
+        	this.eventConsumersLock.unlock();
         }
         return size;
     }
