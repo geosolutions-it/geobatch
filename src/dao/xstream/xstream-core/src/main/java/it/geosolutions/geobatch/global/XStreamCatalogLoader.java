@@ -70,10 +70,6 @@ public class XStreamCatalogLoader extends CatalogHolder {
     @Resource
     private ApplicationContext context;
 
-    /**
-     * GeoBatch data dir. This directory is used by the GeoBatch to store Flows configuration files.
-     */
-
     public void setApplicationContext(ApplicationContext context) throws BeansException {
         this.context = context;
 
@@ -105,7 +101,7 @@ public class XStreamCatalogLoader extends CatalogHolder {
 
         // //
         //
-        // Force loading all all services
+        // Force loading all services
         //
         // //
         final Map<String, ? extends Service> services = context.getBeansOfType(Service.class);
@@ -121,6 +117,11 @@ public class XStreamCatalogLoader extends CatalogHolder {
             catalog.add(servicePair.getValue());
         }
 
+        loadFlows(dataDir, catalog);
+
+    }
+
+    protected void loadFlows(File dataDir, final Catalog catalog) {
         // //
         //
         // load all flows
@@ -143,13 +144,12 @@ public class XStreamCatalogLoader extends CatalogHolder {
                 // try to load the flow and add it to the catalog
 // TODO change this:
                 final FileBasedFlowManager flowManager = new FileBasedFlowManager(
-                        FilenameUtils.getBaseName(flowConfigFile.getName()),
-                        configuration.getName(),
-                        configuration.getDescription());
+                        FilenameUtils.getBaseName(flowConfigFile.getName()));
 //                flow.setId(FilenameUtils.getBaseName(o.getName()));
                 DAO flowLoader = new XStreamFlowConfigurationDAO(dataDir.getAbsolutePath(), alias);
                 flowManager.setDAO(flowLoader);
                 flowManager.load();
+
 // TODO ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // add to the catalog
                 catalog.add(flowManager);
@@ -164,7 +164,6 @@ public class XStreamCatalogLoader extends CatalogHolder {
             }
 
         }
-
     }
 
     //==========================================================================

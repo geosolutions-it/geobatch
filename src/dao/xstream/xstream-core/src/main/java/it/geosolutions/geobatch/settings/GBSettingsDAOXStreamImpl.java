@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -87,8 +87,10 @@ public class GBSettingsDAOXStreamImpl implements GBSettingsDAO  {
                     throw new RuntimeException("Mismatching id in settings (id:"+id+")");
                 }
 
-                if (LOGGER.isInfoEnabled())
-                    LOGGER.info("FOUND " + id + ">" + obj + "<");
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("FOUND id:" + id + " obj:[" + obj + "]");
+                    LOGGER.info("      at path " + entityfile + "  -- absolute " + entityfile.getAbsolutePath());
+                }
                 return obj;
             }
         } catch (Exception e) {
@@ -148,8 +150,8 @@ public class GBSettingsDAOXStreamImpl implements GBSettingsDAO  {
 
 
     protected void init() {
-        settingsDir = new File(dataDirHandler.getDataDirectory(), relativeDir);
-        LOGGER.info("Settings dir is " + settingsDir);
+        settingsDir = new File(dataDirHandler.getConfigDirectory(), relativeDir);
+        LOGGER.info("Settings dir is " + settingsDir + " (absolute " + settingsDir.getAbsolutePath() + " )");
     }
 
 }

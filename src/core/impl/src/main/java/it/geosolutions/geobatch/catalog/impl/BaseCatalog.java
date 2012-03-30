@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.catalog.Descriptable;
 import it.geosolutions.geobatch.catalog.Resource;
 import it.geosolutions.geobatch.catalog.event.CatalogAddEvent;
 import it.geosolutions.geobatch.catalog.event.CatalogEvent;
@@ -50,25 +51,27 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Alessio Fabiani, GeoSolutions
  * @author Simone Giannecchini, GeoSolutions
- * 
+ * @author Emanuele Tajariol, GeoSolutions
+ *
  */
-public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> implements Catalog {
-    
-    public BaseCatalog(String id, String name, String description) {
-        super(id, name, description);
-    }
+public class BaseCatalog
+    extends BasePersistentResource<CatalogConfiguration>
+    implements Catalog, Descriptable {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BaseCatalog.class.getName());
 
+    private String name;
+    private String description;
+
     /**
      * flow manager types
-     * 
+     *
      */
 //    private final MultiHashMap /* <Class> */flowManagers = new MultiHashMap();
 
     /**
      * resources
-     * 
+     *
      */
     private final MultiHashMap /* <Class> */resources = new MultiHashMap();
 
@@ -77,9 +80,16 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
      */
     private final List<CatalogListener> listeners = new CopyOnWriteArrayList<CatalogListener>();
 
+
+    public BaseCatalog(String id, String name, String description) {
+        super(id);
+        this.name = name;
+        this.description = description;
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.geosolutions.geobatch.catalog.Catalog#add(it.geosolutions.geobatch
      * .catalog.FlowManager)
      */
@@ -110,7 +120,7 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.geosolutions.geobatch.catalog.Catalog#dispose()
      */
     public void dispose() {
@@ -131,7 +141,7 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.geosolutions.geobatch.catalog.Catalog#getFlowManagerType(java.lang .String,
      * java.lang.Class)
      */
@@ -149,10 +159,10 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
         return null;
     }
 
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.geosolutions.geobatch.catalog.Catalog#getFlowManagerTypeByName(java .lang.String,
      * java.lang.Class)
     */
@@ -170,11 +180,11 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
 
         return null;
     }
-    
-    
+
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.geosolutions.geobatch.catalog.Catalog#getFlowManagers(java.lang.Class)
      */
     public <EO extends EventObject, FC extends FlowConfiguration, FM extends FlowManager<EO, FC>> List<FM> getFlowManagers(
@@ -184,7 +194,7 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.geosolutions.geobatch.catalog.Catalog#getResource(java.lang.String, java.lang.Class)
      */
     public <R extends Resource> R getResource(final String id, final Class<R> clazz) {
@@ -201,25 +211,27 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.geosolutions.geobatch.catalog.Catalog#getResourceByName(java.lang. String,
      * java.lang.Class)
      */
+    @Override
     public <R extends Resource> R getResourceByName(final String name, final Class<R> clazz) {
         final List<R> l = lookup(clazz, resources);
 
         for (R resource : l) {
-            if (name.equals(resource.getName())) {
-                return resource;
+            if(resource instanceof Descriptable){
+                if (name.equals(((Descriptable)resource).getName())) {
+                    return resource;
+                }
             }
         }
-
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.geosolutions.geobatch.catalog.Catalog#getResources(java.lang.Class)
      */
     public <R extends Resource> List<R> getResources(final Class<R> clazz) {
@@ -228,7 +240,7 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.geosolutions.geobatch.catalog.Catalog#remove(it.geosolutions.geobatch
      * .catalog.FlowManager)
      */
@@ -243,7 +255,7 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see it.geosolutions.geobatch.catalog.Catalog#save(it.geosolutions.geobatch
      * .catalog.FlowManager)
      */
@@ -274,6 +286,23 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
 
         return result;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 
     // //
     // Event Methods
@@ -335,19 +364,21 @@ public class BaseCatalog extends BasePersistentResource<CatalogConfiguration> im
         // sanity checks
         if (resource.getId() == null) {
             throw new IllegalArgumentException(
-                    "No ID has been specified for this Flow BaseEventConsumer.");
+                    "No ID has been specified for this " + resource.getClass().getSimpleName());
         }
 
-        if (resource.getName() == null) {
-            throw new IllegalArgumentException(
-                    "No Output Dir has been specified for this Flow BaseEventConsumer.");
-        }
+        if(resource instanceof Descriptable) {
+            Descriptable d = (Descriptable) resource;
+            if (d.getName() == null) {
+                throw new IllegalArgumentException(
+                        "No Name has been specified for this "+ resource.getClass().getSimpleName() + " id:" + resource.getId());
+            }
 
-        if (resource.getDescription() == null) {
-            throw new IllegalArgumentException(
-                    "No Flow BaseEventConsumer Descriptor has been specified for this Flow BaseEventConsumer.");
+            if (d.getDescription() == null) {
+                throw new IllegalArgumentException(
+                        "No Description has been specified for this "+ resource.getClass().getSimpleName() + " id:" + resource.getId());
+            }
         }
-
         synchronized (resources) {
             resources.put(resource.getClass(), resource);
         }

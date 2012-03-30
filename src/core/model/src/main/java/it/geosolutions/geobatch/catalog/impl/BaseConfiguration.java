@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -23,33 +23,52 @@
 package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.Configuration;
+import org.slf4j.LoggerFactory;
 
-public class BaseConfiguration extends BaseIdentifiable implements Configuration, Cloneable {
+public abstract class BaseConfiguration
+    extends BaseIdentifiable
+    implements Configuration, Cloneable {
 
     
     private String serviceID;
-
     
     private boolean dirty;
 
     public BaseConfiguration() {
         super();
     }
-    
+
+    /**
+     * @deprecated name and description not needed here
+     */
     public BaseConfiguration(String id, String name) {
-        super(id, name, name);
+        super(id);
+        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
     }
     
     public BaseConfiguration(String id) {
-        super(id, id, id);
+        super(id);
     }
 
+    /**
+     * @deprecated name and description not needed here
+     */
     public BaseConfiguration(String id, String name, String description) {
-        super(id, name, description);
+        super(id);
+        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
     }
 
+    /**
+     * @deprecated name and description not needed here
+     */
     public BaseConfiguration(String id, String name, String description, boolean dirty) {
-        super(id, name, description);
+        super(id);
+        this.dirty = dirty;
+        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
+    }
+
+    public BaseConfiguration(String id, boolean dirty) {
+        super(id);
         this.dirty = dirty;
     }
 
@@ -92,6 +111,6 @@ public class BaseConfiguration extends BaseIdentifiable implements Configuration
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[" + "id:" + getId() + " srvId:" + serviceID
-                + " name:" + getName() + " drty:" + isDirty() + "]";
+                + " drty:" + isDirty() + "]";
     }
 }

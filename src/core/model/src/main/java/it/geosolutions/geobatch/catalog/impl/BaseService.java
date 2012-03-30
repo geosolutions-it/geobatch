@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -23,8 +23,11 @@
 package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BaseService extends BaseResource implements Service {
+    private final static Logger LOGGER = LoggerFactory.getLogger(BaseService.class);
     
     private boolean available;
 
@@ -35,12 +38,14 @@ public class BaseService extends BaseResource implements Service {
      * @param description
      */
     public BaseService(String id, String name, String description) {
-        super(id, name, description);
+        super(id);
+        LOGGER.debug("Creating service id:"+id+ " name:"+name + " descr:"+description + " -- but dropping name and descr"); // todo serveces should be Descrictable=
         available = true;
     }
 
     public BaseService(String id, String name, String description, boolean available) {
-        super(id, name, description);
+        super(id);
+        LOGGER.debug("Creating service id:"+id+ " name:"+name + " descr:"+description + " -- but dropping name and descr"); // todo serveces should be Descrictable=
         this.available = available;
     }
 

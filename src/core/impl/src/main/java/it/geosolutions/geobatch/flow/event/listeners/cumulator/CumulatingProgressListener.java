@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.flow.event.listeners.cumulator;
 
+import it.geosolutions.geobatch.catalog.Descriptable;
 import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 
@@ -73,10 +74,20 @@ public class CumulatingProgressListener extends ProgressListener {
     protected void msg(String msg) {
         Calendar now = Calendar.getInstance();
         StringBuilder sb = new StringBuilder();
-        sb.append(DATEFORMAT.format(now.getTime())).append(' ').append(msg).append(' ').append(
-                getProgress()).append("% --").append(getTask());
-        if (getOwner() != null) {
-            sb.append(" [").append(getOwner().getName().toString()).append(']');
+        sb.append(DATEFORMAT.format(now.getTime()))
+                .append(' ')
+                .append(msg)
+                .append(' ')
+                .append(getProgress()).append("% --")
+                .append(getTask());
+        Identifiable owner = getOwner();
+        if (owner != null) {
+            if(owner instanceof Descriptable) {
+                Descriptable d = (Descriptable)owner;
+                sb.append(" [").append(d.getName()).append(']');
+//            } else {
+//                sb.append(" [").append(owner.getId()).append(']');
+            }
         }
         messages.add(sb.toString());
     }

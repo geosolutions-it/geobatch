@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.configuration.flow;
 
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
+import it.geosolutions.geobatch.catalog.impl.BaseDescriptableConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
@@ -35,12 +36,12 @@ import java.util.List;
  * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public abstract class BaseFlowConfiguration extends BaseConfiguration implements FlowConfiguration {
+public abstract class BaseFlowConfiguration 
+    extends BaseDescriptableConfiguration
+    implements FlowConfiguration {
 
     
     private EventGeneratorConfiguration eventGeneratorConfiguration;
-
-    
     private EventConsumerConfiguration eventConsumerConfiguration;
 
     /**
@@ -60,19 +61,6 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
     
     private int workQueueSize;
 
-    /**
-     * @return
-     */
-    public int getWorkQueueSize() {
-        return workQueueSize;
-    }
-
-    /**
-     * @param workQueueSize
-     */
-    public void setWorkQueueSize(int workQueueSize) {
-        this.workQueueSize = workQueueSize;
-    }
 
     public BaseFlowConfiguration(String id, String name,
             EventGeneratorConfiguration eventGeneratorConfiguration, String description,
@@ -185,4 +173,19 @@ public abstract class BaseFlowConfiguration extends BaseConfiguration implements
     public void setKeepAliveTime(long keepAliveTime) {
         this.keepAliveTime = keepAliveTime;
     }
+
+    /**
+     * @return
+     */
+    public int getWorkQueueSize() {
+        return workQueueSize;
+    }
+
+    /**
+     * @param workQueueSize
+     */
+    public void setWorkQueueSize(int workQueueSize) {
+        this.workQueueSize = workQueueSize;
+    }
+
 }

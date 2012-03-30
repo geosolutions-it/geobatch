@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -30,13 +30,7 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
 
     
     private String id;
-
     
-    private String name;
-
-    
-    private String description;
-
     /**
      * A constructor which do not initialize the resource id
      * @deprecated use the complete constructor
@@ -47,14 +41,9 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
     /**
      * Constructor forcing initialization of: id ,name and description of this resource 
      * @param id
-     * @param name
-     * @param description
      */
-    public BaseIdentifiable(String id, String name, String description) {
-        super();
+    public BaseIdentifiable(String id) {
         this.id = id;
-        this.name = name;
-        this.description = description;
     }
 
     /**
@@ -65,46 +54,16 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
     }
 
     /**
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
      * @param id  the id to set
      */
     public void setId(String id) {
         this.id = id;
     }
 
-    /**
-     * @param name  the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @param description  the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * @return
-     */
-    public String getDescription() {
-        return description;
-    }
-
     public BaseIdentifiable clone() {
         try {
             BaseIdentifiable bi = (BaseIdentifiable) super.clone();
-            bi.description = this.description;
-            bi.id = UUID.randomUUID().toString();
-            bi.name = this.name;
+            bi.id = UUID.randomUUID().toString(); // check me: does this respect the clone contract?
             return bi;
         } catch (CloneNotSupportedException e) {
             // this shouldn't happen, since we are Cloneable

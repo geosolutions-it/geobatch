@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -30,12 +30,14 @@ import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * Conf for the event consumers based on xml marshalled files.
  * 
  * @author Simone Giannecchini, GeoSolutions
+ * @author Emanuele Tajariol, GeoSolutions
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public class FileBasedEventConsumerConfiguration extends BaseConfiguration implements EventConsumerConfiguration
@@ -45,13 +47,6 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
      * List of configurable actions that will be sequentially performed at the end of event consumption.
      */
     private List<? extends ActionConfiguration> actions;
-
-    /**
-     * workingDirectory: this attribute represents the configuring directory for this flow.
-     * It can be relative to the catalog.xml directory or absolute.
-     * The configuring directory. This is the directory where the consumer will store the input data.
-     */
-    private String workingDirectory;
 
     /**
      * Do we remove input files and put them on a backup directory?
@@ -80,25 +75,17 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
 
 
     /**
-     * @return the keepRuntimeDir
-     */
-    public final boolean isKeepRuntimeDir() {
-        return keepRuntimeDir;
-    }
-
-    /**
-     * @param keepRuntimeDir the keepRuntimeDir to set
-     */
-    public final void setKeepRuntimeDir(boolean keepRuntimeDir) {
-        this.keepRuntimeDir = keepRuntimeDir;
-    }
-
-    /**
-     * Default Constructor.
+     * @deprecated name and description not needed here
      */
     public FileBasedEventConsumerConfiguration(String id, String name, String description)
     {
-        super(id, name, description);
+        this(id);
+        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
+    }
+    
+    public FileBasedEventConsumerConfiguration(String id)
+    {
+        super(id);
     }
 
     /**
@@ -137,6 +124,20 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     public void setPerformBackup(boolean performBackup)
     {
         this.performBackup = performBackup;
+    }
+
+    /**
+     * @return the keepRuntimeDir
+     */
+    public final boolean isKeepRuntimeDir() {
+        return keepRuntimeDir;
+    }
+
+    /**
+     * @param keepRuntimeDir the keepRuntimeDir to set
+     */
+    public final void setKeepRuntimeDir(boolean keepRuntimeDir) {
+        this.keepRuntimeDir = keepRuntimeDir;
     }
 
     /**
@@ -192,55 +193,32 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
         return listenerConfigurations;
     }
 
-    /**
-     * Getter for the workingDirectory
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
-
-    /**
-     * Setter for the workingDirectory.<br/>
-     *
-     * @param  workingDirectory
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        if (workingDirectory!=null){
-                this.workingDirectory = workingDirectory;
-        }
-    }
-
     @Override
     public FileBasedEventConsumerConfiguration clone()
     {
-
         // clone object
-        final FileBasedEventConsumerConfiguration object = new FileBasedEventConsumerConfiguration(
-                super.getId(), super.getName(), super.getDescription());
-        object.setDirty(super.isDirty());
-        object.setPerformBackup(performBackup);
-        object.setPreserveInput(preserveInput);
-        object.setWorkingDirectory(workingDirectory);
-        
-        object.setKeepRuntimeDir(keepRuntimeDir);
+        final FileBasedEventConsumerConfiguration clone = (FileBasedEventConsumerConfiguration)super.clone();
 
+        // deep copy
         final List<ActionConfiguration> clonedActions = new ArrayList<ActionConfiguration>(actions.size());
         for (ActionConfiguration action : actions)
         {
             clonedActions.add(action.clone());
         }
-        object.setActions(clonedActions);
+        clone.setActions(clonedActions);
 
         // clone listeners
         if (listenerConfigurations != null) // tricks from xstream
         {
-            for (ProgressListenerConfiguration progressListenerConfiguration : listenerConfigurations)
+            clone.listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
+
+            for (ProgressListenerConfiguration cfg : listenerConfigurations)
             {
-                object.addListenerConfiguration(progressListenerConfiguration);
+                clone.addListenerConfiguration(cfg);
             }
         }
 
-        return object;
+        return clone;
 
     }
 

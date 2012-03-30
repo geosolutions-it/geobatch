@@ -182,4 +182,10 @@ public class FlowSettings extends GBSettings {
         this.keepAliveTime = keepAliveTime;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()+"[" + getId() + ']';
+    }
+
+
 }

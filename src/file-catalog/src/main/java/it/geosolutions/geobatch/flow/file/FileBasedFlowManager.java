@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -61,7 +61,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 
-import sun.java2d.Disposer;
 
 /**
  * 
@@ -72,11 +71,15 @@ import sun.java2d.Disposer;
 // @Component("FlowManager")
 // @ManagedResource(objectName = "spring:name=FileBasedFlowManager", description
 // = "A JMX-managed FileBasedFlowManager")
-public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowConfiguration> implements
-    FlowManager<FileSystemEvent, FileBasedFlowConfiguration>, Runnable, Job {
+public class FileBasedFlowManager
+    extends BasePersistentResource<FileBasedFlowConfiguration>
+    implements FlowManager<FileSystemEvent, FileBasedFlowConfiguration>, Runnable, Job {
 
     /** Default Logger **/
     private static final Logger LOGGER = LoggerFactory.getLogger(FlowManager.class);
+
+    private String name;
+    private String description;
 
     private boolean autorun = false;
 
@@ -137,11 +140,23 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      *            initialization
      * @throws IOException
      */
-    public FileBasedFlowManager(FileBasedFlowConfiguration configuration) throws IOException,
-        NullPointerException {
-        super(configuration.getId(), configuration.getName(), configuration.getDescription());
+    public FileBasedFlowManager(FileBasedFlowConfiguration configuration) 
+            throws IOException, NullPointerException {
+
+        super(configuration.getId());
+
+        name = configuration.getName();
+        description = configuration.getDescription();
+
         initialize(configuration);
         super.setConfiguration(configuration);
+    }
+
+    /**
+     * Used just before loading the object.
+     */
+    public FileBasedFlowManager(String baseName) throws NullPointerException, IOException {
+        super(baseName);
     }
 
     /**
@@ -155,7 +170,16 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      */
     public FileBasedFlowManager(String baseName, String name, String description)
         throws NullPointerException, IOException {
-        super(baseName, name, description);
+
+        super(baseName);
+        this.name = name;
+        this.description = description;
+
+//        LOGGER.error("Creating an unconfigured " + getClass().getSimpleName());
+//        if(LOGGER.isDebugEnabled()) {
+//            LOGGER.debug("Creating an unconfigured " + getClass().getSimpleName(), new RuntimeException("Trace!"));
+//        }
+
         // warning this flow manager is not configured nor initialized (working
         // dir related problem)
         // initialize(new FileBasedFlowConfiguration(baseName, name, null,
@@ -543,6 +567,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     /**
      * @return the workingDirectory
      */
+    @Override
     public File getWorkingDirectory() {
         return workingDirectory;
     }
@@ -577,6 +602,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     public synchronized void load() throws IOException {
         super.load();
         setName(getConfiguration().getName());
+        setDescription(getConfiguration().getDescription());
     }
 
     @Override
@@ -588,6 +614,24 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     public synchronized void persist() throws IOException {
         super.persist();
     }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 
     /**
      * @return

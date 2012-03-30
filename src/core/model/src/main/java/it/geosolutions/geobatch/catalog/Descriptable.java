@@ -19,30 +19,35 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package it.geosolutions.geobatch.catalog;
 
-package it.geosolutions.geobatch.catalog.impl;
+/**
+ * Handles info for description to the human interface.
+ *
+ * @author ETj
+ */
+public interface Descriptable extends Identifiable {
 
-import it.geosolutions.geobatch.catalog.Resource;
-import org.slf4j.LoggerFactory;
-
-public class BaseResource extends BaseIdentifiable implements Resource {
     /**
-     * Constructor forcing initialization of: id ,name and description of this resource 
-     * @param id
-     * @param name
-     * @param description
-     * @deprecated name and description not needed here
+     * A short name for the object.
      */
-    public BaseResource(String id, String name, String description) {
-        super(id);
-        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
-    }
+    public abstract String getName();
 
-    public BaseResource(String id) {
-        super(id);
-    }
+    /**
+     * A short name for the object.
+     */
+    public abstract void setName(String name);
 
-    public void dispose() {
-    }
+
+    /**
+     * A longer description of the object.
+     */
+    public abstract String getDescription();
+
+
+    /**
+     * A longer description of the object.
+     */
+    public abstract void setDescription(String description);
 
 }

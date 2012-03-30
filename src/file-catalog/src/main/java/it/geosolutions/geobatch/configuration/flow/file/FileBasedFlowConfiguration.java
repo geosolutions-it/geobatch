@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -36,17 +36,27 @@ import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
  * @author Alessio Fabiani, GeoSolutions
  * @author Ivano Picco
  * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author Emanuele Tajariol, GeoSolutions
  * 
  */
 public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
 
+//    /**
+//     * workingDirectory: this attribute represents the configuring directory for
+//     * this flow. It can be relative to the catalog.xml directory or absolute.
+//     * Attention: the configuring directory should be different from the one
+//     * containing the configuration files.
+//     */
+//    private String workingDirectory;
+
     /**
-     * workingDirectory: this attribute represents the configuring directory for
-     * this flow. It can be relative to the catalog.xml directory or absolute.
-     * Attention: the configuring directory should be different from the one
-     * containing the configuration files.
+     * May be different than null if the temp dir should be mapped in a directory outside the configured GEOBATCH_TEMP_DIR.
+     * It represents the "Flow Base Temp Dir", i.e. the base direcotry where the
+     * temp dir for the flow instances will be created.
+     * <p/>
+     * <B>It must be an absolute path.</B>
      */
-    private String workingDirectory;
+    private String overrideTempDir;
 
     /**
      * maximum numbers of stored executed (see Consumer.getStatus()) consumers
@@ -65,19 +75,6 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
      */
     private boolean autorun = false;
 
-    /**
-     * @return the keepConsumers
-     */
-    public final boolean isKeepConsumers() {
-        return keepConsumers;
-    }
-
-    /**
-     * @param keepConsumers the keepConsumers to set
-     */
-    public final void setKeepConsumers(boolean keepConsumers) {
-        this.keepConsumers = keepConsumers;
-    }
 
     /**
      * 
@@ -87,9 +84,8 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
      * @param description
      * @param eventConsumerConfiguration
      */
-    public FileBasedFlowConfiguration(String id, String name,
+    public FileBasedFlowConfiguration(String id, String name, String description,
                                       FileBasedEventGeneratorConfiguration eventGeneratorConfiguration,
-                                      String description,
                                       FileBasedEventConsumerConfiguration eventConsumerConfiguration) {
         super(id, name, eventGeneratorConfiguration, description, eventConsumerConfiguration);
     }
@@ -103,13 +99,12 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
      * @param eventConsumerConfiguration
      * @param workingDirectory
      */
-    public FileBasedFlowConfiguration(String id, String name,
-                                      EventGeneratorConfiguration eventGeneratorConfiguration,
-                                      String description,
+    public FileBasedFlowConfiguration(String id, String name, String description,
+                                      EventGeneratorConfiguration eventGeneratorConfiguration,                                      
                                       EventConsumerConfiguration eventConsumerConfiguration,
-                                      String workingDirectory) {
+                                      String ovrTempDir) {
         super(id, name, eventGeneratorConfiguration, description, eventConsumerConfiguration);
-        this.workingDirectory = workingDirectory;
+        this.overrideTempDir = ovrTempDir;
     }
 
     /**
@@ -119,28 +114,30 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
         return maxStoredConsumers;
     }
 
-    /**
-     * Getter for the workingDirectory
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
+//    /**
+//     * Getter for the workingDirectory
+//     */
+//    public String getWorkingDirectory() {
+//        return workingDirectory;
+//    }
+//
+//    /**
+//     * Setter for the workingDirectory.
+//     *
+//     * @param workingDirectory
+//     */
+//    public void setWorkingDirectory(String workingDirectory) {
+//        this.workingDirectory = workingDirectory;
+//        setDirty(true);
+//    }
+
+    public String getOverrideTempDir() {
+        return overrideTempDir;
     }
 
-    /**
-     * Setter for the workingDirectory.
-     * 
-     * @param workingDirectory
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
+    public void setOverrideTempDir(String overrideTempDir) {
+        this.overrideTempDir = overrideTempDir;
         setDirty(true);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[" + "id:" + getId() + ", name:" + getName() + ", sid:"
-               + getServiceID() + ", wdir:" + getWorkingDirectory() + ", egcfg:"
-               + getEventGeneratorConfiguration() + "]";
     }
 
     /**
@@ -156,4 +153,34 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
     public void setAutorun(boolean autorun) {
         this.autorun = autorun;
     }
+
+    /**
+     * @return the keepConsumers
+     */
+    public final boolean isKeepConsumers() {
+        return keepConsumers;
+    }
+
+    /**
+     * @param keepConsumers the keepConsumers to set
+     */
+    public final void setKeepConsumers(boolean keepConsumers) {
+        this.keepConsumers = keepConsumers;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()
+                + "["
+                + "id:" + getId()
+                + ", name:" + getName()
+                + ", sid:" + getServiceID()
+                + ", ovrTDir:" + getOverrideTempDir()
+                + ", egcfg:" + getEventGeneratorConfiguration()
+                + " auto:" + autorun
+                + " maxCons:" + maxStoredConsumers
+                + " keepCons:" + keepConsumers
+                + "]";
+    }
+
 }

@@ -29,12 +29,18 @@ import java.util.EventObject;
 /**
  * 
  * @author Ivano Picco
+ *
+ * @deprecated is this class really useful?
  */
-public abstract class BaseEventGenerator<EO extends EventObject> extends BaseIdentifiable implements
-        EventGenerator<EO> {
+public abstract class BaseEventGenerator<EO extends EventObject>
+    extends BaseIdentifiable
+    implements EventGenerator<EO> {
 
-    public BaseEventGenerator(String id, String name, String description) {
-        super(id, name, description);
+    public BaseEventGenerator(String id) {
+        super(id);
     }
+//    public BaseEventGenerator(String id, String name, String description) {
+//        super(id, name, description);
+//    }
 
 }

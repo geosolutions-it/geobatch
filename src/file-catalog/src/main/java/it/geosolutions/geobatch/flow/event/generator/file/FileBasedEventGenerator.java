@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -51,11 +51,10 @@ import org.slf4j.LoggerFactory;
  * @author AlFa (Alessio Fabiani)
  * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
-public class FileBasedEventGenerator<T extends EventObject> extends
-		BaseEventGenerator<T> {
+public class FileBasedEventGenerator<T extends EventObject> 
+    extends BaseEventGenerator<T> {
 
-	private static Logger LOGGER = LoggerFactory
-			.getLogger(FileBasedEventGenerator.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(FileBasedEventGenerator.class);
 
 	/**
 	 * The File-System Monitor thread.
@@ -95,8 +94,7 @@ public class FileBasedEventGenerator<T extends EventObject> extends
 	public FileBasedEventGenerator(
 			FileBasedEventGeneratorConfiguration configuration)
 			throws IOException, NullPointerException {
-		super(configuration.getId(), configuration.getName(), configuration
-				.getDescription());
+		super(configuration.getId());
 		// initialize
 		initialize(configuration);
 	}

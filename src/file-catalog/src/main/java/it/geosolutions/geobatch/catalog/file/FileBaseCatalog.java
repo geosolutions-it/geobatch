@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -28,8 +28,10 @@ import it.geosolutions.geobatch.catalog.Catalog;
 
 
 /**
- * <p> A Catalog based on an xml marshalled file. </p>
+ * A Catalog based on an xml marshalled file.
+ *  
  * @author  Simone Giannecchini, GeoSolutions
+ * @author  Emanuele Tajariol, GeoSolutions
  */
 public interface FileBaseCatalog extends Catalog
 {
@@ -37,13 +39,14 @@ public interface FileBaseCatalog extends Catalog
     /**
      * Getter for the base directory.
      * @return  baseDirectory
+     * @deprecated base directory is poorly defined. Prefer using {@link #getConfigDirectory() }
      */
     File getBaseDirectory();
 
     /**
-     * Setter for the base directory.
-     * @param  baseDirectory
+     * Directory where the catalog config file is stored.
+     * In a FileBased hierarchy, the same dir also contains the flows config files.
      */
-//    void setBaseDirectory(File baseDirectory);
+    File getConfigDirectory();
 
 }

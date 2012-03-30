@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -22,12 +22,12 @@
 
 package it.geosolutions.geobatch.configuration;
 
-import it.geosolutions.geobatch.catalog.Configuration;
+import it.geosolutions.geobatch.catalog.DescriptableConfiguration;
 
 /**
  * @author Alessio Fabiani, GeoSolutions
  * 
  */
-public interface CatalogConfiguration extends Configuration {
+public interface CatalogConfiguration extends DescriptableConfiguration {
 
 }

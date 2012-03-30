@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.flow.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
+import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
@@ -45,10 +46,10 @@ import org.slf4j.LoggerFactory;
  * will be created.
  * 
  * @author AlFa
+ * @author Emanuele Tajariol, GeoSolutions
  */
 /* package private */class FileBasedEventDispatcher extends Thread {
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(FileBasedEventDispatcher.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedEventDispatcher.class);
 
 	private final BlockingQueue<FileSystemEvent> eventMailBox;
 
@@ -91,15 +92,14 @@ import org.slf4j.LoggerFactory;
 		try {
 			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info("Ready to dispatch Events to flow "
-						+ flowManager.getId() + "(" + flowManager.getName()
-						+ ")");
+						+ flowManager.getId() 
+                        + "(" + flowManager.getName() + ")");
 			}
 
 			while (!isInterrupted()) {
 
-				// //
 				// waiting for a new event
-				// //
+                
 				final FileSystemEvent event;
 				try {
 					event = eventMailBox.take(); // blocking call
@@ -109,8 +109,8 @@ import org.slf4j.LoggerFactory;
 					return;
 				}
 
-				if (LOGGER.isTraceEnabled()) {
-					LOGGER.trace("Processing incoming event " + event);
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Processing incoming event " + event);
 				}
 
 				// //
@@ -122,22 +122,18 @@ import org.slf4j.LoggerFactory;
 				for (EventConsumer consumer : flowManager.getEventConsumers()) {
 
 					if (LOGGER.isTraceEnabled()) {
-						LOGGER.trace("Checking consumer " + consumer + " for "
-								+ event);
+						LOGGER.trace("Checking consumer " + consumer + " for "+ event);
 					}
 
 					if (consumer.getStatus() == EventConsumerStatus.EXECUTING) {
 						if (consumer.consume(event)) {
 							// //
 							// we have found an Event BaseEventConsumer waiting
-							// for
-							// this event, if
+							// for this event, if
 							// we have changed state we remove it from the list
 							// //
 							if (LOGGER.isTraceEnabled()) {
-								LOGGER.trace(event
-										+ " was the last needed event for "
-										+ consumer);
+								LOGGER.trace(event + " was the last needed event for " + consumer);
 							}
 
 							// are we executing? If we are, let's trigger a
@@ -154,19 +150,17 @@ import org.slf4j.LoggerFactory;
 				}
 
 				if (LOGGER.isTraceEnabled()) {
-					LOGGER.trace(event + (eventServed ? "" : " not")
-							+ " served");
+					LOGGER.trace(event + (eventServed ? "" : " not") + " served");
 				}
 
 				if (!eventServed) {
-					// //
-					// if no EventConsumer is found, we need to create a new one
-					// //
-					final FileBasedEventConsumerConfiguration configuration = ((FileBasedEventConsumerConfiguration) flowManager
-							.getConfiguration().getEventConsumerConfiguration())
-							.clone();
-					final BaseEventConsumer brandNewConsumer = new FileBasedEventConsumer(
-							configuration);
+                    // //
+                    // if no EventConsumer is found, we need to create a new one
+                    // //
+                    final FileBasedFlowConfiguration flowCfg = flowManager.getConfiguration();
+					final FileBasedEventConsumerConfiguration consumerCfg = ((FileBasedEventConsumerConfiguration)flowCfg.getEventConsumerConfiguration()).clone();
+					final BaseEventConsumer brandNewConsumer = new FileBasedEventConsumer(consumerCfg, flowCfg);
+                    brandNewConsumer.setFlowName(flowManager.getName());
 
 					if (brandNewConsumer.consume(event)) {
 						// //
@@ -176,29 +170,26 @@ import org.slf4j.LoggerFactory;
 						// it in the EventConsumers waiting list.
 						// //
 						if (brandNewConsumer.getStatus() != EventConsumerStatus.EXECUTING) {
-							if (LOGGER.isTraceEnabled()) {
-								LOGGER.trace(brandNewConsumer
-										+ " created on event " + event);
+							if (LOGGER.isDebugEnabled()) {
+								LOGGER.debug(brandNewConsumer + " created on event " + event);
 							}
 							eventServed = flowManager.addConsumer(brandNewConsumer);
-							if (eventServed!=true){
+							if ( ! eventServed ) {
 							    brandNewConsumer.dispose();
-                                                        }
+                            }
 						} else {
-							if (LOGGER.isTraceEnabled()) {
-								LOGGER.trace(event
-										+ " was the only needed event for "
-										+ brandNewConsumer);
+							if (LOGGER.isDebugEnabled()) {
+								LOGGER.debug(event + " was the only needed event for " + brandNewConsumer);
 							}
 
 							eventServed = flowManager.addConsumer(brandNewConsumer);
-							if (eventServed==true){
-	                                                    // etj: shouldn't we call
-	                                                    // executor.execute(consumer); here?
-	                                                    // carlo: probably this is a good idea
-	                                                    flowManager.execute(brandNewConsumer);
+							if (eventServed){
+                                // etj: shouldn't we call
+                                // executor.execute(consumer); here?
+                                // carlo: probably this is a good idea
+                                flowManager.execute(brandNewConsumer);
 							} else {
-	                                                    brandNewConsumer.dispose();
+                                brandNewConsumer.dispose();
 							}
 						}
 					}
@@ -209,8 +200,7 @@ import org.slf4j.LoggerFactory;
 					}
 				}
 			}
-		} catch (InterruptedException e) // may be thrown by the "stop" button
-		{
+		} catch (InterruptedException e) { // may be thrown by the "stop" button
 			// on web interface
 			LOGGER.error(e.getLocalizedMessage(), e);
 		} catch (IOException e) {

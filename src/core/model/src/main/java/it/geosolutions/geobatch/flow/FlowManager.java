@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.flow;
 
+import it.geosolutions.geobatch.catalog.Descriptable;
 import it.geosolutions.geobatch.catalog.PersistentResource;
 import it.geosolutions.geobatch.configuration.flow.FlowConfiguration;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
@@ -36,11 +37,8 @@ import java.util.EventObject;
  * @author  Alessio Fabiani
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
-public interface FlowManager<EO extends EventObject, FC extends FlowConfiguration> extends PersistentResource<FC>, Job {
-    /**
-     * The Flow BaseEventConsumer identifier.
-     */
-    public void setName(String name);
+public interface FlowManager<EO extends EventObject, FC extends FlowConfiguration> 
+    extends PersistentResource<FC>, Job, Descriptable {
 
     public boolean isRunning();
 

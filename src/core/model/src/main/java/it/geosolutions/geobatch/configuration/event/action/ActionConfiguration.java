@@ -22,7 +22,8 @@
 
 package it.geosolutions.geobatch.configuration.event.action;
 
-import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
+import it.geosolutions.geobatch.catalog.Descriptable;
+import it.geosolutions.geobatch.catalog.impl.BaseDescriptableConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
@@ -39,9 +40,11 @@ import java.util.List;
  * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  *
  */
-public abstract class ActionConfiguration extends BaseConfiguration implements Cloneable {
+public abstract class ActionConfiguration
+    extends BaseDescriptableConfiguration
+    implements Descriptable, Cloneable {
 
-    
+
     private List<String> listenerIds = null;
 
     
@@ -65,9 +68,9 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
     private File configDir;
 
 
-    public ActionConfiguration() {
-        super();
-    }
+//    public ActionConfiguration() {
+//        super();
+//    }
     
     public ActionConfiguration(String id, String name, String description) {
         super(id, name, description);

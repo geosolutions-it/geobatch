@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -87,7 +87,7 @@ public class JMSFlowManager implements AsyncProcessor {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT consumer");
         }
-        consumer = new GBFileSystemEventConsumer(configuration);
+        consumer = new GBFileSystemEventConsumer(configuration, parent.getConfiguration());
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT injecting consumer to the parent flow");
         }

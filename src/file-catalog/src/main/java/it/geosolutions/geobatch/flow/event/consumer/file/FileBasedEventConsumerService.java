@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -44,47 +44,33 @@ public class FileBasedEventConsumerService extends BaseService
 
     public boolean canCreateEventConsumer(FileBasedEventConsumerConfiguration configuration)
     {
-
-        final String workingDir = configuration.getWorkingDirectory();
-        if (workingDir != null)
-        {
-            final File dir = new File((String) workingDir);
-            if (!dir.exists() || !dir.isDirectory() || !dir.canRead())
-            {
-                if (LOGGER.isErrorEnabled())
-                {
-                    LOGGER.error("Unable to create the consumer using workingDir: "+dir);
-                }
-                return false;
-            }
-        }
-
         return true;
     }
 
     public FileBasedEventConsumer createEventConsumer(
         FileBasedEventConsumerConfiguration configuration)
     {
-        try
-        {
-            return new FileBasedEventConsumer(configuration);
-        }
-        catch (IOException e)
-        {
-            if (LOGGER.isErrorEnabled())
-            {
-                LOGGER.error(e.getLocalizedMessage(), e);
-            }
-        }
-        catch (InterruptedException e)
-        {
-            if (LOGGER.isErrorEnabled())
-            {
-                LOGGER.error(e.getLocalizedMessage(), e);
-            }
-        }
-
-        return null;
+        throw new UnsupportedOperationException("Could not create consumer " + configuration.getId());
+//        try
+//        {
+//            return new FileBasedEventConsumer(configuration, );
+//        }
+//        catch (IOException e)
+//        {
+//            if (LOGGER.isErrorEnabled())
+//            {
+//                LOGGER.error(e.getLocalizedMessage(), e);
+//            }
+//        }
+//        catch (InterruptedException e)
+//        {
+//            if (LOGGER.isErrorEnabled())
+//            {
+//                LOGGER.error(e.getLocalizedMessage(), e);
+//            }
+//        }
+//
+//        return null;
     }
 
 }

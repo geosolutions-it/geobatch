@@ -21,6 +21,8 @@
  */
 package it.geosolutions.geobatch.flow.event.action;
 
+import it.geosolutions.geobatch.catalog.Descriptable;
+import it.geosolutions.geobatch.catalog.impl.BaseDescriptable;
 import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.Job;
@@ -46,8 +48,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @param <XEO> Kind of EventObject to be eXecuted
  */
-public abstract class BaseAction<XEO extends EventObject> extends BaseIdentifiable implements Action<XEO>,
-    Job {
+public abstract class BaseAction<XEO extends EventObject> 
+    extends BaseDescriptable
+    implements Action<XEO>, Job {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 
@@ -76,8 +79,10 @@ public abstract class BaseAction<XEO extends EventObject> extends BaseIdentifiab
     }
 
     public BaseAction(ActionConfiguration actionConfiguration) {
-        super(actionConfiguration.getId(), actionConfiguration.getName(), actionConfiguration
-            .getDescription());
+        super(actionConfiguration.getId(), 
+                actionConfiguration.getName(),
+                actionConfiguration.getDescription());
+
         listenerForwarder = new ProgressListenerForwarder(this);
         failIgnored = actionConfiguration.isFailIgnored();
     }
@@ -150,19 +155,19 @@ public abstract class BaseAction<XEO extends EventObject> extends BaseIdentifiab
         this.listenerForwarder.addListener(listener);
     }
 
-    public Collection getListeners() {
+    public Collection<IProgressListener> getListeners() {
         return this.listenerForwarder.getListeners();
     }
 
-    public Collection getListeners(Class clazz) {
-        final Collection<IProgressListener> c=new ArrayList<IProgressListener>();
-        final Iterator<IProgressListener> it=getListeners().iterator();
-        while (it.hasNext()) {
-            IProgressListener ipl = it.next();
+    public Collection<IProgressListener> getListeners(Class clazz) {
+        final Collection<IProgressListener> ret=new ArrayList<IProgressListener>();
+
+        for (IProgressListener ipl : getListeners()) {
             if (clazz.isAssignableFrom(ipl.getClass())){
-                c.add(ipl);
+                ret.add(ipl);
             }
         }
-        return c;
+
+        return ret;
     }
 }

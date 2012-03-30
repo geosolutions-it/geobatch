@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -38,8 +38,16 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BasePersistentResource<C extends Configuration> extends BaseResource {
 
+    public BasePersistentResource(final String id) {
+        super(id);
+    }
+
+    /**
+     * @deprecated name and description not needed here
+     */
     public BasePersistentResource(final String id, final String name, final String description) {
-        super(id, name, description);
+        super(id);
+        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
     }
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BasePersistentResource.class);
@@ -83,10 +91,10 @@ public abstract class BasePersistentResource<C extends Configuration> extends Ba
             if(!this.getId().equals(configuration.getId())){
                 final String message;
                 if (configuration.getId()!=null)
-                    message = "BasePersistentResource: The flow ID should be equals to the Flux file name: " +
-                    		"ID: "+configuration.getId()+" Flux file name: "+this.getId();
+                    message = "BasePersistentResource: The flow ID should be equals to the Flow file name: " + // FIXME: FLOW?!? bad message here!
+                    		"ID: "+configuration.getId()+" Flow file name: "+this.getId();
                     else
-                        message = "BasePersistentResource: The flow ID should not be null. Flux file name: "+this.getId();
+                        message = "BasePersistentResource: The flow ID should not be null. Flow file name: "+this.getId();
 
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);

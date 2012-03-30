@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -37,23 +37,20 @@ import org.springframework.context.ApplicationContextAware;
  * A Catalog based on an xml marshalled file.
  *
  * @author Simone Giannecchini, GeoSolutions
+ * @author Emanuele Tajariol, GeoSolutions
  */
 @SuppressWarnings("unchecked")
-public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog, ApplicationContextAware
+public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedCatalogImpl.class);
 
     public DataDirHandler dataDirHandler;
 
-    private ApplicationContext applicationContext;
-
     /**
      * The base directory where the configuration files are located.
-     * <br/>The workingDirectory will be relative to this base directory unless
-     * an absolute path will be specified.
      */
-    private File dataDir;
+    private File configDir;
 
     public FileBasedCatalogImpl(String id, String name, String description)
     {
@@ -66,32 +63,31 @@ public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog
      */
     public void init() throws Exception
     {
-        dataDir = dataDirHandler.getDataDirectory();
+        configDir = dataDirHandler.getConfigDirectory();
     }
 
 
+    /**
+     * @deprecated base directory is poorly defined. Prefer using {@link #getConfigDirectory() }
+     */
+    @Override
     public File getBaseDirectory()
     {
-        return this.dataDir;
+        return this.configDir;
     }
-
-    protected void setBaseDirectory(final File baseDirectory)
-    {
-        LOGGER.warn("Setting datadir to '" + baseDirectory + "', was '" + this.dataDir + "'");
-        this.dataDir = baseDirectory;
-    }
-
 
     @Override
-    public String toString()
-    {
-        return getClass().getSimpleName() + " [" + dataDir + "]";
+    public File getConfigDirectory() {
+        return this.configDir;
     }
 
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
-    {
-        this.applicationContext = applicationContext;
-    }
+
+//    protected void setBaseDirectory(final File baseDirectory)
+//    {
+//        LOGGER.warn("Setting datadir to '" + baseDirectory + "', was '" + this.dataDir + "'");
+//        this.dataDir = baseDirectory;
+//    }
+
 
     public DataDirHandler getDataDirHandler()
     {
@@ -101,6 +97,12 @@ public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog
     public void setDataDirHandler(DataDirHandler dataDirHandler)
     {
         this.dataDirHandler = dataDirHandler;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getClass().getSimpleName() + " [" + configDir + "]";
     }
 
 }

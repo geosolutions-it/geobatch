@@ -22,11 +22,14 @@
 package it.geosolutions.geobatch.flow.event.consumer.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerService;
+import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
@@ -38,7 +41,6 @@ import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.tools.commons.file.Path;
 import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
@@ -60,12 +62,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Simone Giannecchini, GeoSolutions S.A.S.
- * @author Emanuele Tajariol <etj AT geo-solutions DOT it>, GeoSolutions S.A.S.
+ * @author Emanuele Tajariol, GeoSolutions S.A.S.
  * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class FileBasedEventConsumer extends
-    BaseEventConsumer<FileSystemEvent, FileBasedEventConsumerConfiguration> {
+public class FileBasedEventConsumer 
+    extends BaseEventConsumer<FileSystemEvent, FileBasedEventConsumerConfiguration> {
 
     /**
      * Default logger
@@ -81,25 +83,19 @@ public class FileBasedEventConsumer extends
 
     /**
      * Temporary dir for this flow instance.<br>
-     * It represents the parent dir of the runtimeDir<br>
+     * It represents the parent dir of the {@link #flowInstanceTempDir}<br>
      */
-    private File workingDir;
+    private File flowBaseTempDir;
+//    private File workingDir;
 
     /**
-     * Temporary folder created using
-     * {@link FileBasedEventConsumer#createTempDir(File)}
+     * Temporary folder for a given flow instance.
+     * It's created using
+     * {@link FileBasedEventConsumer#createFlowInstanceTempDir(File)}
      */
-    private File runtimeDir;
+    private File flowInstanceTempDir;
+//    private File runtimeDir;
 
-    /**
-     * Temporary folder created using
-     * {@link FileBasedEventConsumer#createTempDir(File)}
-     * 
-     * @return the runtimeDir
-     */
-    public final File getRuntimeDir() {
-        return runtimeDir;
-    }
 
     private FileBasedEventConsumerConfiguration configuration;
 
@@ -110,19 +106,6 @@ public class FileBasedEventConsumer extends
      */
     private boolean keepRuntimeDir = false;
 
-    /**
-     * @return the keepRuntimeDir
-     */
-    public final boolean isKeepRuntimeDir() {
-        return keepRuntimeDir;
-    }
-
-    /**
-     * @param keepRuntimeDir if true the runtime dir is not removed
-     */
-    public final void setKeepRuntimeDir(boolean keepRuntimeDir) {
-        this.keepRuntimeDir = keepRuntimeDir;
-    }
 
     /**
      * PUBLIC CONSTRUCTORS: Initialize the consumer using the passed
@@ -136,43 +119,59 @@ public class FileBasedEventConsumer extends
      * @throws IOException
      */
 
-    public FileBasedEventConsumer(FileBasedEventConsumerConfiguration configuration)
+    public FileBasedEventConsumer(FileBasedEventConsumerConfiguration configuration, FileBasedFlowConfiguration flowConfiguration)
         throws InterruptedException, IOException {
-        super(UUID.randomUUID().toString(), configuration.getName(), configuration.getDescription());
+        super(UUID.randomUUID().toString());
 
-        final File catalogFile = ((FileBaseCatalog)CatalogHolder.getCatalog()).getBaseDirectory();
+        final File configDir = ((FileBaseCatalog)CatalogHolder.getCatalog()).getConfigDirectory();
 
-        final File initDir = Path.findLocation(configuration.getWorkingDirectory(), catalogFile);
-        if (initDir == null) {
-            throw new IllegalArgumentException("Invalid configuring directory");
+        File baseTempDir = ((FileBasedCatalogImpl)CatalogHolder.getCatalog()).getDataDirHandler().getBaseTempDirectory(); // FIXME remove the Impl reference
+
+        String overrideTempDir = flowConfiguration.getOverrideTempDir();
+        if(overrideTempDir != null) {
+            baseTempDir = new File(overrideTempDir);
+            if( ! baseTempDir.isAbsolute() )
+                throw new IllegalStateException("Override temp dir must be an absolute path ("+overrideTempDir+")");
         }
 
-        if (initDir.exists() && (initDir.isDirectory() & initDir.canRead())) {
-            initialize(configuration, initDir);
-        }
+        String flowId = flowConfiguration.getId();
+        flowBaseTempDir = new File(baseTempDir, flowId);
 
+        if(LOGGER.isDebugEnabled())
+            LOGGER.debug("Creating a " + getClass().getSimpleName() + " with flowBaseTempDir = " + flowBaseTempDir);
+
+        if( (! flowBaseTempDir.mkdir() && !flowBaseTempDir.exists()) || ! flowBaseTempDir.canWrite())
+            throw new IllegalStateException("Can't write temp dir ("+flowBaseTempDir+")");
+
+        this.flowInstanceTempDir = createFlowInstanceTempDir(flowBaseTempDir);
+        if(LOGGER.isDebugEnabled())
+            LOGGER.debug("Prepared flowInstanceTempDir " + flowInstanceTempDir);
+
+        initialize(configuration);
+    }
+
+
+    // Dateformat for creating flow instance temp dirs.
+    final static SimpleDateFormat DATEFORMATTER = new SimpleDateFormat("yyyyMMdd'-'HHmmss-SSS");
+    static{
+        TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
+        DATEFORMATTER.setTimeZone(TZ_UTC);
     }
 
     /**
      * Called by ctor
      */
-    private static File createTempDir(File baseDir) {
+    private static File createFlowInstanceTempDir(File flowBaseTempDir) {
 
-        // Dateformat for creating working dirs.
-        final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSSz");
-        TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
-        dateFormatter.setTimeZone(TZ_UTC);
+        final String timeStamp = DATEFORMATTER.format(new Date());
 
-        final String timeStamp = dateFormatter.format(new Date());
-
-        // current directory inside working dir, specifically created for this
-        // execution.
+        // current directory inside working dir, specifically created for this execution.
         // Creation is eager
-        final File currentRunDirectory = new File(baseDir, timeStamp);
+        final File instanceTempDir = new File(flowBaseTempDir, timeStamp);
 
-        currentRunDirectory.mkdirs();
+        instanceTempDir.mkdirs();
 
-        return currentRunDirectory;
+        return instanceTempDir;
     }
 
     /**
@@ -185,16 +184,12 @@ public class FileBasedEventConsumer extends
      * @throws IllegalArgumentException
      * @throws IOException
      */
-    private void initialize(FileBasedEventConsumerConfiguration configuration, File workingDir)
+    private void initialize(FileBasedEventConsumerConfiguration configuration)
         throws InterruptedException, IllegalArgumentException, IOException {
-        this.configuration = configuration;
-        this.workingDir = workingDir;
-        this.keepRuntimeDir = configuration.isKeepRuntimeDir();
-        this.runtimeDir = createTempDir(workingDir);
-        this.canceled = false;
 
-        // set the same name of the configuration
-        setName(configuration.getName());
+        this.configuration = configuration;
+        this.keepRuntimeDir = configuration.isKeepRuntimeDir();
+        this.canceled = false;
 
         // ////////////////////////////////////////////////////////////////////
         // LISTENER
@@ -202,11 +197,10 @@ public class FileBasedEventConsumer extends
 
         for (ProgressListenerConfiguration plConfig : configuration.getListenerConfigurations()) {
             final String serviceID = plConfig.getServiceID();
-            final ProgressListenerService progressListenerService = CatalogHolder.getCatalog()
-                .getResource(serviceID, ProgressListenerService.class);
+            final ProgressListenerService progressListenerService =
+                    CatalogHolder.getCatalog().getResource(serviceID, ProgressListenerService.class);
             if (progressListenerService != null) {
-                ProgressListener progressListener = progressListenerService.createProgressListener(plConfig,
-                                                                                                   this);
+                ProgressListener progressListener = progressListenerService.createProgressListener(plConfig, this);
                 getListenerForwarder().addListener(progressListener);
             } else {
                 throw new IllegalArgumentException("Could not find '" + serviceID
@@ -221,10 +215,15 @@ public class FileBasedEventConsumer extends
 
         final List<BaseAction<FileSystemEvent>> loadedActions = new ArrayList<BaseAction<FileSystemEvent>>();
 
+        final Catalog catalog = CatalogHolder.getCatalog();
+
         for (ActionConfiguration actionConfig : configuration.getActions()) {
             final String actionServiceID = actionConfig.getServiceID();
-            final ActionService<FileSystemEvent, ActionConfiguration> actionService = CatalogHolder
-                .getCatalog().getResource(actionServiceID, ActionService.class);
+            if(LOGGER.isDebugEnabled())
+                LOGGER.debug("Loading actionService " + actionServiceID 
+                        + " from " + actionConfig.getClass().getSimpleName()
+                        + " " + actionConfig.getId()+":"+actionConfig.getName());
+            final ActionService<FileSystemEvent, ActionConfiguration> actionService = catalog.getResource(actionServiceID, ActionService.class);
             if (actionService != null) {
                 Action<FileSystemEvent> action = null;
                 if (actionService.canCreateAction(actionConfig)) {
@@ -300,20 +299,21 @@ public class FileBasedEventConsumer extends
             //
             // if we work on the input directory, we do not move around
             // anything, unless we want to
-            // perform
-            // a backup
+            // perform a backup
+
             if (configuration.isPerformBackup() || !configuration.isPreserveInput()) {
-                if (!runtimeDir.exists() && !runtimeDir.mkdirs()) {
+                if ( ! flowInstanceTempDir.exists() && ! flowInstanceTempDir.mkdirs()) {
                     throw new IllegalStateException("Could not create consumer backup directory!");
                 }
             }
             // set the consumer running context
-            setRunningContext(runtimeDir.getAbsolutePath());
+            // don't know how this running context will be used in a FileBased* hiererchy, anyway let's force the use of proper methods.
+            setRunningContext("DONT_USE_AS_FILEPATH_" + flowInstanceTempDir.getAbsolutePath());
 
             // create backup dir. Creation is deferred until first usage
             getListenerForwarder().progressing(20, "Creating backup dir");
 
-            final File backupDirectory = new File(runtimeDir, "backup");
+            final File backupDirectory = new File(flowInstanceTempDir, "backup");
             if (configuration.isPerformBackup()) {
                 if (!backupDirectory.exists() && !backupDirectory.mkdirs()) {
                     throw new IllegalStateException("Could not create consumer backup directory!");
@@ -372,9 +372,8 @@ public class FileBasedEventConsumer extends
                         if (!configuration.isPreserveInput()) {
 
                             // In case we do not work on the input as is, we
-                            // move it to our
-                            // current working directory
-                            final File destDataFile = new File(runtimeDir, fileBareName);
+                            // move it to our current working directory
+                            final File destDataFile = new File(flowInstanceTempDir, fileBareName);
                             if (sourceDataFile.isDirectory()) {
                                 FileUtils.moveDirectory(sourceDataFile, destDataFile);
                             } else {
@@ -440,17 +439,20 @@ public class FileBasedEventConsumer extends
 
             return fileEventList;
         } catch (ActionException e) {
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("FileBasedEventConsumer " + Thread.currentThread().getName() + " Error during "
-                             + e.getType().getSimpleName() + " execution: " + e.getLocalizedMessage(), e);
+            String msg = "[" + Thread.currentThread().getName() + "] Error during "
+                             + e.getType().getSimpleName() + " execution: " + e.getLocalizedMessage();
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.error(msg, e);
+            } else {
+                LOGGER.error(msg);
             }
             this.setStatus(EventConsumerStatus.FAILED);
             exceptionOccurred = e;
 
         } catch (IOException e) {
             if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("FileBasedEventConsumer " + Thread.currentThread().getName()
-                                 + " could not move file " + " due to the following IO error: "
+                LOGGER.error("[" + Thread.currentThread().getName()
+                                 + "] could not move file " + " due to the following IO error: "
                                  + e.getLocalizedMessage(), e);
             }
             this.setStatus(EventConsumerStatus.FAILED);
@@ -458,8 +460,8 @@ public class FileBasedEventConsumer extends
 
         } catch (InterruptedException e) {
             if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("FileBasedEventConsumer " + Thread.currentThread().getName()
-                                 + " could not move file " + " due to an InterruptedException: "
+                LOGGER.error("[" + Thread.currentThread().getName()
+                                 + "] could not move file " + " due to an InterruptedException: "
                                  + e.getLocalizedMessage(), e);
             }
             this.setStatus(EventConsumerStatus.FAILED);
@@ -492,13 +494,6 @@ public class FileBasedEventConsumer extends
     public void setConfiguration(FileBasedEventConsumerConfiguration configuration) {
         this.configuration = configuration;
 
-    }
-
-    /**
-     * @return the workingDirectory
-     */
-    public File getWorkingDir() {
-        return workingDir;
     }
 
     /**
@@ -570,11 +565,11 @@ public class FileBasedEventConsumer extends
         if (!keepRuntimeDir) {
             // removing running context directory
             try {
-                FileUtils.deleteDirectory(getRuntimeDir());
+                FileUtils.deleteDirectory(getFlowInstanceTempDir());
             } catch (IOException e) {
                 if (LOGGER.isWarnEnabled()) {
                     LOGGER.warn("Problem trying to remove the running context directory: "
-                                + getRuntimeDir() + ".\n " + e.getLocalizedMessage());
+                                + getFlowInstanceTempDir() + ".\n " + e.getLocalizedMessage());
                 }
             }
         }
@@ -632,21 +627,41 @@ public class FileBasedEventConsumer extends
      */
     @Override
     protected void setupAction(BaseAction action, int step) throws IllegalStateException {
-        String dirName = step + "_" + action.getClass().getSimpleName();
-        File tempDir = new File(runtimeDir, dirName);
-        if (!tempDir.mkdirs()) {
-            throw new IllegalStateException("Unable to create the temporary dir: " + dirName);
+        String actionTempDirName = step + "_" + action.getClass().getSimpleName();
+        File actionTempDir = new File(flowInstanceTempDir, actionTempDirName);
+        if (!actionTempDir.mkdirs()) {
+            throw new IllegalStateException("Unable to create the action temporary dir: " + actionTempDir);
         }
-        action.setTempDir(tempDir);
+        action.setTempDir(actionTempDir);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[" + " name:" + getName() + " status:" + getStatus()
+        return getClass().getSimpleName() + "[" + " status:" + getStatus()
                + " actions:" + actions.size() + " context: " + getRunningContext() + " events:"
                + eventsQueue.size() + " still missing:" + numInputFiles + (isPaused() ? " PAUSED" : "")
                + (eventsQueue.isEmpty() ? "" : (" first event:" + eventsQueue.peek().getSource().getName()))
                + "]";
     }
 
+    /**
+     * Temporary folder used in the flow instance.
+     */
+    public final File getFlowInstanceTempDir() {
+        return flowInstanceTempDir;
+    }
+
+    /**
+     * @return the keepRuntimeDir
+     */
+    public final boolean isKeepRuntimeDir() {
+        return keepRuntimeDir;
+    }
+
+    /**
+     * @param keepRuntimeDir if true the runtime dir is not removed
+     */
+    public final void setKeepRuntimeDir(boolean keepRuntimeDir) {
+        this.keepRuntimeDir = keepRuntimeDir;
+    }
 }

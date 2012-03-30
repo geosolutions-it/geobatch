@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -23,6 +23,7 @@ package it.geosolutions.geobatch.camel;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
+import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 
@@ -42,9 +43,9 @@ import java.util.List;
  */
 public class GBFileSystemEventConsumer extends FileBasedEventConsumer {
 
-    public GBFileSystemEventConsumer(FileBasedEventConsumerConfiguration configuration)
+    public GBFileSystemEventConsumer(FileBasedEventConsumerConfiguration configuration, FileBasedFlowConfiguration flowCfg)
             throws InterruptedException, IOException {
-        super(configuration);
+        super(configuration, flowCfg);
     }
 
     public boolean canConsumeAll(List<FileSystemEvent> fileEventList) throws IllegalArgumentException{

@@ -246,7 +246,7 @@ public class GBFileSystemMonitorJob implements Job {
          */
 if (jdm.get(FileSystemMonitorSPI.TYPE_KEY)==FileSystemEventType.POLLING_EVENT){
 	final GBEventNotifier notifier = (GBEventNotifier) jdm.get(EVENT_NOTIFIER_KEY);
-	notifier.notifyEvent(new File(""+System.currentTimeMillis()), FileSystemEventType.POLLING_EVENT);
+	notifier.notifyEvent(new File(Long.toString(System.currentTimeMillis())), FileSystemEventType.POLLING_EVENT);
 	return;
 }
 //WORKAROUND
@@ -298,8 +298,8 @@ if (jdm.get(FileSystemMonitorSPI.TYPE_KEY)==FileSystemEventType.POLLING_EVENT){
         // DEBUG
         // System.out.println("DOTHEJOB");
 
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("job named: " + detail.getKey() + " completed");
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("job named: " + detail.getKey() + " completed");
         }
     }
 }

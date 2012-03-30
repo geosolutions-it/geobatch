@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -25,7 +25,7 @@ package it.geosolutions.geobatch.configuration.flow.file;
 import java.io.File;
 
 import it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl;
-import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
+import it.geosolutions.geobatch.catalog.impl.BaseDescriptableConfiguration;
 import it.geosolutions.geobatch.configuration.CatalogConfiguration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.global.CatalogHolder;
@@ -41,33 +41,8 @@ import it.geosolutions.tools.commons.file.Path;
  * @todo: take a look to
  * @see ActionConfiguration
  */
-public class FileBasedCatalogConfiguration extends BaseConfiguration implements CatalogConfiguration
+public class FileBasedCatalogConfiguration extends BaseDescriptableConfiguration implements CatalogConfiguration
 {
-
-    /**
-     * Obtaining the Absolute path of the working dir
-     *
-     * @param working_dir
-     *            the relative (or absolute) path to absolutize
-     * @note it should be a sub-dir of ...
-     * @TODO open a ticket to get getBaseDirectory() into Catalog interface
-     */
-    public static String getAbsolutePath(String working_dir) /* throws FileNotFoundException */
-    {
-        FileBasedCatalogImpl c = (FileBasedCatalogImpl) CatalogHolder.getCatalog();
-        File fo = Path.findLocation(working_dir, c.getBaseDirectory());
-        if (fo != null)
-        {
-            return fo.toString();
-        }
-        else
-        {
-            // TODO LOG throw new FileNotFoundException("Unable to locate the working dir");
-            // throw new FileNotFoundException();
-            return null;
-        }
-    }
-
     /**
      * workingDirectory: this attribute represents the configuring directory for this flow.
      * It can be relative to the catalog.xml directory or absolute.
@@ -100,6 +75,30 @@ public class FileBasedCatalogConfiguration extends BaseConfiguration implements 
     public void setWorkingDirectory(String workingDirectory)
     {
         this.workingDirectory = workingDirectory;
+    }
+
+    /**
+     * Obtaining the Absolute path of the working dir
+     *
+     * @param working_dir
+     *            the relative (or absolute) path to absolutize
+     * @note it should be a sub-dir of ...
+     * @TODO open a ticket to get getBaseDirectory() into Catalog interface
+     */
+    public static String getAbsolutePath(String working_dir) /* throws FileNotFoundException */
+    {
+        FileBasedCatalogImpl c = (FileBasedCatalogImpl) CatalogHolder.getCatalog();
+        File fo = Path.findLocation(working_dir, c.getBaseDirectory());
+        if (fo != null)
+        {
+            return fo.toString();
+        }
+        else
+        {
+            // TODO LOG throw new FileNotFoundException("Unable to locate the working dir");
+            // throw new FileNotFoundException();
+            return null;
+        }
     }
 
     @Override

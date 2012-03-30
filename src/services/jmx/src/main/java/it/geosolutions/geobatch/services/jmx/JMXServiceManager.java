@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -108,9 +108,9 @@ public class JMXServiceManager implements ActionManager {
                 LOGGER.info("The flow id \'" + FlowManagerID
                             + "\' does not exists into catalog... -> going to create it");
             }
-            flowManagerConfig = new FileBasedFlowConfiguration(FlowManagerID, FlowManagerID, null,
-                                                               "Auto generated " + FlowManagerID, null);
-            configDirFile = new File(((FileBaseCatalog)catalog).getBaseDirectory(), FlowManagerID);
+            flowManagerConfig = new FileBasedFlowConfiguration(FlowManagerID, FlowManagerID, "Auto generated " + FlowManagerID,
+                        null, null);
+            configDirFile = new File(((FileBaseCatalog)catalog).getConfigDirectory(), FlowManagerID);
             if (!configDirFile.exists()) {
                 if (!(configDirFile.getParentFile().canWrite() && configDirFile.mkdir())) {
                     throw new IllegalArgumentException("Unable to automatically create the " + FlowManagerID
@@ -118,7 +118,7 @@ public class JMXServiceManager implements ActionManager {
                                                        + configDirFile.getAbsolutePath().toString());
                 }
             }
-            flowManagerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
+//            flowManagerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
 
             flowManager = new FileBasedFlowManager(flowManagerConfig);
 
@@ -236,9 +236,10 @@ public class JMXServiceManager implements ActionManager {
             throw new IllegalArgumentException("Unable to locate the configuration");
 
         final FileBasedEventConsumerConfiguration consumerConfig = new FileBasedEventConsumerConfiguration(
-                                                                                                           "JMX_Consumer_id",
-                                                                                                           "JMX_Consumer_name",
-                                                                                                           "JMX_Consumer description");
+                                                                                                           "JMX_Consumer_id"
+//                                                                                                           ,"JMX_Consumer_name"
+//                                                                                                           ,"JMX_Consumer description"
+                );
         // TODO Status progress listener
         // final StatusProgressListenerConfiguration
         // statusProgressListenerConfig=new
@@ -251,7 +252,7 @@ public class JMXServiceManager implements ActionManager {
         actions.add(actionConfig);
 
         consumerConfig.setActions(actions);
-        consumerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
+//        consumerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
         // TODO may we want to remove only when getStatus is remotely called???
         // consumerConfig.setKeepContextDir(true);
 
@@ -267,7 +268,7 @@ public class JMXServiceManager implements ActionManager {
         // loggingProgressListenerConfig.setLoggerName("it.geosolutions.geobatch.services");
         // consumerConfig.addListenerConfiguration(loggingProgressListenerConfig);
 
-        final FileBasedEventConsumer consumer = new FileBasedEventConsumer(consumerConfig);
+        final FileBasedEventConsumer consumer = new FileBasedEventConsumer(consumerConfig, flowManagerConfig );
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("INIT injecting consumer to the parent flow. UUID: " + consumer.getId());
         }

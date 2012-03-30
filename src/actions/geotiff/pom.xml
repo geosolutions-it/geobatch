@@ -12,7 +12,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-actions</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2.5-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
@@ -56,6 +56,12 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-action-geoserver</artifactId>
     </dependency>
+
+
+     <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-coverage</artifactId>
+     </dependency>
     <!-- including coverage tools that brings in most of the things we need -->
     <dependency>
       <groupId>org.geotools</groupId>

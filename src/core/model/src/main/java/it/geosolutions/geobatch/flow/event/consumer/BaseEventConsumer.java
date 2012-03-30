@@ -57,6 +57,8 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
     private static Logger LOGGER = LoggerFactory.getLogger(BaseEventConsumer.class);
 
+    private String flowName;
+
     private final Calendar creationTimestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
     private final Calendar endingTimestamp = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -69,19 +71,6 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
      */
     private String runningContext;
 
-    /**
-     * @return the runningContext
-     */
-    public String getRunningContext() {
-        return runningContext;
-    }
-
-    /**
-     * @param runningContext the runningContext to set
-     */
-    public void setRunningContext(String runningContext) {
-        this.runningContext = runningContext;
-    }
 
     /**
      * The MailBox
@@ -96,8 +85,16 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
     protected PauseHandler pauseHandler = new PauseHandler(false);
 
+    /**
+     * @deprecated name and description not needed here
+     */
     public BaseEventConsumer(String id, String name, String description) {
-        super(id, name, description);
+        this(id);
+        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
+    }
+
+    public BaseEventConsumer(String id) {
+        super(id);
         this.listenerForwarder = new EventConsumerListenerForwarder(this);
         this.setStatus(EventConsumerStatus.IDLE);
     }
@@ -108,6 +105,28 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
     public Calendar getEndingTimestamp() {
         return (Calendar)endingTimestamp.clone();
+    }
+
+    public String getFlowName() {
+        return flowName;
+    }
+
+    public void setFlowName(String flowName) {
+        this.flowName = flowName;
+    }
+
+    /**
+     * @return the runningContext
+     */
+    public String getRunningContext() {
+        return runningContext;
+    }
+
+    /**
+     * @param runningContext the runningContext to set
+     */
+    public void setRunningContext(String runningContext) {
+        this.runningContext = runningContext;
     }
 
     /*
@@ -206,8 +225,10 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                     step++;
 
                 } catch (ActionException e) {
-                    if (LOGGER.isErrorEnabled()) {
+                    if (LOGGER.isDebugEnabled()) {
                         LOGGER.error(e.getLocalizedMessage(), e);
+                    } else {
+                        LOGGER.error(e.getLocalizedMessage());
                     }
 
                     listenerForwarder.setTask("Action " + action.getClass().getSimpleName() + " failed (" + e
@@ -228,8 +249,8 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                         LOGGER.error("Action threw an unhandled exception: " + e.getLocalizedMessage(), e);
                     }
 
-                    listenerForwarder.setTask("Action " + action.getClass().getSimpleName() + " failed (" + e
-                                              + ")");
+                    listenerForwarder.setTask("Action " + action.getClass().getSimpleName() 
+                                            + " failed (" + e + ")");
                     listenerForwarder.progressing();
 
                     if (!currentAction.isFailIgnored()) {
@@ -242,21 +263,14 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                         // wrap the unhandled exception
                         throw new ActionException(currentAction, e.getMessage(), e);
                     } else {
-                        // CHECKME: eventlist is not modified in this case. will
-                        // it
-                        // work?
+                        // CHECKME: eventlist is not modified in this case. will it work?
                     }
                 } finally {
-                    // currentAction = null; // don't null the action: we'd like
-                    // to
-                    // read which was the last action run
-
+                    // currentAction = null; // don't null the action: we'd like to read which was the last action run
                 }
             }
-        } catch (Throwable t) {
-            final ActionException ae = new ActionException(currentAction, t.getLocalizedMessage());
-            ae.initCause(t);
-            throw ae;
+        } catch (Exception ex) {
+            throw new ActionException(currentAction, ex.getLocalizedMessage(), ex);
         } finally {
             // set ending time
             endingTimestamp.setTimeInMillis(System.currentTimeMillis());
@@ -285,7 +299,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
             || status.equals(EventConsumerStatus.IDLE)) {
 
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Pausing consumer " + getName() + " [" + creationTimestamp + "]");
+                LOGGER.info("Pausing consumer " + getFlowName() + " [" + creationTimestamp + "]");
             }
 
             pauseHandler.pause();
@@ -293,13 +307,13 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
             setStatus(EventConsumerStatus.PAUSED);
 
             if (currentAction != null) {
-                LOGGER.info("Pausing action " + currentAction.getClass().getSimpleName() + " in consumer "
-                            + getName() + " [" + creationTimestamp + "]");
+                LOGGER.info("Pausing action " + currentAction.getClass().getSimpleName() + " in flow "
+                            + getFlowName() + " [" + creationTimestamp + "]");
                 currentAction.pause();
             }
         } else {
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Consumer " + getName() + " [" + creationTimestamp + "] is already in state: "
+                LOGGER.info("Consumer " + getFlowName() + " [" + creationTimestamp + "] is already in state: "
                             + getStatus());
             }
         }
@@ -307,10 +321,10 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
     }
 
     public void resume() {
-        LOGGER.info("Resuming consumer " + getName() + " [" + creationTimestamp + "]");
+        LOGGER.info("Resuming consumer " + getFlowName() + " [" + creationTimestamp + "]");
         if (currentAction != null) {
-            LOGGER.info("Resuming action " + currentAction.getClass().getSimpleName() + " in consumer "
-                        + getName() + " [" + creationTimestamp + "]");
+            LOGGER.info("Resuming action " + currentAction.getClass().getSimpleName() + " in flow "
+                        + getFlowName() + " [" + creationTimestamp + "]");
             currentAction.resume();
         }
 

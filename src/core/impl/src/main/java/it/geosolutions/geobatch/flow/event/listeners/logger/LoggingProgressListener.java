@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.flow.event.listeners.logger;
 
+import it.geosolutions.geobatch.catalog.Descriptable;
 import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 
@@ -48,32 +49,43 @@ public class LoggingProgressListener extends ProgressListener {
     }
 
     public void started() {
-        getLogger().info("Started [" + getOwner().getName() + "]");
+        getLogger().info("Started [" + getPrintable(getOwner()) + "]");
     }
 
     public void progressing() {
         getLogger()
-                .info("Progressing " + getProgress() + "% -- " + getTask() + " [" + getOwner().getName() + "]");
+                .info("Progressing " + getProgress() + "% -- " + getTask() + " [" + getPrintable(getOwner()) + "]");
     }
 
     public void paused() {
-        getLogger().info("Paused " + getProgress() + "% -- " + getTask() + " [" + getOwner().getName() + "]");
+        getLogger().info("Paused " + getProgress() + "% -- " + getTask() + " [" + getPrintable(getOwner()) + "]");
     }
 
     public void resumed() {
-        getLogger().info("Resumed " + getProgress() + "% -- " + getTask() + " [" + getOwner().getName() + "]");
+        getLogger().info("Resumed " + getProgress() + "% -- " + getTask() + " [" + getPrintable(getOwner()) + "]");
     }
 
     public void completed() {
-        getLogger().info("Completed [" + getOwner().getName() + "]");
+        getLogger().info("Completed [" + getPrintable(getOwner()) + "]");
     }
 
     public void failed(Throwable exception) {
-        getLogger().info("Failed " + getProgress() + "% -- " + getTask() + " [" + getOwner().getName() + "]");
+        getLogger().info("Failed " + getProgress() + "% -- " + getTask() + " [" + getPrintable(getOwner()) + "]");
     }
 
     public void terminated() {
-        getLogger().info("Terminated " + getProgress() + "% -- " + getTask() + " [" + getOwner().getName() + "]");
+        getLogger().info("Terminated " + getProgress() + "% -- " + getTask() + " [" + getPrintable(getOwner()) + "]");
     }
 
+    static protected String getPrintable(Identifiable i) {        
+        if (i != null) {
+            if(i instanceof Descriptable) {
+                Descriptable d = (Descriptable)i;
+                return d.getName();
+            } else {
+                return i.getId();
+            }
+        } else
+            return "-";
+    }
 }

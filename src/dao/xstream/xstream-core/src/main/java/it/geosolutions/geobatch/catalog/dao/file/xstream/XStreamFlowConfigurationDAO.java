@@ -48,8 +48,7 @@ import com.thoughtworks.xstream.XStream;
 public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> implements
         FlowManagerConfigurationDAO {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(XStreamFlowConfigurationDAO.class
-            .toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(XStreamFlowConfigurationDAO.class);
 
     public XStreamFlowConfigurationDAO(String directory, Alias alias) {
         super(directory, alias);
@@ -84,12 +83,9 @@ public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> i
 
                 return obj;
             } catch (Throwable e) {
-                final IOException ioe = new IOException("Unable to load flow config:" + id);
-                ioe.initCause(e);
-                throw ioe;
+                throw new IOException("Unable to load flow config:" + id, e);
             } finally {
-                if (inStream != null)
-                    IOUtils.closeQuietly(inStream);
+                IOUtils.closeQuietly(inStream);
             }
         }
         return null;
@@ -142,8 +138,7 @@ public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> i
         // resolve actions listener
         if (ecc.getActions()!=null){
 	        for (ActionConfiguration ac : ecc.getActions()) {
-	            if (ac.getListenerConfigurations() == null) { // this happens in
-	                // XStream...
+	            if (ac.getListenerConfigurations() == null) { // this may happen in XStream...
 	                ac.setListenerConfigurations(new ArrayList<ProgressListenerConfiguration>());
 	            }
 	
@@ -164,7 +159,7 @@ public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> i
 	        }
         }
         else {
-        	final String message="FlowConfiguration do not declare any Action!";
+        	final String message="FlowConfiguration does not declare any Action!";
         	if (LOGGER.isErrorEnabled())
         		LOGGER.error(message);
         }

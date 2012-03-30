@@ -16,7 +16,7 @@
   <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb</artifactId>
   <packaging>pom</packaging>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2.5-SNAPSHOT</version>
   <name>GeoSolutions GeoBatch</name>
   <!--    <url>http://www.geo-solutions.it/maven_reports/gb/</url>-->
   <description>
@@ -1518,11 +1518,11 @@
           <includes>
             <include>**/*Test.java</include>
           </includes>
-          <excludes>
+<!--          <excludes>
             <exclude>${online.skip.pattern}</exclude>
             <exclude>${stress.skip.pattern}</exclude>
             <exclude>${test.exclude.pattern}</exclude>
-          </excludes>
+	  </excludes> -->
           <argLine>-Xmx${test.maxHeapSize} -Djava.awt.headless=${java.awt.headless}</argLine>
           <!-- Ignores test failure only if we are generating a       -->
           <!-- report for publication on the web site. See the        -->

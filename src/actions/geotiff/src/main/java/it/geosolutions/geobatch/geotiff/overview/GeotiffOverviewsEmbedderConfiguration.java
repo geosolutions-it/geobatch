@@ -32,8 +32,11 @@ import org.geotools.utils.CoverageToolsConstants;
 public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration implements
         Configuration {
 
-    public GeotiffOverviewsEmbedderConfiguration() {
+    
+    protected GeotiffOverviewsEmbedderConfiguration() {
+        super("XSTREAM PROBLEM!", "XSTREAM PROBLEM!", "XSTREAM PROBLEM!");
     }
+
 
     public GeotiffOverviewsEmbedderConfiguration(String id, String name, String description) {
         super(id, name, description);

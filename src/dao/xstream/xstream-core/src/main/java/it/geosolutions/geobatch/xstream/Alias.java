@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -29,6 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
+import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
+import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
+import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
+import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 
 /**
  * TODO: We need to have one (or more) XML file and to bind aliases dynamically.
@@ -95,6 +99,26 @@ public class Alias {
         xstream.addImplicitCollection(
                 it.geosolutions.geobatch.configuration.event.action.ActionConfiguration.class,
                 "listenerIds", "listenerId", String.class);
+
+
+        // Back compatibility hack:
+        // In these classes name and description fields are omitted
+        // TODO: to be removed when all config files are corrected
+        for (Class class1 : new Class[]{EventConsumerConfiguration.class, FileBasedEventConsumerConfiguration.class, EventGeneratorConfiguration.class}) {
+            xstream.omitField(class1, "description");
+            xstream.omitField(class1, "name");
+            if(LOGGER.isDebugEnabled())
+                LOGGER.debug("Workaround for older configuration files: omitting name and descr from " + class1.getSimpleName());
+        }
+
+        // Back compatibility hack:
+        // In these classes workingDir field is omitted
+        // TODO: to be removed when all config files are corrected
+        for (Class class1 : new Class[]{FileBasedEventConsumerConfiguration.class, FileBasedFlowConfiguration.class}) {
+            xstream.omitField(class1, "workingDirectory");
+            if(LOGGER.isDebugEnabled())
+                LOGGER.debug("Workaround for older configuration files: omitting workingDir from " + class1.getSimpleName());
+        }
 
         // adding registered alias
         if (aliasRegistry != null) {
