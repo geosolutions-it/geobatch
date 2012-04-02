@@ -60,22 +60,18 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 /**
  * 
- * GeoBatch JMX service which supports:<ul>
+ * GeoBatch JMX service which supports:
+ * <ul>
  * <li>
- * - creating JMX flow on the fly
- * </li>
+ * - creating JMX flow on the fly</li>
  * <li>
- * - creating and starting consumers with externally configured action
- * </li>
+ * - creating and starting consumers with externally configured action</li>
  * <li>
- * - get status of JMX consumer instances 
- * </li>
+ * - get status of JMX consumer instances</li>
  * <li>
- * - dispose JMX consumer instances 
- * </li>
+ * - dispose JMX consumer instances</li>
  * <li>
- * - get status of JMX consumer instance 
- * </li>
+ * - get status of JMX consumer instance</li>
  * </ul>
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
@@ -108,7 +104,7 @@ public class JMXServiceManager implements ActionManager {
                 LOGGER.info("The flow id \'" + FlowManagerID
                             + "\' does not exists into catalog... -> going to create it");
             }
-            
+
             flowManagerConfig = new FileBasedFlowConfiguration(FlowManagerID, FlowManagerID, null,
                                                                "Auto generated " + FlowManagerID, null);
             configDirFile = new File(((FileBaseCatalog)catalog).getBaseDirectory(), FlowManagerID);
@@ -120,10 +116,11 @@ public class JMXServiceManager implements ActionManager {
                 }
             }
             flowManagerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
-            
+
             // keep consumer until disposeAction is called
             flowManagerConfig.setKeepConsumers(true);
-            //flowManagerConfig.setMaximumPoolSize(flowManagerConfig.getMaximumPoolSize()); // TODO create a spec param
+            // flowManagerConfig.setMaximumPoolSize(flowManagerConfig.getMaximumPoolSize());
+            // // TODO create a spec param
 
             flowManager = new FileBasedFlowManager(flowManagerConfig);
 
@@ -141,14 +138,13 @@ public class JMXServiceManager implements ActionManager {
             }
         } else {
             flowManagerConfig = flowManager.getConfiguration();
-            
-            if (flowManagerConfig.getWorkingDirectory()==null)
-                throw new IllegalArgumentException("Please set the flow working dir");
-            
-            configDirFile = new File(flowManagerConfig.getWorkingDirectory());
-            
-        }
 
+            if (flowManagerConfig.getWorkingDirectory() == null)
+                throw new IllegalArgumentException("Please set the flow working dir");
+
+            configDirFile = new File(flowManagerConfig.getWorkingDirectory());
+
+        }
 
         // TODO listener config
         // if ()
@@ -211,14 +207,18 @@ public class JMXServiceManager implements ActionManager {
         for (Method method : serviceClass.getMethods()) {
             if (method.getName().equals("canCreateAction")) {
                 final Class[] classes = method.getParameterTypes();
-                
+
                 Constructor constructor;
+
+                // BeanUtils.instantiate(clazz)
                 try {
-                    constructor= classes[0].getConstructor(new Class[]{});
+                    constructor = classes[0].getConstructor(new Class[] {});
                     actionConfig = (ActionConfiguration)constructor.newInstance();
-                }catch (NoSuchMethodException e){
-                    constructor= classes[0].getConstructor(new Class[]{String.class,String.class,String.class});
-                    actionConfig = (ActionConfiguration)constructor.newInstance(serviceId,serviceId,serviceId);
+                } catch (NoSuchMethodException e) {
+                    constructor = classes[0].getConstructor(new Class[] {String.class, String.class,
+                                                                         String.class});
+                    actionConfig = (ActionConfiguration)constructor.newInstance(serviceId, serviceId,
+                                                                                serviceId);
                 }
                 actionConfig.setServiceID(serviceId);
                 final Set<String> keys = config.keySet();
@@ -233,11 +233,10 @@ public class JMXServiceManager implements ActionManager {
                         // TODO something else?
                     }
                 }
-                
+
                 actionConfig.setConfigDir(configDirFile);
                 if (actionConfig != null)
                     break;
-                // BeanUtils.instantiate(clazz)
             }
         }
         if (actionConfig == null)
@@ -279,16 +278,16 @@ public class JMXServiceManager implements ActionManager {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("INIT injecting consumer to the parent flow. UUID: " + consumer.getId());
         }
-        
+
         for (FileSystemEvent event : events) {
             consumer.consume(event);
         }
 
         // following ops are atomic
-        if (!flowManager.addConsumer(consumer)){
+        if (!flowManager.addConsumer(consumer)) {
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Unable to add another consumer, consumer queue is full. " +
-                		"Please dispose some completed consumer before submit a new one.");
+                LOGGER.info("Unable to add another consumer, consumer queue is full. "
+                            + "Please dispose some completed consumer before submit a new one.");
             }
             return null;
         }
@@ -297,92 +296,124 @@ public class JMXServiceManager implements ActionManager {
 
         return consumer.getId();
     }
-    
 
-    private static <T> void smartCopy(final T bean, final String propertyName, final String value)
+    private static <T> void smartCopy(final T bean, final String propertyName, final Object value)
         throws Exception {
-    	// try quick way
-    	try {
-    		BeanUtils.copyProperty(bean, propertyName, value);
-    		return;
-    	} catch (Exception e){
-        	if (LOGGER.isWarnEnabled())
-        		LOGGER.warn("Error using ");
-    	}
-    	// special cases
+        // special cases
         PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean, propertyName);
         // return null if there is no such descriptor
         if (pd == null) {
             return;
         }
-        final Class<?> type=pd.getPropertyType();
-        if (type.isAssignableFrom(value.getClass())){
-	        // try using setter
-	        if (pd.getWriteMethod()!=null){
-	        	PropertyUtils.setProperty(bean, propertyName, value);
-	        } else {
-
-	        	// T interface doesn't declare setter method for this property
-	            // lets use getter methods to get the property reference
-	            Object property = PropertyUtils.getProperty(bean, propertyName);
-	            if (property!=null){
-	            	if (!adapt(type,property,value)){
-	            		// fail
-	            		if (LOGGER.isErrorEnabled())
-	            			LOGGER.error("Skipping unwritable property " + propertyName + " unable to find the adapter for type "
-	                             + type);
-	            	}
-	            } else {
-	            	if (LOGGER.isErrorEnabled())
-            			LOGGER.error("Skipping unwritable property " + propertyName + " with property type "
-                             + type);
-	            }
-		    }
-        }
-    }
-    
-    private static boolean adapt(Class<?> type, Object property, Object value){
-        // check type of property to apply new value
-    	if (Collection.class.isAssignableFrom(type)) {
-
-            final Collection<Object> liveCollection;
-            if (property != null) {
-                liveCollection = (Collection<Object>)property;
-                liveCollection.clear();
+        
+        Class type=pd.getPropertyType();
+        
+        Object valueTo=value;
+        if (type.isAssignableFrom(value.getClass())) {
+         // try using setter
+            if (pd.getWriteMethod() != null) {
+                PropertyUtils.setProperty(bean, propertyName, valueTo);
+                return;
             } else {
-                liveCollection = new LinkedList<Object>();
+             // T interface doesn't declare setter method for this property
+                // lets use getter methods to get the property reference
+                Object property = PropertyUtils.getProperty(bean, propertyName);
+                if (property == null) {
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error("Skipping unwritable property " + propertyName);
+                } else {
+                    if (Collection.class.isAssignableFrom(type)) {
+                        ((Collection)property).addAll((Collection)value);
+                    } else if (Map.class.isAssignableFrom(type)) {
+                        ((Map)property).putAll((Map)value);
+                    } 
+                }
             }
-            if (String.class.isAssignableFrom(value.getClass())){
-	            // value should be a list of string ',' separated
-	            String[] listString = ((String)value).split(",");
-	            for (String s : listString) {
-	                liveCollection.add(s);
-	            }
-            }
+        } else if (Collection.class.isAssignableFrom(type)) {
+            valueTo=adaptCollection(value);
 
         } else if (Map.class.isAssignableFrom(type)) {
 
-            final Map<Object, Object> liveMap;
-            if (property != null) {
-                liveMap = (Map<Object, Object>)property;
-                liveMap.clear();
-            } else {
-                liveMap = new HashMap<Object, Object>();
-            }
-            if (String.class.isAssignableFrom(value.getClass())){
-	            // value should be a list of key=value string ';' separated
-	            String[] listString = ((String)value).split(";");
-	            for (String kvString : listString) {
-	                String kv[] = kvString.split("=");
-	                liveMap.put(kv[0], kv[1]);
-	            }
-            } else {
-            	return false;
-            }
+            valueTo=adaptMap(value);
+
         } else {
-        	return false;
+        
+            // fail
+            // try quick way
+            try {
+                BeanUtils.copyProperty(bean, propertyName, valueTo);
+                return;
+            } catch (Exception e) {
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("Error using ");
+            }            
         }
-        return true;
+        
+//
+//        boolean status = true;
+//        if (!status) {
+//            if (LOGGER.isErrorEnabled())
+//                LOGGER.error("Skipping unwritable property " + propertyName
+//                             + " unable to find the adapter for type " + pd.getPropertyType());
+//        }
     }
 
+    public static Map adaptMap(Object value) {
+        Map<Object, Object> liveMap=new HashMap<Object, Object>();
+        // value should be a list of key=value string ';' separated
+        String[] listString = ((String)value).split(";");
+        for (String kvString : listString) {
+            String kv[] = kvString.split("=");
+            liveMap.put(kv[0], kv[1]);
+        }
+        return liveMap;
+    }
+
+    private static Collection adaptCollection(Object value) {
+
+        Collection<Object> liveCollection= new ArrayList<Object>();
+        // value should be a list of string ',' separated
+        String[] listString = ((String)value).split(",");
+        for (String s : listString) {
+            liveCollection.add(s);
+        }
+        return liveCollection;
+    }
+    
+/* 
+ * TODO make smart adapter extensible
+ * 
+    public interface TypeAdapter<F, T> {
+        public boolean adapt(Class<F> fromType, Class<T> toType, Object property, Object value);
+    };
+
+    private final class StringToCollectionAdapter implements TypeAdapter<String, Map> {
+        @Override
+        public boolean adapt(Class<String> fromType, Class<Map> toType, Object property, Object value) {
+
+            // check type of property to apply new value
+            if (Map.class.isAssignableFrom(toType)) {
+
+                final Map<Object, Object> liveMap;
+                if (property != null) {
+                    liveMap = (Map<Object, Object>)property;
+                    liveMap.clear();
+                } else {
+                    return false;
+                }
+                if (fromType.isAssignableFrom(value.getClass())) {
+                    // value should be a list of key=value string ';' separated
+                    String[] listString = ((String)value).split(";");
+                    for (String kvString : listString) {
+                        String kv[] = kvString.split("=");
+                        liveMap.put(kv[0], kv[1]);
+                    }
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+*/
 }
