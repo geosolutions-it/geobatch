@@ -32,6 +32,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.global.CatalogHolder;
+import it.geosolutions.tools.commons.file.Path;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
@@ -46,7 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -58,7 +58,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
-import org.springframework.scheduling.quartz.AdaptableJobFactory;
 
 /**
  * 
@@ -83,7 +82,8 @@ import org.springframework.scheduling.quartz.AdaptableJobFactory;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-@ManagedResource(objectName = "bean:name=JMXServiceManager", description = "JMX Service Manager to start/monitor/dispose GeoBatch action", log = true, logFile = "jmx.log", currencyTimeLimit = 15, persistPolicy = "OnUpdate", persistPeriod = 200, persistLocation = "foo", persistName = "JMXServiceManager")
+//currencyTimeLimit = 15, persistPolicy = "OnUpdate", persistPeriod = 200, persistLocation = "foo",
+@ManagedResource(objectName = "bean:name=JMXServiceManager", description = "JMX Service Manager to start/monitor/dispose GeoBatch action", log = true, logFile = "jmx.log", persistName = "JMXServiceManager")
 public class JMXServiceManager implements ActionManager {
     private final static Logger LOGGER = LoggerFactory.getLogger(JMXServiceManager.class);
 
@@ -110,6 +110,7 @@ public class JMXServiceManager implements ActionManager {
                 LOGGER.info("The flow id \'" + FlowManagerID
                             + "\' does not exists into catalog... -> going to create it");
             }
+            
             flowManagerConfig = new FileBasedFlowConfiguration(FlowManagerID, FlowManagerID, null,
                                                                "Auto generated " + FlowManagerID, null);
             configDirFile = new File(((FileBaseCatalog)catalog).getBaseDirectory(), FlowManagerID);
@@ -124,6 +125,7 @@ public class JMXServiceManager implements ActionManager {
             
             // keep consumer until disposeAction is called
             flowManagerConfig.setKeepConsumers(true);
+            //flowManagerConfig.setMaximumPoolSize(flowManagerConfig.getMaximumPoolSize()); // TODO create a spec param
 
             flowManager = new FileBasedFlowManager(flowManagerConfig);
 
@@ -132,18 +134,23 @@ public class JMXServiceManager implements ActionManager {
             // catalog.save(parent);
             // parent.persist();
 
+            if (!configDirFile.exists()) {
+                if (!(configDirFile.getParentFile().canWrite() && configDirFile.mkdir())) {
+                    throw new IllegalArgumentException("Unable to automatically create the " + FlowManagerID
+                                                       + " working dir into:"
+                                                       + configDirFile.getAbsolutePath().toString());
+                }
+            }
         } else {
-            configDirFile = flowManager.getWorkingDirectory();
             flowManagerConfig = flowManager.getConfiguration();
+            
+            if (flowManagerConfig.getWorkingDirectory()==null)
+                throw new IllegalArgumentException("Please set the flow working dir");
+            
+            configDirFile = new File(flowManagerConfig.getWorkingDirectory());
+            
         }
 
-        if (!configDirFile.exists()) {
-            if (!(configDirFile.getParentFile().canWrite() && configDirFile.mkdir())) {
-                throw new IllegalArgumentException("Unable to automatically create the " + FlowManagerID
-                                                   + " working dir into:"
-                                                   + configDirFile.getAbsolutePath().toString());
-            }
-        }
 
         // TODO listener config
         // if ()
@@ -234,6 +241,7 @@ public class JMXServiceManager implements ActionManager {
                         // TODO something else?
                     }
                 }
+                
                 actionConfig.setConfigDir(configDirFile);
 
                 if (actionConfig != null)
@@ -260,7 +268,7 @@ public class JMXServiceManager implements ActionManager {
         actions.add(actionConfig);
 
         consumerConfig.setActions(actions);
-        consumerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
+        consumerConfig.setWorkingDirectory(flowManagerConfig.getWorkingDirectory());
         // TODO may we want to remove only when getStatus is remotely called???
         // consumerConfig.setKeepContextDir(true);
 
@@ -275,23 +283,27 @@ public class JMXServiceManager implements ActionManager {
         // loggingProgressListenerConfig.setServiceID("LoggingProgressListener");
         // loggingProgressListenerConfig.setLoggerName("it.geosolutions.geobatch.services");
         // consumerConfig.addListenerConfiguration(loggingProgressListenerConfig);
+        
 
         final FileBasedEventConsumer consumer = new FileBasedEventConsumer(consumerConfig);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("INIT injecting consumer to the parent flow. UUID: " + consumer.getId());
         }
+        
+        for (FileSystemEvent event : events) {
+            consumer.consume(event);
+        }
 
         // following ops are atomic
-        synchronized (flowManager) {
-            flowManager.addConsumer(consumer);
-
-            for (FileSystemEvent event : events) {
-                consumer.consume(event);
+        if (!flowManager.addConsumer(consumer)){
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Unable to add another consumer, consumer queue is full. " +
+                		"Please dispose some completed consumer before submit a new one.");
             }
-
-            // execute
-            flowManager.getExecutor().submit(consumer);
+            return null;
         }
+        // execute
+        flowManager.getExecutor().submit(consumer);
 
         return consumer.getId();
     }
@@ -381,11 +393,5 @@ public class JMXServiceManager implements ActionManager {
         }
         return true;
     }
-
-    // @Override
-    // public void setApplicationContext(ApplicationContext applicationContext)
-    // throws BeansException {
-    // context=applicationContext;
-    // }
 
 }

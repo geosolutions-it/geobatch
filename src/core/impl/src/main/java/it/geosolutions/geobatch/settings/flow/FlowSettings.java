@@ -40,7 +40,7 @@ public class FlowSettings extends GBSettings {
     /**
      * maximum numbers of stored executed (see Consumer.getStatus()) consumers
      */
-    private static final int DEFAULT_maxStoredConsumers = 10;
+    private static final int DEFAULT_maxStoredConsumers = 100;
     private int maxStoredConsumers = DEFAULT_maxStoredConsumers;
 
     private static final boolean DEFAULT_keepConsumers = false;

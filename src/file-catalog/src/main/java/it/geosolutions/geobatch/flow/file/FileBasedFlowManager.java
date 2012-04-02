@@ -118,7 +118,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     private EventGenerator<FileSystemEvent> eventGenerator; // FileBasedEventGenerator<FileSystemEvent>
 
     private final ConcurrentMap<String, EventConsumer> eventConsumers = new ConcurrentHashMap<String, EventConsumer>();
-    private volatile static Lock eventConsumersLock=new ReentrantLock();
+    private volatile Lock eventConsumersLock=new ReentrantLock();
 
     /**
      * maximum numbers of executed see {@link EventConsumer#getStatus()}
@@ -190,6 +190,11 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             this.initialized = false;
             this.paused = false;
             this.terminationRequest = false;
+            
+//            if (configuration.getWorkingDirectory()==null){
+//                throw new IllegalArgumentException("Unable to configure a flow without a valid working dir");
+//            }
+//            this.setWorkingDirectory(new File(configuration.getWorkingDirectory()));
 
             maxStoredConsumers = configuration.getMaxStoredConsumers();
             if (maxStoredConsumers < 1) {
@@ -287,27 +292,29 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             throw new IllegalArgumentException("Unable to dispose a null consumer object");
         }
 
-        final EventConsumer<FileSystemEvent, EventConsumerConfiguration> fbec = eventConsumers.get(uuid);
-
-        if (fbec == null) {
-            throw new IllegalArgumentException("This flow is not managing consumer: " + uuid);
-        }
-
-        if ((fbec.getStatus() != EventConsumerStatus.COMPLETED)
-            && (fbec.getStatus() != EventConsumerStatus.FAILED)) {
-            if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn("Goning to dispose and uncompleted consumer " + fbec);
-            }
-            fbec.cancel();
-        }
-
         try {
-        	this.eventConsumersLock.lock();
-            eventConsumers.remove(uuid);
+                this.eventConsumersLock.lock();
+                final EventConsumer<FileSystemEvent, EventConsumerConfiguration> fbec = eventConsumers.get(uuid);
+        
+                if (fbec == null) {
+                    throw new IllegalArgumentException("This flow is not managing consumer: " + uuid);
+                }
+        
+                if ((fbec.getStatus() != EventConsumerStatus.COMPLETED)
+                    && (fbec.getStatus() != EventConsumerStatus.FAILED)) {
+                    if (LOGGER.isWarnEnabled()) {
+                        LOGGER.warn("Goning to dispose and uncompleted consumer " + fbec);
+                    }
+                    fbec.cancel();
+                }
+    
+                eventConsumers.remove(uuid);
+                fbec.dispose();
+            
         } finally {
         	this.eventConsumersLock.unlock();
         }
-        fbec.dispose();
+
     }
 
     /**
@@ -395,6 +402,12 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     private void createGenerator() {
         final EventGeneratorConfiguration generatorConfig = getConfiguration()
             .getEventGeneratorConfiguration();
+        if (generatorConfig==null){
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Unable to create a null event generator. Please configure one.");
+            }
+            return;
+        }
         final String serviceID = generatorConfig.getServiceID();
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("EventGeneratorCreationServiceID: " + serviceID);
@@ -612,8 +625,11 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @return
      */
     public final Collection<EventConsumer> getEventConsumers() {
-        synchronized (eventConsumers) {
+        try {
+            eventConsumersLock.lock();
             return UnmodifiableCollection.decorate(eventConsumers.values());
+        } finally {
+            eventConsumersLock.unlock();
         }
     }
 
@@ -624,15 +640,22 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * {@link FileBasedFlowManager#addConsumer(EventConsumer)}<br>
      */
     public final Set<String> getEventConsumersId() {
-        synchronized (eventConsumers) {
+        try {
+            eventConsumersLock.lock();
             return UnmodifiableSet.decorate(eventConsumers.keySet());
+        } finally {
+            eventConsumersLock.unlock();
         }
     }
 
     @Override
     public final EventConsumer<FileSystemEvent, EventConsumerConfiguration> getConsumer(final String uuid) {
-        synchronized (eventConsumers) {
+
+        try {
+            eventConsumersLock.lock();
             return eventConsumers.get(uuid);
+        } finally {
+            eventConsumersLock.unlock();
         }
     }
 
@@ -680,13 +703,17 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      *         found
      */
     public EventConsumerStatus getStatus(final String uuid) {
-        synchronized (eventConsumers) {
-            final EventConsumer consumer = eventConsumers.get(uuid);
-            if (consumer != null) {
-                return consumer.getStatus();
-            } else {
-                return null;
-            }
+        EventConsumer consumer=null;
+        try {
+            eventConsumersLock.lock();
+            consumer = eventConsumers.get(uuid);
+        } finally {
+            eventConsumersLock.unlock();
+        }
+        if (consumer != null) {
+            return consumer.getStatus();
+        } else {
+            return null;
         }
     }
 
@@ -709,25 +736,25 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         
     	try {
     		this.eventConsumersLock.lock();
-            final Set<String> keySet = eventConsumers.keySet();
-            final Iterator<String> it = keySet.iterator();
-            while (it.hasNext() && size < quantity) {
-                final String key = it.next();
-                final EventConsumer<FileSystemEvent, EventConsumerConfiguration> nextConsumer = eventConsumers
-                    .get(key);
-                if (nextConsumer == null) {
-                    it.remove();
-                    ++size;
-                    continue;
+                final Set<String> keySet = eventConsumers.keySet();
+                final Iterator<String> it = keySet.iterator();
+                while (it.hasNext() && size < quantity) {
+                    final String key = it.next();
+                    final EventConsumer<FileSystemEvent, EventConsumerConfiguration> nextConsumer = eventConsumers
+                        .get(key);
+                    if (nextConsumer == null) {
+                        it.remove();
+                        ++size;
+                        continue;
+                    }
+                    final EventConsumerStatus status = nextConsumer.getStatus();
+                    if ((status == EventConsumerStatus.CANCELED) || (status == EventConsumerStatus.COMPLETED)
+                        || (status == EventConsumerStatus.FAILED)) {
+                        nextConsumer.dispose();
+                        it.remove();
+                        ++size;
+                    }
                 }
-                final EventConsumerStatus status = nextConsumer.getStatus();
-                if ((status == EventConsumerStatus.CANCELED) || (status == EventConsumerStatus.COMPLETED)
-                    || (status == EventConsumerStatus.FAILED)) {
-                    nextConsumer.dispose();
-                    it.remove();
-                    ++size;
-                }
-            }
         } finally {
         	this.eventConsumersLock.unlock();
         }

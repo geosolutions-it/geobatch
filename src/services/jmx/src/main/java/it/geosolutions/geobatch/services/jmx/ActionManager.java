@@ -40,6 +40,12 @@ public interface ActionManager {
 
     public ConsumerStatus getStatus(final String uuid);
 
+    /**
+     * create the configured action on the remote GeoBatch server through the JMX connection
+     * @param config
+     * @return
+     * @throws Exception
+     */
     public String callAction(Map<String, String> config) throws Exception;
 
     public void disposeAction(final String uuid) throws Exception;

@@ -125,48 +125,52 @@ public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> i
 
         // resolve consumer listener
         EventConsumerConfiguration ecc = obj.getEventConsumerConfiguration();
-        if (ecc.getListenerIds() != null) {
-            for (String listenerId : ecc.getListenerIds()) {
-                if (listenerId != null) {
-                    if (listenersMap.containsKey(listenerId)) {
-                        ecc.addListenerConfiguration(listenersMap.get(listenerId));
-                    } else {
-                        LOGGER.error("FileBasedFlowConfiguration " + obj
-                                + " declares an invalid listener in the ConsumerConfiguration '"
-                                + listenerId + "'");
+        if (ecc==null){
+            if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("FlowConfiguration doesn't declare any Consumer!");
+        } else {
+            if (ecc.getListenerIds() != null) {
+                for (String listenerId : ecc.getListenerIds()) {
+                    if (listenerId != null) {
+                        if (listenersMap.containsKey(listenerId)) {
+                            ecc.addListenerConfiguration(listenersMap.get(listenerId));
+                        } else {
+                            LOGGER.error("FileBasedFlowConfiguration " + obj
+                                    + " declares an invalid listener in the ConsumerConfiguration '"
+                                    + listenerId + "'");
+                        }
                     }
                 }
             }
-        }
-
-        // resolve actions listener
-        if (ecc.getActions()!=null){
-	        for (ActionConfiguration ac : ecc.getActions()) {
-	            if (ac.getListenerConfigurations() == null) { // this happens in
-	                // XStream...
-	                ac.setListenerConfigurations(new ArrayList<ProgressListenerConfiguration>());
-	            }
-	
-	            if (ac.getListenerIds() != null) {
-	                for (String actionListenerId : ac.getListenerIds()) {
-	                    if (actionListenerId != null) {
-	                        if (listenersMap.containsKey(actionListenerId)) {
-	                            ac.addListenerConfiguration(listenersMap.get(actionListenerId));
-	                        } else {
-	                        	if (LOGGER.isErrorEnabled())
-	                        		LOGGER.error("FlowConfiguration " + obj
-	                                    + " declares an invalid listener in an action configuration '"
-	                                    + actionListenerId + "'");
-	                        }
-	                    }
-	                }
-	            }
-	        }
-        }
-        else {
-        	final String message="FlowConfiguration do not declare any Action!";
-        	if (LOGGER.isErrorEnabled())
-        		LOGGER.error(message);
+    
+            // resolve actions listener
+            if (ecc.getActions()==null){
+                if (LOGGER.isWarnEnabled())
+                        LOGGER.warn("FlowConfiguration doesn't declare any Action!");
+            } else {
+                for (ActionConfiguration ac : ecc.getActions()) {
+                    if (ac.getListenerConfigurations() == null) { // this happens in
+                        // XStream...
+                        ac.setListenerConfigurations(new ArrayList<ProgressListenerConfiguration>());
+                    }
+    
+                    if (ac.getListenerIds() != null) {
+                        for (String actionListenerId : ac.getListenerIds()) {
+                            if (actionListenerId != null) {
+                                if (listenersMap.containsKey(actionListenerId)) {
+                                    ac.addListenerConfiguration(listenersMap.get(actionListenerId));
+                                } else {
+                                    if (LOGGER.isErrorEnabled())
+                                        LOGGER
+                                            .error("FlowConfiguration " + obj
+                                                   + " declares an invalid listener in an action configuration '"
+                                                   + actionListenerId + "'");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
