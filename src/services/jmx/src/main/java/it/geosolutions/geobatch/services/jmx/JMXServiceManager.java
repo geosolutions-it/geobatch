@@ -32,7 +32,6 @@ import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.tools.commons.file.Path;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
@@ -61,7 +60,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 /**
  * 
- * JMX service which supports:<ul>
+ * GeoBatch JMX service which supports:<ul>
  * <li>
  * - creating JMX flow on the fly
  * </li>
@@ -82,7 +81,6 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-//currencyTimeLimit = 15, persistPolicy = "OnUpdate", persistPeriod = 200, persistLocation = "foo",
 @ManagedResource(objectName = "bean:name=JMXServiceManager", description = "JMX Service Manager to start/monitor/dispose GeoBatch action", log = true, logFile = "jmx.log", persistName = "JMXServiceManager")
 public class JMXServiceManager implements ActionManager {
     private final static Logger LOGGER = LoggerFactory.getLogger(JMXServiceManager.class);
@@ -158,12 +156,6 @@ public class JMXServiceManager implements ActionManager {
 
     }
 
-    /**
-     * returns the status of the selected consumer
-     * 
-     * @param uuid
-     * @return {@link ConsumerStatus}
-     */
     @Override
     @org.springframework.jmx.export.annotation.ManagedOperation(description = "disposeAction - used to dispose the consumer instance from the consumer registry")
     @ManagedOperationParameters({@ManagedOperationParameter(name = "uuid", description = "The uuid of the consumer")})
@@ -186,7 +178,7 @@ public class JMXServiceManager implements ActionManager {
 
     @Override
     @org.springframework.jmx.export.annotation.ManagedOperation(description = "callAction - used to run a consumer")
-    @ManagedOperationParameters({@ManagedOperationParameter(name = "config", description = "A map containing the list of needed paramethers, inputs and outputs used by the action")})
+    @ManagedOperationParameters({@ManagedOperationParameter(name = "config", description = "A map containing the list of needed parameters, inputs and outputs used by the action")})
     public String callAction(java.util.Map<String, String> config) throws Exception {
         final String serviceId = config.remove(SERVICE_ID_KEY);
         if (serviceId == null || serviceId.isEmpty())
@@ -243,7 +235,6 @@ public class JMXServiceManager implements ActionManager {
                 }
                 
                 actionConfig.setConfigDir(configDirFile);
-
                 if (actionConfig != null)
                     break;
                 // BeanUtils.instantiate(clazz)
@@ -283,7 +274,6 @@ public class JMXServiceManager implements ActionManager {
         // loggingProgressListenerConfig.setServiceID("LoggingProgressListener");
         // loggingProgressListenerConfig.setLoggerName("it.geosolutions.geobatch.services");
         // consumerConfig.addListenerConfiguration(loggingProgressListenerConfig);
-        
 
         final FileBasedEventConsumer consumer = new FileBasedEventConsumer(consumerConfig);
         if (LOGGER.isInfoEnabled()) {
@@ -307,6 +297,7 @@ public class JMXServiceManager implements ActionManager {
 
         return consumer.getId();
     }
+    
 
     private static <T> void smartCopy(final T bean, final String propertyName, final String value)
         throws Exception {

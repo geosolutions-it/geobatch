@@ -635,7 +635,7 @@ public class FileBasedEventConsumer extends
         String dirName = step + "_" + action.getClass().getSimpleName();
         File tempDir = new File(runtimeDir, dirName);
         if (!tempDir.mkdirs()) {
-            throw new IllegalStateException("Unable to create the temporary dir: " + dirName);
+            throw new IllegalStateException("Unable to create the temporary dir: " + tempDir);
         }
         action.setTempDir(tempDir);
     }
