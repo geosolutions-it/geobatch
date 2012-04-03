@@ -43,8 +43,6 @@ public class GeotiffRetilerConfiguration extends ActionConfiguration implements 
         this.JAICapacity = JAICapacity;
     }
 
-    private String workingDirectory;
-
     private double compressionRatio = Double.NaN;
 
     private String compressionScheme = CoverageToolsConstants.DEFAULT_COMPRESSION_SCHEME;
@@ -58,9 +56,7 @@ public class GeotiffRetilerConfiguration extends ActionConfiguration implements 
     /** rewrite geotiff forcing bigtiff */
     private boolean forceToBigTiff = false;
 
-	private String serviceID;
-
-    public boolean isForceToBigTiff() {
+	public boolean isForceToBigTiff() {
 		return forceToBigTiff;
 	}
 
@@ -68,9 +64,6 @@ public class GeotiffRetilerConfiguration extends ActionConfiguration implements 
 		this.forceToBigTiff = forceToBigTiff;
 	}
 	
-//    public GeotiffRetilerConfiguration() {
-//        super();
-//    }
 
     public final double getCompressionRatio() {
         return compressionRatio;
@@ -104,13 +97,17 @@ public class GeotiffRetilerConfiguration extends ActionConfiguration implements 
         this.tileW = tileW;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[" + "id:" + getId() + " srvId:" + serviceID
-                + " name:" + getName() + " wxh:" + getTileW() + "x" + getTileH() + "]";
-    }
 
     @Override
+	public String toString() {
+		return "GeotiffRetilerConfiguration [JAICapacity=" + JAICapacity
+				+ ", compressionRatio=" + compressionRatio
+				+ ", compressionScheme=" + compressionScheme + ", tileH="
+				+ tileH + ", tileW=" + tileW + ", forceToBigTiff="
+				+ forceToBigTiff + "]";
+	}
+
+	@Override
     public GeotiffRetilerConfiguration clone() {
         GeotiffRetilerConfiguration configuration = (GeotiffRetilerConfiguration) super.clone();
         // final GeotiffRetilerConfiguration configuration=

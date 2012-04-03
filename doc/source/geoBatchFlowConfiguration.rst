@@ -40,9 +40,12 @@ Here is an example of the entire flow configuration:
 		<keepAliveTime>150</keepAliveTime> <!--seconds-->
 		<workQueueSize>100</workQueueSize>
 		
+		<!-- keep consumer instance into memory map until they are manually removed -->
+		<keepConsumers>false</keepConsumers>
+		<!-- maximum number of consumer instances -->
 		<maxStoredConsumers>6</maxStoredConsumers>
-		<keepConsumers>true</keepConsumers>
 
+		
 		...
 
 		<EventGeneratorConfiguration>
@@ -53,10 +56,10 @@ Here is an example of the entire flow configuration:
 		<EventConsumerConfiguration>
 
 			...
+			<!-- keep runtime dir when consumer instance is disposed -->
+			<keepRuntimeDir>[true|false]<keepRuntimeDir>
 
-			<FileEventRule>
-				...
-			</FileEventRule>
+			...
 
 			<ACTION_1_Configuration>
 				...

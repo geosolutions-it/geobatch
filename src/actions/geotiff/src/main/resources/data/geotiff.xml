@@ -35,8 +35,6 @@
 		<performBackup>true</performBackup>
 		<preserveInput>false</preserveInput>
 
-
-
 		<GeotiffRetilerConfiguration>
 			<id>GeoTiffRetiler</id>
 			<description>Action to retile a geotif</description>
@@ -90,10 +88,8 @@
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
 			<geoserverPWD>geoserver</geoserverPWD>
 			<geoserverUID>admin</geoserverUID>
-			<geoserverURL>http://localhost:9090/geoserver</geoserverURL>
-			<defaultNamespace>topp</defaultNamespace>
-
-			<wmsPath>/</wmsPath>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<defaultNamespace>it.geosolutions</defaultNamespace>
 			<defaultStyle>raster</defaultStyle>
 			<styles />
 		</GeoServerActionConfiguration>

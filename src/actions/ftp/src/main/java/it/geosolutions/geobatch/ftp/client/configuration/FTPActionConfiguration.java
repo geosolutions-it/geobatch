@@ -50,8 +50,6 @@ public class FTPActionConfiguration extends ActionConfiguration implements Confi
 
     private int ftpserverPort;
 
-    private String workingDirectory;
-
     private String dataTransferMethod;
 
     private int timeout;
@@ -201,21 +199,6 @@ public class FTPActionConfiguration extends ActionConfiguration implements Confi
      */
     public void setFtpserverPort(int ftpserverPort) {
         this.ftpserverPort = ftpserverPort;
-    }
-
-    /**
-     * @return the workingDirectory
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
-
-    /**
-     * @param workingDirectory
-     *            the workingDirectory to set
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
     }
 
     /**

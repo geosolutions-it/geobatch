@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- OCTAVE ENV -->
+<octave>
+  <sheets>
+	<!-- OCTAVE SHEET -->
+	<sheet name="${SHEET_NAME}">
+	  <commands>
+	  
+		<OctaveCommand executed="false">
+			<command>source "${event[1].PARENT}/${event[1].FILENAME}.${event[1].EXTENSION}";</command><!--/usr/share/octave/3.0.5/m/startup/octaverc"-->
+		</OctaveCommand>
+		<!-- todo: variables! -->
+		<OctaveCommand executed="false">
+			<command>cd "${event[0].WORKING_DIR}";</command><!--/home/carlo/work/data/rep10workingdir/mars3d/-->
+		</OctaveCommand>
+		<OctaveCommand executed="false">
+			<command>mars3d("${event[0].FILE_IN}","${event[0].FILE_OUT}");</command>
+		</OctaveCommand>
+	  </commands>
+	  <definitions/>
+	  <returns/>
+	</sheet>
+  </sheets>
+</octave>
+<!-- 
+${event[0].LIST[1]}, ${event[0].LIST[2]}
+ -->

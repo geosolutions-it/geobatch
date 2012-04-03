@@ -28,6 +28,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.tools.adapter.EventAdapter;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.tools.commons.file.Path;
 import it.geosolutions.tools.freemarker.filter.FreeMarkerFilter;
 
 import java.io.File;
@@ -74,26 +75,30 @@ public class FreeMarkerAction
 	 * @throws IllegalAccessException if input template file cannot be resolved
 	 * 
 	 */
-	public FreeMarkerAction(FreeMarkerConfiguration configuration) throws IllegalAccessException {
+	public FreeMarkerAction(FreeMarkerConfiguration configuration) throws IllegalArgumentException {
 		super(configuration);
 		conf = configuration;
-
-        File templateDir = conf.getInput() != null? new File(conf.getInput()).getParentFile() : null;
-		templateDir = resolveDir(templateDir, conf.getConfigDir());
-//		final String templateDir = Path.getAbsolutePath(conf.getConfigDir());
 		
-		if (templateDir == null)
+		File templateFile=null;
+		if (conf.getInput() != null){
+		    templateFile= new File(conf.getInput());
+		    if (!templateFile.isAbsolute()){
+		        templateFile = Path.findLocation(templateFile, conf.getConfigDir());
+		    }
+		}
+                
+		if (templateFile == null)
 			throw new IllegalArgumentException("Unable to resolve the template dir"
                     + " (templatePath:"+conf.getInput()
                     + " configDir:"+configuration.getConfigDir()+")");
 
-        if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("FreeMarker template dir is  " + templateDir);
-            LOGGER.debug("FreeMarker config dir is    " + conf.getConfigDir());
-            LOGGER.debug("FreeMarker conf.getInput is " + conf.getInput());
-        }
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("FreeMarker template dir is  " + templateFile);
+                    LOGGER.debug("FreeMarker config dir is    " + conf.getConfigDir());
+                    LOGGER.debug("FreeMarker conf.getInput is " + conf.getInput());
+                }
 
-		processor = new FreeMarkerFilter(templateDir.toString(), conf.getInput());
+		processor = new FreeMarkerFilter(templateFile.getParent(), templateFile.getName());
 	}
 
     /**
@@ -188,7 +193,7 @@ public class FreeMarkerAction
 					continue;
 				} else {
 					listenerForwarder.failed(ioe);
-					throw new ActionException(this, ioe.getLocalizedMessage());
+					throw new ActionException(this, ioe.getLocalizedMessage(),ioe);
 				}
 			}
 

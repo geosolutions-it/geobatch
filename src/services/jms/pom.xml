@@ -7,7 +7,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-services</artifactId>
-    <version>1.2.5-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
   </parent>
   <properties>
     <!-- <allow.test.skip>true</allow.test.skip> <allow.test.failure.ignore>false</allow.test.failure.ignore> 
@@ -37,24 +37,23 @@
   <!-- Dependencies -->
   <!-- ==================================================== -->
   <dependencies>
-  <dependency>
-  <groupId>org.apache.camel</groupId>
-  <artifactId>camel-xstream</artifactId>
-  <version>2.9.0</version>
-</dependency>
-<dependency>
-    <groupId>org.apache.camel</groupId>
-    <artifactId>camel-stream</artifactId>
-    <version>2.9.0</version>
-    <!-- use the same version as your Camel core version -->
-</dependency>
-
-<dependency>
-    <groupId>org.apache.camel</groupId>
-    <artifactId>camel-freemarker</artifactId>
-    <version>2.9.0</version> <!-- use the same version as your Camel core version -->
-</dependency>
-  
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-xstream</artifactId>
+      <version>2.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-stream</artifactId>
+      <version>2.9.0</version>
+      <!-- use the same version as your Camel core version -->
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-freemarker</artifactId>
+      <version>2.9.0</version>
+      <!-- use the same version as your Camel core version -->
+    </dependency>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fsm-core</artifactId>

@@ -16,7 +16,7 @@
   <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb</artifactId>
   <packaging>pom</packaging>
-  <version>1.2.5-SNAPSHOT</version>
+  <version>1.3-SNAPSHOT</version>
   <name>GeoSolutions GeoBatch</name>
   <!--    <url>http://www.geo-solutions.it/maven_reports/gb/</url>-->
   <description>
@@ -94,8 +94,7 @@
   <!-- =========================================================== -->
   <properties>
     <tools.version>1.0.1-SNAPSHOT</tools.version>
-    <geoserver.manager.version>1.3.3-SNAPSHOT</geoserver.manager.version>
-    
+    <geoserver.manager.version>1.4.1-SNAPSHOT</geoserver.manager.version>
     <gt.version>8-SNAPSHOT</gt.version>
     <imageio-ext.version>1.2-M102011</imageio-ext.version>
     <spring.version>3.0.3.RELEASE</spring.version>
@@ -107,8 +106,8 @@
     <jt.version>1.2.0</jt.version>
     <jetty.version>6.1.8</jetty.version>
     <nelios.restlet.version>1.1.6</nelios.restlet.version>
-    
-    <dao.type>xstream</dao.type><!-- the default dao type -->
+    <dao.type>xstream</dao.type>
+    <!-- the default dao type -->
     <allow.test.skip>true</allow.test.skip>
     <allow.test.failure.ignore>false</allow.test.failure.ignore>
     <extensive.tests>false</extensive.tests>
@@ -370,39 +369,45 @@
       </dependency>
       <!-- tools -->
       <dependency>
-	<groupId>it.geosolutions.tools</groupId>
-	<artifactId>tools-commons</artifactId>
-	<version>${tools.version}</version>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-commons</artifactId>
+        <version>${tools.version}</version>
       </dependency>
       <dependency>
-	<groupId>it.geosolutions.tools</groupId>
-	<artifactId>tools-io</artifactId>
-	<version>${tools.version}</version>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-io</artifactId>
+        <version>${tools.version}</version>
       </dependency>
       <dependency>
-	<groupId>it.geosolutions.tools</groupId>
-	<artifactId>tools-compress</artifactId>
-	<version>${tools.version}</version>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-compress</artifactId>
+        <version>${tools.version}</version>
       </dependency>
       <dependency>
-	<groupId>it.geosolutions.tools</groupId>
-	<artifactId>tools-netcdf</artifactId>
-	<version>${tools.version}</version>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-netcdf</artifactId>
+        <version>${tools.version}</version>
       </dependency>
       <dependency>
-	<groupId>it.geosolutions.tools</groupId>
-	<artifactId>tools-geotools</artifactId>
-	<version>${tools.version}</version>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-geotools</artifactId>
+        <version>${tools.version}</version>
       </dependency>
       <dependency>
-	<groupId>it.geosolutions.tools</groupId>
-	<artifactId>tools-freemarker</artifactId>
-	<version>${tools.version}</version>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-freemarker</artifactId>
+        <version>${tools.version}</version>
       </dependency>
       <!-- action-tools -->
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-action-tools</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- gb-action-tools -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-commons</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- action-freemarker -->
@@ -460,9 +465,9 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-	<groupId>org.apache.ftpserver</groupId>
-	<artifactId>ftpserver-core</artifactId>
-	<version>1.0.4</version>
+        <groupId>org.apache.ftpserver</groupId>
+        <artifactId>ftpserver-core</artifactId>
+        <version>1.0.4</version>
       </dependency>
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
@@ -490,65 +495,63 @@
         <artifactId>gb-action-scripting</artifactId>
         <version>${project.version}</version>
       </dependency>
-      
       <dependency>
-	<groupId>javax.script</groupId>
-	<artifactId>script-api</artifactId>
-	<version>1.0</version>
-	<classifier>jdk14</classifier>
+        <groupId>javax.script</groupId>
+        <artifactId>script-api</artifactId>
+        <version>1.0</version>
+        <classifier>jdk14</classifier>
       </dependency>
       <dependency>
-	<groupId>net.sf.retrotranslator</groupId>
-	<artifactId>retrotranslator-runtime</artifactId>
-	<version>1.2.1</version>
+        <groupId>net.sf.retrotranslator</groupId>
+        <artifactId>retrotranslator-runtime</artifactId>
+        <version>1.2.1</version>
       </dependency>
       <!-- JS -->
       <dependency>
-	<groupId>javax.script</groupId>
-	<artifactId>js-engine</artifactId>
-	<version>1.0</version>
+        <groupId>javax.script</groupId>
+        <artifactId>js-engine</artifactId>
+        <version>1.0</version>
       </dependency>
       <dependency>
-	<groupId>rhino</groupId>
-	<artifactId>js</artifactId>
-	<version>1.7R2</version>
+        <groupId>rhino</groupId>
+        <artifactId>js</artifactId>
+        <version>1.7R2</version>
       </dependency>
       <!-- groovy -->
       <dependency>
-	<groupId>javax.script</groupId>
-	<artifactId>groovy-engine</artifactId>
-	<version>1.0</version>
-	<classifier>jdk14</classifier>
+        <groupId>javax.script</groupId>
+        <artifactId>groovy-engine</artifactId>
+        <version>1.0</version>
+        <classifier>jdk14</classifier>
       </dependency>
       <dependency>
-	<groupId>groovy</groupId>
-	<artifactId>groovy-all</artifactId>
-	<version>1.0</version>
+        <groupId>groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <version>1.0</version>
       </dependency>
       <!-- ruby -->
       <dependency>
-	<groupId>javax.script</groupId>
-	<artifactId>jruby-engine</artifactId>
-	<version>1.0</version>
+        <groupId>javax.script</groupId>
+        <artifactId>jruby-engine</artifactId>
+        <version>1.0</version>
       </dependency>
       <dependency>
-	<groupId>jruby</groupId>
-	<artifactId>jruby</artifactId>
-	<version>0.9.8</version>
+        <groupId>jruby</groupId>
+        <artifactId>jruby</artifactId>
+        <version>0.9.8</version>
       </dependency>
       <!-- jython -->
       <dependency>
-	<groupId>javax.script</groupId>
-	<artifactId>jython-engine</artifactId>
-	<version>1.0</version>
+        <groupId>javax.script</groupId>
+        <artifactId>jython-engine</artifactId>
+        <version>1.0</version>
       </dependency>
       <dependency>
-	<groupId>org.python</groupId>
-	<artifactId>jython</artifactId>
-	<version>2.2</version>
+        <groupId>org.python</groupId>
+        <artifactId>jython</artifactId>
+        <version>2.2</version>
       </dependency>
       <!-- END Scripting ===========================================-->
-      
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-action-splitting</artifactId>
@@ -701,7 +704,7 @@
       </dependency>
       <!-- Jetty -->
       <dependency>
-	<groupId>org.mortbay.jetty</groupId>
+        <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
         <version>${jetty.version}</version>
       </dependency>
@@ -1111,8 +1114,8 @@
         <version>1.1.3.4.O</version>
       </dependency>
       <dependency>
-	<groupId>it.geosolutions.geobatch.services</groupId>
-	<artifactId>gb-jmx</artifactId>
+        <groupId>it.geosolutions.geobatch.services</groupId>
+        <artifactId>gb-jmx</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- CAMEL =============================================-->
@@ -1313,7 +1316,7 @@
           </exclusion>
         </exclusions>
       </dependency>
-       <!--================================================================= -->
+      <!--================================================================= -->
       <!-- TEST -->
       <!--================================================================= -->
       <dependency>
@@ -1396,10 +1399,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.geotools</groupId>
-        <artifactId>gt-sample-data</artifactId>
-        <scope>test</scope>
-      </dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-sample-data</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -1518,7 +1521,7 @@
           <includes>
             <include>**/*Test.java</include>
           </includes>
-<!--          <excludes>
+          <!--          <excludes>
             <exclude>${online.skip.pattern}</exclude>
             <exclude>${stress.skip.pattern}</exclude>
             <exclude>${test.exclude.pattern}</exclude>

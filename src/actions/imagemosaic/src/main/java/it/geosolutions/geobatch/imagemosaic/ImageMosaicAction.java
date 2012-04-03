@@ -360,7 +360,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 					layerEnc.setDefaultStyle(configuration.getDefaultStyle());
 
 					// create a new ImageMosaic layer...
-					final RESTCoverageStore store = gsPublisher
+					final boolean published = gsPublisher
 							.publishExternalMosaic(workspace, layerID, baseDir,
 									coverageEnc, layerEnc);
 
@@ -372,7 +372,7 @@ public class ImageMosaicAction extends BaseAction<FileSystemEvent> {
 					 * configuration.getCrs(), configuration.getDefaultStyle());
 					 */
 
-					if (store == null) {
+					if (!published) {
 						// layer already exists
 						if (LOGGER.isWarnEnabled()) {
 							LOGGER.warn("Error creating the new store: "

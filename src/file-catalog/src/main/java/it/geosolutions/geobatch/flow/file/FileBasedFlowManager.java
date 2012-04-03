@@ -42,25 +42,26 @@ import it.geosolutions.geobatch.settings.flow.FlowSettings;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.collections.collection.UnmodifiableCollection;
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
-
 
 /**
  * 
@@ -120,7 +121,8 @@ public class FileBasedFlowManager
      */
     private EventGenerator<FileSystemEvent> eventGenerator; // FileBasedEventGenerator<FileSystemEvent>
 
-    private final Map<String, EventConsumer> eventConsumers = new HashMap<String, EventConsumer>();
+    private final ConcurrentMap<String, EventConsumer> eventConsumers = new ConcurrentHashMap<String, EventConsumer>();
+    private volatile Lock eventConsumersLock=new ReentrantLock();
 
     /**
      * maximum numbers of executed see {@link EventConsumer#getStatus()}
@@ -213,6 +215,11 @@ public class FileBasedFlowManager
             this.initialized = false;
             this.paused = false;
             this.terminationRequest = false;
+            
+//            if (configuration.getWorkingDirectory()==null){
+//                throw new IllegalArgumentException("Unable to configure a flow without a valid working dir");
+//            }
+//            this.setWorkingDirectory(new File(configuration.getWorkingDirectory()));
 
             maxStoredConsumers = configuration.getMaxStoredConsumers();
             if (maxStoredConsumers < 1) {
@@ -310,23 +317,27 @@ public class FileBasedFlowManager
             throw new IllegalArgumentException("Unable to dispose a null consumer object");
         }
 
-        final EventConsumer<FileSystemEvent, EventConsumerConfiguration> fbec = eventConsumers.get(uuid);
-
-        if (fbec == null) {
-            throw new IllegalArgumentException("This flow is not managing " + uuid);
-        }
-
-        if ((fbec.getStatus() != EventConsumerStatus.COMPLETED)
-            && (fbec.getStatus() != EventConsumerStatus.FAILED)) {
-            if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn("Trying to dispose and uncompleted consumer " + fbec);
-            }
-            fbec.cancel();
-        }
-
-        synchronized (eventConsumers) {
-            eventConsumers.remove(uuid);
-            fbec.dispose();
+        try {
+                this.eventConsumersLock.lock();
+                final EventConsumer<FileSystemEvent, EventConsumerConfiguration> fbec = eventConsumers.get(uuid);
+        
+                if (fbec == null) {
+                    throw new IllegalArgumentException("This flow is not managing consumer: " + uuid);
+                }
+        
+                if ((fbec.getStatus() != EventConsumerStatus.COMPLETED)
+                    && (fbec.getStatus() != EventConsumerStatus.FAILED)) {
+                    if (LOGGER.isWarnEnabled()) {
+                        LOGGER.warn("Goning to dispose and uncompleted consumer " + fbec);
+                    }
+                    fbec.cancel();
+                }
+    
+                eventConsumers.remove(uuid);
+                fbec.dispose();
+            
+        } finally {
+        	this.eventConsumersLock.unlock();
         }
 
     }
@@ -416,6 +427,12 @@ public class FileBasedFlowManager
     private void createGenerator() {
         final EventGeneratorConfiguration generatorConfig = getConfiguration()
             .getEventGeneratorConfiguration();
+        if (generatorConfig==null){
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Unable to create a null event generator. Please configure one.");
+            }
+            return;
+        }
         final String serviceID = generatorConfig.getServiceID();
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("EventGeneratorCreationServiceID: " + serviceID);
@@ -653,8 +670,11 @@ public class FileBasedFlowManager
      * @return
      */
     public final Collection<EventConsumer> getEventConsumers() {
-        synchronized (eventConsumers) {
+        try {
+            eventConsumersLock.lock();
             return UnmodifiableCollection.decorate(eventConsumers.values());
+        } finally {
+            eventConsumersLock.unlock();
         }
     }
 
@@ -665,15 +685,22 @@ public class FileBasedFlowManager
      * {@link FileBasedFlowManager#addConsumer(EventConsumer)}<br>
      */
     public final Set<String> getEventConsumersId() {
-        synchronized (eventConsumers) {
+        try {
+            eventConsumersLock.lock();
             return UnmodifiableSet.decorate(eventConsumers.keySet());
+        } finally {
+            eventConsumersLock.unlock();
         }
     }
 
     @Override
     public final EventConsumer<FileSystemEvent, EventConsumerConfiguration> getConsumer(final String uuid) {
-        synchronized (eventConsumers) {
+
+        try {
+            eventConsumersLock.lock();
             return eventConsumers.get(uuid);
+        } finally {
+            eventConsumersLock.unlock();
         }
     }
 
@@ -697,16 +724,19 @@ public class FileBasedFlowManager
         if (consumer == null)
             throw new IllegalArgumentException("Unable to add a null consumer");
 
-        synchronized (eventConsumers) {
-            if (eventConsumers.size() >= maxStoredConsumers) {
-                if (purgeConsumers(1) > 0) {
-                    eventConsumers.put(consumer.getId(), consumer);
-                } else {
-                    return false;
-                }
-            } else {
-                eventConsumers.put(consumer.getId(), consumer);
-            }
+        this.eventConsumersLock.lock();  // block until condition holds
+        try {
+        	if (eventConsumers.size() >= maxStoredConsumers) {
+	            if (purgeConsumers(1) > 0) {
+	                eventConsumers.put(consumer.getId(), consumer);
+	            } else {
+	                return false;
+	            }
+	        } else {
+	            eventConsumers.put(consumer.getId(), consumer);
+	        }
+        } finally {
+        	this.eventConsumersLock.unlock();
         }
         return true;
     }
@@ -718,13 +748,17 @@ public class FileBasedFlowManager
      *         found
      */
     public EventConsumerStatus getStatus(final String uuid) {
-        synchronized (eventConsumers) {
-            final EventConsumer consumer = eventConsumers.get(uuid);
-            if (consumer != null) {
-                return consumer.getStatus();
-            } else {
-                return null;
-            }
+        EventConsumer consumer=null;
+        try {
+            eventConsumersLock.lock();
+            consumer = eventConsumers.get(uuid);
+        } finally {
+            eventConsumersLock.unlock();
+        }
+        if (consumer != null) {
+            return consumer.getStatus();
+        } else {
+            return null;
         }
     }
 
@@ -744,26 +778,30 @@ public class FileBasedFlowManager
         int size = 0;
         if (keepConsumers)
             return 0;
-        synchronized (eventConsumers) {
-            final Set<String> keySet = eventConsumers.keySet();
-            final Iterator<String> it = keySet.iterator();
-            while (it.hasNext() && size < quantity) {
-                final String key = it.next();
-                final EventConsumer<FileSystemEvent, EventConsumerConfiguration> nextConsumer = eventConsumers
-                    .get(key);
-                if (nextConsumer == null) {
-                    eventConsumers.remove(key);
-                    ++size;
-                    continue;
+        
+    	try {
+    		this.eventConsumersLock.lock();
+                final Set<String> keySet = eventConsumers.keySet();
+                final Iterator<String> it = keySet.iterator();
+                while (it.hasNext() && size < quantity) {
+                    final String key = it.next();
+                    final EventConsumer<FileSystemEvent, EventConsumerConfiguration> nextConsumer = eventConsumers
+                        .get(key);
+                    if (nextConsumer == null) {
+                        it.remove();
+                        ++size;
+                        continue;
+                    }
+                    final EventConsumerStatus status = nextConsumer.getStatus();
+                    if ((status == EventConsumerStatus.CANCELED) || (status == EventConsumerStatus.COMPLETED)
+                        || (status == EventConsumerStatus.FAILED)) {
+                        nextConsumer.dispose();
+                        it.remove();
+                        ++size;
+                    }
                 }
-                final EventConsumerStatus status = nextConsumer.getStatus();
-                if ((status == EventConsumerStatus.CANCELED) || (status == EventConsumerStatus.COMPLETED)
-                    || (status == EventConsumerStatus.FAILED)) {
-                    nextConsumer.dispose();
-                    eventConsumers.remove(key);
-                    ++size;
-                }
-            }
+        } finally {
+        	this.eventConsumersLock.unlock();
         }
         return size;
     }

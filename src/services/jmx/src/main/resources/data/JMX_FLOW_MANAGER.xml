@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<corePoolSize>5</corePoolSize>
+	<maximumPoolSize>10</maximumPoolSize>
+	<keepAliveTime>3600</keepAliveTime> <!--seconds-->
+	<workQueueSize>100</workQueueSize>
+	
+	<maxStoredConsumers>100</maxStoredConsumers>
+	
+	<workingDirectory>JMX_FLOW_MANAGER/</workingDirectory>
+	
+	<!-- Keep following settings -->
+	<keepConsumers>true</keepConsumers>
+	<autorun>true</autorun>
+	<id>JMX_FLOW_MANAGER</id>
+	
+</FlowConfiguration>
