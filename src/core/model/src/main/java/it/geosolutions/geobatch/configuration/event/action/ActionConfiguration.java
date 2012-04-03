@@ -100,6 +100,9 @@ public abstract class ActionConfiguration extends BaseConfiguration implements C
      * @return the directory where the Action can find its static configuration files.
      */
     public File getConfigDir() {
+        if (workingDirectory!=null){
+            return new File(workingDirectory);
+        }
         return configDir;
     }
 
