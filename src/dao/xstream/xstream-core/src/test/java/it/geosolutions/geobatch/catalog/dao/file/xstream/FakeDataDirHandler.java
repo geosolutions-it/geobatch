@@ -54,7 +54,7 @@ public class FakeDataDirHandler extends DataDirHandler implements ApplicationCon
     }
 
     @Override
-    public File getConfigDirectory() {
+    public File getBaseConfigDirectory() {
         return dataDirectory;
     }
 

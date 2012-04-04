@@ -77,14 +77,14 @@ public class FreeMarkerSheetBuilder extends SheetBuilder {
         }
         catch (XStreamException xse){
             //XStreamException - if the object cannot be serialized
-            String message="FreeMarkerSheetBuilder: XStreamException - the object cannot be serialized.\n"
+            String message="XStreamException - the object cannot be serialized.\n"
                 +xse.getLocalizedMessage();
             if (LOGGER.isInfoEnabled())
                 LOGGER.info(message);
             throw new OctaveParseException(message);
         }
         // the filter for this object
-        final FreeMarkerFilter filter=new FreeMarkerFilter(Path.getAbsolutePath(conf.getWorkingDirectory()), reader);
+        final FreeMarkerFilter filter=new FreeMarkerFilter(conf.getOverrideConfigDir().getAbsolutePath(), reader); // TODO checkme
         // the stream to a byte array (buffer)
         final ByteArrayOutputStream outStream= new ByteArrayOutputStream();
         // a writer to that buffer

@@ -29,7 +29,6 @@ import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.generator.EventGenerator;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.EventObject;
 
@@ -45,10 +44,6 @@ public interface FlowManager<EO extends EventObject, FC extends FlowConfiguratio
     public void reset();
 
     public void dispose();
-
-    public File getWorkingDirectory();
-
-    public void setWorkingDirectory(File workingDir);
 
     public EventGenerator<EO> getEventGenerator();
 

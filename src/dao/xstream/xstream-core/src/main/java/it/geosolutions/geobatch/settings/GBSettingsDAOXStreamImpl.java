@@ -150,7 +150,7 @@ public class GBSettingsDAOXStreamImpl implements GBSettingsDAO  {
 
 
     protected void init() {
-        settingsDir = new File(dataDirHandler.getConfigDirectory(), relativeDir);
+        settingsDir = new File(dataDirHandler.getBaseConfigDirectory(), relativeDir);
         LOGGER.info("Settings dir is " + settingsDir + " (absolute " + settingsDir.getAbsolutePath() + " )");
     }
 

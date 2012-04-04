@@ -69,7 +69,7 @@ public class DataDirHandler implements ApplicationContextAware {
      */
 //    private File dataDir;
 
-    private File configDir;
+    private File baseConfigDir;
     private File baseTempDir;
 
     public DataDirHandler() {
@@ -82,24 +82,24 @@ public class DataDirHandler implements ApplicationContextAware {
      */
     public void init() throws Exception {
         boolean obsolete = false;
-        configDir = retrieveConfiguredDir(GEOBATCH_CONFIG_DIR);
-        if(configDir == null) {
+        baseConfigDir = retrieveConfiguredDir(GEOBATCH_CONFIG_DIR);
+        if(baseConfigDir == null) {
             obsolete = true;
             LOGGER.error("No " + GEOBATCH_CONFIG_DIR + " configuration was found. Will try for older " + GEOBATCH_DATA_DIR);
 
-            configDir = retrieveConfiguredDir(GEOBATCH_DATA_DIR);
-            if(configDir == null) {
+            baseConfigDir = retrieveConfiguredDir(GEOBATCH_DATA_DIR);
+            if(baseConfigDir == null) {
                 LOGGER.error("No " + GEOBATCH_DATA_DIR + " configuration was found. Will try to force a default one.");
-                configDir = forceDataDir(); // assign or throw
+                baseConfigDir = forceDataDir(); // assign or throw
             }
         }
 
         LOGGER.error("----------------------------------");
         if(obsolete) {
-            LOGGER.error("- OBSOLETE GEOBATCH_DATA_DIR: " + configDir.getAbsolutePath());
+            LOGGER.error("- OBSOLETE GEOBATCH_DATA_DIR: " + baseConfigDir.getAbsolutePath());
             LOGGER.error("- Please update this configuration using GEOBATCH_CONFIG_DIR setting");
         } else
-            LOGGER.error("- GEOBATCH_CONFIG_DIR: " + configDir.getAbsolutePath());
+            LOGGER.error("- GEOBATCH_CONFIG_DIR: " + baseConfigDir.getAbsolutePath());
         LOGGER.error("----------------------------------");
 
         // and now for the TEMP_DIR
@@ -107,7 +107,7 @@ public class DataDirHandler implements ApplicationContextAware {
         baseTempDir = retrieveConfiguredDir(GEOBATCH_TEMP_DIR);
         if(baseTempDir == null) {
             LOGGER.error("No " + GEOBATCH_TEMP_DIR+ " configuration was found. Will be forced.");
-            baseTempDir = new File(configDir, "temp");
+            baseTempDir = new File(baseConfigDir, "temp");
         }
         LOGGER.error("----------------------------------");
         LOGGER.error("- GEOBATCH_TEMP_DIR: " + baseTempDir.getAbsolutePath());
@@ -116,18 +116,18 @@ public class DataDirHandler implements ApplicationContextAware {
 
     /**
      *
-     * @deprecated use {@link #getConfigDirectory() } or {@link #getBaseTempDirectory() }
+     * @deprecated use {@link #getBaseConfigDirectory() } or {@link #getBaseTempDirectory() }
      */
     public File getDataDirectory() {
-        return this.configDir;
+        return this.baseConfigDir;
     }
 
     /**
      *
      * @return the directory where the catalog and the flow configurations are stored.
      */
-    public File getConfigDirectory() {
-        return this.configDir;
+    public File getBaseConfigDirectory() {
+        return this.baseConfigDir;
     }
 
     /**
@@ -135,7 +135,7 @@ public class DataDirHandler implements ApplicationContextAware {
      * @return the base directory where the temporary directories will be created in.
      */
     public File getBaseTempDirectory() {
-        return this.configDir;
+        return this.baseConfigDir;
     }
    
     /**
@@ -255,7 +255,7 @@ public class DataDirHandler implements ApplicationContextAware {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " [CONFIG:" + configDir + " TEMP:"+baseTempDir+"]";
+        return getClass().getSimpleName() + " [CONFIG:" + baseConfigDir + " TEMP:"+baseTempDir+"]";
     }
 
     // ==========================================================================

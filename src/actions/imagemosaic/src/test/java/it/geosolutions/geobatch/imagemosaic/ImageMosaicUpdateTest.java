@@ -76,7 +76,7 @@ public class ImageMosaicUpdateTest {
 
 		// config
 		ImageMosaicConfiguration conf = new ImageMosaicConfiguration("", "", "");
-		conf.setWorkingDirectory(workingDir.getAbsolutePath());
+		conf.setOverrideConfigDir(workingDir);
 		conf.setTimeRegex("[0-9]{6}");
 		conf.setTimeDimEnabled("true");
 		conf.setTimePresentationMode("LIST");

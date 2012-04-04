@@ -87,7 +87,7 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T> 
                 }
                 File in_file=null;
                 try{
-                    in_file=new File(Path.getAbsolutePath(config.getWorkingDirectory())+File.separator+config.getEnv());
+                    in_file=new File(config.getOverrideConfigDir(),config.getEnv()); // TODO checkme
                 }
                 catch(NullPointerException npe){
                     // NullPointerException - If the pathname argument is null

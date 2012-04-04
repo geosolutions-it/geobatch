@@ -60,22 +60,7 @@ public class FreeMarkerGeneratorService extends BaseService implements
     }
 
     public boolean canCreateAction(FreeMarkerConfiguration configuration) {
-        try {
-            // absolutize working dir
-            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
-            if (wd != null) {
-                configuration.setWorkingDirectory(wd);
-                return true;
-            } else {
-                if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("FreeMarkerGeneratorService::canCreateAction(): "
-                            + "unable to create action, it's not possible to get an absolute working dir.");
-            }
-        } catch (Throwable e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-        }
-        return false;
+        return true;
     }
 
 }

@@ -58,33 +58,7 @@ public abstract class ImageMosaicService<T extends EventObject, C extends Action
         // data flow configuration must not be null.
 
         if (configuration == null) {
-            final String message = "ImageMosaicService::canCreateAction():  Cannot create the ImageMosaicAction:  Configuration is null.";
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(message);
-            return false;
-        }
-
-        try {
-            // absolutize working dir
-            final String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
-            if (wd != null) {
-                configuration.setWorkingDirectory(wd);
-            } else {
-                if (LOGGER.isErrorEnabled())
-                    LOGGER.error("ImageMosaicService::canCreateAction(): "
-                                    + "unable to create action, it's not possible to get an absolute working dir.");
-            }
-        } catch (Throwable e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-            return false;
-        }
-
-        final File workingDir = new File(configuration.getWorkingDirectory());
-
-        if (!workingDir.exists() || !workingDir.isDirectory()) {
-            final String message = "ImageMosaicService::canCreateAction(): Cannot create the ImageMosaicAction: "
-                    + "GeoServer working Dir does not exist.";
+            final String message = "Cannot create the ImageMosaicAction:  Configuration is null.";
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(message);
             return false;

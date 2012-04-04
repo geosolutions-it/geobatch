@@ -195,7 +195,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
 
                     float progress = 100f * (float)step / this.actions.size();
                     listenerForwarder.setProgress(progress);
-                    listenerForwarder.setTask("Running " + action.getClass().getSimpleName() + "("
+                    listenerForwarder.setTask("Running " + action.getName() + "("
                                               + (step + 1) + "/" + this.actions.size() + ")");
                     // notify there has been some progressing
                     listenerForwarder.progressing();
@@ -213,12 +213,12 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                     events = action.execute(events);
 
                     if (events == null) {
-                        throw new IllegalArgumentException("Action " + action.getClass().getSimpleName()
-                                                           + " left no event in queue.");
+                        throw new IllegalArgumentException("Action " + action.getName()
+                                                           + " returns a null queue.");
                     }
                     if (events.isEmpty()) {
                         if (LOGGER.isWarnEnabled()) {
-                            LOGGER.warn("Action " + action.getClass().getSimpleName()
+                            LOGGER.warn("Action " + action.getName()
                                         + " left no event in queue.");
                         }
                     }
@@ -231,7 +231,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                         LOGGER.error(e.getLocalizedMessage());
                     }
 
-                    listenerForwarder.setTask("Action " + action.getClass().getSimpleName() + " failed (" + e
+                    listenerForwarder.setTask("Action " + action.getName() + " failed (" + e
                                               + ")");
                     listenerForwarder.progressing();
 
@@ -249,13 +249,13 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                         LOGGER.error("Action threw an unhandled exception: " + e.getLocalizedMessage(), e);
                     }
 
-                    listenerForwarder.setTask("Action " + action.getClass().getSimpleName() 
+                    listenerForwarder.setTask("Action " + action.getName() 
                                             + " failed (" + e + ")");
                     listenerForwarder.progressing();
 
                     if (!currentAction.isFailIgnored()) {
                         if (events == null) {
-                            throw new IllegalArgumentException("Action " + action.getClass().getSimpleName()
+                            throw new IllegalArgumentException("Action " + action.getName()
                                                                + " left no event in queue.");
                         } else {
                             events.clear();
@@ -280,7 +280,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
         // checkme: what shall we do with the events left in the queue?
         if (events != null && !events.isEmpty()) {
             LOGGER.info("There are " + events.size() + " events left in the queue after last action ("
-                        + currentAction.getClass().getSimpleName() + ")");
+                        + currentAction.getName() + ")");
         }
 
         return events;
@@ -307,7 +307,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
             setStatus(EventConsumerStatus.PAUSED);
 
             if (currentAction != null) {
-                LOGGER.info("Pausing action " + currentAction.getClass().getSimpleName() + " in flow "
+                LOGGER.info("Pausing action " + currentAction.getName() + " in flow "
                             + getFlowName() + " [" + creationTimestamp + "]");
                 currentAction.pause();
             }
@@ -323,7 +323,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
     public void resume() {
         LOGGER.info("Resuming consumer " + getFlowName() + " [" + creationTimestamp + "]");
         if (currentAction != null) {
-            LOGGER.info("Resuming action " + currentAction.getClass().getSimpleName() + " in flow "
+            LOGGER.info("Resuming action " + currentAction.getName() + " in flow "
                         + getFlowName() + " [" + creationTimestamp + "]");
             currentAction.resume();
         }

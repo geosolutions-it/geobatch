@@ -49,11 +49,11 @@ public class ScriptingActionTest extends Assert {
         cfg.setServiceID("scriptingService");
         cfg.setLanguage("groovy");
         cfg.setProperties(props);
-        cfg.setWorkingDirectory(Path.getAbsolutePath("./src/test/resources/"));
+        cfg.setOverrideConfigDir(new File(Path.getAbsolutePath("./src/test/resources/")));
         
         Queue <FileSystemEvent> inq = new LinkedList<FileSystemEvent>();
         ScriptingAction action = new ScriptingAction(cfg);
-        action.setRunningContext(Path.getAbsolutePath("./src/test/resources/"));
+        action.setTempDir(new File(Path.getAbsolutePath("./src/test/resources/")));
         Queue<FileSystemEvent> out = action.execute(inq);
 
         List<String> outs = new ArrayList<String>();

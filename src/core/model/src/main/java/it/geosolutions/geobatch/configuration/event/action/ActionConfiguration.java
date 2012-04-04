@@ -54,18 +54,9 @@ public abstract class ActionConfiguration
     private boolean failIgnored = false;
     
     /**
-     * workingDirectory: this attribute represents the configuring directory for this flow. 
-     * It can be relative to the catalog.xml directory or absolute. Attention: the configuring 
-     * directory should be different from the one containing the configuration files.
-     *
-     * @deprecated use {@link #configDir}
-     */
-    private String workingDirectory;
-
-    /**
      * Action configuration directory
      */
-    private File configDir;
+    private File overrideConfigDir;
 
 
 //    public ActionConfiguration() {
@@ -75,38 +66,20 @@ public abstract class ActionConfiguration
     public ActionConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
+    
+    public File getOverrideConfigDir() {
+        return overrideConfigDir;
+    }
 
-    /**
-     * Getter for the workingDirectory
-     * @deprecated use {@link #getConfigDir()} or {@link BaseAction#getTempDir() }
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
+    public void setOverrideConfigDir(File overrideConfigDir) {
+        this.overrideConfigDir = overrideConfigDir;
     }
 
     /**
-     * Setter for the workingDirectory.<br/>
-     * Note that when this setter is called, {@link #configDir} is set as well.
-     *
-     * @param  workingDirectory
-     * @deprecated use {@link #setConfigDir(java.io.File)}  or {@link BaseAction#setTempDir() }
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-    	if (workingDirectory!=null){
-	        this.workingDirectory = workingDirectory;
-	        this.configDir = new File(workingDirectory);
-    	}
-    }
-
-    /**
-     *
-     * @return the directory where the Action can find its static configuration files.
+     * @deprecated config dir is injected in the action. n the configuration you may specify only an override directory
      */
     public File getConfigDir() {
-        if (workingDirectory!=null){
-            return new File(workingDirectory);
-        }
-        return configDir;
+        return overrideConfigDir;
     }
 
     /**
@@ -114,12 +87,10 @@ public abstract class ActionConfiguration
      * Note that when this setter is called, {@link #workingDirectory} is set as well.
      *
      * @param  configDir the directory where the Action can find its static configuration files.
+     * @deprecated config dir is injected in the action. n the configuration you may specify only an override directory
      */
     public void setConfigDir(File configDir) {
-    	if (configDir!=null){
-	        this.configDir = configDir;
-	        this.workingDirectory = configDir.getAbsolutePath();
-    	}
+        this.overrideConfigDir = configDir;
     }
 
     /**
@@ -164,13 +135,9 @@ public abstract class ActionConfiguration
     public ActionConfiguration clone() {
         ActionConfiguration bc = (ActionConfiguration) super.clone();
 
-        // setConfigDir(bc.getConfigDir());
-        setWorkingDirectory(bc.getWorkingDirectory());
-
-        setFailIgnored(bc.isFailIgnored());
-
-        bc.listenerIds = listenerIds == null ? new ArrayList<String>() : new ArrayList<String>(
-                listenerIds);
+        bc.listenerIds = listenerIds == null ? 
+                new ArrayList<String>() : 
+                new ArrayList<String>(listenerIds);
 
         bc.listenerConfigurations = new ArrayList<ProgressListenerConfiguration>();
         if (listenerConfigurations != null) {

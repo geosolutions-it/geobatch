@@ -25,6 +25,7 @@ import it.geosolutions.geobatch.catalog.Descriptable;
 import it.geosolutions.geobatch.catalog.impl.BaseDescriptable;
 import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+import it.geosolutions.geobatch.flow.FlowManager;
 import it.geosolutions.geobatch.flow.Job;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
@@ -64,14 +65,27 @@ public abstract class BaseAction<XEO extends EventObject>
      * Directory where temp files can be stored. It should be automatically
      * cleaned up by the GB engine when an Action ends successfully.<br>
      * This should be initialized by the FlowManager <br/>
-     * <b>WORK IN PROGRESS</b>
      */
     private File tempDir;
+    
+    /**
+     * Directory where configuration files are be stored.
+     * It can be set as:<br>
+     * <ul>
+     * <li>If it is relative: GEOBATCH_CONFIG_DIR/flowConfigDir/actionConfigDir</li>
+     * <li>If it is null: GEOBATCH_CONFIG_DIR/flowConfigDir/actionid</li>
+     * <li>If it is absolute: /actionConfigDir</li>
+     * </ul><br>
+     * To see which values flowConfigDir can be set to take a look here {@link FlowManager#getConfigDir()} 
+     */
+    private File configDir;
 
     final protected ProgressListenerForwarder listenerForwarder;
 
     protected boolean failIgnored = false;
 
+    private ActionConfiguration actionConfiguration;
+    
     public BaseAction(String id, String name, String description) {
         super(id, name, description);
         listenerForwarder = new ProgressListenerForwarder(this);
@@ -83,6 +97,7 @@ public abstract class BaseAction<XEO extends EventObject>
                 actionConfiguration.getName(),
                 actionConfiguration.getDescription());
 
+        this.actionConfiguration = actionConfiguration;
         listenerForwarder = new ProgressListenerForwarder(this);
         failIgnored = actionConfiguration.isFailIgnored();
     }
@@ -109,6 +124,24 @@ public abstract class BaseAction<XEO extends EventObject>
         this.tempDir = tempDir;
     }
 
+    /**
+     * @return the configDir
+     */
+    public final File getConfigDir() {
+        return configDir;
+    }
+
+    /**
+     * @param configDir the configDir to set
+     */
+    public final void setConfigDir(File configDir) {
+        this.configDir = configDir;
+    }
+
+    public ActionConfiguration getActionConfiguration() {
+        return actionConfiguration;
+    }
+    
     public void destroy() {
     }
 

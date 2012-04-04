@@ -158,8 +158,8 @@ import org.slf4j.LoggerFactory;
                     // if no EventConsumer is found, we need to create a new one
                     // //
                     final FileBasedFlowConfiguration flowCfg = flowManager.getConfiguration();
-					final FileBasedEventConsumerConfiguration consumerCfg = ((FileBasedEventConsumerConfiguration)flowCfg.getEventConsumerConfiguration()).clone();
-					final BaseEventConsumer brandNewConsumer = new FileBasedEventConsumer(consumerCfg, flowCfg);
+                    final FileBasedEventConsumerConfiguration consumerCfg = ((FileBasedEventConsumerConfiguration)flowCfg.getEventConsumerConfiguration()).clone();
+		    final BaseEventConsumer brandNewConsumer = new FileBasedEventConsumer(consumerCfg, flowManager.getFlowConfigDir(), flowManager.getFlowTempDir());
                     brandNewConsumer.setFlowName(flowManager.getName());
 
 					if (brandNewConsumer.consume(event)) {

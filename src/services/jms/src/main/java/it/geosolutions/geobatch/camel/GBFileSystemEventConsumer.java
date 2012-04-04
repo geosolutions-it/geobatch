@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfigurati
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -43,9 +44,9 @@ import java.util.List;
  */
 public class GBFileSystemEventConsumer extends FileBasedEventConsumer {
 
-    public GBFileSystemEventConsumer(FileBasedEventConsumerConfiguration configuration, FileBasedFlowConfiguration flowCfg)
+    public GBFileSystemEventConsumer(FileBasedEventConsumerConfiguration configuration, File flowConfigDir, File flowBaseTempDir)
             throws InterruptedException, IOException {
-        super(configuration, flowCfg);
+        super(configuration,flowConfigDir, flowBaseTempDir);
     }
 
     public boolean canConsumeAll(List<FileSystemEvent> fileEventList) throws IllegalArgumentException{

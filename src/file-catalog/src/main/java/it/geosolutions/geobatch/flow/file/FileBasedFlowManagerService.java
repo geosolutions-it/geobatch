@@ -43,9 +43,9 @@ public class FileBasedFlowManagerService extends BaseService
 
     public boolean canCreateFlowManager(FileBasedFlowConfiguration configuration) {
 
-        final String ovrTDir = configuration.getOverrideTempDir();
+        final File ovrTDir = configuration.getOverrideTempDir();
         if ( ovrTDir != null ) {
-            final File dir = new File(ovrTDir);
+            final File dir = ovrTDir;
             if ( !dir.isAbsolute() ) {
                 LOGGER.error("Override directory must be absolute [" + ovrTDir + "]");
                 return false;
@@ -61,17 +61,18 @@ public class FileBasedFlowManagerService extends BaseService
     }
 
     public FileBasedFlowManager createFlowManager(FileBasedFlowConfiguration configuration) {
-
-        if ( !canCreateFlowManager(configuration) ) {
-            throw new IllegalStateException("FlowManager can not be created with current configuration");
-        }
-
-        try {
-            return new FileBasedFlowManager(configuration);
-        } catch (Exception e) {
-            LOGGER.error(e.getLocalizedMessage(), e);
-        }
-
-        return null;
+        throw new IllegalStateException("Unexpected service invocation");
+        
+//        if ( !canCreateFlowManager(configuration) ) {
+//            throw new IllegalStateException("FlowManager can not be created with current configuration");
+//        }
+//
+//        try {
+//            return new FileBasedFlowManager(configuration,);
+//        } catch (Exception e) {
+//            LOGGER.error(e.getLocalizedMessage(), e);
+//        }
+//
+//        return null;
     }
 }

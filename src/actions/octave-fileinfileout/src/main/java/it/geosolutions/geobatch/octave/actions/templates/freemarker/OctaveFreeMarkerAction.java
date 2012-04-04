@@ -122,16 +122,16 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
                  * - exists (if not try to create)
                  * - check write permissions
                  */
-                String out_dir_name=config.getWorkingDirectory()+File.separator+getOutputDir()+File.separator;
-                File out_dir=new File(out_dir_name);
+//                String out_dir_name=config.getOverrideConfigDir()+File.separator+getOutputDir()+File.separator;
+                
+                File out_dir=new File(getTempDir(),getOutputDir()); // TODO checkme
                 if (!out_dir.exists()){
                     if (!out_dir.mkdir()){
                         throw new IOException("Unable to create the output dir: "+out_dir);
                     }
                     else{
                         if (!out_dir.canWrite())
-                            throw new IOException("" +
-                                    "Can't write to the output dir: "+out_dir+" check permissions");
+                            throw new IOException("Can't write to the output dir: "+out_dir+" check permissions");
                     }
                 }
                 
@@ -144,7 +144,7 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
                 /**
                  * build absolute output file name
                  */
-                String out_name=out_dir_name+buildFileName();
+                String out_name=getTempDir().getAbsolutePath()+buildFileName();
                 
                 Map<String, Object> root=config.getRoot();
                 if (root!=null){
@@ -156,7 +156,7 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
                     }
                     root.put(OctaveFreeMarkerAction.IN_FILE_KEY, in_name);
                     root.put(OctaveFreeMarkerAction.OUT_FILE_KEY, out_name);
-                    StringBuilder sb=new StringBuilder(Path.getAbsolutePath(config.getWorkingDirectory())+File.separator);
+                    StringBuilder sb=new StringBuilder(getTempDir().getAbsolutePath());//TODO Path.getAbsolutePath(config.getWorkingDirectory())+File.separator);
                     if(LOGGER.isInfoEnabled()){
                         LOGGER.info(
                                 "WorkingDir: "+sb.toString());

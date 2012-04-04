@@ -29,25 +29,27 @@ import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEven
 import it.geosolutions.geobatch.configuration.flow.BaseFlowConfiguration;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
+import java.io.File;
+
 /**
  * A Conf for the Flow based on xml marshalled files.
  * 
  * @author Simone Giannecchini, GeoSolutions
  * @author Alessio Fabiani, GeoSolutions
  * @author Ivano Picco
- * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * @author Emanuele Tajariol, GeoSolutions
  * 
  */
 public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
 
-//    /**
-//     * workingDirectory: this attribute represents the configuring directory for
-//     * this flow. It can be relative to the catalog.xml directory or absolute.
-//     * Attention: the configuring directory should be different from the one
-//     * containing the configuration files.
-//     */
-//    private String workingDirectory;
+    /**
+     * configDir: this attribute represents the configuring directory for
+     * this flow. It can be relative to the {@link #DataDirHandler} GEOBATCH_CONFIG_DIR directory or absolute.
+     * Attention: the configuring directory should be different from the one
+     * containing temporary files.
+     */
+    private File overrideConfigDir;
 
     /**
      * May be different than null if the temp dir should be mapped in a directory outside the configured GEOBATCH_TEMP_DIR.
@@ -56,7 +58,7 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
      * <p/>
      * <B>It must be an absolute path.</B>
      */
-    private String overrideTempDir;
+    private File overrideTempDir;
 
     /**
      * maximum numbers of stored executed (see Consumer.getStatus()) consumers
@@ -75,6 +77,29 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
      */
     private boolean autorun = false;
 
+
+    /**
+     * @return the configDir
+     */
+    public File getOverrideConfigDir() {
+        return overrideConfigDir;
+    }
+
+    /**
+     * @param configDir the configDir to set
+     */
+    public void setOverrideConfigDir(File configDir) {
+        this.overrideConfigDir = configDir;
+        setDirty(true);
+    }
+
+    /**
+     * @param maxStoredConsumers the maxStoredConsumers to set
+     */
+    public void setMaxStoredConsumers(int maxStoredConsumers) {
+        this.maxStoredConsumers = maxStoredConsumers;
+        setDirty(true);
+    }
 
     /**
      * 
@@ -102,7 +127,7 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
     public FileBasedFlowConfiguration(String id, String name, String description,
                                       EventGeneratorConfiguration eventGeneratorConfiguration,                                      
                                       EventConsumerConfiguration eventConsumerConfiguration,
-                                      String ovrTempDir) {
+                                      File ovrTempDir) {
         super(id, name, eventGeneratorConfiguration, description, eventConsumerConfiguration);
         this.overrideTempDir = ovrTempDir;
     }
@@ -114,28 +139,11 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
         return maxStoredConsumers;
     }
 
-//    /**
-//     * Getter for the workingDirectory
-//     */
-//    public String getWorkingDirectory() {
-//        return workingDirectory;
-//    }
-//
-//    /**
-//     * Setter for the workingDirectory.
-//     *
-//     * @param workingDirectory
-//     */
-//    public void setWorkingDirectory(String workingDirectory) {
-//        this.workingDirectory = workingDirectory;
-//        setDirty(true);
-//    }
-
-    public String getOverrideTempDir() {
+    public File getOverrideTempDir() {
         return overrideTempDir;
     }
 
-    public void setOverrideTempDir(String overrideTempDir) {
+    public void setOverrideTempDir(File overrideTempDir) {
         this.overrideTempDir = overrideTempDir;
         setDirty(true);
     }
@@ -152,6 +160,7 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
      */
     public void setAutorun(boolean autorun) {
         this.autorun = autorun;
+        setDirty(true);
     }
 
     /**
@@ -166,6 +175,7 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
      */
     public final void setKeepConsumers(boolean keepConsumers) {
         this.keepConsumers = keepConsumers;
+        setDirty(true);
     }
 
     @Override
@@ -175,6 +185,7 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
                 + "id:" + getId()
                 + ", name:" + getName()
                 + ", sid:" + getServiceID()
+                + ", configDir:" + getOverrideConfigDir()
                 + ", ovrTDir:" + getOverrideTempDir()
                 + ", egcfg:" + getEventGeneratorConfiguration()
                 + " auto:" + autorun

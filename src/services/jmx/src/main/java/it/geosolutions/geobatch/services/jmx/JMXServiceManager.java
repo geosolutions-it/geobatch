@@ -24,7 +24,7 @@ package it.geosolutions.geobatch.services.jmx;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.catalog.file.DataDirHandler;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -81,7 +80,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 public class JMXServiceManager implements ActionManager {
     private final static Logger LOGGER = LoggerFactory.getLogger(JMXServiceManager.class);
 
-    public final static String FlowManagerID = "JMX_FLOW_MANAGER";
+    public final static String FLOW_MANAGER_ID = "JMX_FLOW_MANAGER";
 
     private static Catalog catalog;
 
@@ -90,6 +89,9 @@ public class JMXServiceManager implements ActionManager {
     final FileBasedFlowConfiguration flowManagerConfig;
 
     private static File configDirFile;
+    
+    @Resource(name="dataDirHandler")
+    private DataDirHandler dataDirHandler;
 
     @Resource(type = org.springframework.context.ApplicationContext.class)
     private ApplicationContext context;
@@ -97,31 +99,32 @@ public class JMXServiceManager implements ActionManager {
     public JMXServiceManager() throws Exception {
         catalog = CatalogHolder.getCatalog();
 
-        flowManager = catalog.getResource(FlowManagerID,
+        flowManager = catalog.getResource(FLOW_MANAGER_ID,
                                           it.geosolutions.geobatch.flow.file.FileBasedFlowManager.class);
         if (flowManager == null) {
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("The flow id \'" + FlowManagerID
+                LOGGER.info("The flow id \'" + FLOW_MANAGER_ID
                             + "\' does not exists into catalog... -> going to create it");
             }
-            flowManagerConfig = new FileBasedFlowConfiguration(FlowManagerID, FlowManagerID, "Auto generated " + FlowManagerID,
+            flowManagerConfig = new FileBasedFlowConfiguration(FLOW_MANAGER_ID, FLOW_MANAGER_ID, "Auto generated " + FLOW_MANAGER_ID,
                         null, null);
-            configDirFile = new File(((FileBaseCatalog)catalog).getConfigDirectory(), FlowManagerID);
+
+            configDirFile = new File(DataDirHandler.GEOBATCH_CONFIG_DIR,FLOW_MANAGER_ID);
             if (!configDirFile.exists()) {
                 if (!(configDirFile.getParentFile().canWrite() && configDirFile.mkdir())) {
-                    throw new IllegalArgumentException("Unable to automatically create the " + FlowManagerID
+                    throw new IllegalArgumentException("Unable to automatically create the " + FLOW_MANAGER_ID
                                                        + " working dir into:"
                                                        + configDirFile.getAbsolutePath().toString());
                 }
             }
-//            flowManagerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
+            flowManagerConfig.setOverrideConfigDir(configDirFile);
 
             // keep consumer until disposeAction is called
             flowManagerConfig.setKeepConsumers(true);
             // flowManagerConfig.setMaximumPoolSize(flowManagerConfig.getMaximumPoolSize());
             // // TODO create a spec param
 
-            flowManager = new FileBasedFlowManager(flowManagerConfig);
+            flowManager = new FileBasedFlowManager(flowManagerConfig,dataDirHandler);
 
             catalog.add(flowManager);
             // TODO persistence (throws NullPointerException)
@@ -130,7 +133,7 @@ public class JMXServiceManager implements ActionManager {
 
             if (!configDirFile.exists()) {
                 if (!(configDirFile.getParentFile().canWrite() && configDirFile.mkdir())) {
-                    throw new IllegalArgumentException("Unable to automatically create the " + FlowManagerID
+                    throw new IllegalArgumentException("Unable to automatically create the " + FLOW_MANAGER_ID
                                                        + " working dir into:"
                                                        + configDirFile.getAbsolutePath().toString());
                 }
@@ -138,10 +141,9 @@ public class JMXServiceManager implements ActionManager {
         } else {
             flowManagerConfig = flowManager.getConfiguration();
 
-            if (flowManager.getWorkingDirectory() == null)
-                throw new IllegalArgumentException("Please set the flow working dir");
+            if (flowManagerConfig.getOverrideConfigDir() == null)
+                throw new IllegalArgumentException("Please set the flow config dir");
 
-            configDirFile = flowManager.getWorkingDirectory();
 
         }
 
@@ -241,11 +243,7 @@ public class JMXServiceManager implements ActionManager {
         if (actionConfig == null)
             throw new IllegalArgumentException("Unable to locate the configuration");
 
-        final FileBasedEventConsumerConfiguration consumerConfig = new FileBasedEventConsumerConfiguration(
-                                                                                                           "JMX_Consumer_id"
-//                                                                                                           ,"JMX_Consumer_name"
-//                                                                                                           ,"JMX_Consumer description"
-                );
+        final FileBasedEventConsumerConfiguration consumerConfig = new FileBasedEventConsumerConfiguration("JMX_Consumer_id");
         // TODO Status progress listener
         // final StatusProgressListenerConfiguration
         // statusProgressListenerConfig=new
@@ -274,7 +272,9 @@ public class JMXServiceManager implements ActionManager {
         // loggingProgressListenerConfig.setLoggerName("it.geosolutions.geobatch.services");
         // consumerConfig.addListenerConfiguration(loggingProgressListenerConfig);
 
-        final FileBasedEventConsumer consumer = new FileBasedEventConsumer(consumerConfig, flowManagerConfig );
+        File configDir=flowManager.initConfigDir(flowManager.getConfiguration(), dataDirHandler.getBaseConfigDirectory());
+        File tempDir=flowManager.initTempDir(flowManager.getConfiguration(), dataDirHandler.getBaseTempDirectory());
+        final FileBasedEventConsumer consumer = new FileBasedEventConsumer(consumerConfig, configDir, tempDir);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("INIT injecting consumer to the parent flow. UUID: " + consumer.getId());
         }
@@ -378,6 +378,10 @@ public class JMXServiceManager implements ActionManager {
             liveCollection.add(s);
         }
         return liveCollection;
+    }
+
+    public void setDataDirHandler(DataDirHandler dataDirHandler) {
+        this.dataDirHandler = dataDirHandler;
     }
     
 /* 

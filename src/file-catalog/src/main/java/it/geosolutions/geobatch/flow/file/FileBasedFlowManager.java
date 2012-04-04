@@ -23,6 +23,9 @@
 package it.geosolutions.geobatch.flow.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.catalog.dao.DAO;
+import it.geosolutions.geobatch.catalog.file.DataDirHandler;
+import it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl;
 import it.geosolutions.geobatch.catalog.impl.BasePersistentResource;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
@@ -40,6 +43,7 @@ import it.geosolutions.geobatch.settings.GBSettingsCatalog;
 import it.geosolutions.geobatch.settings.flow.FlowSettings;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -54,8 +58,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.collections.collection.UnmodifiableCollection;
 import org.apache.commons.collections.set.UnmodifiableSet;
@@ -66,12 +68,9 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 /**
  * 
  * @author Alessio Fabiani, GeoSolutions
- * @author (rev2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-// @Component("FlowManager")
-// @ManagedResource(objectName = "spring:name=FileBasedFlowManager", description
-// = "A JMX-managed FileBasedFlowManager")
 public class FileBasedFlowManager
     extends BasePersistentResource<FileBasedFlowConfiguration>
     implements FlowManager<FileSystemEvent, FileBasedFlowConfiguration>, Runnable, Job {
@@ -83,9 +82,7 @@ public class FileBasedFlowManager
     private String description;
 
     private boolean autorun = false;
-
-    private File workingDirectory;
-
+    
     /**
      * initialized flag
      */
@@ -122,7 +119,19 @@ public class FileBasedFlowManager
     private EventGenerator<FileSystemEvent> eventGenerator; // FileBasedEventGenerator<FileSystemEvent>
 
     private final ConcurrentMap<String, EventConsumer> eventConsumers = new ConcurrentHashMap<String, EventConsumer>();
-    private volatile Lock eventConsumersLock=new ReentrantLock();
+//    private volatile ReentrantReadWriteLock eventConsumersLock=new ReentrantReadWriteLock();
+
+    /**
+     * The absolute configuration dir file {@link FileBasedFlowConfiguration#getOverrideConfigDir()},
+     * with overrides already applied.<br/>
+     * 
+     * The default configuration dir is set as GEOBATCH_CONFIG_DIR/FLOW_ID.<br/>
+     *  
+     * The optional override is set in the FlowConfiguration.
+     * If the override is a relative path, it will be rooted into GEOBATCH_CONFIG_DIR.
+     */
+    private File flowConfigDir;
+    private File flowTempDir;
 
     /**
      * maximum numbers of executed see {@link EventConsumer#getStatus()}
@@ -142,23 +151,25 @@ public class FileBasedFlowManager
      *            initialization
      * @throws IOException
      */
-    public FileBasedFlowManager(FileBasedFlowConfiguration configuration) 
-            throws IOException, NullPointerException {
+    public FileBasedFlowManager(FileBasedFlowConfiguration configuration, DataDirHandler ddh) 
+            throws Exception{
 
         super(configuration.getId());
 
-        name = configuration.getName();
-        description = configuration.getDescription();
-
-        initialize(configuration);
+        initialize(configuration,ddh.getBaseConfigDirectory(),ddh.getBaseTempDirectory());
         super.setConfiguration(configuration);
     }
 
     /**
      * Used just before loading the object.
      */
-    public FileBasedFlowManager(String baseName) throws NullPointerException, IOException {
-        super(baseName);
+    public FileBasedFlowManager(String flowId, DAO flowLoader, DataDirHandler ddh) throws Exception {
+        super(flowId);
+        // load config using DAO
+        setDAO(flowLoader);
+        load();
+        // initialize object using configuration
+        initialize(getConfiguration(),ddh.getBaseConfigDirectory(),ddh.getBaseTempDirectory());
     }
 
     /**
@@ -170,22 +181,14 @@ public class FileBasedFlowManager
      * @throws NullPointerException
      * @throws IOException
      */
-    public FileBasedFlowManager(String baseName, String name, String description)
-        throws NullPointerException, IOException {
+    public FileBasedFlowManager(String baseName, String name, String description, DataDirHandler ddh)
+        throws Exception {
 
         super(baseName);
         this.name = name;
         this.description = description;
 
-//        LOGGER.error("Creating an unconfigured " + getClass().getSimpleName());
-//        if(LOGGER.isDebugEnabled()) {
-//            LOGGER.debug("Creating an unconfigured " + getClass().getSimpleName(), new RuntimeException("Trace!"));
-//        }
-
-        // warning this flow manager is not configured nor initialized (working
-        // dir related problem)
-        // initialize(new FileBasedFlowConfiguration(baseName, name, null,
-        // description, null));
+        initialize(new FileBasedFlowConfiguration(baseName, name, description, null, null),ddh.getBaseConfigDirectory(),ddh.getBaseTempDirectory());
     }
 
     @ManagedAttribute
@@ -194,74 +197,125 @@ public class FileBasedFlowManager
     }
 
     /**
-     * @param configuration
+     * @param flowCfg
      * @throws IOException
      */
-    private void initialize(FileBasedFlowConfiguration configuration) throws IOException,
+    private void initialize(FileBasedFlowConfiguration flowCfg, File geoBatchConfigDir, File geoBatchTempDir) throws Exception,
         NullPointerException {
+        
+        this.initialized = false;
+        
+        this.name = flowCfg.getName();
+        this.description = flowCfg.getDescription();
+        
+        flowConfigDir = initConfigDir(flowCfg, geoBatchConfigDir);
+        flowTempDir   = initTempDir(flowCfg, geoBatchTempDir);
+        
+        // get global config
         final GBSettingsCatalog settingsCatalog = CatalogHolder.getSettingsCatalog();
         final GBSettings settings;
         final FlowSettings fs;
-        try {
-            settings = settingsCatalog.find("FLOW");
-            if ((settings != null) && (settings instanceof FlowSettings)) {
-                fs = (FlowSettings)settings;
-            } else {
-                fs = new FlowSettings();
-                // store the file for further flow loads
-                settingsCatalog.save(fs);
+        settings = settingsCatalog.find("FLOW");
+        if ((settings != null) && (settings instanceof FlowSettings)) {
+            fs = (FlowSettings)settings;
+        } else {
+            fs = new FlowSettings();
+            // store the file for further flow loads
+            settingsCatalog.save(fs);
+        }
+
+        this.keepConsumers=flowCfg.isKeepConsumers();
+        this.maxStoredConsumers = flowCfg.getMaxStoredConsumers();
+        if (maxStoredConsumers < 1) {
+            this.maxStoredConsumers = fs.getMaxStoredConsumers(); // default
+                                                             // value
+        }
+
+        final int queueSize = (flowCfg.getWorkQueueSize() > 0) ? flowCfg.getWorkQueueSize() : fs
+            .getWorkQueueSize();
+        final int corePoolSize = (flowCfg.getCorePoolSize() > 0) ? flowCfg.getCorePoolSize() : fs
+            .getCorePoolSize();
+        final int maximumPoolSize = (flowCfg.getMaximumPoolSize() > 0) ? flowCfg
+            .getMaximumPoolSize() : fs.getMaximumPoolSize();
+        final long keepAlive = (flowCfg.getKeepAliveTime() > 0) ? flowCfg.getKeepAliveTime() : fs
+            .getKeepAliveTime(); // seconds
+
+        final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueSize);
+
+        this.executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAlive, TimeUnit.SECONDS,
+                                               queue);
+
+
+        this.paused = false;
+        this.terminationRequest = false;
+        this.autorun = flowCfg.isAutorun();
+        if (this.autorun) {
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Automatic Flow Startup for '" + getId() + "'");
             }
-
-            this.initialized = false;
-            this.paused = false;
-            this.terminationRequest = false;
-            
-//            if (configuration.getWorkingDirectory()==null){
-//                throw new IllegalArgumentException("Unable to configure a flow without a valid working dir");
-//            }
-//            this.setWorkingDirectory(new File(configuration.getWorkingDirectory()));
-
-            maxStoredConsumers = configuration.getMaxStoredConsumers();
-            if (maxStoredConsumers < 1) {
-                maxStoredConsumers = fs.getMaxStoredConsumers(); // default
-                                                                 // value
-            }
-            this.keepConsumers=configuration.isKeepConsumers();
-
-            this.autorun = configuration.isAutorun();
-
-            final int queueSize = (configuration.getWorkQueueSize() > 0)
-                ? configuration.getWorkQueueSize() : fs.getWorkQueueSize();
-            final int corePoolSize = (configuration.getCorePoolSize() > 0)
-                ? configuration.getCorePoolSize() : fs.getCorePoolSize();
-            final int maximumPoolSize = (configuration.getMaximumPoolSize() > 0) ? configuration
-                .getMaximumPoolSize() : fs.getMaximumPoolSize();
-            final long keepAlive = (configuration.getKeepAliveTime() > 0)
-                ? configuration.getKeepAliveTime() : fs.getKeepAliveTime(); // seconds
-
-            final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueSize);
-
-            this.executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAlive,
-                                                   TimeUnit.SECONDS, queue);
-
-            if (this.autorun) {
-                if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info("Automatic Flow Startup for '" + getName() + "'");
-                }
-                this.resume();
-            }
-
-        } catch (Throwable e) {
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Failed to save the flow settings");
-            }
-
-            final IOException ioe = new IOException(e);
-            ioe.initCause(e.getCause());
-            throw ioe;
+            this.resume();
         }
     }
 
+    public static File initConfigDir(FileBasedFlowConfiguration flowCfg, File geoBatchConfigDir)
+        throws FileNotFoundException {
+        
+        // set config dir
+        File ret = null; 
+        File ovrCfgDir = flowCfg.getOverrideConfigDir();
+        if (ovrCfgDir == null){
+            ret = new File(geoBatchConfigDir, flowCfg.getId());
+            if (!ret.exists()) {
+                if(LOGGER.isDebugEnabled())
+                    LOGGER.debug("Default config dir does not exist: " + ret);
+            }
+        } else {
+            if ( ! ovrCfgDir.isAbsolute()){       
+                ret = new File(geoBatchConfigDir, ovrCfgDir.getPath());
+            } else {
+                ret = ovrCfgDir;
+            }
+            if (!ret.isDirectory() || ! ret.canRead()){
+                throw new FileNotFoundException("Unable to locate the overriden configDir: "+ret);
+            }
+        }
+        
+        if (LOGGER.isInfoEnabled()){
+            LOGGER.info("Flow: "+flowCfg.getId()+" - config dir is now set to -> "+ret);
+        }
+        return ret;
+    }
+
+    public static File initTempDir(FileBasedFlowConfiguration flowConfiguration, File geoBatchTempDir)
+        throws FileNotFoundException {
+
+        File ret = null;
+        
+        File overrideTempDir = flowConfiguration.getOverrideTempDir();
+        if(overrideTempDir != null) {
+            ret = overrideTempDir;
+            if( ! ret.isAbsolute() )
+                throw new IllegalStateException("Override temp dir must be an absolute path ("+overrideTempDir+")");
+        } else {
+                            
+            String flowId = flowConfiguration.getId();
+            ret = new File(geoBatchTempDir, flowId);
+
+            if(LOGGER.isDebugEnabled())
+                LOGGER.debug("FlowBaseTempDir = " + ret);
+        }
+
+        if( (! ret.mkdir() && !ret.exists()) || ! ret.canWrite())
+            throw new IllegalStateException("Can't write temp dir ("+ret+")");        
+        
+            
+        if (LOGGER.isInfoEnabled()){
+            LOGGER.info("Flow: "+flowConfiguration.getId()+" - config dir is now set to -> "+ret);
+        }
+        return ret;
+    }
+    
+    
     /*
      * (non-Javadoc)
      * 
@@ -317,8 +371,8 @@ public class FileBasedFlowManager
             throw new IllegalArgumentException("Unable to dispose a null consumer object");
         }
 
-        try {
-                this.eventConsumersLock.lock();
+//        try {
+//                this.eventConsumersLock.writeLock().lock();
                 final EventConsumer<FileSystemEvent, EventConsumerConfiguration> fbec = eventConsumers.get(uuid);
         
                 if (fbec == null) {
@@ -336,9 +390,9 @@ public class FileBasedFlowManager
                 eventConsumers.remove(uuid);
                 fbec.dispose();
             
-        } finally {
-        	this.eventConsumersLock.unlock();
-        }
+//        } finally {
+//        	this.eventConsumersLock.writeLock().unlock();
+//        }
 
     }
 
@@ -581,20 +635,6 @@ public class FileBasedFlowManager
         return terminationRequest;
     }
 
-    /**
-     * @return the workingDirectory
-     */
-    @Override
-    public File getWorkingDirectory() {
-        return workingDirectory;
-    }
-
-    /**
-     * @param workingDirectory the workingDirectory to set
-     */
-    public void setWorkingDirectory(File outputDir) {
-        this.workingDirectory = outputDir;
-    }
 
     public EventGenerator<FileSystemEvent> getEventGenerator() {
         return this.eventGenerator;
@@ -604,34 +644,6 @@ public class FileBasedFlowManager
         this.eventGenerator = eventGenerator;
 
     }
-
-    @Override
-    public synchronized void setConfiguration(FileBasedFlowConfiguration configuration) {
-        super.setConfiguration(configuration);
-        try {
-            initialize(configuration);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public synchronized void load() throws IOException {
-        super.load();
-        setName(getConfiguration().getName());
-        setDescription(getConfiguration().getDescription());
-    }
-
-    @Override
-    public synchronized boolean remove() throws IOException {
-        return super.remove();
-    }
-
-    @Override
-    public synchronized void persist() throws IOException {
-        super.persist();
-    }
-
 
     public String getDescription() {
         return description;
@@ -649,10 +661,6 @@ public class FileBasedFlowManager
         this.name = name;
     }
 
-
-    /**
-     * @return
-     */
     public boolean isAutorun() {
         return autorun;
     }
@@ -663,19 +671,31 @@ public class FileBasedFlowManager
     public void setAutorun(boolean autorun) {
         this.autorun = autorun;
     }
+    
+    /**
+     * @return the absolute configDir for this flow
+     * @see {@link #initialize(FileBasedFlowConfiguration)}
+     */
+    public final File getFlowConfigDir() {
+        return flowConfigDir;
+    }
 
+    public final File getFlowTempDir() {
+        return flowTempDir;
+    }
+    
     /**
      * returns an unmodifiable list of all the consumers
      * 
      * @return
      */
     public final Collection<EventConsumer> getEventConsumers() {
-        try {
-            eventConsumersLock.lock();
+//        try {
+//            eventConsumersLock.reaLock().lock();
             return UnmodifiableCollection.decorate(eventConsumers.values());
-        } finally {
-            eventConsumersLock.unlock();
-        }
+//        } finally {
+//            eventConsumersLock.readLock().unlock();
+//        }
     }
 
     /**
@@ -685,23 +705,23 @@ public class FileBasedFlowManager
      * {@link FileBasedFlowManager#addConsumer(EventConsumer)}<br>
      */
     public final Set<String> getEventConsumersId() {
-        try {
-            eventConsumersLock.lock();
+//        try {
+//            eventConsumersLock.readLock().lock();
             return UnmodifiableSet.decorate(eventConsumers.keySet());
-        } finally {
-            eventConsumersLock.unlock();
-        }
+//        } finally {
+//            eventConsumersLock.reaLock().unlock();
+//        }
     }
 
     @Override
     public final EventConsumer<FileSystemEvent, EventConsumerConfiguration> getConsumer(final String uuid) {
 
-        try {
-            eventConsumersLock.lock();
+//        try {
+//            eventConsumersLock.readLck().lock();
             return eventConsumers.get(uuid);
-        } finally {
-            eventConsumersLock.unlock();
-        }
+//        } finally {
+//            eventConsumersLock.readLock().unlock();
+//        }
     }
 
     /**
@@ -724,8 +744,8 @@ public class FileBasedFlowManager
         if (consumer == null)
             throw new IllegalArgumentException("Unable to add a null consumer");
 
-        this.eventConsumersLock.lock();  // block until condition holds
-        try {
+//        this.eventConsumersLock.lock();  // block until condition holds
+//        try {
         	if (eventConsumers.size() >= maxStoredConsumers) {
 	            if (purgeConsumers(1) > 0) {
 	                eventConsumers.put(consumer.getId(), consumer);
@@ -735,9 +755,9 @@ public class FileBasedFlowManager
 	        } else {
 	            eventConsumers.put(consumer.getId(), consumer);
 	        }
-        } finally {
-        	this.eventConsumersLock.unlock();
-        }
+//        } finally {
+//        	this.eventConsumersLock.unlock();
+//        }
         return true;
     }
 
@@ -749,12 +769,12 @@ public class FileBasedFlowManager
      */
     public EventConsumerStatus getStatus(final String uuid) {
         EventConsumer consumer=null;
-        try {
-            eventConsumersLock.lock();
+//        try {
+//            eventConsumersLock.lock();
             consumer = eventConsumers.get(uuid);
-        } finally {
-            eventConsumersLock.unlock();
-        }
+//        } finally {
+//            eventConsumersLock.unlock();
+//        }
         if (consumer != null) {
             return consumer.getStatus();
         } else {
@@ -778,9 +798,9 @@ public class FileBasedFlowManager
         int size = 0;
         if (keepConsumers)
             return 0;
-        
-    	try {
-    		this.eventConsumersLock.lock();
+//        
+//    	try {
+//    		this.eventConsumersLock.lock();
                 final Set<String> keySet = eventConsumers.keySet();
                 final Iterator<String> it = keySet.iterator();
                 while (it.hasNext() && size < quantity) {
@@ -800,9 +820,9 @@ public class FileBasedFlowManager
                         ++size;
                     }
                 }
-        } finally {
-        	this.eventConsumersLock.unlock();
-        }
+//        } finally {
+//        	this.eventConsumersLock.unlock();
+//        }
         return size;
     }
 

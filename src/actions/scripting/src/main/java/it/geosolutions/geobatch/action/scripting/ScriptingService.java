@@ -68,27 +68,10 @@ public class ScriptingService extends BaseService implements
 
         if (engine == null) {
             if (LOGGER.isWarnEnabled())
-                LOGGER.warn("ScriptingService::canCreateAction(): Requested unhandled language '" + configuration.getLanguage() + "'");
+                LOGGER.warn("Requested unhandled language '" + configuration.getLanguage() + "'");
             return false;
         }
-
-        try {
-            // absolutize working dir
-            final String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
-            if (wd != null) {
-                configuration.setWorkingDirectory(wd);
-                return true;
-            } else {
-                if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("ScriptingService::canCreateAction(): "
-                            + "unable to create action, it's not possible to get an absolute working dir.");
-            }
-        } catch (Throwable e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-        }
-        return false;
-
+        return true;
     }
 
 }

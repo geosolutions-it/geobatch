@@ -51,7 +51,8 @@ public class XstreamActionTest {
         fmc.setDirty(false);
         fmc.setFailIgnored(false);
         fmc.setServiceID("serviceID");
-        fmc.setWorkingDirectory("src/test/resources/data/");
+//        fmc.setWorkingDirectory("src/test/resources/data/"); TODO fixme
+        
         fmc.setOutput("src/test/resources/data/out");
         final Map<String,String> m=new HashMap<String, String>();
         m.put("XstreamConfiguration", "it.geosolutions.geobatch.actions.xstream.XstreamConfiguration");

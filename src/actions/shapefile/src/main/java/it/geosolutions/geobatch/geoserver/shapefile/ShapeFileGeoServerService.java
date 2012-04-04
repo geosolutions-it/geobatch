@@ -64,35 +64,8 @@ public class ShapeFileGeoServerService extends BaseService implements
     public boolean canCreateAction(final GeoServerActionConfiguration configuration) {
         // data flow configuration must not be null.
         if (configuration == null) {
-            final String message = "ShapeFileGeoServerService::canCreateAction():  Cannot create the ShapeFileAction:  Configuration is null.";
             if (LOGGER.isErrorEnabled())
-                LOGGER.error(message);
-            return false;
-        }
-
-        try {
-            // absolutize working dir
-            final String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
-            if (wd != null) {
-                configuration.setWorkingDirectory(wd);
-            } else {
-                if (LOGGER.isErrorEnabled())
-                    LOGGER.error("ShapeFileGeoServerService::canCreateAction(): "
-                                    + "unable to create action, it's not possible to get an absolute working dir.");
-            }
-        } catch (Throwable e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-            return false;
-        }
-
-        final File workingDir = new File(configuration.getWorkingDirectory());
-
-        if (!workingDir.exists() || !workingDir.isDirectory()) {
-            final String message = "ShapeFileGeoServerService::canCreateAction(): Cannot create the ShapeFileAction: "
-                    + "GeoServer working Dir does not exist.";
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(message);
+                LOGGER.error("Cannot create the ShapeFileAction:  Configuration is null.");
             return false;
         }
 

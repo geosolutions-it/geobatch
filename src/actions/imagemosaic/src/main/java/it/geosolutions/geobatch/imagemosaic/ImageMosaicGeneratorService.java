@@ -68,39 +68,10 @@ public class ImageMosaicGeneratorService extends
                 final String message = "GeoServerURL is null.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message,new IllegalStateException(message));
-            } else if ("".equals(configuration.getGeoserverURL())) {
+            } else if (configuration.getGeoserverURL().isEmpty()) {
                 final String message = "GeoServerURL is empty.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message,new IllegalStateException(message));
-            } else {
-            	//other checks
-            	
-	            
-	        	if (configuration.getWorkingDirectory()==null) {
-	        		if (LOGGER.isWarnEnabled())
-	                    LOGGER.warn("ImageMosaicGeneratorService::canCreateAction(): " +
-	                                "unable to create action, working dir is NULL.");
-	            }
-	            else {
-	            	// all checks are OK
-	            	// do some stuff
-
-	            	// absolutize working dir
-		        	final String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
-		        	if (wd==null) {
-		        		if (LOGGER.isWarnEnabled())
-		                    LOGGER.warn("ImageMosaicGeneratorService::canCreateAction(): " +
-		                                "unable to create action, it's not possible to get an absolute working dir using: "+
-		                                configuration.getWorkingDirectory());
-		        		return false;
-		        	}
-		        	
-	                configuration.setWorkingDirectory(wd);
-	                
-	                // and return OK status
-	                return true;
-	            }
-	            
             }
         } catch (Throwable e) {
             if (LOGGER.isErrorEnabled())

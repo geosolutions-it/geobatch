@@ -57,14 +57,6 @@ public class GeotiffOverviewsEmbedderService extends BaseService implements
     public GeotiffOverviewsEmbedder createAction(GeotiffOverviewsEmbedderConfiguration configuration) {
         try {
                 // absolutize working dir
-                String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
-                if (wd == null) {
-                	final String message="Unable to create action, it's not possible to get an absolute working dir.";
-                	if (LOGGER.isWarnEnabled())
-                        LOGGER.warn(message);
-                	throw new IllegalArgumentException(message);
-                }
-                configuration.setWorkingDirectory(wd);
                 return new GeotiffOverviewsEmbedder(configuration);
             
         } catch (Exception e) {

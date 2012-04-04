@@ -19,13 +19,14 @@
  */
 package it.geosolutions.geobatch.actions.geonetwork;
 
-import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkInsertConfiguration;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkInsertConfiguration;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.Queue;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,7 @@ public class GeonetworkActionInsertTest extends GeonetworkAbstractTest {
         queue.add(event);
         
         GeonetworkAction action = new GeonetworkAction(cfg);
+        action.setTempDir(File.createTempFile("test", "test").getParentFile()); // TODO checkme
         Queue<FileSystemEvent> retQueue = action.execute(queue);
 
         assertEquals(0, retQueue.size());
@@ -90,7 +92,7 @@ public class GeonetworkActionInsertTest extends GeonetworkAbstractTest {
 
     protected GeonetworkInsertConfiguration createConfiguration() {
         GeonetworkInsertConfiguration cfg = new GeonetworkInsertConfiguration("GNIC", "TestGeoNetworkInsert", "test configuration");
-        cfg.setWorkingDirectory("/tmp");
+//        cfg.setConfigDir(new File("/tmp"));
 
         cfg.setGeonetworkServiceURL(gnServiceUrl);
         cfg.setLoginUsername(gnUsername);

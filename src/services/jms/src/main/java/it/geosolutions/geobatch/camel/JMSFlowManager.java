@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.camel.beans.JMSFlowRequest;
 import it.geosolutions.geobatch.camel.beans.JMSFlowResponse;
 import it.geosolutions.geobatch.camel.beans.JMSFlowStatus;
 import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.catalog.file.DataDirHandler;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
@@ -37,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Future;
+
+import javax.annotation.Resource;
 
 import org.apache.camel.AsyncCallback;
 import org.apache.camel.AsyncProcessor;
@@ -61,15 +64,18 @@ public class JMSFlowManager implements AsyncProcessor {
     private FileBasedFlowManager parent;
     private GBFileSystemEventConsumer consumer;
     
+    @Resource(name="dataDirHandler")
+    private DataDirHandler dataDirHandler;
+    
+
     private void init(String FlowManagerID) throws Exception {
 
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT catalog");
         }
+        
         Catalog catalog = CatalogHolder.getCatalog();
-        if (catalog == null)
-            throw new IllegalArgumentException(
-                    "JMSFlowManager: Unable to load the catalog... -> catalog == null.");
+        
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT parent flow manager");
         }
@@ -87,7 +93,9 @@ public class JMSFlowManager implements AsyncProcessor {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT consumer");
         }
-        consumer = new GBFileSystemEventConsumer(configuration, parent.getConfiguration());
+        File configDir=parent.initConfigDir(parent.getConfiguration(), dataDirHandler.getBaseConfigDirectory());
+        File tempDir=parent.initTempDir(parent.getConfiguration(), dataDirHandler.getBaseTempDirectory());
+        consumer = new GBFileSystemEventConsumer(configuration, configDir, tempDir);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT injecting consumer to the parent flow");
         }
@@ -265,4 +273,8 @@ public class JMSFlowManager implements AsyncProcessor {
         return true;
     }
 
+    public void setDataDirHandler(DataDirHandler dataDirHandler) {
+        this.dataDirHandler = dataDirHandler;
+    }
+    
 }

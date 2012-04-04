@@ -30,7 +30,6 @@ import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -74,14 +73,14 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     private boolean keepRuntimeDir;
 
 
-    /**
-     * @deprecated name and description not needed here
-     */
-    public FileBasedEventConsumerConfiguration(String id, String name, String description)
-    {
-        this(id);
-        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
-    }
+//    /**
+//     * @deprecated name and description not needed here
+//     */
+//    public FileBasedEventConsumerConfiguration(String id, String name, String description)
+//    {
+//        this(id);
+//        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
+//    }
     
     public FileBasedEventConsumerConfiguration(String id)
     {
@@ -214,7 +213,7 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
 
             for (ProgressListenerConfiguration cfg : listenerConfigurations)
             {
-                clone.addListenerConfiguration(cfg);
+                clone.addListenerConfiguration(cfg.clone());
             }
         }
 

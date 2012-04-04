@@ -24,10 +24,6 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.apache.commons.beanutils.BeanUtils;
-
 public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
 	public ImageMosaicConfiguration(String id, String name,
@@ -336,25 +332,14 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
 	@Override
 	public ImageMosaicConfiguration clone() {
-		try {
-			return (ImageMosaicCommand) BeanUtils.cloneBean(this);
-		} catch (IllegalAccessException e) {
-			
-		} catch (InstantiationException e) {
-			
-		} catch (InvocationTargetException e) {
-			
-		} catch (NoSuchMethodException e) {
-		
-		}
-		return null;
+		return (ImageMosaicConfiguration)super.clone();
 	}
 
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[" + "id:" + getId() + " name:"
-				+ getName() + " srvId:" + getServiceID() + " wkdir:"
-				+ getWorkingDirectory() + " GSurl:" + getGeoserverURL() + "]";
+				+ getName() + " srvId:" + getServiceID() + " cfgDir:"
+				+ getOverrideConfigDir() + " GSurl:" + getGeoserverURL() + "]";
 	}
 
 }

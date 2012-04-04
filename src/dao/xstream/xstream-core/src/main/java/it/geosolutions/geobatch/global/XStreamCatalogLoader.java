@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.catalog.dao.DAO;
 import it.geosolutions.geobatch.catalog.dao.file.xstream.XStreamCatalogDAO;
 import it.geosolutions.geobatch.catalog.dao.file.xstream.XStreamFlowConfigurationDAO;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
@@ -142,13 +143,15 @@ public class XStreamCatalogLoader extends CatalogHolder {
                     LOGGER.info("Loading flow from file " + flowConfigFile.getAbsolutePath());
 
                 // try to load the flow and add it to the catalog
-// TODO change this:
-                final FileBasedFlowManager flowManager = new FileBasedFlowManager(
-                        FilenameUtils.getBaseName(flowConfigFile.getName()));
-//                flow.setId(FilenameUtils.getBaseName(o.getName()));
+// TODO change this: 
+                
                 DAO flowLoader = new XStreamFlowConfigurationDAO(dataDir.getAbsolutePath(), alias);
-                flowManager.setDAO(flowLoader);
-                flowManager.load();
+                String id = FilenameUtils.getBaseName(flowConfigFile.getName());
+                FileBasedCatalogImpl fbcImpl = ((FileBasedCatalogImpl)CatalogHolder.getCatalog());
+                final FileBasedFlowManager flowManager = new FileBasedFlowManager(id,flowLoader,fbcImpl.getDataDirHandler());
+//              flow.setId(FilenameUtils.getBaseName(o.getName()));
+//                flowManager.setDAO(flowLoader);
+//                flowManager.load();
 
 // TODO ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // add to the catalog

@@ -23,14 +23,11 @@
 package it.geosolutions.geobatch.ftp.client.upload;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPBaseAction;
-import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.tools.compress.file.Compressor;
-import it.geosolutions.tools.commons.file.Path;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,8 +88,6 @@ public class FTPUploadAction extends FTPBaseAction<FileSystemEvent> {
             //
             // ////////////////////////////////////////////////////////////////////
 
-            final File workingDir = Path.findLocation(configuration.getWorkingDirectory(),
-                    ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
 
             // ////////////////////////////////////////////////////////////////////
             //
@@ -100,10 +95,6 @@ public class FTPUploadAction extends FTPBaseAction<FileSystemEvent> {
             //
             // ////////////////////////////////////////////////////////////////////
 
-            if ((workingDir == null) || !workingDir.exists() || !workingDir.isDirectory()) {
-                throw new IllegalStateException(
-                        "FTP client data directory is null or does not exist.");
-            }
 
             String ftpserverHost = configuration.getFtpserverHost();
             String ftpserverUSR = configuration.getFtpserverUSR();

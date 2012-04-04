@@ -34,5 +34,11 @@ public class ProgressListenerConfiguration extends BaseConfiguration implements 
     public ProgressListenerConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
+    
+    @Override
+    public ProgressListenerConfiguration clone() {
+        ProgressListenerConfiguration clone=(ProgressListenerConfiguration)super.clone();
+        return clone;
+    }
 
 }

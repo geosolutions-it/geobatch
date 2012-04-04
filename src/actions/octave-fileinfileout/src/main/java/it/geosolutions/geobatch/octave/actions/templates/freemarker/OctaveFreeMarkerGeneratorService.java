@@ -23,7 +23,6 @@
 package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
@@ -42,22 +41,8 @@ public class OctaveFreeMarkerGeneratorService
     }
 
     public boolean canCreateAction(final OctaveFreeMarkerConfiguration configuration)  {
-        try {
-            // absolutize working dir
-            final String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
-            if (wd != null) {
-                configuration.setWorkingDirectory(wd);
-                return true;
-            } else {
-                if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("OctaveFreeMarkerGeneratorService::canCreateAction(): "
-                                    + "unable to create action, it's not possible to get an absolute working dir.");
-            }
-        } catch (Throwable e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-        }
-        return false;
+
+        return true;
         
 //TODO check if the m file is present and is readable
 //TODO check if the sheet (execute) file is present and is readable

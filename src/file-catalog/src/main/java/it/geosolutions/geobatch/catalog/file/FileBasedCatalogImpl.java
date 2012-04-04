@@ -63,7 +63,7 @@ public class FileBasedCatalogImpl extends BaseCatalog implements FileBaseCatalog
      */
     public void init() throws Exception
     {
-        configDir = dataDirHandler.getConfigDirectory();
+        configDir = dataDirHandler.getBaseConfigDirectory();
     }
 
 

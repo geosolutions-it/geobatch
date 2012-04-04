@@ -23,13 +23,10 @@ package it.geosolutions.geobatch.flow.event.consumer.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
-import it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerService;
-import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
@@ -86,7 +83,7 @@ public class FileBasedEventConsumer
      * It represents the parent dir of the {@link #flowInstanceTempDir}<br>
      */
     private File flowBaseTempDir;
-//    private File workingDir;
+    private File flowConfigDir;
 
     /**
      * Temporary folder for a given flow instance.
@@ -119,56 +116,28 @@ public class FileBasedEventConsumer
      * @throws IOException
      */
 
-    public FileBasedEventConsumer(FileBasedEventConsumerConfiguration configuration, FileBasedFlowConfiguration flowConfiguration)
+    public FileBasedEventConsumer(FileBasedEventConsumerConfiguration configuration, File flowConfigDir, File flowBaseTempDir)
         throws InterruptedException, IOException {
         super(UUID.randomUUID().toString());
-
-        final File configDir = ((FileBaseCatalog)CatalogHolder.getCatalog()).getConfigDirectory();
-
-        File baseTempDir = ((FileBasedCatalogImpl)CatalogHolder.getCatalog()).getDataDirHandler().getBaseTempDirectory(); // FIXME remove the Impl reference
-
-        String overrideTempDir = flowConfiguration.getOverrideTempDir();
-        if(overrideTempDir != null) {
-            baseTempDir = new File(overrideTempDir);
-            if( ! baseTempDir.isAbsolute() )
-                throw new IllegalStateException("Override temp dir must be an absolute path ("+overrideTempDir+")");
-        }
-
-        String flowId = flowConfiguration.getId();
-        flowBaseTempDir = new File(baseTempDir, flowId);
-
-        if(LOGGER.isDebugEnabled())
-            LOGGER.debug("Creating a " + getClass().getSimpleName() + " with flowBaseTempDir = " + flowBaseTempDir);
-
-        if( (! flowBaseTempDir.mkdir() && !flowBaseTempDir.exists()) || ! flowBaseTempDir.canWrite())
-            throw new IllegalStateException("Can't write temp dir ("+flowBaseTempDir+")");
-
+       
+        this.flowConfigDir = flowConfigDir;
+        
         this.flowInstanceTempDir = createFlowInstanceTempDir(flowBaseTempDir);
         if(LOGGER.isDebugEnabled())
             LOGGER.debug("Prepared flowInstanceTempDir " + flowInstanceTempDir);
-
+               
         initialize(configuration);
     }
 
 
-    // Dateformat for creating flow instance temp dirs.
-    final static SimpleDateFormat DATEFORMATTER = new SimpleDateFormat("yyyyMMdd'-'HHmmss-SSS");
-    static{
-        TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
-        DATEFORMATTER.setTimeZone(TZ_UTC);
-    }
 
     /**
      * Called by ctor
      */
     private static File createFlowInstanceTempDir(File flowBaseTempDir) {
-
-        final String timeStamp = DATEFORMATTER.format(new Date());
-
-        // current directory inside working dir, specifically created for this execution.
+        // current directory inside the flow temp dir, specifically created for this execution/thread.
         // Creation is eager
-        final File instanceTempDir = new File(flowBaseTempDir, timeStamp);
-
+        final File instanceTempDir = new File(flowBaseTempDir, UniqueTimeStampProvider.getTimeStamp());
         instanceTempDir.mkdirs();
 
         return instanceTempDir;
@@ -627,14 +596,37 @@ public class FileBasedEventConsumer
      */
     @Override
     protected void setupAction(BaseAction action, int step) throws IllegalStateException {
-        String actionTempDirName = step + "_" + action.getClass().getSimpleName();
+        // random id
+        action.setId(UUID.randomUUID().toString());
+        
+        // tempDir
+        String actionTempDirName = step + "_" + action.getName();
         File actionTempDir = new File(flowInstanceTempDir, actionTempDirName);
         if (!actionTempDir.mkdirs()) {
             throw new IllegalStateException("Unable to create the action temporary dir: " + actionTempDir);
         }
         action.setTempDir(actionTempDir);
+        
+        File actionConfigDir = initConfigDir(action.getActionConfiguration(), flowConfigDir);
+        action.setConfigDir(actionConfigDir);
     }
 
+    private File initConfigDir(ActionConfiguration actionCfg, File flowConfigDir) {
+        File ret = null;
+        File ovr = actionCfg.getOverrideConfigDir(); 
+        if( ovr != null) {
+            if( ! ovr.isAbsolute())
+                ret = new File(flowConfigDir, ovr.getPath());
+            else 
+                ret = ovr;            
+        } else
+            ret = new File(flowConfigDir, actionCfg.getId());
+        
+        if(LOGGER.isDebugEnabled())
+            LOGGER.debug("Action config dir set to " + ret);
+        return ret;
+    }
+    
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[" + " status:" + getStatus()
@@ -663,5 +655,31 @@ public class FileBasedEventConsumer
      */
     public final void setKeepRuntimeDir(boolean keepRuntimeDir) {
         this.keepRuntimeDir = keepRuntimeDir;
+    }
+
+    /**
+     * Used to create a unique timestamp useful for creating unique temp dir names.  
+     */
+    static class UniqueTimeStampProvider {
+        // Dateformat for creating flow instance temp dirs.
+        final static SimpleDateFormat DATEFORMATTER = new SimpleDateFormat("yyyyMMdd'-'HHmmss-SSS");
+        static{
+            TimeZone TZ_UTC = TimeZone.getTimeZone("UTC");
+            DATEFORMATTER.setTimeZone(TZ_UTC);
+        }
+        
+        static long lastDate = new Date().getTime(); // arbitrary init
+        
+        synchronized static public String getTimeStamp() {
+            Date now;
+            do {
+                now = new Date();    
+            } while (lastDate == now.getTime());
+            lastDate = now.getTime();
+                        
+            final String timeStamp = DATEFORMATTER.format(now);
+            return timeStamp;
+        }
+        
     }
 }

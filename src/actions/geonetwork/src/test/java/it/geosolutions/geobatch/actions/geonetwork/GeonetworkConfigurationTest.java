@@ -29,6 +29,7 @@ import it.geosolutions.geobatch.xstream.Alias;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -100,7 +101,7 @@ public class GeonetworkConfigurationTest extends GeonetworkAbstractTest {
     }
 
     
-    public void testDump() {
+    public void testDump() throws IOException {
     
         GeonetworkInsertConfiguration cfg = createConfiguration();
         cfg.addPrivileges(42, "012345");
@@ -109,10 +110,10 @@ public class GeonetworkConfigurationTest extends GeonetworkAbstractTest {
     }
     
     
-    protected GeonetworkInsertConfiguration createConfiguration() {
+    protected GeonetworkInsertConfiguration createConfiguration() throws IOException {
         GeonetworkInsertConfiguration cfg = new GeonetworkInsertConfiguration("GNIC", "TestGeoNetworkInsert", "test configuration");
-        cfg.setWorkingDirectory("/tmp");
-
+//        cfg.setWorkingDirectory("/tmp");
+        cfg.setConfigDir(File.createTempFile("test", "test").getParentFile()); // TODO checkme
         cfg.setGeonetworkServiceURL(gnServiceUrl);
         cfg.setLoginUsername(gnUsername);
         cfg.setLoginPassword(gnPassword);

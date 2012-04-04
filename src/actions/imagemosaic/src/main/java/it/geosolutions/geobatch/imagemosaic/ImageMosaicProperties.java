@@ -245,7 +245,7 @@ public abstract class ImageMosaicProperties {
         if (!datastore.exists()) {
             if (configuration.getDatastorePropertiesPath() != null) {
                 File dsFile = Path.findLocation(configuration.getDatastorePropertiesPath(),
-                        new File(configuration.getWorkingDirectory()));
+                        configuration.getOverrideConfigDir());
                 
                 if (dsFile == null) {
                     if (LOGGER.isWarnEnabled()) {

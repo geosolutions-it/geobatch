@@ -84,11 +84,11 @@ public class XstreamConfiguration extends ActionConfiguration implements Configu
     @Override
     public XstreamConfiguration clone(){
         final XstreamConfiguration ret=(XstreamConfiguration)super.clone();
-        ret.setWorkingDirectory(this.getWorkingDirectory());
-        ret.setServiceID(this.getServiceID());
-        ret.setOutput(this.getOutput());
-        ret.setAlias(this.getAlias()); // TODO copy!!!
-        ret.setListenerConfigurations(ret.getListenerConfigurations());
+        
+        ret.setAlias(new HashMap<String, String>());
+        if(getAlias()!=null)
+            ret.getAlias().putAll(this.getAlias());
+
         return ret;
     }
 }
