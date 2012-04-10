@@ -35,6 +35,7 @@ import it.geosolutions.geobatch.global.CatalogHolder;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -46,10 +47,13 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -86,7 +90,7 @@ public class JMXServiceManager implements ActionManager {
 
     private static FileBasedFlowManager flowManager;
 
-    final FileBasedFlowConfiguration flowManagerConfig;
+    private FileBasedFlowConfiguration flowManagerConfig;
 
     private static File configDirFile;
     
@@ -96,8 +100,9 @@ public class JMXServiceManager implements ActionManager {
     @Resource(type = org.springframework.context.ApplicationContext.class)
     private ApplicationContext context;
 
-    public JMXServiceManager() throws Exception {
-        catalog = CatalogHolder.getCatalog();
+    @PostConstruct
+    public void initialize() throws Exception{
+    	catalog = CatalogHolder.getCatalog();
 
         flowManager = catalog.getResource(FLOW_MANAGER_ID,
                                           it.geosolutions.geobatch.flow.file.FileBasedFlowManager.class);
@@ -109,11 +114,11 @@ public class JMXServiceManager implements ActionManager {
             flowManagerConfig = new FileBasedFlowConfiguration(FLOW_MANAGER_ID, FLOW_MANAGER_ID, "Auto generated " + FLOW_MANAGER_ID,
                         null, null);
 
-            configDirFile = new File(DataDirHandler.GEOBATCH_CONFIG_DIR,FLOW_MANAGER_ID);
+            configDirFile = flowManager.initConfigDir(flowManagerConfig, dataDirHandler.getBaseConfigDirectory());
             if (!configDirFile.exists()) {
-                if (!(configDirFile.getParentFile().canWrite() && configDirFile.mkdir())) {
+                if (!configDirFile.mkdir()) {
                     throw new IllegalArgumentException("Unable to automatically create the " + FLOW_MANAGER_ID
-                                                       + " working dir into:"
+                                                       + " working dir into: "
                                                        + configDirFile.getAbsolutePath().toString());
                 }
             }
@@ -130,27 +135,19 @@ public class JMXServiceManager implements ActionManager {
             // TODO persistence (throws NullPointerException)
             // catalog.save(parent);
             // parent.persist();
-
-            if (!configDirFile.exists()) {
-                if (!(configDirFile.getParentFile().canWrite() && configDirFile.mkdir())) {
-                    throw new IllegalArgumentException("Unable to automatically create the " + FLOW_MANAGER_ID
-                                                       + " working dir into:"
-                                                       + configDirFile.getAbsolutePath().toString());
-                }
-            }
         } else {
             flowManagerConfig = flowManager.getConfiguration();
-
-            if (flowManagerConfig.getOverrideConfigDir() == null)
-                throw new IllegalArgumentException("Please set the flow config dir");
-
+            configDirFile = flowManager.initConfigDir(flowManagerConfig, dataDirHandler.getBaseConfigDirectory());
 
         }
 
         // TODO listener config
         // if ()
         // flowManagerConfig.getProgressListenerConfigurations();
-
+    }
+    
+    public JMXServiceManager() throws Exception {
+        
     }
 
     @Override
@@ -235,7 +232,6 @@ public class JMXServiceManager implements ActionManager {
                     }
                 }
 
-                actionConfig.setConfigDir(configDirFile);
                 if (actionConfig != null)
                     break;
             }
@@ -289,8 +285,11 @@ public class JMXServiceManager implements ActionManager {
                 LOGGER.info("Unable to add another consumer, consumer queue is full. "
                             + "Please dispose some completed consumer before submit a new one.");
             }
+            consumer.dispose();
             return null;
         }
+        
+        
         // execute
         flowManager.getExecutor().submit(consumer);
 
