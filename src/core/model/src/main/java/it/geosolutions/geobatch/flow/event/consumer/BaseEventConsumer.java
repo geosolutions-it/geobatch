@@ -269,8 +269,9 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
                     // currentAction = null; // don't null the action: we'd like to read which was the last action run
                 }
             }
-        } catch (Exception ex) {
-            throw new ActionException(currentAction, ex.getLocalizedMessage(), ex);
+        } catch (Error ex) { // this catch in not in the loop: it will catch Errors, which cant usually be recovered
+            LOGGER.error("Error in Action", ex);
+            throw ex;
         } finally {
             // set ending time
             endingTimestamp.setTimeInMillis(System.currentTimeMillis());
