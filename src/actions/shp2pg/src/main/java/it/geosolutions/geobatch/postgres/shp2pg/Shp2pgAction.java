@@ -327,12 +327,12 @@ public class Shp2pgAction extends BaseAction<EventObject> {
 
 		GSPostGISDatastoreEncoder datastoreEncoder = new GSPostGISDatastoreEncoder();
 
-		datastoreEncoder.addUser(configuration.getDbUID());
-		datastoreEncoder.addDatabase(configuration.getDbName());
-		datastoreEncoder.addPassword(configuration.getDbPWD());
-		datastoreEncoder.addHost(configuration.getDbServerIp());
-		datastoreEncoder.addPort(Integer.valueOf(configuration.getDbPort()));
-		datastoreEncoder.addName(configuration.getDbName());
+		datastoreEncoder.setUser(configuration.getDbUID());
+		datastoreEncoder.setDatabase(configuration.getDbName());
+		datastoreEncoder.setPassword(configuration.getDbPWD());
+		datastoreEncoder.setHost(configuration.getDbServerIp());
+		datastoreEncoder.setPort(Integer.valueOf(configuration.getDbPort()));
+		datastoreEncoder.setName(configuration.getDbName());
 
 		publisher.createPostGISDatastore(configuration.getDefaultNamespace(),
 				datastoreEncoder);

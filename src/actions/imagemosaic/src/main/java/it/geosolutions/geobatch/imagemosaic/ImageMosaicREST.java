@@ -83,12 +83,12 @@ public abstract class ImageMosaicREST {
 
 	    final GSImageMosaicEncoder coverageEnc=new GSImageMosaicEncoder();
 
-	    coverageEnc.addName(mosaicDescriptor.getCoverageStoreId());
-	    coverageEnc.addTitle(mosaicDescriptor.getCoverageStoreId());
-	    coverageEnc.addSRS(config.getCrs()!=null?config.getCrs():"");
+	    coverageEnc.setName(mosaicDescriptor.getCoverageStoreId());
+	    coverageEnc.setTitle(mosaicDescriptor.getCoverageStoreId());
+	    coverageEnc.setSRS(config.getCrs()!=null?config.getCrs():"");
 	    
 //	    coverageEnc.setMaxAllowedTiles(config.get) //TODO
-	    coverageEnc.addMaxAllowedTiles(Integer.MAX_VALUE);
+	    coverageEnc.setMaxAllowedTiles(Integer.MAX_VALUE);
 	    
 
         final String noData;
