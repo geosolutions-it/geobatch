@@ -150,7 +150,7 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 			try {
 
 				if (xslPath != null && xslPath.trim().length() > 0) {
-					final String path=Path.findLocation(xslPath,configuration.getConfigDir().getAbsolutePath());
+					final String path=Path.findLocation(xslPath,getConfigDir().getAbsolutePath());
 					if (path==null){
 						final ActionException e = new ActionException(this, "XSL file not found: " + path);
 						listenerForwarder.failed(e);
@@ -168,7 +168,7 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 				String outputFile = null;
 				if (useDefaultScript) {
 					if (defaultScriptPath != null && defaultScriptPath.trim().length() > 0) {
-						final String path = Path.findLocation(xslPath, configuration.getConfigDir().getAbsolutePath());
+						final String path = Path.findLocation(xslPath, getConfigDir().getAbsolutePath());
 						if (path == null){
 							final ActionException e = new ActionException(this, "XSL file not found: " + path);
 							listenerForwarder.failed(e);

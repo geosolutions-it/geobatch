@@ -44,6 +44,7 @@ import java.util.Queue;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.omg.CORBA.INITIALIZE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,8 +68,13 @@ public class FreeMarkerAction
 	private final FreeMarkerConfiguration conf;
 
 	/** the FreeMarker processor */
-	final FreeMarkerFilter processor;
+	private FreeMarkerFilter processor;
 
+	/**
+	 * has {@link #initialize()} been called?
+	 */
+	private boolean initialized=false;
+	
 	/**
 	 * 
 	 * @param configuration
@@ -79,26 +85,30 @@ public class FreeMarkerAction
 		super(configuration);
 		conf = configuration;
 		
+	}
+	
+	private void initialize(){
 		File templateFile=null;
 		if (conf.getInput() != null){
 		    templateFile= new File(conf.getInput());
 		    if (!templateFile.isAbsolute()){
-		        templateFile = Path.findLocation(templateFile, conf.getConfigDir());
+		        templateFile = Path.findLocation(templateFile, getConfigDir());
 		    }
 		}
                 
 		if (templateFile == null)
 			throw new IllegalArgumentException("Unable to resolve the template dir"
                     + " (templatePath:"+conf.getInput()
-                    + " configDir:"+configuration.getConfigDir()+")");
+                    + " configDir:"+getConfigDir()+")");
 
                 if(LOGGER.isDebugEnabled()) {
                     LOGGER.debug("FreeMarker template dir is  " + templateFile);
-                    LOGGER.debug("FreeMarker config dir is    " + conf.getConfigDir());
+                    LOGGER.debug("FreeMarker config dir is    " + getConfigDir());
                     LOGGER.debug("FreeMarker conf.getInput is " + conf.getInput());
                 }
 
 		processor = new FreeMarkerFilter(templateFile.getParent(), templateFile.getName());
+		initialized=true;
 	}
 
     /**
@@ -124,6 +134,11 @@ public class FreeMarkerAction
 	public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
         
 		listenerForwarder.started();
+		
+		listenerForwarder.setTask("initializing the FreeMarker engine");
+		if (!initialized)
+			initialize();
+		
 		listenerForwarder.setTask("build the output absolute file name");
 
         // build the output absolute file name

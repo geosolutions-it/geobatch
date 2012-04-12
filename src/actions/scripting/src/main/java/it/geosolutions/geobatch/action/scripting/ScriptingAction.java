@@ -71,7 +71,10 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 	 * set of well known keys
 	 */
 	public static final String CONFIG_KEY="configuration";
-	public static final String CONTEXT_KEY="context";
+	public static final String TEMPDIR_KEY="tempDir";
+	@Deprecated
+	public static final String CONTEXT_KEY=TEMPDIR_KEY;
+	public static final String CONFIGDIR_KEY="configDir";
 	public static final String LISTENER_KEY="listenerForwarder";
 	public static final String EVENTS_KEY="events";
 	public static final String RETURN_KEY="return";
@@ -119,8 +122,7 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 				throw new ActionException(this, "Configuration is null.");
 			}
 
-			final String scriptName = Path.getAbsolutePath(configuration
-					.getScriptFile());
+			final String scriptName = it.geosolutions.tools.commons.file.Path.findLocation(configuration.getScriptFile(),getConfigDir().getAbsolutePath());
 			if (scriptName == null)
 				throw new ActionException(this,
 						"Unable to locate the script file name: "
@@ -217,7 +219,8 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 			// call the script
 			final Map<String,Object> argsMap = new HashedMap();
 			argsMap.put(ScriptingAction.CONFIG_KEY,configuration);
-			argsMap.put(ScriptingAction.CONTEXT_KEY,getTempDir());
+			argsMap.put(ScriptingAction.TEMPDIR_KEY,getTempDir());
+			argsMap.put(ScriptingAction.CONFIGDIR_KEY,getConfigDir());
 			argsMap.put(ScriptingAction.EVENTS_KEY,events);
 			argsMap.put(ScriptingAction.LISTENER_KEY,listenerForwarder);
 			

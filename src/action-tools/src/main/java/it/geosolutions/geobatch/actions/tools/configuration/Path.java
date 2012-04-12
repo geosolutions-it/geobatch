@@ -63,7 +63,7 @@ public final class Path {
 
 		try {
 			File fo = it.geosolutions.tools.commons.file.Path.findLocation(
-					working_dir, c.getBaseDirectory());
+					working_dir, c.getConfigDirectory());
 			if (fo != null) {
 				return fo.toString();
 			}
