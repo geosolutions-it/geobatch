@@ -22,7 +22,6 @@ import java.util.concurrent.Future;
 import javax.management.BadAttributeValueExpException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.NullArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,7 +159,7 @@ public class GeoServerReload extends BaseAction<EventObject> {
 			throws BadAttributeValueExpException {
 
 		if (xml == null)
-			throw new NullArgumentException("input file is null");
+			throw new IllegalArgumentException("input file is null");
 
 		XStream stream = new XStream();
 

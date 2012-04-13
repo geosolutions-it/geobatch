@@ -78,6 +78,7 @@
       <groupId>net.sf.retrotranslator</groupId>
       <artifactId>retrotranslator-runtime</artifactId>
     </dependency>
+
     <dependency>
       <groupId>javax.script</groupId>
       <artifactId>js-engine</artifactId>
@@ -89,13 +90,16 @@
     <dependency>
       <groupId>javax.script</groupId>
       <artifactId>groovy-engine</artifactId>
-      <classifier>jdk14</classifier>
+      <classifier>jdk14</classifier> <!-- 1.4 ??-->
     </dependency>
     <dependency>
-      <groupId>groovy</groupId>
-      <artifactId>groovy-all</artifactId>
+	<groupId>org.codehaus.groovy</groupId>
+	<artifactId>groovy-all</artifactId>
     </dependency>
-    <dependency>
+
+       <!-- jruby integration has to be reworked -->
+<!--
+        <dependency>
       <groupId>javax.script</groupId>
       <artifactId>jruby-engine</artifactId>
     </dependency>
@@ -103,6 +107,7 @@
       <groupId>jruby</groupId>
       <artifactId>jruby</artifactId>
     </dependency>
+-->
     <dependency>
       <groupId>javax.script</groupId>
       <artifactId>jython-engine</artifactId>
