@@ -607,7 +607,7 @@ public class FileBasedEventConsumer
         }
         action.setTempDir(actionTempDir);
         
-        File actionConfigDir = initConfigDir(action.getActionConfiguration(), flowConfigDir);
+        File actionConfigDir = initConfigDir(action.getConfiguration(), flowConfigDir);
         action.setConfigDir(actionConfigDir);
     }
 

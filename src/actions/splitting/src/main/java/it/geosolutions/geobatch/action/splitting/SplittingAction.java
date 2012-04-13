@@ -42,15 +42,8 @@ import org.slf4j.LoggerFactory;
 public class SplittingAction extends BaseAction<FileSystemEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SplittingAction.class.getName());
 
-    private SplittingConfiguration configuration;
-
     public SplittingAction(SplittingConfiguration configuration) throws IOException {
         super(configuration);
-        this.configuration = configuration;
-    }
-
-    protected SplittingConfiguration getConfiguration() {
-        return configuration;
     }
 
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
@@ -77,7 +70,7 @@ public class SplittingAction extends BaseAction<FileSystemEvent> {
                 listenerForwarder.setTask("Processing event " + event);
 
                 // FORWARDING EVENTS
-                for (String flowId : configuration.getServiceIDs()) {
+                for (String flowId : ((SplittingConfiguration) getConfiguration()).getServiceIDs()) {
                     FileBasedFlowManager flow = CatalogHolder.getCatalog().getResource(flowId,
                             FileBasedFlowManager.class);
                     if (flow != null) {

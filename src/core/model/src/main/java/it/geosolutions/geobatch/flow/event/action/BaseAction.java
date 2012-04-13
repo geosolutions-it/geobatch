@@ -21,9 +21,7 @@
  */
 package it.geosolutions.geobatch.flow.event.action;
 
-import it.geosolutions.geobatch.catalog.Descriptable;
 import it.geosolutions.geobatch.catalog.impl.BaseDescriptable;
-import it.geosolutions.geobatch.catalog.impl.BaseIdentifiable;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.FlowManager;
 import it.geosolutions.geobatch.flow.Job;
@@ -34,7 +32,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
-import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +81,7 @@ public abstract class BaseAction<XEO extends EventObject>
 
     protected boolean failIgnored = false;
 
-    private ActionConfiguration actionConfiguration;
+    private ActionConfiguration configuration;
     
     public BaseAction(String id, String name, String description) {
         super(id, name, description);
@@ -97,7 +94,7 @@ public abstract class BaseAction<XEO extends EventObject>
                 actionConfiguration.getName(),
                 actionConfiguration.getDescription());
 
-        this.actionConfiguration = actionConfiguration;
+        this.configuration = actionConfiguration;
         listenerForwarder = new ProgressListenerForwarder(this);
         failIgnored = actionConfiguration.isFailIgnored();
     }
@@ -138,8 +135,8 @@ public abstract class BaseAction<XEO extends EventObject>
         this.configDir = configDir;
     }
 
-    public ActionConfiguration getActionConfiguration() {
-        return actionConfiguration;
+    public ActionConfiguration getConfiguration() {
+        return configuration;
     }
     
     public void destroy() {
