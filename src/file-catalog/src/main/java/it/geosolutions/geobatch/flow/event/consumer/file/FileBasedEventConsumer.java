@@ -629,9 +629,9 @@ public class FileBasedEventConsumer
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[" + " status:" + getStatus()
-               + " actions:" + actions.size() + " context: " + getRunningContext() + " events:"
-               + eventsQueue.size() + " still missing:" + numInputFiles + (isPaused() ? " PAUSED" : "")
+        return getClass().getSimpleName() + "[" + " status:" + getStatus() + " actions:" + actions.size()
+               + " tempDir:" + getFlowInstanceTempDir() + " events:" + eventsQueue.size()
+               + (isPaused() ? " PAUSED" : "")
                + (eventsQueue.isEmpty() ? "" : (" first event:" + eventsQueue.peek().getSource().getName()))
                + "]";
     }

@@ -22,10 +22,9 @@ import org.springframework.core.io.ClassPathResource;
 /**
  * 
  * @author etj
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public class ScriptingTest extends Assert {
-
-    
 
     @Test
     public void testLoop() throws ScriptException {
