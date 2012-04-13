@@ -9,8 +9,6 @@
     <failIgnored>false</failIgnored>
     <listenerConfigurations/>
 
-    <workingDirectory>sample_geonetwork/</workingDirectory>
-
     <!-- geonetwork action's specific params -->
     <geonetworkServiceURL>http://localhost:8080/geonetwork</geonetworkServiceURL>
     <loginUsername>admin</loginUsername>

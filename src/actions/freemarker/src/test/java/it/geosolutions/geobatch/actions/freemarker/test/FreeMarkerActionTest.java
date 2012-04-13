@@ -48,74 +48,6 @@ import org.junit.Test;
  */
 
 public class FreeMarkerActionTest extends BaseTest {
-    
-    /*
-     * 
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!-- OCTAVE ENV -->
-        <octave>
-          <sheets>
-                <!-- OCTAVE SHEET -->
-                <sheet name="${SHEET_NAME}">
-                  <commands>
-                        <OctaveCommand executed="false">
-                                <command>source "${event.SOURCE_PATH}";</command>
-                        </OctaveCommand>
-                        <OctaveCommand executed="false">
-                                <command>cd "${event.WORKING_DIR}";</command>
-                        </OctaveCommand>
-                        <OctaveCommand executed="false">
-                                <command>mars3d("${event.FILE_IN}","${event.FILE_OUT}");</command>
-                        </OctaveCommand>
-                  </commands>
-                  <definitions/>
-                  <returns/>
-                </sheet>
-          </sheets>
-        </octave>
-     */
-    
-//    @Test
-//    public void testXstream() throws ActionException {
-//        //FileSystemEvent ev=queue.get(0);
-//        FileInputStream fis=null;
-//        try{
-//            File mapFile=new File("/home/carlo/work/data/briseide/dynamic/raster/pph/20101012T210000_pph/20101012T210000_pph.xml");//ev.getSource();
-//            XStream xstream=new XStream();
-//            fis=new FileInputStream(mapFile);
-//            Map<String,Object> map=(Map<String, Object>) xstream.fromXML(fis);
-//            System.out.println(map.get("LAYERNAME"));
-//            
-//            String layerName=(String) map.get("LAYERNAME");
-//            
-//            String runtimeString=layerName.substring(0,layerName.indexOf('_'));
-//            TimeParser parser=new TimeParser();
-//            try {
-//                List<Date> date=parser.parse(runtimeString);
-//                final SimpleDateFormat iso801= new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
-//                final String runtime=iso801.format(date.get(0));
-//                System.out.println("RUNTIME: "+runtime);
-//                map.put("RUNTIME",runtime);
-//            } catch (ParseException e) {
-//                
-//            }
-//            
-//            
-//            System.out.println(map.get("CRS"));
-//        }
-//        catch (IOException ioe){
-//            
-//        }
-//        finally {
-//            try{ 
-//                if (fis!=null)
-//                    fis.close();
-//            }
-//            catch (Exception e)
-//            {}
-//        }
-//        
-//    }
         
     @Test
     public void test() throws ActionException, IllegalAccessException, FileNotFoundException, IOException {
@@ -128,7 +60,6 @@ public class FreeMarkerActionTest extends BaseTest {
         fmc.setDirty(false);
         fmc.setFailIgnored(false);
         fmc.setServiceID("serviceID");
-        fmc.setConfigDir(testDir);
 //        fmc.setWorkingDirectory(workingDir.getAbsolutePath());
         fmc.setInput("test.xml");
         fmc.setOutput(getTempDir().getAbsolutePath()+"/out");
@@ -168,7 +99,7 @@ public class FreeMarkerActionTest extends BaseTest {
         FreeMarkerAction fma=new FreeMarkerAction(fmc);
 //        fma.setRunningContext(workingDir.getAbsolutePath());
         fma.setTempDir(getTempDir());
-        
+        fma.setConfigDir(testDir);
         q=fma.execute(q);
         try{
             FileSystemEvent res=(FileSystemEvent)q.remove();
@@ -193,8 +124,6 @@ public class FreeMarkerActionTest extends BaseTest {
         fmc.setFailIgnored(false);
         fmc.setServiceID("serviceID");
         
-//        fmc.setWorkingDirectory(workingDir.getAbsolutePath());
-        fmc.setConfigDir(testDir);
 
         File outDir = new File(getTempDir(), "out");
         outDir.mkdir(); // output dir is expected to exist
@@ -227,6 +156,7 @@ public class FreeMarkerActionTest extends BaseTest {
         
         FreeMarkerAction fma=new FreeMarkerAction(fmc);
         fma.setTempDir(getTempDir());
+        fma.setConfigDir(testDir);
         
         q=fma.execute(q);
         try{

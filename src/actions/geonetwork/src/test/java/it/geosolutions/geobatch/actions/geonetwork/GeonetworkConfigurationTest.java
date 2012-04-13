@@ -112,8 +112,7 @@ public class GeonetworkConfigurationTest extends GeonetworkAbstractTest {
     
     protected GeonetworkInsertConfiguration createConfiguration() throws IOException {
         GeonetworkInsertConfiguration cfg = new GeonetworkInsertConfiguration("GNIC", "TestGeoNetworkInsert", "test configuration");
-//        cfg.setWorkingDirectory("/tmp");
-        cfg.setConfigDir(File.createTempFile("test", "test").getParentFile()); // TODO checkme
+
         cfg.setGeonetworkServiceURL(gnServiceUrl);
         cfg.setLoginUsername(gnUsername);
         cfg.setLoginPassword(gnPassword);
