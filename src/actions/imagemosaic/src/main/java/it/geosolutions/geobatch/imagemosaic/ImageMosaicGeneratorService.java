@@ -21,8 +21,7 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
+import java.util.EventObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ImageMosaicGeneratorService extends
-        ImageMosaicService<FileSystemEvent, ImageMosaicConfiguration> {
+        ImageMosaicService<EventObject, ImageMosaicConfiguration> {
 
     public ImageMosaicGeneratorService(String id, String name, String description) {
         super(id, name, description);
@@ -49,7 +48,6 @@ public class ImageMosaicGeneratorService extends
      * @return new JGSFLoDeSSSWANFileConfigurator()
      */
     public ImageMosaicAction createAction(ImageMosaicConfiguration configuration) {
-            // absolutize working dir
             return new ImageMosaicAction(configuration);
     }
 
@@ -73,7 +71,7 @@ public class ImageMosaicGeneratorService extends
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message,new IllegalStateException(message));
             }
-        } catch (Throwable e) {
+        } catch (Error e) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(e.getLocalizedMessage(), e);
         }

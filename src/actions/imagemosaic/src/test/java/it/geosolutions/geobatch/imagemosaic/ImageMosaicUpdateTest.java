@@ -121,7 +121,7 @@ public class ImageMosaicUpdateTest {
 		Assert.assertNotNull(action);
 
 		// queue
-		Queue<FileSystemEvent> queue = new LinkedList<FileSystemEvent>();
+		Queue queue = new LinkedList<FileSystemEvent>();
 		queue.add(new FileSystemEvent(imgMscCmdFile,
 				FileSystemEventType.FILE_ADDED));
 
@@ -166,7 +166,7 @@ public class ImageMosaicUpdateTest {
 		Assert.assertNotNull(action);
 
 		// queue
-		Queue<FileSystemEvent> queue = new LinkedList<FileSystemEvent>();
+		Queue queue = new LinkedList<FileSystemEvent>();
 		queue.add(new FileSystemEvent(imgMscCmdFile,
 				FileSystemEventType.FILE_ADDED));
 

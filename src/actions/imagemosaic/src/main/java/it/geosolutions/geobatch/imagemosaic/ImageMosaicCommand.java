@@ -86,10 +86,10 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements
 		init();
 	}
 
+	@Deprecated
 	public ImageMosaicCommand() {
 		super("imageMosaicCommand", "imageMosaicCommand",
 				"imageMosaicCommand config");
-		init();
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements
 
 	public ImageMosaicCommand(final File baseDir, final List<File> addFiles,
 			final List<File> delFiles) {
-		super("imageMosaicCommand", "imageMosaicCommand",
+		super("imageMosaicCommand_"+baseDir, "imageMosaicCommand",
 				"imageMosaicCommand config");
 		this.baseDir = baseDir;
 		this.addFiles = addFiles;
@@ -166,7 +166,7 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements
 
 	public ImageMosaicCommand(final String baseDir,
 			final List<String> addFiles, final List<String> delFiles) {
-		super("imageMosaicCommand", "imageMosaicCommand",
+		super("imageMosaicCommand_"+baseDir, "imageMosaicCommand",
 				"imageMosaicCommand config");
 		this.baseDir = new File(baseDir);
 		if (addFiles != null) {

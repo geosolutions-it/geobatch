@@ -24,7 +24,6 @@ package it.geosolutions.geobatch.imagemosaic;
 import it.geosolutions.tools.commons.file.Path;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -240,49 +239,48 @@ public abstract class ImageMosaicProperties {
      *            the directory of the layer
      * @return File (unchecked) datastore.properties if succes or null if some error occurred.
      */
-    protected static File checkDataStore(ImageMosaicConfiguration configuration, File baseDir) {
+    protected static File checkDataStore(ImageMosaicConfiguration configuration, File configDir, File baseDir) {
         final File datastore = new File(baseDir, "datastore.properties");
-        if (!datastore.exists()) {
-            if (configuration.getDatastorePropertiesPath() != null) {
-                File dsFile = Path.findLocation(configuration.getDatastorePropertiesPath(),
-                        configuration.getOverrideConfigDir());
-                
-                if (dsFile == null) {
-                    if (LOGGER.isWarnEnabled()) {
-                        LOGGER.warn("Unable to get the absolute "
-                                + "path of the 'datastore.properties'");
-                    }
-                    return null;
+        if (datastore.exists()) {
+            return datastore;
+        }
+        
+        if (configuration.getDatastorePropertiesPath() == null) {
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn("DataStoreProperties file not configured "
+                        + "nor found into destination dir. A shape file will be used.");
+            }
+            return null;
+        }
+        
+        final File dsFile = Path.findLocation(configuration.getDatastorePropertiesPath(),configDir);
+        if (dsFile == null) {
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn("Unable to get the absolute "
+                        + "path of the 'datastore.properties'");
+            }
+        }
+        if (dsFile != null) {
+            if (!dsFile.isDirectory()) {
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("Configuration DataStore file found: '"
+                            + dsFile.getAbsolutePath() + "'.");
                 }
-                if (dsFile != null) {
-                    if (!dsFile.isDirectory()) {
-                        if (LOGGER.isInfoEnabled()) {
-                            LOGGER.info("Configuration DataStore file found: '"
-                                    + dsFile.getAbsolutePath() + "'.");
-                        }
-                        try {
-                            FileUtils.copyFileToDirectory(dsFile, baseDir);
-                        } catch (IOException e) {
-                            if (LOGGER.isWarnEnabled())
-                                LOGGER.warn(e.getMessage(),e);
-                            return null;
-                        }
-                    } else {
-                        if (LOGGER.isWarnEnabled()) {
-                            LOGGER.warn("DataStoreProperties file points to a directory! "
-                                    + dsFile.getAbsolutePath() + "'. Skipping event");
-                        }
-                        return null;
-                    }
+                try {
+                    FileUtils.copyFileToDirectory(dsFile, baseDir);
+                    return new File(baseDir,dsFile.getName());
+                } catch (IOException e) {
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(e.getMessage(),e);
                 }
             } else {
                 if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn("DataStoreProperties file not configured "
-                            + "nor found into destination dir. A shape file will be used.");
+                    LOGGER.warn("DataStoreProperties file points to a directory! "
+                            + dsFile.getAbsolutePath() + "'. Skipping event");
                 }
             }
         }
-        return datastore;
+        return null;
     }
 
 }

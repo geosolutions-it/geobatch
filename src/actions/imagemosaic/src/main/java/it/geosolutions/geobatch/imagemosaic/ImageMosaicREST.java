@@ -85,7 +85,9 @@ public abstract class ImageMosaicREST {
 
 	    coverageEnc.setName(mosaicDescriptor.getCoverageStoreId());
 	    coverageEnc.setTitle(mosaicDescriptor.getCoverageStoreId());
-	    coverageEnc.setSRS(config.getCrs()!=null?config.getCrs():"");
+	    if (config.getCrs()!=null){
+	        coverageEnc.setSRS(config.getCrs());
+	    }
 	    
 //	    coverageEnc.setMaxAllowedTiles(config.get) //TODO
 	    coverageEnc.setMaxAllowedTiles(Integer.MAX_VALUE);
@@ -206,7 +208,7 @@ public abstract class ImageMosaicREST {
         	}
         }
         else {
-        	coverageEnc.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);	
+        	coverageEnc.setProjectionPolicy(ProjectionPolicy.NONE);	
         }
         
         coverageEnc.setLatLonBoundingBox(
@@ -218,7 +220,7 @@ public abstract class ImageMosaicREST {
 
 
         if (LOGGER.isDebugEnabled()){
-        	LOGGER.debug("ImageMosaicREST.createGSCoverageEncoder(): Coverage configuration:\n"+coverageEnc.toString());
+        	LOGGER.debug("Coverage configuration:\n"+coverageEnc.toString());
         }
         
         return coverageEnc;
