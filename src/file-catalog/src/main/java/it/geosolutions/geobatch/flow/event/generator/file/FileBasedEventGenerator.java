@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author AlFa (Alessio Fabiani)
- * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public class FileBasedEventGenerator<T extends EventObject> 
     extends BaseEventGenerator<T> {
@@ -135,7 +135,7 @@ public class FileBasedEventGenerator<T extends EventObject>
 		try {
 			watchDirectory = Path.findLocation(configuration
 					.getWatchDirectory(), ((FileBaseCatalog) CatalogHolder
-					.getCatalog()).getBaseDirectory());
+					.getCatalog()).getConfigDirectory());
 		} catch (Exception e){
 			// eat
 			LOGGER.warn("Unable to setup the watchDirectory, this may be a problem!");
@@ -159,10 +159,10 @@ public class FileBasedEventGenerator<T extends EventObject>
 			throw new IllegalArgumentException("Unable to initialize "
 					+ "FileBasedEventGenerator using a null watchingDirectory");
 		} else {
-			// really important otherwise GEOBATCH_DATA_DIR will be empty
+			// really important otherwise GEOBATCH_CONFIG_DIR contents will be erased!!!
 			this.keepFiles = true;
 			this.watchDirectory = watchDirectory = ((FileBaseCatalog) CatalogHolder
-					.getCatalog()).getBaseDirectory();
+					.getCatalog()).getConfigDirectory();
 		}
 		// WORKAROUND
 
