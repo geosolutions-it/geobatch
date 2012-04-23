@@ -24,7 +24,6 @@ package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.octave.OctaveEnv;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
@@ -49,7 +48,7 @@ import dk.ange.octave.exception.OctaveEvalException;
 
 public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
        
-    private final static Logger LOGGER = LoggerFactory.getLogger(OctaveFreeMarkerAction.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(OctaveFreeMarkerAction.class);
     
     private final OctaveFreeMarkerConfiguration config;
 

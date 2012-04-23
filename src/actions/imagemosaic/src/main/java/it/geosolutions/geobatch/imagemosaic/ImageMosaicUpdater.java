@@ -111,7 +111,7 @@ abstract class ImageMosaicUpdater {
 		 */
 		// case fileLocation IN ('f1','f2',...,'fn')
 		if (key[0] == null) {
-			throw new NullPointerException(
+			throw new IllegalArgumentException(
 					"The passed argument key list contains a null element!");
 		}
 		StringBuilder query = new StringBuilder(key[0] + " IN (");
@@ -492,10 +492,11 @@ abstract class ImageMosaicUpdater {
 		/*
 		 * CHECK IF ADD FILES ARE ALREADY INTO THE LAYER
 		 */
-		if (addFilter != null) {
+		if (addFilter == null) {
 			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("the ADD file list is not used to query datastore. Probably it is empty");
+				LOGGER.info("the ADD query ins null. Probably add list is empty");
 			}
+			return false;
 		}
 
 		FeatureReader<SimpleFeatureType, SimpleFeature> fr = null;
@@ -728,11 +729,16 @@ abstract class ImageMosaicUpdater {
 	 * @param cmd
 	 * @return boolean representing the operation success (true) or failure
 	 *         (false)
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws IllegalArgumentException 
 	 */
 	protected static boolean updateDataStore(Properties mosaicProp,
 			Properties dataStoreProp,
 			ImageMosaicGranulesDescriptor mosaicDescriptor,
-			ImageMosaicCommand cmd) {
+			ImageMosaicCommand cmd) throws IllegalArgumentException, InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
 
 		if (mosaicProp == null) {
 			if (LOGGER.isErrorEnabled()) {
@@ -798,13 +804,17 @@ abstract class ImageMosaicUpdater {
 			Filter delFilter = null;
 			// query
 			try {
-				delFilter = getQuery(delList, absolute, locationKey);
-			} catch (NullPointerException npe) {
-				if (LOGGER.isWarnEnabled()) {
-					LOGGER.warn("The command contain a null delFile list.\nSKIPPING deletion list."
-							+ npe.getLocalizedMessage());
-				}
-			}
+			    delFilter = getQuery(delList, absolute, locationKey);
+                        } catch (IllegalArgumentException e) {
+                            if (LOGGER.isWarnEnabled()) {
+                                LOGGER.warn(e.getLocalizedMessage());
+                            }
+                        } catch (CQLException e) {
+                            if (LOGGER.isErrorEnabled()) {
+                                LOGGER.error("Unable to build a query. Message: " + e, e);
+                            }
+                            return false;
+                        }
 
 			// REMOVE features
 			if (!removeFeatures(dataStore, store, delFilter)) {
@@ -820,14 +830,14 @@ abstract class ImageMosaicUpdater {
 			// calculate the query
 			try {
 				addFilter = getQuery(addList, absolute, locationKey);
-			} catch (NullPointerException npe) {
+			} catch (IllegalArgumentException e) {
 				if (LOGGER.isWarnEnabled()) {
-					LOGGER.warn(npe.getLocalizedMessage(), npe);
+					LOGGER.warn(e.getLocalizedMessage());
 				}
-			} catch (CQLException cqle) {
+			} catch (CQLException e) {
 				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error("Unable to build a query. Message: " + cqle,
-							cqle);
+					LOGGER.error("Unable to build a query. Message: " + e,
+							e);
 				}
 				return false;
 			}
@@ -840,16 +850,13 @@ abstract class ImageMosaicUpdater {
 
 			// //////////////////////////////////
 			if (cmd.getAddFiles() == null) {
-				final String message = "addFiles list is null Here.";
-
 				if (LOGGER.isWarnEnabled()) {
-					LOGGER.warn(message);
+					LOGGER.warn("addFiles list is null Here.");
 				}
 				return false;
 			} else if (cmd.getAddFiles().size() == 0) {
-				final String message = "No more images to add to the layer were found, please check the command.";
 				if (LOGGER.isWarnEnabled()) {
-					LOGGER.warn(message);
+					LOGGER.warn("No more images to add to the layer were found, please check the command.");
 				}
 				return false;
 			} else if (cmd.getAddFiles().size() > 0) {
@@ -881,14 +888,7 @@ abstract class ImageMosaicUpdater {
 				}
 			} // addFiles size > 0
 
-		} catch (CQLException cqle) {
-			if (LOGGER.isErrorEnabled()) {
-				LOGGER.error(
-						"Unable to build a query. Message: "
-								+ cqle.getLocalizedMessage(), cqle);
-			}
-			return false;
-		} catch (Throwable e) {
+		} catch (Error e) {
 
 			if (LOGGER.isErrorEnabled()) {
 				LOGGER.error(e.getLocalizedMessage(), e);

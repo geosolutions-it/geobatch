@@ -73,71 +73,30 @@ class ImageMosaicOutput {
     final String workspace, final String layername) {
 
         final File layerDescriptor = new File(outDir, layername + ".xml");
-
-        FileWriter outFile = null;
+        FileWriter outFile=null;
         try {
-            if (layerDescriptor.createNewFile()) {
+            final XStream xstream = new XStream();
+            outFile = new FileWriter(layerDescriptor);
+            // the output structure
+            Map<String, Object> outMap = new HashMap<String, Object>();
 
-                try {
-                    final XStream xstream = new XStream();
-                    outFile = new FileWriter(layerDescriptor);
-                    // the output structure
-                    Map<String, Object> outMap = new HashMap<String, Object>();
+            outMap.put(STORENAME_KEY, storename);
+            outMap.put(WORKSPACE_KEY, workspace);
+            outMap.put(LAYERNAME_KEY, layername);
 
-                    outMap.put(STORENAME_KEY, storename);
-                    outMap.put(WORKSPACE_KEY, workspace);
-                    outMap.put(LAYERNAME_KEY, layername);
+            setReaderData(baseDir, outMap);
 
-                    setReaderData(baseDir, outMap);
-
-                    xstream.toXML(outMap, outFile);
-
-                } catch (XStreamException e) {
-                    // XStreamException - if the object cannot be serialized
-                    if (LOGGER.isErrorEnabled())
-                        LOGGER.error("ImageMosaicAction.writeReturn(): setReturn the object cannot be serialized");
-                } finally {
-                    IOUtils.closeQuietly(outFile);
-                }
-
-                // PrintWriter out = null;
-                // try {
-                //
-                // /*
-                // * F.E. a layer called 'data' will result in: namespace=topp metocFields=data
-                // * storeid=data layerid=data driver=ImageMosaic path=/
-                // */
-                // outFile = new FileWriter(layerDescriptor);
-                // out = new PrintWriter(outFile);
-                // // Write text to file
-                // // out.println("namespace=" + layerResponse[1]);
-                // // out.println("metocFields=" + mosaicDescriptor.getMetocFields());
-                // // out.println("storeid=" + mosaicDescriptor.getCoverageStoreId());
-                // // out.println("layerid=" + inputDir.getName());
-                // // out.println("driver=ImageMosaic");
-                // // out.println("path=" + File.separator);
-                // } catch (IOException e) {
-                // if (LOGGER.isErrorEnabled())
-                // LOGGER.error("Error occurred while writing indexer.properties file!", e);
-                // } finally {
-                // if (out != null) {
-                // out.flush();
-                // out.close();
-                // }
-                //
-                // outFile = null;
-                // out = null;
-                // }
-            } else {
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error("ImageMosaic:setReturn(): unable to create the output file: "
-                            + layerDescriptor.getAbsolutePath());
-                }
-            }
+            xstream.toXML(outMap, outFile);
+        } catch (XStreamException e) {
+            // XStreamException - if the object cannot be serialized
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("setReturn the object cannot be serialized");
         } catch (IOException e) {
-            if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn("ImageMosaic:setReturn(): " + e.getMessage(), e);
-            }
+            // XStreamException - if the object cannot be serialized
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("setReturn the object cannot be serialized");
+        } finally {
+            IOUtils.closeQuietly(outFile);
         }
         return layerDescriptor;
     }

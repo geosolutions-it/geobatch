@@ -83,14 +83,10 @@ public class SheetPreprocessor {
                             oes.pushReturns(sheet.getReturns());
                             
                             env.push(oes);
-                        }
-                        catch (OctaveException oe){
+                        } catch (Exception oe){
                             if (LOGGER.isErrorEnabled())
                                 LOGGER.error("Unable to build the sheet named: "+f.getName()
                                         +" message is:\n"+oe.getLocalizedMessage());
-// debug
-oe.printStackTrace();
-                            throw oe;
                         }
                     }
                     else {

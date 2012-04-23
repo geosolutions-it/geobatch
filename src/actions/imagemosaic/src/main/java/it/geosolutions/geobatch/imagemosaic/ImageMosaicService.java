@@ -22,12 +22,10 @@
 
 package it.geosolutions.geobatch.imagemosaic;
 
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
-import java.io.File;
 import java.util.EventObject;
 
 import org.slf4j.Logger;

@@ -22,7 +22,6 @@
 
 package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveFunctionFile;
 import it.geosolutions.geobatch.octave.SheetBuilder;
@@ -62,9 +61,11 @@ public class FreeMarkerSheetBuilder extends SheetBuilder {
     /**
      * The prototype of the mars3d function is:
      * mars3d(file_in,file_out);
+     * @throws IOException 
+     * @throws IllegalArgumentException 
      */
     @Override
-    protected OctaveExecutableSheet buildSheet(OctaveFunctionFile off) throws OctaveException{
+    protected OctaveExecutableSheet buildSheet(OctaveFunctionFile off) throws OctaveException, IllegalArgumentException, IOException {
         
         XStream stream=new XStream();
         stream.processAnnotations(OctaveFunctionFile.class);
@@ -84,7 +85,7 @@ public class FreeMarkerSheetBuilder extends SheetBuilder {
             throw new OctaveParseException(message);
         }
         // the filter for this object
-        final FreeMarkerFilter filter=new FreeMarkerFilter(conf.getOverrideConfigDir().getAbsolutePath(), reader); // TODO checkme
+        final FreeMarkerFilter filter=new FreeMarkerFilter(conf.getOverrideConfigDir(), reader); // TODO checkme
         // the stream to a byte array (buffer)
         final ByteArrayOutputStream outStream= new ByteArrayOutputStream();
         // a writer to that buffer

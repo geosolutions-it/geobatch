@@ -16,7 +16,7 @@
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb</artifactId>
     <packaging>pom</packaging>
-  <version>1.3-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
     <name>GeoSolutions GeoBatch</name>
   <!--    <url>http://www.geo-solutions.it/maven_reports/gb/</url>-->
     <description>
@@ -93,8 +93,8 @@
   <!--     manner relevant to the purpose of the "site" goal.      -->
   <!-- =========================================================== -->
     <properties>
-        <tools.version>1.0.1-SNAPSHOT</tools.version>
-    <geoserver.manager.version>1.4.1-SNAPSHOT</geoserver.manager.version>
+        <tools.version>1.1-SNAPSHOT</tools.version>
+        <geoserver.manager.version>1.4-SNAPSHOT</geoserver.manager.version>
         <gt.version>8-SNAPSHOT</gt.version>
         <imageio-ext.version>1.2-M102011</imageio-ext.version>
         <spring.version>3.0.3.RELEASE</spring.version>
@@ -106,8 +106,8 @@
         <jt.version>1.2.0</jt.version>
         <jetty.version>6.1.8</jetty.version>
         <nelios.restlet.version>1.1.6</nelios.restlet.version>
-    <dao.type>xstream</dao.type>
-    <!-- the default dao type -->
+        <dao.type>xstream</dao.type>
+        <!-- the default dao type -->
         <allow.test.skip>true</allow.test.skip>
         <allow.test.failure.ignore>false</allow.test.failure.ignore>
         <extensive.tests>false</extensive.tests>

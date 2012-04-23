@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.octave;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,9 +36,11 @@ public abstract class SheetBuilder {
      * [ret1,ret2,...,retN]=function_name(arg1,arg2,...,argN);
      * 
      * @return a string as above
+     * @throws IOException 
+     * @throws IllegalArgumentException 
      * @note this can be overrided
      */
-    protected OctaveExecutableSheet buildSheet(OctaveFunctionFile off) throws OctaveException{
+    protected OctaveExecutableSheet buildSheet(OctaveFunctionFile off) throws OctaveException, IllegalArgumentException, IOException{
         List<SerializableOctaveObject<?>> returns=off.getReturns();
         List<SerializableOctaveObject<?>> arguments=off.getDefinitions();
         List<OctaveCommand> commands=off.getCommands();

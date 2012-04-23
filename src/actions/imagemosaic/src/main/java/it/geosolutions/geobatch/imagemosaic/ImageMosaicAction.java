@@ -499,6 +499,26 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                 LOGGER.error(t.getLocalizedMessage(), t);
             listenerForwarder.failed(t);
             throw new ActionException(this, t.getMessage(), t);
+        } catch (IllegalArgumentException e) {
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
+            listenerForwarder.failed(e);
+            throw new ActionException(this, e.getMessage(), e);
+        } catch (InstantiationException e) {
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
+            listenerForwarder.failed(e);
+            throw new ActionException(this, e.getMessage(), e);
+        } catch (IllegalAccessException e) {
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
+            listenerForwarder.failed(e);
+            throw new ActionException(this, e.getMessage(), e);
+        } catch (ClassNotFoundException e) {
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
+            listenerForwarder.failed(e);
+            throw new ActionException(this, e.getMessage(), e);
         }
     }
 

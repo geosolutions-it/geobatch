@@ -44,7 +44,6 @@ import java.util.Queue;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.omg.CORBA.INITIALIZE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +86,7 @@ public class FreeMarkerAction
 		
 	}
 	
-	private void initialize(){
+	private void initialize() throws IllegalArgumentException, IOException {
 		File templateFile=null;
 		if (conf.getInput() != null){
 		    templateFile= new File(conf.getInput());
@@ -107,26 +106,9 @@ public class FreeMarkerAction
                     LOGGER.debug("FreeMarker conf.getInput is " + conf.getInput());
                 }
 
-		processor = new FreeMarkerFilter(templateFile.getParent(), templateFile.getName());
+		processor = new FreeMarkerFilter(templateFile);
 		initialized=true;
 	}
-
-    /**
-     * Return the absolute dir represented by "dir", rooted at "parentDir" if needed.
-     * 
-     * @return the absolute dir represented by "dir", rooted at "parentDir" if needed, or null if no existing dir could be found.
-     */
-    private File resolveDir(File dir, File parentDir) {
-        if(dir == null)
-            return parentDir;
-
-        if(dir.isAbsolute() ) {
-            return dir.exists() ? dir : null;
-        } else {
-            File absDir = new File(parentDir, dir.getPath());
-            return absDir.exists() ? absDir : null;
-        }
-    }
 
 	/**
 	 * Removes TemplateModelEvents from the queue and put
@@ -136,8 +118,15 @@ public class FreeMarkerAction
 		listenerForwarder.started();
 		
 		listenerForwarder.setTask("initializing the FreeMarker engine");
-		if (!initialized)
-			initialize();
+		if (!initialized){
+		    try {
+                        initialize();
+                    } catch (IllegalArgumentException e) {
+                        throw new ActionException(this, e.getLocalizedMessage(),e.getCause());
+                    } catch (IOException e) {
+                        throw new ActionException(this, e.getLocalizedMessage(),e.getCause());
+                    }
+		}
 		
 		listenerForwarder.setTask("build the output absolute file name");
 
