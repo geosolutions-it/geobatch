@@ -365,8 +365,8 @@ If you pass an ImageMosaicCommand (IMC) to the imagemosaic action (you can also 
 4. If the mosaic does not exists:
  - copy a datastore.properties to the base directory (which tells to the GeoTools ImageMosaic pluging where to store/update the datastore)
  - create the indexer.properties into the base directory (which tells to the GeoTools ImageMosaic pluging how the read and handle mosaic metadata such as time and elevation)
- - create the time.regex into the base directory (the time regex)
- - create the elevation.regex into the base directory (the elevation regex)
+ - create the timeregex.properites into the base directory (the time regex)
+ - create the elevationregex.properites into the base directory (the elevation regex)
  - Using GeoServer Manager create the ImageMosaic on the target geoserver using specified (from IMC or flow configuration) options
 4. If the mosaic exists:
  - connect to the target datastore using the datastore.properties from the base dir (if itsn't present the ImageMosaic uses a shape file, in this case the action will exit with error)
