@@ -23,8 +23,8 @@ package it.geosolutions.geobatch.actions.freemarker;
 
 import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import java.util.HashMap;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -54,15 +54,12 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
      * @param name
      * @param description
      * @param dirty
-     * @param in
-     *            the input template file
-     * @param out
-     *            the output filtered (resulting) file
-     * @param r
-     *            the root data model to use as root
+     * @param in the input template file
+     * @param out the output filtered (resulting) file
+     * @param r the root data model to use as root
      */
-    public FreeMarkerConfiguration(String id, String name, String description, boolean dirty,
-            String in, String out, Map<String, Object> r) {
+    public FreeMarkerConfiguration(String id, String name, String description, boolean dirty, String in,
+                                   String out, Map<String, Object> r) {
         super(id, name, description);
         input = in;
         output = out;
@@ -104,29 +101,32 @@ public class FreeMarkerConfiguration extends ActionConfiguration implements Conf
      * return the template path
      * 
      * @return the template path
-     * @note this object can be null anyway the templateIn should be always present into the
-     *       configuration.
+     * @note this object can be null anyway the templateIn should be always
+     *       present into the configuration.
      */
     public final String getInput() {
         return input;
     }
 
     /**
-     * The absolute path where the output should be put into.
-     * Optional.
-     * If not defined, the Action's tempDir will be used.
+     * The absolute path where the output should be put into. Optional. If not
+     * defined, the Action's tempDir will be used.
      * 
-     * @return the output absolute path where the output files should be created, or null.
+     * @return the output absolute path where the output files should be
+     *         created, or null.
      */
     public final String getOutput() {
         return output;
     }
-    
+
     @Override
-    public FreeMarkerConfiguration clone(){
+    public FreeMarkerConfiguration clone() {
         final FreeMarkerConfiguration ret = (FreeMarkerConfiguration)super.clone();
 
-        ret.root = new HashMap<String, Object>(this.root);
+        if (this.root != null)
+            ret.root = new HashMap<String, Object>(this.root);
+        else
+            ret.root = null;
 
         return ret;
     }
