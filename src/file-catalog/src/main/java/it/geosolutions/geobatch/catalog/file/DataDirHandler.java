@@ -44,13 +44,14 @@ import org.springframework.web.context.WebApplicationContext;
  * DataDirHandler will try to retrieve the value for GEOBATCH_CONFIG_DIR. <br/>
  * If not found, it will try to retrieve a setting for the older GEOBATCH_DATA_DIR.<br/><br/>
  *
- * Then it will try to retrieve the value for GEOBATCH_TEMP_DIR. If not found, the temp dir will be placed inside a temp/ dir
- * under the main config dir.
+ * Then it will try to retrieve the value for GEOBATCH_TEMP_DIR. If not found, the temp dir will be set to GEOBATCH_CONFIG_DIR/temp/.
+ * If this directory does not exists it will be created, an IllegalStateException is thrown if it is not writeable.
  *
  * <li></li>
  * <li></li>
  *
  * @author Etj
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public class DataDirHandler implements ApplicationContextAware {
 
@@ -63,13 +64,11 @@ public class DataDirHandler implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     /**
      * The base directory where the configuration files are located. <br/>
-     *
-     * The workingDirectory will be relative to this base
-     * directory unless an absolute path will be specified.
      */
-//    private File dataDir;
-
     private File baseConfigDir;
+    /**
+     * The temporary directory where the temporary files are created. <br/>
+     */
     private File baseTempDir;
 
     public DataDirHandler() {
@@ -85,33 +84,45 @@ public class DataDirHandler implements ApplicationContextAware {
         baseConfigDir = retrieveConfiguredDir(GEOBATCH_CONFIG_DIR);
         if(baseConfigDir == null) {
             obsolete = true;
-            LOGGER.error("No " + GEOBATCH_CONFIG_DIR + " configuration was found. Will try for older " + GEOBATCH_DATA_DIR);
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn("No " + GEOBATCH_CONFIG_DIR + " configuration was found. Will try for older " + GEOBATCH_DATA_DIR);
 
             baseConfigDir = retrieveConfiguredDir(GEOBATCH_DATA_DIR);
             if(baseConfigDir == null) {
-                LOGGER.error("No " + GEOBATCH_DATA_DIR + " configuration was found. Will try to force a default one.");
+                if (LOGGER.isWarnEnabled())
+                    LOGGER.warn("No " + GEOBATCH_DATA_DIR + " configuration was found. Will try to force a default one.");
                 baseConfigDir = forceDataDir(); // assign or throw
             }
         }
-
-        LOGGER.error("----------------------------------");
-        if(obsolete) {
-            LOGGER.error("- OBSOLETE GEOBATCH_DATA_DIR: " + baseConfigDir.getAbsolutePath());
-            LOGGER.error("- Please update this configuration using GEOBATCH_CONFIG_DIR setting");
-        } else
-            LOGGER.error("- GEOBATCH_CONFIG_DIR: " + baseConfigDir.getAbsolutePath());
-        LOGGER.error("----------------------------------");
+        if (LOGGER.isInfoEnabled()){
+                LOGGER.info("----------------------------------");
+            if(obsolete) {
+                LOGGER.info("- OBSOLETE GEOBATCH_DATA_DIR: " + baseConfigDir.getAbsolutePath());
+                LOGGER.info("- Please update this configuration using GEOBATCH_CONFIG_DIR setting");
+            } else
+                LOGGER.info("- GEOBATCH_CONFIG_DIR: " + baseConfigDir.getAbsolutePath());
+            LOGGER.info("----------------------------------");
+        }
 
         // and now for the TEMP_DIR
 
         baseTempDir = retrieveConfiguredDir(GEOBATCH_TEMP_DIR);
         if(baseTempDir == null) {
-            LOGGER.error("No " + GEOBATCH_TEMP_DIR+ " configuration was found. Will be forced.");
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("No " + GEOBATCH_TEMP_DIR+ " configuration was found. Will be forced.");
             baseTempDir = new File(baseConfigDir, "temp");
+            if (!baseTempDir.exists()){
+                baseTempDir.mkdir();
+                if (!baseTempDir.canRead() || !baseTempDir.canWrite()){
+                    throw new IllegalStateException("Unable to read/write from the temp dir:"+baseTempDir);
+                }
+            }
         }
-        LOGGER.error("----------------------------------");
-        LOGGER.error("- GEOBATCH_TEMP_DIR: " + baseTempDir.getAbsolutePath());
-        LOGGER.error("----------------------------------");
+        if (LOGGER.isInfoEnabled()){
+            LOGGER.info("----------------------------------");
+            LOGGER.info("- GEOBATCH_TEMP_DIR: " + baseTempDir.getAbsolutePath());
+            LOGGER.info("----------------------------------");
+        }
     }
 
     /**
@@ -135,7 +146,7 @@ public class DataDirHandler implements ApplicationContextAware {
      * @return the base directory where the temporary directories will be created in.
      */
     public File getBaseTempDirectory() {
-        return this.baseConfigDir;
+        return this.baseTempDir;
     }
    
     /**
