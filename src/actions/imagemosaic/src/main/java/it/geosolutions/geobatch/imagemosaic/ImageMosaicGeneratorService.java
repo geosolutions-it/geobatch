@@ -53,29 +53,23 @@ public class ImageMosaicGeneratorService extends
 
     @Override
     public boolean canCreateAction(ImageMosaicConfiguration configuration) {
-        try {            
-            // //
-            // data flow configuration and dataStore name must not be null.
-            // //
-
             if (configuration == null) {
                 final String message = "ImageMosaicAction: DataFlowConfig is null.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message,new IllegalStateException(message));
+                return false;
             } else if ((configuration.getGeoserverURL() == null)) {
                 final String message = "GeoServerURL is null.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message,new IllegalStateException(message));
+                return false;
             } else if (configuration.getGeoserverURL().isEmpty()) {
                 final String message = "GeoServerURL is empty.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message,new IllegalStateException(message));
+                return false;
             }
-        } catch (Error e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-        }
-        return false;
+            return true;
     }
 
 }

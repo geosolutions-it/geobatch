@@ -121,11 +121,11 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     continue;
                 }
 
-                if (evObj instanceof FileSystemEventType) {
+                if (evObj instanceof FileSystemEvent) {
                     /*
                      * Checking input files.
                      */
-                    final File input = (File)evObj;
+                    final File input = ((FileSystemEvent)evObj).getSource();
                     if (!input.exists()) {
                         // no file is found for this event try with the next one
                         if (LOGGER.isWarnEnabled()) {
@@ -293,8 +293,6 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("Failed to check for datastore.properties into:" + baseDir);
                         }
-                        // error occurred
-                        continue;
                     }
 
                     /*
