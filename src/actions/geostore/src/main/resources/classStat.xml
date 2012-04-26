@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<statisticConfiguration>
+    <name>area_admin_classified</name>
+    <title>Forest change in admin areas</title>
+    <description>Compute the area for the administrative areas.</description>
+
+    <topic>rdc</topic>
+    <topic>area</topic>
+    <topic>administrative</topic>
+    <topic>forest</topic>
+
+    <stats>
+        <stat>SUM</stat>
+    </stats>
+
+    <deferredMode>true</deferredMode>
+
+    <dataLayer>
+        <file>c:/work/Repository/rdc_admin_area2.tif</file>
+    </dataLayer>
+
+    <classificationLayer zonal="true">
+        <file>c:/work/Repository/rdc_limite_administrative_fixed_4326_tiled.tif</file>
+        <nodata>65535</nodata>
+    </classificationLayer>
+
+    <classificationLayer>
+        <file>c:/work/Repository/rdc_limite_administrative_fixed_4326_tiled.tif</file>
+        <nodata>0.0</nodata>
+        <pivot>
+            <value>1.0</value>
+            <value>2.0</value>
+            <value>3.0</value>
+            <value>4.0</value>
+            <value>5.0</value>
+            <value>6.0</value>
+        </pivot>
+    </classificationLayer>
+
+
+    <output>
+        <format>CSV</format>
+        <separator>;</separator>
+        <missingValue>0</missingValue>
+        <NaNValue>-1</NaNValue>
+        <file>area_admin_classified_6.csv</file>
+    </output>
+
+</statisticConfiguration>

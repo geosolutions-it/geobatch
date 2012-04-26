@@ -253,6 +253,18 @@
       </modules>
     </profile>
     <profile>
+      <id>geostore</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>geostore</module>
+      </modules>
+    </profile>
+    <profile>
       <id>commons</id>
       <activation>
         <property>

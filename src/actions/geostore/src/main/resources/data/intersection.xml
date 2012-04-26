@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<id>intersection</id>
+	<description>Intersection configuration flow</description>
+	<name>Intersection flow</name>
+	
+	<workingDirectory>intersection/</workingDirectory>
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>intersection/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<interval>* * * * * ?</interval><!-- CRON: every minute at sec 0 -->
+		<!--<interval>20</interval> each 20 sec -->
+		<id>IntersectionFlow</id>
+		<serviceID>fsEventGeneratorService</serviceID>
+		<description>Intersection event generator description</description>
+		<name>Intersection</name>
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		<id>intersection</id>
+		<description>intersection</description>
+		<name>intersection</name>
+		
+		<workingDirectory>intersection/</workingDirectory>
+		<performBackup>false</performBackup>
+		
+		<FileEventRule>
+			<optional>false</optional>
+			<originalOccurrencies>1</originalOccurrencies>
+			<regex>.*\.*</regex>
+			<id>r1</id>
+			<description>description</description>
+			<name>Intersection</name>
+		</FileEventRule>
+		
+		<IntersectionConfiguration>
+			<serviceID>IntersectionGeneratorService</serviceID>
+			<id>IntersectionGeneratorService</id>
+			<description>Intersection action</description>
+			<name>IntersectionConfiguration</name>
+			
+			<listenerConfigurations/>
+			<failIgnored>false</failIgnored>
+		  
+			<workingDirectory>intersection/</workingDirectory>
+			
+			<!-- 
+			<alias>
+				<entry>
+					<string>IntersectionConfiguration</string>
+					<string>it.geosolutions.geobatch.actions.intersection.IntersectionConfiguration</string>
+				</entry>
+			</alias>
+			 -->
+		</IntersectionConfiguration>
+		
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>

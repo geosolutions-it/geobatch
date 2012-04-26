@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+   <layername>pippo</layername>
+   <year>2011</year>
+   <tiff>rdc_admin_area2.tif</tiff>
+   <token1>value1</token1>
+   <token2>value2</token2>
+</request>

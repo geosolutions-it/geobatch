@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =======================================================================    
+        Maven Project Configuration File                                        
+                                                                                
+        GeoSolutions GeoBatch Project                                                    
+            http://geobatch.codehaus.org
+                                                                                            
+        Version: $Id: pom.xml 329 2011-06-14 13:00:49Z ccancellieri $              
+     ======================================================================= -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                               http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-actions</artifactId>
+        <version>1.3-SNAPSHOT</version>
+    </parent>
+
+  <!-- =========================================================== -->
+  <!--     Module Description                                      -->
+  <!-- =========================================================== -->
+    <groupId>it.geosolutions.geobatch</groupId>
+    <artifactId>gb-action-geostore</artifactId>
+    <packaging>jar</packaging>
+
+    <name>GeoBatch action: geostore</name>
+    <description>GeoSolutions GeoBatch Action: geostore</description>
+    <url>http://www.geo-solutions.it/maven_reports/gb/</url>
+  
+    <scm>
+        <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/</connection>
+        <url>http://svn.geotools.org/geotools/trunk/gt/modules/</url>
+    </scm>
+  
+
+    <licenses>
+        <license>
+            <name>Lesser General Public License (LGPL)</name>
+            <url>http://www.gnu.org/copyleft/lesser.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+  <!-- =========================================================== -->
+  <!--     Dependency Management                                   -->
+  <!-- =========================================================== -->
+    <dependencies>
+   		
+        <!-- =========================================================== -->
+        <!-- GeoBatch -->
+        <!-- =========================================================== -->
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-core-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-fs-catalog</artifactId>
+        </dependency>
+	
+        <!-- tools -->
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-action-tools</artifactId>
+        </dependency>
+
+        <!-- =========================================================== -->
+        <!-- GeoStore -->
+        <!-- =========================================================== -->
+
+        <dependency>
+            <groupId>it.geosolutions.geostore</groupId>
+            <artifactId>geostore-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions.geostore</groupId>
+            <artifactId>geostore-services-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions.geostore</groupId>
+            <artifactId>geostore-rest-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions.geostore</groupId>
+            <artifactId>geostore-rest-client</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>

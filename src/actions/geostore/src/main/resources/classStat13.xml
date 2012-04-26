@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<statisticConfiguration>
+    <name>area_admin_classified_13</name>
+    <title>Forest change in admin areas - 13 classes</title>
+    <description>Compute the area for the administrative areas, 13 classes.</description>
+
+    <topic>rdc</topic>
+    <topic>area</topic>
+    <topic>administrative</topic>
+    <topic>forest</topic>
+
+    <stats>
+        <stat>SUM</stat>
+    </stats>
+
+    <deferredMode>true</deferredMode>
+
+    <dataLayer>
+        <file>/home/geosol/data/unredd/rdc_admin_area.tif</file>
+    </dataLayer>
+
+    <classificationLayer zonal="true">
+        <file>/home/geosol/data/unredd/rdc_limite_administrative_tiled.tif</file>
+        <nodata>65535</nodata>
+    </classificationLayer>
+
+    <classificationLayer>
+        <file>/home/geosol/data/unredd/map13_tiled.tif</file>
+        <nodata>0.0</nodata>
+        <pivot>
+            <value>1.0</value>
+            <value>2.0</value>
+            <value>3.0</value>
+            <value>4.0</value>
+            <value>5.0</value>
+            <value>6.0</value>
+            <value>7.0</value>
+            <value>8.0</value>
+            <value>9.0</value>
+            <value>10.0</value>
+            <value>11.0</value>
+            <value>12.0</value>
+            <value>13.0</value>
+        </pivot>
+    </classificationLayer>
+
+
+    <output>
+        <format>CSV</format>
+        <separator>;</separator>
+        <missingValue>0</missingValue>
+        <NaNValue>0</NaNValue>
+        <file>area_admin_classified_13.csv</file>
+    </output>
+
+</statisticConfiguration>
