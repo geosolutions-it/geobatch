@@ -189,14 +189,11 @@ class ImageMosaicOutput {
             }
         } catch (IOException e) {
             if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn("ImageMosaic:setReturn(): " + e.getMessage(), e);
+                LOGGER.warn(e.getMessage(), e);
             }
         }
         return layerDescriptor;
     }
-
-    private static String HAS_TIME_DOMAIN_KEY = "HAS_TIME_DOMAIN";
-
 
     private static String NATIVE_LOWER_CORNER_FIRST_KEY = "NATIVE_LOWER_CORNER_FIRST";
 
