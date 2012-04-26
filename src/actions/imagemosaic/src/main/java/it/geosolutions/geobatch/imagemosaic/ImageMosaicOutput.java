@@ -197,7 +197,6 @@ class ImageMosaicOutput {
 
     private static String HAS_TIME_DOMAIN_KEY = "HAS_TIME_DOMAIN";
 
-    private static String TIME_DOMAIN_KEY = "TIME_DOMAIN";
 
     private static String NATIVE_LOWER_CORNER_FIRST_KEY = "NATIVE_LOWER_CORNER_FIRST";
 
@@ -244,7 +243,7 @@ class ImageMosaicOutput {
             }
 
             if (!IMAGEMOSAIC_FORMAT.accepts(directory)) {
-                final String message = "ImageMosaicOutput.setReaderData(): IMAGEMOSAIC_FORMAT do not accept the directory: "
+                final String message = "IMAGEMOSAIC_FORMAT do not accept the directory: "
                         + directory.getAbsolutePath();
                 final IOException ioe = new IOException(message);
                 if (LOGGER.isErrorEnabled())
@@ -261,21 +260,34 @@ class ImageMosaicOutput {
                     LOGGER.error(message, ioe);
                 throw ioe;
             }
-
+            
             // HAS_TIME_DOMAIN this is a boolean String with values true|false. Meaning is obvious.
             // TIME_DOMAIN this returns a String that is a comma separated list of time values in
             // ZULU time using the ISO 8601 format (yyyy-MM-dd'T'HH:mm:ss.SSS)
-            if (reader.getMetadataValue(HAS_TIME_DOMAIN_KEY) == "true") {
-                map.put(HAS_TIME_DOMAIN_KEY, Boolean.TRUE);
-                final String times = reader.getMetadataValue(TIME_DOMAIN_KEY);
+            if (reader.getMetadataValue(AbstractGridCoverage2DReader.HAS_TIME_DOMAIN) == "true") {
+                map.put(AbstractGridCoverage2DReader.HAS_TIME_DOMAIN, Boolean.TRUE);
+                final String times = reader.getMetadataValue(AbstractGridCoverage2DReader.TIME_DOMAIN);
                 final Set<String> timesList = new TreeSet<String>();
                 for (String time : times.split(",")) {
                     timesList.add(time);
                 }
 //                Collections.sort(timesList);
-                map.put(TIME_DOMAIN_KEY, timesList);
+                map.put(AbstractGridCoverage2DReader.TIME_DOMAIN, timesList);
             } else {
-                map.put(HAS_TIME_DOMAIN_KEY, Boolean.FALSE);
+                map.put(AbstractGridCoverage2DReader.HAS_TIME_DOMAIN, Boolean.FALSE);
+            }
+            
+            // ELEVATION
+            if (reader.getMetadataValue(AbstractGridCoverage2DReader.HAS_ELEVATION_DOMAIN) == "true") {
+                map.put(AbstractGridCoverage2DReader.HAS_ELEVATION_DOMAIN, Boolean.TRUE);
+                final String elevations = reader.getMetadataValue(AbstractGridCoverage2DReader.ELEVATION_DOMAIN);
+                final Set<String> elevList = new TreeSet<String>();
+                for (String time : elevations.split(",")) {
+                    elevList.add(time);
+                }
+                map.put(AbstractGridCoverage2DReader.ELEVATION_DOMAIN, elevList);
+            } else {
+                map.put(AbstractGridCoverage2DReader.HAS_ELEVATION_DOMAIN, Boolean.FALSE);
             }
 
             final GeneralEnvelope originalEnvelope = reader.getOriginalEnvelope();
