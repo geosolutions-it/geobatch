@@ -22,8 +22,6 @@
 
 package it.geosolutions.geobatch.catalog.impl;
 
-import java.util.UUID;
-
 import it.geosolutions.geobatch.catalog.Identifiable;
 
 public abstract class BaseIdentifiable implements Identifiable, Cloneable {
@@ -63,7 +61,6 @@ public abstract class BaseIdentifiable implements Identifiable, Cloneable {
     public BaseIdentifiable clone() {
         try {
             BaseIdentifiable bi = (BaseIdentifiable) super.clone();
-            bi.id = UUID.randomUUID().toString(); // check me: does this respect the clone contract?
             return bi;
         } catch (CloneNotSupportedException e) {
             // this shouldn't happen, since we are Cloneable

@@ -618,7 +618,7 @@ public class FileBasedEventConsumer
             if( ! ovr.isAbsolute())
                 ret = new File(flowConfigDir, ovr.getPath());
             else 
-                ret = ovr;            
+                ret = ovr;
         } else
             ret = new File(flowConfigDir, actionCfg.getId());
         
