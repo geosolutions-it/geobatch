@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://code.google.com/p/geobatch/
- *  Copyright (C) 2007-2011 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -69,6 +69,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Abstract class to provide update functions to the ImageMosaic action
@@ -167,6 +168,9 @@ abstract class ImageMosaicUpdater {
 	private static boolean setFeature(File baseDir, File granule,
 			SimpleFeature feature, String geometryName, String locationKey) {
 
+
+        String granuleBaseName = FilenameUtils.getBaseName(granule.getAbsolutePath());
+
 		// get attributes and copy them over
 		try {
 			AbstractGridFormat format = null;
@@ -212,8 +216,7 @@ abstract class ImageMosaicUpdater {
 			// granule.getName().replaceAll("\\", "\\\\"));
 
 			final File indexer = new File(baseDir, org.geotools.gce.imagemosaic.Utils.INDEXER_PROPERTIES);
-			final Properties indexerProps = ImageMosaicProperties
-					.getProperty(indexer);
+			final Properties indexerProps = ImageMosaicProperties.getProperty(indexer);
 
 			/**
 			 * @see {@link #org.geotools.gce.imagemosaic.properties.RegExPropertiesCollector.collect(File)}
@@ -221,18 +224,28 @@ abstract class ImageMosaicUpdater {
 			final String granuleName=FilenameUtils.getBaseName(granule.getName());
 			if (indexerProps.getProperty("TimeAttribute") != null) {
 				// TODO move out of the cycle
-				final File timeregex = new File(baseDir, "timeregex.properties");
-				final Properties timeProps = ImageMosaicProperties
-						.getProperty(timeregex);
-				final Pattern timePattern = Pattern.compile(timeProps
-						.getProperty("regex"));
+				final File timeregexFile = new File(baseDir, "timeregex.properties");
+				final Properties timeProps = ImageMosaicProperties.getProperty(timeregexFile);
+                String timeregex = timeProps.getProperty("regex");
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("time regex: --->"+timeregex+"<--");
+                }
+				final Pattern timePattern = Pattern.compile(timeregex);
 				// TODO move out of the cycle
-				if (timePattern != null) {
+				if (timePattern != null) { // when it is == null?????
 					final Matcher matcher = timePattern.matcher(granuleName);
 					if (matcher.find()) {
+                        String matchedGroup = matcher.group();
+                        if(LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("time regex is matching: ["+matchedGroup+"]");
+                        }
 						TimeParser timeParser = new TimeParser();
-						List<Date> dates = timeParser.parse(matcher.group());
-						if (dates != null && dates.size() > 0) {
+						List<Date> dates = timeParser.parse(matchedGroup);
+                        if(LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("TimeParser parsed dates:" + dates);
+                        }
+
+						if (dates != null && !dates.isEmpty()) {
 							Calendar cal = Calendar.getInstance();
 							cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 							cal.setTime(dates.get(0));
@@ -241,7 +254,11 @@ abstract class ImageMosaicUpdater {
 									indexerProps.getProperty("TimeAttribute"),
 									cal.getTime());
 						}
-					}
+					} else {
+                        if(LOGGER.isWarnEnabled()) {
+                            LOGGER.warn("time regex is not matching");
+                        }
+                    }
 				}
 			}
 
@@ -670,6 +687,9 @@ abstract class ImageMosaicUpdater {
 				// get the next feature to append
 				SimpleFeature feature = fw.next();
 				if (feature != null) {
+                    if(LOGGER.isInfoEnabled()) {
+                        LOGGER.info("Updating feature for file " + file);
+                    }
 					setFeature(baseDir, file, feature, geometryPropertyName,
 							locationKey);
 					fw.write();
@@ -806,26 +826,35 @@ abstract class ImageMosaicUpdater {
 			final List<File> delList = cmd.getDelFiles();
 			Filter delFilter = null;
 			// query
-			try {
-			    delFilter = getQuery(delList, absolute, locationKey);
-                        } catch (IllegalArgumentException e) {
-                            if (LOGGER.isWarnEnabled()) {
-                                LOGGER.warn(e.getLocalizedMessage());
-                            }
-                        } catch (CQLException e) {
+            if(delList != null && ! delList.isEmpty()) {
+    			try {
+                    delFilter = getQuery(delList, absolute, locationKey);
+                } catch (IllegalArgumentException e) {
+                    if (LOGGER.isWarnEnabled()) {
+                        LOGGER.warn(e.getLocalizedMessage());
+                    }
+                } catch (CQLException e) {
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("Unable to build a query. Message: " + e, e);
+                    }
+                    return false;
                             if (LOGGER.isErrorEnabled()) {
                                 LOGGER.error("Unable to build a query. Message: " + e, e);
                             }
                             return false;
-                        }
+                }
 
-			// REMOVE features
-			if (!removeFeatures(dataStore, store, delFilter)) {
-				if (LOGGER.isWarnEnabled()) {
-					LOGGER.warn("Failed to remove features.");
-				}
-				
-			}
+                // REMOVE features
+                if (!removeFeatures(dataStore, store, delFilter)) {
+                    if (LOGGER.isWarnEnabled()) {
+                        LOGGER.warn("Failed to remove features.");
+                    }
+                }
+            } else {
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("No items to delete");
+                }
+            }
 
 			// ///////////////////////////////////
 			final List<File> addList = cmd.getAddFiles();
@@ -854,10 +883,10 @@ abstract class ImageMosaicUpdater {
 			// //////////////////////////////////
 			if (cmd.getAddFiles() == null) {
 				if (LOGGER.isWarnEnabled()) {
-					LOGGER.warn("addFiles list is null Here.");
+					LOGGER.warn("addFiles list is null.");
 				}
 				return false;
-			} else if (cmd.getAddFiles().size() == 0) {
+			} else if ( cmd.getAddFiles().isEmpty()) {
 				if (LOGGER.isWarnEnabled()) {
 					LOGGER.warn("No more images to add to the layer were found, please check the command.");
 				}
@@ -870,6 +899,9 @@ abstract class ImageMosaicUpdater {
 				// store copied file for rollback purpose
 				List<File> addedFile = null;
 				if (!absolute) {
+                    if(LOGGER.isInfoEnabled()) {
+                        LOGGER.info("Starting file copy ("+cmd.getAddFiles().size()+" file/s)");
+                    }
 					addedFile = Copy.copyListFileToNFS(cmd.getAddFiles(),
 							cmd.getBaseDir(), false, ImageMosaicAction.WAIT);
 				}
@@ -891,7 +923,7 @@ abstract class ImageMosaicUpdater {
 				}
 			} // addFiles size > 0
 
-		} catch (Error e) {
+		} catch (Exception e) {
 
 			if (LOGGER.isErrorEnabled()) {
 				LOGGER.error(e.getLocalizedMessage(), e);

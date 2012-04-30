@@ -31,6 +31,12 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 		super(id, name, description);
 	}
 
+
+    /**
+     * Only used when updating.
+     * We'll assume the layer exists, and the reset will not be performed.
+     */
+    private boolean ignoreGeoServer = false;
 	/**
 	 * Try to use COARDS file name convention to parse file name. This is used
 	 * to get ImageMosaicGranulesDescription info
@@ -330,6 +336,18 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 		return runtimeRegex;
 	}
 
+    /**
+     * Only used when updating.
+     * We'll assume the layer exists, and the reset will not be performed.
+     */
+    public boolean getIgnoreGeoServer() {
+        return ignoreGeoServer;
+    }
+
+    public void setIgnoreGeoServer(boolean ignoreGeoServer) {
+        this.ignoreGeoServer = ignoreGeoServer;
+    }
+
 	@Override
 	public ImageMosaicConfiguration clone() {
 		return (ImageMosaicConfiguration)super.clone();
@@ -337,9 +355,14 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[" + "id:" + getId() + " name:"
-				+ getName() + " srvId:" + getServiceID() + " cfgDir:"
-				+ getOverrideConfigDir() + " GSurl:" + getGeoserverURL() + "]";
+		return getClass().getSimpleName() 
+                + "["
+                + "id:" + getId()
+                + " name:" + getName()
+                + " srvId:" + getServiceID()
+                + " GS:" + getGeoserverUID() + "@"+ getGeoserverURL()
+                + " ignoreGS:" + ignoreGeoServer
+                + "]";
 	}
 
 }

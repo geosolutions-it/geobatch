@@ -68,6 +68,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
      */
     protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicAction.class);
 
+    final private ImageMosaicConfiguration configuration;
     /**
      * Constructs a producer. The operation name will be the same than the
      * parameter descriptor name.
@@ -265,22 +266,30 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                                                                        getConfiguration().getGeoserverUID(),
                                                                        getConfiguration().getGeoserverPWD());
                 // REST library write
-                final GeoServerRESTPublisher gsPublisher = new GeoServerRESTPublisher(getConfiguration()
-                    .getGeoserverURL(), getConfiguration().getGeoserverUID(), getConfiguration()
-                    .getGeoserverPWD());
+                final GeoServerRESTPublisher gsPublisher = new GeoServerRESTPublisher(
+                        getConfiguration().getGeoserverURL(),
+                        getConfiguration().getGeoserverUID(),
+                        getConfiguration().getGeoserverPWD());
 
-                final String workspace = getConfiguration().getDefaultNamespace() != null
-                    ? getConfiguration().getDefaultNamespace() : "";
+                final String workspace = getConfiguration().getDefaultNamespace() != null  
+                        ? getConfiguration().getDefaultNamespace()
+                        : "";
 
                 /*
                  * Check if ImageMosaic layer already exists...
                  */
+
                 final boolean layerExists;
-                final RESTLayer layer = gsReader.getLayer(layerID);
-                if (layer == null)
-                    layerExists = false;
-                else
+
+                if(configuration.getIgnoreGeoServer()) {
+                    if(LOGGER.isInfoEnabled()) {
+                        LOGGER.info("GeoServer will be ignored by configuration. Assuming that an updated is required. ");
+                    }
                     layerExists = true;
+                } else {
+                    final RESTLayer layer = configuration.getIgnoreGeoServer()? null: gsReader.getLayer(layerID);
+                    layerExists = layer != null;
+                }
 
                 if (!layerExists) {
                     // layer does not exists so try to create a new one
@@ -288,7 +297,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     /*
                      * CHECKING FOR datastore.properties
                      */
-                    final File datastore = ImageMosaicProperties.checkDataStore(getConfiguration(), getConfigDir(), baseDir);
+                    final File datastore = ImageMosaicProperties.checkDataStore(getConfiguration(), getConfiguration().getConfigDir(), baseDir);
                     if (datastore == null) {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("Failed to check for datastore.properties into:" + baseDir);
@@ -396,7 +405,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     /*
                      * CHECKING FOR datastore.properties
                      */
-                    final File datastore = ImageMosaicProperties.checkDataStore(getConfiguration(), getConfigDir(), baseDir);
+                    final File datastore = ImageMosaicProperties.checkDataStore(getConfiguration(), getConfiguration().getConfigDir(), baseDir);
                     if (datastore == null) {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("Failed to check for datastore.properties");
@@ -452,16 +461,22 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                             LOGGER.info("Reset GeoServer Cache");
                         }
                         // clear GeoServer cached readers
-                        if (gsPublisher.reset()) {
-                            // SUCCESS update the Catalog
+                        if(configuration.getIgnoreGeoServer()) {
                             if (LOGGER.isInfoEnabled()) {
-                                LOGGER.info("Reset DONE");
+                                LOGGER.info("GeoServer is disabled by configuration. Reset will not be performed. ");
                             }
                         } else {
-                            if (LOGGER.isWarnEnabled()) {
-                                LOGGER.warn("GeoServer failed to reset cached readers.");
+                            if (gsPublisher.reset()) {
+                                // SUCCESS update the Catalog
+                                if (LOGGER.isInfoEnabled()) {
+                                    LOGGER.info("Reset DONE");
+                                }
+                            } else {
+                                if (LOGGER.isWarnEnabled()) {
+                                    LOGGER.warn("GeoServer failed to reset cached readers.");
+                                }
+                                continue;
                             }
-                            continue;
                         }
                     } else {
                         if (LOGGER.isWarnEnabled()) {
