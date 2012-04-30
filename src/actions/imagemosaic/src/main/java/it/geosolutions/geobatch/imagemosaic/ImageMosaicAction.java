@@ -68,7 +68,6 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
      */
     protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicAction.class);
 
-    final private ImageMosaicConfiguration configuration;
     /**
      * Constructs a producer. The operation name will be the same than the
      * parameter descriptor name.
@@ -281,13 +280,13 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
                 final boolean layerExists;
 
-                if(configuration.getIgnoreGeoServer()) {
+                if(getConfiguration().getIgnoreGeoServer()) {
                     if(LOGGER.isInfoEnabled()) {
                         LOGGER.info("GeoServer will be ignored by configuration. Assuming that an updated is required. ");
                     }
                     layerExists = true;
                 } else {
-                    final RESTLayer layer = configuration.getIgnoreGeoServer()? null: gsReader.getLayer(layerID);
+                    final RESTLayer layer = getConfiguration().getIgnoreGeoServer()? null: gsReader.getLayer(layerID);
                     layerExists = layer != null;
                 }
 
@@ -461,7 +460,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                             LOGGER.info("Reset GeoServer Cache");
                         }
                         // clear GeoServer cached readers
-                        if(configuration.getIgnoreGeoServer()) {
+                        if(getConfiguration().getIgnoreGeoServer()) {
                             if (LOGGER.isInfoEnabled()) {
                                 LOGGER.info("GeoServer is disabled by configuration. Reset will not be performed. ");
                             }

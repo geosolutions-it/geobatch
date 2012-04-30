@@ -838,10 +838,6 @@ abstract class ImageMosaicUpdater {
                         LOGGER.error("Unable to build a query. Message: " + e, e);
                     }
                     return false;
-                            if (LOGGER.isErrorEnabled()) {
-                                LOGGER.error("Unable to build a query. Message: " + e, e);
-                            }
-                            return false;
                 }
 
                 // REMOVE features
