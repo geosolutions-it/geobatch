@@ -48,7 +48,32 @@ import org.slf4j.LoggerFactory;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 
-class ImageMosaicOutput {
+public class ImageMosaicOutput {
+    
+    public static String NATIVE_LOWER_CORNER_FIRST_KEY = "NATIVE_LOWER_CORNER_FIRST";
+
+    public static String NATIVE_LOWER_CORNER_SECOND_KEY = "NATIVE_LOWER_CORNER_SECOND";
+
+    public static String NATIVE_UPPER_CORNER_FIRST_KEY = "NATIVE_UPPER_CORNER_FIRST";
+
+    public static String NATIVE_UPPER_CORNER_SECOND_KEY = "NATIVE_UPPER_CORNER_SECOND";
+
+    public static String LONLAT_LOWER_CORNER_FIRST_KEY = "LONLAT_LOWER_CORNER_FIRST";
+
+    public static String LONLAT_LOWER_CORNER_SECOND_KEY = "LONLAT_LOWER_CORNER_SECOND";
+
+    public static String LONLAT_UPPER_CORNER_FIRST_KEY = "LONLAT_UPPER_CORNER_FIRST";
+
+    public static String LONLAT_UPPER_CORNER_SECOND_KEY = "LONLAT_UPPER_CORNER_SECOND";
+
+    public static String CRS_KEY = "CRS";
+
+    public static String STORENAME = "STORENAME";
+
+    public static String WORKSPACE = "WORKSPACE";
+
+    public static String LAYERNAME = "LAYERNAME";
+    
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicOutput.class);
 
@@ -56,6 +81,8 @@ class ImageMosaicOutput {
      * used to read properties from an already created imagemosaic.
      */
     private static final AbstractGridFormat IMAGEMOSAIC_FORMAT = new ImageMosaicFormat();
+    
+    
 
     /**
      * /**
@@ -80,9 +107,9 @@ class ImageMosaicOutput {
             // the output structure
             Map<String, Object> outMap = new HashMap<String, Object>();
 
-            outMap.put(STORENAME_KEY, storename);
-            outMap.put(WORKSPACE_KEY, workspace);
-            outMap.put(LAYERNAME_KEY, layername);
+            outMap.put(STORENAME, storename);
+            outMap.put(WORKSPACE, workspace);
+            outMap.put(LAYERNAME, layername);
 
             setReaderData(baseDir, outMap);
 
@@ -137,9 +164,9 @@ class ImageMosaicOutput {
                     // the output structure
                     Map<String, Object> outMap = new HashMap<String, Object>();
 
-                    outMap.put(STORENAME_KEY, storename);
-                    outMap.put(WORKSPACE_KEY, workspace);
-                    outMap.put(LAYERNAME_KEY, layername);
+                    outMap.put(STORENAME, storename);
+                    outMap.put(WORKSPACE, workspace);
+                    outMap.put(LAYERNAME, layername);
 
                     setReaderData(cmd.getBaseDir(), outMap);
 
@@ -148,7 +175,7 @@ class ImageMosaicOutput {
                 } catch (XStreamException e) {
                     // XStreamException - if the object cannot be serialized
                     if (LOGGER.isErrorEnabled())
-                        LOGGER.error("ImageMosaicAction.writeReturn(): setReturn the object cannot be serialized");
+                        LOGGER.error("SetReturn the object cannot be serialized");
                 } finally {
                     IOUtils.closeQuietly(outFile);
                 }
@@ -194,30 +221,6 @@ class ImageMosaicOutput {
         }
         return layerDescriptor;
     }
-
-    private static String NATIVE_LOWER_CORNER_FIRST_KEY = "NATIVE_LOWER_CORNER_FIRST";
-
-    private static String NATIVE_LOWER_CORNER_SECOND_KEY = "NATIVE_LOWER_CORNER_SECOND";
-
-    private static String NATIVE_UPPER_CORNER_FIRST_KEY = "NATIVE_UPPER_CORNER_FIRST";
-
-    private static String NATIVE_UPPER_CORNER_SECOND_KEY = "NATIVE_UPPER_CORNER_SECOND";
-
-    private static String LONLAT_LOWER_CORNER_FIRST_KEY = "LONLAT_LOWER_CORNER_FIRST";
-
-    private static String LONLAT_LOWER_CORNER_SECOND_KEY = "LONLAT_LOWER_CORNER_SECOND";
-
-    private static String LONLAT_UPPER_CORNER_FIRST_KEY = "LONLAT_UPPER_CORNER_FIRST";
-
-    private static String LONLAT_UPPER_CORNER_SECOND_KEY = "LONLAT_UPPER_CORNER_SECOND";
-
-    private static String CRS_KEY = "CRS";
-
-    private static String STORENAME_KEY = "STORENAME";
-
-    private static String WORKSPACE_KEY = "WORKSPACE";
-
-    private static String LAYERNAME_KEY = "LAYERNAME";
 
     /**
      * using ImageMosaic reader extract needed data from the mosaic
