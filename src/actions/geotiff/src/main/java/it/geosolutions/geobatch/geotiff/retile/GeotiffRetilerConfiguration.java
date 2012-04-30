@@ -29,20 +29,16 @@ import org.geotools.utils.CoverageToolsConstants;
 
 public class GeotiffRetilerConfiguration extends ActionConfiguration implements Configuration {
 
+
     public GeotiffRetilerConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
 
+    protected GeotiffRetilerConfiguration() {
+        super("xstream loader", "xstream loader", "xstream loader");
+    }
+
     private long JAICapacity;
-
-    public long getJAICapacity() {
-        return JAICapacity;
-    }
-
-    public void setJAICapacity(long JAICapacity) {
-        this.JAICapacity = JAICapacity;
-    }
-
     private double compressionRatio = Double.NaN;
 
     private String compressionScheme = CoverageToolsConstants.DEFAULT_COMPRESSION_SCHEME;
@@ -97,15 +93,19 @@ public class GeotiffRetilerConfiguration extends ActionConfiguration implements 
         this.tileW = tileW;
     }
 
+    public long getJAICapacity() {
+        return JAICapacity;
+    }
+
+    public void setJAICapacity(long JAICapacity) {
+        this.JAICapacity = JAICapacity;
+    }
 
     @Override
 	public String toString() {
-		return "GeotiffRetilerConfiguration [JAICapacity=" + JAICapacity
-				+ ", compressionRatio=" + compressionRatio
-				+ ", compressionScheme=" + compressionScheme + ", tileH="
-				+ tileH + ", tileW=" + tileW + ", forceToBigTiff="
-				+ forceToBigTiff + "]";
-	}
+        return getClass().getSimpleName() + "[" + "id:" + getId() + " srvId:" + getServiceID()
+                + " name:" + getName() + " size:" + getTileW() + "x" + getTileH() + "]";
+    }
 
 	@Override
     public GeotiffRetilerConfiguration clone() {

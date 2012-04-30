@@ -44,7 +44,8 @@ public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration i
 
     private long JAICapacity;
 
-    private double compressionRatio = CoverageToolsConstants.DEFAULT_COMPRESSION_RATIO;
+    private float compressionRatio = CoverageToolsConstants.DEFAULT_COMPRESSION_RATIO;
+    //CoverageToolsConstants.DEFAULT_COMPRESSION_RATIO; // 20120427: this constant stopped working for a com.thoughtworks.xstream.converters.ConversionException: Uncompilable source code - Erroneous tree type: org.geotools.utils.CoverageToolsConstants : Uncompilable source code - Erroneous tree type: org.geotools.utils.CoverageToolsConstants
 
     private String compressionScheme = CoverageToolsConstants.DEFAULT_COMPRESSION_SCHEME;
 
@@ -83,7 +84,7 @@ public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration i
         this.JAICapacity = JAICapacity;
     }
 
-    public final double getCompressionRatio() {
+    public final float getCompressionRatio() {
         return compressionRatio;
     }
 
@@ -107,7 +108,7 @@ public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration i
         return tileW;
     }
 
-    public void setCompressionRatio(double compressionRatio) {
+    public void setCompressionRatio(float compressionRatio) {
         this.compressionRatio = compressionRatio;
     }
 

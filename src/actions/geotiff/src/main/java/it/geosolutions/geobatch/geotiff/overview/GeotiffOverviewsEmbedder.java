@@ -39,6 +39,7 @@ import javax.media.jai.JAI;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.geotools.utils.imageoverviews.OverviewsEmbedder;
+import org.geotools.utils.imageoverviews.OverviewsEmbedder.SubsampleAlgorithm;
 import org.geotools.utils.progress.ExceptionEvent;
 import org.geotools.utils.progress.ProcessingEvent;
 import org.geotools.utils.progress.ProcessingEventListener;
@@ -117,7 +118,17 @@ public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 			// SG: this way we are sure we use the standard tile cache
 			oe.setTileCache(JAI.getDefaultInstance().getTileCache());
 
-			oe.setScaleAlgorithm(configuration.getScaleAlgorithm());
+            String scaleAlgorithm = configuration.getScaleAlgorithm();
+            if(scaleAlgorithm == null) {
+                LOGGER.warn("No scaleAlgorithm defined. Using " + SubsampleAlgorithm.Nearest + " as default");
+                scaleAlgorithm = SubsampleAlgorithm.Nearest.name();
+            } else {
+                final SubsampleAlgorithm algorithm = SubsampleAlgorithm.valueOf(scaleAlgorithm);
+                if(algorithm == null) {
+                    throw new IllegalStateException("Bad scaleAlgorithm defined ["+scaleAlgorithm+"]");
+                }
+            }
+			oe.setScaleAlgorithm(scaleAlgorithm);
 			oe.setTileHeight(configuration.getTileH());
 			oe.setTileWidth(configuration.getTileW());
 
@@ -131,12 +142,14 @@ public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 
 					public void exceptionOccurred(ExceptionEvent event) {
 						if (LOGGER.isInfoEnabled())
-							LOGGER.info(event.getMessage());
+							LOGGER.info("GeotiffOverviewsEmbedder::execute(): "
+									+ event.getMessage(), event.getException());
 					}
 
 					public void getNotification(ProcessingEvent event) {
 						if (LOGGER.isInfoEnabled())
-							LOGGER.info(event.getMessage());
+							LOGGER.info("GeotiffOverviewsEmbedder::execute(): "
+									+ event.getMessage());
 						listenerForwarder.progressing(
 								(float) event.getPercentage(),
 								event.getMessage());
@@ -154,6 +167,8 @@ public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 				final FileSystemEvent event = events.remove();
 
 				final File eventFile = event.getSource();
+                if(LOGGER.isDebugEnabled())
+                    LOGGER.debug("Processing file " + eventFile);
 
 				if (eventFile.exists() && eventFile.canRead()
 						&& eventFile.canWrite()) {
