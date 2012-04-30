@@ -38,6 +38,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.GridFormatFinder;
@@ -214,6 +215,10 @@ abstract class ImageMosaicUpdater {
 			final Properties indexerProps = ImageMosaicProperties
 					.getProperty(indexer);
 
+			/**
+			 * @see {@link #org.geotools.gce.imagemosaic.properties.RegExPropertiesCollector.collect(File)}
+			 */
+			final String granuleName=FilenameUtils.getBaseName(granule.getName());
 			if (indexerProps.getProperty("TimeAttribute") != null) {
 				// TODO move out of the cycle
 				final File timeregex = new File(baseDir, "timeregex.properties");
@@ -223,8 +228,7 @@ abstract class ImageMosaicUpdater {
 						.getProperty("regex"));
 				// TODO move out of the cycle
 				if (timePattern != null) {
-					final Matcher matcher = timePattern.matcher(granule
-							.getName());
+					final Matcher matcher = timePattern.matcher(granuleName);
 					if (matcher.find()) {
 						TimeParser timeParser = new TimeParser();
 						List<Date> dates = timeParser.parse(matcher.group());
@@ -250,7 +254,7 @@ abstract class ImageMosaicUpdater {
 				final Pattern elevPattern = Pattern.compile(elevProps
 						.getProperty("regex"));
 				// TODO move out of the cycle
-				final Matcher matcher = elevPattern.matcher(granule.getName());
+				final Matcher matcher = elevPattern.matcher(granuleName);
 				if (matcher.find()) {
 					feature.setAttribute(
 							indexerProps.getProperty("ElevationAttribute"),
@@ -267,8 +271,7 @@ abstract class ImageMosaicUpdater {
 				final Pattern runtimePattern = Pattern.compile(runtimeProps
 						.getProperty("regex"));
 				// TODO move out of the cycle
-				final Matcher matcher = runtimePattern.matcher(granule
-						.getName());
+				final Matcher matcher = runtimePattern.matcher(granuleName);
 				if (matcher.find()) {
 					feature.setAttribute(
 							indexerProps.getProperty("RuntimeAttribute"),
