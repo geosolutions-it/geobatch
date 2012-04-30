@@ -267,16 +267,16 @@ public class FreeMarkerAction
 			final String outputFileSuffix = "."+ FilenameUtils.getExtension(conf.getInput());
 			outputFile = File.createTempFile(outputFilePrefix,outputFileSuffix, outputDir);
 			if (LOGGER.isInfoEnabled())
-				LOGGER.info("FreeMarkerAction.buildOutput(): Output file name: "+ outputFile);
+				LOGGER.info("Output file name: "+ outputFile);
 			fw = new FileWriter(outputFile);
 		} catch (IOException ioe) {
-            IOUtils.closeQuietly(fw);
-			final String message = "FreeMarkerAction.buildOutput(): Unable to build the output file writer: "
+                        IOUtils.closeQuietly(fw);
+			final String message = "Unable to build the output file writer: "
 					+ ioe.getLocalizedMessage();
 			if (LOGGER.isErrorEnabled())
 				LOGGER.error(message);
 			throw new ActionException(this, message);
-        }
+                }
 
 		/*
 		 * If available, process the output file using the TemplateModel data
@@ -291,23 +291,14 @@ public class FreeMarkerAction
 				fw.flush();
 
 		} catch (IOException ioe) {
-			final String message = "FreeMarkerAction.execute(): Unable to flush buffer to the output file: "
-					+ ioe.getLocalizedMessage();
-			if (LOGGER.isErrorEnabled())
-				LOGGER.error(message, ioe);
-			throw new ActionException(this, message);
+			throw new ActionException(this, "Unable to flush buffer to the output file: "
+		                                        + ioe.getLocalizedMessage(),ioe.getCause());
 		} catch (TemplateModelException tme) {
-			final String message = "FreeMarkerAction.execute(): Unable to wrap the passed object: "
-					+ tme.getLocalizedMessage();
-			if (LOGGER.isErrorEnabled())
-				LOGGER.error(message, tme);
-			throw new ActionException(this, message);
+			throw new ActionException(this, "Unable to wrap the passed object: "
+		                                        + tme.getLocalizedMessage(),tme.getCause());
 		} catch (Exception e) {
-			final String message = "FreeMarkerAction.execute(): Unable to process the input file: "
-					+ e.getLocalizedMessage();
-			if (LOGGER.isErrorEnabled())
-				LOGGER.error(message, e);
-			throw new ActionException(this, message);
+			throw new ActionException(this, "Unable to process the input file: "
+                                        + e.getLocalizedMessage(), e.getCause());
 		} finally {
 			IOUtils.closeQuietly(fw);
 		}
@@ -361,12 +352,12 @@ public class FreeMarkerAction
 			} catch (NullPointerException npe) {
 				// NullPointerException - if tm is null
 				if (LOGGER.isErrorEnabled())
-					LOGGER.error("FreeMarkerAction.adapter(): The passed event object is null");
+					LOGGER.error("The passed event object is null");
 			} catch (TemplateModelException tme) {
 				// TemplateModelException - if defined objectWrapper can't wrap
 				// the passed object
 				if (LOGGER.isErrorEnabled())
-					LOGGER.error("FreeMarkerAction.adapter(): Default wrapper can't wrap the passed object");
+					LOGGER.error("Default wrapper can't wrap the passed object");
 			}
 		}
 		return null;

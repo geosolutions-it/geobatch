@@ -45,7 +45,7 @@ public class TemplateModelEvent extends EventObject {
      * 
      * @see FreeMarkerConfiguration
      */
-    static final String EVENT_KEY = "event";
+    public static final String EVENT_KEY = "event";
 
     private static final long serialVersionUID = -8211229935415131446L;
 
@@ -95,7 +95,7 @@ public class TemplateModelEvent extends EventObject {
         if (f != null)
             return f.wrapRoot(this.getSource());
         else {
-            final String message="TemplateModelEvent.getModel(): Unable to get the model using a null FreeMarkerFilter";
+            final String message="Unable to get the model using a null FreeMarkerFilter";
             if (LOGGER.isErrorEnabled()){
                 LOGGER.error(message);
             }
