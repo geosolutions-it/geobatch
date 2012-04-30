@@ -77,7 +77,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
         this.configuration = configuration;
     }
 
-    private File reTile(File inFile) throws IOException {
+    public static void reTile(File inFile, File tiledTiffFile, double compressionRatio, String compressionType, int tileW, int tileH, boolean forceBigTiff) throws IOException {
         //
         // look for a valid file that we can read
         //
@@ -87,53 +87,20 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
         GridCoverage2D inCoverage = null;
         AbstractGridCoverageWriter writer = null;
 
-        final String absolutePath = inFile.getAbsolutePath();
-        final String inputFileName = FilenameUtils.getName(absolutePath);
-
-        if (LOGGER.isInfoEnabled())
-            LOGGER.info("GeotiffRetiler: is going to retile: " + inputFileName);
-
-        listenerForwarder.setTask("GeotiffRetiler");
-
         // getting a format for the given input
         format = (AbstractGridFormat) GridFormatFinder.findFormat(inFile);
         if (format == null || (format instanceof UnknownFormat)) {
-            throw new IllegalArgumentException(
-                    "GeotiffRetiler::reTile(): Unable to find the GridFormat for the provided file: "
-                            + inputFileName);
+            throw new IllegalArgumentException("Unable to find the GridFormat for the provided file: "+ inFile);
         }
         
-        // throws IOException
-        final File tiledTiffFile = File.createTempFile(inputFileName, "_tiled.tif", inFile.getParentFile());
-
         try {
-            if (tiledTiffFile.exists()) {
-                // file already exists
-                // check write permission
-                if (!tiledTiffFile.canWrite()) {
-                    final String message = "GeotiffRetiler::reTile(): Unable to over-write the temporary file called: "
-                            + tiledTiffFile.getAbsolutePath() + "\nCheck permissions.";
-                    if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error(message);
-                    }
-                    throw new IllegalArgumentException(message);
-                }
-            } else if (!tiledTiffFile.createNewFile()) {
-                final String message = "GeotiffRetiler.reTile(): Unable to create temporary file called: "
-                        + tiledTiffFile.getAbsolutePath();
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error(message);
-                }
-                throw new IllegalArgumentException(message);
-            }
-
             // /////////////////////////////////////////////////////////////////////
             //
             // ACQUIRING A READER
             //
             // /////////////////////////////////////////////////////////////////////
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("GeotiffRetiler.reTile(): Acquiring a reader for the provided file...");
+                LOGGER.info("Acquiring a reader for the provided file...");
             }
 
             // can throw UnsupportedOperationsException
@@ -141,9 +108,8 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                     Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
             
             if (reader == null) {
-                final IOException ioe = new IOException(
-                        "GeotiffRetiler::reTile(): Unable to find a reader for the provided file: "
-                                + inputFileName);
+                final IOException ioe = new IOException("Unable to find a reader for the provided file: "
+                                + inFile);
                 throw ioe;
             }
 
@@ -153,12 +119,11 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
             //
             // /////////////////////////////////////////////////////////////////////
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("GeotiffRetiler::reTile(): Acquiring a coverage provided file...");
+                LOGGER.info("Acquiring a coverage provided file...");
             }
             inCoverage = (GridCoverage2D) reader.read(null);
             if (inCoverage == null) {
-                final IOException ioe = new IOException(
-                        "GeotiffRetiler::reTile(): inCoverage == null");
+                final IOException ioe = new IOException("inCoverage == null");
                 throw ioe;
             }
             // /////////////////////////////////////////////////////////////////////
@@ -167,10 +132,8 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
             //
             // /////////////////////////////////////////////////////////////////////
             if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("GeotiffRetiler::reTile(): Writing down the file in the decoded directory...");
+                LOGGER.info("Writing down the file in the decoded directory...");
             }
-            final double compressionRatio = configuration.getCompressionRatio();
-            final String compressionType = configuration.getCompressionScheme();
 
             final GeoTiffFormat wformat = new GeoTiffFormat();
             final GeoTiffWriteParams wp = new GeoTiffWriteParams();
@@ -179,9 +142,9 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                 wp.setCompressionType(compressionType);
                 wp.setCompressionQuality((float) compressionRatio);
             }
-            wp.setForceToBigTIFF(configuration.isForceToBigTiff());            
+            wp.setForceToBigTIFF(forceBigTiff);            
             wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
-            wp.setTiling(configuration.getTileW(), configuration.getTileH());
+            wp.setTiling(tileW, tileH);
             final ParameterValueGroup wparams = wformat.getWriteParameters();
             wparams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString()).setValue(wp);
 
@@ -206,7 +169,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                     reader.dispose();
                 } catch (Exception e) {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn("GeotiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                        LOGGER.warn(e.getLocalizedMessage(), e);
                 }
 
             }
@@ -216,7 +179,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                     writer.dispose();
                 } catch (Exception e) {
                     if (LOGGER.isWarnEnabled())
-                        LOGGER.warn("GeotiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                        LOGGER.warn(e.getLocalizedMessage(), e);
                 }
 
             }
@@ -238,18 +201,6 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
             }
         }
 
-        String extension = FilenameUtils.getExtension(inputFileName);
-        if (!extension.contains("tif")) {
-            extension = "tif";
-        }
-        final String outputFileName = FilenameUtils.getFullPath(absolutePath)
-                + FilenameUtils.getBaseName(inputFileName) + "." + extension;
-        final File outputFile = new File(outputFileName);
-        // do we need to remove the input?
-        FileUtils.copyFile(tiledTiffFile, outputFile);
-        FileUtils.deleteQuietly(tiledTiffFile);
-
-        return outputFile;
     }
 
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
@@ -294,10 +245,55 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
 
                             File inFile = fileList[progress];
 
+                            final String absolutePath = inFile.getAbsolutePath();
+                            final String inputFileName = FilenameUtils.getName(absolutePath);
+
+                            if (LOGGER.isInfoEnabled())
+                                LOGGER.info("is going to retile: " + inputFileName);
+
+                            
+
                             try {
 
-                                reTile(inFile);
+                                listenerForwarder.setTask("GeotiffRetiler");
 
+                                File tiledTiffFile = File.createTempFile(inFile.getName(), "_tiled.tif", getTempDir());
+                                if (tiledTiffFile.exists()) {
+                                    // file already exists
+                                    // check write permission
+                                    if (!tiledTiffFile.canWrite()) {
+                                        final String message = "Unable to over-write the temporary file called: "
+                                                + tiledTiffFile.getAbsolutePath() + "\nCheck permissions.";
+                                        if (LOGGER.isErrorEnabled()) {
+                                            LOGGER.error(message);
+                                        }
+                                        throw new IllegalArgumentException(message);
+                                    }
+                                } else if (!tiledTiffFile.createNewFile()) {
+                                    final String message = "Unable to create temporary file called: "
+                                            + tiledTiffFile.getAbsolutePath();
+                                    if (LOGGER.isErrorEnabled()) {
+                                        LOGGER.error(message);
+                                    }
+                                    throw new IllegalArgumentException(message);
+                                }
+                                final double compressionRatio = getConfiguration().getCompressionRatio();
+                                final String compressionType = getConfiguration().getCompressionScheme();
+                                
+                                reTile(inFile,tiledTiffFile,compressionRatio,compressionType,getConfiguration().getTileW(), getConfiguration().getTileH(),getConfiguration().isForceToBigTiff());
+
+                                String extension = FilenameUtils.getExtension(inputFileName);
+                                if (!extension.contains("tif")) {
+                                    extension = "tif";
+                                }
+                                final String outputFileName = FilenameUtils.getFullPath(absolutePath)
+                                        + FilenameUtils.getBaseName(inputFileName) + "." + extension;
+                                final File outputFile = new File(outputFileName);
+                                // do we need to remove the input?
+                                FileUtils.copyFile(tiledTiffFile, outputFile);
+                                FileUtils.deleteQuietly(tiledTiffFile);
+
+                                
                                 // set the output
                                 /*
                                  * COMMENTED OUT 21 Feb 2011: simone: If the event represents a Dir
@@ -309,26 +305,22 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                                  * here we use the same event for each file in the ret.add(new
                                  * FileSystemEvent(outputFile, eventType)); }
                                  */
+                                
+
                             } catch (UnsupportedOperationException uoe) {
                                 listenerForwarder.failed(uoe);
                                 if (LOGGER.isWarnEnabled())
-                                    LOGGER.warn(
-                                            "GeotiffRetiler::execute(): "
-                                                    + uoe.getLocalizedMessage(), uoe);
+                                    LOGGER.warn(uoe.getLocalizedMessage(), uoe);
                                 continue;
                             } catch (IOException ioe) {
                                 listenerForwarder.failed(ioe);
                                 if (LOGGER.isWarnEnabled())
-                                    LOGGER.warn(
-                                            "GeotiffRetiler::execute(): "
-                                                    + ioe.getLocalizedMessage(), ioe);
+                                    LOGGER.warn(ioe.getLocalizedMessage(), ioe);
                                 continue;
                             } catch (IllegalArgumentException iae) {
                                 listenerForwarder.failed(iae);
                                 if (LOGGER.isWarnEnabled())
-                                    LOGGER.warn(
-                                            "GeotiffRetiler::execute(): "
-                                                    + iae.getLocalizedMessage(), iae);
+                                    LOGGER.warn(iae.getLocalizedMessage(), iae);
                                 continue;
                             } finally {
                                 listenerForwarder.setProgress((progress * 100)
@@ -337,47 +329,72 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                             }
                         }
 
+                        if (LOGGER.isInfoEnabled())
+                            LOGGER.info("SUCCESSFULLY completed work on: "+ event.getSource());
+                        
                         // add the directory to the return
                         ret.add(event);
                     } else {
                         // file is not a directory
-                        File outFile = null;
                         try {
-                            outFile = reTile(eventFile);
-                            if (outFile != null) {
-                                if (LOGGER.isInfoEnabled())
-                                    LOGGER.info("GeotiffRetiler::execute(): SUCCESSFULLY completed work on: "
-                                            + event.getSource());
-                                listenerForwarder.setProgress(100);
-                                ret.add(new FileSystemEvent(outFile, eventType));
-                            } else {
-                                ret.add(new FileSystemEvent(eventFile, eventType));
-                                final String message = "GeotiffRetiler::execute(): retiler FAILED to return the output file: "
-                                        + event.getSource();
-                                if (LOGGER.isErrorEnabled())
+                            listenerForwarder.setTask("GeotiffRetiler");
+
+                            File tiledTiffFile = File.createTempFile(eventFile.getName(), "_tiled.tif", eventFile.getParentFile());
+                            if (tiledTiffFile.exists()) {
+                                // file already exists
+                                // check write permission
+                                if (!tiledTiffFile.canWrite()) {
+                                    final String message = "Unable to over-write the temporary file called: "
+                                            + tiledTiffFile.getAbsolutePath() + "\nCheck permissions.";
+                                    if (LOGGER.isErrorEnabled()) {
+                                        LOGGER.error(message);
+                                    }
+                                    throw new IllegalArgumentException(message);
+                                }
+                            } else if (!tiledTiffFile.createNewFile()) {
+                                final String message = "Unable to create temporary file called: "
+                                        + tiledTiffFile.getAbsolutePath();
+                                if (LOGGER.isErrorEnabled()) {
                                     LOGGER.error(message);
-                                throw new NullPointerException(message);
+                                }
+                                throw new IllegalArgumentException(message);
                             }
+                            final double compressionRatio = getConfiguration().getCompressionRatio();
+                            final String compressionType = getConfiguration().getCompressionScheme();
+                            
+                            reTile(eventFile,tiledTiffFile,compressionRatio,compressionType,getConfiguration().getTileW(), getConfiguration().getTileH(),getConfiguration().isForceToBigTiff());
+                            
+                            String extension = FilenameUtils.getExtension(eventFile.getName());
+                            if (!extension.contains("tif")) {
+                                extension = "tif";
+                            }
+                            final String outputFileName = FilenameUtils.getFullPath(eventFile.getAbsolutePath())
+                                    + FilenameUtils.getBaseName(eventFile.getName()) + "." + extension;
+                            final File outputFile = new File(outputFileName);
+                            // do we need to remove the input?
+                            FileUtils.copyFile(tiledTiffFile, outputFile);
+                            FileUtils.deleteQuietly(tiledTiffFile);
+                            
+                            if (LOGGER.isInfoEnabled())
+                                LOGGER.info("SUCCESSFULLY completed work on: "
+                                        + event.getSource());
+                            listenerForwarder.setProgress(100);
+                            ret.add(new FileSystemEvent(tiledTiffFile, eventType));
+                        
                         } catch (UnsupportedOperationException uoe) {
                             listenerForwarder.failed(uoe);
                             if (LOGGER.isWarnEnabled())
-                                LOGGER.warn(
-                                        "GeotiffRetiler::execute(): " + uoe.getLocalizedMessage(),
-                                        uoe);
+                                LOGGER.warn(uoe.getLocalizedMessage(), uoe);
                             continue;
                         } catch (IOException ioe) {
                             listenerForwarder.failed(ioe);
                             if (LOGGER.isWarnEnabled())
-                                LOGGER.warn(
-                                        "GeotiffRetiler::execute(): " + ioe.getLocalizedMessage(),
-                                        ioe);
+                                LOGGER.warn(ioe.getLocalizedMessage(),ioe);
                             continue;
                         } catch (IllegalArgumentException iae) {
                             listenerForwarder.failed(iae);
                             if (LOGGER.isWarnEnabled())
-                                LOGGER.warn(
-                                        "GeotiffRetiler::execute(): " + iae.getLocalizedMessage(),
-                                        iae);
+                                LOGGER.warn(iae.getLocalizedMessage(),iae);
                             continue;
                         } finally {
 
@@ -387,7 +404,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                         }
                     }
                 } else {
-                    final String message = "GeotiffRetiler::execute(): The passed file event refers to a not existent "
+                    final String message = "The passed file event refers to a not existent "
                             + "or not readable/writeable file! File: "
                             + eventFile.getAbsolutePath();
                     if (LOGGER.isWarnEnabled())
@@ -410,16 +427,16 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                 return events;
             }
         } catch (Exception t) {
-            final String message = "GeotiffRetiler::execute(): " + t.getLocalizedMessage();
             if (LOGGER.isErrorEnabled())
-                LOGGER.error(message, t);
-            final ActionException exc = new ActionException(this, message, t);
+                LOGGER.error(t.getLocalizedMessage(), t);
+            final ActionException exc = new ActionException(this, t.getLocalizedMessage(), t);
             listenerForwarder.failed(exc);
             throw exc;
         }
     }
 
-    public ActionConfiguration getConfiguration() {
+    @Override
+    public GeotiffRetilerConfiguration getConfiguration() {
         return configuration;
     }
 }

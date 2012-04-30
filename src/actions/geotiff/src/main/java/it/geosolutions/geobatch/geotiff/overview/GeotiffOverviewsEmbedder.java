@@ -108,7 +108,7 @@ public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 			int numberOfSteps = configuration.getNumSteps();
 			if (numberOfSteps <= 0)
 				throw new IllegalArgumentException(
-						"GeotiffOverviewsEmbedder::execute(): Illegal numberOfSteps: "
+						"Illegal numberOfSteps: "
 								+ numberOfSteps);
 
 			final OverviewsEmbedder oe = new OverviewsEmbedder();
@@ -131,14 +131,12 @@ public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 
 					public void exceptionOccurred(ExceptionEvent event) {
 						if (LOGGER.isInfoEnabled())
-							LOGGER.info("GeotiffOverviewsEmbedder::execute(): "
-									+ event.getMessage());
+							LOGGER.info(event.getMessage());
 					}
 
 					public void getNotification(ProcessingEvent event) {
 						if (LOGGER.isInfoEnabled())
-							LOGGER.info("GeotiffOverviewsEmbedder::execute(): "
-									+ event.getMessage());
+							LOGGER.info(event.getMessage());
 						listenerForwarder.progressing(
 								(float) event.getPercentage(),
 								event.getMessage());
