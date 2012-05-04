@@ -22,7 +22,6 @@
 package it.geosolutions.geobatch.geoserver.shapefile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
@@ -96,8 +95,6 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             // Initializing input variables
             //
             if (configuration == null) {
-                // LOGGER.error("ActionConfig is null."); // we're
-                // rethrowing it, so don't log
                 throw new IllegalStateException("ActionConfig is null.");
             }
             
@@ -129,9 +126,8 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             	// SINGLE FILE, is a zip or throw error
             	//
                 zippedFile = event.getSource();
-
-                if (LOGGER.isTraceEnabled())
-                    LOGGER.trace("Testing for compressed file: " + zippedFile.getAbsolutePath());
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("Testing for compressed file: " + zippedFile.getAbsolutePath());
 
                 // try to extract
                 final String tmpDirName = Extract.extract(zippedFile.getAbsolutePath());

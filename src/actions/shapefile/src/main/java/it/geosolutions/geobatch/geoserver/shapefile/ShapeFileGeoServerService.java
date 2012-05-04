@@ -23,12 +23,10 @@
 package it.geosolutions.geobatch.geoserver.shapefile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.slf4j.Logger;
