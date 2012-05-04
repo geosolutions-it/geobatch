@@ -60,6 +60,13 @@
       <artifactId>gb-gui</artifactId>
     </dependency>
     <!-- ============================== -->
+    <!-- DAO XStream -->
+    <!-- ============================== -->
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-dao-xstream</artifactId>
+    </dependency>
+    <!-- ============================== -->
     <!-- Test: JETTY -->
     <!-- ============================== -->
     <dependency>
@@ -78,13 +85,7 @@
       <artifactId>javassist</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- ============================== -->
-    <!-- DAO XStream -->
-    <!-- ============================== -->
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-dao-xstream</artifactId>
-    </dependency>
+    
   </dependencies>
   <build>
     <plugins>

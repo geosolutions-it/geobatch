@@ -48,7 +48,7 @@
     <!-- GB Global Settings ================================================ -->
 
     <bean id="settingsCatalog" class="it.geosolutions.geobatch.settings.GBSettingsCatalogImpl">
-        <property name="settingsDAO" ref="settingsDAO"/>
+        <property name="settingsDAO" ref="settingsDAO"/><!-- DEPENDS FROM GB-DAO-XSTREAM!!!! -->
     </bean>
 
     <bean id="settingsProcessor" class="it.geosolutions.geobatch.settings.GBSettingsProcessor" lazy-init="false">

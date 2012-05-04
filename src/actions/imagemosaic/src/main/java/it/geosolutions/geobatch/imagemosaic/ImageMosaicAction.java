@@ -296,7 +296,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     /*
                      * CHECKING FOR datastore.properties
                      */
-                    final File datastore = ImageMosaicProperties.checkDataStore(getConfiguration(), getConfiguration().getConfigDir(), baseDir);
+                    final File datastore = ImageMosaicProperties.checkDataStore(getConfiguration(), getConfigDir(), baseDir);
                     if (datastore == null) {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("Failed to check for datastore.properties into:" + baseDir);
@@ -404,7 +404,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     /*
                      * CHECKING FOR datastore.properties
                      */
-                    final File datastore = ImageMosaicProperties.checkDataStore(getConfiguration(), getConfiguration().getConfigDir(), baseDir);
+                    final File datastore = ImageMosaicProperties.checkDataStore(getConfiguration(), getConfigDir(), baseDir);
                     if (datastore == null) {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("Failed to check for datastore.properties");
