@@ -250,6 +250,7 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message, ae);
                 listenerForwarder.failed(ae);
+                throw ae;
             }
 
             return events;
