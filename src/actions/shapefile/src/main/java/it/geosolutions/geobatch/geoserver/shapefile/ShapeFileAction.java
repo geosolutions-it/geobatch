@@ -127,7 +127,7 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
                     LOGGER.debug("Testing for compressed file: " + zippedFile);
 
                 // try to extract
-                tmpDirFile = Extract.extract(zippedFile,getTempDir(),true);
+                tmpDirFile = Extract.extract(zippedFile,getTempDir(),false);
                 listenerForwarder.progressing(5, "File extracted");
 
                 

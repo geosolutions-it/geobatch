@@ -43,10 +43,11 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  * @author AlFa
- * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: 0.1 $ 23/mar/07 11:42:25
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: 0.2 $ 25/Apr/11 11:00:00
+ * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: 0.2 $ 09/May/12 12:00:00
  */
 public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 
