@@ -34,7 +34,7 @@ public class ActionException extends Exception {
 	 */
 	private Class type;
 
-	public ActionException(Class<Action> type, String message) {
+	public <A extends Action> ActionException(Class<A> type, String message) {
 		super(message);
 		setType(type);
 	}

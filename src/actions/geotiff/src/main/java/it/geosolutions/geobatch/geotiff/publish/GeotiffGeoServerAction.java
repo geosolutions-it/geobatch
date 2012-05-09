@@ -54,27 +54,20 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
     
     private static final GeoTiffFormat FORMAT = new GeoTiffFormat();
 
-    private final GeoServerActionConfiguration configuration;
-
     public GeotiffGeoServerAction(GeoServerActionConfiguration configuration)
             throws IOException {
         super(configuration);
-        this.configuration = configuration;
-    }
-
-    public GeoServerActionConfiguration getConfiguration() {
-        return configuration;
     }
 
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         try {
             listenerForwarder.started();
-
+            final GeoServerActionConfiguration configuration=getConfiguration();
             // //
             // data flow configuration and dataStore name must not be null.
             // //
             if (configuration == null) {
-                final String message = "GeotiffGeoServerAction.execute(): DataFlowConfig is null.";
+                final String message = "DataFlowConfig is null.";
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(message);
                 throw new IllegalStateException(message);
@@ -120,12 +113,13 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
             	}	            
 	            
             	// do your magic
-            	publishGeoTiff(inputFile);
+            	listenerForwarder.setTask("Working on: " + inputFile);
+            	publishGeoTiff(inputFile,configuration);
             }
             listenerForwarder.completed();
             return events;
         } catch (Throwable t) {
-            final String message = "GeotiffGeoServerAction.execute(): FATAL -> "
+            final String message = "FATAL -> "
                     + t.getLocalizedMessage();
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error(message, t); // no need to
@@ -135,11 +129,9 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
         }
     }
 
-
-	private void publishGeoTiff(File inputFile) throws Exception {
+	private static void publishGeoTiff(File inputFile, GeoServerActionConfiguration configuration) throws Exception {
 		final String inputFileName = inputFile.getName();
-		listenerForwarder.setTask("Working on: " + inputFileName);
-
+		
 		final String filePrefix = FilenameUtils.getBaseName(inputFile.getName());
 		final String fileSuffix = FilenameUtils.getExtension(inputFile.getName());
 
@@ -157,7 +149,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 		}
 
 		if (baseFileName == null) {
-			final String message = "GeotiffGeoServerAction.execute(): Unable to find a fileName for '"
+			final String message = "Unable to find a fileName for '"
 					+ inputFileName + "'";
 			if (LOGGER.isErrorEnabled())
 				LOGGER.error(message);
@@ -241,7 +233,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 					LOGGER.info(message);
 				}
 				if (!configuration.isFailIgnored())
-					throw new ActionException(this,message);
+					throw new ActionException(GeotiffGeoServerAction.class,message);
 				return;
  
 			}
@@ -303,7 +295,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 				LOGGER.info(message);
 			}
 			if (!configuration.isFailIgnored())
-				throw new ActionException(this,message);
+				throw new ActionException(GeotiffGeoServerAction.class,message);
 
 		}
 	}

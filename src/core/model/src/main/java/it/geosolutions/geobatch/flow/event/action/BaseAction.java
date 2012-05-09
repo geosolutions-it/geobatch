@@ -135,8 +135,9 @@ public abstract class BaseAction<XEO extends EventObject>
         this.configDir = configDir;
     }
 
-    public ActionConfiguration getConfiguration() {
-        return configuration;
+    
+    public <T extends ActionConfiguration> T getConfiguration() {
+        return (T)configuration; // TODO T should be set at class level
     }
     
     public void destroy() {

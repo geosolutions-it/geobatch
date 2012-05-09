@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
  * @author AlFa
  * @author ETj
  * @author Daniele Romagnoli, GeoSolutions S.A.S.
- * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  * @version 0.1 - date: 11 feb 2007
  * @version 0.2 - date: 25 Apr 2011
@@ -74,12 +74,8 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
     
     private final static ShapefileDataStoreFactory SHP_FACTORY= new ShapefileDataStoreFactory();
 
-    // private ShapeFileConfiguration configuration;
-    private GeoServerActionConfiguration configuration;
-
     public ShapeFileAction(final GeoServerActionConfiguration configuration) throws IOException {
         super(configuration);
-        this.configuration = configuration;
     }
 
     /**
@@ -94,6 +90,7 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             //
             // Initializing input variables
             //
+        	GeoServerActionConfiguration configuration=getConfiguration();
             if (configuration == null) {
                 throw new IllegalStateException("ActionConfig is null.");
             }
@@ -127,25 +124,25 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             	//
                 zippedFile = event.getSource();
                 if (LOGGER.isDebugEnabled())
-                    LOGGER.debug("Testing for compressed file: " + zippedFile.getAbsolutePath());
+                    LOGGER.debug("Testing for compressed file: " + zippedFile);
 
                 // try to extract
-                final String tmpDirName = Extract.extract(zippedFile.getAbsolutePath());
+                tmpDirFile = Extract.extract(zippedFile,getTempDir(),true);
                 listenerForwarder.progressing(5, "File extracted");
 
                 
                 //if the output (Extract) file is not a dir the event was a not compressed file so
                 //we have to throw and error
-                if(tmpDirName==null){
+                if(tmpDirFile==null){
                     throw new IllegalStateException("Not valid input: we need a zip file ");
                 }
-                tmpDirFile = new File(tmpDirName);
+                
                 if (!tmpDirFile.isDirectory()) {
                     throw new IllegalStateException("Not valid input: we need a zip file ");
                 }
 
                 // collect extracted files
-                final Collector c = new Collector(FileFilterUtils.notFileFilter(FileFilterUtils.nameFileFilter(tmpDirName))); // no filter
+                final Collector c = new Collector(FileFilterUtils.notFileFilter(FileFilterUtils.nameFileFilter(tmpDirFile.getName()))); // no filter
                 final List<File> fileList = c.collect(tmpDirFile);
                 if (fileList != null) {
                     files = fileList.toArray(new File[1]);
