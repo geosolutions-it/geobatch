@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -74,6 +75,8 @@ public class ImageMosaicOutput {
 
     public static String LAYERNAME = "LAYERNAME";
     
+    public static String DEFAULT_STYLE = "DEFAULT_STYLE";
+    
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicOutput.class);
 
@@ -96,10 +99,10 @@ public class ImageMosaicOutput {
      * @param layername
      * @return
      */
-    protected static File writeReturn(final File baseDir, final File outDir, final String storename,
-    final String workspace, final String layername) {
+    protected static File writeReturn(final File baseDir, final File outDir, final ImageMosaicCommand cmd) {
 
-        final File layerDescriptor = new File(outDir, layername + ".xml");
+        final String layerName=cmd.getLayerName();
+        final File layerDescriptor = new File(outDir, layerName + ".xml");
         FileWriter outFile=null;
         try {
             final XStream xstream = new XStream();
@@ -107,9 +110,11 @@ public class ImageMosaicOutput {
             // the output structure
             Map<String, Object> outMap = new HashMap<String, Object>();
 
-            outMap.put(STORENAME, storename);
-            outMap.put(WORKSPACE, workspace);
-            outMap.put(LAYERNAME, layername);
+            outMap.put(STORENAME, cmd.getStoreName());
+            outMap.put(WORKSPACE, cmd.getDefaultNamespace());
+            outMap.put(LAYERNAME, layerName);
+            outMap.put(DEFAULT_STYLE, cmd.getDefaultStyle());
+            // TODO ADD AS NEEDED ...
 
             setReaderData(baseDir, outMap);
 
@@ -128,99 +133,6 @@ public class ImageMosaicOutput {
         return layerDescriptor;
     }
     
-    
-    /**
-     * Write the ImageMosaic output to an XML file using XStream
-     * 
-     * @param outputDir
-     *            directory where to place the output
-     * @param layerResponse
-     *            must not be null and should contain the following elements:<br>
-     *            result[0]: the storename<br>
-     *            result[1]: the namespace<br>
-     *            result[2]: the layername<br>
-     * @param mosaicDescriptor
-     * @param cmd
-     *            the image mosaic command
-     * @return
-     * @deprecated
-     */
-    protected static File writeReturn(File outputDir, String[] layerResponse,
-            ImageMosaicGranulesDescriptor mosaicDescriptor, ImageMosaicCommand cmd) {
-
-        final String storename = layerResponse[0];
-        final String workspace = layerResponse[1];
-        final String layername = layerResponse[2];
-
-        final File layerDescriptor = new File(outputDir, layername + ".xml");
-
-        FileWriter outFile = null;
-        try {
-            if (layerDescriptor.createNewFile()) {
-
-                try {
-                    final XStream xstream = new XStream();
-                    outFile = new FileWriter(layerDescriptor);
-                    // the output structure
-                    Map<String, Object> outMap = new HashMap<String, Object>();
-
-                    outMap.put(STORENAME, storename);
-                    outMap.put(WORKSPACE, workspace);
-                    outMap.put(LAYERNAME, layername);
-
-                    setReaderData(cmd.getBaseDir(), outMap);
-
-                    xstream.toXML(outMap, outFile);
-
-                } catch (XStreamException e) {
-                    // XStreamException - if the object cannot be serialized
-                    if (LOGGER.isErrorEnabled())
-                        LOGGER.error("SetReturn the object cannot be serialized");
-                } finally {
-                    IOUtils.closeQuietly(outFile);
-                }
-
-                // PrintWriter out = null;
-                // try {
-                //
-                // /*
-                // * F.E. a layer called 'data' will result in: namespace=topp metocFields=data
-                // * storeid=data layerid=data driver=ImageMosaic path=/
-                // */
-                // outFile = new FileWriter(layerDescriptor);
-                // out = new PrintWriter(outFile);
-                // // Write text to file
-                // // out.println("namespace=" + layerResponse[1]);
-                // // out.println("metocFields=" + mosaicDescriptor.getMetocFields());
-                // // out.println("storeid=" + mosaicDescriptor.getCoverageStoreId());
-                // // out.println("layerid=" + inputDir.getName());
-                // // out.println("driver=ImageMosaic");
-                // // out.println("path=" + File.separator);
-                // } catch (IOException e) {
-                // if (LOGGER.isErrorEnabled())
-                // LOGGER.error("Error occurred while writing indexer.properties file!", e);
-                // } finally {
-                // if (out != null) {
-                // out.flush();
-                // out.close();
-                // }
-                //
-                // outFile = null;
-                // out = null;
-                // }
-            } else {
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error("ImageMosaic:setReturn(): unable to create the output file: "
-                            + layerDescriptor.getAbsolutePath());
-                }
-            }
-        } catch (IOException e) {
-            if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn(e.getMessage(), e);
-            }
-        }
-        return layerDescriptor;
-    }
 
     /**
      * using ImageMosaic reader extract needed data from the mosaic
