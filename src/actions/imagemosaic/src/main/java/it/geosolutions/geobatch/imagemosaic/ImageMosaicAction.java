@@ -47,6 +47,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sun.misc.Launcher;
+
 /**
  * An action which is able to create and update a layer into the GeoServer
  * 
@@ -153,10 +155,6 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                             continue;
                         }
 
-                        // override local getConfiguration() with the command
-                        // one
-                        cmd.overrideImageMosaicConfiguration(getConfiguration());
-
                     } else if (input.isDirectory()) {
                         if (LOGGER.isInfoEnabled()) {
                             LOGGER.info("Input file event points to a directory: " + input.getAbsolutePath());
@@ -178,9 +176,6 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     Object innerObject=((EventObject)evObj).getSource();
                     if (innerObject instanceof ImageMosaicCommand){
                         cmd = (ImageMosaicCommand)innerObject;
-                        // override local getConfiguration() with the command
-                        // one
-                        cmd.overrideImageMosaicConfiguration(getConfiguration());
                     } else {
                      // the file event does not point to a directory nor to an
                         // xml file
@@ -203,8 +198,6 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                  * to.
                  */
                 final File baseDir = cmd.getBaseDir();
-                final String layerID = baseDir.getName();
-
                 /**
                  * a descriptor for the mosaic to handle
                  */
@@ -250,7 +243,24 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         continue;
                     }
                 }
+                // override local cmd null params with the getConfiguration()
+                cmd.overrideImageMosaicCommand(getConfiguration());
 
+                final String layerName;
+                if (cmd.getLayerName()==null){
+                    layerName=baseDir.getName();
+                    cmd.setLayerName(layerName);
+                } else {
+                    layerName=cmd.getLayerName();
+                }
+                final String storeName;
+                if (cmd.getStoreName()==null){
+                    storeName=layerName;
+                    cmd.setStoreName(storeName);
+                } else {
+                    storeName=cmd.getStoreName();
+                }
+                
                 /**
                  * HERE WE HAVE A 'cmd' COMMAND FILE WHICH MAY HAVE GETADDFILE
                  * OR GETDELFILE !=NULL USING THOSE LIST WE MAY:<br>
@@ -259,19 +269,18 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                  * ADD ->INSERT INTO THE DATASTORE AN IMAGE USING THE ABSOLUTE
                  * PATH.<br>
                  */
-
                 // REST library read
-                GeoServerRESTReader gsReader = new GeoServerRESTReader(getConfiguration().getGeoserverURL(),
-                                                                       getConfiguration().getGeoserverUID(),
-                                                                       getConfiguration().getGeoserverPWD());
+                GeoServerRESTReader gsReader = new GeoServerRESTReader(cmd.getGeoserverURL(),
+                                                                       cmd.getGeoserverUID(),
+                                                                       cmd.getGeoserverPWD());
                 // REST library write
                 final GeoServerRESTPublisher gsPublisher = new GeoServerRESTPublisher(
-                        getConfiguration().getGeoserverURL(),
-                        getConfiguration().getGeoserverUID(),
-                        getConfiguration().getGeoserverPWD());
+                        cmd.getGeoserverURL(),
+                        cmd.getGeoserverUID(),
+                        cmd.getGeoserverPWD());
 
-                final String workspace = getConfiguration().getDefaultNamespace() != null  
-                        ? getConfiguration().getDefaultNamespace()
+                final String workspace = cmd.getDefaultNamespace() != null  
+                        ? cmd.getDefaultNamespace()
                         : "";
 
                 /*
@@ -280,13 +289,13 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
                 final boolean layerExists;
 
-                if(getConfiguration().getIgnoreGeoServer()) {
+                if(cmd.getIgnoreGeoServer()) {
                     if(LOGGER.isInfoEnabled()) {
                         LOGGER.info("GeoServer will be ignored by configuration. Assuming that an updated is required. ");
                     }
                     layerExists = true;
                 } else {
-                    final RESTLayer layer = getConfiguration().getIgnoreGeoServer()? null: gsReader.getLayer(layerID);
+                    final RESTLayer layer = cmd.getIgnoreGeoServer()? null: gsReader.getLayer(layerName);
                     layerExists = layer != null;
                 }
 
@@ -296,7 +305,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     /*
                      * CHECKING FOR datastore.properties
                      */
-                    final File datastore = ImageMosaicProperties.checkDataStore(getConfiguration(), getConfigDir(), baseDir);
+                    final File datastore = ImageMosaicProperties.checkDataStore(cmd, getConfigDir(), baseDir);
                     if (datastore == null) {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("Failed to check for datastore.properties into:" + baseDir);
@@ -308,7 +317,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                      */
                     final File indexer = new File(baseDir, "indexer.properties");
                     final Properties indexerProp = ImageMosaicProperties.buildIndexer(indexer,
-                                                                                      getConfiguration());
+                                                                                      cmd);
                     if (indexerProp == null) {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("Failed to check for indexer.properties into:" + baseDir);
@@ -367,31 +376,32 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
                     // coverage encoder
                     final GSCoverageEncoder coverageEnc = ImageMosaicREST
-                        .createGSImageMosaicEncoder(mosaicDescriptor, getConfiguration());
-
-                    // layerEnc.setWmsPath(getConfiguration().getWmsPath()!=null?getConfiguration().getWmsPath():"");
+                        .createGSImageMosaicEncoder(mosaicDescriptor, cmd);
+                    coverageEnc.setName(layerName);
+                    // layerEnc.setWmsPath(cmd.getWmsPath()!=null?cmd.getWmsPath():"");
 
                     // layer encoder
                     final GSLayerEncoder layerEnc = new GSLayerEncoder();
-                    layerEnc.setDefaultStyle(getConfiguration().getDefaultStyle());
+                    layerEnc.setDefaultStyle(cmd.getDefaultStyle());
+                    
 
                     // create a new ImageMosaic layer...
-                    final boolean published = gsPublisher.publishExternalMosaic(workspace, layerID, baseDir,
+                    final boolean published = gsPublisher.publishExternalMosaic(workspace, storeName, baseDir,
                                                                                 coverageEnc, layerEnc);
 
                     /**
                      * TODO gsPublisher.createExternalMosaic TODO
                      * gsPublisher.publishLayer
                      * gsPublisher.publishExternalMosaic(???
-                     * getConfiguration().getDefaultNamespace(),
-                     * layerID,baseDir, getConfiguration().getCrs(),
-                     * getConfiguration().getDefaultStyle());
+                     * cmd.getDefaultNamespace(),
+                     * layerID,baseDir, cmd.getCrs(),
+                     * cmd.getDefaultStyle());
                      */
 
                     if (!published) {
                         // layer already exists
                         if (LOGGER.isWarnEnabled()) {
-                            LOGGER.warn("Error creating the new store: " + layerID);
+                            LOGGER.warn("Error creating the new store: " + layerName);
                         }
                         continue;
                     } // layer Exists
@@ -404,7 +414,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     /*
                      * CHECKING FOR datastore.properties
                      */
-                    final File datastore = ImageMosaicProperties.checkDataStore(getConfiguration(), getConfigDir(), baseDir);
+                    final File datastore = ImageMosaicProperties.checkDataStore(cmd, getConfigDir(), baseDir);
                     if (datastore == null) {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("Failed to check for datastore.properties");
@@ -441,7 +451,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                      * AbsolutePath=false Name=20101014T030000_pph
                      * ExpandToRGB=false LocationAttribute=location
                      */
-                    final File mosaicPropFile = new File(baseDir, layerID + ".properties");
+                    final File mosaicPropFile = new File(baseDir, layerName + ".properties");
 
                     if (!Utils.checkFileReadable(mosaicPropFile)) {
                         if (LOGGER.isWarnEnabled()) {
@@ -460,7 +470,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                             LOGGER.info("Reset GeoServer Cache");
                         }
                         // clear GeoServer cached readers
-                        if(getConfiguration().getIgnoreGeoServer()) {
+                        if(cmd.getIgnoreGeoServer()) {
                             if (LOGGER.isInfoEnabled()) {
                                 LOGGER.info("GeoServer is disabled by configuration. Reset will not be performed. ");
                             }
@@ -494,8 +504,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
                 // generate a RETURN file and append it to the return queue
                 // TODO get info about store and workspace name...
-                if ((layerDescriptor = ImageMosaicOutput.writeReturn(baseDir, baseDir, layerID, workspace,
-                                                                     layerID)) != null) {
+                if ((layerDescriptor = ImageMosaicOutput.writeReturn(baseDir, baseDir, cmd)) != null) {
                     ret.add(new FileSystemEvent(layerDescriptor, FileSystemEventType.FILE_ADDED));
                 }
 
