@@ -1,51 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 	
-	<id>FreeMarkerFlow</id>
-	<description>FreeMarkerFlow</description>
-	<name>FreeMarkerFlow</name>
+	<id>ExtractFlow</id>
+	<description>ExtractFlow</description>
+	<name>ExtractFlow</name>
 	
-	<workingDirectory>freemarker/</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>freemarker/in</watchDirectory>
+		<watchDirectory>in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<interval>0 * * * * ?</interval><!-- CRON: every minute at sec 0 -->
 		<!--<interval>20</interval> each 20 sec -->
-		<id>FreeMarkerFlow</id>
-        <serviceID>fsEventGeneratorService</serviceID>
-		<description>description</description>
+		<id>Flow</id>
 		<name>test</name>
 	</EventGeneratorConfiguration>
 	
 	<EventConsumerConfiguration>
-		<id>FreeMarker</id>
-		<description>FreeMarker</description>
-		<name>FreeMarker</name>
-		
-		<workingDirectory>freemarker/</workingDirectory>
+		<id>extract</id>
+	
 		<performBackup>false</performBackup>
 		
-		<FreeMarker>
-			<serviceID>FreeMarkerGeneratorService</serviceID>
-			<id>FreeMarkerGeneratorService</id>
+		<ExtractConfiguration>
+			<serviceID>ExtractGeneratorService</serviceID>
+			
+			<id>extract</id>
 			<description>description</description>
-			<name>FreeMarkerConfiguration</name>
+			<name>ExtractConfiguration</name>
 		  
 			<dirty>false</dirty>
 			<listenerConfigurations/>
 			<failIgnored>false</failIgnored>
-		  
-			<workingDirectory>freemarker/</workingDirectory>
 			
-			<input>test.xml</input>
-			
-			<output>out/</output>
-			
-			<nToN>true</nToN>
+			<destination>out/</destination>
 			
 			<!-- Static data into DataModel --> 
 			<!--
@@ -56,7 +45,7 @@
 				</entry>
 			</root>
 			 -->
-		</FreeMarker>
+		</ExtractConfiguration>
 		
 	</EventConsumerConfiguration>
 

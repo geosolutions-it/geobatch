@@ -37,23 +37,10 @@ public class ExtractConfiguration extends ActionConfiguration implements Configu
         super(id, name, description);
     }
 
+    /**
+     * is a folder where incoming files will be moved after extraction
+     */
     private File destination;
-
-    private int timeout = 30; // seconds
-
-    /**
-     * @return the timeout
-     */
-    public final int getTimeout() {
-        return timeout;
-    }
-
-    /**
-     * @param timeout the timeout to set
-     */
-    public final void setTimeout(int timeout) {
-        this.timeout = timeout;
-    }
 
     /**
      * @return the destination

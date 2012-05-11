@@ -92,15 +92,12 @@ public class ExtractAction extends BaseAction<EventObject> {
             extractMultipleFile=false;
         }
         
-        boolean extractToDir;
-        if (!conf.getDestination().isDirectory()){
-            // TODO LOG
-            extractToDir=false;
-            if (extractMultipleFile){
-                throw new ActionException(this, "Unable to run on multiple file with an output file, use directory instead");
+        final File dest=conf.getDestination();
+        
+        if (dest!=null && !dest.isDirectory()){
+            if (!dest.mkdirs()){
+                throw new ActionException(this, "bad destination (not writeable): "+dest);
             }
-        } else {
-            extractToDir=true;
         }
         
         
@@ -114,36 +111,44 @@ public class ExtractAction extends BaseAction<EventObject> {
             }
             if (event instanceof FileSystemEvent){ 
                 File source = ((FileSystemEvent) event).getSource();
-                File dest;
-                if (extractToDir){
-                    dest=conf.getDestination();
-                } else if (extractMultipleFile){
-                    dest=conf.getDestination();
-                } else {
-                    // LOG continue
-                    continue;
-                }
                 
                 try {
-                    listenerForwarder.setTask("Extracting file");
-                    final String path=Extract.extract(source.getAbsolutePath());
-                    if (path!=null){
-                        File out=new File(path);
-                        listenerForwarder.setTask("moving to dest");
-                        FileUtils.moveFileToDirectory(out, dest, true);
-                        ret.add(new FileSystemEvent(out, FileSystemEventType.DIR_CREATED));
+                    listenerForwarder.setTask("Extracting file: "+source);
+                    final File extracted=Extract.extract(source,getTempDir(),false);
+                    if (extracted!=null){
+                            if (dest!=null){
+                                File newDest=new File(dest,extracted.getName());
+                                listenerForwarder.setTask("moving \'"+extracted+"\' to \'"+newDest+"\'");
+                                FileUtils.moveDirectoryToDirectory(extracted, newDest, true);
+                            ret.add(new FileSystemEvent(newDest, FileSystemEventType.DIR_CREATED));
+                        } else {
+                            throw new ActionException(this, "Unable to extracto file: "+source);
+                        }
+                    } else{
+                        final String message="Unable to extract "+source;
+                        if (!getConfiguration().isFailIgnored()){
+                            throw new ActionException(this.getClass(), message);
+                        } else {
+                            LOGGER.warn(message);
+                        }
+                    }
+                } catch (Exception e) {
+                    if (!getConfiguration().isFailIgnored()){
+                        throw new ActionException(this, e.getLocalizedMessage());
                     } else {
-                        throw new ActionException(this, "Unable to extracto file: "+source);
+                        LOGGER.warn(e.getLocalizedMessage());
                     }
                     
-                } catch (Exception e) {
-                    throw new ActionException(this, e.getLocalizedMessage());
+                }
+            } else {
+                final String message="Incoming instance is not a FileSystemEvent: "+event;
+                if (!getConfiguration().isFailIgnored()){
+                    throw new ActionException(this.getClass(), message);
+                } else {
+                    LOGGER.warn(message);
                 }
             }
-        }
-
-        // add the file to the return
-        ret.add(new FileSystemEvent(new File(""), FileSystemEventType.FILE_ADDED));
+        } // endwile
 
         listenerForwarder.completed();
         return ret;
