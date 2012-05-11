@@ -268,7 +268,8 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 					configuration.getDefaultNamespace(), 
 					configuration.getStoreName()==null?coverageStoreId:configuration.getStoreName(), 
 					configuration.getLayerName()==null?coverageStoreId:configuration.getLayerName(), 
-					inputFile);
+					inputFile,finalEPSGCode,projectionPolicy,
+					configuration.getDefaultStyle()!=null?configuration.getDefaultStyle():"raster");
 		} else if ("EXTERNAL".equalsIgnoreCase(configuration.getDataTransferMethod())) {
 			sent = publisher.publishExternalGeoTIFF(
 					configuration.getDefaultNamespace(),// workspace
