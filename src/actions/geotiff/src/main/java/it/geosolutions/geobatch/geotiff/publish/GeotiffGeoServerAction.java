@@ -31,6 +31,7 @@ import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy
 import java.io.File;
 import java.io.IOException;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.gce.geotiff.GeoTiffFormat;
@@ -52,18 +53,17 @@ import org.slf4j.LoggerFactory;
 public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffGeoServerAction.class);
-    
+
     private static final GeoTiffFormat FORMAT = new GeoTiffFormat();
 
-    public GeotiffGeoServerAction(GeoServerActionConfiguration configuration)
-            throws IOException {
+    public GeotiffGeoServerAction(GeoServerActionConfiguration configuration) throws IOException {
         super(configuration);
     }
 
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         try {
             listenerForwarder.started();
-            final GeoServerActionConfiguration configuration=getConfiguration();
+            final GeoServerActionConfiguration configuration = getConfiguration();
             // //
             // data flow configuration and dataStore name must not be null.
             // //
@@ -73,55 +73,74 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
                     LOGGER.error(message);
                 throw new IllegalStateException(message);
             }
+            
+            if (events == null) {
+                final String message = "Incoming events queue is null.";
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
+                throw new IllegalStateException(message);
+            }
+            
+            // returning queue
+            final Queue<FileSystemEvent> ret = new ArrayBlockingQueue<FileSystemEvent>(events.size());
 
-            while (events.size()>0){
-	            final FileSystemEvent event = events.remove();
-	            final File inputFile = event.getSource();
-	            
-	            // checks on input file
-	            if(!inputFile.exists()){
-	            	// ERROR or LOG since it does not exists
-	    			if (!configuration.isFailIgnored())
-	    				throw new IllegalStateException("File: "+inputFile.getAbsolutePath()+" does not exist!");
-	    			else {
-	    				if(LOGGER.isWarnEnabled()){
-	    					LOGGER.warn("File: "+inputFile.getAbsolutePath()+" does not exist!");
-	    				}
-	    			}
-	            }
-            	// check if is File
-            	if(!inputFile.isFile()){
-	            	// ERROR or LOG
-	    			if (!configuration.isFailIgnored())
-	    				throw new IllegalStateException("File: "+inputFile.getAbsolutePath()+" is not a file!");
-	    			else {
-	    				if(LOGGER.isWarnEnabled()){
-	    					LOGGER.warn("File: "+inputFile.getAbsolutePath()+" is not a file!");
-	    				}
-	    			}
-            	}	
-            	
-            	// check if we can read it
-            	if(!inputFile.canRead()){
-	            	// ERROR or LOG
-	    			if (!configuration.isFailIgnored())
-	    				throw new IllegalStateException("File: "+inputFile.getAbsolutePath()+" is not readable!");
-	    			else {
-	    				if(LOGGER.isWarnEnabled()){
-	    					LOGGER.warn("File: "+inputFile.getAbsolutePath()+" is not readablet!");
-	    				}
-	    			}
-            	}	            
-	            
-            	// do your magic
-            	listenerForwarder.setTask("Working on: " + inputFile);
-            	publishGeoTiff(inputFile,configuration);
+            // for each incoming file
+            for (FileSystemEvent event : events) {
+                
+                
+                
+                final File inputFile = event.getSource();
+
+                // checks on input file
+                if (!inputFile.exists()) {
+                    // ERROR or LOG since it does not exists
+                    if (!configuration.isFailIgnored())
+                        throw new IllegalStateException("File: " + inputFile.getAbsolutePath()
+                                                        + " does not exist!");
+                    else {
+                        if (LOGGER.isWarnEnabled()) {
+                            LOGGER.warn("File: " + inputFile.getAbsolutePath() + " does not exist!");
+                        }
+                    }
+                }
+                // check if is File
+                if (!inputFile.isFile()) {
+                    // ERROR or LOG
+                    if (!configuration.isFailIgnored())
+                        throw new IllegalStateException("File: " + inputFile.getAbsolutePath()
+                                                        + " is not a file!");
+                    else {
+                        if (LOGGER.isWarnEnabled()) {
+                            LOGGER.warn("File: " + inputFile.getAbsolutePath() + " is not a file!");
+                        }
+                    }
+                }
+
+                // check if we can read it
+                if (!inputFile.canRead()) {
+                    // ERROR or LOG
+                    if (!configuration.isFailIgnored())
+                        throw new IllegalStateException("File: " + inputFile.getAbsolutePath()
+                                                        + " is not readable!");
+                    else {
+                        if (LOGGER.isWarnEnabled()) {
+                            LOGGER.warn("File: " + inputFile.getAbsolutePath() + " is not readablet!");
+                        }
+                    }
+                }
+                
+                // do your magic
+                listenerForwarder.setTask("Publishing: "+inputFile);
+                // try to publish on geoserver
+                if (publishGeoTiff(inputFile, configuration)) {
+                    // if success add the geotiff to the output queue
+                    ret.add(event);
+                }
             }
             listenerForwarder.completed();
-            return events;
+            return ret;
         } catch (Throwable t) {
-            final String message = "FATAL -> "
-                    + t.getLocalizedMessage();
+            final String message = "FATAL -> " + t.getLocalizedMessage();
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error(message, t); // no need to
             }
@@ -130,176 +149,192 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
         }
     }
 
-	private static void publishGeoTiff(File inputFile, GeoServerActionConfiguration configuration) throws Exception {
-		final String inputFileName = inputFile.getName();
-		
-		final String filePrefix = FilenameUtils.getBaseName(inputFile.getName());
-		final String fileSuffix = FilenameUtils.getExtension(inputFile.getName());
+    /**
+     * If configuration.isFailIgnore and publish fails return false otherwise
+     * true.<br>
+     * If ! configuration.isFailIgnore and publish fails throws ActionException
+     * otherwise return true.<br>
+     * 
+     * @param inputFile the file to publish
+     * @param configuration the configuration to use
+     * @return true if success, false otherwise.
+     * @throws Exception
+     */
+    private static boolean publishGeoTiff(File inputFile, GeoServerActionConfiguration configuration)
+        throws Exception {
+        final String inputFileName = inputFile.getName();
 
-		String baseFileName = null;
-		final String fileNameFilter = configuration.getStoreFilePrefix();
-		if (fileNameFilter != null) {
-			if ((filePrefix.equals(fileNameFilter) || filePrefix.matches(fileNameFilter))
-					&& ("tif".equalsIgnoreCase(fileSuffix) || "tiff".equalsIgnoreCase(fileSuffix))) {
-				// etj: are we missing something here?
-				baseFileName = filePrefix;
-			}
-		} else if ("tif".equalsIgnoreCase(fileSuffix)
-				|| "tiff".equalsIgnoreCase(fileSuffix)) {
-			baseFileName = filePrefix;
-		}
+        final String filePrefix = FilenameUtils.getBaseName(inputFile.getName());
+        final String fileSuffix = FilenameUtils.getExtension(inputFile.getName());
 
-		if (baseFileName == null) {
-			final String message = "Unable to find a fileName for '"
-					+ inputFileName + "'";
-			if (LOGGER.isErrorEnabled())
-				LOGGER.error(message);
-			if (!configuration.isFailIgnored())
-				throw new IllegalStateException(message);
-		}
+        String baseFileName = null;
+        final String fileNameFilter = configuration.getStoreFilePrefix();
+        if (fileNameFilter != null) {
+            if ((filePrefix.equals(fileNameFilter) || filePrefix.matches(fileNameFilter))
+                && ("tif".equalsIgnoreCase(fileSuffix) || "tiff".equalsIgnoreCase(fileSuffix))) {
+                // etj: are we missing something here?
+                baseFileName = filePrefix;
+            }
+        } else if ("tif".equalsIgnoreCase(fileSuffix) || "tiff".equalsIgnoreCase(fileSuffix)) {
+            baseFileName = filePrefix;
+        }
 
-		// generate the coveragestore id
-		final String coverageStoreId = FilenameUtils.getBaseName(inputFileName);
+        if (baseFileName == null) {
+            final String message = "Unable to find a fileName for '" + inputFileName + "'";
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(message);
+            if (!configuration.isFailIgnored())
+                throw new IllegalStateException(message);
+        }
 
-		// //
-		// creating coverageStore
-		// //
-		GeoTiffReader coverageReader = null;
+        // generate the coveragestore id
+        final String coverageStoreId = FilenameUtils.getBaseName(inputFileName);
 
-		// Trying to read the GeoTIFF to make sure it is correct
-		CoordinateReferenceSystem crs=null;
-		Integer epsgCode = null;
-		try {
-			if (!FORMAT.accepts(inputFile)) {
-				final String message = "No valid GeoTIFF File found for this Data Flow!";
-				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error(message);
-				}
-				if (!configuration.isFailIgnored())
-					throw new IllegalStateException(message);
-			}
-			coverageReader = (GeoTiffReader) FORMAT.getReader(inputFile);
-			if (coverageReader == null) {
-				final String message = "No valid GeoTIFF File found for this Data Flow!";
-				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error(message);
-				}
-				if (!configuration.isFailIgnored())
-					throw new IllegalStateException(message);
-			}
+        // //
+        // creating coverageStore
+        // //
+        GeoTiffReader coverageReader = null;
 
-			// get the CRS or go back to the default one as per the
-			// configuration if we cannot find one
-			crs=coverageReader.getCrs();
-			if (crs != null) {
-				epsgCode = CRS.lookupEpsgCode(crs, true);
-			}
-		} finally {
-			if (coverageReader != null) {
-				try {
-					coverageReader.dispose();
-				} catch (Throwable e) {
-					if (LOGGER.isTraceEnabled()) {
-						LOGGER.trace(e.getLocalizedMessage(), e);
-					}
-				}
-			}
-		}
+        // Trying to read the GeoTIFF to make sure it is correct
+        CoordinateReferenceSystem crs = null;
+        Integer epsgCode = null;
+        try {
+            if (!FORMAT.accepts(inputFile)) {
+                final String message = "No valid GeoTIFF File found for this Data Flow!";
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(message);
+                }
+                if (!configuration.isFailIgnored())
+                    throw new IllegalStateException(message);
+            }
+            coverageReader = (GeoTiffReader)FORMAT.getReader(inputFile);
+            if (coverageReader == null) {
+                final String message = "No valid GeoTIFF File found for this Data Flow!";
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error(message);
+                }
+                if (!configuration.isFailIgnored())
+                    throw new IllegalStateException(message);
+            }
 
-		//
-		// SENDING data to GeoServer via REST protocol.
-		//
-		boolean sent = false;
-		GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
-				configuration.getGeoserverURL(), 
-				configuration.getGeoserverUID(), 
-				configuration.getGeoserverPWD());
+            // get the CRS or go back to the default one as per the
+            // configuration if we cannot find one
+            crs = coverageReader.getCrs();
+            if (crs != null) {
+                epsgCode = CRS.lookupEpsgCode(crs, true);
+            }
+        } finally {
+            if (coverageReader != null) {
+                try {
+                    coverageReader.dispose();
+                } catch (Throwable e) {
+                    if (LOGGER.isTraceEnabled()) {
+                        LOGGER.trace(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
+        }
 
-		// check transfer method
-		String transferMethod=configuration.getDataTransferMethod();
-		if(transferMethod==null){
-			transferMethod="DIRECT"; // default one
-		}
-		
-		// decide CRS
-		// default crs
-		final String defaultCRS= configuration.getCrs();
-		String finalEPSGCode=defaultCRS;
-		// retain original CRS if the code is there
-		if(epsgCode==null){
-			// we do not have a valid EPSG code
-			if(defaultCRS==null){
-				final String message = "Input file has no CRS neither the configuration provides a default one";
-				if (LOGGER.isInfoEnabled()) {
-					LOGGER.info(message);
-				}
-				if (!configuration.isFailIgnored())
-					throw new ActionException(GeotiffGeoServerAction.class,message);
-				return;
- 
-			}
+        //
+        // SENDING data to GeoServer via REST protocol.
+        //
+        boolean sent = false;
+        GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(configuration.getGeoserverURL(),
+                                                                      configuration.getGeoserverUID(),
+                                                                      configuration.getGeoserverPWD());
 
-		} else {
-			finalEPSGCode="EPSG:"+epsgCode;
-		}
-			
-		// decide CRS management
-		ProjectionPolicy projectionPolicy=ProjectionPolicy.NONE;
-		if(crs==null){
-			// we do not have a valid CRS, we use the default one
-			projectionPolicy=ProjectionPolicy.FORCE_DECLARED;
-			
-		} else 
-			// we DO have a valid CRS
-			if(epsgCode == null) {
-				// we do not have a CRS with a valid EPSG code, let's reproject on the fly  
-				projectionPolicy=ProjectionPolicy.REPROJECT_TO_DECLARED ;
-				
-			}
-		
+        // check transfer method
+        String transferMethod = configuration.getDataTransferMethod();
+        if (transferMethod == null) {
+            transferMethod = "DIRECT"; // default one
+        }
 
-		////
-		//
-		// Transferring the file
-		//
-		////
-		if ("DIRECT".equalsIgnoreCase(transferMethod)) {
-			sent = publisher.publishGeoTIFF(
-					configuration.getDefaultNamespace(), 
-					configuration.getStoreName()==null?coverageStoreId:configuration.getStoreName(), 
-					configuration.getLayerName()==null?coverageStoreId:configuration.getLayerName(), 
-					inputFile,finalEPSGCode,projectionPolicy,
-					configuration.getDefaultStyle()!=null?configuration.getDefaultStyle():"raster");
-		} else if ("EXTERNAL".equalsIgnoreCase(configuration.getDataTransferMethod())) {
-			sent = publisher.publishExternalGeoTIFF(
-					configuration.getDefaultNamespace(),// workspace
-					configuration.getStoreName()==null?coverageStoreId:configuration.getStoreName(),
-					inputFile,
-					configuration.getLayerName()==null?coverageStoreId:configuration.getLayerName(),
-					finalEPSGCode,
-					projectionPolicy,
-					configuration.getDefaultStyle()!=null?configuration.getDefaultStyle():"raster");
-		} else {
-			final String message = "FATAL -> Unknown transfer method "
-					+ configuration.getDataTransferMethod();
-			if (LOGGER.isErrorEnabled()) {
-				LOGGER.error(message);
-			}
-			sent = false;
-		}
-		if (sent) {
-			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("Coverage SUCCESSFULLY sent to GeoServer!");
-			}
-		} else {
-			final String message = "Coverage was NOT sent to GeoServer due to connection errors!";
-			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info(message);
-			}
-			if (!configuration.isFailIgnored())
-				throw new ActionException(GeotiffGeoServerAction.class,message);
+        // decide CRS
+        // default crs
+        final String defaultCRS = configuration.getCrs();
+        String finalEPSGCode = defaultCRS;
+        // retain original CRS if the code is there
+        if (epsgCode == null) {
+            // we do not have a valid EPSG code
+            if (defaultCRS == null) {
+                final String message = "Input file has no CRS neither the configuration provides a default one";
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info(message);
+                }
+                if (!configuration.isFailIgnored())
+                    throw new ActionException(GeotiffGeoServerAction.class, message);
+                return false;
 
-		}
-	}
+            }
+
+        } else {
+            finalEPSGCode = "EPSG:" + epsgCode;
+        }
+
+        // decide CRS management
+        ProjectionPolicy projectionPolicy = ProjectionPolicy.NONE;
+        if (crs == null) {
+            // we do not have a valid CRS, we use the default one
+            projectionPolicy = ProjectionPolicy.FORCE_DECLARED;
+
+        } else
+        // we DO have a valid CRS
+        if (epsgCode == null) {
+            // we do not have a CRS with a valid EPSG code, let's reproject on
+            // the fly
+            projectionPolicy = ProjectionPolicy.REPROJECT_TO_DECLARED;
+
+        }
+
+        // //
+        //
+        // Transferring the file
+        //
+        // //
+        if ("DIRECT".equalsIgnoreCase(transferMethod)) {
+            sent = publisher.publishGeoTIFF(configuration.getDefaultNamespace(),
+                                            configuration.getStoreName() == null
+                                                ? coverageStoreId : configuration.getStoreName(),
+                                            configuration.getLayerName() == null
+                                                ? coverageStoreId : configuration.getLayerName(),
+                                            inputFile,
+                                            finalEPSGCode,
+                                            projectionPolicy,
+                                            configuration.getDefaultStyle() != null ? configuration
+                                                .getDefaultStyle() : "raster");
+        } else if ("EXTERNAL".equalsIgnoreCase(configuration.getDataTransferMethod())) {
+            sent = publisher.publishExternalGeoTIFF(configuration.getDefaultNamespace(),// workspace
+                                                    configuration.getStoreName() == null
+                                                        ? coverageStoreId : configuration.getStoreName(),
+                                                    inputFile,
+                                                    configuration.getLayerName() == null
+                                                        ? coverageStoreId : configuration.getLayerName(),
+                                                    finalEPSGCode,
+                                                    projectionPolicy,
+                                                    configuration.getDefaultStyle() != null ? configuration
+                                                        .getDefaultStyle() : "raster");
+        } else {
+            final String message = "FATAL -> Unknown transfer method "
+                                   + configuration.getDataTransferMethod();
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error(message);
+            }
+            sent = false;
+        }
+        if (sent) {
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Coverage SUCCESSFULLY sent to GeoServer!");
+            }
+            return true;
+        } else {
+            final String message = "Coverage was NOT sent to GeoServer due to connection errors!";
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info(message);
+            }
+            if (!configuration.isFailIgnored())
+                throw new ActionException(GeotiffGeoServerAction.class, message);
+        }
+        return false;
+    }
 
 }
