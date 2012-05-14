@@ -26,6 +26,8 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.UploadMethod;
+import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 import it.geosolutions.tools.compress.file.Compressor;
 import it.geosolutions.tools.compress.file.Extract;
 import it.geosolutions.tools.io.file.Collector;
@@ -222,21 +224,66 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             // GeoServerRESTReader reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
             // configuration.getGeoserverUID(), configuration.getGeoserverPWD());
 
-            
-
             //
             // SENDING data to GeoServer via REST protocol.
             //
             GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
                     configuration.getGeoserverURL(), configuration.getGeoserverUID(),
                     configuration.getGeoserverPWD());
+            
+            // decide CRS
+            // default crs
+            final String defaultCRS = configuration.getCrs();
+            String finalEPSGCode = defaultCRS;
+            // retain original CRS if the code is there
+            if (epsgCode == null) {
+                // we do not have a valid EPSG code
+                if (defaultCRS == null) {
+                    final String message = "Input file has no CRS neither the configuration provides a default one";
+                    if (LOGGER.isInfoEnabled()) {
+                        LOGGER.info(message);
+                    }
+                    if (!configuration.isFailIgnored())
+                        throw new ActionException(ShapeFileAction.class, message);
+                }
+            } else {
+                finalEPSGCode = "EPSG:" + epsgCode;
+            }
+            
+            // decide CRS management
+            ProjectionPolicy projectionPolicy = ProjectionPolicy.NONE;
+            if (defaultCRS == null) {
+                // we do not have a valid CRS, we use the default one
+                projectionPolicy = ProjectionPolicy.FORCE_DECLARED;
+            } else
+            // we DO have a valid CRS
+            if (epsgCode == null) {
+                // we do not have a CRS with a valid EPSG code, let's reproject on
+                // the fly
+                projectionPolicy = ProjectionPolicy.REPROJECT_TO_DECLARED;
+            }
+            
+            String transferMethod = configuration.getDataTransferMethod();
+            if (transferMethod == null) {
+                transferMethod = "DIRECT"; // default one
+            }
+            
+            UploadMethod uMethod=null;
+            if ("DIRECT".equalsIgnoreCase(transferMethod)) {
+                uMethod=UploadMethod.file;
+            } else if ("EXTERNAL".equalsIgnoreCase(configuration.getDataTransferMethod())) {
+                uMethod=UploadMethod.external;
+            } else {
+                throw new IllegalArgumentException("Unsupported transfer method: "+configuration.getDataTransferMethod());
+            }
             // DIRECT Upload is the only supported method
-            if (publisher.publishShp(
-            		configuration.getDefaultNamespace(), 
-            		shapeName, 
-            		shapeName,
-            		zippedFile, 
-                    epsgCode!=null?"EPSG:"+epsgCode:configuration.getCrs())) {
+            if (publisher.publishShp(configuration.getDefaultNamespace(),
+                                     configuration.getStoreName() == null? shapeName : configuration.getStoreName(), 
+                null, configuration.getLayerName() == null? shapeName : configuration.getLayerName(), uMethod,
+                    zippedFile.toURI(),
+                    finalEPSGCode,
+                    projectionPolicy,
+                    configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "polygon" )) {
                 final String message = "Shape file SUCCESFULLY sent";
                 if (LOGGER.isInfoEnabled())
                     LOGGER.info(message);
