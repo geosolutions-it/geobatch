@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.imagemosaic;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfig;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -352,16 +354,31 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
      */
     public void overrideImageMosaicCommand(final ImageMosaicConfiguration conf) {
 
-        try {
-            final Class clazz=ImageMosaicCommand.class;
-            for (Field field:clazz.getFields()){
-                if (field.get(this)==null){
-                    field.set(this, field.get(conf));
+            final PropertyDescriptor[] props=PropertyUtils.getPropertyDescriptors(conf);
+            for (PropertyDescriptor prop:props){
+                final String name=prop.getName();
+                if (name=="class"){
+                    continue;
+                }
+                final Object obj;
+                try {
+                    obj = PropertyUtils.getProperty(this,name);
+                    if (obj==null){
+                        // override
+                        PropertyUtils.setProperty(this, name, PropertyUtils.getProperty(conf,name));
+                    }
+                } catch (InvocationTargetException e) {
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(e.getMessage());
+                } catch (NoSuchMethodException e) {
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(e.getMessage());
+                } catch (IllegalAccessException e) {
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(e.getMessage());
                 }
             }
-        } catch (IllegalAccessException e) {
-            LOGGER.warn(e.getMessage(), e);
-        }
+        
     }
 
 }

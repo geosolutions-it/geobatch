@@ -26,321 +26,334 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
 public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
-	public ImageMosaicConfiguration(String id, String name,
-			String description) {
-		super(id, name, description);
-	}
-
+    public ImageMosaicConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
 
     /**
-     * Only used when updating.
-     * We'll assume the layer exists, and the reset will not be performed.
+     * Only used when updating. We'll assume the layer exists, and the reset
+     * will not be performed.
      */
-    private boolean ignoreGeoServer = false;
-	/**
-	 * Try to use COARDS file name convention to parse file name. This is used
-	 * to get ImageMosaicGranulesDescription info
-	 */
-	private boolean COARDS;
+    private Boolean ignoreGeoServer = false;
+    /**
+     * Try to use COARDS file name convention to parse file name. This is used
+     * to get ImageMosaicGranulesDescription info
+     */
+    private Boolean COARDS;
 
-	private String datastorePropertiesPath;
+    private String datastorePropertiesPath;
 
-	private String timeRegex;
+    private String timeRegex;
 
-	private String elevationRegex;
+    private String elevationRegex;
 
-	private String runtimeRegex;
+    private String runtimeRegex;
 
-	private String backgroundValue;// NoData
+    private String backgroundValue;// NoData
 
-	private String projectionPolicy;// NONE, REPROJECT_TO_DECLARED,
-									// FORCE_DECLARED
+    private String projectionPolicy;// NONE, REPROJECT_TO_DECLARED,
+                                    // FORCE_DECLARED
 
-	private Double NativeMinBoundingBoxX;// BoundingBox
+    private Double NativeMinBoundingBoxX;// BoundingBox
 
-	private Double NativeMinBoundingBoxY;// BoundingBox
+    private Double NativeMinBoundingBoxY;// BoundingBox
 
-	private Double NativeMaxBoundingBoxX;// BoundingBox
+    private Double NativeMaxBoundingBoxX;// BoundingBox
 
-	private Double NativeMaxBoundingBoxY;// BoundingBox
+    private Double NativeMaxBoundingBoxY;// BoundingBox
 
-	public String getProjectionPolicy() {
-		return projectionPolicy;
-	}
+    public String getProjectionPolicy() {
+        return projectionPolicy;
+    }
 
-	public void setProjectionPolicy(String projectionPolicy) {
-		this.projectionPolicy = projectionPolicy;
-	}
+    public void setProjectionPolicy(String projectionPolicy) {
+        this.projectionPolicy = projectionPolicy;
+    }
 
-	private Double latLonMinBoundingBoxX;// BoundingBox
+    private Double latLonMinBoundingBoxX;// BoundingBox
 
-	private Double latLonMinBoundingBoxY;// BoundingBox
+    private Double latLonMinBoundingBoxY;// BoundingBox
 
-	private Double latLonMaxBoundingBoxX;// BoundingBox
+    private Double latLonMaxBoundingBoxX;// BoundingBox
 
-	private Double latLonMaxBoundingBoxY;// BoundingBox
+    private Double latLonMaxBoundingBoxY;// BoundingBox
 
-	// <metadata>
-	// <entry key="timeDimEnabled">true</entry>
-	// <entry key="dirName">20101012T210000_wdi_20101012T210000_wdi</entry>
-	// <entry key="timePresentationMode">LIST</entry>
-	// </metadata>
-	private String timeDimEnabled;
+    // <metadata>
+    // <entry key="timeDimEnabled">true</entry>
+    // <entry key="dirName">20101012T210000_wdi_20101012T210000_wdi</entry>
+    // <entry key="timePresentationMode">LIST</entry>
+    // </metadata>
+    private String timeDimEnabled;
 
-	private String elevDimEnabled;
+    private String elevDimEnabled;
 
-	public String getElevDimEnabled() {
-		return elevDimEnabled;
-	}
+    public String getElevDimEnabled() {
+        return elevDimEnabled;
+    }
 
-	public void setElevDimEnabled(String elevationDimEnabled) {
-		this.elevDimEnabled = elevationDimEnabled;
-	}
+    public void setElevDimEnabled(String elevationDimEnabled) {
+        this.elevDimEnabled = elevationDimEnabled;
+    }
 
-	private String timePresentationMode;
+    private String timePresentationMode;
 
-	private String elevationPresentationMode;
+    private String elevationPresentationMode;
 
-	public String getElevationPresentationMode() {
-		return elevationPresentationMode;
-	}
+    public String getElevationPresentationMode() {
+        return elevationPresentationMode;
+    }
 
-	public void setElevationPresentationMode(String elevationPresentationMode) {
-		this.elevationPresentationMode = elevationPresentationMode;
-	}
+    public void setElevationPresentationMode(String elevationPresentationMode) {
+        this.elevationPresentationMode = elevationPresentationMode;
+    }
 
-	// TODO removeme
-	private String dirName;
+    // TODO removeme
+    private String dirName;
 
-	private String outputTransparentColor;
+    private String outputTransparentColor;
 
-	private String inputTransparentColor;
+    private String inputTransparentColor;
 
-	private boolean allowMultithreading;
+    private Boolean allowMultithreading;
 
-	private boolean useJaiImageRead;
+    private Boolean useJaiImageRead;
 
-	private int tileSizeH;
+    private Integer tileSizeH;
 
-	private int tileSizeW;
+    private Integer tileSizeW;
 
-	public boolean isCOARDS() {
-		return COARDS;
-	}
+    public boolean isCOARDS() {
+        if (COARDS==null)
+            return false;
+        return COARDS;
+    }
 
-	public void setCOARDS(boolean cOARDS) {
-		COARDS = cOARDS;
-	}
+    public void setCOARDS(boolean cOARDS) {
+        COARDS = cOARDS;
+    }
 
-	public Double getNativeMinBoundingBoxX() {
-		return NativeMinBoundingBoxX;
-	}
-
-	public void setNativeMinBoundingBoxX(Double nativeMinBoundingBoxX) {
-		NativeMinBoundingBoxX = nativeMinBoundingBoxX;
-	}
-
-	public Double getNativeMinBoundingBoxY() {
-		return NativeMinBoundingBoxY;
-	}
-
-	public void setNativeMinBoundingBoxY(Double nativeMinBoundingBoxY) {
-		NativeMinBoundingBoxY = nativeMinBoundingBoxY;
-	}
-
-	public Double getNativeMaxBoundingBoxX() {
-		return NativeMaxBoundingBoxX;
-	}
-
-	public void setNativeMaxBoundingBoxX(Double nativeMaxBoundingBoxX) {
-		NativeMaxBoundingBoxX = nativeMaxBoundingBoxX;
-	}
-
-	public Double getNativeMaxBoundingBoxY() {
-		return NativeMaxBoundingBoxY;
-	}
-
-	public void setNativeMaxBoundingBoxY(Double nativeMaxBoundingBoxY) {
-		NativeMaxBoundingBoxY = nativeMaxBoundingBoxY;
-	}
-
-	public Double getLatLonMinBoundingBoxX() {
-		return latLonMinBoundingBoxX;
-	}
-
-	public void setLatLonMinBoundingBoxX(Double latLonMinBoundingBoxX) {
-		this.latLonMinBoundingBoxX = latLonMinBoundingBoxX;
-	}
-
-	public Double getLatLonMinBoundingBoxY() {
-		return latLonMinBoundingBoxY;
-	}
-
-	public void setLatLonMinBoundingBoxY(Double latLonMinBoundingBoxY) {
-		this.latLonMinBoundingBoxY = latLonMinBoundingBoxY;
-	}
-
-	public Double getLatLonMaxBoundingBoxX() {
-		return latLonMaxBoundingBoxX;
-	}
-
-	public void setLatLonMaxBoundingBoxX(Double latLonMaxBoundingBoxX) {
-		this.latLonMaxBoundingBoxX = latLonMaxBoundingBoxX;
-	}
-
-	public Double getLatLonMaxBoundingBoxY() {
-		return latLonMaxBoundingBoxY;
-	}
-
-	public void setLatLonMaxBoundingBoxY(Double latLonMaxBoundingBoxY) {
-		this.latLonMaxBoundingBoxY = latLonMaxBoundingBoxY;
-	}
-
-	public String getTimeDimEnabled() {
-		return timeDimEnabled;
-	}
-
-	public void setTimeDimEnabled(String timeDimEnabled) {
-		this.timeDimEnabled = timeDimEnabled;
-	}
-
-	public String getDirName() {
-		return dirName;
-	}
-
-	public void setDirName(String dirName) {
-		this.dirName = dirName;
-	}
-
-	public String getTimePresentationMode() {
-		return timePresentationMode;
-	}
-
-	public void setTimePresentationMode(String timePresentationMode) {
-		this.timePresentationMode = timePresentationMode;
-	}
-
-	public String getOutputTransparentColor() {
-		return outputTransparentColor;
-	}
-
-	public void setOutputTransparentColor(String outputTransparentColor) {
-		this.outputTransparentColor = outputTransparentColor;
-	}
-
-	public String getInputTransparentColor() {
-		return inputTransparentColor;
-	}
-
-	public void setInputTransparentColor(String inputTransparentColor) {
-		this.inputTransparentColor = inputTransparentColor;
-	}
-
-	public boolean isAllowMultithreading() {
-		return allowMultithreading;
-	}
-
-	public void setAllowMultithreading(boolean allowMultithreading) {
-		this.allowMultithreading = allowMultithreading;
-	}
-
-	public boolean isUseJaiImageRead() {
-		return useJaiImageRead;
-	}
-
-	public void setUseJaiImageRead(boolean useJaiImageRead) {
-		this.useJaiImageRead = useJaiImageRead;
-	}
-
-	public int getTileSizeH() {
-		return tileSizeH;
-	}
-
-	public void setTileSizeH(int tileSizeH) {
-		this.tileSizeH = tileSizeH;
-	}
-
-	public int getTileSizeW() {
-		return tileSizeW;
-	}
-
-	public void setTileSizeW(int tileSizeW) {
-		this.tileSizeW = tileSizeW;
-	}
-
-	public String getBackgroundValue() {
-		return backgroundValue;
-	}
-
-	public void setBackgroundValue(String backgroundValue) {
-		this.backgroundValue = backgroundValue;
-	}
-
-	/**
-	 * @param datastorePropertiesPath
-	 *            the datastorePropertiesPath to set
-	 */
-	public void setDatastorePropertiesPath(String datastorePropertiesPath) {
-		this.datastorePropertiesPath = datastorePropertiesPath;
-	}
-
-	/**
-	 * @return the datastorePropertiesPath
-	 */
-	public String getDatastorePropertiesPath() {
-		return datastorePropertiesPath;
-	}
-
-	/**
-	 * @param timeRegex
-	 *            the timeRegex to set
-	 */
-	public void setTimeRegex(String timeRegex) {
-		this.timeRegex = timeRegex;
-	}
-
-	/**
-	 * @return the timeRegex
-	 */
-	public String getTimeRegex() {
-		return timeRegex;
-	}
-
-	/**
-	 * @param elevationRegex
-	 *            the elevationRegex to set
-	 */
-	public void setElevationRegex(String elevationRegex) {
-		this.elevationRegex = elevationRegex;
-	}
-
-	/**
-	 * @return the elevationRegex
-	 */
-	public String getElevationRegex() {
-		return elevationRegex;
-	}
-
-	/**
-	 * @param runtimeRegex
-	 *            the runtimeRegex to set
-	 */
-	public void setRuntimeRegex(String runtimeRegex) {
-		this.runtimeRegex = runtimeRegex;
-	}
-
-	/**
-	 * @return the runtimeRegex
-	 */
-	public String getRuntimeRegex() {
-		return runtimeRegex;
-	}
+    public Double getNativeMinBoundingBoxX() {
+        return NativeMinBoundingBoxX;
+    }
+
+    public void setNativeMinBoundingBoxX(Double nativeMinBoundingBoxX) {
+        NativeMinBoundingBoxX = nativeMinBoundingBoxX;
+    }
+
+    public Double getNativeMinBoundingBoxY() {
+        return NativeMinBoundingBoxY;
+    }
+
+    public void setNativeMinBoundingBoxY(Double nativeMinBoundingBoxY) {
+        NativeMinBoundingBoxY = nativeMinBoundingBoxY;
+    }
+
+    public Double getNativeMaxBoundingBoxX() {
+        return NativeMaxBoundingBoxX;
+    }
+
+    public void setNativeMaxBoundingBoxX(Double nativeMaxBoundingBoxX) {
+        NativeMaxBoundingBoxX = nativeMaxBoundingBoxX;
+    }
+
+    public Double getNativeMaxBoundingBoxY() {
+        return NativeMaxBoundingBoxY;
+    }
+
+    public void setNativeMaxBoundingBoxY(Double nativeMaxBoundingBoxY) {
+        NativeMaxBoundingBoxY = nativeMaxBoundingBoxY;
+    }
+
+    public Double getLatLonMinBoundingBoxX() {
+        return latLonMinBoundingBoxX;
+    }
+
+    public void setLatLonMinBoundingBoxX(Double latLonMinBoundingBoxX) {
+        this.latLonMinBoundingBoxX = latLonMinBoundingBoxX;
+    }
+
+    public Double getLatLonMinBoundingBoxY() {
+        return latLonMinBoundingBoxY;
+    }
+
+    public void setLatLonMinBoundingBoxY(Double latLonMinBoundingBoxY) {
+        this.latLonMinBoundingBoxY = latLonMinBoundingBoxY;
+    }
+
+    public Double getLatLonMaxBoundingBoxX() {
+        return latLonMaxBoundingBoxX;
+    }
+
+    public void setLatLonMaxBoundingBoxX(Double latLonMaxBoundingBoxX) {
+        this.latLonMaxBoundingBoxX = latLonMaxBoundingBoxX;
+    }
+
+    public Double getLatLonMaxBoundingBoxY() {
+        return latLonMaxBoundingBoxY;
+    }
+
+    public void setLatLonMaxBoundingBoxY(Double latLonMaxBoundingBoxY) {
+        this.latLonMaxBoundingBoxY = latLonMaxBoundingBoxY;
+    }
+
+    public String getTimeDimEnabled() {
+        return timeDimEnabled;
+    }
+
+    public void setTimeDimEnabled(String timeDimEnabled) {
+        this.timeDimEnabled = timeDimEnabled;
+    }
+
+    public String getDirName() {
+        return dirName;
+    }
+
+    public void setDirName(String dirName) {
+        this.dirName = dirName;
+    }
+
+    public String getTimePresentationMode() {
+        return timePresentationMode;
+    }
+
+    public void setTimePresentationMode(String timePresentationMode) {
+        this.timePresentationMode = timePresentationMode;
+    }
+
+    public String getOutputTransparentColor() {
+        return outputTransparentColor;
+    }
+
+    public void setOutputTransparentColor(String outputTransparentColor) {
+        this.outputTransparentColor = outputTransparentColor;
+    }
+
+    public String getInputTransparentColor() {
+        return inputTransparentColor;
+    }
+
+    public void setInputTransparentColor(String inputTransparentColor) {
+        this.inputTransparentColor = inputTransparentColor;
+    }
+
+    public boolean isAllowMultithreading() {
+        if (allowMultithreading==null)
+            return false;
+        return allowMultithreading;
+    }
+
+    public void setAllowMultithreading(boolean allowMultithreading) {
+        this.allowMultithreading = allowMultithreading;
+    }
+
+    public boolean isUseJaiImageRead() {
+        if (useJaiImageRead==null)
+            return false;
+        return useJaiImageRead;
+    }
+
+    public void setUseJaiImageRead(boolean useJaiImageRead) {
+        this.useJaiImageRead = useJaiImageRead;
+    }
+
+    public Integer getTileSizeH() {
+        if (tileSizeH==null)
+            return 0;
+        return tileSizeH;
+    }
+
+    public void setTileSizeH(int tileSizeH) {
+        this.tileSizeH = tileSizeH;
+    }
+
+    public Integer getTileSizeW() {
+        if (tileSizeW==null)
+            return 0;
+        return tileSizeW;
+    }
+
+    public void setTileSizeW(int tileSizeW) {
+        this.tileSizeW = tileSizeW;
+    }
+
+
+    public void setTileSizeH(Integer tileSizeH) {
+        this.tileSizeH = tileSizeH;
+    }
+
+    public void setTileSizeW(Integer tileSizeW) {
+        this.tileSizeW = tileSizeW;
+    }
+    
+    public String getBackgroundValue() {
+        return backgroundValue;
+    }
+
+    public void setBackgroundValue(String backgroundValue) {
+        this.backgroundValue = backgroundValue;
+    }
 
     /**
-     * Only used when updating.
-     * We'll assume the layer exists, and the reset will not be performed.
+     * @param datastorePropertiesPath the datastorePropertiesPath to set
      */
-    public boolean getIgnoreGeoServer() {
+    public void setDatastorePropertiesPath(String datastorePropertiesPath) {
+        this.datastorePropertiesPath = datastorePropertiesPath;
+    }
+
+    /**
+     * @return the datastorePropertiesPath
+     */
+    public String getDatastorePropertiesPath() {
+        return datastorePropertiesPath;
+    }
+
+    /**
+     * @param timeRegex the timeRegex to set
+     */
+    public void setTimeRegex(String timeRegex) {
+        this.timeRegex = timeRegex;
+    }
+
+    /**
+     * @return the timeRegex
+     */
+    public String getTimeRegex() {
+        return timeRegex;
+    }
+
+    /**
+     * @param elevationRegex the elevationRegex to set
+     */
+    public void setElevationRegex(String elevationRegex) {
+        this.elevationRegex = elevationRegex;
+    }
+
+    /**
+     * @return the elevationRegex
+     */
+    public String getElevationRegex() {
+        return elevationRegex;
+    }
+
+    /**
+     * @param runtimeRegex the runtimeRegex to set
+     */
+    public void setRuntimeRegex(String runtimeRegex) {
+        this.runtimeRegex = runtimeRegex;
+    }
+
+    /**
+     * @return the runtimeRegex
+     */
+    public String getRuntimeRegex() {
+        return runtimeRegex;
+    }
+
+    /**
+     * Only used when updating. We'll assume the layer exists, and the reset
+     * will not be performed.
+     */
+    public Boolean getIgnoreGeoServer() {
         return ignoreGeoServer;
     }
 
@@ -348,21 +361,29 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         this.ignoreGeoServer = ignoreGeoServer;
     }
 
-	@Override
-	public ImageMosaicConfiguration clone() {
-		return (ImageMosaicConfiguration)super.clone();
-	}
+    public Boolean getCOARDS() {
+        return COARDS;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() 
-                + "["
-                + "id:" + getId()
-                + " name:" + getName()
-                + " srvId:" + getServiceID()
-                + " GS:" + getGeoserverUID() + "@"+ getGeoserverURL()
-                + " ignoreGS:" + ignoreGeoServer
-                + "]";
-	}
+    public Boolean getAllowMultithreading() {
+        return allowMultithreading;
+    }
+
+    public Boolean getUseJaiImageRead() {
+        return useJaiImageRead;
+    }
+
+
+    @Override
+    public ImageMosaicConfiguration clone() {
+        return (ImageMosaicConfiguration)super.clone();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + "id:" + getId() + " name:" + getName() + " srvId:"
+               + getServiceID() + " GS:" + getGeoserverUID() + "@" + getGeoserverURL() + " ignoreGS:"
+               + ignoreGeoServer + "]";
+    }
 
 }

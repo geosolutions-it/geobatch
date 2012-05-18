@@ -279,11 +279,13 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             // DIRECT Upload is the only supported method
             if (publisher.publishShp(configuration.getDefaultNamespace(),
                                      configuration.getStoreName() == null? shapeName : configuration.getStoreName(), 
-                null, configuration.getLayerName() == null? shapeName : configuration.getLayerName(), uMethod,
-                    zippedFile.toURI(),
-                    finalEPSGCode,
-                    projectionPolicy,
-                    configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "polygon" )) {
+                                     null,
+                                     configuration.getLayerName() == null? shapeName : configuration.getLayerName(),
+                                     uMethod,
+                                     zippedFile.toURI(),
+                                     finalEPSGCode,
+                                     projectionPolicy,
+                                     configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "polygon" )) {
                 final String message = "Shape file SUCCESFULLY sent";
                 if (LOGGER.isInfoEnabled())
                     LOGGER.info(message);

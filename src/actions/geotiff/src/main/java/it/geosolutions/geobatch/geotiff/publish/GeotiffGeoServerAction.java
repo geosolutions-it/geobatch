@@ -300,8 +300,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
                                             inputFile,
                                             finalEPSGCode,
                                             projectionPolicy,
-                                            configuration.getDefaultStyle() != null ? configuration
-                                                .getDefaultStyle() : "raster");
+                                            configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "raster");
         } else if ("EXTERNAL".equalsIgnoreCase(configuration.getDataTransferMethod())) {
             sent = publisher.publishExternalGeoTIFF(configuration.getDefaultNamespace(),// workspace
                                                     configuration.getStoreName() == null
@@ -311,8 +310,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
                                                         ? coverageStoreId : configuration.getLayerName(),
                                                     finalEPSGCode,
                                                     projectionPolicy,
-                                                    configuration.getDefaultStyle() != null ? configuration
-                                                        .getDefaultStyle() : "raster");
+                                                    configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "raster");
         } else {
             final String message = "FATAL -> Unknown transfer method "
                                    + configuration.getDataTransferMethod();

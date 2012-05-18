@@ -27,26 +27,34 @@ import com.sun.org.apache.xerces.internal.xs.XSException;
 public class ImageMosaicCommandTest {
 	ImageMosaicCommand cmd = null;
 	File cmdFile;
-
+	List<File> addList;
+	List<File> delList;
 	@Before
 	public void setUp() throws Exception {
 		// create in memory object
-		List<File> addList = new ArrayList<File>();
+	        addList = new ArrayList<File>();
 		addList.add(TestData.file(this,
 				"time_mosaic/world.200406.3x5400x2700.tiff"));
-		List<File> delList = new ArrayList<File>();
+		delList = new ArrayList<File>();
 		delList.add(TestData.file(this,
 				"time_mosaic/world.200406.3x5400x2700.tiff"));
 		cmd = new ImageMosaicCommand(
 				new File(TestData.file(this, null), "test"), addList, delList);
+		
+		// GeoServerActionConfig
+                cmd.setGeoserverUID("admin");
+                
+                // GeoServerActionConfiguration
+                cmd.setCrs("EPSG:4326");
+                
+                // ImageMosaicConfiguration
+                cmd.setAllowMultithreading(true);
 		
 		cmdFile = new File(TestData.file(this, null), "test_cmd_out.xml");
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		cmd = null;
-		FileUtils.deleteQuietly(cmdFile);
 	}
 
 	@Test
@@ -56,14 +64,7 @@ public class ImageMosaicCommandTest {
 
 			// change params
 			
-			// GeoServerActionConfig
-			cmd.setGeoserverUID("admin");
 			
-			// GeoServerActionConfiguration
-			cmd.setCrs("EPSG:4326");
-			
-			// ImageMosaicConfiguration
-			cmd.setAllowMultithreading(true);
 			
 			File out = ImageMosaicCommand.serialize(cmd, path);
 
@@ -96,4 +97,24 @@ public class ImageMosaicCommandTest {
 		Assert.assertNotNull(cmd2);
 	}
 
+	@Test
+        public final void testoverrideImageMosaicCommand() {
+	        final ImageMosaicConfiguration conf=new ImageMosaicConfiguration("id", "name", "description");
+	        conf.setTileSizeH(256);
+	        conf.setTileSizeW(256);
+	        
+            try {
+                
+                cmd.overrideImageMosaicCommand(conf);
+                Assert.assertEquals((Integer)256, cmd.getTileSizeH());
+                Assert.assertEquals((Integer)256, cmd.getTileSizeW());
+                
+                // not set into configuration but already present into command is not overridden
+                Assert.assertEquals((Boolean)true, cmd.getAllowMultithreading());
+            } catch (SecurityException e) {
+                Assert.fail(e.getLocalizedMessage());
+            }
+	        
+                
+        }
 }
