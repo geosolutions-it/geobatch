@@ -49,6 +49,9 @@ public class ImageMosaicCommandTest {
                 
                 // ImageMosaicConfiguration
                 cmd.setAllowMultithreading(true);
+                
+                cmd.setTileSizeH(128);
+                cmd.setTileSizeW(128);
 		
 		cmdFile = new File(TestData.file(this, null), "test_cmd_out.xml");
 	}
@@ -105,9 +108,12 @@ public class ImageMosaicCommandTest {
 	        
             try {
                 
-                cmd.overrideImageMosaicCommand(conf);
-                Assert.assertEquals((Integer)256, cmd.getTileSizeH());
-                Assert.assertEquals((Integer)256, cmd.getTileSizeW());
+                cmd.copyConfigurationIntoCommand(conf);
+                
+                // tile size is set to 128 into cmd and to 256 into conf
+                // result should be 128 since cmd settings may override 
+                Assert.assertEquals((Integer)128, cmd.getTileSizeH());
+                Assert.assertEquals((Integer)128, cmd.getTileSizeW());
                 
                 // not set into configuration but already present into command is not overridden
                 Assert.assertEquals((Boolean)true, cmd.getAllowMultithreading());

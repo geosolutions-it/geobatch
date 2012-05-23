@@ -352,7 +352,7 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
      * set this instance null properties with the passed configuration
      * @param conf
      */
-    public void overrideImageMosaicCommand(final ImageMosaicConfiguration conf) {
+    public void copyConfigurationIntoCommand(final ImageMosaicConfiguration conf) {
 
             final PropertyDescriptor[] props=PropertyUtils.getPropertyDescriptors(conf);
             for (PropertyDescriptor prop:props){
@@ -377,8 +377,14 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
                     if (LOGGER.isWarnEnabled())
                         LOGGER.warn(e.getMessage());
                 }
-            }
-        
+            }   
+    }
+    
+    /**
+     * @deprecated use {@link #copyConfigurationIntoCommand(ImageMosaicConfiguration)}
+     */
+    public void overrideImageMosaicCommand(final ImageMosaicConfiguration conf) {
+        copyConfigurationIntoCommand(conf);
     }
 
 }

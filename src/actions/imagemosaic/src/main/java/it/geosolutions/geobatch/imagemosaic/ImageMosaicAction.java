@@ -244,7 +244,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     }
                 }
                 // override local cmd null params with the getConfiguration()
-                cmd.overrideImageMosaicCommand(getConfiguration());
+                cmd.copyConfigurationIntoCommand(getConfiguration());
 
                 final String layerName;
                 if (cmd.getLayerName()==null){
