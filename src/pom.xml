@@ -43,6 +43,19 @@
         <system>jenkins</system>
         <url>http://ci.geo-solutions.it/</url>
     </ciManagement>
+
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>geosolutions</id>
+            <url>ftp://maven.geo-solutions.it</url>
+        </repository>
+        <site>
+            <id>demo.geosolutions</id>
+            <url>scp://demo.geo-solutions.it/var/www/share/javadoc/geobatch</url>
+        </site>
+    </distributionManagement>
+
   <!-- =========================================================== -->
   <!--   Properties and Profiles                                   -->
   <!--       modify the build process in certain conditions.       -->
@@ -118,13 +131,7 @@
         <test.maxHeapSize>512M</test.maxHeapSize>
         <src.output>${basedir}/target</src.output>
     </properties>
-    <distributionManagement>
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>geosolutions</id>
-            <url>ftp://maven.geo-solutions.it</url>
-        </repository>
-    </distributionManagement>
+
   <!-- Profiles set on the command-line overwrite default properties. -->
     <profiles>
         <profile>
@@ -177,15 +184,25 @@
                 </plugins>
             </reporting>
         </profile>
-        <profile>
-            <id>site.geosolutions</id>
-            <distributionManagement>
-                <site>
-                    <id>site-geosolutions</id>
-                    <name>Web site for Maven reports</name>
-                    <url>scp://www.geo-solutions.it/var/www/geo-solutions.it/maven/reports/gb</url>
-                </site>
-            </distributionManagement>
+	<profile>
+           <id>javadoc</id>
+           <build>
+           <plugins>
+              <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-javadoc-plugin</artifactId>
+               <version>2.7</version>
+               <executions>
+                 <execution>
+                   <id>attach-javadocs</id>
+                   <goals>
+                     <goal>jar</goal>
+                   </goals>
+                 </execution>
+               </executions>
+             </plugin>
+           </plugins>
+           </build>
         </profile>
     <!-- deploy libs -->
         <profile>

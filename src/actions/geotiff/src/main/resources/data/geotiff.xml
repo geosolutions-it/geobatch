@@ -4,7 +4,6 @@
 	<name>Prepare GeoTIFF and publish</name>
 	<description>Create overviews, retile the image and publish on GeoServer</description>
 
-	<workingDirectory>geotiff</workingDirectory>
 	<autorun>true</autorun>
 
 	<corePoolSize>10</corePoolSize>
@@ -21,17 +20,14 @@
 		<interval>20</interval>  <!--  each 20 sec -->
 		<id>id</id>
 		<serviceID>fsEventGeneratorService</serviceID>
-		<description>description</description>
-		<name>geotiff</name>
 	</EventGeneratorConfiguration>
 
 	<EventConsumerConfiguration>
 		<id>geotiff_retile_overview_publish</id>
-		<name>geotiffEventConsumer</name>
-		<description>geotiff EventConsumer</description>
+		
 		<listenerId>GeoTIFFConsumerLogger0</listenerId>
 		<listenerId>GeoTIFFCumulator0</listenerId>
-		<workingDirectory>geotiff</workingDirectory>
+		
 		<performBackup>true</performBackup>
 		<preserveInput>false</preserveInput>
 
@@ -43,7 +39,6 @@
 			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 
-			<workingDirectory>geotiff</workingDirectory>
 			<serviceID>GeotiffRetilerService</serviceID>
 			<forceToBigTiff>false</forceToBigTiff>
 			<tileH>256</tileH>
@@ -59,7 +54,6 @@
 			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 
-			<workingDirectory>geotiff</workingDirectory>
 			<serviceID>GeotiffOverviewsEmbedderService</serviceID>
 
 			<downsampleStep>2</downsampleStep>

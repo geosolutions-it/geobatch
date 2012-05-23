@@ -100,6 +100,7 @@ Estimated\ extends=false
 #Boolean
 # use prepared statements
 #Default Boolean.FALSE
+# try setting to 'true' in case of dialect problems 
 preparedStatements=false
 
 
