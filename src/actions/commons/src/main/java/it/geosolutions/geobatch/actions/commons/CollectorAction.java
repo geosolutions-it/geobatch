@@ -30,6 +30,7 @@ import it.geosolutions.tools.io.file.Collector;
 import java.io.File;
 import java.util.EventObject;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import org.apache.commons.collections.ListUtils;
@@ -102,15 +103,16 @@ public class CollectorAction extends BaseAction<EventObject> {
                 continue;
             }
             listenerForwarder.setTask("Collecting from" + source);
-            ret.addAll(ListUtils.transformedList(collector.collect(source), new Transformer() {
-                @Override
-                public Object transform(Object input) {
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Collected file: " + input);
-                    }
-                    return new FileSystemEvent((File)input, FileSystemEventType.FILE_ADDED);
+            
+            List<File> files=collector.collect(source);
+            
+            for (File file: files){
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Collected file: " + file);
                 }
-            }));
+                ret.add(new FileSystemEvent((File)file, FileSystemEventType.FILE_ADDED));
+            }
+            
         }
         listenerForwarder.completed();
         return ret;
