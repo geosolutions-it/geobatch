@@ -4,8 +4,6 @@
 	<id>step1</id>
 	<name>ShapeFileIngestion</name>
 	<description>Get a pack of shapefiles (zipped) and ingest them into a GeoServer instance.</description>
-	<listenerId>StatusActionLogger0</listenerId>
-	<listenerId>ActionLogger0</listenerId>
 	<defaultStyle>polygon</defaultStyle>
 	<crs>EPSG:4326</crs>
 	<envelope/>
