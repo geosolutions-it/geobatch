@@ -1,4 +1,4 @@
-package it.geosolutions.geobatch.imagemosaic;
+package it.geosolutions.geobatch.geoserver.test;
 
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 

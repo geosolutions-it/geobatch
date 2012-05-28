@@ -24,10 +24,15 @@ package it.geosolutions.geobatch.geoserver.shapefile;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
+import it.geosolutions.geobatch.geoserver.GeoServerShapeActionConfiguration;
+import it.geosolutions.geoserver.rest.GeoServerRESTManager;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.UploadMethod;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
+import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
+import it.geosolutions.geoserver.rest.encoder.datastore.GSShapefileDatastoreEncoder;
+import it.geosolutions.geoserver.rest.manager.GeoServerRESTDatastoreManager;
 import it.geosolutions.tools.compress.file.Compressor;
 import it.geosolutions.tools.compress.file.Extract;
 import it.geosolutions.tools.io.file.Collector;
@@ -35,6 +40,7 @@ import it.geosolutions.tools.io.file.Collector;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
@@ -294,30 +300,35 @@ public class ShapeFileAction extends BaseAction<EventObject> {
                 throw new IllegalArgumentException("Unsupported transfer method: "+configuration.getDataTransferMethod());
             }
             
-            boolean success = false;
+            // Get some common parameters
+            String wsName = configuration.getDefaultNamespace();
+            String dsName = configuration.getStoreName() == null? shapeNames[0] : configuration.getStoreName();
+            String lyrName = configuration.getLayerName() == null? shapeNames[0] : configuration.getLayerName();
+            String styleName = configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "polygon";
+
             // DIRECT Upload is the only supported method
+            boolean success = false;
+            
             // Either publish a single shapefile, or a collection of shapefiles
             if(shapeNames.length==1) {
-            	success = publisher.publishShp(configuration.getDefaultNamespace(),
-                        configuration.getStoreName() == null? shapeNames[0] : configuration.getStoreName(), 
+            	success = publisher.publishShp(wsName,
+                        dsName, 
                         null,
-                        configuration.getLayerName() == null? shapeNames[0] : configuration.getLayerName(),
+                        lyrName,
                         uMethod,
                         zippedFile.toURI(),
                         finalEPSGCode,
                         projectionPolicy,
-                        configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "polygon" );
+                        styleName);
             } else {
-            	success = publisher.publishShpCollection(configuration.getDefaultNamespace(),
-            			configuration.getStoreName() == null? shapeNames[0] : configuration.getStoreName(), 
-            			zippedFile.toURI());
+            	success = publisher.publishShpCollection(wsName, dsName, zippedFile.toURI());
             }
             
             if (success) {
                 final String message = "Shape file SUCCESFULLY sent";
                 if (LOGGER.isInfoEnabled())
                     LOGGER.info(message);
-                listenerForwarder.progressing(100, message);
+                listenerForwarder.progressing(90, message);
             } else {
                 final String message = "Shape file FAILED to be sent";
                 final ActionException ae = new ActionException(this, message);
@@ -326,8 +337,59 @@ public class ShapeFileAction extends BaseAction<EventObject> {
                 listenerForwarder.failed(ae);
                 throw ae;
             }
+            
+            // If we have shape specific config, apply now
+            if (configuration instanceof GeoServerShapeActionConfiguration) {
+            	// Log
+                String message = "Configuring shape datastore connection parameters";
+                if (LOGGER.isInfoEnabled())
+                    LOGGER.info(message);
+                
+            	// Get config
+            	GeoServerShapeActionConfiguration shpConfig = (GeoServerShapeActionConfiguration)configuration;
+            	
+            	// Get managers from geoserver-manager
+            	GeoServerRESTManager manager = new GeoServerRESTManager(new URL(shpConfig.getGeoserverURL()),
+            			shpConfig.getGeoserverUID(), shpConfig.getGeoserverPWD());
+            	GeoServerRESTDatastoreManager dsManager = manager.getDatastoreManager();
+            	
+            	// Read config from GS
+            	RESTDataStore dsRead = manager.getReader().getDatastore(wsName, dsName);
+            	GSShapefileDatastoreEncoder dsWrite = new GSShapefileDatastoreEncoder(dsRead);
+            	
+            	// Update store params
+            	if (shpConfig.getUrl() != null)
+            		dsWrite.setUrl(shpConfig.getUrl());
+            	if (shpConfig.getCharset() != null)
+            		dsWrite.setCharset(shpConfig.getCharset());
+            	if (shpConfig.getCreateSpatialIndex() != null)
+            		dsWrite.setCreateSpatialIndex(shpConfig.getCreateSpatialIndex());
+            	if (shpConfig.getMemoryMappedBuffer() != null)
+            		dsWrite.setMemoryMappedBuffer(shpConfig.getMemoryMappedBuffer());
+            	if (shpConfig.getCacheAndReuseMemoryMaps() != null)
+            	dsWrite.setCacheAndReuseMemoryMaps(shpConfig.getCacheAndReuseMemoryMaps());
+            	
+            	// Push changes to GS
+            	success = dsManager.update(wsName, dsWrite);
+            	
+            	// Success or die
+                if (success) {
+                    message = "Shape datastore SUCCESFULLY configured";
+                    if (LOGGER.isInfoEnabled())
+                        LOGGER.info(message);
+                    listenerForwarder.progressing(100, message);
+                } else {
+                    message = "Shape datastore FAILED to be configured";
+                    final ActionException ae = new ActionException(this, message);
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(message, ae);
+                    listenerForwarder.failed(ae);
+                    throw ae;
+                }
+            }
 
             return events;
+            
         } catch (Throwable t) {
             final ActionException ae = new ActionException(this, t.getMessage(), t);
             if (LOGGER.isErrorEnabled())

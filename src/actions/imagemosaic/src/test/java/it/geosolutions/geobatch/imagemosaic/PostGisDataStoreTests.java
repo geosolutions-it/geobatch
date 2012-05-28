@@ -1,5 +1,7 @@
 package it.geosolutions.geobatch.imagemosaic;
 
+import it.geosolutions.geobatch.geoserver.test.GeoServerTests;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
