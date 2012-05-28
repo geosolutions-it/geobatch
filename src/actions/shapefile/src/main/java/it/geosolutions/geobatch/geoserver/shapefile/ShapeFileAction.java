@@ -21,12 +21,12 @@
  */
 package it.geosolutions.geobatch.geoserver.shapefile;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.UploadMethod;
+import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 import it.geosolutions.tools.compress.file.Compressor;
 import it.geosolutions.tools.compress.file.Extract;
@@ -34,6 +34,9 @@ import it.geosolutions.tools.io.file.Collector;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.List;
 import java.util.Queue;
 
@@ -61,16 +64,19 @@ import org.slf4j.LoggerFactory;
  * The same output is sent to the configured GeoServer using the GS REST api.
  * 
  * TODO: check for store/layer existence
+ * TODO: Handle CRSs for multiple files (see #16)
+ * TODO: Handle styles for multiple files (see #16)
  * 
  * @author AlFa
  * @author ETj
  * @author Daniele Romagnoli, GeoSolutions S.A.S.
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author Oscar Fonts
  * 
  * @version 0.1 - date: 11 feb 2007
  * @version 0.2 - date: 25 Apr 2011
  */
-public class ShapeFileAction extends BaseAction<FileSystemEvent> {
+public class ShapeFileAction extends BaseAction<EventObject> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ShapeFileAction.class);
     
@@ -83,7 +89,7 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
     /**
      * 
      */
-    public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
+    public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
 
         listenerForwarder.setTask("config");
         listenerForwarder.started();
@@ -99,39 +105,36 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             
             // how many files do we have?
             final int inputSize = events.size();
-
             
             // Fetch the first event in the queue.
             // We may have one in these 2 cases:
             // 1) a single event for a .zip file
-            // 2) a list of events for the .shp+.dbf+.shx+ some other optional
-            // files
+            // 2) a list of events for a (.shp+.dbf+.shx) collection, plus some other optional files
 
-            final FileSystemEvent event = events.peek();
+            final EventObject event = events.peek();
 
             // the name of the shapefile
-            String shapeName = null;
+            String[] shapeNames;
 
             // the output (to send to the geoserver) file
             File zippedFile = null;
 
             // list of file to send to the GeoServer
             File[] files=null;
-            File tmpDirFile=null; 
-            Integer epsgCode=null;            
+            File tmpDirFile=null;
+            Integer epsgCode=null;
+            
             if (inputSize == 1) {
-
             	//
             	// SINGLE FILE, is a zip or throw error
             	//
-                zippedFile = event.getSource();
+                zippedFile = toFile(event);
                 if (LOGGER.isDebugEnabled())
                     LOGGER.debug("Testing for compressed file: " + zippedFile);
 
                 // try to extract
                 tmpDirFile = Extract.extract(zippedFile,getTempDir(),false);
                 listenerForwarder.progressing(5, "File extracted");
-
                 
                 //if the output (Extract) file is not a dir the event was a not compressed file so
                 //we have to throw and error
@@ -146,9 +149,13 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
                 // collect extracted files
                 final Collector c = new Collector(FileFilterUtils.notFileFilter(FileFilterUtils.nameFileFilter(tmpDirFile.getName()))); // no filter
                 final List<File> fileList = c.collect(tmpDirFile);
-                if (fileList != null) {
-                    files = fileList.toArray(new File[1]);
-                } else {
+                files = fileList.toArray(new File[1]);
+                
+                // Check if there is at least one shp there
+                shapeNames = acceptable(files);
+                
+                // If not, throw error
+                if (shapeNames == null) {
                     final String message = "Input is not a zipped file nor a valid collection of files";
                     if (LOGGER.isErrorEnabled())
                         LOGGER.error(message);
@@ -156,7 +163,6 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
                 }
                 
             } else {
-
             	//
             	// Multiple separated files, let's look for the right one
             	//
@@ -167,70 +173,81 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
 
                 // collect files
                 files = new File[events.size()];
-                int i = 0;
-                boolean found=false;
-                for (FileSystemEvent ev : events) {
-                    files[i++] = ev.getSource();
-                    if(FilenameUtils.getExtension(files[i-1].getAbsolutePath()).equalsIgnoreCase("shp")){
-                    	
-                    	// is this a real shapefile?
-                    	found=true;
-                    	
-                    	// is it a shape?
-                        //
-                        // check the original CRS
-                        //
-                        FileDataStore store = null;
-                       
-                        try{
-                        	store=SHP_FACTORY.createDataStore(new File(tmpDirFile,shapeName+".shp").toURI().toURL());
-                            CoordinateReferenceSystem crs = store.getSchema().getCoordinateReferenceSystem();
-                            epsgCode= crs!=null?CRS.lookupEpsgCode(crs, true):null;            	
-                        } finally {
-                        	if(store!=null){
-                        		try{
-                        			store.dispose();
-                        		}catch (Exception e) {
-            						if(LOGGER.isTraceEnabled()){
-            							LOGGER.trace(e.getLocalizedMessage(),e);
-            						}
-            					}
-                        	}
-                        }
-                    }
+                int i = 0;                
+                for (EventObject ev : events) {
+                    files[i++] = toFile(ev);
                 }
-                // found any valid shapefile?
-                if(!found){
-                	 throw new IllegalStateException("Unable to create the zip file");
+
+                // Get tmp dir from the absolute path of the first captured file
+                tmpDirFile = new File(FilenameUtils.getFullPath(files[0].getAbsolutePath()));
+                
+                // Check for shapefile names
+                shapeNames = acceptable(files);
+                
+                // Not found any valid shapefile
+                if (shapeNames == null) {
+                	throw new IllegalStateException("The file list do not contains mandatory files");
                 }
                 
-                // zip to a single file if method is not external
+                for(String shape: shapeNames) {
+                    FileDataStore store = null;
+                   
+                    try{
+                    	store=SHP_FACTORY.createDataStore(new File(tmpDirFile,shape+".shp").toURI().toURL());
+                        CoordinateReferenceSystem crs = store.getSchema().getCoordinateReferenceSystem();
+                        epsgCode= crs!=null?CRS.lookupEpsgCode(crs, true):null;
+                    } finally {
+                    	if(store!=null){
+                    		try{
+                    			store.dispose();
+                    		}catch (Exception e) {
+        						if(LOGGER.isTraceEnabled()){
+        							LOGGER.trace(e.getLocalizedMessage(),e);
+        						}
+        					}
+                    	}
+                    }                	
+                }
+                
+                // zip to a single file if method is not external.
+                // Will use the first shapeName as the zip name.
                 if(!configuration.getDataTransferMethod().equalsIgnoreCase("external")) {
-	                zippedFile = Compressor.deflate(getTempDir(),shapeName, files);
+	                zippedFile = Compressor.deflate(getTempDir(),shapeNames[0], files);
 	                if (zippedFile == null) {
 	                    throw new IllegalStateException("Unable to create the zip file");
 	                }
                 }
 
             } 
-            // obtain the shape file name and check for mandatory file
-            if ((shapeName = acceptable(files)) == null) {
-                throw new IllegalStateException("The file list do not contains mandatory files");
-            }
+
             listenerForwarder.progressing(10, "In progress");
 
-            // TODO: check if the store do not exists and if so create it
-            // TODO: check if a layer with the same name already exists in GS
-            // GeoServerRESTReader reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
-            // configuration.getGeoserverUID(), configuration.getGeoserverPWD());
+            // Get GS reader & publisher
+            GeoServerRESTReader reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
+            		configuration.getGeoserverUID(), configuration.getGeoserverPWD());            
+            GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
+                    configuration.getGeoserverURL(), configuration.getGeoserverUID(),
+                    configuration.getGeoserverPWD());
+
+            // Check if the namespace exists in GS. If not, create it.
+            if(!reader.getWorkspaceNames().contains(configuration.getDefaultNamespace())) {
+            	if(configuration.getDefaultNamespaceUri() != null) {
+            		publisher.createNamespace(configuration.getDefaultNamespace(),
+            			new URI(configuration.getDefaultNamespaceUri()));
+            	} else {
+            		// No uri given; create a workspace
+            		publisher.createWorkspace(configuration.getDefaultNamespace());
+            	}
+            }
+            
+            // TODO: check if a layer with the same name already exists in GS           
+        	// TODO: Handle CRSs for multiple files
+        	// TODO: Handle styles for multiple files (see comment on #16)
 
             //
             // SENDING data to GeoServer via REST protocol.
             //
-            GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
-                    configuration.getGeoserverURL(), configuration.getGeoserverUID(),
-                    configuration.getGeoserverPWD());
-            
+
             // decide CRS
             // default crs
             final String defaultCRS = configuration.getCrs();
@@ -276,16 +293,27 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
             } else {
                 throw new IllegalArgumentException("Unsupported transfer method: "+configuration.getDataTransferMethod());
             }
+            
+            boolean success = false;
             // DIRECT Upload is the only supported method
-            if (publisher.publishShp(configuration.getDefaultNamespace(),
-                                     configuration.getStoreName() == null? shapeName : configuration.getStoreName(), 
-                                     null,
-                                     configuration.getLayerName() == null? shapeName : configuration.getLayerName(),
-                                     uMethod,
-                                     zippedFile.toURI(),
-                                     finalEPSGCode,
-                                     projectionPolicy,
-                                     configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "polygon" )) {
+            // Either publish a single shapefile, or a collection of shapefiles
+            if(shapeNames.length==1) {
+            	success = publisher.publishShp(configuration.getDefaultNamespace(),
+                        configuration.getStoreName() == null? shapeNames[0] : configuration.getStoreName(), 
+                        null,
+                        configuration.getLayerName() == null? shapeNames[0] : configuration.getLayerName(),
+                        uMethod,
+                        zippedFile.toURI(),
+                        finalEPSGCode,
+                        projectionPolicy,
+                        configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "polygon" );
+            } else {
+            	success = publisher.publishShpCollection(configuration.getDefaultNamespace(),
+            			configuration.getStoreName() == null? shapeNames[0] : configuration.getStoreName(), 
+            			zippedFile.toURI());
+            }
+            
+            if (success) {
                 final String message = "Shape file SUCCESFULLY sent";
                 if (LOGGER.isInfoEnabled())
                     LOGGER.info(message);
@@ -310,50 +338,64 @@ public class ShapeFileAction extends BaseAction<FileSystemEvent> {
     }
 
     /**
-     * check for mandatory files in the passed list: .shp — shape format; the feature geometry
-     * itself <br>
-     * .shx — shape index format; a positional index of the feature geometry to allow seeking
-     * forwards and backwards quickly <br>
-     * .dbf — attribute format; columnar attributes for each shape, in dBase IV format
+     * check for mandatory files in the passed list:
+     * <ul>
+     * <li>.shp — shape format; the feature geometry itself
+     * <li>.dbf — attribute format; columnar attributes for each shape, in dBase IV
+     * format
+     * <li>.shx — shape index format; a positional index of the feature geometry to
+     * allow seeking forwards and backwards quickly
+     * </ul>
      * 
+     * There can be multiple shapefiles.
      * 
-     * @param files
-     *            a list of file to check for
-     * @return null if 'files' do not contain needed files or contain more than 1 shape file, the
-     *         name of the shape file otherwise.
+     * @param files a list of files to check for.
+     * @return null if 'files' do not contain needed files,
+     * or the name of the acceptable shape files (*.shp) otherwise.
      */
-    private static String acceptable(final File[] files) {
-        if (files == null)
+    private static String[] acceptable(final File[] files) {
+    	
+        if (files == null) {
             return null;
-
-        String shapeFileName = null;
-        // if ==3 the incoming file list is acceptable
-        int acceptable = 0;
-        for (File file : files) {
-            if (file == null)
-                continue;
-            final String ext = FilenameUtils.getExtension(file.getAbsolutePath());
-
-            if (ext.equals("shp")) {
-                ++acceptable;
-                /*
-                 * check if there are more than 1 shp file in the list if so an error occur
-                 */
-                if (shapeFileName == null)
-                    shapeFileName = FilenameUtils.getBaseName(file.getName());
-                else
-                    return null;
-            } else if (ext.equals("shx")) {
-                ++acceptable;
-            } else if (ext.equals("dbf")) {
-                ++acceptable;
-            }
         }
+        
+        // Placeholders for all candidates and acceptable ones
+        List<String> candidates = new ArrayList<String>();
+        List<String> acceptable = new ArrayList<String>();
+        
+        // Get all the candidate file names
+        for(File file : files) {
+        	if(file != null) {
+        		candidates.add(FilenameUtils.getName(file.getName()));
+        	}
+        }
+        
+        // Get the acceptable ones.
+        // That is: a .shp for what .shx and .dbf associate files exist
+        for(String fileName : candidates) {
+        	final String baseName = FilenameUtils.getBaseName(fileName);
+        	final String extension = FilenameUtils.getExtension(fileName);
+        	if (extension.equals("shp") &&
+        		//candidates.contains(baseName+".shx") && // is index really mandatory?
+        		candidates.contains(baseName+".dbf")) {
+        			acceptable.add(baseName);
+    		}
+    	}
 
-        if (acceptable == 3) {
-            return shapeFileName;
-        } else
-            return null;
+        // Return acceptable as an array, or null if none.
+        if (acceptable.isEmpty()) {
+        	return null;
+        } else {
+        	return acceptable.toArray(new String[1]);
+        }
     }
-
+    
+    private File toFile(EventObject eo) {
+    	Object o = eo.getSource();
+    	if(o instanceof File) {
+    		return (File)o;
+    	} else {
+    		return null;
+    	}
+    }
 }

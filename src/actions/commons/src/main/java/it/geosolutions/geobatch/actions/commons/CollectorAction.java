@@ -104,15 +104,13 @@ public class CollectorAction extends BaseAction<EventObject> {
             }
             listenerForwarder.setTask("Collecting from" + source);
             
-            List<File> files=collector.collect(source);
-            
-            for (File file: files){
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Collected file: " + file);
-                }
-                ret.add(new FileSystemEvent((File)file, FileSystemEventType.FILE_ADDED));
+            List<File> files = collector.collect(source);
+            for (File file : files) {
+            	if (LOGGER.isDebugEnabled()) {
+            		LOGGER.debug("Collected file: " + file);
+            	}
+            	ret.add(new FileSystemEvent((File)file, FileSystemEventType.FILE_ADDED));
             }
-            
         }
         listenerForwarder.completed();
         return ret;
