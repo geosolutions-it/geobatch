@@ -5,6 +5,7 @@ import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,30 +18,37 @@ import it.geosolutions.geobatch.geoserver.test.GeoServerTests;
 
 public class ShapeFileActionTest extends GeoServerTests {
 
-	static final String FLOW_XML = "shapefile.xml";
-	static final String MULTI_SHP_ZIP = "";
-	static final String MULTI_SHP_DIR = "";
+	static final Logger LOGGER = Logger.getLogger(ShapeFileActionTest.class);
 	
-	ShapeFileAction action;
+	static final String FLOW_XML = "shapefile.xml";
+	static final String MULTI_SHP_ZIP = "multipleshapefiles.zip";
+	
+	GeoServerActionConfiguration configuration;
 	
 	@Before
 	public void setUp() throws Exception {
-		XStream stream =new XStream();
-		GeoServerActionConfiguration configuration = (GeoServerActionConfiguration)stream.fromXML(
+		XStream stream = new XStream();
+        stream.alias("GeoServerShapeActionConfiguration",
+        		it.geosolutions.geobatch.geoserver.GeoServerShapeActionConfiguration.class);
+		configuration = (GeoServerActionConfiguration)stream.fromXML(
 				getClass().getResourceAsStream(FLOW_XML));
-		action = new ShapeFileAction(configuration);
 	}
 
 	@Test
 	public void testExecuteMultiShpZip() throws Exception {
-		if (skipTest())
+		if (skipTest()) {
+			LOGGER.warn("Skipping test.");
 			return;
+		}
 		
 		File zipFile = new File(getClass().getResource(MULTI_SHP_ZIP).toURI());
 		
 		Queue<EventObject> events = new LinkedList<EventObject>();
 		events.add(new FileSystemEvent(zipFile, FileSystemEventType.FILE_ADDED));
 		
-		//action.execute(events);
-	}	
+		ShapeFileAction action = new ShapeFileAction(configuration);
+		action.setTempDir(new File("/tmp"));
+		action.execute(events);
+	}
+	
 }
