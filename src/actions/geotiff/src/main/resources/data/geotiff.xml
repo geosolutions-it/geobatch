@@ -18,7 +18,6 @@
 		<eventType>FILE_ADDED</eventType>
 		<!--interval>0 * * * * ?</interval--> <!-- CRON: every minute at sec 0 -->
 		<interval>20</interval>  <!--  each 20 sec -->
-		<id>id</id>
 		<serviceID>fsEventGeneratorService</serviceID>
 	</EventGeneratorConfiguration>
 
@@ -64,7 +63,6 @@
 
 		</GeotiffOverviewsEmbedderConfiguration>
 
-
 		<GeoServerActionConfiguration>
 			<serviceID>GeotiffGeoServerService</serviceID>
 			<id>geotiff</id>
@@ -73,8 +71,6 @@
 
 			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
-
-			<workingDirectory>geotiff</workingDirectory>
 
 			<crs>EPSG:4326</crs>
 

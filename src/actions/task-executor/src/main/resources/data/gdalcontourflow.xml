@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<workingDirectory>gdaloperationsworkingdir/gdalcontour</workingDirectory>
 	<EventConsumerConfiguration>
-		<workingDirectory>gdaloperationsworkingdir/gdalcontour</workingDirectory>
 		<performBackup>true</performBackup>
         <TaskExecutorConfiguration>
-			<workingDirectory>gdaloperationsworkingdir/gdalcontour</workingDirectory>
 			<serviceID>TaskExecutorService</serviceID>
-			<errorFile>gdaloperationsworkingdir/gdalcontour/config/errorlog.txt</errorFile>
+			<errorFile>config/errorlog.txt</errorFile>
 			<timeOut>1200000</timeOut> <!-- milliseconds -->
 			<executable>C:\Program Files\FWTools2.2.8\bin\gdal_contour.exe</executable>
-			<defaultScript>gdaloperationsworkingdir/gdalcontour/config/gdalcontour.xml</defaultScript>
+			<defaultScript>config/gdalcontour.xml</defaultScript>
 			<outputName>*.tif</outputName>
 		    <variables>
 				 <entry>
@@ -22,24 +19,20 @@
 				    <string>C:/Program Files/FWTools2.2.8/bin</string>
 				  </entry>
 			</variables>
-			<xsl>gdaloperationsworkingdir/gdalcontour/config/gdalcontour.xsl</xsl>
+			<xsl>config/gdalcontour.xsl</xsl>
 			<id>gdalcontour</id>
 			<description>Flow to run gdalcontour operations</description>
 			<name>gdalcontour flow</name>
 		</TaskExecutorConfiguration>		
-		<id>id</id>
-		<description>description</description>
-		<name>test</name>
+		<id>gdalcontourflow</id>
 	</EventConsumerConfiguration>
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>gdaloperationsworkingdir/gdalcontour/in</watchDirectory>
+		<watchDirectory>gdalcontourflow/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>id</id>
         <serviceID>fsEventGeneratorService</serviceID>
-		<description>description</description>
-		<name>test</name>
 	</EventGeneratorConfiguration>
 	<id>gdalcontourflow</id>
 	<description>Flow to run gdalcontour operations</description>

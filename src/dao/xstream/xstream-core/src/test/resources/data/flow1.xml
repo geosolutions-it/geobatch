@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<workingDirectory>flow1workingdir</workingDirectory>
 	<EventConsumerConfiguration>
-		<workingDirectory>flow1workingdir</workingDirectory>
 		<performBackup>true</performBackup>
 		<id>id</id>
-		<description>description</description>
-		<name>test</name>
 	</EventConsumerConfiguration>
 	<EventGeneratorConfiguration>
 		<serviceID>fsEventGeneratorService</serviceID>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>flow1workingdir/in</watchDirectory>
+		<watchDirectory>flow1/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>id</id>
-		<description>description</description>
-		<name>test</name>
 	</EventGeneratorConfiguration>
 	<id>flow1</id>
 	<description>flow1desc</description>

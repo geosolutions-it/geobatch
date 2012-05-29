@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 	
-	<id>FreeMarkerFlow</id>
+	<id>freemarkerflow</id>
 	<description>FreeMarkerFlow</description>
 	<name>FreeMarkerFlow</name>
 	
-	<workingDirectory>freemarker/</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
+		<serviceID>fsEventGeneratorService</serviceID>
+		
 		<wildCard>*.*</wildCard>
-		<watchDirectory>freemarker/in</watchDirectory>
+		<watchDirectory>freemarkerflow/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<interval>0 * * * * ?</interval><!-- CRON: every minute at sec 0 -->
 		<!--<interval>20</interval> each 20 sec -->
-		<id>FreeMarkerFlow</id>
-        <serviceID>fsEventGeneratorService</serviceID>
-		<description>description</description>
-		<name>test</name>
 	</EventGeneratorConfiguration>
 	
 	<EventConsumerConfiguration>
-		<id>FreeMarker</id>
-		<description>FreeMarker</description>
-		<name>FreeMarker</name>
 		
-		<workingDirectory>freemarker/</workingDirectory>
 		<performBackup>false</performBackup>
 		
 		<FreeMarker>
@@ -38,8 +31,6 @@
 			<dirty>false</dirty>
 			<listenerConfigurations/>
 			<failIgnored>false</failIgnored>
-		  
-			<workingDirectory>freemarker/</workingDirectory>
 			
 			<input>test.xml</input>
 			

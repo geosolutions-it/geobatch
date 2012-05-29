@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<workingDirectory>gdaloperationsworkingdir/gdaladdo</workingDirectory>
 	<EventConsumerConfiguration>
-		<workingDirectory>gdaloperationsworkingdir/gdaladdo</workingDirectory>
 		<performBackup>true</performBackup>
-		
         <TaskExecutorConfiguration>
-			<workingDirectory>gdaloperationsworkingdir/gdaladdo</workingDirectory>
 			<serviceID>TaskExecutorService</serviceID>
-			<errorFile>gdaloperationsworkingdir/gdaladdo/config/errorlog.txt</errorFile>
+			<errorFile>config/errorlog.txt</errorFile>
 			<timeOut>1200000</timeOut> <!-- milliseconds -->
 			<executable>D:\work\programs\Java\jdk1.5.0_17\bin\gdaladdo.exe</executable>
-			<defaultScript>gdaloperationsworkingdir/gdaladdo/config/gdaladdo.xml</defaultScript>
+			<defaultScript>config/gdaladdo.xml</defaultScript>
 			<outputName>*.tif</outputName>
 		    <variables>
 				 <entry>
@@ -23,24 +19,20 @@
 				    <string>D:/work/programs/Java/jdk1.5.0_17/bin</string>
 				  </entry>
 			</variables>
-			<xsl>gdaloperationsworkingdir/gdaladdo/config/gdaladdo.xsl</xsl>
+			<xsl>config/gdaladdo.xsl</xsl>
 			<id>gdaladdo</id>
 			<description>Flow to run gdaladdo operations</description>
 			<name>gdaladdo flow</name>
 		</TaskExecutorConfiguration>		
 		<id>id</id>
-		<description>description</description>
-		<name>test</name>
 	</EventConsumerConfiguration>
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>gdaloperationsworkingdir/gdaladdo/in</watchDirectory>
+		<watchDirectory>gdaladdoflow/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<id>id</id>
         <serviceID>fsEventGeneratorService</serviceID>
-		<description>description</description>
-		<name>test</name>
 	</EventGeneratorConfiguration>
 	<id>gdaladdoflow</id>
 	<description>Flow to run gdaladdo operations</description>

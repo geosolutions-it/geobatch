@@ -9,7 +9,6 @@
 	<keepAliveTime>1500</keepAliveTime>
 	<workQueueSize>100</workQueueSize>
 	
-	<workingDirectory>reload</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
@@ -23,14 +22,10 @@
 		<name>reload</name>
 	</EventGeneratorConfiguration>
 	<EventConsumerConfiguration>
-		<id></id>
-		<name>reload_consumer</name>
-		<description>reload consumer</description>
 		
 		<listenerId>Logger</listenerId>
 		<listenerId>Cumulator</listenerId>
 
-		<workingDirectory>reload</workingDirectory>
 		<performBackup>false</performBackup>
 		<preserveInput>false</preserveInput>
 
@@ -47,7 +42,8 @@
 			<dirty>false</dirty>
 			<failIgnored>false</failIgnored>
 		  
-			<geoserverList>reload/GeoServerList.xml</geoserverList>
+			<geoserverList>GeoServerList.xml</geoserverList>
+
 			<executorSize>10</executorSize>
 			
 			<workingDirectory>reload</workingDirectory>

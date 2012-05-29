@@ -1,37 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 	
-	<id>XstreamFlow</id>
+	<id>xstreamflow</id>
 	<description>XstreamFlow</description>
 	<name>XstreamFlow</name>
 	
-	<workingDirectory>xstream/</workingDirectory>
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
+	
+		<serviceID>fsEventGeneratorService</serviceID>
+		
 		<wildCard>*.*</wildCard>
-		<watchDirectory>xstream/in</watchDirectory>
+		<watchDirectory>xstreamflow/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<interval>* * * * * ?</interval><!-- CRON: every minute at sec 0 -->
 		<!--<interval>20</interval> each 20 sec -->
-		<id>XstreamFlow</id>
-        <serviceID>fsEventGeneratorService</serviceID>
-		<description>description</description>
-		<name>test</name>
 	</EventGeneratorConfiguration>
 	
 	<EventConsumerConfiguration>
-		<id>xstream</id>
-		<description>xstream</description>
-		<name>xstream</name>
 		
-		<workingDirectory>xstream/</workingDirectory>
 		<performBackup>false</performBackup>
 		
 		<XstreamConfiguration>
 			<serviceID>XstreamGeneratorService</serviceID>
-			<id>XstreamGeneratorService</id>
+			<id>xstream</id>
 			<description>Xstream action</description>
 			<name>XstreamConfiguration</name>
 		  
@@ -39,7 +33,6 @@
 			<listenerConfigurations/>
 			<failIgnored>false</failIgnored>
 		  
-			<workingDirectory>xstream/</workingDirectory>
 			<output>out/</output>
 			<!-- 
 			<alias>

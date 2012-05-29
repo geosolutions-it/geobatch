@@ -1,36 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<id>splitting_flow</id>
+	<id>splittingflow</id>
 	<name>Test splitting flow</name>
 	<description>A test flow for splitting actions</description>
 
-	<workingDirectory>splitting_working_dir</workingDirectory>
 	<autorun>true</autorun>
 
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>splitting_working_dir/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>id</id>
-        <serviceID>fsEventGeneratorService</serviceID>
-		<description>description</description>
-		<name>test</name>
+		
 	</EventGeneratorConfiguration>
 
     <EventConsumerConfiguration>
-		<id>splitting_test</id>
-		<name>TestSplittingScript</name>
-		<description>Test splitting script</description>
 
 		<listenerId>SplitConsumerLogger0</listenerId>
         <listenerId>SplitCumulator0</listenerId>
         
-		<workingDirectory>splitting_working_dir</workingDirectory>
 		<performBackup>false</performBackup>
 
 		<SplittingConfiguration>
-			<id>splitGroovyTest</id>
+			<id>splitting</id>
 			<description>Split test action</description>
 			<name>Split test action</name>
 			

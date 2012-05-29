@@ -11,7 +11,7 @@
 		</OctaveCommand>
 		<!-- todo: variables! -->
 		<OctaveCommand executed="false">
-			<command>cd "${event[0].WORKING_DIR}";</command><!--/home/carlo/work/data/rep10workingdir/mars3d/-->
+			<command>cd "${event[0].WORKING_DIR}";</command><!---->
 		</OctaveCommand>
 		<OctaveCommand executed="false">
 			<command>mars3d("${event[0].FILE_IN}","${event[0].FILE_OUT}");</command>

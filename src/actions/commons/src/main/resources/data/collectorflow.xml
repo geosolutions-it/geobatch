@@ -1,0 +1,63 @@
+<FlowConfiguration>
+
+    <id>collectorflow</id>
+    <description>collectorflow</description>
+    <name>collectorflow</name>
+
+    <autorun>true</autorun>
+
+    <EventConsumerConfiguration>
+    
+        <listenerId>ConsumerLogger0</listenerId>
+        <listenerId>Cumulator</listenerId>
+
+        <CollectorConfiguration>
+            <serviceID>CollectorGeneratorService</serviceID>
+            
+            <id>collect</id>
+            <name>CollectShapefiles</name>
+            <description>Get a pack of shapefiles.</description>
+            
+            <wildcard>*.shp</wildcard>
+            <deep>1</deep>
+        </CollectorConfiguration>
+		
+    </EventConsumerConfiguration>
+
+    <EventGeneratorConfiguration>
+        <serviceID>fsEventGeneratorService</serviceID>
+        
+        <wildCard>*</wildCard>
+        <watchDirectory>collectorflow/in</watchDirectory>
+        <osType>OS_UNDEFINED</osType>
+        <eventType>DIR_CREATED</eventType>
+    </EventGeneratorConfiguration>
+
+    <ListenerConfigurations>
+    	<StatusProgressListener>
+    		<serviceID>statusListenerService</serviceID>
+            <id>StatusActionLogger0</id>
+    	</StatusProgressListener>
+    	
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ActionLogger0</id>
+
+            <loggerName>it.geosolutions.ActionLogger</loggerName>
+        </LoggingProgressListener>
+
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>ConsumerLogger0</id>
+
+            <loggerName>it.geosolutions.ConsLogger</loggerName>
+        </LoggingProgressListener>
+
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>Cumulator</id>
+        </CumulatingProgressListener>
+
+    </ListenerConfigurations>
+
+</FlowConfiguration>

@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 <!-- ID MUST be the same as file name -->
-	<id>imagemosaic_flow</id>
+	<id>imagemosaicflow</id>
 	<name>Prepare ImageMosaic and publish</name>
 	<description>Create indexes and publish on GeoServer</description>
 
-	<workingDirectory>imagemosaic_work</workingDirectory>
 	<autorun>true</autorun>
 
     <EventConsumerConfiguration>
-		<id>image_mosaic_publish</id>
-		<name>dummy</name>
-		<description>dummy</description>
 
 		<listenerId>ImageMosaicConsumerLogger0</listenerId>
         <listenerId>ImageMosaicCumulator0</listenerId>
         
-		<workingDirectory>imagemosaic_work</workingDirectory>
 		<performBackup>false</performBackup>
 
-
 		<ImageMosaicActionConfiguration>
-			<workingDirectory>imagemosaic_work</workingDirectory>
+			<serviceID>ImageMosaicGeneratorService</serviceID>
+			<id>imagemosaic</id>
+			
+			<description>ImageMosaicService</description>
+			<name>ImageMosaicService</name>
+		
 			<crs>EPSG:4326</crs>
 			<envelope/>
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
@@ -53,26 +52,21 @@
 			<!--  <dirName>DIR</dirName>-->
 			
 			<styles/>
-			<datastorePropertiesPath>imagemosaic_work/config/datastore.properties</datastorePropertiesPath>
+			<datastorePropertiesPath>config/datastore.properties</datastorePropertiesPath>
+			
 			<timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>
 			<elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>
-			<serviceID>ImageMosaicGeneratorService</serviceID>
-			<id>ImageMosaicService</id>
-			<description>ImageMosaicService</description>
-			<name>ImageMosaicService</name>
+
 		</ImageMosaicActionConfiguration>
 
 	</EventConsumerConfiguration>
 
 	<EventGeneratorConfiguration>
+		<serviceID>fsEventGeneratorService</serviceID>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>imagemosaic_work/in</watchDirectory>
+		<watchDirectory>imagemosaicflow/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>id</id>
-        <serviceID>fsEventGeneratorService</serviceID>
-		<description>description</description>
-		<name>test</name>
 	</EventGeneratorConfiguration>
 
     <ListenerConfigurations>

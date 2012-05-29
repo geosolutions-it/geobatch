@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+
+	<id>wgribflow</id>
+	<description>Flow to run wgrib inventory</description>
+	<name>wgribInventoryFlow</name>
+
+	<EventConsumerConfiguration>
+		<performBackup>true</performBackup>
+
+        <TaskExecutorConfiguration>
+			<serviceID>TaskExecutorService</serviceID>
+			
+			<id>inventory</id>
+			<description>Flow to run wgrib inventory</description>
+			<name>wgribInventory Flow</name>
+			
+			<errorFile>config/errorlog.txt</errorFile>
+			<timeOut>1200000</timeOut> <!-- milliseconds -->
+			<executable>G:\work\LAMMA\WGRIB\wgrib.exe</executable>
+			<defaultScript>config/wgribinventory.xml</defaultScript>
+			<output>g:\temp\lamma.dump</output>
+			<outputName>*.dump</outputName>
+		    <variables>
+				  <entry>
+				    <string>PATH</string>
+				    <string>G:/work/LAMMA/WGRIB</string>
+				  </entry>
+			</variables>
+			<xsl>config/wgrib.xsl</xsl>
+		</TaskExecutorConfiguration>
+	</EventConsumerConfiguration>
+	
+	<EventGeneratorConfiguration>
+        <serviceID>fsEventGeneratorService</serviceID>
+        
+		<wildCard>*.*</wildCard>
+		<watchDirectory>wgribflow/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+	</EventGeneratorConfiguration>
+	
+	
+</FlowConfiguration>

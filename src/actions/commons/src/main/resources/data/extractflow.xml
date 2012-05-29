@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 	
-	<id>ExtractFlow</id>
-	<description>ExtractFlow</description>
-	<name>ExtractFlow</name>
+	<id>extractflow</id>
+	<description>extractflow</description>
+	<name>extractflow</name>
 	
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
+	
+		<serviceID>fsEventGeneratorService</serviceID>
+	
 		<wildCard>*.*</wildCard>
-		<watchDirectory>in</watchDirectory>
+		<watchDirectory>extractflow/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<interval>0 * * * * ?</interval><!-- CRON: every minute at sec 0 -->
 		<!--<interval>20</interval> each 20 sec -->
-		<id>Flow</id>
-		<name>test</name>
 	</EventGeneratorConfiguration>
 	
 	<EventConsumerConfiguration>
-		<id>extract</id>
-	
 		<performBackup>false</performBackup>
 		
 		<ExtractConfiguration>
@@ -36,15 +35,6 @@
 			
 			<destination>out/</destination>
 			
-			<!-- Static data into DataModel --> 
-			<!--
-			<root>
-				<entry>
-					<string>KEY</string>
-					<string>value</string>
-				</entry>
-			</root>
-			 -->
 		</ExtractConfiguration>
 		
 	</EventConsumerConfiguration>
