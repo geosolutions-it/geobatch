@@ -13,53 +13,21 @@ Welcome to GeoBatch Index
 
 
 
-- `geoBatchWelcomePages <file:///C:/Users/Notarnicola/work/code/java/geobatch/doc/build/html/welcomePage.html>`_
-
-
-
-
-------------------------------------
-
-
-- `geoBatchUserDocs <file:///C:/Users/Notarnicola/work/code/java/geobatch/doc/build/html/geoBatchUserDocs.html>`_
-------------------------------------
-
-
-- `geoBatchFlowConfiguration <file:///C:/Users/Notarnicola/work/code/java/geobatch/doc/build/html/geoBatchFlowConfiguration.html>`_
-------------------------------------
-
-
-- `geoBatchAddingNewActionConfiguration <file:///C:/Users/Notarnicola/work/code/java/geobatch/doc/build/html/geoBatchAddingNewActionConfiguration.html>`_
-------------------------------------
-
-
-- `geoBatchActionImageMosaic <file:///C:/Users/Notarnicola/work/code/java/geobatch/doc/build/html/geoBatchActionImageMosaic.html>`_
-------------------------------------
-
-
-- `geoBatchActionGeoNetwork <file:///C:/Users/Notarnicola/work/code/java/geobatch/doc/build/html/geoBatchActionGeoNetwork.html>`_
-------------------------------------
-
-
-- `geoBatchFreeMarkerActionConfiguration <file:///C:/Users/Notarnicola/work/code/java/geobatch/doc/build/html/geoBatchFreeMarkerActionConfiguration.html>`_
---------------------------------------
-
-
-- `geoBatchJMService <file:///C:/Users/Notarnicola/work/code/java/geobatch/doc/build/html/geoBatchJMService.html>`_
---------------------------------------
-
-
-- `geoBatchOctaveService <file:///C:/Users/Notarnicola/work/code/java/geobatch/doc/build/html/geoBatchOctaveService.html>`_
----------------------------------------
-
-
-- `geoBatchWorkingAndConfigDir <file:///C:/Users/Notarnicola/work/code/java/geobatch/doc/build/html/geoBatchWorkingAndConfigDir.html>`_
----------------------------------------
-
-
-
 
 .. toctree::
    :maxdepth: 2
+   
+   geoBatchActionGeoNetwork
+   geoBatchActionImageMosaic
+   geoBatchAddingNewActionConfiguration
+   geoBatchFlowConfiguration
+   geoBatchFreeMarkerActionConfiguration
+   geoBatchJMService
+   geoBatchOctaveService
+   geoBatchUserDocs
+   geoBatchWelcomePage
+   geoBatchWorkingAndConfigDir
+   geoBatchWorkingAndDataDirRestruct
+   
 
 
