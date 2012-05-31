@@ -24,11 +24,20 @@
  */
 package it.geosolutions.geobatch.ui.mvc;
 
+import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
+import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.EventObject;
+import java.util.Iterator;
+import java.util.NavigableSet;
+import java.util.TreeSet;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -57,7 +66,36 @@ public class FlowManagerInfoController extends AbstractController
 
         ModelAndView mav = new ModelAndView("flowinfo");
         FileBasedFlowManager fm = catalog.getResource(fmId, FileBasedFlowManager.class);
+
         mav.addObject("flowManager", fm);
+        
+        Iterator<String> ecIt=fm.getEventConsumersId().iterator();
+        
+        TreeSet<BaseEventConsumer<EventObject, EventConsumerConfiguration>> tree=
+            new TreeSet<BaseEventConsumer<EventObject, EventConsumerConfiguration>>(
+                new Comparator<BaseEventConsumer<EventObject, EventConsumerConfiguration>>() {
+            @Override
+            public int compare(BaseEventConsumer<EventObject, EventConsumerConfiguration> o1,
+                               BaseEventConsumer<EventObject, EventConsumerConfiguration> o2) {
+                    Calendar cal = o1.getCreationTimestamp();
+                    Calendar currentcal = o2.getCreationTimestamp();
+                    if(cal.before(currentcal))
+                            return 1;
+                    else if(cal.after(currentcal))
+                        return -1;
+                    else
+                            return 0;
+            }
+
+        });
+        
+        while (ecIt.hasNext()){
+                tree.add((BaseEventConsumer)fm.getConsumer(ecIt.next()));
+        }
+        
+        NavigableSet ecList=tree.descendingSet();
+        mav.addObject("ecList", ecList.toArray(new BaseEventConsumer[]{}));
+        
 
         return mav;
     }
