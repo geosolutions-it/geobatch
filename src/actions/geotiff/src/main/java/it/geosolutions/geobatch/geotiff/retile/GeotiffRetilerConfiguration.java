@@ -22,12 +22,11 @@
 
 package it.geosolutions.geobatch.geotiff.retile;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import org.geotools.utils.CoverageToolsConstants;
 
-public class GeotiffRetilerConfiguration extends ActionConfiguration implements Configuration {
+public class GeotiffRetilerConfiguration extends ActionConfiguration {
 
 
     public GeotiffRetilerConfiguration(String id, String name, String description) {

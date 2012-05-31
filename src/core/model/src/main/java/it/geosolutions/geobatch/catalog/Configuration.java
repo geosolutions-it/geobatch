@@ -31,16 +31,4 @@ public interface Configuration extends Identifiable {
 
     public void setDirty(boolean dirty);
 
-    /**
-     * @return  the serviceID
-     * @uml.property  name="serviceID"
-     */
-    public String getServiceID();
-
-    /**
-     * @param serviceID  the serviceID to set
-     * @uml.property  name="serviceID"
-     */
-    public void setServiceID(String serviceID);
-
 }

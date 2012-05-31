@@ -22,14 +22,12 @@
 
 package it.geosolutions.geobatch.action.scripting;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.Collections;
 import java.util.Map;
 
-public class ScriptingConfiguration extends ActionConfiguration implements
-		Configuration {
+public class ScriptingConfiguration extends ActionConfiguration {
 
 	public ScriptingConfiguration(String id, String name, String description) {
 		super(id, name, description);

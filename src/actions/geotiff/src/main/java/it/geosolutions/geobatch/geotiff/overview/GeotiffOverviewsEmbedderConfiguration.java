@@ -22,15 +22,13 @@
 
 package it.geosolutions.geobatch.geotiff.overview;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import javax.media.jai.Interpolation;
 
 import org.geotools.utils.CoverageToolsConstants;
 
-public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration implements
-        Configuration {
+public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration {
 
     
     protected GeotiffOverviewsEmbedderConfiguration() {

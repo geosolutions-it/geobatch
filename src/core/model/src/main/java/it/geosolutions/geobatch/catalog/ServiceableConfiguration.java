@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://code.google.com/p/geobatch/
- *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
+ *  http://geobatch.codehaus.org/
+ *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -19,39 +19,23 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.actions.commons;
-
-import it.geosolutions.geobatch.catalog.Configuration;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+package it.geosolutions.geobatch.catalog;
 
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- * 
+ *
  */
-public class CollectorConfiguration extends ActionConfiguration {
+public interface ServiceableConfiguration extends Configuration {
 
-    public CollectorConfiguration(String id, String name, String description) {
-        super(id, name, description);
-    }
+    /**
+     * @return  the serviceID
+     */
+    public String getServiceID();
 
-    private String wildcard;
-
-    private int deep = -1; // seconds
-
-    public String getWildcard() {
-        return wildcard;
-    }
-
-    public void setWildcard(String wildcard) {
-        this.wildcard = wildcard;
-    }
-
-    public int getDeep() {
-        return deep;
-    }
-
-    public void setDeep(int deep) {
-        this.deep = deep;
-    }
+    /**
+     * @param serviceID  the serviceID to set
+     */
+    public void setServiceID(String serviceID);
+    
 }

@@ -22,7 +22,6 @@
 
 package it.geosolutions.geobatch.configuration.flow;
 
-import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import it.geosolutions.geobatch.catalog.impl.BaseDescriptableConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;

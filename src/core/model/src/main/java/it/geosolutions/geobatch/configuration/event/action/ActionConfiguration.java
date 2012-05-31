@@ -22,10 +22,8 @@
 
 package it.geosolutions.geobatch.configuration.event.action;
 
-import it.geosolutions.geobatch.catalog.Descriptable;
 import it.geosolutions.geobatch.catalog.impl.BaseDescriptableConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
-import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,8 +39,7 @@ import java.util.List;
  *
  */
 public abstract class ActionConfiguration
-    extends BaseDescriptableConfiguration
-    implements Descriptable, Cloneable {
+    extends BaseDescriptableConfiguration {
 
 
     private List<String> listenerIds = null;

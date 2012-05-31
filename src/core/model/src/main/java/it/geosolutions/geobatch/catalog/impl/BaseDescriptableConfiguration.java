@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.DescriptableConfiguration;
+import it.geosolutions.geobatch.catalog.ServiceableConfiguration;
 
 /**
  *
@@ -30,7 +31,7 @@ import it.geosolutions.geobatch.catalog.DescriptableConfiguration;
  */
 public abstract class BaseDescriptableConfiguration
     extends BaseConfiguration
-    implements DescriptableConfiguration, Cloneable {
+    implements DescriptableConfiguration, ServiceableConfiguration, Cloneable {
 
     private String name;
     private String description;

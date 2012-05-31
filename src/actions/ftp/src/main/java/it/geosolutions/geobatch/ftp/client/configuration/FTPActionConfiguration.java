@@ -22,7 +22,6 @@
 
 package it.geosolutions.geobatch.ftp.client.configuration;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import org.springframework.beans.BeanUtils;
@@ -32,7 +31,7 @@ import org.springframework.beans.BeanUtils;
  * 
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  */
-public class FTPActionConfiguration extends ActionConfiguration implements Configuration {
+public class FTPActionConfiguration extends ActionConfiguration {
 
     public FTPActionConfiguration(String id, String name, String description) {
         super(id, name, description);

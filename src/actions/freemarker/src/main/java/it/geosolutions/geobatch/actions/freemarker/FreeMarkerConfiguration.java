@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.actions.freemarker;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.HashMap;
@@ -33,7 +32,7 @@ import java.util.Map;
  * 
  */
 
-public class FreeMarkerConfiguration extends ActionConfiguration implements Configuration {
+public class FreeMarkerConfiguration extends ActionConfiguration {
 
     // path where to find the template
     private String input;

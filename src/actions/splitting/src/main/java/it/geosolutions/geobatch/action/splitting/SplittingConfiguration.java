@@ -22,13 +22,12 @@
 
 package it.geosolutions.geobatch.action.splitting;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.Collections;
 import java.util.List;
 
-public class SplittingConfiguration extends ActionConfiguration implements Configuration {
+public class SplittingConfiguration extends ActionConfiguration {
 
     /**
      * Script params are stored as String serviceIDs, since it must be really dynamic and we don't

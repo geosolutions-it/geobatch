@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.actions.xstream;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.HashMap;
@@ -33,7 +32,7 @@ import java.util.Map;
  * 
  */
 
-public class XstreamConfiguration extends ActionConfiguration implements Configuration {
+public class XstreamConfiguration extends ActionConfiguration {
 
     public XstreamConfiguration(String id, String name, String description) {
         super(id, name, description);

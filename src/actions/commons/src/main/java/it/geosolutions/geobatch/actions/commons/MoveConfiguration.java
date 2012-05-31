@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.actions.commons;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.io.File;
@@ -31,7 +30,7 @@ import java.io.File;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class MoveConfiguration extends ActionConfiguration implements Configuration {
+public class MoveConfiguration extends ActionConfiguration {
 
     public MoveConfiguration(String id, String name, String description) {
         super(id, name, description);

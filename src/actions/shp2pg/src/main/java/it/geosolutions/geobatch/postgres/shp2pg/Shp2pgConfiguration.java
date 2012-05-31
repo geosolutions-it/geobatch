@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.postgres.shp2pg;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.List;
@@ -32,7 +31,7 @@ import java.util.List;
  * 
  */
 
-public class Shp2pgConfiguration extends ActionConfiguration implements Configuration {
+public class Shp2pgConfiguration extends ActionConfiguration {
 
     private String workingDirectory;
 

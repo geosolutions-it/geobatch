@@ -22,13 +22,26 @@
 
 package it.geosolutions.geobatch.configuration.event.generator;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 
-public class EventGeneratorConfiguration extends BaseConfiguration implements Configuration {
+public class EventGeneratorConfiguration extends BaseConfiguration {
 
+    /**
+     * @deprecated
+     * @param id
+     * @param name
+     * @param description
+     * @param dirty
+     */
     public EventGeneratorConfiguration(String id, String name, String description, boolean dirty) {
         super(id, name, description, dirty);
+    }
+    
+    /**
+     * @param id used to persist configuration 
+     */
+    public EventGeneratorConfiguration(String id) {
+        super(id);
     }
 
 }

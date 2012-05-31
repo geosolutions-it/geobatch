@@ -23,12 +23,12 @@
 package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.Configuration;
+
 import org.slf4j.LoggerFactory;
 
 public abstract class BaseConfiguration
     extends BaseIdentifiable
     implements Configuration, Cloneable {
-
     
     private String serviceID;
     
