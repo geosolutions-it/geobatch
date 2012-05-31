@@ -24,7 +24,6 @@ package it.geosolutions.geobatch.geoserver.shapefile;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerShapeActionConfiguration;
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.UploadMethod;
@@ -341,9 +340,8 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             // If we have shape specific config, apply now
             if (configuration instanceof GeoServerShapeActionConfiguration) {
             	// Log
-                String message = "Configuring shape datastore connection parameters";
                 if (LOGGER.isInfoEnabled())
-                    LOGGER.info(message);
+                    LOGGER.info("Configuring shape datastore connection parameters");
                 
             	// Get config
             	GeoServerShapeActionConfiguration shpConfig = (GeoServerShapeActionConfiguration)configuration;
@@ -374,12 +372,12 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             	
             	// Success or die
                 if (success) {
-                    message = "Shape datastore SUCCESFULLY configured";
+                    String message = "Shape datastore SUCCESFULLY configured";
                     if (LOGGER.isInfoEnabled())
                         LOGGER.info(message);
                     listenerForwarder.progressing(100, message);
                 } else {
-                    message = "Shape datastore FAILED to be configured";
+                    String message = "Shape datastore FAILED to be configured";
                     final ActionException ae = new ActionException(this, message);
                     if (LOGGER.isErrorEnabled())
                         LOGGER.error(message, ae);

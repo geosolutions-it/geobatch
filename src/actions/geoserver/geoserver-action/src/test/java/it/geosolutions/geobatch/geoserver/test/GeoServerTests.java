@@ -37,69 +37,81 @@ import org.apache.log4j.Logger;
  * <li><b>gs_url</b> - string - the url of the target geoserver</li>
  * <li><b>gs_uid</b> - string - the user for the target geoserver</li>
  * <li><b>gs_pwd</b> - string - the password for the target geoserver</li>
- * <li><b>gs_test</b> - string{true|false} - to enable|disable the geoserver tests</li>
+ * <li><b>gs_test</b> - string{true|false} - to enable|disable the geoserver
+ * tests</li>
  * </ul>
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
 public abstract class GeoServerTests {
-	private final static Logger LOGGER = Logger.getLogger(GeoServerTests.class);
+    private final static Logger LOGGER = Logger.getLogger(GeoServerTests.class);
 
-	public static final String URL;
-	public static final String UID;
-	public static final String PWD;
+    public static final String URL;
+    public static final String UID;
+    public static final String PWD;
 
-	private static boolean enabled = false;
-	private static boolean existgs = false;
+    private static boolean enabled = false;
+    private static boolean existgs = false;
 
-	static {
-		URL = getenv("gs_url", "http://localhost:8080/geoserver");
-		UID = getenv("gs_uid", "admin");
-		PWD = getenv("gs_pwd", "geoserver");
+    static {
+        URL = getenv("gs_url", "http://localhost:8080/geoserver");
+        UID = getenv("gs_uid", "admin");
+        PWD = getenv("gs_pwd", "geoserver");
 
-		// These tests will destroy data, so let's make sure we do want to run
-		// them
-		enabled = getenv("gs_test", "false").equalsIgnoreCase("true");
-		if (!enabled) {
-			LOGGER.warn("Tests on GeoServer are disabled. Please read the documentation to enable them.");
-		} else if (!geoServerExists(URL, UID, PWD)) {
-			LOGGER.warn("Tests are enabled but GeoServer but could not access to the target GeoServer.");
-		}
-	}
+        // These tests will destroy data, so let's make sure we do want to run
+        // them
+        enabled = getenv("gs_test", "false").equalsIgnoreCase("true");
+        if (!enabled) {
+            LOGGER.warn("Tests on GeoServer are disabled. Please read the documentation to enable them.");
+        } else if (!geoServerExists(URL, UID, PWD)) {
+            LOGGER.warn("Tests are enabled but GeoServer but could not access to the target GeoServer.");
+        }
+    }
 
-	private static boolean geoServerExists(final String url, final String user,
-			final String pass) {
-		if (enabled) {
-			GeoServerRESTReader reader;
-			try {
-				if (!existgs) {
-					reader = new GeoServerRESTReader(new URL(URL), UID, PWD);
-					existgs = reader.existGeoserver();
-				}
-			} catch (MalformedURLException e) {
-				LOGGER.error(e.getLocalizedMessage(), e);
-				return false;
-			}
-			if (!existgs) {
-				LOGGER.error("Failing geoserver not found @:" + URL);
-			}
-		}
-		return existgs;
-	}
+    private static boolean geoServerExists(final String url, final String user, final String pass) {
+        if (enabled) {
+            GeoServerRESTReader reader;
+            try {
+                if (!existgs) {
+                    reader = new GeoServerRESTReader(new URL(URL), UID, PWD);
+                    existgs = reader.existGeoserver();
+                }
+            } catch (MalformedURLException e) {
+                LOGGER.error(e.getLocalizedMessage(), e);
+                return false;
+            }
+            if (!existgs) {
+                LOGGER.error("Failing geoserver not found @:" + URL);
+            }
+        }
+        return existgs;
+    }
 
-	public static String getenv(String envName, String envDefault) {
-		String env = System.getenv(envName);
-		String ret = System.getProperty(envName, env);
-		LOGGER.debug("env var " + envName + " is " + ret);
-		return ret != null ? ret : envDefault;
-	}
+    public static String getenv(String envName, String envDefault) {
+        String env = System.getenv(envName);
+        String ret = System.getProperty(envName, env);
+        LOGGER.debug("env var " + envName + " is " + ret);
+        return ret != null ? ret : envDefault;
+    }
 
-	/**
-	 * @return true if tests are disabled or geoserver is NOT reachable
-	 */
-	public static boolean skipTest() {
-		return (!enabled || !existgs);
-	}
+    /**
+     * @return true if tests are disabled or geoserver is NOT reachable
+     */
+    public static boolean skipTest() {
+        return (!enabled || !existgs);
+    }
+
+    public static String getUrl() {
+        return URL;
+    }
+
+    public static String getUid() {
+        return UID;
+    }
+
+    public static String getPwd() {
+        return PWD;
+    }
 
 }

@@ -36,6 +36,5 @@ public class GeoServerAliasRegistrar extends AliasRegistrar {
         if (LOGGER.isInfoEnabled())
             LOGGER.info(getClass().getSimpleName() + ": registering aliases.");
         registry.putAlias("GeoServerActionConfiguration", GeoServerActionConfiguration.class);
-        registry.putAlias("GeoServerShapeActionConfiguration", GeoServerShapeActionConfiguration.class);
     }
 }
