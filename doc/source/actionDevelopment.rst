@@ -1,5 +1,5 @@
-Action Configuration
-====================
+Developing a new Action
+=======================
 
 * *Create the action's directory*::
 

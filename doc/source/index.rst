@@ -11,12 +11,14 @@
 
    introduction
    setup
+   demoHowto
    flowConfiguration
-   actionConfiguration
    actionShapeFile
+   actionGeoTiff
    actionImageMosaic
    actionGeoNetwork
    actionFreeMarker
+   actionDevelopment
    serviceJM
    serviceOctave
 
