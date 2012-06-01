@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://code.google.com/p/geobatch/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://geobatch.geo-solutions.it/
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.actions.xstream;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.HashMap;
@@ -33,7 +32,7 @@ import java.util.Map;
  * 
  */
 
-public class XstreamConfiguration extends ActionConfiguration implements Configuration {
+public class XstreamConfiguration extends ActionConfiguration {
 
     public XstreamConfiguration(String id, String name, String description) {
         super(id, name, description);

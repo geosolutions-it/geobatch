@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://geobatch.geo-solutions.it/
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -34,8 +34,7 @@ import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConf
  *
  * @author Simone Giannecchini, GeoSolutions
  */
-public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfiguration implements Configuration
-{
+public class FileBasedEventGeneratorConfiguration extends EventGeneratorConfiguration {
 
     /**
      * The type of OS which will be used by the embedded File System Watcher.

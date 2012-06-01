@@ -1,6 +1,6 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://code.google.com/p/geobatch/
+ *  http://geobatch.geo-solutions.it/
  *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.actions.commons;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.io.File;
@@ -31,7 +30,7 @@ import java.io.File;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class CopyConfiguration extends ActionConfiguration implements Configuration {
+public class CopyConfiguration extends ActionConfiguration {
 
     public CopyConfiguration(String id, String name, String description) {
         super(id, name, description);

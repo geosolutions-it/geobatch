@@ -1,6 +1,6 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://code.google.com/p/geobatch/
+ *  http://geobatch.geo-solutions.it/
  *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -105,12 +105,14 @@ public class CollectorAction extends BaseAction<EventObject> {
             listenerForwarder.setTask("Collecting from" + source);
             
             List<File> files=collector.collect(source);
-            
+            if (files==null){
+                return ret;
+            }
             for (File file: files){
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Collected file: " + file);
                 }
-                ret.add(new FileSystemEvent((File)file, FileSystemEventType.FILE_ADDED));
+                ret.add(new FileSystemEvent(file, FileSystemEventType.FILE_ADDED));
             }
             
         }

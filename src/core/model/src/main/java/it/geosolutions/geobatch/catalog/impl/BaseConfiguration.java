@@ -1,6 +1,6 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://geobatch.codehaus.org/
+ *  http://geobatch.geo-solutions.it/
  *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -23,12 +23,12 @@
 package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.Configuration;
+
 import org.slf4j.LoggerFactory;
 
 public abstract class BaseConfiguration
     extends BaseIdentifiable
     implements Configuration, Cloneable {
-
     
     private String serviceID;
     

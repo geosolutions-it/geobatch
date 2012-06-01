@@ -1,6 +1,6 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://code.google.com/p/geobatch/
+ *  http://geobatch.geo-solutions.it/
  *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.actions.freemarker;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.util.HashMap;
@@ -33,7 +32,7 @@ import java.util.Map;
  * 
  */
 
-public class FreeMarkerConfiguration extends ActionConfiguration implements Configuration {
+public class FreeMarkerConfiguration extends ActionConfiguration {
 
     // path where to find the template
     private String input;

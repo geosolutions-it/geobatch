@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://code.google.com/p/geobatch/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://geobatch.geo-solutions.it/
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -22,7 +22,6 @@
 
 package it.geosolutions.geobatch.geoserver.shapefile;
 
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 
@@ -34,7 +33,8 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
 public class ShapeFileAliasRegistrar extends AliasRegistrar {
 
     public ShapeFileAliasRegistrar(AliasRegistry registry) {
-        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-        registry.putAlias("GeoServerActionConfiguration", GeoServerActionConfiguration.class);
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info(getClass().getSimpleName() + ": registering alias.");
+        registry.putAlias("GeoServerShapeActionConfiguration", GeoServerShapeActionConfiguration.class);
     }
 }

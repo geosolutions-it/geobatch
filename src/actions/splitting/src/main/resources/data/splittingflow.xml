@@ -31,12 +31,8 @@
 			<serviceID>splittingService</serviceID>
 
 		    <serviceIDs>
-				 <entry>
 				    <string>key0</string>
-				  </entry>
-				  <entry>
 				    <string>key1</string>
-				  </entry>
 			</serviceIDs>
 			
 		</SplittingConfiguration>

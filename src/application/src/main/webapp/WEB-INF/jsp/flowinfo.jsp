@@ -1,8 +1,13 @@
+<%@page import="it.geosolutions.geobatch.flow.file.FileBasedFlowManager"%>
+<%@page import="it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration"%>
+<%@page import="it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer"%>
+<%@page import="it.geosolutions.geobatch.flow.FlowManager"%>
+<%@page import="it.geosolutions.geobatch.flow.event.consumer.EventConsumer"%>
 <%
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://geobatch.geo-solutions.it/
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -98,8 +103,8 @@
 
 	<!-- Accordion -->
 	<div id="accordion">
-		<div class="accordionInfo">
-			<c:forEach var="ec" items="${fm.eventConsumers}" varStatus="ecCounter">
+		<div class="accordionInfo">	
+			<c:forEach var="ec" items="${ecList}" varStatus="ecCounter">
 				<hr/>
 			    <h6>
 			    	<B><c:out value="${ec.id}"/></B>

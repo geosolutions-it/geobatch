@@ -1,6 +1,6 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://geobatch.codehaus.org/
+ *  http://geobatch.geo-solutions.it/
  *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.catalog.impl;
 
 import it.geosolutions.geobatch.catalog.DescriptableConfiguration;
+import it.geosolutions.geobatch.catalog.ServiceableConfiguration;
 
 /**
  *
@@ -30,7 +31,7 @@ import it.geosolutions.geobatch.catalog.DescriptableConfiguration;
  */
 public abstract class BaseDescriptableConfiguration
     extends BaseConfiguration
-    implements DescriptableConfiguration, Cloneable {
+    implements DescriptableConfiguration, ServiceableConfiguration, Cloneable {
 
     private String name;
     private String description;

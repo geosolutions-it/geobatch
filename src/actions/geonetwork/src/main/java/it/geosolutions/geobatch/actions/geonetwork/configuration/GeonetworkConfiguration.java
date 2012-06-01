@@ -1,6 +1,6 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://code.google.com/p/geobatch/
+ *  http://geobatch.geo-solutions.it/
  *  Copyright (C) 2007-2011 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.actions.geonetwork.configuration;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 /**
@@ -30,8 +29,7 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
  * @author ETj (etj at geo-solutions.it)
  */
 public class GeonetworkConfiguration 
-        extends ActionConfiguration 
-        implements Configuration {
+        extends ActionConfiguration {
     
     public GeonetworkConfiguration(String id, String name, String description) {
         super(id, name, description);

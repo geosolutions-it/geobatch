@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://geobatch.geo-solutions.it/
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -39,10 +39,21 @@ public class ConsumerDisposeController extends ConsumerAbstractController {
 
     private FlowManager fm;
 
+    protected void handleFlowManager(ModelAndView mav, FlowManager fm) throws IllegalArgumentException {
+
+        super.handleFlowManager(mav, fm);
+
+        this.fm = fm;
+    }
+
     @Override
     protected void handleConsumer(ModelAndView mav, EventConsumer consumer) throws IllegalArgumentException {
         final EventConsumerStatus status = consumer.getStatus();
+        disposeConsumer(status, fm, consumer);
+    }
 
+    public static void disposeConsumer(final EventConsumerStatus status, final FlowManager fm,
+                                       final EventConsumer consumer) throws IllegalArgumentException {
         if (status.equals(EventConsumerStatus.COMPLETED) || status.equals(EventConsumerStatus.CANCELED)
             || status.equals(EventConsumerStatus.FAILED)) {
 
@@ -55,13 +66,6 @@ public class ConsumerDisposeController extends ConsumerAbstractController {
             }
 
         }
-    }
-
-    protected void handleFlowManager(ModelAndView mav, FlowManager fm) throws IllegalArgumentException {
-
-        super.handleFlowManager(mav, fm);
-
-        this.fm = fm;
     }
 
 }

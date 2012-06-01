@@ -1,6 +1,6 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://code.google.com/p/geobatch/
+ *  http://geobatch.geo-solutions.it/
  *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -29,7 +29,7 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class CollectorConfiguration extends ActionConfiguration implements Configuration {
+public class CollectorConfiguration extends ActionConfiguration {
 
     public CollectorConfiguration(String id, String name, String description) {
         super(id, name, description);

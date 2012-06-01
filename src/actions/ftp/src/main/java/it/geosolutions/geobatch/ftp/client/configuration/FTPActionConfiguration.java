@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://geobatch.geo-solutions.it/
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -22,7 +22,6 @@
 
 package it.geosolutions.geobatch.ftp.client.configuration;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import org.springframework.beans.BeanUtils;
@@ -32,7 +31,7 @@ import org.springframework.beans.BeanUtils;
  * 
  * @author Tobia Di Pisa (tobia.dipisa@geo-solutions.it)
  */
-public class FTPActionConfiguration extends ActionConfiguration implements Configuration {
+public class FTPActionConfiguration extends ActionConfiguration {
 
     public FTPActionConfiguration(String id, String name, String description) {
         super(id, name, description);

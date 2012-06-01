@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GeoServerShapeActionConfiguration>
+	<serviceID>ShapeFileGeoServerService</serviceID>
+	<id>step1</id>
+	<name>ShapeFileIngestion</name>
+	<description>Get a pack of shapefiles (zipped) and ingest them into a GeoServer instance.</description>
+	<defaultStyle>polygon</defaultStyle>
+	<crs>EPSG:4326</crs>
+	<envelope/>
+	<dataTransferMethod>DIRECT</dataTransferMethod>
+	<wmsPath>/</wmsPath>
+	<defaultNamespace>it_geosolutions</defaultNamespace>
+	<storeName>shapefile_plus</storeName>
+	<styles/>
+	<geoserverPWD>geoserver</geoserverPWD>
+	<geoserverUID>admin</geoserverUID>
+	<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+	<charset>UTF-8</charset>
+	<createSpatialIndex>true</createSpatialIndex>
+	<memoryMappedBuffer>true</memoryMappedBuffer>
+	<cacheAndReuseMemoryMaps>true</cacheAndReuseMemoryMaps>
+</GeoServerShapeActionConfiguration>

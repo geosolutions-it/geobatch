@@ -52,7 +52,7 @@
         </repository>
         <site>
             <id>demo.geosolutions</id>
-            <url>scp://demo.geo-solutions.it/var/www/share/javadoc/geobatch</url>
+            <url>scp://demo.geo-solutions.it/var/www/share/javadoc/${project.artifactId}</url>
         </site>
     </distributionManagement>
 

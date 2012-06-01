@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://geobatch.geo-solutions.it/
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -66,10 +66,12 @@ public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> i
             alias.setAliases(xstream);
 
             InputStream inStream = null;
+            BufferedInputStream bis= null;
             try {
                 inStream = new FileInputStream(entityfile);
+                bis = new BufferedInputStream(inStream);
                 FileBasedFlowConfiguration obj = (FileBasedFlowConfiguration) xstream
-                        .fromXML(new BufferedInputStream(inStream));
+                        .fromXML(bis);
 
                 if (obj.getEventConsumerConfiguration() == null)
                     LOGGER.error("FileBasedFlowConfiguration " + obj
@@ -85,6 +87,7 @@ public class XStreamFlowConfigurationDAO extends XStreamDAO<FlowConfiguration> i
             } catch (Throwable e) {
                 throw new IOException("Unable to load flow config:" + id, e);
             } finally {
+                IOUtils.closeQuietly(bis);
                 IOUtils.closeQuietly(inStream);
             }
         }

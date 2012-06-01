@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://geobatch.codehaus.org/
- *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
+ *  http://geobatch.geo-solutions.it/
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -22,13 +22,26 @@
 
 package it.geosolutions.geobatch.configuration.event.generator;
 
-import it.geosolutions.geobatch.catalog.Configuration;
 import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 
-public class EventGeneratorConfiguration extends BaseConfiguration implements Configuration {
+public class EventGeneratorConfiguration extends BaseConfiguration {
 
+    /**
+     * @deprecated
+     * @param id
+     * @param name
+     * @param description
+     * @param dirty
+     */
     public EventGeneratorConfiguration(String id, String name, String description, boolean dirty) {
         super(id, name, description, dirty);
+    }
+    
+    /**
+     * @param id used to persist configuration 
+     */
+    public EventGeneratorConfiguration(String id) {
+        super(id);
     }
 
 }
