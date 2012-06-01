@@ -1,6 +1,5 @@
-
-**Image Mosaic Flow**
-==============================================================
+Image Mosaic Action
+===================
 
 The image mosaic flow can be used to publish or update an http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html 
 ImageMosaic up to a single instance of the http://docs.geoserver.org/2.0.0/user/ GeoServer.
@@ -9,15 +8,16 @@ It is fundamentally based on the http://geotools.org/ GeoTools
 http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html 
 ImageMosaic library and make use of a series of http://docs.geoserver.org/2.0.0/user/extensions/rest/index.html REST calls to perform remote GeoServer update and queries.
 
-*Input*
---------------------------------------------------------------
+Input
+-----
 
 * A writeable directory (with readable geotiff)
 
 OR
 
-* An ImageMosaicCommand file: ::
+* An ImageMosaicCommand file:
 
+.. sourcecode:: xml
 
 	<ImageMosaic>
 	  <base>/path/to/destination/layer/</base>
@@ -58,7 +58,6 @@ OR
 	  ...
 	</ImageMosaic>
 
-
 *NOTE:*
  
 * 07/10/2011 -> ImageMosaicCommand is now able to *override* statically defined (into configuration) mosaic parameters
@@ -75,9 +74,8 @@ into the: ::
 
 of the *GeoServer* instance which may build the mosaic.
 
-
-*Output*
-------------------------------------------------------------------
+Output
+------
 
 * A file (queue) representing the output layer (if successfully configured)
 
@@ -107,20 +105,23 @@ http://docs.geotools.org/latest/userguide/guide/library/coverage/index.html Cove
 http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html ImageMosaic
 
 
-*The Flow Chart*
-----------------------------------------------------------------------
+The Flow Chart
+--------------
 
 [[Image(ImageMosaicAction.jpg, align=center, nolink)]]
 
 
-*ImageMosaicCommand options:*
-----------------------------------------------------------------------
+ImageMosaicCommand options
+--------------------------
 Passing an ImageMosaicCommand to the GeoBatch ImageMosaicAction you could define on the fly most of the ImageMosaicAction options to use (passed options will override the flow configuration):
 
-* Inputs *
-----------------------------------------------------------------------
-  The set of granules to add/remove or the entire mosaic:
-	  -----------------------------------------
+Inputs
+------
+
+The set of granules to add/remove or the entire mosaic:
+
+.. sourcecode:: xml
+
 	  <base>/path/to/destination/layer/</base>
 	  <add>/path/of/file/to/add/geoN.tif</add>
 	   ...
@@ -128,19 +129,23 @@ Passing an ImageMosaicCommand to the GeoBatch ImageMosaicAction you could define
 	  <del>/path/of/file/to/delete/geo.tif</del>
 	   ...
 	  <del>/path/of/file/to/delete/geoM.tif</del>
-	  -----------------------------------------
-  Where 'base' represents the target directory to place the mosaic (if you are creating it); If you are updating a mosaic the 'base' folder may exists so all the files in that directory will be used to create the mosaic.
-  The 'add' and 'del' file list is used to add or remove granules from an existing (or during creation) of an imagemosaic.
 
-* The target Geoserver *
-----------------------------------------------------------------------
-  You could change on the fly the target geoserver passing GeoServer URL, user and password.
+Where 'base' represents the target directory to place the mosaic (if you are creating it); If you are updating a mosaic the 'base' folder may exists so all the files in that directory will be used to create the mosaic.
 
-* The options used to configure the coverageStore/resource/layer *
-----------------------------------------------------------------------
-  To understand most of the following parameters please read the official GeoServer documentation ( http://docs.geoserver.org/latest/en/user/tutorials/image_mosaic_plugin/imagemosaic.html )
-	  -----------------------------------------
-	   ...
+The 'add' and 'del' file list is used to add or remove granules from an existing (or during creation) of an imagemosaic.
+
+The target Geoserver
+--------------------
+
+You could change on the fly the target geoserver passing GeoServer URL, user and password.
+
+The options used to configure the coverageStore/resource/layer
+--------------------------------------------------------------
+
+To understand most of the following parameters please read the official GeoServer documentation ( http://docs.geoserver.org/latest/en/user/tutorials/image_mosaic_plugin/imagemosaic.html )
+
+.. sourcecode:: xml
+
 	  <backgroundValue>-9999</backgroundValue>
 	  <outputTransparentColor></outputTransparentColor>
 	  <inputTransparentColor></inputTransparentColor>
@@ -152,11 +157,12 @@ Passing an ImageMosaicCommand to the GeoBatch ImageMosaicAction you could define
 	  <projectionPolicy>NONE</projectionPolicy>
 	  ...
 	  <styles/>
-	  -----------------------------------------
-  
-  Since GeoServer 2.2.x Elevation and Time metadata settings are supported:
 
-	  -----------------------------------------
+  
+Since GeoServer 2.2.x Elevation and Time metadata settings are supported:
+
+.. sourcecode:: xml
+
 	  <!-- METADATA -->
 
 	  <!-- TIME -->
@@ -169,18 +175,21 @@ Passing an ImageMosaicCommand to the GeoBatch ImageMosaicAction you could define
 	  <elevDimEnabled>false</elevDimEnabled>
 	  <elevationPresentationMode>LIST</elevationPresentationMode>
 	  <elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>
-	  -----------------------------------------
 
-  Essentially the above settings enables the metadata (time and/or elevation) support on the store you are going to create on the target GeoServer.
-	  -----------------------------------------  
+
+Essentially the above settings enables the metadata (time and/or elevation) support on the store you are going to create on the target GeoServer.
+
+.. sourcecode:: xml
+
 	  <timeDimEnabled>true</timeDimEnabled>
 	  ...
 	  <elevDimEnabled>true</elevDimEnabled>
 	  ...
-  	  -----------------------------------------
   
-  The *presentation mode* sets the representation of the metadata:
-  for example for elevation:
+The *presentation mode* sets the representation of the metadata:
+
+For example for elevation::
+
   LIST:
     0, 1, 10, 
   CONTINUOUS_INTERVAL:
@@ -189,33 +198,33 @@ Passing an ImageMosaicCommand to the GeoBatch ImageMosaicAction you could define
     0:1:10
     starts from 0 with step 1 ends at 10
   
-  The *regex* (elevation and time) are used by the geotools imagemosaic plugin to parse the file name and recognize the elevation and time. Each file of the mosaic infacts should be named following a convention (as specified into these regex).
-  For example using:
-	  -----------------------------------------
+The *regex* (elevation and time) are used by the geotools imagemosaic plugin to parse the file name and recognize the elevation and time. Each file of the mosaic infacts should be named following a convention (as specified into these regex).
+For example using:
+
+.. sourcecode:: xml
+
 	  <timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>
 	  ...
 	  <elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>
-	  -----------------------------------------
-  Your mosaic should contains files named as following:
+
+Your mosaic should contains files named as following::
+
 	  FILENAME_20121231T235959_0001.000.tif
 
-  Which represents a granule with date 2012-12-31 23:59:59 and elevation 1.0.
+Which represents a granule with date 2012-12-31 23:59:59 and elevation 1.0.
 
-
-*Datastore*
-----------------------------------------------------------------------
+Datastore
+---------
 
 The Datastore is a properties file which is used by the ImageMosaic to update the metadata store which is used by the GeoServer.
 
 Here a complete example with all the acceptable options:
 
-	  -----------------------------------------
+.. sourcecode:: xml
+
 	  <datastorePropertiesPath>imagemosaic/config/datastore.properties</datastorePropertiesPath>
-	  -----------------------------------------
 
-*datastore.properties* ::
-
-
+*datastore.properties*::
 
 	#String
 	# database type
@@ -297,16 +306,12 @@ Here a complete example with all the acceptable options:
 	# defatul false.
 	Expose\ primary\ keys=
 
-
-
-
-*Using PostGis*
------------------------------------------------------------------------
+Using PostGis
+-------------
 
 If you are using the PostGis (PostgreSQL) API:
 In addition to the above options you can use the below one.
-Note the 'SPI' key can substitute the 'dbtype'. ::
-
+Note the 'SPI' key can substitute the 'dbtype'::
 
 	#######################
 	# PostgreSQL specific #
@@ -327,14 +332,10 @@ Note the 'SPI' key can substitute the 'dbtype'. ::
 	#Default Boolean.FALSE
 	preparedStatements=false
 
+Using JNDI on PostGis
+---------------------
 
-
-
-*Using JNDI on PostGis*
------------------------------------------------------------------------
-If you are using the API for the JNDI: ::
-
-
+If you are using the API for the JNDI::
 
 	#################
 	# JNDI specific #
@@ -356,23 +357,27 @@ If you are using the API for the JNDI: ::
 	preparedStatements=false
 
 
-*How the ImageMosaicAction works*
------------------------------------------------------------------------
+How the ImageMosaicAction works
+-------------------------------
+
 If you pass an ImageMosaicCommand (IMC) to the imagemosaic action (you can also pass a queue of IMCs), geobatch will proceed with the following steps:
+
 1. check for the 'base' directory (if not exists create it)
 2. copy all the files in the 'add' list to the base folder
 3. remove all the files in the 'del' list from the base folder (if the mosaic exists otherwise this step is skipped with warning)
 4. If the mosaic does not exists:
+
  - copy a datastore.properties to the base directory (which tells to the GeoTools ImageMosaic pluging where to store/update the datastore)
  - create the indexer.properties into the base directory (which tells to the GeoTools ImageMosaic pluging how the read and handle mosaic metadata such as time and elevation)
  - create the timeregex.properites into the base directory (the time regex)
  - create the elevationregex.properites into the base directory (the elevation regex)
  - Using GeoServer Manager create the ImageMosaic on the target geoserver using specified (from IMC or flow configuration) options
-4. If the mosaic exists:
+
+5. If the mosaic exists:
+
  - connect to the target datastore using the datastore.properties from the base dir (if itsn't present the ImageMosaic uses a shape file, in this case the action will exit with error)
  - Generate a query to select granules to remove
  - Remove the selected granules from the datastore
  - Generate a query to update the granules to add to the datastore
  - Add the granules to the datastore
-
 

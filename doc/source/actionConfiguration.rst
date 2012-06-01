@@ -1,18 +1,11 @@
-**Adding new Action**
-====================================================================
+Action Configuration
+====================
 
-
-
-
-
-* *Create the action's directory:* ::
-
-
+* *Create the action's directory*::
 
 	mkdir ${GEOBATCH}/src/actions/gb-${ACTION_NAME}
 
-* *Create the new directory structure:* ::
-
+* *Create the new directory structure*::
 
 	mkdir ${GEOBATCH}/src/actions/gb-${ACTION_NAME}/src/
 	mkdir ${GEOBATCH}/src/actions/gb-${ACTION_NAME}/src/main
@@ -22,41 +15,38 @@
 	mkdir ${GEOBATCH}/src/actions/gb-${ACTION_NAME}/src/test/java
 	mkdir ${GEOBATCH}/src/actions/gb-${ACTION_NAME}/src/test/resources
 
-
-* *To build a simple action you have to create a minimal set of classes into:* ::
-
+* *To build a simple action you have to create a minimal set of classes into*::
  
 	${GEOBATCH}/src/actions/gb-${ACTION_NAME}/src/main/java
 
-#. Implement a Service: ::
+#. Implement a Service::
 
 	<EO extends EventObject, AC ActionConfiguration>
 
-#. Define the Action class implementing an Action: ::
+#. Define the Action class implementing an Action::
 
 	<EXO extends EventObject>
 
-#. Implement a Configuration: ::
+#. Implement a Configuration::
 
 	<EO extends EventObject>
    
-This class will represent the configuration used by the Action defined above.
-Here you have define all the variables needed by the Action.
+This class will represent the configuration used by the Action defined above. Here you have define all the variables needed by the Action.
+
 *Notice:* each member variable will be binded to nodes defined into the Execution_flow execution Flow.
 
-Actually GeoBatch make use of Xstream as class (de)serializer so we recommend to add: :: 
+Actually GeoBatch make use of Xstream as class (de)serializer so we recommend to add::
 
 	-Pdao.xstream 
 
 to mvn command string. 
 
-Look ahead for the MVN section in this document.
-To add the configuration class to the Xstream Catalog you also have to:
+Look ahead for the MVN section in this document. To add the configuration class to the Xstream Catalog you also have to:
 
-* Extend an AliasRegistrar: ::
-	#This is used by the 
-	it.geosolutions.geobatch.registry 
-	#package to store the name of the Configuration class to perform the bind.
+* Extend an AliasRegistrar::
+
+	# This is used by the it.geosolutions.geobatch.registry 
+	# package to store the name of the Configuration class to perform the bind.
 
 *Example:*
 
@@ -80,7 +70,7 @@ To add the configuration class to the Xstream Catalog you also have to:
 
 * *Other details* http://geoserver.org/display/GEOS/Configuration+Persistence 
 
-Since GeoBatch is a Spring based framework you have to add into: :: 
+Since GeoBatch is a Spring based framework you have to add into::
 
 	${GEOBATCH}/src/actions/gb-${ACTION_NAME}/src/main/resources 
 
@@ -107,31 +97,25 @@ an XML file called *applicationContext.xml* which will be used to load beans on 
 	</beans>
 
 
-*MAVEN:*
---------------------------------------------------------------- 
+Maven
+-----
+
 * GeoBatch uses maven2 to handle module dependencies, To add the above action be sure to apply following steps.
 
-
-Create the maven configuration file: ::
-
+Create the maven configuration file::
 
 	touch ${GEOBATCH}/src/actions/gb-${ACTION_NAME}/pom.xml
-
 
 Edit the pom.xml file setting project name and dependencies: 
 
 .. sourcecode:: xml
 
-
 	<?xml version="1.0" encoding="UTF-8"?>
 	<!-- =======================================================================    
-			Maven Project Configuration File                                   	 
-																				 
-			GeoSolutions GeoBatch Project                                               	 
-				http://geobatch.codehaus.org
-																							 
-			Version: $Id: pom.xml 329 2009-12-17 17:24:49Z dany111 $         	 
-		======================================================================= -->
+		Maven Project Configuration File                                   			GeoSolutions GeoBatch Project                                               
+		http://geobatch.codehaus.org
+		Version: $Id: pom.xml 329 2009-12-17 17:24:49Z dany111 $         	 
+	     ======================================================================= -->
 	  <project xmlns="http://maven.apache.org/POM/4.0.0"
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -194,9 +178,7 @@ Edit the pom.xml file setting project name and dependencies:
 	  </dependencies>
 	</project>
 
-
-
-Edit the: ::
+Edit the::
 
 	${GEOBATCH}/src/actions/pom.xml 
 
@@ -258,8 +240,6 @@ to add the module action profile, flags and setting dependencies.
 		</profiles>
 
 	</project>
-
-
 
 Edit the main maven pom.xml file found in the GeoBatch project sources folder: ::
 
@@ -325,13 +305,12 @@ Edit the main maven pom.xml file found in the GeoBatch project sources folder: :
 	</project>
 
 
-Now run the following mvn command from the GeoBatch source dir: ::
+Now run the following mvn command from the GeoBatch source dir::
 
 	cd ${GEOBATCH}/src/
 	mvn eclipse:clean eclipse:eclipse -P${PROFILE}
 
-
-Where: :: 
+Where:: 
 
 	${PROFILE}
  
@@ -349,9 +328,3 @@ Short How-TO:
 Window -> Preferences -> Java -> Code Style:
 -> Code Templates: e importate dal codice di geotools /build/eclipse/codetemplates.xml
 -> Formatter: e importare dal codice di geotools /build/eclipse/formatter.xml
-
-* More details can be found here:
-
-Building building GeoBatch
-GeoBatch_UML UML
-http://docs.geoserver.org/stable/en/developer/maven-guide/index.html#maven-guide GeoBatch Maven guide

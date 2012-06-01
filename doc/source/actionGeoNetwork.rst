@@ -1,21 +1,20 @@
-
-**GeoNetwork Action**
-=======================================================================
+GeoNetwork Action
+=================
 
 The GeoNetwork Action is used to integrate with a GeoNetwork instance.
 
-*Insert operation*
+Insert operation
 -----------------------------------------------------------------------
 
 The GeoNetwork Action allows you to insert a new metadata into the catalog and set the related privileges.
 
-*Update and delete operation*
+Update and delete operation
 -----------------------------------------------------------------------
 
 At the moment the only available operation is about inserting a new metadata entry in the catalog.
 Next operations to be implemented will be the ''delete'' and the ''update'' operations.
 
-*Consumed events*
+Consumed events
 -----------------------------------------------------------------------
 
 The GeoNetwork Action consumes a FileSystemEvent.
@@ -27,7 +26,7 @@ The event should reference an XML file, containing either (see the *onlyMetadata
 * a full GeoNetwork request for the metadata.insert 
 
 
-*Configuration*
+Configuration
 ------------------------------------------------------------------------
 
 The Action needs some data to connect to the GeoNetwork instance:
@@ -58,9 +57,9 @@ Such params are described in http://geonetwork-opensource.org/manuals/2.6.3/deve
 
  * group (mandatory): Owner group identifier for metadata
 
- * isTemplate: indicates if the metadata content is a new template or not. Default value: “n” *(not handled by this Action)*
+ * isTemplate: indicates if the metadata content is a new template or not. Default value: ``n`` *(not handled by this Action)*
 
- * title: Metadata title. Only required if isTemplate = “y” *(not handled by this Action)*
+ * title: Metadata title. Only required if isTemplate = ``y`` *(not handled by this Action)*
 
  * category (mandatory): Metadata category 
 	
@@ -68,7 +67,7 @@ Such params are described in http://geonetwork-opensource.org/manuals/2.6.3/deve
 		
 		_none_ 
 
-	value to don’t assign any category
+	value to don't assign any category
 
  * styleSheet (mandatory): Stylesheet name to transform the metadata before inserting in the catalog 
 
@@ -76,7 +75,7 @@ Such params are described in http://geonetwork-opensource.org/manuals/2.6.3/deve
 		
 		_none_ 
 	
-	value to don’t apply any stylesheet
+	value to don't apply any stylesheet
 
  * validate: Indicates if the metadata should be validated before inserting in the catalog 
 
@@ -104,10 +103,10 @@ Each operation privilege is assigned a single digit: ::
 Each set of privileges is simply indentified with the set of related digits; for instance "02" means view+edit.
 
 
-*Sample configuration snippet* 
+Sample configuration snippet
 -------------------------------------------------------------------------- 
-::
 
+.. sourcecode:: xml
 
 	<GeoNetwork>
 	   <serviceID>GeonetworkGeneratorService</serviceID>

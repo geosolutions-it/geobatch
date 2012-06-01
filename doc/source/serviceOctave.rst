@@ -1,13 +1,11 @@
-
-**Module gb-octave:**
-==========================================================================
-
+Octave Service
+==============
 
 This module add the Octave support to the GeoBatch platform.
 
-
-*Octave Environment*
+Octave Environment
 ------------------------------------------------------------
+
 The octave environment is composed by an ordered sequence of sheets, it represents the complete execution flow of an Octave process and it's executed atomically.
 
 .. sourcecode:: xml
@@ -27,31 +25,31 @@ The octave environment is composed by an ordered sequence of sheets, it represen
    	 </sheets>
     </octave>
 
-.. toctree::
-   :maxdepth: 2
-
-
-
-*Octave Executable Sheet*
+Octave Executable Sheet
 ------------------------------------------------------------
+
 Each sheet is defined by its name (which should be unique within the same environment).
 A sheet contains:
 
-   '''commands''': (alternative*)
-List of octave simple commands to run
+ '''commands''': (alternative*)
+ 
+   List of octave simple commands to run
 
-   '''functions''': (alternative*)
-List of functions which should be executed by the Octave process. this could be as complex as you want but you'll have to provide a preprocessor to execute it.
+ '''functions''': (alternative*)
+ 
+   List of functions which should be executed by the Octave process. this could be as complex as you want but you'll have to provide a preprocessor to execute it.
 
-The function part of a sheet is essentially a sheet itself but it is not an executable sheet.
+   The function part of a sheet is essentially a sheet itself but it is not an executable sheet.
 
-The ExecutableSheet is different from a simple Sheet since it never contain a function node (which need to be preprocessed to become executable).
+   The ExecutableSheet is different from a simple Sheet since it never contain a function node (which need to be preprocessed to become executable).
 
    '''definitions''': (optional)
-List of variables which should be passed to the Octave process from the Java environment (this happen before the first command is executed)
+
+   List of variables which should be passed to the Octave process from the Java environment (this happen before the first command is executed)
 
    '''returns''': (optional)
-List of variables which should be passed from the Octave process to the Java environment (this happen after the last command is executed)
+
+   List of variables which should be passed from the Octave process to the Java environment (this happen after the last command is executed)
 
 * alternative -> at last one of these should be present
 
@@ -86,11 +84,10 @@ List of variables which should be passed from the Octave process to the Java env
       </sheets>
     </octave>
 
-.. toctree::
-   :maxdepth: 2
 
-*Preprocessor*
+Preprocessor
 -----------------------------------------------------------------
+
 '''Why we need preprocessors?'''
  Looking ahead to the example we will try to preprocess a function which should be called using 2 variables (which should be passed from the Java to the Octave environment).
 
@@ -109,10 +106,6 @@ This sheet need to be preprocessed since it contains a function:
     </definitions>
  	</function>
 
-.. toctree::
-   :maxdepth: 2
-
-
 This sheet is a (not so good) preprocessed version of the above one...
 
 .. sourcecode:: xml
@@ -126,9 +119,6 @@ This sheet is a (not so good) preprocessed version of the above one...
     <OctaveFile name="file_in" value="?" output="false" input="true"/>
     <OctaveFile name="file_out" value="?" output="true" input="false"/>
  	</definitions>
-
-.. toctree::
-   :maxdepth: 2
 
 
 Looking at the OctaveFile variables we can still see that their value '?' are undefined!

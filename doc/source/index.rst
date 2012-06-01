@@ -3,31 +3,20 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to GeoBatch Index
-====================================
-
-**GeoBatch Documentation Pages**.  
-
-
-====================================
-
-
-
+*GeoBatch* Documentation
+========================
 
 .. toctree::
    :maxdepth: 2
-   
-   geoBatchActionGeoNetwork
-   geoBatchActionImageMosaic
-   geoBatchAddingNewActionConfiguration
-   geoBatchFlowConfiguration
-   geoBatchFreeMarkerActionConfiguration
-   geoBatchJMService
-   geoBatchOctaveService
-   geoBatchUserDocs
-   geoBatchWelcomePage
-   geoBatchWorkingAndConfigDir
-   geoBatchWorkingAndDataDirRestruct
-   
 
+   introduction
+   setup
+   flowConfiguration
+   actionConfiguration
+   actionShapeFile
+   actionImageMosaic
+   actionGeoNetwork
+   actionFreeMarker
+   serviceJM
+   serviceOctave
 

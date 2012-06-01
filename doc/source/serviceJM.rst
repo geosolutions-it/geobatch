@@ -1,7 +1,5 @@
-**GeoBatch JMS Service**
-===========================================================
-
-
+JMS Service
+===========
 
 *The JMS service leverage on the following technologies:*
 
@@ -28,7 +26,7 @@ or set the::
 	-Dall flag
 
 
-*Introduction*
+Introduction
 ------------------------------------------------------------
 
 The GeoBatch JMS service add JMS capabilities to the GeoBatch platform.
@@ -36,7 +34,7 @@ The GeoBatch JMS service add JMS capabilities to the GeoBatch platform.
 It's essentially a way to activate, (sending something like an event), and retrieve results from an active flow into !GeoBatch using a JMS bean message.
 
 
-*How to use*
+How to use
 ------------------------------------------------------------
 
 
@@ -89,9 +87,6 @@ The '''JMSFlowStatus''':
 	}
 
 
-
-
-
 Looking at the '''JMSFlowResponse''' bean:
 
 
@@ -104,17 +99,10 @@ Looking at the '''JMSFlowResponse''' bean:
 		...
 	}
 
-
-
-
-
-*Settings*
+Settings
 --------------------------------------------------------------
 
-
 This is the '''jms.properties''' file::
-
-
 
 	# the camel JMS component configuration
 	pooledConnectionFactory.maxConnections=50
@@ -134,12 +122,7 @@ This is the '''jms.properties''' file::
 	# (should be the same of the camel jms component)
 	broker.transportConnectorURIs[0]=tcp://localhost:61612
 
-.. toctree::
-   :maxdepth: 2
-
-
-
-*Tests*
+Tests
 ---------------------------------------------------------------
 
 Take a look to the:: 
