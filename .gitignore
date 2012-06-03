@@ -11,3 +11,6 @@
 target/
 *nb-configuration.xml
 *nbactions.xml
+*.h2.db
+src/doc/build
+src/application/src/main/webapp/logs/

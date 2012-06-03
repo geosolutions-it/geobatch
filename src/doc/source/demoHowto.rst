@@ -1,12 +1,12 @@
 .. |GB| replace:: *GeoBatch*
 .. |demo| replace:: *geobatch-demo*
 
-demo HOWTO
-==========
+Demo setup HOW-TO
+=================
 
-The |demo| project uses |GB| and GDAL to convert a bulk of raster files from almost any format to tiled GeoTIFFs with overviews.
+The |demo| project uses |GB| and *GDAL* to convert a bulk of raster files from almost any format to tiled GeoTIFFs with overviews.
 
-Allowed input formats are those `formats supported by GDAL <http://www.gdal.org/formats_list.html>`_.
+Allowed input formats are those `supported by GDAL <http://www.gdal.org/formats_list.html>`_.
 
 
 Installing Tomcat
@@ -34,18 +34,18 @@ Run installation script::
   $ ./install.sh
   $ chmod +x fwtools*
 
-Add the FWTools enviroment to the tomcat instance.
+Add the FWTools enviroment to the tomcat installation.
 Edit ``bin/startup.sh`` and add a call to ``fwtools_env.sh``:
 
- . ../../FWTools-linux-x86_64-3.1.0/fwtools_env.sh
+ . /opt/FWTools-linux-x86_64-3.1.0/fwtools_env.sh
 
 
 Installing |GB|
 ---------------
 
-Download |GB| from http://demo.geo-solutions.it/share/github/geobatch/geobatch.war and copy it to ``webapps``.
+Download |GB| from http://demo.geo-solutions.it/share/github/geobatch/geobatch.war and copy it into ``webapps``, under the tomcat installation.
 
-Test it is running in::
+Start tomcat via ``startup.sh`` and see it running in:
 
   http://localhost:8080/geobatch/
 
@@ -58,7 +58,7 @@ Unzip it::
 
   $ unzip geosolutions-it-geobatch-demo-0dd29a9.zip
 
-Create ``output`` and ``backup`` directories:
+Create ``output`` and ``backup`` directories::
 
   $ mkdir output_tiff
   $ mkdir output_backup
@@ -67,8 +67,8 @@ Edit the |demo| flow configuration under ``geosolutions-it-geobatch-demo-0dd29a9
 
 * ``outputDirName`` pointing to your ``output_tiff`` directory (absolute path).
 * ``output_backup`` pointing to your ``output_backup`` directory (absolute path).
-* ``translateExecutable`` pointing to ``GDAL_HOME/bin/gdal_translate``
-* ``overviewExecutable`` pointing to ``GDAL_HOME/bin/gdaladdo``.
+* ``translateExecutable`` pointing to ``/opt/FWTools-linux-x86_64-3.1.0/bin/gdal_translate``
+* ``overviewExecutable`` pointing to ``/opt/FWTools-linux-x86_64-3.1.0/bin/gdaladdo``.
 
 Finally, set the ``GEOBATCH_CONFIG_DIR`` variable in ``startup.sh``::
 
@@ -77,9 +77,9 @@ Finally, set the ``GEOBATCH_CONFIG_DIR`` variable in ``startup.sh``::
 Running
 -------
 
-#. Start tomcat via ``./startup.sh``.
+#. Start tomcat via ``startup.sh``.
 #. Go to http://localhost:8080/geobatch/flows.do You should see a stopped ``geobatch_flow_tiff``. Start it.
 #. Put some raster files in ``geobatch_flow_tiff/in``.
-#. Check instances to see how they run.
-#. Get the processed files in your ``output_tiff`` directory.
+#. Check the instances tab to see how they run.
+#. Get the processed files in your ``output_tiff`` directory. In case of failure, recover the original files and check the error cause from ``output_backup``.
 
