@@ -1848,6 +1848,17 @@
         <enabled>false</enabled>
       </releases>
     </pluginRepository>
+    <pluginRepository>
+      <id>repo.geosolutions</id>
+      <name>geosolutions Repository</name>
+      <url>http://maven.geo-solutions.it/</url>
+      <releases>
+          <enabled>true</enabled>
+      </releases>
+      <snapshots>
+          <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
   </pluginRepositories>
   <!-- =========================================================== -->
   <!--     Modules for the build in approximate dependency order   -->
