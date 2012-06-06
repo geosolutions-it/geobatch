@@ -10,15 +10,16 @@
    :maxdepth: 2
 
    introduction
-   setup
-   demoHowto
+   concepts
+   installation
+   use
+   advancedDemo
    flowConfiguration
    actionShapeFile
    actionGeoTiff
    actionImageMosaic
    actionGeoNetwork
    actionFreeMarker
-   actionDevelopment
    serviceJM
    serviceOctave
 
