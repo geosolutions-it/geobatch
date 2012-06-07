@@ -16,7 +16,7 @@
   <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb</artifactId>
   <packaging>pom</packaging>
-  <version>1.3-BETA_1</version>
+  <version>1.3-SNAPSHOT</version>
   <name>GeoSolutions GeoBatch</name>
   <url>http://geobatch.geo-solutions.it</url>
   <description>
@@ -37,7 +37,8 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:[fetch=]git@geosolutions.sourcerepo.com:geosolutions/geobatch.git[push=]git@geosolutions.sourcerepo.com:geosolutions/geobatch.git</connection>
+    <!--connection>scm:git:[fetch=]git@geosolutions.sourcerepo.com:geosolutions/geobatch.git[push=]git@geosolutions.sourcerepo.com:geosolutions/geobatch.git</connection-->
+    <connection>scm:git:[fetch=]git@github.com:geosolutions-it/geobatch.git[push=]git@github.com:geosolutions-it/geobatch.git</connection>
   </scm>
   <ciManagement>
     <system>jenkins</system>
@@ -105,8 +106,8 @@
   <!-- =========================================================== -->
   <properties>
     <root.dir>${project.basedir}</root.dir>
-    <tools.version>1.1.0</tools.version>
-    <geoserver.manager.version>1.4.2</geoserver.manager.version>
+    <tools.version>1.1-SNAPSHOT</tools.version>
+    <geoserver.manager.version>1.4-SNAPSHOT</geoserver.manager.version>
     <geostore.version>1.0-SNAPSHOT</geostore.version>
     <gt.version>8.0-M4</gt.version>
     <imageio-ext.version>1.2-M102011</imageio-ext.version>
@@ -1853,10 +1854,10 @@
       <name>geosolutions Repository</name>
       <url>http://maven.geo-solutions.it/</url>
       <releases>
-          <enabled>true</enabled>
+        <enabled>true</enabled>
       </releases>
       <snapshots>
-          <enabled>false</enabled>
+        <enabled>false</enabled>
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
