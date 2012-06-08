@@ -21,6 +21,8 @@ In production, it is recommended to copy the contents of the configuration direc
 
 To set the ``GEOBATCH_CONFIG_DIR``, set it as one environment variable in your operating system, *or* run tomcat with ``-D`` option to define it as a java system property.
 
+If you set the ``GEOBATCH_CONFIG_DIR`` the configuration into ``WEB-INF/data`` will be discarded.
+
 
 Windows
 .........
@@ -40,13 +42,9 @@ Open it and edit the file specifying the geobatch config dir ::
 Linux
 .....
 
-Download tomcat from ` here http://tomcat.apache.org/download-60.cgi` and extract the archive into /xxx
+Download tomcat from ` here http://tomcat.apache.org/download-60.cgi` and extract the archive into /usr/share/local/
 
 Create the directory /opt/GEOBATCH_CONFIG_DIR
-
-Create a file named setenv.sh in xxx/apache-tomcat-6.0.35/bin/
-
-Open it and edit the file specifying the geobatch config dir ::
 
 To apply this value every time Tomcat is started, you can set the ``GEOBATCH_CONFIG_DIR`` as a Java system property. Edit the file ``bin/setclasspath.sh`` under the root of the Tomcat installation. Specify the GEOBATCH_CONFIG_DIR system property by setting the CATALINA_OPTS variable using the ``-D`` option::
 
