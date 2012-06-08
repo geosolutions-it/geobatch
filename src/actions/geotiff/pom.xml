@@ -89,5 +89,6 @@
       <groupId>org.geotools</groupId>
       <artifactId>gt-epsg-hsql</artifactId>
     </dependency>
+    
   </dependencies>
 </project>

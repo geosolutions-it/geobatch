@@ -55,7 +55,6 @@ public class GeoServerActionConfiguration extends GeoServerActionConfig {
 
     private String dataTransferMethod; // DIRECT, URL, EXTERNAL
 
-
     public String getCrs() {
         return crs;
     }

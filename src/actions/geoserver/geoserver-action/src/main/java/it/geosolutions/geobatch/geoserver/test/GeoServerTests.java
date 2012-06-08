@@ -26,7 +26,9 @@ import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Abstract class to perform tests on a GeoServer targhet. Use the method
@@ -45,7 +47,7 @@ import org.apache.log4j.Logger;
  * 
  */
 public abstract class GeoServerTests {
-    private final static Logger LOGGER = Logger.getLogger(GeoServerTests.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeoServerTests.class);
 
     public static final String URL;
     public static final String UID;

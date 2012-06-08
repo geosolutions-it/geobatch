@@ -50,6 +50,7 @@
       <groupId>org.geotools</groupId>
       <artifactId>gt-shapefile</artifactId>
     </dependency>
+    
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-action-geoserver</artifactId>
