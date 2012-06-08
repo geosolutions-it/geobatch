@@ -12,12 +12,6 @@ Prerequisites: Java and Tomcat
 |GB| requires `Oracle Java SE 6 <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ or newer to be installed in your system, and a servlet container. |GB| has been tested with `Apache Tomcat 6 <http://tomcat.apache.org/download-60.cgi>`_ and its use is strongly recommended.
 
 
-Installation and running
-------------------------
-
-Download `geobatch.war <demo.geo-solutions.it/share/github/geobatch/geobatch.war>`_ and copy it to the ``webapps`` directory in tomcat. Tomcat should unpack the web archive and automatically set up and run |GB|.
-
-
 The configuration directory
 ---------------------------
 
@@ -28,26 +22,41 @@ In production, it is recommended to copy the contents of the configuration direc
 To set the ``GEOBATCH_CONFIG_DIR``, set it as one environment variable in your operating system, *or* run tomcat with ``-D`` option to define it as a java system property.
 
 
-Windows 7
+Windows
 .........
 
-[TODO]
+Download tomcat from ` here http://tomcat.apache.org/download-60.cgi` and extract the archive into C:\\Program Files
+
+Create the directory C:\\GEOBATCH_CONFIG
+
+Create a file named setenv.bat in C:\\Program Files\\apache-tomcat-6.0.35\\bin\\
+
+Open it and edit the file specifying the geobatch config dir ::
+
+  set GEOBATCH_CONFIG_DIR=c:\GEOBATCH_CONFIG
+
 
 
 Linux
 .....
 
-Setting the variable can be achieved with the following command (in a bash shell)::
+Download tomcat from ` here http://tomcat.apache.org/download-60.cgi` and extract the archive into /xxx
 
-  $ export GEOBATCH_CONFIG_DIR=/var/lib/geobatch_config
+Create the directory /opt/GEOBATCH_CONFIG_DIR
 
+Create a file named setenv.sh in xxx/apache-tomcat-6.0.35/bin/
 
-Tomcat
-......
+Open it and edit the file specifying the geobatch config dir ::
 
 To apply this value every time Tomcat is started, you can set the ``GEOBATCH_CONFIG_DIR`` as a Java system property. Edit the file ``bin/setclasspath.sh`` under the root of the Tomcat installation. Specify the GEOBATCH_CONFIG_DIR system property by setting the CATALINA_OPTS variable using the ``-D`` option::
 
-  CATALINA_OPTS="-DGEOBATCH_CONFIG_DIR=/var/lib/geobatch_config"
+  CATALINA_OPTS="-DGEOBATCH_CONFIG_DIR=/opt/GEOBATCH_CONFIG_DIR $CATALINA_OPTS"
+
+  
+Deploy and running
+------------------------
+
+Download `geobatch.war <demo.geo-solutions.it/share/github/geobatch/geobatch.war>`_ and copy it to the ``webapps`` directory in tomcat. Tomcat should unpack the web archive and automatically set up and run |GB|.
 
 
 Configuration directory structure
@@ -68,14 +77,14 @@ Each action needs a configuration dir. Its default location is ``GEOBATCH_CONFIG
 * At **action level**. Each action may override its own config dir location, using the ``<overrideConfigDir>`` element. If a relative path is given, it will be placed under its flow-level dir specification.
 
 
-The temporal directory
+The temporary directory
 ----------------------
 
 The place where |GB| Actions will create their temporary files during execution, if not specified otherwise, will be placed in ``temp`` dir under ``GEOBATCH_CONFIG_DIR``.
 
 The ``GEOBATCH_TEMP_DIR`` environment/system variable can be used to specify another location, the same way as ``GEOBATCH_CONFIG_DIR``.
 
-.. note:: Make sure that the running tomcat user will have write permisions into the temporal directory.
+.. note:: Make sure that |GB| (the running tomcat user) will have write permisions into the temporary directory.
 
 
 The logging system
