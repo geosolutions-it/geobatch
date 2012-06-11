@@ -11,7 +11,7 @@ The |demo| project uses |GB| to convert a bulk of GeoTIFFs files to tiled GeoTIF
 Installing |demo|
 -----------------
 
-if you have not already done, setup the ``GEOBATCH_CONFIG_DIR`` and make sure that you have setted the variable.
+if you haven't already done, setup the ``GEOBATCH_CONFIG_DIR`` and make sure that you have setted the corresponding environment variable.
 
 Locate into |GB| deployment the folder WEB-INF/data/
 
@@ -28,7 +28,7 @@ Edit the |demo| flow configuration under ``/GEOBATCH_CONFIG_DIR/geotiff.xml``. T
 * ``output_backup``    pointing to your ``output_backup`` directory (absolute path).
 * ``geoserverURL``     pointing a running geoserver.
 create a workspace named ``it_geosolutions``
-* ``defaultNamespace`` set ``it_geosolutions``
+
 Running
 -------
 

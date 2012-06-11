@@ -13,6 +13,7 @@
    concepts
    installation
    use
+   easyDemo
    advancedDemo
    flowConfiguration
    actionShapeFile
