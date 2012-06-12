@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://geobatch.geo-solutions.it/
- *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
+ *  http://geobatch.codehaus.org/
+ *  Copyright (C) 2007-2008-2009 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception

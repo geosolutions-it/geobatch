@@ -135,7 +135,7 @@ background: #fff url(./chrome/header-bg.png) 0 100% repeat-x;
 }
 
 #main {
-/*background: #fff url(./chrome/main-bg.png) repeat-x;*/
+background: #fff url(./chrome/main-bg.png) repeat-x;
 }
 
 #content {
@@ -143,7 +143,7 @@ width: 75%; /*790px total*/
 float: left;
 margin: -3px 0 0 0;
 padding: 16px 28px 0 22px;
-/*background: #fff url(./chrome/content-bg.png) repeat-x;*/
+background: #fff url(./chrome/content-bg.png) repeat-x;
 color: #262523;
 font-size: 1.2em;
 }
@@ -185,7 +185,7 @@ width: 353px;
 height: 112px;
 overflow: hidden;
 text-indent: -9999em;
-background: url(./chrome/geobatch_logo_new_blue.png) no-repeat;
+background: url(./chrome/geobatch-icon.png) no-repeat;
 }
 
 #account-nav {
