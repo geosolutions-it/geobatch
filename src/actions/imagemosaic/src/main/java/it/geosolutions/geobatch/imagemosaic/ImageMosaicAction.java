@@ -47,8 +47,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sun.misc.Launcher;
-
 /**
  * An action which is able to create and update a layer into the GeoServer
  * 

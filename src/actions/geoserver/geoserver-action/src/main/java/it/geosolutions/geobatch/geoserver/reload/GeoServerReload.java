@@ -200,8 +200,7 @@ public class GeoServerReload extends BaseAction<EventObject> {
 
 		@Override
 		public Boolean call() throws Exception {
-			final GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
-					url, user, pass);
+			final GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(url, user, pass);
 
 			if (!publisher.reload()) {
 				if (LOGGER.isWarnEnabled())

@@ -48,19 +48,15 @@
       <artifactId>xstream</artifactId>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.codehaus.jettison</groupId>
       <artifactId>jettison</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>it.geosolutions</groupId>
+      <artifactId>geoserver-manager</artifactId>
+    </dependency>
+    
     <!-- GEOBATCH lib -->
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
@@ -70,9 +66,20 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
     </dependency>
+    
+    <!--  test  -->
     <dependency>
-      <groupId>it.geosolutions</groupId>
-      <artifactId>geoserver-manager</artifactId>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
+    
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 </project>

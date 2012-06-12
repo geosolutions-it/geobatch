@@ -33,7 +33,7 @@ Edit ``bin/startup.sh`` and add a call to ``fwtools_env.sh``:
 Installing |demo|
 -----------------
 
-Download |demo| zip from: https://github.com/geosolutions-it/geobatch-demo
+Download |demo| zip from: https://github.com/geosolutions-it/geobatch-demo/zipball/BETA_1
 
 Unzip it::
 
