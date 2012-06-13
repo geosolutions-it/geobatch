@@ -82,10 +82,10 @@ table, td, th {
     width: 990px;
 }
 #header {
-    background: url("./chrome/background.png") scroll 0 100%;
+    background: url("./chrome/background.jpg") scroll 0 100%;
 }
 #main {
-    background: url("./chrome/background.png") scroll 0 0;
+    background: url("./chrome/background.jpg") scroll 0 0;
 }
 #content {
 
