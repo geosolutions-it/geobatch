@@ -246,8 +246,9 @@ public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 							+ eventFile.getAbsolutePath();
 					if (LOGGER.isWarnEnabled())
 						LOGGER.warn(message);
-					listenerForwarder.failed(new IllegalArgumentException(
-							message));
+
+					throw new ActionException(this, message);
+
 				}
 			} // endwile
 			listenerForwarder.completed();

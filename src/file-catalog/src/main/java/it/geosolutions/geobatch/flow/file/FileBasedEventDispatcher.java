@@ -169,11 +169,11 @@ import org.slf4j.LoggerFactory;
 						// If it needs some other events to complete, we'll put
 						// it in the EventConsumers waiting list.
 						// //
+						eventServed = flowManager.addConsumer(brandNewConsumer);
 						if (brandNewConsumer.getStatus() != EventConsumerStatus.EXECUTING) {
 							if (LOGGER.isDebugEnabled()) {
 								LOGGER.debug(brandNewConsumer + " created on event " + event);
-							}
-							eventServed = flowManager.addConsumer(brandNewConsumer);
+							} 
 							if ( ! eventServed ) {
 							    brandNewConsumer.dispose();
                             }
@@ -182,7 +182,6 @@ import org.slf4j.LoggerFactory;
 								LOGGER.debug(event + " was the only needed event for " + brandNewConsumer);
 							}
 
-							eventServed = flowManager.addConsumer(brandNewConsumer);
 							if (eventServed){
                                 // etj: shouldn't we call
                                 // executor.execute(consumer); here?
