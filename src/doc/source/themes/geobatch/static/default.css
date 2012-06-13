@@ -203,7 +203,7 @@ table, td, th {
     display: none;
 }
 #quick-search fieldset {
-	background: url("./chrome/toc-contrast-bg.png") no-repeat scroll 0 100% #FFFFFF;
+	background: url("./chrome/toc-contrast-bg.png") no-repeat scroll 0 100% #CEE4A6;
     border: 0 none color: #FFFFFF;
     float: none;
     margin: 0;
