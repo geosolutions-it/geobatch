@@ -83,12 +83,15 @@ table, td, th {
 }
 #header {
     background: url("./chrome/background.jpg") scroll 0 100%;
-	box-shadow: 4px 4px 30px 4px #2DDB59 inset ;
-	-moz-box-shadow: 4px 4px 30px 4px #2DDB59 inset ;
-	-webkit-box-shadow: 4px 4px 30px 4px #2DDB59 inset ;
+	box-shadow: -1px -7px 50px 4px #464646 inset ;
+	-moz-box-shadow: -1px -7px 50px 4px #464646 inset ;
+	-webkit-box-shadow: -1px -7px 50px 4px #464646 inset ;
 }
 #main {
     background: url("./chrome/background.jpg") scroll 0 0;
+	/*box-shadow: 0px 4px 40px 10px #5C9CFE inset ;
+	-moz-box-shadow: 0px 4px 40px 10px #5C9CFE inset ;
+	-webkit-box-shadow: 0px 4px 40px 10px #5C9CFE inset ;*/
 }
 #content {
 
@@ -96,9 +99,9 @@ table, td, th {
 	
 	/*border: 8px solid #2DDB59;*/
 	/*-moz-border-colors: #2DDB59 #FFF;*/
-	box-shadow: 4px 4px 40px 4px #5C9CFE inset ;
-	-moz-box-shadow: 4px 4px 40px 4px #5C9CFE inset ;
-	-webkit-box-shadow: 4px 4px 40px 4px #5C9CFE inset ;
+	box-shadow: 0px 4px 40px 10px #464646 inset ;
+	-moz-box-shadow: 0px 4px 40px 10px #464646 inset ;
+	-webkit-box-shadow: 0px 4px 40px 10px #464646 inset ;
 	background-color: #FFF;
     color: #262523;
     float: left;
@@ -119,7 +122,7 @@ table, td, th {
 }
 #footer {
     background: url("./chrome/footer-bg.png") repeat-x scroll 0 0;
-    color: #D9D9D9;
+    color: #474747;
     font-size: 0.84em;
     padding: 55px 0 75px;
     text-align: center;
@@ -200,7 +203,8 @@ table, td, th {
     display: none;
 }
 #quick-search fieldset {
-    border: 0 none transparent;
+	background: url("./chrome/toc-contrast-bg.png") no-repeat scroll 0 100% #CEE4A6;
+    border: 0 none color: #FFFFFF;
     float: none;
     margin: 0;
     padding: 0;
@@ -534,12 +538,14 @@ span.eqno {
     padding: 0.9em 0;
 }
 #sidebar .section h3 {
+	background: url("./chrome/toc-contrast-top-bg.png") no-repeat scroll 0 0 #76AE23;
     font-family: "Lucida Sans","Lucida Sans Unicode","Lucida Grande",Verdana,Arial,Helvetica,sans-serif;
     font-size: 1em;
     font-weight: bold;
     margin: 0;
 }
 #sidebar .section ul {
+	background: url("./chrome/toc-contrast-bg.png") no-repeat scroll 0 100% transparent;
     margin: 0;
     padding: 0;
 }
@@ -549,7 +555,7 @@ span.eqno {
     padding: 0 0.3em 0 1em;
 }
 #sidebar .section li:before {
-    content: "- ";
+    content: " - ";
     margin: 0 0 0 -1em;
 }
 #sidebar #toc {
@@ -582,7 +588,7 @@ span.eqno {
     margin: 0;
 }
 #sidebar #toc ul ul li:before {
-    content: "- ";
+    content: " - ";
     margin: 0 0 0 -1em;
 }
 #blog-callout {
