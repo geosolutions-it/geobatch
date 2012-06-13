@@ -83,6 +83,9 @@ table, td, th {
 }
 #header {
     background: url("./chrome/background.jpg") scroll 0 100%;
+	box-shadow: 4px 4px 30px 4px #2DDB59 inset ;
+	-moz-box-shadow: 4px 4px 30px 4px #2DDB59 inset ;
+	-webkit-box-shadow: 4px 4px 30px 4px #2DDB59 inset ;
 }
 #main {
     background: url("./chrome/background.jpg") scroll 0 0;
@@ -93,9 +96,9 @@ table, td, th {
 	
 	/*border: 8px solid #2DDB59;*/
 	/*-moz-border-colors: #2DDB59 #FFF;*/
-	box-shadow: 4px 4px 4px 4px #2DDB59 inset ;
-	-moz-box-shadow: 4px 4px 4px 4px #2DDB59 inset ;
-	-webkit-box-shadow: 4px 4px 4px 4px #2DDB59 inset ;
+	box-shadow: 4px 4px 40px 4px #5C9CFE inset ;
+	-moz-box-shadow: 4px 4px 40px 4px #5C9CFE inset ;
+	-webkit-box-shadow: 4px 4px 40px 4px #5C9CFE inset ;
 	background-color: #FFF;
     color: #262523;
     float: left;
@@ -108,7 +111,7 @@ table, td, th {
     color: #0076A1;
     float: left;
     margin: 0 0 0 10px;
-    padding: 143px 0 0;
+    padding: 180px 0 0;
     width: 190px;
 }
 * html #sidebar {
@@ -579,7 +582,7 @@ span.eqno {
     margin: 0;
 }
 #sidebar #toc ul ul li:before {
-    content: "» ";
+    content: "- ";
     margin: 0 0 0 -1em;
 }
 #blog-callout {
