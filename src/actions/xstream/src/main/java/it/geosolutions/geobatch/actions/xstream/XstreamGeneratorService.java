@@ -21,7 +21,6 @@
  */
 package it.geosolutions.geobatch.actions.xstream;
 
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
