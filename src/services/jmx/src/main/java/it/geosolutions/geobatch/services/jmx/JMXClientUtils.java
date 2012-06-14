@@ -43,7 +43,7 @@ import javax.management.remote.JMXServiceURL;
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
-public class GeoBatchJMXClient {
+public class JMXClientUtils {
 
 	// JMX bean
 	public final static String GB_JMXBEAN_KEY = "JMXServiceManager";
@@ -195,7 +195,7 @@ public class GeoBatchJMXClient {
 	 *             if the name of the bean is not found into the environment
 	 *             (see {@link #GB_JMXBEAN_KEY})
 	 */
-	public static ActionManager getProxy(Map<String, ?> environment,
+	public static ServiceManager getProxy(Map<String, ?> environment,
 			JMXConnector jmxc) throws IOException,
 			MalformedObjectNameException, NullPointerException {
 
@@ -208,9 +208,9 @@ public class GeoBatchJMXClient {
 				+ environment.get(GB_JMXBEAN_KEY));
 
 		// create the proxy
-		final ActionManager mbeanProxy = JMX.newMBeanProxy(
+		final ServiceManager mbeanProxy = JMX.newMBeanProxy(
 				jmxc.getMBeanServerConnection(), mbeanName,
-				ActionManager.class, true);
+				ServiceManager.class, true);
 
 		return mbeanProxy;
 	}

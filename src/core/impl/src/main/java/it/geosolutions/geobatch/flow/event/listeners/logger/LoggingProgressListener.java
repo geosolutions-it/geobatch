@@ -36,56 +36,68 @@ import org.slf4j.LoggerFactory;
  */
 public class LoggingProgressListener extends ProgressListener {
 
-    public LoggingProgressListener(LoggingProgressListenerConfiguration configuration, Identifiable owner) {
-        super(configuration,owner);
-    }
-    
-    public LoggingProgressListenerConfiguration getConfig(){
-        return (LoggingProgressListenerConfiguration) configuration;
-    }
+	private final Logger logger;
 
-    private Logger getLogger() {
-        return LoggerFactory.getLogger(getConfig().getLoggerName());
-    }
+	
+	public LoggingProgressListener(
+			LoggingProgressListenerConfiguration configuration,
+			Identifiable owner) {
+		super(configuration, owner);
+		if (configuration == null)
+			throw new IllegalArgumentException("Null configuration!");
+		logger = LoggerFactory.getLogger(configuration.getLoggerName());
+	}
 
-    public void started() {
-        getLogger().info("Started [" + getPrintable(getOwner()) + "]");
-    }
+	public LoggingProgressListenerConfiguration getConfig() {
+		return (LoggingProgressListenerConfiguration) configuration;
+	}
 
-    public void progressing() {
-        getLogger()
-                .info("Progressing " + getProgress() + "% -- " + getTask() + " [" + getPrintable(getOwner()) + "]");
-    }
+	public Logger getLogger() {
+		return logger;
+	}
 
-    public void paused() {
-        getLogger().info("Paused " + getProgress() + "% -- " + getTask() + " [" + getPrintable(getOwner()) + "]");
-    }
+	public void started() {
+		logger.info("Started [" + getPrintable(getOwner()) + "]");
+	}
 
-    public void resumed() {
-        getLogger().info("Resumed " + getProgress() + "% -- " + getTask() + " [" + getPrintable(getOwner()) + "]");
-    }
+	public void progressing() {
+		logger.info("Progressing " + getProgress() + "% -- " + getTask() + " ["
+				+ getPrintable(getOwner()) + "]");
+	}
 
-    public void completed() {
-        getLogger().info("Completed [" + getPrintable(getOwner()) + "]");
-    }
+	public void paused() {
+		logger.info("Paused " + getProgress() + "% -- " + getTask() + " ["
+				+ getPrintable(getOwner()) + "]");
+	}
 
-    public void failed(Throwable exception) {
-        getLogger().info("Failed " + getProgress() + "% -- " + getTask() + " [" + getPrintable(getOwner()) + "]");
-    }
+	public void resumed() {
+		logger.info("Resumed " + getProgress() + "% -- " + getTask() + " ["
+				+ getPrintable(getOwner()) + "]");
+	}
 
-    public void terminated() {
-        getLogger().info("Terminated " + getProgress() + "% -- " + getTask() + " [" + getPrintable(getOwner()) + "]");
-    }
+	public void completed() {
+		logger.info("Completed [" + getPrintable(getOwner()) + "]");
+	}
 
-    static protected String getPrintable(Identifiable i) {        
-        if (i != null) {
-            if(i instanceof Descriptable) {
-                Descriptable d = (Descriptable)i;
-                return d.getName();
-            } else {
-                return i.getId();
-            }
-        } else
-            return "-";
-    }
+	public void failed(Throwable exception) {
+		logger.info("Failed " + getProgress() + "% -- " + getTask() + " ["
+				+ getPrintable(getOwner()) + "]");
+	}
+
+	public void terminated() {
+		logger.info("Terminated " + getProgress() + "% -- " + getTask() + " ["
+				+ getPrintable(getOwner()) + "]");
+	}
+
+	static protected String getPrintable(Identifiable i) {
+		if (i != null) {
+			if (i instanceof Descriptable) {
+				Descriptable d = (Descriptable) i;
+				return d.getName();
+			} else {
+				return i.getId();
+			}
+		} else
+			return "-";
+	}
 }

@@ -387,7 +387,7 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
     }
 
     @Override
-    public Collection<IProgressListener> getListeners(Class<IProgressListener> clazz) {
+    public Collection<IProgressListener> getListeners(Class clazz) {
         return listenerForwarder.getListeners(clazz);
     }
 
