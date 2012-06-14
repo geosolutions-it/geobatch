@@ -320,8 +320,11 @@ public class JMXServiceManager implements ServiceManager {
 	}
 	
 	private static List<JMXProgressListener> get(Collection<IProgressListener> coll){
+		final List<JMXProgressListener> al=new ArrayList<JMXProgressListener>();
+		if (coll==null){
+			return al;
+		}
 		final Iterator<IProgressListener> cit=coll.iterator();
-		final List<JMXProgressListener> al=new ArrayList<JMXProgressListener>(); 
 		while (cit.hasNext()){
 			IProgressListener pl=cit.next();
 			if (pl instanceof JMXCumulatorListener){
