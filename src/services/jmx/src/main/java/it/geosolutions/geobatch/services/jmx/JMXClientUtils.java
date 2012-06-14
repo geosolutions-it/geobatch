@@ -43,7 +43,7 @@ import javax.management.remote.JMXServiceURL;
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
-public class GeoBatchJMXClient {
+public class JMXClientUtils {
 
 	// JMX bean
 	public final static String GB_JMXBEAN_KEY = "JMXServiceManager";
@@ -54,14 +54,6 @@ public class GeoBatchJMXClient {
 	public final static String GB_URL = "localhost";
 	public final static String GB_PORT_KEY = "gb_jmx_port";
 	public final static String GB_PORT = "1099";
-
-	//JMX ENV OPTIONAL 
-	public final static String GB_URL_KEY_OPT="";
-	public final static String GB_URL_OPT = "";
-	public final static String GB_PORT_KEY_OPT = "";
-	public final static String GB_PORT_OPT = "";
-	
-	
 
 	// delay in secs
 	public static final String PROCESS_DELAY_KEY = "PROCESS_DELAY";
@@ -87,23 +79,15 @@ public class GeoBatchJMXClient {
 	 *            jmx.properties or null (in this case defaults values are used)
 	 * @return a map containing the initialized environment
 	 */
-	public static Map<String, String> loadEnv(final String configFilePath, final String configFilePathOpts) {
+	public static Map<String, String> loadEnv(final String configFilePath) {
 		// load from file
 		final Properties props = new Properties();
-		
-		// load from optional env properties
-		final Properties propsOptional = new Properties();
-		
 		// if no external file configuration is found using defaults
-		if (configFilePath != null || configFilePathOpts!=null) {
+		if (configFilePath != null) {
 			FileInputStream fis = null;
-			FileInputStream fisOpt= null;
 			try {
 				fis = new FileInputStream(new File(configFilePath));
 				props.load(fis);
-				fisOpt = new FileInputStream(new File(configFilePathOpts));
-				propsOptional.load(fisOpt);
-				
 
 			} catch (IOException e) {
 
@@ -112,10 +96,9 @@ public class GeoBatchJMXClient {
 				// }
 
 			} finally {
-				if (fis != null || fisOpt !=null) {
+				if (fis != null) {
 					try {
 						fis.close();
-						fisOpt.close();
 					} catch (Exception e) {
 					}
 				}
@@ -129,7 +112,6 @@ public class GeoBatchJMXClient {
 		// url
 		if (!props.containsKey(GB_URL_KEY))
 			env.put(GB_URL_KEY, GB_URL);
-			
 		else
 			env.put(GB_URL_KEY, props.getProperty(GB_URL_KEY));
 
@@ -151,15 +133,6 @@ public class GeoBatchJMXClient {
 			String key = (String) it.next();
 			env.put(key, props.getProperty(key));
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		return env;
 	}
 
@@ -222,7 +195,7 @@ public class GeoBatchJMXClient {
 	 *             if the name of the bean is not found into the environment
 	 *             (see {@link #GB_JMXBEAN_KEY})
 	 */
-	public static ActionManager getProxy(Map<String, ?> environment,
+	public static ServiceManager getProxy(Map<String, ?> environment,
 			JMXConnector jmxc) throws IOException,
 			MalformedObjectNameException, NullPointerException {
 
@@ -235,9 +208,9 @@ public class GeoBatchJMXClient {
 				+ environment.get(GB_JMXBEAN_KEY));
 
 		// create the proxy
-		final ActionManager mbeanProxy = JMX.newMBeanProxy(
+		final ServiceManager mbeanProxy = JMX.newMBeanProxy(
 				jmxc.getMBeanServerConnection(), mbeanName,
-				ActionManager.class, true);
+				ServiceManager.class, true);
 
 		return mbeanProxy;
 	}

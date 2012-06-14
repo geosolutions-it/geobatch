@@ -1789,6 +1789,11 @@
       <url>http://download.osgeo.org/webdav/geotools/</url>
     </repository>
     <repository>
+      <id>geotoolkit</id>
+      <name>Geotk, GeoAPI and dependencies</name>
+      <url>http://maven.geotoolkit.org/</url>
+    </repository>
+    <repository>
       <id>java.net</id>
       <name>java.net Repository</name>
       <url>http://download.java.net/maven/2/</url>

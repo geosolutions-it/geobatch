@@ -203,7 +203,7 @@ public class ProgressListenerForwarder extends ProgressListener implements
         return Collections.unmodifiableCollection(listeners);
     }
     
-    public Collection<IProgressListener> getListeners(Class<IProgressListener> clazz) {
+    public Collection<IProgressListener> getListeners(Class clazz) {
         final Collection<IProgressListener> ret = new ArrayList<IProgressListener>();
         for (IProgressListener ipl : getListeners()) {
             if (clazz.isAssignableFrom(ipl.getClass())){

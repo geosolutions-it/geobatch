@@ -28,14 +28,17 @@ import it.geosolutions.geobatch.catalog.file.DataDirHandler;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.global.CatalogHolder;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -44,7 +47,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -52,8 +54,6 @@ import javax.annotation.Resource;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -81,123 +81,107 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  * 
  */
 @ManagedResource(objectName = "bean:name=JMXServiceManager", description = "JMX Service Manager to start/monitor/dispose GeoBatch action", log = true, logFile = "jmx.log", persistName = "JMXServiceManager")
-public class JMXServiceManager implements ActionManager {
-    private final static Logger LOGGER = LoggerFactory.getLogger(JMXServiceManager.class);
+public class JMXServiceManager implements ServiceManager {
+	private final static Logger LOGGER = LoggerFactory
+			.getLogger(JMXServiceManager.class);
 
-    public final static String FLOW_MANAGER_ID = "JMX_FLOW_MANAGER";
+	public final static String FLOW_MANAGER_ID = "JMX_FLOW_MANAGER";
 
-    private static Catalog catalog;
+	private static Catalog catalog;
 
-    private static FileBasedFlowManager flowManager;
+	private static FileBasedFlowManager flowManager;
 
-    private FileBasedFlowConfiguration flowManagerConfig;
+	private FileBasedFlowConfiguration flowManagerConfig;
 
-    private static File configDirFile;
-    
-    @Resource(name="dataDirHandler")
-    private DataDirHandler dataDirHandler;
+	private static File configDirFile;
 
-    @Resource(type = org.springframework.context.ApplicationContext.class)
-    private ApplicationContext context;
+	@Resource(name = "dataDirHandler")
+	private DataDirHandler dataDirHandler;
 
-    @PostConstruct
-    public void initialize() throws Exception{
-    	catalog = CatalogHolder.getCatalog();
+	@Resource(type = org.springframework.context.ApplicationContext.class)
+	private ApplicationContext context;
 
-        flowManager = catalog.getResource(FLOW_MANAGER_ID,
-                                          it.geosolutions.geobatch.flow.file.FileBasedFlowManager.class);
-        if (flowManager == null) {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("The flow id \'" + FLOW_MANAGER_ID
-                            + "\' does not exists into catalog... -> going to create it");
-            }
-            flowManagerConfig = new FileBasedFlowConfiguration(FLOW_MANAGER_ID, FLOW_MANAGER_ID, "Auto generated " + FLOW_MANAGER_ID,
-                        null, null);
+	@PostConstruct
+	private void initialize() throws Exception {
+		catalog = CatalogHolder.getCatalog();
 
-            configDirFile = flowManager.initConfigDir(flowManagerConfig, dataDirHandler.getBaseConfigDirectory());
-            if (!configDirFile.exists()) {
-                if (!configDirFile.mkdir()) {
-                    throw new IllegalArgumentException("Unable to automatically create the " + FLOW_MANAGER_ID
-                                                       + " working dir into: "
-                                                       + configDirFile.getAbsolutePath().toString());
-                }
-            }
-            flowManagerConfig.setOverrideConfigDir(configDirFile);
+		flowManager = catalog.getResource(FLOW_MANAGER_ID,
+				it.geosolutions.geobatch.flow.file.FileBasedFlowManager.class);
+		if (flowManager == null) {
+			if (LOGGER.isInfoEnabled()) {
+				LOGGER.info("The flow id \'"
+						+ FLOW_MANAGER_ID
+						+ "\' does not exists into catalog... -> going to create it");
+			}
+			flowManagerConfig = new FileBasedFlowConfiguration(FLOW_MANAGER_ID,
+					FLOW_MANAGER_ID, "Auto generated " + FLOW_MANAGER_ID, null,
+					null);
 
-            // keep consumer until disposeAction is called
-            flowManagerConfig.setKeepConsumers(true);
-            // flowManagerConfig.setMaximumPoolSize(flowManagerConfig.getMaximumPoolSize());
-            // // TODO create a spec param
+			configDirFile = flowManager.initConfigDir(flowManagerConfig,
+					dataDirHandler.getBaseConfigDirectory());
+			if (!configDirFile.exists()) {
+				if (!configDirFile.mkdir()) {
+					throw new IllegalArgumentException(
+							"Unable to automatically create the "
+									+ FLOW_MANAGER_ID
+									+ " working dir into: "
+									+ configDirFile.getAbsolutePath()
+											.toString());
+				}
+			}
+			flowManagerConfig.setOverrideConfigDir(configDirFile);
 
-            flowManager = new FileBasedFlowManager(flowManagerConfig,dataDirHandler);
+			// keep consumer until disposeAction is called
+			flowManagerConfig.setKeepConsumers(true);
+			// flowManagerConfig.setMaximumPoolSize(flowManagerConfig.getMaximumPoolSize());
+			// // TODO create a spec param
 
-            catalog.add(flowManager);
-            // TODO persistence (throws NullPointerException)
-            // catalog.save(parent);
-            // parent.persist();
-        } else {
-            flowManagerConfig = flowManager.getConfiguration();
-            configDirFile = flowManager.initConfigDir(flowManagerConfig, dataDirHandler.getBaseConfigDirectory());
+			flowManager = new FileBasedFlowManager(flowManagerConfig,
+					dataDirHandler);
 
-        }
+			catalog.add(flowManager);
+			// TODO persistence (throws NullPointerException)
+			// catalog.save(parent);
+			// parent.persist();
+		} else {
+			flowManagerConfig = flowManager.getConfiguration();
+			configDirFile = FileBasedFlowManager.initConfigDir(
+					flowManagerConfig, dataDirHandler.getBaseConfigDirectory());
+		}
 
-        // TODO listener config
-        // if ()
-        // flowManagerConfig.getProgressListenerConfigurations();
-    }
-    
-    public JMXServiceManager() throws Exception {
-        
-    }
+	}
 
-    @Override
-    @org.springframework.jmx.export.annotation.ManagedOperation(description = "disposeAction - used to dispose the consumer instance from the consumer registry")
-    @ManagedOperationParameters({@ManagedOperationParameter(name = "uuid", description = "The uuid of the consumer")})
-    public void disposeAction(String uuid) throws Exception {
-        flowManager.disposeConsumer(uuid);
-    }
+	@Override
+	@org.springframework.jmx.export.annotation.ManagedOperation(description = "disposeAction - used to dispose the consumer instance from the consumer registry")
+	@ManagedOperationParameters({ @ManagedOperationParameter(name = "uuid", description = "The uuid of the consumer") })
+	public void disposeConsumer(final String uuid) throws Exception {
+		flowManager.disposeConsumer(uuid);
+	}
 
-    /**
-     * returns the status of the selected consumer
-     * 
-     * @param uuid
-     * @return {@link ConsumerStatus}
-     */
-    @Override
-    @org.springframework.jmx.export.annotation.ManagedOperation(description = "get the status of the selected consumer")
-    @ManagedOperationParameters({@ManagedOperationParameter(name = "uuid", description = "The uuid of the consumer")})
-    public ConsumerStatus getStatus(String uuid) {
-        return ConsumerStatus.getStatus(flowManager.getStatus(uuid));
-    }
+	/**
+	 * returns the status of the selected consumer
+	 * 
+	 * @param uuid
+	 * @return {@link ConsumerStatus}
+	 */
+	@Override
+	@org.springframework.jmx.export.annotation.ManagedOperation(description = "get the status of the selected consumer")
+	@ManagedOperationParameters({ @ManagedOperationParameter(name = "uuid", description = "The uuid of the consumer") })
+	public ConsumerStatus getStatus(String uuid) {
+		return ConsumerStatus.getStatus(flowManager.getStatus(uuid));
+	}
 
-    @Override
-    @org.springframework.jmx.export.annotation.ManagedOperation(description = "callAction - used to run a consumer")
-    @ManagedOperationParameters({@ManagedOperationParameter(name = "config", description = "A map containing the list of needed parameters, inputs and outputs used by the action")})
-    public String callAction(java.util.Map<String, String> config) throws Exception {
-        final String serviceId = config.remove(SERVICE_ID_KEY);
+	@Override
+    @org.springframework.jmx.export.annotation.ManagedOperation(description = "createConsumer - used to get a new consumer")
+    public String createConsumer(java.util.Map<String, String> config) throws Exception {
+    	
+        final String serviceId = config.remove(ConsumerManager.SERVICE_ID_KEY);
         if (serviceId == null || serviceId.isEmpty())
             throw new IllegalArgumentException(
                                                "Unable to locate the key "
-                                                   + SERVICE_ID_KEY
+                                                   + ConsumerManager.SERVICE_ID_KEY
                                                    + " matching the serviceId action in the passed paramether table");
-
-        final String input = config.remove(INPUT_KEY);
-        if (input == null || input.isEmpty()) {
-            throw new IllegalArgumentException("Unable to locate the key " + INPUT_KEY
-                                               + " matching input in the passed paramether table.");
-        }
-        FileSystemEvent event = new FileSystemEvent(new File(input), FileSystemEventType.FILE_ADDED);
-        Queue<FileSystemEvent> events = new java.util.LinkedList<FileSystemEvent>();
-        events.add(event);
-
-        // TODO remove all 'NOT configuration' param
-
-        return callAction(serviceId, config, events);
-    };
-
-    private String callAction(String serviceId, Map<String, String> config, Queue<FileSystemEvent> events)
-        throws Exception {
-
+        
         final ActionService service = (ActionService)context.getBean(serviceId);
         final Class serviceClass = service.getClass();
 
@@ -240,183 +224,236 @@ public class JMXServiceManager implements ActionManager {
             throw new IllegalArgumentException("Unable to locate the configuration");
 
         final FileBasedEventConsumerConfiguration consumerConfig = new FileBasedEventConsumerConfiguration("JMX_Consumer_id");
-        // TODO Status progress listener
-        // final StatusProgressListenerConfiguration
-        // statusProgressListenerConfig=new
-        // StatusProgressListenerConfiguration("status_listener",
-        // "status_listener", "status_listener");
-        // statusProgressListenerConfig.setServiceID("StatusProgressListener");
-        // actionConfig.addListenerConfiguration(statusProgressListenerConfig);
 
         final List<ActionConfiguration> actions = new ArrayList<ActionConfiguration>();
         actions.add(actionConfig);
 
         consumerConfig.setActions(actions);
-//        consumerConfig.setWorkingDirectory(configDirFile.getAbsolutePath());
+        
         // TODO may we want to remove only when getStatus is remotely called???
         // consumerConfig.setKeepContextDir(true);
 
         // if you want to move the input you may call the action move!
         consumerConfig.setPreserveInput(true);
 
-        // TODO logging progress listener
-        // final LoggingProgressListenerConfiguration
-        // loggingProgressListenerConfig=new
-        // LoggingProgressListenerConfiguration("logging_listener",
-        // "logging_listener", "logging_listener");
-        // loggingProgressListenerConfig.setServiceID("LoggingProgressListener");
-        // loggingProgressListenerConfig.setLoggerName("it.geosolutions.geobatch.services");
-        // consumerConfig.addListenerConfiguration(loggingProgressListenerConfig);
-
-        File configDir=flowManager.initConfigDir(flowManager.getConfiguration(), dataDirHandler.getBaseConfigDirectory());
-        File tempDir=flowManager.initTempDir(flowManager.getConfiguration(), dataDirHandler.getBaseTempDirectory());
+        File configDir=FileBasedFlowManager.initConfigDir(flowManager.getConfiguration(), dataDirHandler.getBaseConfigDirectory());
+        File tempDir=FileBasedFlowManager.initTempDir(flowManager.getConfiguration(), dataDirHandler.getBaseTempDirectory());
         final FileBasedEventConsumer consumer = new FileBasedEventConsumer(consumerConfig, configDir, tempDir);
+        
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("INIT injecting consumer to the parent flow. UUID: " + consumer.getId());
         }
 
-        for (FileSystemEvent event : events) {
-            consumer.consume(event);
-        }
-
-        // following ops are atomic
+        // Add to the consumer map
         if (!flowManager.addConsumer(consumer)) {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Unable to add another consumer, consumer queue is full. "
-                            + "Please dispose some completed consumer before submit a new one.");
-            }
             consumer.dispose();
-            return null;
+            throw new IllegalStateException("Unable to add another consumer, consumer queue is full. "
+                            + "Please dispose some completed consumer before submit a new one.");
         }
         
+        final Iterator<BaseAction<FileSystemEvent>> ait=consumer.getActions().iterator();
+		while (ait.hasNext()){
+	        ait.next().addListener(new JMXCumulatorListener());	
+		}
         
-        // execute
-        flowManager.getExecutor().submit(consumer);
-
+//		NOT USEFUL messages from the consumer
+//		consumer.addListener(new JMXProgressListener());
+        
         return consumer.getId();
     }
 
-    private static <T> void smartCopy(final T bean, final String propertyName, final Object value)
-        throws Exception {
-        // special cases
-        PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean, propertyName);
-        // return null if there is no such descriptor
-        if (pd == null) {
-            return;
-        }
-        
-        Class type=pd.getPropertyType();
-        
-        Object valueTo=value;
-        if (type.isAssignableFrom(value.getClass())) {
-         // try using setter
-            if (pd.getWriteMethod() != null) {
-                PropertyUtils.setProperty(bean, propertyName, valueTo);
-                return;
-            } else {
-             // T interface doesn't declare setter method for this property
-                // lets use getter methods to get the property reference
-                Object property = PropertyUtils.getProperty(bean, propertyName);
-                if (property == null) {
-                    if (LOGGER.isErrorEnabled())
-                        LOGGER.error("Skipping unwritable property " + propertyName);
-                } else {
-                    if (Collection.class.isAssignableFrom(type)) {
-                        ((Collection)property).addAll((Collection)value);
-                    } else if (Map.class.isAssignableFrom(type)) {
-                        ((Map)property).putAll((Map)value);
-                    } 
-                }
-            }
-        } else if (Collection.class.isAssignableFrom(type)) {
-            valueTo=adaptCollection(value);
+    /**
+     * create the configured action on the remote GeoBatch server through the
+     * JMX connection
+     * 
+     * @param config A map containing the list of needed parameters, inputs and
+     *            outputs used by the action
+     * @throws Exception if:
+     *             <ul>
+     *             <li>the passed map is null</li>
+     *             <li>the passed map doesn't contains needed keys</li>
+     *             <li>the connection is lost</li>
+     *             </ul>
+     */
+	@Override
+	@org.springframework.jmx.export.annotation.ManagedOperation(description = "runConsumer - used to run a consumer")
+	@ManagedOperationParameters({ @ManagedOperationParameter(name = "jmxConsumer", description = "A map containing the list of needed parameters, inputs and outputs used by the action") })
+	public void runConsumer(String uuid, Serializable event) throws Exception {
 
-        } else if (Map.class.isAssignableFrom(type)) {
+		if (uuid==null || event==null){
+			throw new IllegalArgumentException("Unable to run using null arguments: uuid="+uuid+" event="+event);
+		}
+		
+		EventConsumer consumer = getConsumer(uuid);
 
-            valueTo=adaptMap(value);
+		// ///////// SET INPUTS
+		if (event instanceof File)
+			consumer.consume(new FileSystemEvent(File.class.cast(event),FileSystemEventType.FILE_ADDED));
+		else if (event instanceof String)
+			consumer.consume(new FileSystemEvent(new File(event.toString()),FileSystemEventType.FILE_ADDED));
+		else
+			throw new IllegalArgumentException("Unable to use the incoming event: bad type ->"+event.getClass());
+		// ///////// RUN CONSUMER
+		// execute
+		flowManager.getExecutor().submit(consumer);
+	}
+	
+	@Override
+	@org.springframework.jmx.export.annotation.ManagedOperation(description = "getListeners - used to run a consumer")
+	@ManagedOperationParameters({ @ManagedOperationParameter(name = "uuid", description = "A map containing the list of needed parameters, inputs and outputs used by the action") })
+	public Collection<JMXProgressListener> getListeners(String uuid, Class<? extends JMXProgressListener> type) {
 
-        } else {
-        
-            // fail
-            // try quick way
-            try {
-                BeanUtils.copyProperty(bean, propertyName, valueTo);
-                return;
-            } catch (Exception e) {
-                if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("Error using ");
-            }            
-        }
-        
-//
-//        boolean status = true;
-//        if (!status) {
-//            if (LOGGER.isErrorEnabled())
-//                LOGGER.error("Skipping unwritable property " + propertyName
-//                             + " unable to find the adapter for type " + pd.getPropertyType());
-//        }
-    }
+		EventConsumer consumer = getConsumer(uuid);
 
-    public static Map adaptMap(Object value) {
-        Map<Object, Object> liveMap=new HashMap<Object, Object>();
-        // value should be a list of key=value string ';' separated
-        String[] listString = ((String)value).split(";");
-        for (String kvString : listString) {
-            String kv[] = kvString.split("=");
-            liveMap.put(kv[0], kv[1]);
-        }
-        return liveMap;
-    }
+		final List<JMXProgressListener> al=get(consumer.getListeners(JMXCumulatorListener.class));
+		
+		if (consumer instanceof FileBasedEventConsumer){
+			final FileBasedEventConsumer fbConsumer=FileBasedEventConsumer.class.cast(consumer);
 
-    private static Collection adaptCollection(Object value) {
+			final Iterator<BaseAction<FileSystemEvent>> ait=fbConsumer.getActions().iterator();
+			
+			while (ait.hasNext()){
+				al.addAll(get(ait.next().getListeners(JMXCumulatorListener.class)));
+			}
+		}
+		return al;
+	}
+	
+	private static List<JMXProgressListener> get(Collection<IProgressListener> coll){
+		final List<JMXProgressListener> al=new ArrayList<JMXProgressListener>();
+		if (coll==null){
+			return al;
+		}
+		final Iterator<IProgressListener> cit=coll.iterator();
+		while (cit.hasNext()){
+			IProgressListener pl=cit.next();
+			if (pl instanceof JMXCumulatorListener){
+				al.add(JMXCumulatorListener.class.cast(pl));
+			}
+		}
+		return al;
+	}
 
-        Collection<Object> liveCollection= new ArrayList<Object>();
-        // value should be a list of string ',' separated
-        String[] listString = ((String)value).split(",");
-        for (String s : listString) {
-            liveCollection.add(s);
-        }
-        return liveCollection;
-    }
+	public void setDataDirHandler(DataDirHandler dataDirHandler) {
+		this.dataDirHandler = dataDirHandler;
+	}
 
-    public void setDataDirHandler(DataDirHandler dataDirHandler) {
-        this.dataDirHandler = dataDirHandler;
-    }
-    
-/* 
- * TODO make smart adapter extensible
- * 
-    public interface TypeAdapter<F, T> {
-        public boolean adapt(Class<F> fromType, Class<T> toType, Object property, Object value);
-    };
+	private EventConsumer getConsumer(String uuid)
+			throws IllegalArgumentException {
+		final EventConsumer consumer = flowManager.getConsumer(uuid);
+		if (consumer == null)
+			throw new IllegalArgumentException(
+					"Unable to get a consumer using uuid: " + uuid);
+		return consumer;
+	}
 
-    private final class StringToCollectionAdapter implements TypeAdapter<String, Map> {
-        @Override
-        public boolean adapt(Class<String> fromType, Class<Map> toType, Object property, Object value) {
+	private static <T> void smartCopy(final T bean, final String propertyName,
+			final Object value) throws Exception {
+		// special cases
+		PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean,
+				propertyName);
+		// return null if there is no such descriptor
+		if (pd == null) {
+			return;
+		}
 
-            // check type of property to apply new value
-            if (Map.class.isAssignableFrom(toType)) {
+		Class type = pd.getPropertyType();
 
-                final Map<Object, Object> liveMap;
-                if (property != null) {
-                    liveMap = (Map<Object, Object>)property;
-                    liveMap.clear();
-                } else {
-                    return false;
-                }
-                if (fromType.isAssignableFrom(value.getClass())) {
-                    // value should be a list of key=value string ';' separated
-                    String[] listString = ((String)value).split(";");
-                    for (String kvString : listString) {
-                        String kv[] = kvString.split("=");
-                        liveMap.put(kv[0], kv[1]);
-                    }
-                    return true;
-                }
-            }
+		Object valueTo = value;
+		if (type.isAssignableFrom(value.getClass())) {
+			// try using setter
+			if (pd.getWriteMethod() != null) {
+				PropertyUtils.setProperty(bean, propertyName, valueTo);
+				return;
+			} else {
+				// T interface doesn't declare setter method for this property
+				// lets use getter methods to get the property reference
+				Object property = PropertyUtils.getProperty(bean, propertyName);
+				if (property == null) {
+					if (LOGGER.isErrorEnabled())
+						LOGGER.error("Skipping unwritable property "
+								+ propertyName);
+				} else {
+					if (Collection.class.isAssignableFrom(type)) {
+						((Collection) property).addAll((Collection) value);
+					} else if (Map.class.isAssignableFrom(type)) {
+						((Map) property).putAll((Map) value);
+					}
+				}
+			}
+		} else if (Collection.class.isAssignableFrom(type)) {
+			valueTo = adaptCollection(value);
 
-            return false;
-        }
-    }
-*/
+		} else if (Map.class.isAssignableFrom(type)) {
+
+			valueTo = adaptMap(value);
+
+		} else {
+
+			// fail
+			// try quick way
+			try {
+				BeanUtils.copyProperty(bean, propertyName, valueTo);
+				return;
+			} catch (Exception e) {
+				if (LOGGER.isWarnEnabled())
+					LOGGER.warn("Error using ");
+			}
+		}
+
+		//
+		// boolean status = true;
+		// if (!status) {
+		// if (LOGGER.isErrorEnabled())
+		// LOGGER.error("Skipping unwritable property " + propertyName
+		// + " unable to find the adapter for type " + pd.getPropertyType());
+		// }
+	}
+
+	private static Map adaptMap(Object value) {
+		Map<Object, Object> liveMap = new HashMap<Object, Object>();
+		// value should be a list of key=value string ';' separated
+		String[] listString = ((String) value).split(";");
+		for (String kvString : listString) {
+			String kv[] = kvString.split("=");
+			liveMap.put(kv[0], kv[1]);
+		}
+		return liveMap;
+	}
+
+	private static Collection adaptCollection(Object value) {
+
+		Collection<Object> liveCollection = new ArrayList<Object>();
+		// value should be a list of string ',' separated
+		String[] listString = ((String) value).split(",");
+		for (String s : listString) {
+			liveCollection.add(s);
+		}
+		return liveCollection;
+	}
+
+	/*
+	 * TODO make smart adapter extensible
+	 * 
+	 * public interface TypeAdapter<F, T> { public boolean adapt(Class<F>
+	 * fromType, Class<T> toType, Object property, Object value); };
+	 * 
+	 * private final class StringToCollectionAdapter implements
+	 * TypeAdapter<String, Map> {
+	 * 
+	 * @Override public boolean adapt(Class<String> fromType, Class<Map> toType,
+	 * Object property, Object value) {
+	 * 
+	 * // check type of property to apply new value if
+	 * (Map.class.isAssignableFrom(toType)) {
+	 * 
+	 * final Map<Object, Object> liveMap; if (property != null) { liveMap =
+	 * (Map<Object, Object>)property; liveMap.clear(); } else { return false; }
+	 * if (fromType.isAssignableFrom(value.getClass())) { // value should be a
+	 * list of key=value string ';' separated String[] listString =
+	 * ((String)value).split(";"); for (String kvString : listString) { String
+	 * kv[] = kvString.split("="); liveMap.put(kv[0], kv[1]); } return true; } }
+	 * 
+	 * return false; } }
+	 */
 }

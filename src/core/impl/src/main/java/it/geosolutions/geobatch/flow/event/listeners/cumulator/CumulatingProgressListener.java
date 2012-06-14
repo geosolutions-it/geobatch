@@ -26,6 +26,7 @@ import it.geosolutions.geobatch.catalog.Descriptable;
 import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -40,7 +41,7 @@ import java.util.TimeZone;
  * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class CumulatingProgressListener extends ProgressListener {
+public class CumulatingProgressListener extends ProgressListener implements Serializable{
 
     
     private List<String> messages = new LinkedList<String>();
@@ -78,7 +79,7 @@ public class CumulatingProgressListener extends ProgressListener {
                 .append(' ')
                 .append(msg)
                 .append(' ')
-                .append(getProgress()).append("% --")
+                .append(getProgress()).append("% -- ")
                 .append(getTask());
         Identifiable owner = getOwner();
         if (owner != null) {

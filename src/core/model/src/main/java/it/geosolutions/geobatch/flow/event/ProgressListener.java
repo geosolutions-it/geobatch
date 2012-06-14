@@ -21,6 +21,8 @@
  */
 package it.geosolutions.geobatch.flow.event;
 
+import java.io.Serializable;
+
 import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
 
@@ -29,7 +31,7 @@ import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerCon
  * @author ETj <etj at geo-solutions.it>
  * @author (r2) Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
-public abstract class ProgressListener implements IProgressListener {
+public abstract class ProgressListener implements IProgressListener, Serializable{
 
     
     private Identifiable owner;
