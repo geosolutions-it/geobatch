@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.geoserver.shapefile;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
+import it.geosolutions.geobatch.geoserver.tools.WorkspaceUtils;
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.UploadMethod;
@@ -148,7 +149,12 @@ public class ShapeFileAction extends BaseAction<EventObject> {
                 }
                 
                 if (!tmpDirFile.isDirectory()) {
-                    throw new IllegalStateException("Not valid input: we need a zip file ");
+					if (!tmpDirFile.isFile()) {
+						throw new IllegalStateException(
+								"Not valid input: we need a zip file ");
+					}else{
+						tmpDirFile = tmpDirFile.getParentFile();
+					}
                 }
 
                 // collect extracted files
@@ -227,24 +233,14 @@ public class ShapeFileAction extends BaseAction<EventObject> {
 
             listenerForwarder.progressing(10, "In progress");
 
-            // Get GS reader & publisher
             GeoServerRESTReader reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
-            		configuration.getGeoserverUID(), configuration.getGeoserverPWD());            
-            GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
-                    configuration.getGeoserverURL(), configuration.getGeoserverUID(),
-                    configuration.getGeoserverPWD());
-
-            // Check if the namespace exists in GS. If not, create it.
-            if(!reader.getWorkspaceNames().contains(configuration.getDefaultNamespace())) {
-            	if(configuration.getDefaultNamespaceUri() != null) {
-            		publisher.createNamespace(configuration.getDefaultNamespace(),
-            			new URI(configuration.getDefaultNamespaceUri()));
-            	} else {
-            		// No uri given; create a workspace
-            		publisher.createWorkspace(configuration.getDefaultNamespace());
-            	}
-            }
+ 				   configuration.getGeoserverUID(), configuration.getGeoserverPWD());
+ 			GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
+ 					configuration.getGeoserverURL(), configuration.getGeoserverUID(), configuration.getGeoserverPWD());
+ 			
+           WorkspaceUtils.createWorkspace(reader, publisher, configuration.getDefaultNamespace(), configuration.getDefaultNamespaceUri());
             
+        		   
             // TODO: check if a layer with the same name already exists in GS           
         	// TODO: Handle CRSs for multiple files
         	// TODO: Handle styles for multiple files (see comment on #16)
