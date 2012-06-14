@@ -19,9 +19,9 @@ The configuration directory is where all |GB| flow definitions and other configu
 
 In production, it is recommended to copy the contents of the configuration directory outside the installation directory, and use the ``GEOBATCH_CONFIG_DIR`` environment variable to tell |GB| where to find it.
 
-To set the ``GEOBATCH_CONFIG_DIR``, set it as one environment variable in your operating system, *or* run tomcat with ``-D`` option to define it as a java system property.
-
 If you set the ``GEOBATCH_CONFIG_DIR`` the configuration into ``WEB-INF/data`` will be discarded.
+
+To set the ``GEOBATCH_CONFIG_DIR``, set it as one environment variable in your operating system, *or* run tomcat with ``-D`` option to define it as a java system property.
 
 
 Windows

@@ -13,8 +13,9 @@
    concepts
    installation
    use
-   easyDemo
-   advancedDemo
+   geotiffDemo
+   shapeFileDemo
+   taskExecutorDemo
    flowConfiguration
    actionShapeFile
    actionGeoTiff
