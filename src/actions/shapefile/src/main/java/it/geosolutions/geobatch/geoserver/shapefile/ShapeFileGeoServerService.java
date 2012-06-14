@@ -23,9 +23,11 @@
 package it.geosolutions.geobatch.geoserver.shapefile;
 
 import it.geosolutions.geobatch.catalog.impl.BaseService;
+import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
 import java.io.IOException;
+import java.util.EventObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author AlFa
  * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
-public class ShapeFileGeoServerService extends BaseService {
+public class ShapeFileGeoServerService extends BaseService implements ActionService<EventObject, GeoServerActionConfiguration>  {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ShapeFileGeoServerService.class);
 

@@ -27,7 +27,7 @@ If you set the ``GEOBATCH_CONFIG_DIR`` the configuration into ``WEB-INF/data`` w
 Windows
 .........
 
-Download tomcat from ` here http://tomcat.apache.org/download-60.cgi` and extract the archive into C:\\Program Files
+Download tomcat from `here <http://tomcat.apache.org/download-60.cgi>`_ and extract the archive into C:\\Program Files
 
 Create the directory C:\\GEOBATCH_CONFIG
 
@@ -42,7 +42,7 @@ Open it and edit the file specifying the geobatch config dir ::
 Linux
 .....
 
-Download tomcat from ` here http://tomcat.apache.org/download-60.cgi` and extract the archive into /usr/share/local/
+Download tomcat from `here <http://tomcat.apache.org/download-60.cgi>`_ and extract the archive into /usr/share/local/
 
 Create the directory /opt/GEOBATCH_CONFIG_DIR
 
@@ -66,7 +66,7 @@ The configuration directory must contain:
 * ``settings`` directory.
 * Flow configuration ``*.xml`` files.
 * Action configuration directories, following the hierarchy explained below, unless specified otherwise in the configuration file.
-* ``temp`` dir, unless explicitly specified otherwise (see `The temporal directory`_).
+* ``temp`` dir, unless explicitly specified otherwise (see `The temporary directory`_).
 
 Each action needs a configuration dir. Its default location is ``GEOBATCH_CONFIG_DIR/FLOW_ID/ACTION_ID``. Custom locations can be specified inside the flow configuration files:
 

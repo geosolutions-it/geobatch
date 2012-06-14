@@ -30,6 +30,7 @@ import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -82,7 +83,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
             }
             
             // returning queue
-            final Queue<FileSystemEvent> ret = new ArrayBlockingQueue<FileSystemEvent>(events.size());
+            final Queue<FileSystemEvent> ret = new LinkedList<FileSystemEvent>();
 
             // for each incoming file
             for (FileSystemEvent event : events) {

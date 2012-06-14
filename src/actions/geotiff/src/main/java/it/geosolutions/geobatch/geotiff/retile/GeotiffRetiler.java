@@ -94,11 +94,9 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
         }
         
         try {
-            // /////////////////////////////////////////////////////////////////////
             //
             // ACQUIRING A READER
             //
-            // /////////////////////////////////////////////////////////////////////
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Acquiring a reader for the provided file...");
             }
@@ -113,11 +111,9 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                 throw ioe;
             }
 
-            // /////////////////////////////////////////////////////////////////////
             //
             // ACQUIRING A COVERAGE
             //
-            // /////////////////////////////////////////////////////////////////////
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Acquiring a coverage provided file...");
             }
@@ -126,11 +122,10 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                 final IOException ioe = new IOException("inCoverage == null");
                 throw ioe;
             }
-            // /////////////////////////////////////////////////////////////////////
+            
             //
             // PREPARING A WRITE
             //
-            // /////////////////////////////////////////////////////////////////////
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Writing down the file in the decoded directory...");
             }
@@ -379,7 +374,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
                                 LOGGER.info("SUCCESSFULLY completed work on: "
                                         + event.getSource());
                             listenerForwarder.setProgress(100);
-                            ret.add(new FileSystemEvent(tiledTiffFile, eventType));
+                            ret.add(new FileSystemEvent(outputFile, eventType));
                         
                         } catch (UnsupportedOperationException uoe) {
                             listenerForwarder.failed(uoe);

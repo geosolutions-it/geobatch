@@ -55,6 +55,14 @@ public class JMXClientUtils {
 	public final static String GB_PORT_KEY = "gb_jmx_port";
 	public final static String GB_PORT = "1099";
 
+	//JMX ENV OPTIONAL 
+	public final static String GB_URL_KEY_OPT="";
+	public final static String GB_URL_OPT = "";
+	public final static String GB_PORT_KEY_OPT = "";
+	public final static String GB_PORT_OPT = "";
+	
+	
+
 	// delay in secs
 	public static final String PROCESS_DELAY_KEY = "PROCESS_DELAY";
 	public static final Long PROCESS_DELAY_DEFAULT = new Long(1000);// delay in
@@ -79,15 +87,23 @@ public class JMXClientUtils {
 	 *            jmx.properties or null (in this case defaults values are used)
 	 * @return a map containing the initialized environment
 	 */
-	public static Map<String, String> loadEnv(final String configFilePath) {
+	public static Map<String, String> loadEnv(final String configFilePath, final String configFilePathOpts) {
 		// load from file
 		final Properties props = new Properties();
+		
+		// load from optional env properties
+		final Properties propsOptional = new Properties();
+		
 		// if no external file configuration is found using defaults
-		if (configFilePath != null) {
+		if (configFilePath != null || configFilePathOpts!=null) {
 			FileInputStream fis = null;
+			FileInputStream fisOpt= null;
 			try {
 				fis = new FileInputStream(new File(configFilePath));
 				props.load(fis);
+				fisOpt = new FileInputStream(new File(configFilePathOpts));
+				propsOptional.load(fisOpt);
+				
 
 			} catch (IOException e) {
 
@@ -96,9 +112,10 @@ public class JMXClientUtils {
 				// }
 
 			} finally {
-				if (fis != null) {
+				if (fis != null || fisOpt !=null) {
 					try {
 						fis.close();
+						fisOpt.close();
 					} catch (Exception e) {
 					}
 				}
@@ -112,6 +129,7 @@ public class JMXClientUtils {
 		// url
 		if (!props.containsKey(GB_URL_KEY))
 			env.put(GB_URL_KEY, GB_URL);
+			
 		else
 			env.put(GB_URL_KEY, props.getProperty(GB_URL_KEY));
 
@@ -133,6 +151,15 @@ public class JMXClientUtils {
 			String key = (String) it.next();
 			env.put(key, props.getProperty(key));
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		return env;
 	}
 
