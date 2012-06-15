@@ -139,10 +139,6 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
         if (watchDirectory != null) {
             this.watchDirectory = watchDirectory;
         }
-        // else
-        // throw new IllegalArgumentException(
-        // "FileBasedEventGenerator.initialize(): Unable to initialize "
-        // + "FileBasedEventGenerator using a null watchingDirectory");
 
         /*
          * 1Giu2011 Carlo:<br> to implement a Quartz EventGenerator using quartz

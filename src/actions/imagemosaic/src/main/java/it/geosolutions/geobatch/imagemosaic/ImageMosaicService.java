@@ -48,10 +48,6 @@ public abstract class ImageMosaicService<T extends EventObject, C extends Action
         super(id, name, description);
     }
 
-    // public ImageMosaicService() {
-    // super(true);
-    // }
-
     public boolean canCreateAction(C configuration) {
         // data flow configuration must not be null.
 
