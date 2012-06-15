@@ -44,6 +44,8 @@ import java.util.Properties;
 import java.util.Queue;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -157,7 +159,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         if (LOGGER.isInfoEnabled()) {
                             LOGGER.info("Input file event points to a directory: " + input.getAbsolutePath());
                         }
-                        final Collector coll = new Collector(null);
+                        final Collector coll = new Collector(new WildcardFileFilter("*.tif*", IOCase.INSENSITIVE));
                         // try to deserialize
                         cmd = new ImageMosaicCommand(input, coll.collect(input), null);
                     } else {
@@ -397,12 +399,20 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                      */
 
                     if (!published) {
-                        // layer already exists
-                        if (LOGGER.isWarnEnabled()) {
-                            LOGGER.warn("Error creating the new store: " + layerName);
+                    	final String msg="Error creating the new store: " + layerName;
+                    	ActionException ex = new ActionException(this.getClass(), msg);
+                    	if (!getConfiguration().isFailIgnored()){
+                        	listenerForwarder.failed(ex);
+                            throw ex;
+                        } else {
+                        	// layer already exists
+                            if (LOGGER.isWarnEnabled()) {
+                            	LOGGER.warn(msg);	
+                            }
+                            listenerForwarder.failed(ex);
+                            continue;
                         }
-                        continue;
-                    } // layer Exists
+                    } 
 
                 } else {
                     // layer exists
