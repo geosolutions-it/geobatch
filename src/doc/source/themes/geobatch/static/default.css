@@ -82,10 +82,15 @@ table, td, th {
     width: 990px;
 }
 #header {
-    background: url("./chrome/background.jpg") scroll 0 100%;
-	/*box-shadow: -1px -7px 50px 4px #FFF inset ;
-	-moz-box-shadow: -1px -7px 50px 4px #FFF inset ;
-	-webkit-box-shadow: -1px -7px 50px 4px #FFF inset ;*/
+	background: url("./chrome/background.jpg") scroll 0 100%;
+	box-shadow: -2px -20px 23px -5px  #FFF inset ;
+	-moz-box-shadow: -2px -20px 23px -5px  #FFF inset ;
+	-webkit-box-shadow: -2px -20px 23px -5px  #FFF inset ;
+
+	/*box-shadow: 1px -16px 33px -7px #31DB5C inset;
+	-moz-box-shadow: 1px -16px 33px -7px #31DB5C inset ;
+	-webkit-box-shadow: 1px -16px 33px -7px #31DB5C inset;*/
+
 }
 #main {
     background: url("./chrome/background.jpg") scroll 0 0;
@@ -224,22 +229,30 @@ table, td, th {
     top: 6px;
 }
 #content #breadcrumbs {
+	font-weight:bold;
+	color:#0082B6;
     border-bottom: 1px solid #C6E09B;
-    color: #C6E09B;
+    /*color: #C6E09B;*/
     font-size: 0.85em;
     margin: 0 0 1em;
     padding: 0 0 0.5em;
 }
 #content #breadcrumbs li {
+	font-weight:bold;
+	color:#0082B6;
     display: inline;
     list-style-type: none;
 }
 #content #breadcrumbs a {
-    color: #72A629;
+	font-weight:bold;
+	color:#0082B6;
+    /*color: #72A629;*/
     text-decoration: none;
 }
 #content #breadcrumbs a:hover {
-    color: #26B2DD;
+	font-weight:bold;
+    color:#0082B6;
+	/*color: #26B2DD;*/
 }
 #content h1 {
     background: none repeat scroll 0 0 #F3F3F3;
