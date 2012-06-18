@@ -17,7 +17,7 @@ a {
     outline: medium none !important;
 }
 a:hover {
-    color: #CC6D00;
+    color: #2DDB59;
     text-decoration: underline;
 }
 a img {
@@ -34,11 +34,12 @@ li p {
     margin-bottom: 0;
 }
 li blockquote {
-    margin: 0;
+    margin: 0;sid
 }
 table, td, th {
     vertical-align: baseline;
 }
+
 .error, .notice, .success {
     background: none repeat scroll 0 0 transparent;
     border: 0 none transparent;
@@ -50,7 +51,7 @@ table, td, th {
     clear: both;
     content: ".";
     display: block;
-    height: 0;
+    height: 1;
     visibility: hidden;
 }
 .selfclear {
@@ -82,21 +83,22 @@ table, td, th {
     width: 990px;
 }
 #header {
-	background: url("./chrome/background.jpg") scroll 0 100%;
+	/*background: url("./chrome/background.jpg") scroll 0 100%;
 	box-shadow: -2px -20px 23px -5px  #FFF inset ;
 	-moz-box-shadow: -2px -20px 23px -5px  #FFF inset ;
-	-webkit-box-shadow: -2px -20px 23px -5px  #FFF inset ;
-
-	/*box-shadow: 1px -16px 33px -7px #31DB5C inset;
-	-moz-box-shadow: 1px -16px 33px -7px #31DB5C inset ;
-	-webkit-box-shadow: 1px -16px 33px -7px #31DB5C inset;*/
+	-webkit-box-shadow: -2px -20px 23px -5px  #FFF inset ;*/
+	background: url("./chrome/background.jpg") scroll 0 100%;
+	box-shadow: -2px -12px 23px -5px #31DB5C inset;
+	-moz-box-shadow: -2px -12px 23px -5px #31DB5C inset ;
+	-webkit-box-shadow: -2px -12px 23px -5px #31DB5C inset;
 
 }
 #main {
     background: url("./chrome/background.jpg") scroll 0 0;
-	/*box-shadow: 0px 4px 40px 10px #FFF inset ;
-	-moz-box-shadow: 0px 4px 40px 10px #FFF inset ;
-	-webkit-box-shadow: 0px 4px 40px 10px #FFF inset ;*/
+	/*box-shadow: -3px -10px 20px 2px #5CB6FF inset ;
+	-moz-box-shadow: -3px -10px 20px 2px #5CB6FF inset ;
+	-webkit-box-shadow: -3px -10px 20px 2px #5CB6FF inset ;*/
+	/*solid: 1px;*/
 }
 #content {
 
@@ -104,9 +106,9 @@ table, td, th {
 	
 	/*border: 8px solid #2DDB59;*/
 	/*-moz-border-colors: #2DDB59 #FFF;*/
-	box-shadow: 0px 4px 40px 10px #464646 inset ;
-	-moz-box-shadow: 0px 4px 40px 10px #464646 inset ;
-	-webkit-box-shadow: 0px 4px 40px 10px #464646 inset ;
+	box-shadow: 0px -5px 22px 10px #464646 inset ;
+	-moz-box-shadow: 0px -5px 22px 10px #464646 inset ;
+	-webkit-box-shadow: 0px -5px 22px 10px #464646 inset ;
 	background-color: #FFF;
     color: #262523;
     float: left;
@@ -127,7 +129,7 @@ table, td, th {
 }
 #footer {
     background: url("./chrome/footer-bg.png") repeat-x scroll 0 0;
-    color: #474747;
+    color: #fff;
     font-size: 0.84em;
     padding: 55px 0 75px;
     text-align: center;
@@ -135,7 +137,7 @@ table, td, th {
 #header .wrap {
     height: 134px;
     overflow: hidden;
-    padding: 1px 0 0;
+    padding: 25px 0 0;
     position: relative;
 }
 #logo a {
@@ -194,21 +196,21 @@ table, td, th {
     text-decoration: none;
 }
 #top-nav li a:hover {
-    color: #72A629;
+    color: #2DDB59;
 }
 #quick-search {
     background: url("./chrome/search-box.png") no-repeat scroll left top transparent;
     bottom: 40px;
     height: 28px;
     position: absolute;
-    right: 0;
+	right: 204px;
     width: 190px;
 }
 #quick-search legend {
     display: none;
 }
 #quick-search fieldset {
-	background: url("./chrome/toc-contrast-bg.png") no-repeat scroll 0 100% #CEE4A6;
+	background: url("./chrome/toc-contrast-bg.png") no-repeat scroll 0 99% #CEE4A6;
     border: 0 none color: #FFFFFF;
     float: none;
     margin: 0;
@@ -546,7 +548,7 @@ span.eqno {
     width: 210px;
 }
 #sidebar .section {
-    border-bottom: 2px solid #E4F1D0;
+    border-bottom: 0px solid #E4F1D0;
     margin: 0;
     padding: 0.9em 0;
 }
@@ -666,11 +668,11 @@ span.eqno {
     color: #D9D9D9;
 }
 #footer a {
-    color: #FFFFFF;
+    color: #0082B6;
     text-decoration: none;
 }
 #footer a:hover {
-    color: #FFFFFF;
+    color: #2DDB59;
     text-decoration: underline;
 }
 a.headerlink {
