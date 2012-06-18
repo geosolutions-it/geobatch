@@ -52,15 +52,15 @@
 	</distributionManagement>
 
         <issueManagement>
-                <system>googlecode</system>
-                <url>http://code.google.com/p/geoserver-manager/issues/list</url>
+                <system>github</system>
+                <url>https://github.com/geosolutions-it/geobatch/issues</url>
         </issueManagement>
 
         <mailingLists>
                 <mailingList>
                         <name>GeoBatch User List</name>
                         <post>geobatch-user@googlegroups.com</post>
-                        <archive>http://groups.google.com/group/geobatch-users/topics</archive>
+                        <archive>http://groups.google.com/group/geobatch-user/topics</archive>
                 </mailingList>
                 <mailingList>
                         <name>GeoBatch Developer List</name>
@@ -1538,7 +1538,7 @@
 					<!-- profiles section at the begining of this pom.xml file. -->
 					<testFailureIgnore>
 						${allow.test.failure.ignore}
-          </testFailureIgnore>
+				        </testFailureIgnore>
 					<!-- The two following options have the opposite value of what we would 
 						like. They are that way because they don't seem to work as expected with 
 						Surefire 2.3. TODO: Try again when Surefire 2.4 will be available. -->
