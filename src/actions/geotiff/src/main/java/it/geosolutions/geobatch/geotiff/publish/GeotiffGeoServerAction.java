@@ -25,14 +25,15 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
+import it.geosolutions.geobatch.geoserver.tools.WorkspaceUtils;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
+import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.gce.geotiff.GeoTiffFormat;
@@ -240,9 +241,17 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
         // SENDING data to GeoServer via REST protocol.
         //
         boolean sent = false;
-        GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(configuration.getGeoserverURL(),
-                                                                      configuration.getGeoserverUID(),
-                                                                      configuration.getGeoserverPWD());
+		GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
+				configuration.getGeoserverURL(),
+				configuration.getGeoserverUID(),
+				configuration.getGeoserverPWD());
+		GeoServerRESTReader reader = new GeoServerRESTReader(
+				configuration.getGeoserverURL(),
+				configuration.getGeoserverUID(),
+				configuration.getGeoserverPWD());
+		WorkspaceUtils.createWorkspace(reader, publisher,
+				configuration.getDefaultNamespace(),
+				configuration.getDefaultNamespaceUri());
 
         // check transfer method
         String transferMethod = configuration.getDataTransferMethod();

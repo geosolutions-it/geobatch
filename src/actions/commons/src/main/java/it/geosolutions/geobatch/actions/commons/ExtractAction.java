@@ -120,6 +120,7 @@ public class ExtractAction extends BaseAction<EventObject> {
                                 File newDest=new File(dest,extracted.getName());
                                 listenerForwarder.setTask("moving \'"+extracted+"\' to \'"+newDest+"\'");
                                 FileUtils.moveDirectoryToDirectory(extracted, newDest, true);
+                                listenerForwarder.terminated();
                             ret.add(new FileSystemEvent(newDest, FileSystemEventType.DIR_CREATED));
                         } else {
                             throw new ActionException(this, "Unable to extracto file: "+source);
@@ -127,14 +128,19 @@ public class ExtractAction extends BaseAction<EventObject> {
                     } else{
                         final String message="Unable to extract "+source;
                         if (!getConfiguration().isFailIgnored()){
-                            throw new ActionException(this.getClass(), message);
+                        	ActionException ex = new ActionException(this.getClass(), message);
+                        	listenerForwarder.failed(ex);
+                            throw ex;
                         } else {
                             LOGGER.warn(message);
                         }
                     }
                 } catch (Exception e) {
+                	final String message="Unable to copy extracted archive";
                     if (!getConfiguration().isFailIgnored()){
-                        throw new ActionException(this, e.getLocalizedMessage());
+                    	ActionException ex = new ActionException(this.getClass(), message);
+                    	listenerForwarder.failed(ex);
+                        throw ex;
                     } else {
                         LOGGER.warn(e.getLocalizedMessage());
                     }
@@ -143,11 +149,14 @@ public class ExtractAction extends BaseAction<EventObject> {
             } else {
                 final String message="Incoming instance is not a FileSystemEvent: "+event;
                 if (!getConfiguration().isFailIgnored()){
-                    throw new ActionException(this.getClass(), message);
+                	ActionException ex = new ActionException(this.getClass(), message);
+                	listenerForwarder.failed(ex);
+                    throw ex;
                 } else {
                     LOGGER.warn(message);
                 }
             }
+            // TODO setup task progress
         } // endwile
 
         listenerForwarder.completed();

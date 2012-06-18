@@ -146,18 +146,6 @@ public class GBEventNotifier implements Runnable {
      */
     private void notifyAll(final FileSystemEvent event) {
 
-        /*
-         * FileSystemEventType notified= event.getNotification();
-         * 
-         * if (// if file event is NOT FILE_REMOVED and NOT DIR_REMOVED (notified!=
-         * FileSystemEventType.DIR_REMOVED && notified!=FileSystemEventType.FILE_REMOVED) ){ // deal
-         * with locking of input files if (lockInputFiles) { final File source = event.getSource();
-         * try { //java.nio.channels.FileLock //org.apache.commons.io.FileUtils.
-         * IOUtils.acquireLock(this, source, lockWaitThreshold); } catch (InterruptedException e) {
-         * if (LOGGER.isErrorEnabled()) LOGGER.error(e.getLocalizedMessage(), e); return; } catch
-         * (IOException e) { if (LOGGER.isErrorEnabled()) LOGGER.error(e.getLocalizedMessage(), e);
-         * return; } } }
-         */
         final Object[] listenersArray = listeners.getListenerList();// return a not-null array
         /*
          * Process the listeners last to first, notifying those that are interested in this event
