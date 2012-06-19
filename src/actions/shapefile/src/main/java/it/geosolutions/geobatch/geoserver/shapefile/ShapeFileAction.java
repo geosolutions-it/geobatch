@@ -39,7 +39,6 @@ import it.geosolutions.tools.io.file.Collector;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.EventObject;
@@ -49,11 +48,19 @@ import java.util.Queue;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.geotools.data.FileDataStore;
-import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.feature.type.GeometryType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Geoserver ShapeFile action.
@@ -86,8 +93,6 @@ public class ShapeFileAction extends BaseAction<EventObject> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ShapeFileAction.class);
     
-    private final static ShapefileDataStoreFactory SHP_FACTORY= new ShapefileDataStoreFactory();
-
     public ShapeFileAction(final GeoServerActionConfiguration configuration) throws IOException {
         super(configuration);
     }
@@ -116,7 +121,6 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             // We may have one in these 2 cases:
             // 1) a single event for a .zip file
             // 2) a list of events for a (.shp+.dbf+.shx) collection, plus some other optional files
-
             final EventObject event = events.peek();
 
             // the name of the shapefile
@@ -124,11 +128,18 @@ public class ShapeFileAction extends BaseAction<EventObject> {
 
             // the output (to send to the geoserver) file
             File zippedFile = null;
-
+            
+            // upload method to use
+            it.geosolutions.geobatch.geoserver.UploadMethod transferMethod = it.geosolutions.geobatch.geoserver.UploadMethod.valueOf(configuration.getDataTransferMethod());
+            if (transferMethod == null) {
+                transferMethod =it.geosolutions.geobatch.geoserver.UploadMethod.getDefault(); // default one
+            }
+            
             // list of file to send to the GeoServer
             File[] files=null;
             File tmpDirFile=null;
             Integer epsgCode=null;
+            GeometryDescriptor descriptor=null;
             
             if (inputSize == 1) {
             	//
@@ -163,15 +174,7 @@ public class ShapeFileAction extends BaseAction<EventObject> {
                 files = fileList.toArray(new File[1]);
                 
                 // Check if there is at least one shp there
-                shapeNames = acceptable(files);
-                
-                // If not, throw error
-                if (shapeNames == null) {
-                    final String message = "Input is not a zipped file nor a valid collection of files";
-                    if (LOGGER.isErrorEnabled())
-                        LOGGER.error(message);
-                    throw new IllegalStateException(message);
-                }
+                shapeNames = acceptable(files);                         
                 
             } else {
             	//
@@ -194,43 +197,53 @@ public class ShapeFileAction extends BaseAction<EventObject> {
                 
                 // Check for shapefile names
                 shapeNames = acceptable(files);
-                
-                // Not found any valid shapefile
-                if (shapeNames == null) {
-                	throw new IllegalStateException("The file list do not contains mandatory files");
-                }
-                
-                for(String shape: shapeNames) {
-                    FileDataStore store = null;
-                   
-                    try{
-                    	store=SHP_FACTORY.createDataStore(new File(tmpDirFile,shape+".shp").toURI().toURL());
-                        CoordinateReferenceSystem crs = store.getSchema().getCoordinateReferenceSystem();
-                        epsgCode= crs!=null?CRS.lookupEpsgCode(crs, true):null;
-                    } finally {
-                    	if(store!=null){
-                    		try{
-                    			store.dispose();
-                    		}catch (Exception e) {
-        						if(LOGGER.isTraceEnabled()){
-        							LOGGER.trace(e.getLocalizedMessage(),e);
-        						}
-        					}
-                    	}
-                    }                	
-                }
-                
+                                
                 // zip to a single file if method is not external.
                 // Will use the first shapeName as the zip name.
-                if(!configuration.getDataTransferMethod().equalsIgnoreCase("external")) {
-	                zippedFile = Compressor.deflate(getTempDir(),shapeNames[0], files);
-	                if (zippedFile == null) {
-	                    throw new IllegalStateException("Unable to create the zip file");
-	                }
+                if(transferMethod!=it.geosolutions.geobatch.geoserver.UploadMethod.EXTERNAL) {
+                    zippedFile = Compressor.deflate(getTempDir(),shapeNames[0], files);
+                    if (zippedFile == null) {
+                        throw new IllegalStateException("Unable to create the zip file");
+                    }
                 }
 
-            } 
-
+            }             	
+//            	   
+            
+            // check that we actually found some shapefiles
+            if (shapeNames == null) {
+                final String message = "Input is not a zipped file nor a valid collection of files";
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message);
+                throw new IllegalStateException(message);
+            }
+            
+            // do some additional checks and look for some ausillary information
+            for(String shape: shapeNames) {
+                FileDataStore store = null;
+               
+                try{
+                	// create a shapefile datastore 
+                	store=Utils.SHP_FACTORY.createDataStore(new File(tmpDirFile,shape+".shp").toURI().toURL());
+                	
+                	// get the CRS
+                    CoordinateReferenceSystem crs = store.getSchema().getCoordinateReferenceSystem();
+                    epsgCode= crs!=null?CRS.lookupEpsgCode(crs, true):null;
+                    
+                    // get the geometry
+                    descriptor = store.getSchema().getGeometryDescriptor();
+                } finally {
+                	if(store!=null){
+                		try{
+                			store.dispose();
+                		}catch (Exception e) {
+    						if(LOGGER.isTraceEnabled()){
+    							LOGGER.trace(e.getLocalizedMessage(),e);
+    						}
+    					}
+                	}
+                }                	
+            }     
             listenerForwarder.progressing(10, "In progress");
 
             GeoServerRESTReader reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
@@ -244,10 +257,6 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             // TODO: check if a layer with the same name already exists in GS           
         	// TODO: Handle CRSs for multiple files
         	// TODO: Handle styles for multiple files (see comment on #16)
-
-            //
-            // SENDING data to GeoServer via REST protocol.
-            //
 
             // decide CRS
             // default crs
@@ -281,27 +290,44 @@ public class ShapeFileAction extends BaseAction<EventObject> {
                 projectionPolicy = ProjectionPolicy.REPROJECT_TO_DECLARED;
             }
             
-            String transferMethod = configuration.getDataTransferMethod();
-            if (transferMethod == null) {
-                transferMethod = "DIRECT"; // default one
+            // check style for this geometry
+            String defaultStyle=configuration.getDefaultStyle();
+            if(defaultStyle==null || defaultStyle.isEmpty()){
+            	final GeometryType geometryType = descriptor.getType();
+            	Class clazz=geometryType.getBinding();
+            	if(clazz.isAssignableFrom(Point.class)||clazz.isAssignableFrom(MultiPoint.class)){
+            		defaultStyle=Utils.DEFAULT_POINT_STYLE;
+            	} else if(clazz.isAssignableFrom(LineString.class)||clazz.isAssignableFrom(MultiLineString.class)){
+            		defaultStyle=Utils.DEFAULT_LINE_STYLE;
+            	} else if(clazz.isAssignableFrom(Polygon.class)||clazz.isAssignableFrom(MultiPolygon.class)){
+            		defaultStyle=Utils.DEFAULT_POLYGON_STYLE;
+            	}
             }
             
+
             UploadMethod uMethod=null;
-            if ("DIRECT".equalsIgnoreCase(transferMethod)) {
-                uMethod=UploadMethod.file;
-            } else if ("EXTERNAL".equalsIgnoreCase(configuration.getDataTransferMethod())) {
-                uMethod=UploadMethod.external;
-            } else {
-                throw new IllegalArgumentException("Unsupported transfer method: "+configuration.getDataTransferMethod());
-            }
-            
+            switch (transferMethod) {
+			case DIRECT:
+				uMethod=UploadMethod.file;
+				break;
+			case EXTERNAL:
+				uMethod=UploadMethod.external;
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported transfer method: "+configuration.getDataTransferMethod());
+			}
+           
             // Get some common parameters
             String wsName = configuration.getDefaultNamespace();
             String dsName = configuration.getStoreName() == null? shapeNames[0] : configuration.getStoreName();
             String lyrName = configuration.getLayerName() == null? shapeNames[0] : configuration.getLayerName();
-            String styleName = configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "polygon";
+            String styleName = defaultStyle;
 
-            // DIRECT Upload is the only supported method
+            
+
+            //
+            // SENDING data to GeoServer via REST protocol.
+            //
             boolean success = false;
             
             // Either publish a single shapefile, or a collection of shapefiles
@@ -431,8 +457,8 @@ public class ShapeFileAction extends BaseAction<EventObject> {
         for(String fileName : candidates) {
         	final String baseName = FilenameUtils.getBaseName(fileName);
         	final String extension = FilenameUtils.getExtension(fileName);
-        	if (extension.equals("shp") &&
-        		//candidates.contains(baseName+".shx") && // is index really mandatory?
+        	if (extension.equalsIgnoreCase("shp") &&
+        		candidates.contains(baseName+".shx") && // is index really mandatory?
         		candidates.contains(baseName+".dbf")) {
         			acceptable.add(baseName);
     		}
@@ -446,7 +472,7 @@ public class ShapeFileAction extends BaseAction<EventObject> {
         }
     }
     
-    private File toFile(EventObject eo) {
+    private static File toFile(EventObject eo) {
     	Object o = eo.getSource();
     	if(o instanceof File) {
     		return (File)o;
