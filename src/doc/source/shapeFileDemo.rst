@@ -24,7 +24,7 @@ Copy the folder geotiff and the file geotiff.xml and paste into your ``GEOBATCH_
 Edit the |demo| flow configuration under ``/GEOBATCH_CONFIG_DIR/geotiff.xml``. There, edit:
 
 * ``geoserverURL``        pointing a running geoserver.
-* ``defaultStyle``	      with the shapefile linked above set ``point``.
+* ``defaultStyle``	      with the shapefile linked above set ``point``. If you leave this field blank the action obtain the geometry type from the shapefile and set the style to a default geoserver style.
 * ``memoryMappedBuffer``  set ``true`` if you run geobatch on linux server ``false`` on windows (memoryMappedBuffer is not well supported by windows)
 * ``defaultNamespace``	  set ``it_geosolutions``
 

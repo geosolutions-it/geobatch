@@ -17,9 +17,9 @@ Locate into |GB| deployment the folder WEB-INF/data/
 
 Copy the folder geotiff and the file geotiff.xml and paste into your ``GEOBATCH_CONFIG_DIR``
 
-`Download one or many .tiff files <https://github.com/geosolutions-it/geoserver-manager/tree/master/src/test/resources/testdata/time_geotiff>`_ for example usage::
+`Download one or many .tiff fi les <https://github.com/geosolutions-it/geoserver-manager/tree/master/src/test/resources/testdata/time_geotiff>`_ for example usage.
 
-	For a correct download for each file click on the link and in the following window click on raw button. 
+.. note::	For a correct download for each file click on the link and in the following window click on raw button. 
 	Remember to replace dot(.) with underscore(_).
 	Please dont't download the file right clicking on the link and selecting save as. The downloaded file may be corrupt.
 	
