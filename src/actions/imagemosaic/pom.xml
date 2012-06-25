@@ -22,20 +22,9 @@
   <packaging>jar</packaging>
   <name>GeoBatch action: ImageMosaic ingester</name>
   <description>GeoSolutions GeoBatch flow managers - ImageMosaic ingester.</description>
-  <url>http://mvn.geo-solutions.it/maven_reports/ie/flowmanagers/</url>
-  <scm>
-    <connection>
-            scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
-        </connection>
-    <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
-  </scm>
-  <licenses>
-    <license>
-      <name>Lesser General Public License (LGPL)</name>
-      <url>http://www.gnu.org/copyleft/lesser.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+  <properties>
+   <root.basedir>${project.parent.parent.basedir}</root.basedir>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>

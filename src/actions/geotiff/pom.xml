@@ -22,20 +22,9 @@
   <packaging>jar</packaging>
   <name>GeoBatch action: GeoTIFF</name>
   <description>GeoSolutions GeoBatch flow managers - GeoTIFF flow.</description>
-  <url>http://www.geo-solutions.it/maven_reports/gb/flowmanagers/</url>
-  <scm>
-    <connection>
-            scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/
-        </connection>
-    <url>http://svn.geotools.org/geotools/trunk/gt/modules/flowmanagers/</url>
-  </scm>
-  <licenses>
-    <license>
-      <name>Lesser General Public License (LGPL)</name>
-      <url>http://www.gnu.org/copyleft/lesser.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+  <properties>
+   <root.basedir>${project.parent.parent.basedir}</root.basedir>
+  </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->

@@ -16,12 +16,7 @@
     <allow.test.skip>true</allow.test.skip>
     <allow.test.failure.ignore>false</allow.test.failure.ignore>
     <extensive.tests>false</extensive.tests>
-    <!-- DEPRECATED
-			Removed: 15 Feb 2011
-			By: Carlo
-			As requested: Simone
-        <path.native>/Windows/System32</path.native>
-        -->
+    <root.basedir>${project.parent.basedir}</root.basedir>
   </properties>
   <!-- ===================================================================== -->
   <!--     Project description (including license).                          -->
@@ -35,26 +30,10 @@
         FileSystemMonitor is the general project for the system that select one of avaiable method,
         with Abstract Factory for DirectoryWatching
     </description>
-  <url>http://www.geo-solutions.it/reports/</url>
-  <scm>
-    <connection>scm:svn:https://svn.codehaus.org/geobatch/trunk/</connection>
-    <url>https://svn.codehaus.org/geobatch/trunk/</url>
-  </scm>
-  <organization>
-    <name>GeoSolutions</name>
-    <url>http://www.geo-solutions.it</url>
-  </organization>
-  <inceptionYear>2006</inceptionYear>
   <!-- ===================================================================== -->
   <!--     All FileSystemMonitor groups included in the build.               -->
   <!-- ===================================================================== -->
   <modules>
-    <!-- DEPRECATED
-		Removed: 15 Feb 2011
-		By: Carlo
-		As requested: Simone
-        <module>deploy</module>
-        -->
     <module>module</module>
     <module>plugin</module>
   </modules>

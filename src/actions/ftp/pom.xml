@@ -20,23 +20,10 @@
   <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb-action-ftp</artifactId>
   <name>GeoBatch action: FTP client</name>
-  <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
-  <scm>
-    <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/data/</connection>
-    <url>http://svn.geotools.org/geotools/trunk/gt/modules/data/</url>
-  </scm>
   <description>GeoSolutions GeoBatch support interactions with an FTP server</description>
-  <licenses>
-    <license>
-      <name>Lesser General Public License (LGPL)</name>
-      <url>http://www.gnu.org/copyleft/lesser.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <organization>
-    <name>GeoSolutions</name>
-    <url>http://www.geo-solutions.it</url>
-  </organization>
+  <properties>
+   <root.basedir>${project.parent.parent.basedir}</root.basedir>
+  </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->

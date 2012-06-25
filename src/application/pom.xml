@@ -21,24 +21,13 @@
   <!-- STOP APPLICATION DESCRIPTION -->
   <name>GeoBatch Application</name>
   <description>GeoSolutions GeoBatch Application</description>
-  <url>http://www.geo-solutions.it/maven_reports/gb/library/</url>
   <organization>
     <name>GeoSolutions</name>
   </organization>
-  <scm>
-    <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/web/</connection>
-    <url>http://svn.geotools.org/geotools/trunk/gt/modules/web/</url>
-  </scm>
-  <licenses>
-    <license>
-      <name>Lesser General Public License (LGPL)</name>
-      <url>http://www.gnu.org/copyleft/lesser.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
   <properties>
     <netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
     <flow.dir>geobatch/WEB-INF/</flow.dir>
+    <root.basedir>${project.parent.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!-- Dependencies -->
@@ -94,11 +83,20 @@
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
           <warName>geobatch</warName>
+	  <outputDirectory>${site.outdir}</outputDirectory>
           <webappDirectory>${project.build.directory}/geobatch</webappDirectory>
         </configuration>
         <executions>
           <execution>
+	    <id>install</id>
             <phase>install</phase>
+            <goals>
+              <goal>war</goal>
+            </goals>
+          </execution>
+          <execution>
+	    <id>site</id>
+            <phase>site</phase>
             <goals>
               <goal>war</goal>
             </goals>

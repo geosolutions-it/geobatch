@@ -18,7 +18,7 @@
         Welcome to the home page of the GeoSolutions GeoBatch build process
         In the left side bar you should see a list of active modules,
         visit each for more details on the status of each module.
-    </description>
+	</description>
 	<organization>
 		<name>GeoSolutions</name>
 		<url>http://www.geo-solutions.it</url>
@@ -47,7 +47,7 @@
 		</repository>
 		<site>
 			<id>demo.geosolutions</id>
-			<url>scp://demo.geo-solutions.it/var/www/share/github/geobatch/</url>
+			<url>scp://demo.geo-solutions.it/var/www/share/github/geobatch/download/all/</url>
 		</site>
 	</distributionManagement>
 
@@ -70,6 +70,12 @@
         </mailingLists>
 
 	<properties>
+		<root.basedir>${project.basedir}</root.basedir>
+		<site.basedir>${root.basedir}/build/</site.basedir>
+		<site.outdir>${site.basedir}/${project.version}/</site.outdir>
+		<doc.sphinx.source>${project.basedir}/doc/source/</doc.sphinx.source>
+		<doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
+
 		<tools.version>1.1-SNAPSHOT</tools.version>
 		<geoserver.manager.version>1.4-SNAPSHOT</geoserver.manager.version>
 		<geostore.version>1.0-SNAPSHOT</geostore.version>
@@ -87,9 +93,9 @@
 		<dao.type>xstream</dao.type>
 		<!-- the default dao type -->
 		<allow.test.skip>true</allow.test.skip>
-    <allow.test.failure.ignore>false</allow.test.failure.ignore>
-    <extensive.tests>false</extensive.tests>
-    <interactive.tests>false</interactive.tests>
+		<allow.test.failure.ignore>false</allow.test.failure.ignore>
+		<extensive.tests>false</extensive.tests>
+		<interactive.tests>false</interactive.tests>
 		<online.skip.pattern>**/*OnlineTest.java</online.skip.pattern>
 		<stress.skip.pattern>**/*StressTest.java</stress.skip.pattern>
 		<test.maxHeapSize>512M</test.maxHeapSize>
@@ -98,8 +104,8 @@
 	<!-- Profiles set on the command-line overwrite default properties. -->
 	<profiles>
 		<profile>
-      <id>extensive.tests</id>
-      <properties>
+		      <id>extensive.tests</id>
+	      <properties>
         <extensive.tests>true</extensive.tests>
       </properties>
     </profile>
@@ -110,14 +116,14 @@
       </properties>
     </profile>
     <profile>
-			<id>site.build</id>
-			<properties>
-				<allow.test.skip>false</allow.test.skip>
-				<allow.test.failure.ignore>true</allow.test.failure.ignore>
-				<extensive.tests>true</extensive.tests>
-			</properties>
-		</profile>
-		<profile>
+	<id>site.build</id>
+	<properties>
+		<allow.test.skip>false</allow.test.skip>
+		<allow.test.failure.ignore>true</allow.test.failure.ignore>
+		<extensive.tests>true</extensive.tests>
+	</properties>
+    </profile>
+    <profile>
       <id>online</id>
       <properties>
         <online.skip.pattern>disabled</online.skip.pattern>
@@ -128,8 +134,8 @@
       <properties>
         <stress.skip.pattern>disabled</stress.skip.pattern>
       </properties>
-    </profile>
-    <profile>
+		</profile>
+		<profile>
 			<id>java6</id>
 			<activation>
 				<jdk>1.6</jdk>
@@ -142,6 +148,9 @@
 						<version>2.7</version>
 						<configuration>
 							<source>1.6</source>
+							<reportOutputDirectory>${site.outdir}/</reportOutputDirectory>
+                       		                        <outputDirectory>${site.outdir}</outputDirectory>
+							<destDir>javadoc</destDir>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -161,6 +170,12 @@
 								<goals>
 									<goal>jar</goal>
 								</goals>
+								<configuration>
+                		                                        <source>1.6</source>
+                                		                        <outputDirectory>${site.outdir}</outputDirectory>
+									<reportOutputDirectory>${site.outdir}/</reportOutputDirectory>
+									<destDir>javadoc</destDir>
+                                                		</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -1558,8 +1573,7 @@
 					</includes>
 					<!-- <excludes> <exclude>${online.skip.pattern}</exclude> <exclude>${stress.skip.pattern}</exclude> 
 						<exclude>${test.exclude.pattern}</exclude> </excludes> -->
-					<argLine>-Xmx${test.maxHeapSize}
-						-Djava.awt.headless=${java.awt.headless}</argLine>
+					<argLine>-Xmx${test.maxHeapSize} -Djava.awt.headless=${java.awt.headless}</argLine>
 					<!-- Ignores test failure only if we are generating a -->
 					<!-- report for publication on the web site. See the -->
 					<!-- profiles section at the begining of this pom.xml file. -->
@@ -1663,7 +1677,10 @@
 				<version>3.1</version>
 				<configuration>
 					<locales>en</locales>
-					<outputDirectory>${basedir}/doc/build/</outputDirectory>
+					<!--outputDirectory>${basedir}/doc/build/all/${project.version}/maven</outputDirectory-->
+					<outputDirectory>${site.outdir}/maven</outputDirectory>
+					<inputDirectory>${site.basedir}</inputDirectory> <!-- site to deploy -->
+					<!--siteDirectory>${site.basedir}</siteDirectory--> <!-- site to deploy -->
 				</configuration>
 			</plugin>
 			<!-- sphinx -->
@@ -1678,14 +1695,14 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<tasks>
-								<!--mkdir dir="target/${project.artifactId}-${project.version}/docs"/ -->
-								<exec executable="make">
-									<arg value="-C" />
-									<arg value="${basedir}/doc/" />
+							<target>
+								<exec executable="sphinx-build">
+									<arg value="-b" />
 									<arg value="html" />
+									<arg value="${doc.sphinx.source}" />
+									<arg value="${doc.sphinx.outdir}" />
 								</exec>
-							</tasks>
+							</target>
 						</configuration>
 					</execution>
 				</executions>

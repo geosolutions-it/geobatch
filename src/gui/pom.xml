@@ -18,21 +18,9 @@
   <packaging>jar</packaging>
   <name>GeoBatch GUI module</name>
   <description>GeoSolutions GeoBatch GUI module.</description>
-  <url>http://www.geo-solutions.it/maven_reports/gb/library/</url>
-  <organization>
-    <name>GeoSolutions</name>
-  </organization>
-  <scm>
-    <connection>scm:svn:http://svn.geotools.org/geotools/trunk/gt/modules/web/</connection>
-    <url>http://svn.geotools.org/geotools/trunk/gt/modules/web/</url>
-  </scm>
-  <licenses>
-    <license>
-      <name>Lesser General Public License (LGPL)</name>
-      <url>http://www.gnu.org/copyleft/lesser.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+  <properties>
+        <root.basedir>${project.parent.basedir}</root.basedir>
+  </properties>
   <!-- =========================================================== -->
   <!-- Dependencies -->
   <!-- =========================================================== -->
