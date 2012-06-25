@@ -70,11 +70,15 @@ public class GeoBatchServer implements InitializingBean {
     }
 
     public void suspend() {
-        ftpServer.suspend();
+        if(ftpServer!=null){
+    		ftpServer.suspend();
+    	}
     }
 
     public void stop() {
-        ftpServer.stop();
+        if(ftpServer!=null){
+    		ftpServer.stop();
+        }
     }
 
     public synchronized void start() throws FtpException {
@@ -92,24 +96,32 @@ public class GeoBatchServer implements InitializingBean {
                 userManager.setServerConfig(getLastConfig());
                 ftpServer = create(getLastConfig(), userManager);
             }
+            ftpServer.start();
         } catch (DAOException ex) {
             LOGGER.warn(
                     "Could not retrieve server config. Using old server instance", ex);
         }
 
-        ftpServer.start();
     }
 
     public void resume() {
-        ftpServer.resume();
+    	if(ftpServer!=null){
+    		ftpServer.resume();
+    	}
     }
 
     public boolean isSuspended() {
-        return ftpServer.isSuspended();
+    	if(ftpServer!=null){
+            return ftpServer.isSuspended();
+    	}
+		return false;
     }
 
     public boolean isStopped() {
-        return ftpServer.isStopped();
+    	if(ftpServer!=null){
+            return ftpServer.isStopped();
+    	}
+		return true;
     }
 
     public FtpServerConfig getLastConfig() {

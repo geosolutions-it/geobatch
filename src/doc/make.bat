@@ -3,9 +3,7 @@
 REM Command file for Sphinx documentation
 
 set SPHINXBUILD=sphinx-build
-if NOT "%BUILDDIR%" == "" (
-	set BUILDDIR=build
-)
+set BUILDDIR=build
 set ALLSPHINXOPTS=-d %BUILDDIR%/doctrees %SPHINXOPTS% source
 if NOT "%PAPER%" == "" (
 	set ALLSPHINXOPTS=-D latex_paper_size=%PAPER% %ALLSPHINXOPTS%

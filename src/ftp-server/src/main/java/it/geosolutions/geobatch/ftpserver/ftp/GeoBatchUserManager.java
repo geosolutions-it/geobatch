@@ -270,7 +270,7 @@ public class GeoBatchUserManager implements UserManager {
 
         // ETj: maybe this is not the right place to create an home dir
         if (!homeDirectory.exists()) {
-            if (!homeDirectory.mkdir()) {
+            if (!homeDirectory.mkdirs()) {
                 logger.warn("Unable to create ftp home dir at "
                         + homeDirectory.getAbsolutePath() + " for user " + user.getName());
 
