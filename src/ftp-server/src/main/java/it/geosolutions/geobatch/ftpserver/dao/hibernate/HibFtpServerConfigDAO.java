@@ -47,7 +47,6 @@ public class HibFtpServerConfigDAO extends DAOAbstractSpring<FtpServerConfig, Lo
 
     public HibFtpServerConfigDAO() {
         super(FtpServerConfig.class);
-        // TODO Auto-generated constructor stub
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
