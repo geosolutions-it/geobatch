@@ -3,7 +3,7 @@
 .. |GS| replace:: *GeoServer*
 
 ShapeFile Demo HOW-TO
-====================
+=====================
 
 The |demo| project uses |GB| Get a pack of shapefiles (zipped) and ingest them into a |GS| instance.
 

@@ -91,7 +91,7 @@ Each action needs a configuration dir. Its default location is ``GEOBATCH_CONFIG
 
 
 The temporary directory
-----------------------
+-----------------------
 
 The place where |GB| Actions will create their temporary files during execution, if not specified otherwise, will be placed in ``temp`` dir under ``GEOBATCH_CONFIG_DIR``.
 
