@@ -382,8 +382,11 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
                     // layer encoder
                     final GSLayerEncoder layerEnc = new GSLayerEncoder();
-                    layerEnc.setDefaultStyle(cmd.getDefaultStyle());
                     
+                    String style=cmd.getDefaultStyle();
+                    if (style==null || style.isEmpty())
+                    	style="raster";
+                    layerEnc.setDefaultStyle(style);
 
                     // create a new ImageMosaic layer...
                     final boolean published = gsPublisher.publishExternalMosaic(workspace, storeName, baseDir,
