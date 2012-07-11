@@ -46,11 +46,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.EventObject;
 import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
@@ -64,13 +62,10 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.collections.collection.UnmodifiableCollection;
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
-
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 /**
  * 
