@@ -25,6 +25,7 @@
 package it.geosolutions.geobatch.ui.mvc;
 
 import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.flow.tools.FileBasedFlowManagerUtils;
@@ -67,11 +68,11 @@ public class FlowManagerClearController extends AbstractController {
         if (fmId != null) {
             final FileBasedFlowManager fm = catalog.getResource(fmId, FileBasedFlowManager.class);
             if (fm != null) {
-                final Collection<EventConsumer> consumers = fm.getEventConsumers();
+                final Collection<BaseEventConsumer> consumers = fm.getEventConsumers();
                 synchronized (consumers) {
-                    final Iterator<EventConsumer> it = consumers.iterator();
+                    final Iterator<BaseEventConsumer> it = consumers.iterator();
                     while (it.hasNext()) {
-                        EventConsumer ec = it.next();
+                    	BaseEventConsumer ec = it.next();
                         ConsumerDisposeController.disposeConsumer(ec.getStatus(), fm, ec);
                     }
                 }

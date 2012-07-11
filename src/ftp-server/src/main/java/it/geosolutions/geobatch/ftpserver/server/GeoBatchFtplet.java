@@ -163,11 +163,7 @@ public class GeoBatchFtplet
 
     public FtpletResult onAppendEnd(FtpSession session, FtpRequest request, FtpReply reply)
             throws FtpException, IOException {
-        if (reply.getCode() != FtpReply.REPLY_226_CLOSING_DATA_CONNECTION) { // There
-            // has
-            // been
-            // an
-            // error
+        if (reply.getCode() != FtpReply.REPLY_226_CLOSING_DATA_CONNECTION) { 
             if (LOGGER.isInfoEnabled())
                 LOGGER.info("Append of file '" + request.getArgument() + "' failed.");
             return FtpletResult.DEFAULT;

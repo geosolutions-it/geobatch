@@ -37,7 +37,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * @author giuseppe
+ * @author Emanuele Tajariol, GeoSolutions SAS
  * 
  */
 @Entity(name = "FtpProps")
@@ -53,35 +53,23 @@ public class FtpProps implements Serializable {
     @Column(name = "ID")
     private Long id = null;
 
-    // @Column(name = "USER_ID", nullable = false, unique = true, length = 64)
-    // private String userId;
-    //
-    // @Column(name = "USER_PASSWORD", nullable = false, length = 64)
-    // private String userPassword;
-    //
-    // @Column(name = "HOME_DIRECTORY", length = 128)
-    // private String homeDirectory;
-    //
-    // @Column(name = "ENABLE_FLAG", columnDefinition = "boolean default true")
-    // private boolean enableFlag;
-
     @Column(name = "WRITE_PERMISSION")
     private boolean writePermission = false;
 
     @Column(name = "IDLE_TIME")
-    private int idleTime = 0;
+    private int idleTime = 5000; // ms
 
     @Column(name = "UPLOAD_RATE")
-    private int uploadRate = 10;
+    private int uploadRate = 10000; // B/s
 
     @Column(name = "DOWNLOAD_RATE")
-    private int downloadRate = 10;
+    private int downloadRate = 50000; // B/s
 
     @Column(name = "MAX_LOGIN_NUMBER")
-    private int maxLoginNumber = 4;
+    private int maxLoginNumber = 5;
 
     @Column(name = "MAX_LOGIN_PER_IP")
-    private int maxLoginPerIp = 4;
+    private int maxLoginPerIp = 5;
 
     public FtpProps() {
 

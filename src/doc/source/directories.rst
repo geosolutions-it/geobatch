@@ -1,3 +1,5 @@
+.. |GB| replace:: *GeoBatch*
+
 Configuration and temporal directory structures
 ===============================================
 

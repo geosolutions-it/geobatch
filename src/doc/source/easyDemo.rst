@@ -27,6 +27,7 @@ Edit the |demo| flow configuration under ``/GEOBATCH_CONFIG_DIR/geotiff.xml``. T
 * ``outputDirName``    pointing to your ``output_tiff`` directory (absolute path).
 * ``output_backup``    pointing to your ``output_backup`` directory (absolute path).
 * ``geoserverURL``     pointing a running geoserver.
+
 create a workspace named ``it_geosolutions``
 
 Running

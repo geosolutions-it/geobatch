@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 /**
  * 
- * @author etj
+ * @author Emanuele Tajariol, GeoSolutions SAS
  */
 @Entity(name = "FtpServerConfig")
 @Table(name = "FTP_SERVER_CONFIG")
@@ -37,10 +37,10 @@ public class FtpServerConfig implements Serializable {
     private int maxAnonLogins = 1;
 
     @Column(nullable = false)
-    private int maxLoginFailures = 3;
+    private int maxLoginFailures = 5;
 
     @Column(nullable = false)
-    private int loginFailureDelay = 10;
+    private int loginFailureDelay = 5000; // ms
 
     @Column(nullable = false)
     private int port = 2121;

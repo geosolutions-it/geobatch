@@ -119,8 +119,10 @@ import org.slf4j.LoggerFactory;
 				// //
 				boolean eventServed = false;
 
-				for (EventConsumer consumer : flowManager.getEventConsumers()) {
-
+				for (String consumerId : flowManager.getEventConsumersId()) {
+					
+					EventConsumer consumer=flowManager.getConsumer(consumerId);
+					
 					if (LOGGER.isTraceEnabled()) {
 						LOGGER.trace("Checking consumer " + consumer + " for "+ event);
 					}
@@ -170,32 +172,24 @@ import org.slf4j.LoggerFactory;
 						// it in the EventConsumers waiting list.
 						// //
 						eventServed = flowManager.addConsumer(brandNewConsumer);
-						if (brandNewConsumer.getStatus() != EventConsumerStatus.EXECUTING) {
-							if (LOGGER.isDebugEnabled()) {
-								LOGGER.debug(brandNewConsumer + " created on event " + event);
-							} 
-							if ( ! eventServed ) {
-							    brandNewConsumer.dispose();
-                            }
-						} else {
-							if (LOGGER.isDebugEnabled()) {
-								LOGGER.debug(event + " was the only needed event for " + brandNewConsumer);
+						if ( ! eventServed ) {
+							if (LOGGER.isWarnEnabled()) {
+								LOGGER.warn("No consumer could serve " + event
+										+ " (neither " + brandNewConsumer + " could)");
 							}
-
-							if (eventServed){
-                                // etj: shouldn't we call
-                                // executor.execute(consumer); here?
-                                // carlo: probably this is a good idea
-                                flowManager.execute(brandNewConsumer);
+							flowManager.disposeConsumer(brandNewConsumer);
+                        } else {
+							if (brandNewConsumer.getStatus() != EventConsumerStatus.EXECUTING) {
+								if (LOGGER.isDebugEnabled()) {
+									LOGGER.debug(brandNewConsumer + " created on event " + event);
+								} 
 							} else {
-                                brandNewConsumer.dispose();
+								if (LOGGER.isDebugEnabled()) {
+									LOGGER.debug(event + " was the only needed event for " + brandNewConsumer);
+								}
+	                            flowManager.execute(brandNewConsumer);
 							}
-						}
-					}
-
-					if (!eventServed && LOGGER.isWarnEnabled()) {
-						LOGGER.warn("No consumer could serve " + event
-								+ " (neither " + brandNewConsumer + " could)");
+                        }
 					}
 				}
 			}

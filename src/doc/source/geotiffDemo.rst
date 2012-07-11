@@ -31,6 +31,7 @@ Create in a location of your choice ``output`` and ``backup`` directories::
 Edit the |demo| flow configuration under ``/GEOBATCH_CONFIG_DIR/geotiff.xml``. There, edit:
 
 * ``geoserverURL``     pointing a running geoserver.
+
 create a workspace named ``it_geosolutions``
 
 Running
