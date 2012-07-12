@@ -91,8 +91,6 @@ public class FileBasedEventConsumer
      * {@link FileBasedEventConsumer#createFlowInstanceTempDir(File)}
      */
     private File flowInstanceTempDir;
-//    private File runtimeDir;
-
 
     private FileBasedEventConsumerConfiguration configuration;
 
@@ -109,7 +107,7 @@ public class FileBasedEventConsumer
      * configuration.<br>
      * Note that the id is initialized using UUID.randomUUID()<br>
      * It also try to create a {@link FileBasedEventConsumer#runtimeDir} into
-     * the {@link FileBasedEventConsumer#workingDir}
+     * the {@link FileBasedEventConsumer#getFlowInstanceTempDir()}
      * 
      * @param configuration
      * @throws InterruptedException
@@ -644,7 +642,7 @@ public class FileBasedEventConsumer
     }
 
     /**
-     * @return the keepRuntimeDir
+     * @return the keepTempDir
      */
     public final boolean isKeepTempDir() {
         return keepTempDir;

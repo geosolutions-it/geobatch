@@ -116,17 +116,17 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     }
 
     /**
-     * @return the keepRuntimeDir
+     * @return the keepTempDir
      */
     public final boolean isKeepTempDir() {
         return keepTempDir;
     }
 
     /**
-     * @param keepRuntimeDir the keepRuntimeDir to set
+     * @param keepTempDir the keepRuntimeDir to set
      */
-    public final void setKeepRuntimeDir(boolean keepRuntimeDir) {
-        this.keepTempDir = keepRuntimeDir;
+    public final void setKeepTempDir(boolean keepTempDir) {
+        this.keepTempDir = keepTempDir;
     }
 
     /**
