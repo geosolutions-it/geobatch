@@ -14,36 +14,37 @@ Actually GeoBatch is using Xstream so flows are defined as XML files stored into
     <id></id>
     <name></name>
     <description></description>
-    ...
+    
     <corePoolSize>10</corePoolSize>
     <maximumPoolSize>30</maximumPoolSize>
     <keepAliveTime>150</keepAliveTime> <!--seconds-->
     <workQueueSize>100</workQueueSize>
-    <!-- keep consumer instance into memory map until they are manually removed -->
+    
+	<!-- optional: used to override the default -->
+	<overrideConfigDir></overrideConfigDir>
+	
+	<!-- keep consumer instance into memory map until they are manually removed -->
     <keepConsumers>false</keepConsumers>
     <!-- maximum number of consumer instances -->
     <maxStoredConsumers>6</maxStoredConsumers>
 
     <EventGeneratorConfiguration>
       <serviceID></serviceID>
-      ...
     </EventGeneratorConfiguration>
 
     <EventConsumerConfiguration>
       <!-- keep runtime dir when consumer instance is disposed -->
       <keepRuntimeDir>[true|false]<keepRuntimeDir>
-      ...
+	  
       <ACTION_1_Configuration>
-        ...
+			<!-- optional: used to override the default -->
+			<overrideConfigDir></overrideConfigDir>
       </ACTION_1_Configuration>
-      ...
       <ACTION_N_Configuration>
-        ...
       </ACTION_N_Configuration>
     </EventConsumerConfiguration>
 
     <ListenerConfigurations>
-      ...
     </ListenerConfigurations>	
   </FlowConfiguration>
 
@@ -65,17 +66,17 @@ The ``id`` has to be the same as the flow configuration file name. For example, 
 
     <id>example_flow</id>
 
-
-Working directory
+Config directory
 .................
 
-Can be relative to the ``GEOBATCH_CONFIG_DIR``, or an absolute path:
+Can be relative to the ``GEOBATCH_CONFIG_DIR``, or an absolute path and accepted into consumer and action configuration nodes:
 
 .. sourcecode:: xml
 
-    <workingDirectory>CONSUMER_WORKING_DIR</workingDirectory>
+    <!-- optional: used to override the default -->
+	<overrideConfigDir>override_dir</overrideConfigDir>
 
-If not specified, it will be assumed to be ``GEOBATCH_CONFIG_DIR/FLOW_ID``.
+If not specified, it will be assumed to be ``GEOBATCH_CONFIG_DIR/FLOW_ID`` for consumer and ``GEOBATCH_CONFIG_DIR/FLOW_ID/ACTION_ID`` for actions.
 
 
 Thread pool
@@ -97,15 +98,25 @@ Elements:
     <id>FLOW_NAME</id>
     <name>NAME</name>
     <description>DESCRIPTION</description>
-
-    <workingDirectory>geotiff</workingDirectory>
     <autorun>true</autorun>
 
     <corePoolSize>10</corePoolSize>
     <maximumPoolSize>30</maximumPoolSize>
     <keepAliveTime>150</keepAliveTime> <!--seconds-->
     <workQueueSize>100</workQueueSize>
-    ...
+	
+	<-- maximum numbers of stored consumers executions (as shown into the GUI) -->
+    <!-- DEFAULT_maxStoredConsumers = 100 -->
+    <maxStoredConsumers>100</maxStoredConsumers>
+
+	<-- keep consumer into the store until a dispose is called (via GUI or JMX) -->
+	<!-- default is set to false which means that when maxStoredConsumer is reached if a new consumer is requested (f.e.: generating a new event) the oldest one will be removed -->
+    <keepConsumers>false</keepConsumers>
+	
+	<-- keep temporary directory into the store when a dispose is called (automatically by the flow manager or via GUI or JMX) -->
+	<!-- default is set to false which means that when maxStoredConsumer is reached if a new consumer is requested (f.e.: generating a new event) the oldest one will be removed -->
+	<keepTempDir>false</keepTempDir>
+	
   </FlowConfiguration>
 
 
@@ -116,62 +127,27 @@ This is an *identifiable* component so you have to specify ``id``, ``name`` and 
 
 * ``<listenerId>``: List of listeners used by this consumer, specified by ID (see `listener configuration`_ for details).
 * ``<preserveInput>``: ``true`` to preserve input files. Defaults to ``false``. If this flag is set to ``true`` the consumer will work directly on the input data. Please be careful with this option since the event generator can trigger events on file modification.
-* ``<workingDirectory>``: temporary directory to work on data, when ``preserveInput`` is set to ``false``. Can be relative to the flow working dir, or an absolute path. The actual working directory is created under this one, using a timestamp.
 * ``<performBackup>``: ``true`` to create a directory called ``backup`` under the working directory. Defaults to ``false``.
-* ``<FileEventRule>``: Contains child elements defining event rules.
+
 * **Actions**: A list of actions. Element names depend on the type of action to be performed.
 
 .. sourcecode:: xml
 
   <EventConsumerConfiguration>
-    <id>CONSUMER_ID</id>
-    <name>CONSUMER_NAME</name>
-    <description>CONSUMER_DESCRIPTION</description>
-
+    
     <listenerId>ConsumerLogger0</listenerId>
-    ...
     <listenerId>ConsumerCumulator0</listenerId>
 
     <preserveInput>false</preserveInput>
-    <workingDirectory>CONSUMER_WORKING_DIR</workingDirectory>
     <performBackup>false</performBackup>
-    <FileEventRule>
-      ...
-    </FileEventRule>
+    
     <ACTION_1_Configuration>
-      ...
     </ACTION_1_Configuration>
-    ...
+    
     <ACTION_N_Configuration>
-      ...
     </ACTION_N_Configuration>
+	
   </EventConsumerConfiguration>
-
-
-File event rules
-^^^^^^^^^^^^^^^^
-
-The ``FileEventRule`` defines a file name matching filter to be checked before ingestion starts. An event consumer configuration may contain many file event rules. Each ``FileEventRule`` is an *identifiable* component, so remember to specify ``id``, ``name`` and ``description``. Other elements are:
-
-* ``<optional>``: Specifies if this rule is mandatory or not to start the ingestion. Defaults to ``false``.
-* ``<originalOccurrencies>``: The number of file occurrences which should match this rule. Positive integer.
-* ``<regex>``: A regular expression which should match the input file name. Example: ``<regex>.*\..*</regex>``.
-
-.. sourcecode:: xml
-
-  <FileEventRule>
-    <optional>false</optional>
-    <originalOccurrencies>1</originalOccurrencies>
-    <regex>.*\..*</regex>
-    <id>rule_1_id</id>
-    <description>description</description>
-    <name>rule_1</name>
-  </FileEventRule>
-  ...
-  <FileEventRule>
-    ...
-  </FileEventRule>
-
 
 Event generator
 ...............
@@ -182,7 +158,7 @@ Actually, the only supported event generator is the *File System Event Generator
 
   <EventGeneratorConfiguration>
     <serviceID>fsEventGeneratorService</serviceID>
-    ...
+    
   </EventGeneratorConfiguration>
 
 
@@ -199,17 +175,11 @@ Example:
 
   <EventGeneratorConfiguration>
     <serviceID>fsEventGeneratorService</serviceID>
-    ...
-    <id>geotiff_id</id>
-    <description>description</description>
-    <name>geotiff</name>
-
     <wildCard>*.*</wildCard>
     <watchDirectory>geotiff/in</watchDirectory>
     <osType>OS_UNDEFINED</osType>
     <eventType>FILE_ADDED</eventType>
     <interval>10000</interval>
-    ...
   </EventGeneratorConfiguration>
 
 
@@ -222,7 +192,7 @@ Each listener configuration is referred from other places using the ``<listenerI
 * ``<serviceID>``: Represents an alias id for the class to use and (actually) can be:
 
   * *cumulatingListenerService*: It is a service that is used to instantiate ProgressCumulatingListener (class), which is used by graphical interface to send status messages to the graphical interface, and must be configured at the level of consumer.
-  * *statusListenerService*: It is a service that is used to instantiate ProgressStatusListener (class), which serve to define lists that are graphical interface used to monitor the status of individual actions accordingly edition should be used only in the configuration of an 'action.
+  * *statusListenerService*: It is a service that is used to instantiate ProgressStatusListener (class). Used to define lists that graphical interface uses to monitor the status of individual actions. Should be used only in the configuration of an action.
   * *loggingListenerService*: It is a service that is used to instantiate ProgressLoggingListener (class), is used to log events in progress. For example: 
 
     1. *Consumer started*

@@ -101,7 +101,7 @@ public class FileBasedEventConsumer
     /**
      * do not remove runtimeDir when consumer is disposed
      */
-    private boolean keepRuntimeDir = false;
+    private boolean keepTempDir = false;
 
 
     /**
@@ -157,7 +157,7 @@ public class FileBasedEventConsumer
         throws InterruptedException, IllegalArgumentException, IOException {
 
         this.configuration = configuration;
-        this.keepRuntimeDir = configuration.isKeepRuntimeDir();
+        this.keepTempDir = configuration.isKeepTempDir();
         this.canceled = false;
 
         // ////////////////////////////////////////////////////////////////////
@@ -531,7 +531,7 @@ public class FileBasedEventConsumer
         }
 
         // remove contextRunningDir
-        if (!keepRuntimeDir) {
+        if (!keepTempDir) {
             // removing running context directory
             try {
                 FileUtils.deleteDirectory(getFlowInstanceTempDir());
@@ -646,15 +646,15 @@ public class FileBasedEventConsumer
     /**
      * @return the keepRuntimeDir
      */
-    public final boolean isKeepRuntimeDir() {
-        return keepRuntimeDir;
+    public final boolean isKeepTempDir() {
+        return keepTempDir;
     }
 
     /**
-     * @param keepRuntimeDir if true the runtime dir is not removed
+     * @param keepTempDir if true the runtime dir is not removed
      */
-    public final void setKeepRuntimeDir(boolean keepRuntimeDir) {
-        this.keepRuntimeDir = keepRuntimeDir;
+    public final void setKeepTempDir(boolean keepTempDir) {
+        this.keepTempDir = keepTempDir;
     }
 
     /**
