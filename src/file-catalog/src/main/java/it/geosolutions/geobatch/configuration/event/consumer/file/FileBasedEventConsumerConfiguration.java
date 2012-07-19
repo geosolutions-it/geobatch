@@ -67,20 +67,10 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
         new ArrayList<ProgressListenerConfiguration>();
 
     /**
-     * do not remove runningDir when consumer is disposed.
-     * @see {@link FileBasedEventConsumer#isKeepRuntimeDir()}
+     * do not remove tempDir when consumer is disposed.
+     * @see {@link FileBasedEventConsumer#isKeepTempDir()}
      */
-    private boolean keepRuntimeDir;
-
-
-//    /**
-//     * @deprecated name and description not needed here
-//     */
-//    public FileBasedEventConsumerConfiguration(String id, String name, String description)
-//    {
-//        this(id);
-//        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
-//    }
+    private boolean keepTempDir;
     
     public FileBasedEventConsumerConfiguration(String id)
     {
@@ -126,17 +116,17 @@ public class FileBasedEventConsumerConfiguration extends BaseConfiguration imple
     }
 
     /**
-     * @return the keepRuntimeDir
+     * @return the keepTempDir
      */
-    public final boolean isKeepRuntimeDir() {
-        return keepRuntimeDir;
+    public final boolean isKeepTempDir() {
+        return keepTempDir;
     }
 
     /**
-     * @param keepRuntimeDir the keepRuntimeDir to set
+     * @param keepTempDir the keepRuntimeDir to set
      */
-    public final void setKeepRuntimeDir(boolean keepRuntimeDir) {
-        this.keepRuntimeDir = keepRuntimeDir;
+    public final void setKeepTempDir(boolean keepTempDir) {
+        this.keepTempDir = keepTempDir;
     }
 
     /**

@@ -47,8 +47,7 @@ The configuration options are:
 User management
 ---------------
 
-TODO: How? Don't see the options.
-
+To configure or add user click on the user icon near the log out button near the 'Manage FTP server'.
 
 Flow management
 ---------------
@@ -97,10 +96,4 @@ Restart the service::
 
   $ /etc/init.d/vsftpd start
   $ chkconfig vsftpd on
-
-
-Running the demo flows
-----------------------
-
-...
 
