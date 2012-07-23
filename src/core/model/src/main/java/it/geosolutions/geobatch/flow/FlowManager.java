@@ -31,6 +31,7 @@ import it.geosolutions.geobatch.flow.event.generator.EventGenerator;
 
 import java.util.Collection;
 import java.util.EventObject;
+import java.util.Set;
 
 /**
  * @author  Alessio Fabiani
@@ -61,10 +62,9 @@ public interface FlowManager<EO extends EventObject, FC extends FlowConfiguratio
     public void disposeConsumer(String uuid) throws IllegalArgumentException;
     
     /**
-     * @return an unmodifiable Collection of all the consumers
-     * @throws IllegalArgumentException if param is null 
+     * @return an unmodifiable creation time ordered set of all the consumers
      */
-    public Collection<EventConsumer> getEventConsumers();
+    public Set<? extends EventConsumer> getEventConsumers();
 
     /**
      * @return an unmodifiable Collection<String> of all the consumers id

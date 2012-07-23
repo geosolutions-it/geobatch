@@ -166,7 +166,7 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
     /**
      * @return the keepConsumers
      */
-    public final boolean isKeepConsumers() {
+    public final Boolean isKeepConsumers() {
         return keepConsumers;
     }
 

@@ -63,7 +63,7 @@ public abstract class GeoServerActionConfig extends ActionConfiguration {
 	
     @Override
     public GeoServerActionConfig clone() { 
-        final GeoServerActionConfiguration configuration = (GeoServerActionConfiguration) super
+        final GeoServerActionConfig configuration = (GeoServerActionConfig) super
                 .clone();
 
         configuration.setGeoserverPWD(geoserverPWD);

@@ -38,23 +38,26 @@ Actions get a collection of events as input, and return a collection of new even
   * **GeotiffGeoServer**: Publish a collection of geotiff files as layers in GeoServer.
   * **ImageMosaic**: Builds and manages an imagemosaic in geoserver from a collection of raster images.
   * **GeoServerReload**: Reloads the configuration in a collection of GeoServer instances.
-
-* **GeoNetwork**: Metadata insertion in a GeoNetwork catalog.
-
-* **Shp2pg**: Loads a collection of shapefiles in a PostGIS database.
+  * **GeoNetwork**: Metadata insertion in a GeoNetwork catalog.
 
 * *Raster Processing*:
 
   * **GeotiffOverviewsEmbedder**: Adds overviews to a GeoTIFF image.
   * **GeotiffRetiler**: (re)creates a tiled GeoTIFF.
+  * **TaskExecutor**: Action used to execute external tasks such as Gdal operation (and much more...)
+  * **Xstream**: Action used to produce xml files from incoming event object or deserialize files to java object form incoming xml files using the xstream library
+  * **Scripting**: Action used to run (groovy) scripts
+  
+* *Unsupported Actions*:
+  
+  * **FreeMarker**: Action used to produce ascii files using the freemarker library
+  * **Shp2pg**: Loads a collection of shapefiles in a PostGIS database.
 
-* **Octave**: [TODO]
-* **FreeMarker**: [TODO]
-* **Scripting**: [TODO]
-* **Splitting**: [TODO]
-* **TaskExecutor**: [TODO]
-* **Xstream**: [TODO]
+* *Unsupported Services*:
 
+  * **Octave**: Service used to run multiple octave processes to run parallel octave scripts
+  * **JMS**: Service used to run multiple actions via JMS on different pre configured flows
+  * **JMX**: Service used to run multiple runtime configured actions via JMX
 
 Listeners
 ---------

@@ -31,6 +31,7 @@ import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConf
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 import it.geosolutions.geobatch.flow.FlowManager;
 import it.geosolutions.geobatch.flow.Job;
+import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.generator.EventGenerator;
@@ -44,10 +45,13 @@ import it.geosolutions.geobatch.settings.flow.FlowSettings;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.EventObject;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,7 +62,6 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.collections.collection.UnmodifiableCollection;
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,7 +143,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     /**
      * @see {@link FileBasedFlowConfiguration#isKeepConsumers()}
      */
-    private boolean keepConsumers;
+    private Boolean keepConsumers;
 
     private ThreadPoolExecutor executor;
 
@@ -224,6 +227,9 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         }
 
         this.keepConsumers = flowCfg.isKeepConsumers();
+        if (fs.isKeepConsumers() && keepConsumers==null)
+        	this.keepConsumers=true;
+        
         this.maxStoredConsumers = flowCfg.getMaxStoredConsumers();
         if (maxStoredConsumers < 1) {
             this.maxStoredConsumers = fs.getMaxStoredConsumers(); // default
@@ -367,8 +373,6 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             throw new IllegalArgumentException("Unable to dispose a null consumer object");
         }
 
-        // try {
-        // this.eventConsumersLock.writeLock().lock();
         final EventConsumer<FileSystemEvent, EventConsumerConfiguration> fbec = eventConsumers.get(uuid);
 
         if (fbec == null) {
@@ -385,10 +389,6 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
         eventConsumers.remove(uuid);
         fbec.dispose();
-
-        // } finally {
-        // this.eventConsumersLock.writeLock().unlock();
-        // }
 
     }
 
@@ -680,12 +680,29 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     /**
-     * returns an unmodifiable list of all the consumers
+     * returns an unmodifiable descending ordered by creation time list of all the consumers
      * 
      * @return
      */
-    public final Collection<EventConsumer> getEventConsumers() {
-        return UnmodifiableCollection.decorate(eventConsumers.values());
+    public final Set<BaseEventConsumer> getEventConsumers() {
+        TreeSet tree=
+                new TreeSet<BaseEventConsumer<EventObject, EventConsumerConfiguration>>(
+                    new Comparator<BaseEventConsumer<EventObject, EventConsumerConfiguration>>() {
+                @Override
+                public int compare(BaseEventConsumer<EventObject, EventConsumerConfiguration> o1,
+                                   BaseEventConsumer<EventObject, EventConsumerConfiguration> o2) {
+                        Calendar cal = o1.getCreationTimestamp();
+                        Calendar currentcal = o2.getCreationTimestamp();
+                        if(cal.before(currentcal))
+                                return 1;
+                        else if(cal.after(currentcal))
+                            return -1;
+                        else
+                                return 0;
+                }
+            });
+            tree.addAll(eventConsumers.values());
+            return tree;
     }
 
     /**
@@ -699,7 +716,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     @Override
-    public final EventConsumer<FileSystemEvent, EventConsumerConfiguration> getConsumer(final String uuid) {
+    public final EventConsumer<? extends EventObject, EventConsumerConfiguration> getConsumer(final String uuid) {
         return eventConsumers.get(uuid);
     }
 
@@ -719,12 +736,12 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @throws IllegalArgumentException if consumer is null
      */
     @Override
-    public boolean addConsumer(final EventConsumer consumer) throws IllegalArgumentException {
+    synchronized public boolean addConsumer(final EventConsumer consumer) throws IllegalArgumentException {
         if (consumer == null)
             throw new IllegalArgumentException("Unable to add a null consumer");
-
-        if (eventConsumers.size() >= maxStoredConsumers) {
-            if (purgeConsumers(1) > 0) {
+        int diff=eventConsumers.size() - maxStoredConsumers;
+        if (diff>0) {
+            if (purgeConsumers(diff) > 0) {
                 eventConsumers.put(consumer.getId(), consumer);
             } else {
                 return false;
@@ -752,7 +769,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     /**
-     * Remove from the consumers map at least a 'quantity' of completed, failed
+     * Remove from the consumers map at least a 'quantity' (returned int) of completed, failed
      * or canceled consumers. This method is thread-safe.<br>
      * If keep consumers is true Consumers may be removed manually and this
      * method will return always 0.
@@ -767,22 +784,21 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         int size = 0;
         if (keepConsumers)
             return 0;
-        final Set<String> keySet = eventConsumers.keySet();
-        final Iterator<String> it = keySet.iterator();
-        while (it.hasNext() && size < quantity) {
-            final String key = it.next();
-            final EventConsumer<FileSystemEvent, EventConsumerConfiguration> nextConsumer = eventConsumers
-                .get(key);
-            if (nextConsumer == null) {
-                it.remove();
-                ++size;
-                continue;
-            }
+        
+    	// take a snapshot of the ordered consumer set
+        BaseEventConsumer[] snapshotList=getEventConsumers().toArray(new BaseEventConsumer[]{});
+        int snapshotListSize=snapshotList.length;
+        // iterate the snapshot in reverse order purging consumers
+        while (--snapshotListSize>=0 && size < quantity) {
+            
+            final EventConsumer<FileSystemEvent, EventConsumerConfiguration> nextConsumer = snapshotList[snapshotListSize];
             final EventConsumerStatus status = nextConsumer.getStatus();
             if ((status == EventConsumerStatus.CANCELED) || (status == EventConsumerStatus.COMPLETED)
                 || (status == EventConsumerStatus.FAILED)) {
-                nextConsumer.dispose();
-                it.remove();
+            	// remove from the FM consumer map
+            	disposeConsumer(nextConsumer);
+            	// remove from the ordered consumer list
+                snapshotList[snapshotListSize]=null;
                 ++size;
             }
         }
