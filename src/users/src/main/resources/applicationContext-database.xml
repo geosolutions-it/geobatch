@@ -6,11 +6,20 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
 	default-autowire="byName">
-
+	
+    <bean id="placeholderProperties-database" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer" >
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>file:///${GEOBATCH_CONFIG_DIR}/settings/database.properties</value>
+            </list>
+        </property>
+    </bean>	
+    
 	<!--  Data source -->
 	<bean id="dataSource-gb-users" class="com.mchange.v2.c3p0.ComboPooledDataSource">
 		<property name="driverClass" value="org.h2.Driver" />
-		<property name="jdbcUrl" value="jdbc:h2:gbusers" />
+		<property name="jdbcUrl" value="jdbc:h2:${GEOBATCH_CONFIG_DIR}/gbusers" />
 		<property name="user" value="geobatch" />
 		<property name="password" value="geobatch" />
 		<property name="minPoolSize" value="4" />
@@ -38,10 +47,7 @@
 				<prop key="dialect">
 					org.hibernate.dialect.H2Dialect
                 </prop>
-				<!--prop key="dialect">
-					org.hibernate.dialect.PostgreSQLDialect
-                </prop-->
-				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.connection.autocommit">false</prop>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
@@ -62,4 +68,6 @@
 			<ref local="sessionFactory-gb-users" />
 		</property>
 	</bean>
+
+
 </beans>
