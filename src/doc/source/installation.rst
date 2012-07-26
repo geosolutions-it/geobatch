@@ -100,6 +100,44 @@ The ``GEOBATCH_TEMP_DIR`` environment/system variable can be used to specify ano
 .. note:: Make sure that |GB| (the running tomcat user) will have write permisions into the temporary directory.
 
 
+Configuring Users database
+--------------------------
+
+|GB| use an embedded SQL database to store Users and Ftp Accounts Credentials and their custom configurations.
+
+|GB| Users and Ftp Account are stored in two distinct database. The Database Engine is `H2 <http://www.h2database.com/html/main.html>`_ .
+
+By default |GB| create the temporary file for persist the database in the Temp dir of the OS where running GB.
+
+The usage of this default setting is higly NOT RECOMMENDED for production environment and stable testing environment.
+
+Use this configuration only for out-of-the-box tests and demostrations.
+
+For specifing your custom and reliable location for storing the DB you can use a database.properties file, see the template below::
+
+	dataSource-gb-users.jdbcUrl=jdbc:h2:[absolute_path]/gbusers
+	dataSource-gb-ftp-server.jdbcUrl=jdbc:h2:[absolute_path]/ftpusers
+
+In the properties file will must be specified two location, one for each database; using this template you have only to substitute [absolute_path] with the absolute path where you want save the data.
+
+After |GB| startup 4 files will be created: ftpusers.h2.db, ftpusers.lock.db, gbusers.h2.db, gbusers.lock.db .
+
+Where can I save database.properties file?
+..........................................
+
+There are 3 possible location where you can put the file:
+
+1) In the ``GEOBATCH_CONFIG_DIR`` under settings dir. Be sure of you have correctly set the ``GEOBATCH_CONFIG_DIR`` through an environment variable (see ``The configuration directory``).
+	
+2) In the root of |GB| classpath.
+
+3) In the home of the user running |GB|.
+
+The order of this list isn't random, in fact it indicate the priority of this location: if you put two different version of database.properties in path 1) and 3) the file in path 1) will be override that one in 3).
+ 
+We suggest to use The ``GEOBATCH_CONFIG_DIR``/config for store database.properties and create a directory called ``db`` under ``GEOBATCH_CONFIG_DIR`` for databases location.
+
+
 The logging system
 ------------------
 

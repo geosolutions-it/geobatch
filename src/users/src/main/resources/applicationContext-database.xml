@@ -11,9 +11,9 @@
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="locations">
             <list>
-                <value>file:///${GEOBATCH_CONFIG_DIR}/settings/database.properties</value>
                 <value>classpath:database.properties</value>
                 <value>file:///${user.home}/database.properties</value>
+                <value>file:///${GEOBATCH_CONFIG_DIR}/settings/database.properties</value>
             </list>
         </property>
     </bean>	
