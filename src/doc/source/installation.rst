@@ -105,7 +105,7 @@ Configuring Users database
 
 |GB| use an embedded SQL database to store Users and Ftp Accounts Credentials and their custom configurations.
 
-|GB| Users and Ftp Account are stored in two distinct database. The Database Engine is `H2 <http://www.h2database.com/html/main.html>`_ .
+|GB| Users and Ftp Account are stored in two distinct database. The DBMS Engine is `H2 <http://www.h2database.com/html/main.html>`_ .
 
 By default |GB| create the temporary file for persist the database in the Temp dir of the OS where running GB.
 
@@ -113,23 +113,23 @@ The usage of this default setting is higly NOT RECOMMENDED for production enviro
 
 Use this configuration only for out-of-the-box tests and demostrations.
 
-For specifing your custom and reliable location for storing the DB you can use a database.properties file, see the template below::
+For specifing your custom and reliable location for storing the DB you can use the gb_database.properties file. Here is an example::
 
 	dataSource-gb-users.jdbcUrl=jdbc:h2:[absolute_path]/gbusers
 	dataSource-gb-ftp-server.jdbcUrl=jdbc:h2:[absolute_path]/ftpusers
 
-In the properties file will must be specified two location, one for each database; using this template you have only to substitute [absolute_path] with the absolute path where you want save the data.
+In the properties file will must be specified two location, one for each database; using the previous template you have only to substitute [absolute_path] with the absolute path where you want save the data.
 
 After |GB| startup 4 files will be created: ftpusers.h2.db, ftpusers.lock.db, gbusers.h2.db, gbusers.lock.db .
 
-Where can I save database.properties file?
+Where can I create database.properties file?
 ..........................................
 
 There are 3 possible location where you can put the file:
 
 1) In the ``GEOBATCH_CONFIG_DIR`` under settings dir. Be sure of you have correctly set the ``GEOBATCH_CONFIG_DIR`` through an environment variable (see ``The configuration directory``).
 	
-2) In the root of |GB| classpath.
+2) In a custom path specified setting the env variable DATABASE_CONFIG_FILE after run |GB| .
 
 3) In the home of the user running |GB|.
 
