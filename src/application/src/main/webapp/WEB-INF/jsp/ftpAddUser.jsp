@@ -80,19 +80,10 @@
       <div class="page-header">
 
         <div class="header-panel"></div>
-        <h1>Add new FTP User</h1>
+        <h1>FTP User Management</h1>
         
         <form method="post" action="newFtpUser.form">
         <table>
-          <tr>
-		    <td>User ID</td>
-		    <td>
-		    	<spring:bind path="ftpUserDataBean.userId">
-					<input type="hidden" name="userId" value="${status.value}" />
-					${ftpUserDataBean.userId}
-	      		</spring:bind>
-	      	</td>
-		  </tr>
 		  <tr>
 		    <td>User Name <i>(no spaces allowed)</i></td>
 		    <td>
@@ -139,7 +130,7 @@
 		    </td>
 		  </tr>
 		  <tr>
-		    <td>Upload Rate</td>
+		    <td>Upload Rate (Bytes)</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.uploadRate">
 					<input type="text" name="uploadRate" value="${status.value}" />
@@ -147,7 +138,7 @@
 		    </td>
 		  </tr>
 		  <tr>
-		    <td>Download Rate</td>
+		    <td>Download Rate (Bytes)</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.downloadRate">
 					<input type="text" name="downloadRate" value="${status.value}" />
@@ -171,7 +162,7 @@
 		    </td>
 		  </tr>
 		  <tr>
-		    <td>Idle Time</td>
+		    <td>Idle Time (ms)</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.idleTime">
 					<input type="text" name="idleTime" value="${status.value}" />
@@ -226,6 +217,6 @@
     </div><!-- /.wrap> -->
   </div><!-- /#main -->
   <center><p><img src="img/geoSolutions-logo.png" /></p>
-  <p>Copyright &copy; 2005 - 2011 GeoSolutions.</p></center>
+  <p>Copyright &copy; 2005 - 2012 GeoSolutions.</p></center>
 </body>
 </html>

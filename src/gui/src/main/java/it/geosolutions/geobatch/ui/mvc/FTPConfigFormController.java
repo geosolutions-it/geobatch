@@ -135,7 +135,6 @@ public class FTPConfigFormController extends SimpleFormController
             }
         }
         mav.addObject("ftpStats", stats);
-//        logger.debug("Form data successfully submitted");
         return mav;
     }
 

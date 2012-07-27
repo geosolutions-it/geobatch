@@ -152,7 +152,8 @@
 			</tbody>
 		</table>
 
-        <P/><h2>FTP Server stats</h2>
+        <P/>
+        <h2>FTP Server stats</h2>
         Start time <c:out value="${ftpStats.startTime}"/>
         <br/>
         <table class="statsTable" border="0" cellpadding="2" cellspacing="1" >
@@ -203,6 +204,6 @@
     </div><!-- /.wrap> -->
   </div><!-- /#main -->
   <center><p><img src="img/geoSolutions-logo.png" /></p>
-  <p>Copyright &copy; 2005 - 2011 GeoSolutions.</p></center>
+  <p>Copyright &copy; 2005 - 2012 GeoSolutions.</p></center>
 </body>
 </html>
