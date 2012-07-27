@@ -84,6 +84,15 @@
         
         <form method="post" action="newFtpUser.form">
         <table>
+          <tr>
+		    <td>User ID</td>
+		    <td>
+		    	<spring:bind path="ftpUserDataBean.userId">
+					<input type="hidden" name="userId" value="${status.value}" />
+					${ftpUserDataBean.userId}
+	      		</spring:bind>
+	      	</td>
+		  </tr>
 		  <tr>
 		    <td>User Name <i>(no spaces allowed)</i></td>
 		    <td>
