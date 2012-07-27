@@ -61,22 +61,8 @@ public class GeoServerReloadService extends /**AutoregisteringService*/ BaseServ
     }
 
     public boolean canCreateAction(GeoServerReloadConfiguration configuration) {
-        try {
-            // absolutize working dir
-            final String wd = Path.getAbsolutePath(configuration.getConfigDir().getAbsolutePath());
-            if (wd != null) {
-                configuration.setConfigDir(new File(wd));
-                return true;
-            } else {
-                if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("Unable to create action, it's not possible to get an absolute working dir.");
-            }
-            
-        } catch (Throwable e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-        }
-        return false;
+       
+        return true;
     }
 
 }

@@ -13,13 +13,10 @@
 	
 	<EventGeneratorConfiguration>
 		<wildCard>*.grb</wildCard>
-		<watchDirectory>/opt/ingestion/</watchDirectory>
+		<watchDirectory>reload/in/</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
-		<id>id</id>
 		<serviceID>fsEventGeneratorService</serviceID>
-		<description>reload Event Generator</description>
-		<name>reload</name>
 	</EventGeneratorConfiguration>
 	<EventConsumerConfiguration>
 		
@@ -45,8 +42,6 @@
 			<geoserverList>GeoServerList.xml</geoserverList>
 
 			<executorSize>10</executorSize>
-			
-			<workingDirectory>reload</workingDirectory>
 			
 		</GeoServerReloadConfiguration>
 		
