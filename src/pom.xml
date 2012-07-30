@@ -76,7 +76,7 @@
 		<doc.sphinx.source>${project.basedir}/doc/source/</doc.sphinx.source>
 		<doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
 
-		<tools.version>1.1-SNAPSHOT</tools.version>
+		<tools.version>1.1.1</tools.version>
 		<geoserver.manager.version>1.4-SNAPSHOT</geoserver.manager.version>
 		<geostore.version>1.0-SNAPSHOT</geostore.version>
 		<gt.version>8.0-RC2</gt.version>
