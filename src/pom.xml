@@ -779,7 +779,7 @@
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-api</artifactId>
-				<version>${gt.version}</version>
+				<version>${gt.version}</version>		
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
@@ -793,13 +793,8 @@
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>gt-postgis-versioned</artifactId>
-				<version>${gt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.geotools</groupId>
 				<artifactId>gt-main</artifactId>
-				<version>${gt.version}</version>
+				<version>${gt.version}</version>							
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
@@ -821,11 +816,6 @@
 						<artifactId>imageio-ext-tiff</artifactId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>gt-hdf4</artifactId>
-				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
@@ -1707,6 +1697,26 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<!-- Dependency Enforcer plugin -->
+      <!--plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.0.1</version>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <configuration>
+              <rules>
+                <DependencyConvergence />
+              </rules>
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin-->			
 		</plugins>
 
 		<!-- EXTENSIONS -->
