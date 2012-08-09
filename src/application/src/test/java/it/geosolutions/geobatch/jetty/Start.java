@@ -50,8 +50,7 @@ public class Start {
             jettyServer = new Server();
 
             // don't even think of serving more than XX requests in parallel...
-            // we
-            // have a limit in our processing and memory capacities
+            // we have a limit in our processing and memory capacities
             BoundedThreadPool tp = new BoundedThreadPool();
             tp.setMaxThreads(50);
 
@@ -70,7 +69,6 @@ public class Start {
 
             WebAppContext wah = new WebAppContext();
             wah.setContextPath("/geobatch");
-            // wah.setWar("target/geobatch");
             wah.setWar("src/main/webapp");
             jettyServer.setHandler(wah);
             wah.setTempDirectory(new File("target/work"));

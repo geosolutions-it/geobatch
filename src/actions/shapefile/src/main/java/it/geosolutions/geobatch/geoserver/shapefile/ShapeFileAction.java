@@ -140,6 +140,7 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             File tmpDirFile=null;
             Integer epsgCode=null;
             GeometryDescriptor descriptor=null;
+            CoordinateReferenceSystem crs=null;
             
             if (inputSize == 1) {
             	//
@@ -208,8 +209,7 @@ public class ShapeFileAction extends BaseAction<EventObject> {
                 }
 
             }             	
-//            	   
-            
+            	               
             // check that we actually found some shapefiles
             if (shapeNames == null) {
                 final String message = "Input is not a zipped file nor a valid collection of files";
@@ -227,8 +227,8 @@ public class ShapeFileAction extends BaseAction<EventObject> {
                 	store=Utils.SHP_FACTORY.createDataStore(new File(tmpDirFile,shape+".shp").toURI().toURL());
                 	
                 	// get the CRS
-                    CoordinateReferenceSystem crs = store.getSchema().getCoordinateReferenceSystem();
-                    epsgCode= crs!=null?CRS.lookupEpsgCode(crs, true):null;
+                    crs = store.getSchema().getCoordinateReferenceSystem();
+                    epsgCode= crs!=null?CRS.lookupEpsgCode(crs, false):null;
                     
                     // get the geometry
                     descriptor = store.getSchema().getGeometryDescriptor();
@@ -258,37 +258,40 @@ public class ShapeFileAction extends BaseAction<EventObject> {
         	// TODO: Handle CRSs for multiple files
         	// TODO: Handle styles for multiple files (see comment on #16)
 
+           
             // decide CRS
-            // default crs
-            final String defaultCRS = configuration.getCrs();
-            String finalEPSGCode = defaultCRS;
+            String nativeCRS=null;
+            ProjectionPolicy projectionPolicy = ProjectionPolicy.NONE; // by default we do nothing
+            final String defaultCRS = configuration.getCrs(); //do we have a default crs in the config
+            String finalEPSGCode = defaultCRS; // this is the SRS for this shape
+            
             // retain original CRS if the code is there
             if (epsgCode == null) {
-                // we do not have a valid EPSG code
-                if (defaultCRS == null) {
+                // we do not have a valid EPSG code in the input file, we do need one as per default
+                if (finalEPSGCode == null) {
                     final String message = "Input file has no CRS neither the configuration provides a default one";
-                    if (LOGGER.isInfoEnabled()) {
-                        LOGGER.info(message);
-                    }
-                    if (!configuration.isFailIgnored())
-                        throw new ActionException(ShapeFileAction.class, message);
+                    final ActionException ae = new ActionException(this, message);
+                    if (LOGGER.isErrorEnabled())
+                        LOGGER.error(message, ae);
+                    listenerForwarder.failed(ae);
+                    throw ae;
+                } 
+                
+                // we do have a default, let's choose the proper CRS management                
+                if(crs!=null){
+                	// we have a WKT native crs, let's use it
+                	nativeCRS=crs.toWKT();
+                	projectionPolicy = ProjectionPolicy.REPROJECT_TO_DECLARED;
+                } else {
+                	projectionPolicy = ProjectionPolicy.FORCE_DECLARED;
                 }
+                                
             } else {
+            	// we do have an EPSG code for the original CRS, do nothing
                 finalEPSGCode = "EPSG:" + epsgCode;
+                nativeCRS=finalEPSGCode;
             }
             
-            // decide CRS management
-            ProjectionPolicy projectionPolicy = ProjectionPolicy.NONE;
-            if (defaultCRS == null) {
-                // we do not have a valid CRS, we use the default one
-                projectionPolicy = ProjectionPolicy.FORCE_DECLARED;
-            } else
-            // we DO have a valid CRS
-            if (epsgCode == null) {
-                // we do not have a CRS with a valid EPSG code, let's reproject on
-                // the fly
-                projectionPolicy = ProjectionPolicy.REPROJECT_TO_DECLARED;
-            }
             
             // check style for this geometry
             String defaultStyle=configuration.getDefaultStyle();
@@ -332,13 +335,14 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             
             // Either publish a single shapefile, or a collection of shapefiles
             if(shapeNames.length==1) {
-            	success = publisher.publishShp(wsName,
+				success = publisher.publishShp(wsName,
                         dsName, 
                         null,
                         lyrName,
                         uMethod,
                         zippedFile.toURI(),
                         finalEPSGCode,
+                        nativeCRS,
                         projectionPolicy,
                         styleName);
             } else {

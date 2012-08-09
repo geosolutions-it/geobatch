@@ -53,7 +53,7 @@ import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
-import org.geotools.data.postgis.PostgisDataStoreFactory;
+import org.geotools.data.postgis.PostgisNGDataStoreFactory;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -68,8 +68,10 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class Shp2pgAction extends BaseAction<EventObject> {
-	private final static Logger LOGGER = LoggerFactory
-			.getLogger(Shp2pgAction.class);
+
+	public final static DataStoreFactorySpi PG_FACTORY = new PostgisNGDataStoreFactory();
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(Shp2pgAction.class);
 
 	/**
 	 * configuration
@@ -93,8 +95,7 @@ public class Shp2pgAction extends BaseAction<EventObject> {
 		}
 		File workingDir = Path.findLocation(
 				configuration.getWorkingDirectory(),
-				((FileBaseCatalog) CatalogHolder.getCatalog())
-						.getBaseDirectory());
+				((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
 		if (workingDir == null) {
 			throw new IllegalStateException("Working directory is null.");
 		}
@@ -407,7 +408,6 @@ public class Shp2pgAction extends BaseAction<EventObject> {
 
 	private DataStore createPostgisDataStore(Shp2pgConfiguration configuration)
 			throws IOException {
-		DataStoreFactorySpi factoryPG = new PostgisDataStoreFactory();// NG
 
 		Map<String, Serializable> map = new HashMap<String, Serializable>();
 		map.put("user", configuration.getDbUID());
@@ -427,6 +427,6 @@ public class Shp2pgAction extends BaseAction<EventObject> {
 			LOGGER.info("dbtype: " + configuration.getDbType());
 		}
 
-		return factoryPG.createDataStore(map);
+		return PG_FACTORY.createDataStore(map);
 	}
 }
