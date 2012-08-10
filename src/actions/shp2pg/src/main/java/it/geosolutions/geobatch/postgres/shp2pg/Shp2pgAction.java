@@ -54,6 +54,7 @@ import org.geotools.data.FeatureWriter;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.postgis.PostgisNGDataStoreFactory;
+import org.geotools.data.shapefile.ShapefileDataStoreFactory;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -70,6 +71,8 @@ import org.slf4j.LoggerFactory;
 public class Shp2pgAction extends BaseAction<EventObject> {
 
 	public final static DataStoreFactorySpi PG_FACTORY = new PostgisNGDataStoreFactory();
+	
+	public final static DataStoreFactorySpi SHP_FACTORY = new ShapefileDataStoreFactory();
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(Shp2pgAction.class);
 
@@ -95,7 +98,7 @@ public class Shp2pgAction extends BaseAction<EventObject> {
 		}
 		File workingDir = Path.findLocation(
 				configuration.getWorkingDirectory(),
-				((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
+				((FileBaseCatalog) CatalogHolder.getCatalog()).getConfigDirectory());
 		if (workingDir == null) {
 			throw new IllegalStateException("Working directory is null.");
 		}
@@ -170,14 +173,14 @@ public class Shp2pgAction extends BaseAction<EventObject> {
 		// At this moment i have the shape and a file list
 
 		// connect to the shapefile
-		final Map<String, Object> connect = new HashMap<String, Object>();
+		final Map<String, Serializable> connect = new HashMap<String, Serializable>();
 		connect.put("url", DataUtilities.fileToURL(shapefile));
 
 		DataStore sourceDataStore = null;
 		String typeName = null;
 		SimpleFeatureType originalSchema = null;
 		try {
-			sourceDataStore = DataStoreFinder.getDataStore(connect);
+			sourceDataStore = SHP_FACTORY.createDataStore(connect);
 			String[] typeNames = sourceDataStore.getTypeNames();
 			typeName = typeNames[0];
 
@@ -202,13 +205,12 @@ public class Shp2pgAction extends BaseAction<EventObject> {
 		// prepare to open up a reader for the shapefile
 		Query query = new Query();
 		query.setTypeName(typeName);
-		CoordinateReferenceSystem prj = originalSchema
-				.getCoordinateReferenceSystem();
+		CoordinateReferenceSystem prj = originalSchema.getCoordinateReferenceSystem();
 		query.setCoordinateSystem(prj);
 
 		DataStore destinationDataSource = null;
 		try {
-			destinationDataSource = this.createPostgisDataStore(configuration);
+			destinationDataSource = createPostgisDataStore(configuration);
 
 			// check if the schema is present in postgis
 			boolean schema = false;
@@ -406,7 +408,7 @@ public class Shp2pgAction extends BaseAction<EventObject> {
 		}
 	}
 
-	private DataStore createPostgisDataStore(Shp2pgConfiguration configuration)
+	private static DataStore createPostgisDataStore(Shp2pgConfiguration configuration)
 			throws IOException {
 
 		Map<String, Serializable> map = new HashMap<String, Serializable>();
