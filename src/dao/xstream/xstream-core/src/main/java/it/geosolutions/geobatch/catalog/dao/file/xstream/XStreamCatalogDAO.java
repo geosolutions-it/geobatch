@@ -25,7 +25,7 @@ package it.geosolutions.geobatch.catalog.dao.file.xstream;
 import it.geosolutions.geobatch.catalog.dao.CatalogConfigurationDAO;
 import it.geosolutions.geobatch.configuration.CatalogConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration;
-import it.geosolutions.tools.io.file.IOUtils;
+
 import it.geosolutions.geobatch.xstream.Alias;
 
 import java.io.File;
@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
+import org.apache.commons.io.IOUtils;
 
 /**
  * 
@@ -75,13 +76,10 @@ public class XStreamCatalogDAO extends XStreamDAO<CatalogConfiguration> implemen
                 return obj;
 
             }
-        } catch (Throwable e) {
-            final IOException ioe = new IOException("Unable to load flow config:" + id);
-            ioe.initCause(e);
-            throw ioe;
+        } catch (Exception e) {
+            throw new IOException("Unable to load catalog config '" + id + "' from base dir " + getBaseDirectory(), e);
         } finally {
-            if (inStream != null)
-                IOUtils.closeQuietly(inStream);
+            IOUtils.closeQuietly(inStream);
         }
         return null;
     }
