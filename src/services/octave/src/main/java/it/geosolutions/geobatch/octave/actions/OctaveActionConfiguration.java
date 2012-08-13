@@ -49,6 +49,9 @@ public class OctaveActionConfiguration extends ActionConfiguration {
      */
     @XStreamAlias("execute")
     private String env;
+
+    @XStreamAlias("octave")
+    private OctaveEnv embeddedEnv;
     
     public final String getEnv(){
         return env;
@@ -57,4 +60,13 @@ public class OctaveActionConfiguration extends ActionConfiguration {
     public void setEnv(String ex){
         env=ex;
     }
+
+    public OctaveEnv getEmbeddedEnv() {
+        return embeddedEnv;
+    }
+
+    public void setEmbeddedEnv(OctaveEnv embeddedEnv) {
+        this.embeddedEnv = embeddedEnv;
+    }
+    
 }

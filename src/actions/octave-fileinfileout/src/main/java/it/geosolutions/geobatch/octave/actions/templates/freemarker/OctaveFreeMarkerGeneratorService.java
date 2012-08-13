@@ -25,21 +25,36 @@ package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
+import it.geosolutions.geobatch.octave.actions.OctaveActionConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OctaveFreeMarkerGeneratorService
     extends BaseService 
     implements ActionService<FileSystemEvent, OctaveFreeMarkerConfiguration> {
 
-    
+    private final static Logger LOGGER = LoggerFactory.getLogger(OctaveFreeMarkerGeneratorService.class);
+
     public OctaveFreeMarkerGeneratorService(String id, String name, String description) {
         super(id, name, description);
     }
 
-    public boolean canCreateAction(final OctaveFreeMarkerConfiguration configuration)  {
+    @Override
+    public boolean canCreateAction(final OctaveFreeMarkerConfiguration config)  {
+        if( config.getEmbeddedEnv() != null && config.getEnv() != null) {
+            LOGGER.warn("Env and EmbeddedEnv both not null");
+            return false;
+        }
+        if( config.getEmbeddedEnv() == null && config.getEnv() == null) {
+            LOGGER.warn("Env and EmbeddedEnv both null");
+            return false;
+        }
+
         return true;
     }
 
 
+    @Override
     public OctaveFreeMarkerAction createAction(final OctaveFreeMarkerConfiguration configuration) {
         if(canCreateAction(configuration)){
             return new OctaveFreeMarkerAction(configuration);

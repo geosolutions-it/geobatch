@@ -67,92 +67,25 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T>
 	 * @return Queue<FileSystemEvent> the resulting list of events
 	 */
 	public Queue<T> execute(Queue<T> events) throws ActionException {
-		try {
-			if (LOGGER.isInfoEnabled())
-				LOGGER.info("Executing Octave script...");
 
+        if( config.getEmbeddedEnv() != null && config.getEnv() != null) {
+            throw new ActionException(this, "Bad configuration: either <octave> or <env> should be specified, not both");
+        }
+
+        OctaveEnv<OctaveExecutableSheet> env;
+
+        if(config.getEmbeddedEnv() != null)
+            env = config.getEmbeddedEnv();
+        else if (config.getEnv() != null)
+            env = loadEnv(config.getEnv());
+        else
+            throw new ActionException(this, "Bad configuration: either <octave> or <env> should be specified.");
+
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info("Executing Octave script...");
+
+        try {
 			if (events != null) {
-				XStream stream = null;
-				try {
-					// unmarshall the environment to the env
-					stream = new XStream();
-					stream.processAnnotations(OctaveEnv.class);
-				} catch (InitializationException ie) {
-					// InitializationException - in case of an initialization
-					// problem
-					String message = "InitializationException: Could not initialize the XStream object.\n"
-							+ ie.getLocalizedMessage();
-					if (LOGGER.isErrorEnabled())
-						LOGGER.error(message);
-					throw new ActionException(this, message, ie);
-				}
-				File in_file = null;
-				try {
-					in_file = new File(config.getOverrideConfigDir(),
-							config.getEnv()); // TODO checkme
-				} catch (NullPointerException npe) {
-					// NullPointerException - If the pathname argument is null
-					String message = "NullPointerException: You have to set the execution string in the config file. "
-							+ npe.getLocalizedMessage();
-					if (LOGGER.isErrorEnabled())
-						LOGGER.error(message);
-					throw new ActionException(this, message);
-
-				}
-				FileReader env_reader = null;
-				try {
-					env_reader = new FileReader(in_file);
-				} catch (FileNotFoundException fnfe) {
-					/*
-					 * FileNotFoundException - if the file does not exist, is a
-					 * directory rather than a regular file, or for some other
-					 * reason cannot be opened for reading.
-					 */
-					String message = "Unable to find the OctaveEnv file: "
-							+ fnfe.getMessage();
-					if (LOGGER.isErrorEnabled())
-						LOGGER.error(message);
-					throw new ActionException(this, message);
-				}
-				OctaveEnv<OctaveExecutableSheet> env = null;
-				Object o = null;
-				try {
-					if (env_reader != null && stream != null) {
-						o = stream.fromXML(env_reader);
-						if (o instanceof OctaveEnv<?>)
-							env = (OctaveEnv<OctaveExecutableSheet>) o;
-						else {
-							String message = "ClassCastException: Serialized object is not an OctaveEnv object";
-							if (LOGGER.isErrorEnabled())
-								LOGGER.error(message);
-							throw new ActionException(this, message);
-						}
-					} else {
-						String message = "Exception during execute: stream object:"
-								+ stream + " env_reader:" + env_reader;
-						if (LOGGER.isErrorEnabled())
-							LOGGER.error(message);
-						throw new ActionException(this, message);
-					}
-				} catch (XStreamException xse) {
-					// XStreamException - if the object cannot be deserialized
-					String message = "XStreamException: Serialized object is not an OctaveEnv object:\n"
-							+ xse.getLocalizedMessage();
-					if (LOGGER.isErrorEnabled())
-						LOGGER.error(message);
-					throw new ActionException(this, message, xse);
-				} catch (ClassCastException cce) {
-					// ClassCastException - if the execute string do not point
-					// to a OctaveEnv serialized object
-					String message = "ClassCastException: Serialized object is not an OctaveEnv object:\n"
-							+ cce.getLocalizedMessage();
-					if (LOGGER.isErrorEnabled())
-						LOGGER.error(message);
-					throw new ActionException(this, message, cce);
-				} finally {
-					IOUtils.closeQuietly(env_reader);
-				}
-
 				/**
 				 * here all the events are processed and preprocess map is
 				 * build.
@@ -210,4 +143,96 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T>
 		return events;
 	}
 
+    private OctaveEnv<OctaveExecutableSheet> loadEnv(String filename) throws ActionException {
+        File in_file = null;
+        try {
+            // !!!!!!!!!!!!!!!!1
+            in_file = new File(filename); // TODO checkme
+        } catch (NullPointerException npe) {
+            // NullPointerException - If the pathname argument is null
+            String message = "NullPointerException: You have to set the execution string in the config file. "
+                    + npe.getLocalizedMessage();
+//            if (LOGGER.isErrorEnabled()) {
+//                LOGGER.error(message);
+//            }
+            throw new ActionException(this, message);
+
+        }
+        FileReader env_reader = null;
+        try {
+            env_reader = new FileReader(in_file);
+        } catch (FileNotFoundException fnfe) {
+            /*
+             * FileNotFoundException - if the file does not exist, is a
+             * directory rather than a regular file, or for some other
+             * reason cannot be opened for reading.
+             */
+            String message = "Unable to find the OctaveEnv file: "
+                    + fnfe.getMessage();
+//            if (LOGGER.isErrorEnabled()) {
+//                LOGGER.error(message);
+//            }
+            throw new ActionException(this, message);
+        }
+        OctaveEnv<OctaveExecutableSheet> env = null;
+        Object o = null;
+
+        XStream stream = null;
+        try {
+            // unmarshall the environment to the env
+            stream = new XStream();
+            stream.processAnnotations(OctaveEnv.class);
+        } catch (InitializationException ie) {
+            // InitializationException - in case of an initialization
+            // problem
+            String message = "InitializationException: Could not initialize the XStream object.\n"
+                    + ie.getLocalizedMessage();
+//            if (LOGGER.isErrorEnabled())
+//                LOGGER.error(message);
+            throw new ActionException(this, message, ie);
+        }
+
+        try {
+            if (env_reader != null && stream != null) {
+                o = stream.fromXML(env_reader);
+                if (o instanceof OctaveEnv<?>) {
+                    env = (OctaveEnv<OctaveExecutableSheet>) o;
+                    return env;
+                } else {
+                    String message = "ClassCastException: Serialized object is not an OctaveEnv object";
+//                    if (LOGGER.isErrorEnabled()) {
+//                        LOGGER.error(message);
+//                    }
+                    throw new ActionException(this, message);
+                }
+            } else {
+                String message = "Exception during execute: stream object:"
+                        + stream + " env_reader:" + env_reader;
+//                if (LOGGER.isErrorEnabled()) {
+//                    LOGGER.error(message);
+//                }
+                throw new ActionException(this, message);
+            }
+        } catch (XStreamException xse) {
+            // XStreamException - if the object cannot be deserialized
+            String message = "XStreamException: Serialized object is not an OctaveEnv object:\n"
+                    + xse.getLocalizedMessage();
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error(message);
+            }
+            throw new ActionException(this, message, xse);
+        } catch (ClassCastException cce) {
+            // ClassCastException - if the execute string do not point
+            // to a OctaveEnv serialized object
+            String message = "ClassCastException: Serialized object is not an OctaveEnv object:\n"
+                    + cce.getLocalizedMessage();
+//            if (LOGGER.isErrorEnabled()) {
+//                LOGGER.error(message);
+//            }
+            throw new ActionException(this, message, cce);
+        } finally {
+            IOUtils.closeQuietly(env_reader);
+        }
+
+    }
 }
