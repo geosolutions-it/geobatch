@@ -308,10 +308,10 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             UploadMethod uMethod=null;
             switch (transferMethod) {
 			case DIRECT:
-				uMethod=UploadMethod.file;
+				uMethod=UploadMethod.FILE;
 				break;
 			case EXTERNAL:
-				uMethod=UploadMethod.external;
+				uMethod=UploadMethod.EXTERNAL;
 				break;
 			default:
 				throw new IllegalArgumentException("Unsupported transfer method: "+configuration.getDataTransferMethod());
