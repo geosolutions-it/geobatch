@@ -100,6 +100,7 @@ public class HibGBUserDAO extends DAOAbstractSpring<GBUser, Long> implements GBU
     @Transactional(propagation = Propagation.REQUIRED)
     public void delete(final Long id) throws DAOException {
         try {
+        	
             getHibernateTemplate().execute(new HibernateCallback() {
 
                 public Object doInHibernate(Session session) throws HibernateException,

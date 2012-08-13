@@ -244,6 +244,6 @@
     </div><!-- /.wrap> -->
   </div><!-- /#main -->
   <center><p><img src="img/geoSolutions-logo.png" /></p>
-  <p>Copyright &copy; 2005 - 2011 GeoSolutions.</p></center>
+  <p>Copyright &copy; 2005 - 2012 GeoSolutions.</p></center>
 </body>
 </html>

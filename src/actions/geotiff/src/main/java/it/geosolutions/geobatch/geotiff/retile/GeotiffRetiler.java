@@ -23,7 +23,6 @@ package it.geosolutions.geobatch.geotiff.retile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
@@ -52,6 +51,7 @@ import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.resources.image.ImageUtilities;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,14 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
         this.configuration = configuration;
     }
 
-    public static void reTile(File inFile, File tiledTiffFile, double compressionRatio, String compressionType, int tileW, int tileH, boolean forceBigTiff) throws IOException {
+    public static void reTile(
+    		File inFile, 
+    		File tiledTiffFile, 
+    		double compressionRatio, 
+    		String compressionType, 
+    		int tileW, 
+    		int tileH, 
+    		boolean forceBigTiff) throws IOException {
         //
         // look for a valid file that we can read
         //
@@ -86,9 +93,11 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
         AbstractGridCoverage2DReader reader = null;
         GridCoverage2D inCoverage = null;
         AbstractGridCoverageWriter writer = null;
+        final Hints hints=new Hints(
+                Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE);
 
         // getting a format for the given input
-        format = (AbstractGridFormat) GridFormatFinder.findFormat(inFile);
+        format = (AbstractGridFormat) GridFormatFinder.findFormat(inFile,hints);
         if (format == null || (format instanceof UnknownFormat)) {
             throw new IllegalArgumentException("Unable to find the GridFormat for the provided file: "+ inFile);
         }
@@ -102,8 +111,8 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
             }
 
             // can throw UnsupportedOperationsException
-            reader = (AbstractGridCoverage2DReader) format.getReader(inFile, new Hints(
-                    Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+            reader = (AbstractGridCoverage2DReader) format.getReader(inFile, hints);
+            
             
             if (reader == null) {
                 final IOException ioe = new IOException("Unable to find a reader for the provided file: "
@@ -143,22 +152,18 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
             final ParameterValueGroup wparams = wformat.getWriteParameters();
             wparams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString()).setValue(wp);
 
-            // /////////////////////////////////////////////////////////////////////
             //
             // ACQUIRING A WRITER AND PERFORMING A WRITE
             //
-            // /////////////////////////////////////////////////////////////////////
             writer = (AbstractGridCoverageWriter) new GeoTiffWriter(tiledTiffFile);
             writer.write(inCoverage,
                     (GeneralParameterValue[]) wparams.values()
                             .toArray(new GeneralParameterValue[1]));
 
         } finally {
-            // /////////////////////////////////////////////////////////////////////
             //
             // PERFORMING FINAL CLEAN UP AFTER THE WRITE PROCESS
             //
-            // /////////////////////////////////////////////////////////////////////
             if (reader != null) {
                 try {
                     reader.dispose();

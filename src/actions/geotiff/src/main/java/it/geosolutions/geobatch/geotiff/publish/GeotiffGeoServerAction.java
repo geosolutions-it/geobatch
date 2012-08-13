@@ -56,7 +56,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffGeoServerAction.class);
 
-    private static final GeoTiffFormat FORMAT = new GeoTiffFormat();
+    public static final GeoTiffFormat FORMAT = new GeoTiffFormat();
 
     public GeotiffGeoServerAction(GeoServerActionConfiguration configuration) throws IOException {
         super(configuration);
@@ -223,7 +223,7 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
             // configuration if we cannot find one
             crs = coverageReader.getCrs();
             if (crs != null) {
-                epsgCode = CRS.lookupEpsgCode(crs, true);
+                epsgCode = CRS.lookupEpsgCode(crs, false);
             }
         } finally {
             if (coverageReader != null) {
@@ -310,7 +310,8 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
                                             inputFile,
                                             finalEPSGCode,
                                             projectionPolicy,
-                                            configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "raster");
+                                            configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "raster",
+                                            		null);
         } else if ("EXTERNAL".equalsIgnoreCase(configuration.getDataTransferMethod())) {
             sent = publisher.publishExternalGeoTIFF(configuration.getDefaultNamespace(),// workspace
                                                     configuration.getStoreName() == null

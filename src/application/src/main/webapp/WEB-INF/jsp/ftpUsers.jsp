@@ -72,22 +72,20 @@
 		<table width="100%" border="0" cellpadding="2" cellspacing="1">
 			<thead>
 				<tr bgcolor="black" style="color: white;">
-					<th width="2%">USERID</th>
 					<th width="8%">USERNAME</th>
 					<th width="5%">ROLE</th>
 					<th width="5%">WRITE PERMISSION</th>
-					<th width="5%">UPLOAD RATE</th>
-					<th width="5%">DOWNLOAD RATE</th>
+					<th width="5%">UPLOAD RATE (Bytes)</th>
+					<th width="5%">DOWNLOAD RATE (Bytes)</th>
 					<th width="5%">MAX LOGIN PER IP</th>
 					<th width="5%">MAX LOGIN NUMBER</th>
-					<th width="5%">MAX IDLE TIME</th>
+					<th width="5%">MAX IDLE TIME (ms)</th>
 					<th width="5%">ACTIONS</th>
 				</tr>
 			</thead>
 			<tbody>
 			<c:forEach var="us" items="${ftpUsers}">
 				<tr >
-					<td><c:out value="${us.id}"/></td>
 					<td><c:out value="${us.name}"/></td>
 					<td><c:out value="${us.sourceUser.role}"/></td>
 					<td><c:out value="${us.writePermission}"/></td>
@@ -113,6 +111,6 @@
     </div><!-- /.wrap> -->
   </div><!-- /#main -->
   <center><p><img src="img/geoSolutions-logo.png" /></p>
-  <p>Copyright &copy; 2005 - 2009 GeoSolutions.</p></center>
+  <p>Copyright &copy; 2005 - 2012 GeoSolutions.</p></center>
 </body>
 </html>
