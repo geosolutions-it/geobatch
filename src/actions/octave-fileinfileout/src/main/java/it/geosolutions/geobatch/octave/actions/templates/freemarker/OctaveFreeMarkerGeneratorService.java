@@ -26,27 +26,17 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class OctaveFreeMarkerGeneratorService
     extends BaseService 
     implements ActionService<FileSystemEvent, OctaveFreeMarkerConfiguration> {
 
-    protected final static Logger LOGGER = LoggerFactory.getLogger(OctaveFreeMarkerGeneratorService.class
-            .toString());
     
     public OctaveFreeMarkerGeneratorService(String id, String name, String description) {
         super(id, name, description);
     }
 
     public boolean canCreateAction(final OctaveFreeMarkerConfiguration configuration)  {
-
         return true;
-        
-//TODO check if the m file is present and is readable
-//TODO check if the sheet (execute) file is present and is readable
-        
     }
 
 

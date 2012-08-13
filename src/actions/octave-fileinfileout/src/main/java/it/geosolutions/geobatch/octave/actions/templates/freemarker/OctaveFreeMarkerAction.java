@@ -30,6 +30,7 @@ import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveFunctionSheet;
 import it.geosolutions.geobatch.octave.SheetBuilder;
 import it.geosolutions.geobatch.octave.actions.OctaveAction;
+import it.geosolutions.tools.commons.file.Path;
 import it.geosolutions.tools.compress.file.Extract;
 
 import java.io.File;
@@ -123,7 +124,7 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
                  */
 //                String out_dir_name=config.getOverrideConfigDir()+File.separator+getOutputDir()+File.separator;
                 
-                File out_dir=new File(getTempDir(),getOutputDir()); // TODO checkme
+                File out_dir=getOutputDir()!=null?Path.findLocation(new File(getOutputDir()),getTempDir()):getTempDir(); // TODO check me
                 if (!out_dir.exists()){
                     if (!out_dir.mkdir()){
                         throw new IOException("Unable to create the output dir: "+out_dir);
@@ -203,11 +204,11 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
         }
         catch (OctaveEvalException oee){
             throw new ActionException(this,"Unable to run octave script:\n"
-                        +oee.getLocalizedMessage());
+                        +oee.getLocalizedMessage(),oee);
         }
         catch(Exception e){
             throw new ActionException(this,"Unable to run octave script:\n"
-                    +e.getLocalizedMessage());
+                    +e.getLocalizedMessage(),e);
         }
         return events;
     }    
