@@ -298,8 +298,8 @@ if (jdm.get(FileSystemMonitorSPI.TYPE_KEY)==FileSystemEventType.POLLING_EVENT){
         // DEBUG
         // System.out.println("DOTHEJOB");
 
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("job named: " + detail.getKey() + " completed");
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("job named: " + detail.getKey() + " completed");
         }
     }
 }

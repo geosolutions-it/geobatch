@@ -82,34 +82,44 @@ public class DataDirHandler implements ApplicationContextAware {
     public void init() throws Exception {
         boolean obsolete = false;
         baseConfigDir = retrieveConfiguredDir(GEOBATCH_CONFIG_DIR);
+
+        // == PLEASE NOTE
+        // the LOGGER.error() calls here are not to log errors
+        // BUT to log importatant configuration info
+        // Please do not turn them into info()
+
         if(baseConfigDir == null) {
             obsolete = true;
-            if (LOGGER.isWarnEnabled())
-                LOGGER.warn("No " + GEOBATCH_CONFIG_DIR + " configuration was found. Will try for older " + GEOBATCH_DATA_DIR);
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("No " + GEOBATCH_CONFIG_DIR + " configuration was found. Will try for older " + GEOBATCH_DATA_DIR);
+            }
 
             baseConfigDir = retrieveConfiguredDir(GEOBATCH_DATA_DIR);
             if(baseConfigDir == null) {
-                if (LOGGER.isWarnEnabled())
-                    LOGGER.warn("No " + GEOBATCH_DATA_DIR + " configuration was found. Will try to force a default one.");
+                if (LOGGER.isErrorEnabled()) {
+                    LOGGER.error("No " + GEOBATCH_DATA_DIR + " configuration was found. Will try to force a default one.");
+                }
                 baseConfigDir = forceDataDir(); // assign or throw
             }
         }
-        if (LOGGER.isInfoEnabled()){
-                LOGGER.info("----------------------------------");
+        if (LOGGER.isErrorEnabled()){
+                LOGGER.error("----------------------------------");
             if(obsolete) {
-                LOGGER.info("- OBSOLETE GEOBATCH_DATA_DIR: " + baseConfigDir.getAbsolutePath());
-                LOGGER.info("- Please update this configuration using GEOBATCH_CONFIG_DIR setting");
-            } else
-                LOGGER.info("- GEOBATCH_CONFIG_DIR: " + baseConfigDir.getAbsolutePath());
-            LOGGER.info("----------------------------------");
+                LOGGER.error("- OBSOLETE GEOBATCH_DATA_DIR: " + baseConfigDir.getAbsolutePath());
+                LOGGER.error("- Please update this configuration using GEOBATCH_CONFIG_DIR setting");
+            } else {
+                LOGGER.error("- GEOBATCH_CONFIG_DIR: " + baseConfigDir.getAbsolutePath());
+            }
+            LOGGER.error("----------------------------------");
         }
 
         // and now for the TEMP_DIR
 
         baseTempDir = retrieveConfiguredDir(GEOBATCH_TEMP_DIR);
         if(baseTempDir == null) {
-            if (LOGGER.isErrorEnabled())
+            if (LOGGER.isErrorEnabled()) {
                 LOGGER.error("No " + GEOBATCH_TEMP_DIR+ " configuration was found. Will be forced.");
+            }
             baseTempDir = new File(baseConfigDir, "temp");
             if (!baseTempDir.exists()){
                 baseTempDir.mkdir();
@@ -118,10 +128,10 @@ public class DataDirHandler implements ApplicationContextAware {
                 }
             }
         }
-        if (LOGGER.isInfoEnabled()){
-            LOGGER.info("----------------------------------");
-            LOGGER.info("- GEOBATCH_TEMP_DIR: " + baseTempDir.getAbsolutePath());
-            LOGGER.info("----------------------------------");
+        if (LOGGER.isErrorEnabled()){
+            LOGGER.error("----------------------------------");
+            LOGGER.error("- GEOBATCH_TEMP_DIR: " + baseTempDir.getAbsolutePath());
+            LOGGER.error("----------------------------------");
         }
     }
 
@@ -159,19 +169,25 @@ public class DataDirHandler implements ApplicationContextAware {
      * @throws IllegalStateException
      */
     protected File forceDataDir() throws NullPointerException, IllegalStateException {
+
+        // == PLEASE NOTE
+        // the LOGGER.error() calls here are not to log errors
+        // BUT to log importatant configuration info
+        // Please do not turn them into info()
+
         File ret = null;
         if ( this.applicationContext instanceof WebApplicationContext ) {
             String rootDir = ((WebApplicationContext) applicationContext).getServletContext().getRealPath("/WEB-INF/data");
             if ( rootDir != null ) {
                 ret = new File(rootDir);
-                if ( LOGGER.isInfoEnabled() ) {
-                    LOGGER.info("data dir automatically set inside webapp");
+                if ( LOGGER.isErrorEnabled() ) {
+                    LOGGER.error("data dir automatically set inside webapp");
                 }
             }
         } else {
             ret = new File("./data");
-            if ( LOGGER.isInfoEnabled() ) {
-                LOGGER.info("data dir automatically set in current dir");
+            if ( LOGGER.isErrorEnabled() ) {
+                LOGGER.error("data dir automatically set in current dir");
             }
         }
 
@@ -211,15 +227,15 @@ public class DataDirHandler implements ApplicationContextAware {
             String prop = System.getProperty(propertyName);
             if ( prop != null ) {
                 ret = new File(prop);
-                if ( LOGGER.isInfoEnabled() ) {
-                    LOGGER.info(propertyName + " read from property");
+                if ( LOGGER.isErrorEnabled() ) {
+                    LOGGER.error(propertyName + " read from property");
                 }
             } else {
                 prop = System.getenv(propertyName);
                 if ( prop != null ) {
                     ret = new File(prop);
-                    if ( LOGGER.isInfoEnabled() ) {
-                        LOGGER.info(propertyName + " read from environment var");
+                    if ( LOGGER.isErrorEnabled() ) {
+                        LOGGER.error(propertyName + " read from environment var");
                     }
                 } else {
                     if ( this.applicationContext instanceof WebApplicationContext ) {
@@ -228,8 +244,8 @@ public class DataDirHandler implements ApplicationContextAware {
                         String rootDir = servletContext.getInitParameter(propertyName);
                         if ( rootDir != null ) {
                             ret = new File(rootDir);
-                            if ( LOGGER.isInfoEnabled() ) {
-                                LOGGER.info(propertyName + " read from servlet init param");
+                            if ( LOGGER.isErrorEnabled() ) {
+                                LOGGER.error(propertyName + " read from servlet init param");
                             }
                         }
                     }

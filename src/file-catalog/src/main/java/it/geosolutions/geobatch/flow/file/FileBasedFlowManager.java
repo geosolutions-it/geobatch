@@ -285,7 +285,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         }
 
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Flow: " + flowCfg.getId() + " - config dir is now set to -> " + ret);
+            LOGGER.info("Flow: " + flowCfg.getId() + " - conf dir is now set to -> " + ret);
         }
         return ret;
     }
@@ -314,7 +314,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             throw new IllegalStateException("Can't write temp dir (" + ret + ")");
 
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Flow: " + flowConfiguration.getId() + " - config dir is now set to -> " + ret);
+            LOGGER.info("Flow: " + flowConfiguration.getId() + " - temp dir is now set to -> " + ret);
         }
         return ret;
     }
