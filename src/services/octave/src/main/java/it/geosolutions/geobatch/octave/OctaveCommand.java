@@ -64,4 +64,10 @@ public class OctaveCommand {
         return executed;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()+"[" + command + (executed?" X":"")+"]";
+    }
+
+
 }

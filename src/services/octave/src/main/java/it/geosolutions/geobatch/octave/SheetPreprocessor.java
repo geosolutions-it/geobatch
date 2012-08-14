@@ -66,11 +66,15 @@ public class SheetPreprocessor {
                 // pre-process all functions in the sheet
                 while (sheet.hasFunctions()){
                     OctaveFunctionFile f=sheet.popFunction();
-                    SheetBuilder sb=null;
-                    if ((sb=preprocessors.get(f.getName()))!=null){
+                    SheetBuilder sb = preprocessors.get(f.getName());
+                    if (sb != null) {
                         // build the executable sheet
                         try {
-                            OctaveExecutableSheet oes=sb.buildSheet(f);
+                            if(LOGGER.isDebugEnabled()) {
+                                LOGGER.debug("Preprocessing sheet " + es.getName() + ", function" + f.getName());
+                            }
+
+                            OctaveExecutableSheet oes = sb.buildSheet(f);
                             /*
                              * TODO check this could be redundant
                              * probably we may want to add on top of the list a sheet
@@ -85,8 +89,8 @@ public class SheetPreprocessor {
                             env.push(oes);
                         } catch (Exception oe){
                             if (LOGGER.isErrorEnabled())
-                                LOGGER.error("Unable to build the sheet named: "+f.getName()
-                                        +" message is:\n"+oe.getLocalizedMessage());
+                                LOGGER.error("Unable to build the sheet '"+es.getName()+"', file '"+f.getName()
+                                        +"' : "+oe.getLocalizedMessage(), oe);
                         }
                     }
                     else {

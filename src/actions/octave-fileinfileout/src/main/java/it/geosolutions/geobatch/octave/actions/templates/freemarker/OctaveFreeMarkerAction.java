@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 
+import com.thoughtworks.xstream.XStream;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -45,6 +46,9 @@ import org.slf4j.LoggerFactory;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import dk.ange.octave.exception.OctaveEvalException;
+import java.io.StringWriter;
+import java.util.HashMap;
+import javax.xml.bind.JAXB;
 
 
 public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
@@ -68,9 +72,18 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
     @XStreamOmitField
     protected static String SOURCEDIR_KEY="SOURCEDIR";
 
-    // to set at runtime
+    /**
+     * @deprecated Use TEMPDIR_KEY instead
+     */
     @XStreamOmitField
     protected static String WORKINGDIR_KEY="WORKINGDIR";
+
+    /**
+     * TODO: string content should be set to "TEMPDIR", but I::ETj guess this would break some templates.
+     */
+    // to set at runtime
+    @XStreamOmitField
+    protected static String TEMPDIR_KEY="WORKINGDIR";
 
     @XStreamOmitField
     protected static String SHEETNAME_KEY="SHEETNAME";
@@ -144,51 +157,60 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
                 /**
                  * build absolute output file name
                  */
-                String out_name=getTempDir().getAbsolutePath()+buildFileName();
+                String out_name = new File(getTempDir(), buildFileName()).getAbsolutePath();
                 
-                Map<String, Object> root=config.getRoot();
-                if (root!=null){
+                Map<String, Object> root = config.getRoot() != null ?
+                        config.getRoot() :
+                        new HashMap<String, Object>();
+
 //                  root.put(config.FUNCTION_KEY, getFunction());
-                    if(LOGGER.isInfoEnabled()){
-                        LOGGER.info(
-                                "Preprocessing functions on arguents: \nFile_in: "+in_name
-                                +" \nFile_out: "+out_name);
-                    }
-                    root.put(OctaveFreeMarkerAction.IN_FILE_KEY, in_name);
-                    root.put(OctaveFreeMarkerAction.OUT_FILE_KEY, out_name);
-                    StringBuilder sb=new StringBuilder(getTempDir().getAbsolutePath());//TODO Path.getAbsolutePath(config.getWorkingDirectory())+File.separator);
-                    if(LOGGER.isInfoEnabled()){
-                        LOGGER.info(
-                                "WorkingDir: "+sb.toString());
-                    }
-                    root.put(OctaveFreeMarkerAction.WORKINGDIR_KEY, sb.toString());
-                    sb=null;
-
-                    /**
-                     * Build the SheetBuilder using a FreeMarkerSheetBuilder which get
-                     * two files:
-                     * in file (coming from events)
-                     * out file build into the extending class  
-                     */
-                    SheetBuilder fb=new FreeMarkerSheetBuilder(config);
-
-                    String name=null;
- // TODO this is a very bad check! add checks!
-                    OctaveExecutableSheet es=env.getSheet(0);
-                    if (es!=null){
-                        if (es instanceof OctaveFunctionSheet){
-                            OctaveFunctionSheet fs=(OctaveFunctionSheet) es;
-                            name=fs.getFunctions().get(0).getName();
-                        }
-                    }
-
-                    //add the SheetBuilder to the preprocessor map
-                    preprocessor.addBuilder(name, fb);
+                if(LOGGER.isInfoEnabled()){
+                    LOGGER.info(
+                            "Preprocessing functions on arguments: \nFile_in: "+in_name
+                            +" \nFile_out: "+out_name);
                 }
-                else
-                    throw new NullPointerException("The substitution root map cannot be null");
-                
-                
+                root.put(OctaveFreeMarkerAction.IN_FILE_KEY, in_name);
+                root.put(OctaveFreeMarkerAction.OUT_FILE_KEY, out_name);
+                StringBuilder sb=new StringBuilder(getTempDir().getAbsolutePath());//TODO Path.getAbsolutePath(config.getWorkingDirectory())+File.separator);
+                if(LOGGER.isInfoEnabled()){
+                    LOGGER.info("Temp dir: "+sb.toString());
+                }
+                root.put(OctaveFreeMarkerAction.TEMPDIR_KEY, sb.toString());
+                sb=null;
+
+                /**
+                 * Build the SheetBuilder using a FreeMarkerSheetBuilder which get
+                 * two files:
+                 * in file (coming from events)
+                 * out file build into the extending class  
+                 */
+                SheetBuilder fb = new FreeMarkerSheetBuilder(getConfigDir(), root);
+
+                String name=null;
+ // TODO this is a very bad check! add checks!
+                OctaveExecutableSheet es=env.getSheet(0);
+                if (es!=null){
+                    if(LOGGER.isDebugEnabled()) {
+//                        StringWriter sw = new StringWriter();
+//                        JAXB.marshal(es, sw);
+                        LOGGER.debug("Executable sheet :\n" + es);
+                    }
+
+                    if (es instanceof OctaveFunctionSheet){
+                        OctaveFunctionSheet fs=(OctaveFunctionSheet) es;
+                        name=fs.getFunctions().get(0).getName();
+                    } else {
+                        throw new ActionException(this, "Unknown sheet type " + es);
+                    }
+                } else {
+                    throw new ActionException(this, "No sheets found");
+                }
+
+                //add the SheetBuilder to the preprocessor map
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Adding builder for " + name);
+                }
+                preprocessor.addBuilder(name, fb);
 
                 /**
                  * add output file to the event queue

@@ -23,10 +23,10 @@
 package it.geosolutions.geobatch.octave;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import dk.ange.octave.exception.OctaveException;
+import java.util.Iterator;
 
 public abstract class SheetBuilder {
     
@@ -54,9 +54,9 @@ public abstract class SheetBuilder {
         if (returns!=null){
             if (returns.size()>1) {
                 Iterator<SerializableOctaveObject<?>> i=returns.iterator();
-                script.append("["+i.next());
+                script.append("[").append(i.next());
                 while (i.hasNext()){
-                    script.append(","+i.next().getName());
+                    script.append(",").append(i.next().getName());
                 }
                 script.append("]=");
             }
@@ -67,7 +67,7 @@ public abstract class SheetBuilder {
              */
             else if (returns.size()==1){
                 Iterator<SerializableOctaveObject<?>> i=returns.iterator();
-                script.append(i.next().getName()+"=");
+                script.append(i.next().getName()).append("=");
             }
             /**
              * else
@@ -88,10 +88,11 @@ public abstract class SheetBuilder {
              * ... function(arg1,arg2,...,argN);
              */
             if (arguments.size()>1) {
-                Iterator<SerializableOctaveObject<?>> i=arguments.iterator();
-                script.append("("+i.next().getName());
-                while (i.hasNext()){
-                    script.append(","+i.next().getName());
+                script.append("(");
+                for (Iterator<SerializableOctaveObject<?>> argIter = arguments.iterator(); argIter.hasNext();) {
+                    script.append(argIter.next().getName());
+                    if(argIter.hasNext())
+                        script.append(",");
                 }
                 script.append(")");
             }
@@ -102,7 +103,7 @@ public abstract class SheetBuilder {
              */
             else if (arguments.size()==1){
                 Iterator<SerializableOctaveObject<?>> i=arguments.iterator();
-                script.append("("+i.next().getName()+")");
+                script.append("(").append(i.next().getName()).append(")");
             }
             /**
              * else

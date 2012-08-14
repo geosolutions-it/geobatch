@@ -298,6 +298,24 @@ public class OctaveExecutableSheet {
     public void pushReturns(List<SerializableOctaveObject<?>> rs){
         returns.addAll(rs);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(getClass().getSimpleName())
+                .append('[')
+                .append(name);
+        sb.append(" Commands{");
+        for (OctaveCommand c : commands) {
+            sb.append(c).append(' ');
+        }
+        sb.append('}');
+        sb.append(']');
+
+        return sb.toString();
+    }
+
 }
 
 

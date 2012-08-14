@@ -44,18 +44,20 @@ import com.thoughtworks.xstream.XStreamException;
 import dk.ange.octave.exception.OctaveException;
 import dk.ange.octave.exception.OctaveParseException;
 import freemarker.template.TemplateException;
+import java.io.File;
 
 public class FreeMarkerSheetBuilder extends SheetBuilder {
     private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerSheetBuilder.class.toString());
     
-    private OctaveFreeMarkerConfiguration conf=null;
+    private File templateConfigDir;
+    private Object root;
     
     /**
      * 
      */
-    public FreeMarkerSheetBuilder(OctaveFreeMarkerConfiguration config){
-        super();
-        conf=config;
+    public FreeMarkerSheetBuilder(File templateConfigDir, Object root) {
+        this.templateConfigDir = templateConfigDir;
+        this.root = root;
     }
     
     /**
@@ -66,7 +68,11 @@ public class FreeMarkerSheetBuilder extends SheetBuilder {
      */
     @Override
     protected OctaveExecutableSheet buildSheet(OctaveFunctionFile off) throws OctaveException, IllegalArgumentException, IOException {
-        
+
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Building sheet " + off.getName() + " in dir " + templateConfigDir);
+        }
+
         XStream stream=new XStream();
         stream.processAnnotations(OctaveFunctionFile.class);
         //stream.processAnnotations(SerializableOctaveFile.class);
@@ -80,26 +86,26 @@ public class FreeMarkerSheetBuilder extends SheetBuilder {
             //XStreamException - if the object cannot be serialized
             String message="XStreamException - the object cannot be serialized.\n"
                 +xse.getLocalizedMessage();
-            if (LOGGER.isInfoEnabled())
-                LOGGER.info(message);
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(message);
             throw new OctaveParseException(message);
         }
         // the filter for this object
-        final FreeMarkerFilter filter=new FreeMarkerFilter(conf.getOverrideConfigDir(), reader); // TODO checkme
+        final FreeMarkerFilter filter=new FreeMarkerFilter(templateConfigDir, reader); // TODO checkme
         // the stream to a byte array (buffer)
         final ByteArrayOutputStream outStream= new ByteArrayOutputStream();
         // a writer to that buffer
         final OutputStreamWriter writer = new OutputStreamWriter(outStream);
         try {
             // process the input
-            filter.process(filter.wrapRoot(conf.getRoot()), writer);
+            filter.process(filter.wrapRoot(root), writer);
             
             outStream.flush();
             writer.close();
         }
         catch (TemplateException te){
             //TemplateException if an exception occurs during template processing
-            String message="FreeMarkerSheetBuilder: XTemplateException - an exception occurs during template processing.\n"
+            String message="FreeMarkerSheetBuilder: XTemplateException - an exception occurred while template processing.\n"
                 +te.getLocalizedMessage();
             if (LOGGER.isInfoEnabled())
                 LOGGER.info(message);
@@ -107,7 +113,7 @@ public class FreeMarkerSheetBuilder extends SheetBuilder {
         }
         catch (IOException ioe){
             //IOException if an I/O exception occurs during writing to the writer.
-            String message="FreeMarkerSheetBuilder: IOException - I/O exception occurs during writing to the writer.\n"
+            String message="FreeMarkerSheetBuilder: IOException - I/O exception occurred while writing.\n"
                 +ioe.getLocalizedMessage();
             if (LOGGER.isInfoEnabled())
                 LOGGER.info(message);
