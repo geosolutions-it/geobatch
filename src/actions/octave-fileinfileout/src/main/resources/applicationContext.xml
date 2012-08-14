@@ -16,9 +16,5 @@
 	<bean id="OctaveFreeMarkerAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.templates.freemarker.OctaveFreeMarkerAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
-    
-    <bean id="OctaveAliasRegistrar" class="it.geosolutions.geobatch.octave.actions.OctaveAliasRegistrar" lazy-init="false">
-        <constructor-arg ref="aliasRegistry" />
-    </bean>
   	
 </beans>
