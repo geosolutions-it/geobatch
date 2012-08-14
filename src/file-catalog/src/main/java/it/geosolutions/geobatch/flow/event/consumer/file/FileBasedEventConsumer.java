@@ -595,10 +595,11 @@ public class FileBasedEventConsumer
     @Override
     protected void setupAction(BaseAction action, int step) throws IllegalStateException {
         // random id
+        //
         action.setId(UUID.randomUUID().toString());
         
         // tempDir
-        String actionTempDirName = step + "_" + action.getName();
+        String actionTempDirName = step + "_" + action.getConfiguration().getId();
         File actionTempDir = new File(flowInstanceTempDir, actionTempDirName);
         if (!actionTempDir.mkdirs()) {
             throw new IllegalStateException("Unable to create the action temporary dir: " + actionTempDir);
