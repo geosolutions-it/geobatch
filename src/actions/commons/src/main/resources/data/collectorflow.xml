@@ -1,7 +1,7 @@
 <FlowConfiguration>
 
-    <id>collectorflow</id>
-    <description>collectorflow</description>
+    <id>collectorFlow</id>
+    <description>Get a pack of shapefiles.</description>
     <name>collectorflow</name>
 
     <autorun>true</autorun>
@@ -28,7 +28,7 @@
         <serviceID>fsEventGeneratorService</serviceID>
         
         <wildCard>*</wildCard>
-        <watchDirectory>collectorflow/in</watchDirectory>
+        <watchDirectory>collectorFlow/in</watchDirectory>
         <osType>OS_UNDEFINED</osType>
         <eventType>DIR_CREATED</eventType>
     </EventGeneratorConfiguration>

@@ -1,8 +1,8 @@
 <FlowConfiguration>
 
-	<id>moveflow</id>
-	<description>moveflow</description>
-	<name>moveflow</name>
+	<id>moveFlow</id>
+	<description>Get a pack of shapefiles.</description>
+	<name>moveFlow</name>
 
 	<autorun>true</autorun>
 
@@ -19,7 +19,7 @@
 			<description>Get a pack of shapefiles.</description>
 			<destination>/</destination>
 
-			<timeout></timeout>
+			<timeout>1000</timeout>
 		</MoveConfiguration>
 
 	</EventConsumerConfiguration>
@@ -28,7 +28,7 @@
 		<serviceID>fsEventGeneratorService</serviceID>
 
 		<wildCard>*</wildCard>
-		<watchDirectory>moveflow/in</watchDirectory>
+		<watchDirectory>moveFlow/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>DIR_CREATED</eventType>
 	</EventGeneratorConfiguration>

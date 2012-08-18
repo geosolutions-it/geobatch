@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# supported actions
-PROFILES="geotiff,shapefile,task-executor,freemarker,scripting,commons"
+#profile needed for base demo (commons + geotiff + shapefiles)
+PROFILES="geotiff,shapefile,commons"
 
-# unsupported
+#profiles for base demo + task executor 
+#PROFILES="geotiff,shapefile,task-executor,freemarker,scripting,commons"
+
+# other profiles unsupported yet
 # PROFILES="$PROFILES,xstream,shp2pg,geonetwork,geostore,octave,jmx,jms"
 
 # configure the command
