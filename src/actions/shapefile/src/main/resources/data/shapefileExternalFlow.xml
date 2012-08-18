@@ -24,7 +24,7 @@
 			<dirty>false</dirty>
 			<failIgnored>false</failIgnored>
 			<!-- Example for linux user, it must be an absolute path, this field is mandatory. -->
-			<destination>opt/GEOBATCH_CONFIG_DIR/shapefileflowExt/out</destination>
+			<!-- <destination>opt/GEOBATCH_CONFIG_DIR/shapefileflowExt/out</destination> -->
 			<!-- Example for windows user, it must be an absolute path, this field is mandatory. -->
 			<destination>c:\GEOBATCH_tmpExtractDir</destination>
 		</ExtractConfiguration>
