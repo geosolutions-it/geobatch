@@ -4,7 +4,7 @@
   <parent>
     <artifactId>gb-dao</artifactId>
     <groupId>it.geosolutions.geobatch</groupId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3-BETA2</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
