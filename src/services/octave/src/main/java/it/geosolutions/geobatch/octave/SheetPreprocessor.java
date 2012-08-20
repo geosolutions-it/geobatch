@@ -51,6 +51,11 @@ public class SheetPreprocessor {
      * output can be used as a OctaveExecutableSheet
      */
     public final void preprocess(OctaveEnv<OctaveExecutableSheet> env) throws OctaveException {
+
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Preprocessing env " + env.getUniqueID() + " with " + env.size() + " sheets...");
+        }
+
         int size=env.size();
         int i=0;
         while (i<size){
@@ -100,6 +105,10 @@ public class SheetPreprocessor {
                         throw new OctaveParseException(message);
                     }
                 }
+            } else {
+                if (LOGGER.isInfoEnabled())
+                    LOGGER.info("Not preprocessing sheet " + es.getName() + " type " + es.getClass().getName());
+
             }
         }
     }

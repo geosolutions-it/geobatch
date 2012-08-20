@@ -28,19 +28,13 @@ import java.util.Map;
 
 /**
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
+ * @author ETj
  *
  */
 public class OctaveFreeMarkerConfiguration extends OctaveActionConfiguration {
     
     private Map<String,Object> root;
-    
-    // TODO MOVE INTO A NURC SPECIFIC CONFIGURATION
-    private String cruise;
-    private String model;
-    private String extension;
-    
-    private String outDir;
-    
+        
     public OctaveFreeMarkerConfiguration(OctaveFreeMarkerConfiguration ac){
         super(ac);
         root=new HashMap<String,Object>();
@@ -49,61 +43,4 @@ public class OctaveFreeMarkerConfiguration extends OctaveActionConfiguration {
     public Map<String,Object> getRoot(){
         return root;
     }
-
-    /**
-     * @param cruise the cruise to set
-     */
-    public void setCruise(String cruise) {
-        this.cruise = cruise;
-    }
-
-    /**
-     * @return the cruise
-     */
-    public String getCruise() {
-        return cruise;
-    }
-
-    /**
-     * @param model the model to set
-     */
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    /**
-     * @return the model
-     */
-    public String getModel() {
-        return model;
-    }
-
-    /**
-     * @param extension the extension to set
-     */
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
-
-    /**
-     * @return the extension
-     */
-    public String getExtension() {
-        return extension;
-    }
-
-    /**
-     * @param outDir the outDir to set
-     */
-    public void setOutDir(String outDir) {
-        this.outDir = outDir;
-    }
-
-    /**
-     * @return the outDir
-     */
-    public String getOutDir() {
-        return outDir;
-    }
-
 }

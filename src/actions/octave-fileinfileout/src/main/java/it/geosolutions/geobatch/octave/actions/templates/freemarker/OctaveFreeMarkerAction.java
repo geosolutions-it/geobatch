@@ -92,23 +92,7 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
         super(actionConfiguration);
         config=actionConfiguration;
     }
-    
-    /**
-     *  set the output dir of this action
-     *  @note this should be relative path as 
-     *  it will be a sub dir of the working dir
-     */
-    protected String getOutputDir(){
-        return config.getOutDir();
-    }
-    
-    /**
-     * @return a string representing the output file name of the script
-     */
-    protected String buildFileName(){
-        return config.getCruise()+"_"+config.getModel()+"-Forecast-T" + new Date().getTime()+config.getExtension();
-    }
-
+        
     /**
      * Action to execute on the FileSystemEvent event queue.
      * 
@@ -136,47 +120,31 @@ public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
                  * - check write permissions
                  */
 //                String out_dir_name=config.getOverrideConfigDir()+File.separator+getOutputDir()+File.separator;
-                
-                File out_dir=getOutputDir()!=null?Path.findLocation(new File(getOutputDir()),getTempDir()):getTempDir(); // TODO check me
-                if (!out_dir.exists()){
-                    if (!out_dir.mkdir()){
-                        throw new IOException("Unable to create the output dir: "+out_dir);
-                    }
-                    else{
-                        if (!out_dir.canWrite())
-                            throw new IOException("Can't write to the output dir: "+out_dir+" check permissions");
-                    }
-                }
-                
-                /**
+                                
+                /*
                  * build input file name
                  * uncompress the input file (if needed)
                  */
                 String in_name=Extract.extract(ev.getSource().getAbsolutePath());
                 
-                /**
-                 * build absolute output file name
-                 */
-                String out_name = new File(getTempDir(), buildFileName()).getAbsolutePath();
+                // build absolute output file name
+                String out_name = new File(getTempDir(), ev.getSource().getName()).getAbsolutePath();
                 
                 Map<String, Object> root = config.getRoot() != null ?
                         config.getRoot() :
                         new HashMap<String, Object>();
 
 //                  root.put(config.FUNCTION_KEY, getFunction());
-                if(LOGGER.isInfoEnabled()){
-                    LOGGER.info(
-                            "Preprocessing functions on arguments: \nFile_in: "+in_name
-                            +" \nFile_out: "+out_name);
-                }
-                root.put(OctaveFreeMarkerAction.IN_FILE_KEY, in_name);
+                root.put(OctaveFreeMarkerAction.IN_FILE_KEY,  in_name);
                 root.put(OctaveFreeMarkerAction.OUT_FILE_KEY, out_name);
-                StringBuilder sb=new StringBuilder(getTempDir().getAbsolutePath());//TODO Path.getAbsolutePath(config.getWorkingDirectory())+File.separator);
+                root.put(OctaveFreeMarkerAction.TEMPDIR_KEY,  getTempDir().getAbsolutePath());
+
                 if(LOGGER.isInfoEnabled()){
-                    LOGGER.info("Temp dir: "+sb.toString());
+                    LOGGER.info("Preprocessing functions on arguments: ");
+                    for (Map.Entry<String, Object> entry : root.entrySet()) {
+                        LOGGER.info("Arg '"+entry.getKey()+"' is '"+entry.getValue()+"'");
+                    }
                 }
-                root.put(OctaveFreeMarkerAction.TEMPDIR_KEY, sb.toString());
-                sb=null;
 
                 /**
                  * Build the SheetBuilder using a FreeMarkerSheetBuilder which get

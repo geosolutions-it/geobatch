@@ -32,6 +32,7 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 
 /*
  * @author Carlo Cancellieri
+ * @author ETj
  *
  */
 @XStreamAlias("OctaveConfiguration")

@@ -45,21 +45,13 @@ public class OctaveAliasRegistrar extends AliasRegistrar {
         registry.putAlias(
                 "OctaveConfiguration",OctaveActionConfiguration.class);
         
-        registry.putAlias(
-                "octave",OctaveEnv.class);
-        registry.putAlias(
-                "sheet",OctaveExecutableSheet.class);
-        registry.putAlias(
-                "sheet",OctaveFunctionSheet.class);
-        registry.putAlias(
-                "OctaveCommand",OctaveCommand.class);
-        registry.putAlias(
-                "OctaveFunction",OctaveFunctionFile.class);
-        registry.putAlias(
-                "OctaveFile",SerializableOctaveFile.class);
-        registry.putAlias(
-                "OctaveString",SerializableOctaveString.class);
-        registry.putAlias(
-                "var",SerializableOctaveObject.class);
+        registry.putAlias("octave",OctaveEnv.class);
+        registry.putAlias("sheet",OctaveExecutableSheet.class);
+        registry.putAlias("sheet",OctaveFunctionSheet.class);
+        registry.putAlias("OctaveCommand",OctaveCommand.class);
+        registry.putAlias("OctaveFunction",OctaveFunctionFile.class);
+        registry.putAlias("OctaveFile",SerializableOctaveFile.class);
+        registry.putAlias("OctaveString",SerializableOctaveString.class);
+        registry.putAlias("var",SerializableOctaveObject.class);
     }
 }
