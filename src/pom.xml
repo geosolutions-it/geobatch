@@ -78,7 +78,7 @@
 
 		<tools.version>1.1.1</tools.version>
 		<geoserver.manager.version>1.4-SNAPSHOT</geoserver.manager.version>
-		<geostore.version>1.0-SNAPSHOT</geostore.version>
+		<geostore.version>1.0.1</geostore.version>
 		<gt.version>8.0-RC2</gt.version>
 		<imageio-ext.version>1.2-M102011</imageio-ext.version>
 		<spring.version>3.0.3.RELEASE</spring.version>
@@ -861,6 +861,11 @@
 			<dependency>
 				<groupId>org.geotools.jdbc</groupId>
 				<artifactId>gt-jdbc-postgis</artifactId>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-postgis-versioned</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
 			<dependency>
