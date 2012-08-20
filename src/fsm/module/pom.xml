@@ -10,14 +10,14 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-fsm</artifactId>
-    <version>1.3-BETA3</version>
+    <version>1.3-SNAPSHOT</version>
   </parent>
   <!-- ===================================================================== -->
   <!--     Module description                                                -->
   <!-- ===================================================================== -->
   <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb-fsm-module</artifactId>
-  <version>1.3-BETA3</version>
+  <version>1.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>File System Monitor Core modules</name>
   <description>File System Monitor Core modules</description>
