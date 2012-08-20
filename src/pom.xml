@@ -70,8 +70,7 @@
 
 	<properties>
 		<root.basedir>${project.basedir}</root.basedir>
-		<site.basedir>${root.basedir}/build/</site.basedir>
-		<site.outdir>${site.basedir}/${project.version}/</site.outdir>
+		<site.outdir>${root.basedir}/build/${project.version}/</site.outdir>
 		<doc.sphinx.source>${project.basedir}/doc/source/</doc.sphinx.source>
 		<doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
 
@@ -1663,19 +1662,6 @@
 				<version>2.2.2</version>
 				<configuration>
 					<tagNameFormat>v@{project.version}</tagNameFormat>
-				</configuration>
-			</plugin>
-			<!-- site -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<locales>en</locales>
-					<!--outputDirectory>${basedir}/doc/build/all/${project.version}/maven</outputDirectory-->
-					<outputDirectory>${site.outdir}/maven</outputDirectory>
-					<inputDirectory>${site.basedir}</inputDirectory> <!-- site to deploy -->
-					<!--siteDirectory>${site.basedir}</siteDirectory--> <!-- site to deploy -->
 				</configuration>
 			</plugin>
 			<!-- sphinx -->
