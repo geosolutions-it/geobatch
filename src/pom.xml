@@ -2,8 +2,7 @@
 <!-- ======================================================================= 
 	GeoSolutions GeoBatch Project http://geobatch.geo-solutions.it Copyright 
 	(C) 2008-2011 GeoSolutions S.A.S. http://www.geo-solutions.it -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<!-- =========================================================== -->
 	<!-- Project Description -->
@@ -70,15 +69,16 @@
         </mailingLists>
 
 	<properties>
-		<root.basedir>${project.basedir}</root.basedir>
-		<site.basedir>${root.basedir}/build/</site.basedir>
-		<site.outdir>${site.basedir}/${project.version}/</site.outdir>
+     <root.basedir>${project.basedir}</root.basedir>
+     <site.basedir>${root.basedir}/build/</site.basedir>
+       <site.outdir>${site.basedir}/${project.version}/</site.outdir>
 		<doc.sphinx.source>${project.basedir}/doc/source/</doc.sphinx.source>
 		<doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
 
 		<tools.version>1.1.1</tools.version>
-		<geoserver.manager.version>1.4-SNAPSHOT</geoserver.manager.version>
 		<geostore.version>1.0.1</geostore.version>
+		<geoserver.manager.version>1.4.3</geoserver.manager.version>
+
 		<gt.version>8.0-RC2</gt.version>
 		<imageio-ext.version>1.2-M102011</imageio-ext.version>
 		<spring.version>3.0.3.RELEASE</spring.version>
@@ -1671,19 +1671,18 @@
 					<tagNameFormat>v@{project.version}</tagNameFormat>
 				</configuration>
 			</plugin>
-			<!-- site -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<locales>en</locales>
-					<!--outputDirectory>${basedir}/doc/build/all/${project.version}/maven</outputDirectory-->
-					<outputDirectory>${site.outdir}/maven</outputDirectory>
-					<inputDirectory>${site.basedir}</inputDirectory> <!-- site to deploy -->
-					<!--siteDirectory>${site.basedir}</siteDirectory--> <!-- site to deploy -->
-				</configuration>
-			</plugin>
+ 	
+      <!-- site -->
+      <plugin>	  	
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <locales>en</locales>
+          <outputDirectory>${site.outdir}/maven</outputDirectory>
+          <inputDirectory>${site.basedir}</inputDirectory> <!-- site to deploy -->
+        </configuration>	  	
+      </plugin>			
 			<!-- sphinx -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -1,29 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 
-	<id>shapeFile</id>	
-	<description>Sample injection of sparse shapefiles</description>
+	<id>shapefileExternalFlow</id>	
+	<description>Check and publish on a running geoserver instance a collection of shapefiles. The publication process is made in EXTERNAL mode.</description>
 	<name>Shapefile</name>
 
-	<!-- you must manually start this action -->
-	<autorun>false</autorun>
+	<autorun>true</autorun>
 
 	<EventConsumerConfiguration>
 
 		<listenerId>ConsumerLogger0</listenerId>
-		<listenerId>Cumulator</listenerId> 	
+		<!-- <listenerId>Cumulator</listenerId> 	 -->
+		<listenerId>StatusActionLogger0</listenerId>
+
+
+		<!-- Extractor and Collector Actions before GeoServerShapeActionConfiguration are necessary for EXTERNAL geoserver publication-->
+		<ExtractConfiguration>
+			<serviceID>ExtractGeneratorService</serviceID>			
+			<id>extract</id>
+			<description>description</description>
+			<name>ExtractConfiguration</name>
+			<listenerId>StatusActionLogger0</listenerId>
+			<dirty>false</dirty>
+			<failIgnored>false</failIgnored>
+			<!-- Example for linux user, it must be an absolute path, this field is mandatory. -->
+			<!-- <destination>opt/GEOBATCH_CONFIG_DIR/shapefileflowExt/out</destination> -->
+			<!-- Example for windows user, it must be an absolute path, this field is mandatory. -->
+			<destination>c:\GEOBATCH_tmpExtractDir</destination>
+		</ExtractConfiguration>
+		
+		 <CollectorConfiguration>
+            <serviceID>CollectorGeneratorService</serviceID>
+            <listenerId>StatusActionLogger0</listenerId>
+            <id>collect</id>
+            <name>CollectShapefiles</name>
+            <description>Get a pack of shapefiles.</description>
+            <listenerId>Cumulator</listenerId>
+            <wildcard>*.shp</wildcard>
+            <deep>-1</deep>
+        </CollectorConfiguration>
+		
 		
 		<GeoServerShapeActionConfiguration>
 			<serviceID>ShapeFileGeoServerService</serviceID>
 			<id>shapefile</id>
 			<name>ShapeFileIngestion</name>
 			<description>Get a pack of shapefiles (zipped) and ingest them into a GeoServer instance.</description>
-			<!-- 'point', 'polygon' or 'line', depends on shapefile geometry type. Leave blank for autoconfiguration and make sure that geoserver has these styles configured -->
+			<listenerId>StatusActionLogger0</listenerId>
+			<listenerId>Cumulator</listenerId>
+			<!-- 'point' or 'polygon', depends on shapefile type-->
 			<defaultStyle></defaultStyle>
 			<!-- used in case we do not have a valid Coordinate Reference System in the shapefile -->
 			<crs>EPSG:4326</crs>
 			<envelope /><!-- let GeoServer autoconfigure it -->
-			<dataTransferMethod>DIRECT</dataTransferMethod><!-- direct upload to GeoServer, EXTERNAL mode need more other 2 action before this. See shapefileflowExt.xml -->
+			<dataTransferMethod>EXTERNAL</dataTransferMethod><!-- don't upload shapefiles directly on geoserver (like DIRECT mode) but put the shapefile in an external directory and notify geoserver -->
 			<wmsPath>/</wmsPath>
 			<!-- use alphanumeric characters, separate word with '_'  -->
 			<defaultNamespace>default_workspace</defaultNamespace>
@@ -32,7 +62,7 @@
 			
 			<charset>UTF-8</charset>
 			<createSpatialIndex>true</createSpatialIndex>
-			<!-- better use 'true' on linux and 'false' on windows because of memorymapped buffering isn't well supported on windows -->
+			<!-- better use 'true' on linux and 'false' on windows because of memorymapped isn't well supported on windows -->
 			<memoryMappedBuffer>false</memoryMappedBuffer> 
 			<cacheAndReuseMemoryMaps>false</cacheAndReuseMemoryMaps>
 			
@@ -47,7 +77,7 @@
 	<EventGeneratorConfiguration>
 		<serviceID>fsEventGeneratorService</serviceID>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>shapeFile/in</watchDirectory>
+		<watchDirectory>shapefileExternalFlow/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 	</EventGeneratorConfiguration>
