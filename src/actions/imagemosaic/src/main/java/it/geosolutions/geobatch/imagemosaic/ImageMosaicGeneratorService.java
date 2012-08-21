@@ -27,8 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Public class to generate JGSFLoDeSS Services
- * 
+ * Public class to generate ImageMosaic actions 
+ * @author Simone Giannecchini, GeoSolutions SAS
  */
 public class ImageMosaicGeneratorService extends
         ImageMosaicService<EventObject, ImageMosaicConfiguration> {
