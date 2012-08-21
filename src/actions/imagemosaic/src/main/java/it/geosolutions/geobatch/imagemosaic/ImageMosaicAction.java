@@ -94,7 +94,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
         try {
             // looking for file
             if (events == null)
-                throw new IllegalArgumentException("Uanble execute action with incoming null parameter");
+                throw new IllegalArgumentException("Unable to execute action with incoming null parameter");
             if (events.size() == 0)
                 throw new IllegalArgumentException("Wrong number of elements for this action: "
                                                    + events.size());

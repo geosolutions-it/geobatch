@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -37,10 +38,10 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.thoughtworks.xstream.InitializationException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -82,24 +83,10 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
     private List<File> addFiles;
 
     @XStreamOmitField
-    private static XStream stream;
+    private static final XStream STREAM;
     static {
-        init();
-    }
-
-    @Deprecated
-    public ImageMosaicCommand() {
-        super("imageMosaicCommand", "imageMosaicCommand", "imageMosaicCommand config");
-    }
-
-    /**
-     * initialize the XStream env
-     * 
-     * @throws InitializationException - in case of an initialization problem
-     */
-    private static void init() throws InitializationException {
-        stream = new XStream();
-        stream.processAnnotations(ImageMosaicCommand.class);
+        STREAM = new XStream();
+        STREAM.processAnnotations(ImageMosaicCommand.class);
     }
 
     /**
@@ -114,13 +101,18 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
      *             checkWrite method denies write access to the file
      * @throws XStreamException - if the object cannot be serialized
      */
-    public static File serialize(ImageMosaicCommand cmd, String path) throws FileNotFoundException,
-        SecurityException {
+    public static File serialize(ImageMosaicCommand cmd, String path) throws IOException {
         final File outFile = new File(path);
-        final FileOutputStream fos = new FileOutputStream(outFile);
-        if (stream == null)
-            init();
-        stream.toXML(cmd, fos);
+        FileOutputStream fos = null;
+        try{
+	        fos=new FileOutputStream(outFile);
+	        STREAM.toXML(cmd, fos);
+        } finally {
+        	if(fos!=null){
+
+    	        IOUtils.closeQuietly(fos);
+        	}
+        }
         return outFile;
     }
 
@@ -136,13 +128,18 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
      *             checkWrite method denies write access to the file
      * @throws XStreamException - if the object cannot be serialized
      */
-    public static ImageMosaicCommand deserialize(File file) throws FileNotFoundException, SecurityException {
-        // try {
-        final InputStream is = new FileInputStream(file);
-        if (stream == null)
-            init();
-        final ImageMosaicCommand cmd = (ImageMosaicCommand)stream.fromXML(is);
-        return cmd;
+    public static ImageMosaicCommand deserialize(File file) throws IOException {
+
+        InputStream is = null;
+        try{
+        	is=new FileInputStream(file);
+            return (ImageMosaicCommand)STREAM.fromXML(is);	
+        } finally {
+        	if(is!=null){
+        		IOUtils.closeQuietly(is);
+        	}
+        }
+
     }
 
     public ImageMosaicCommand(final File baseDir, final List<File> addFiles, final List<File> delFiles) {
@@ -195,10 +192,7 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
 
     @Override
     public String toString() {
-        if (stream == null)
-            init();
-
-        return stream.toXML(this);
+        return STREAM.toXML(this);
 
     }
 
@@ -377,13 +371,6 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
                         LOGGER.warn(e.getMessage());
                 }
             }   
-    }
-    
-    /**
-     * @deprecated use {@link #copyConfigurationIntoCommand(ImageMosaicConfiguration)}
-     */
-    public void overrideImageMosaicCommand(final ImageMosaicConfiguration conf) {
-        copyConfigurationIntoCommand(conf);
     }
 
 }
