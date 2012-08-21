@@ -79,7 +79,7 @@
 		<geostore.version>1.0.1</geostore.version>
 		<geoserver.manager.version>1.4.3</geoserver.manager.version>
 
-		<gt.version>8.0-RC2</gt.version>
+		<gt.version>8.0</gt.version>
 		<imageio-ext.version>1.2-M102011</imageio-ext.version>
 		<spring.version>3.0.3.RELEASE</spring.version>
 		<spring.security.version>3.0.3.RELEASE</spring.security.version>
