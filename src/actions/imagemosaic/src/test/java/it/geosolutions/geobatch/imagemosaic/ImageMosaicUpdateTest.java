@@ -127,11 +127,17 @@ public class ImageMosaicUpdateTest {
 		if (GeoServerTests.skipTest()) {
 			return;
 		}
+		
+		// clean up GS
 		GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
 				GeoServerTests.URL, GeoServerTests.UID, GeoServerTests.PWD);
 		publisher.removeCoverageStore(WORKSPACE, STORE, true);
+		
 		// remove created dir
 		FileUtils.deleteDirectory(BASE_DIR);
+		
+		// delete table
+		
 	}
 
 	@Test
@@ -179,6 +185,7 @@ public class ImageMosaicUpdateTest {
 
 		cmd.setAddFiles(addList);
 		cmd.setDelFiles(delList);
+		cmd.setDeleteGranules(true);
 
 		Assert.assertNotNull(imgMscCmdFile);
 		ImageMosaicCommand.serialize(cmd, imgMscCmdFile.getAbsolutePath());

@@ -23,13 +23,14 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.tools.commons.time.TimeParser;
 import it.geosolutions.tools.io.file.Copy;
+import it.geosolutions.tools.io.file.FileGarbageCollector;
+import it.geosolutions.tools.io.file.FileRemover;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -50,12 +52,9 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.Hints;
-import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.gce.imagemosaic.Utils;
@@ -174,8 +173,7 @@ abstract class ImageMosaicUpdater {
 
 		// get attributes and copy them over
 		try {
-			AbstractGridFormat format = null;
-			format = (AbstractGridFormat) GridFormatFinder.findFormat(granule);
+			AbstractGridFormat format = (AbstractGridFormat) GridFormatFinder.findFormat(granule);
 			if (format == null || (format instanceof UnknownFormat)) {
 				throw new IllegalArgumentException(
 						"Unable to find a reader for the provided file: "
@@ -183,9 +181,7 @@ abstract class ImageMosaicUpdater {
 			}
 			// can throw UnsupportedOperationsException
 			final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) format
-					.getReader(granule, new Hints(
-							Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
-							Boolean.TRUE));
+					.getReader(granule, new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER,Boolean.TRUE));
 
 			GeneralEnvelope originalEnvelope = reader.getOriginalEnvelope();
 
@@ -424,8 +420,7 @@ abstract class ImageMosaicUpdater {
 			SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
 
 			// add some new features
-			final String handle = "ImageMosaicUpdater:"
-					+ Thread.currentThread().getId();
+			final String handle = "ImageMosaicUpdater:"+ Thread.currentThread().getId();
 			Transaction t = new DefaultTransaction(handle);
 			featureStore.setTransaction(t);
 			try {
@@ -759,6 +754,26 @@ abstract class ImageMosaicUpdater {
                     if (LOGGER.isWarnEnabled()) {
                         LOGGER.warn("Failed to remove features.");
                     }
+                } else {
+                	
+                	// should we remove the files for good? #81
+                	// TODO backup
+                	if(cmd.isDeleteGranules()){
+                		for(File granule:cmd.getDelFiles()){
+                			if(!FileUtils.deleteQuietly(granule)){
+                				try{
+                					FileUtils.forceDelete(granule);
+                				}catch (Exception e) {
+									if(LOGGER.isErrorEnabled()){
+										LOGGER.error(e.getLocalizedMessage(),e);
+									}
+									
+									// delete on exit
+									FileUtils.forceDeleteOnExit(granule);
+								}
+                			}
+                		}
+                	}
                 }
             } else {
                 if (LOGGER.isInfoEnabled()) {
@@ -778,8 +793,7 @@ abstract class ImageMosaicUpdater {
 				}
 			} catch (CQLException e) {
 				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error("Unable to build a query. Message: " + e,
-							e);
+					LOGGER.error("Unable to build a query. Message: " + e,e);
 				}
 				return false;
 			}
@@ -856,158 +870,5 @@ abstract class ImageMosaicUpdater {
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * Try to update the datastore using the passed command and the
-	 * mosaicDescriptor as data and
-	 * 
-	 * @param mosaicProp
-	 * @param dataStoreProp
-	 * @param mosaicDescriptor
-	 * @param cmd
-	 * @return boolean representing the operation success (true) or failure
-	 *         (false)
-	 * @deprecated TODO use to update existing methods using FeatureStore
-	 *             instead of FeatureWriter
-	 */
-	private static void removeDataStore(Properties mosaicProp,
-			Properties dataStoreProp,
-			ImageMosaicGranulesDescriptor mosaicDescriptor,
-			ImageMosaicCommand cmd) {
-
-		DataStore dataStore = null;
-
-		try {
-			// SPI
-			final String SPIClass = dataStoreProp.getProperty("SPI");
-
-			// datastore creation
-			dataStore = getDataStore(dataStoreProp);
-			if (dataStore == null) {
-				final String message = "The required resource was not found or if insufficent parameters were given.";
-				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error(message);
-				}
-				// return false;
-			}
-
-			SimpleFeatureStore fs = null;
-
-			Transaction transaction = null;
-
-			/*
-			 * CHECK IF ADD FILES ARE ALREADY INTO THE LAYER
-			 */
-			try {
-				// once closed you have to renew the reference
-				if (transaction == null)
-					transaction = new DefaultTransaction("transaction");
-
-				final Filter f;
-				// TODO use SQL query
-				// if (limitSize>0)
-				// f= CQL.toFilter(selectFilter+ " LIMIT " + limitSize); // TODO
-				// check problems
-				// else
-				// f = CQL.toFilter(selectFilter);
-				f = CQL.toFilter("");
-
-				fs = (SimpleFeatureStore) dataStore.getFeatureSource("TABLE");
-
-				// the returned results
-				// final List<Map<String, Object>> ret = new
-				// ArrayList<Map<String, Object>>(
-				// limitSize);
-
-				final SimpleFeatureCollection coll = fs.getFeatures(new Query(
-						""));
-				final SimpleFeatureIterator featureIt = coll.features();
-				while (featureIt.hasNext()) {
-					final SimpleFeature feature = featureIt.next();
-					final SimpleFeatureType type = feature.getFeatureType();
-
-					final Map<String, Object> map = new HashMap<String, Object>();
-					final int attrCount = feature.getAttributeCount();
-					for (int attr = 0; attr < attrCount; attr++) {
-						map.put(type.getDescriptor(attr).getLocalName(),
-								feature.getAttribute(attr));
-					}
-					// add data to ret ret.add(map);
-
-					fs.modifyFeatures("NAME", "VALUE", CQL.toFilter(""));
-				}
-
-				// return ret;
-
-			} catch (NullPointerException e) {
-				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error(
-							"Unable to access to the datastore in append mode. Message: "
-									+ e.getLocalizedMessage(), e);
-				}
-				e.printStackTrace();
-				try {
-					if (transaction != null)
-						transaction.rollback();
-				} catch (Throwable t) {
-					if (LOGGER.isErrorEnabled()) {
-						LOGGER.error(
-								"::updateDataStore(): unable to rollback transaction: "
-										+ t.getLocalizedMessage(), t);
-					}
-				}
-				// return null;
-			} catch (RuntimeException re) {
-				if (LOGGER.isErrorEnabled()) {
-					final String message = "problem with connection: "
-							+ re.getLocalizedMessage();
-					LOGGER.error(message, re);
-				}
-				re.printStackTrace();
-				try {
-					if (transaction != null)
-						transaction.rollback();
-				} catch (Throwable t) {
-
-				}
-				// return null;
-			} finally {
-				try {
-					if (transaction != null) {
-						transaction.commit();
-						transaction.close();
-						transaction = null; // once closed you have to renew the
-											// reference
-					}
-				} catch (Throwable t) {
-
-				}
-			}
-
-		} catch (Throwable e) {
-
-			if (LOGGER.isErrorEnabled()) {
-				LOGGER.error(e.getLocalizedMessage(), e);
-			}
-
-			// return null;
-		} finally {
-			try {
-				if (dataStore != null) {
-					dataStore.dispose();
-				}
-			} catch (Throwable t) {
-				if (LOGGER.isWarnEnabled()) {
-					LOGGER.warn(
-							"::updateDataStore(): " + t.getLocalizedMessage(),
-							t);
-				}
-				/*
-				 * return false; TODO: check is this formally correct? if the
-				 * datastore failed to be disposed...
-				 */
-			}
-		}
 	}
 }

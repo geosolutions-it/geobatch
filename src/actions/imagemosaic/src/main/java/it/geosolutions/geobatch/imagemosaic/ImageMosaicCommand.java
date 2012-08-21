@@ -75,6 +75,8 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
 
     @XStreamAlias("base")
     private File baseDir;
+    
+    private boolean deleteGranules;
 
     @XStreamImplicit(itemFieldName = "del")
     private List<File> delFiles;
@@ -369,5 +371,13 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
                 }
             }   
     }
+
+	public boolean isDeleteGranules() {
+		return deleteGranules;
+	}
+
+	public void setDeleteGranules(boolean deleteGranules) {
+		this.deleteGranules = deleteGranules;
+	}
 
 }
