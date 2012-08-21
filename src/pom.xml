@@ -865,11 +865,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
-				<artifactId>gt-postgis-versioned</artifactId>
-				<version>${gt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.geotools</groupId>
 				<artifactId>gt-matfile5</artifactId>
 				<version>${gt.version}</version>
 			</dependency>
