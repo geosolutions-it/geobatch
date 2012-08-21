@@ -29,10 +29,14 @@ import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Queue;
 
 import org.apache.commons.io.FileUtils;
@@ -137,6 +141,19 @@ public class ImageMosaicUpdateTest {
 		FileUtils.deleteDirectory(BASE_DIR);
 		
 		// delete table
+		if(PostGisDataStoreTests.existsPostgis()){
+			
+			// props
+			final Properties props= ImageMosaicProperties.getPropertyFile(PostGisDataStoreTests.getDatastoreProperties());
+			
+			// delete
+			Class.forName("org.postgresql.Driver");
+			Connection connection = DriverManager.getConnection("jdbc:postgresql://"+props.getProperty("host")+":"+props.getProperty("port")+"/"+props.getProperty("database"),props.getProperty("user"), props.getProperty("passwd"));
+			Statement st = connection.createStatement();
+			st.execute("DROP TABLE IF EXISTS "+STORE);
+			st.close();
+			connection.close();
+		}
 		
 	}
 
