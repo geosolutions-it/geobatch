@@ -47,8 +47,6 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
@@ -242,8 +240,7 @@ abstract class ImageMosaicUpdater {
                         if(LOGGER.isDebugEnabled()) {
                             LOGGER.debug("time regex is matching: ["+matchedGroup+"]");
                         }
-						TimeParser timeParser = new TimeParser();
-						List<Date> dates = timeParser.parse(matchedGroup);
+						List<Date> dates = TimeParser.parse(matchedGroup);
                         if(LOGGER.isDebugEnabled()) {
                             LOGGER.debug("TimeParser parsed dates:" + dates);
                         }
@@ -466,8 +463,8 @@ abstract class ImageMosaicUpdater {
 			final String locationKey, final File baseDir, boolean absolute) {
 
 		
-
-		Transaction transaction = null;
+		final String handle = "ImageMosaic:" + Thread.currentThread().getId();
+		final Transaction transaction = new DefaultTransaction(handle);
 		/*
 		 * CHECK IF ADD FILES ARE ALREADY INTO THE LAYER
 		 */
@@ -480,9 +477,6 @@ abstract class ImageMosaicUpdater {
 
 		FeatureReader<SimpleFeatureType, SimpleFeature> fr = null;
 		try {
-			// once closed you have to renew the reference
-			final String handle = "ImageMosaic:" + Thread.currentThread().getId();
-			transaction = new DefaultTransaction(handle);
 
 			// get the schema if this feature
 			final SimpleFeatureType schema = dataStore.getSchema(store);
@@ -539,29 +533,33 @@ abstract class ImageMosaicUpdater {
 			}
 			
 			//commit
-			if (transaction != null) {
-				transaction.commit();
-			}
+			transaction.commit();
 		} catch (Exception e) {
-			if (transaction != null)
-				try {
+			if (LOGGER.isErrorEnabled()) {
+				LOGGER.error(e.getLocalizedMessage(), e);
+			}
+			
+			try {
 					transaction.rollback();
 				} catch (IOException ioe) {
 					if (LOGGER.isErrorEnabled()) {
 						LOGGER.error(ioe.getLocalizedMessage(), ioe);
 					}
 				}
-			if (LOGGER.isErrorEnabled()) {
-				LOGGER.error(e.getLocalizedMessage(), e);
-			}
+
 			return false;
 		} finally {
 			try {
-				if (transaction != null) {
-					transaction.close();
-					transaction = null; // once closed you have to renew
-										// the reference
+				transaction.close();
+				
+			} catch (Throwable t) {
+				if (LOGGER.isWarnEnabled()) {
+					LOGGER.warn(
+							"problem closing transaction: "
+									+ t.getLocalizedMessage(), t);
 				}
+			}
+			try {
 				if (fr != null) {
 					fr.close();
 					fr = null;
@@ -572,7 +570,7 @@ abstract class ImageMosaicUpdater {
 							"problem closing transaction: "
 									+ t.getLocalizedMessage(), t);
 				}
-			}
+			}			
 		}
 
 		return true;
