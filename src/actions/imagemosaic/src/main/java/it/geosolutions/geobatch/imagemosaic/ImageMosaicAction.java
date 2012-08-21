@@ -46,6 +46,7 @@ import java.util.Queue;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.geotools.gce.imagemosaic.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

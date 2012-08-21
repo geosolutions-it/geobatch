@@ -33,6 +33,7 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.geotools.data.DataUtilities;
+import org.geotools.gce.imagemosaic.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
