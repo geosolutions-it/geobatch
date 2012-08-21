@@ -244,9 +244,11 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         continue;
                     }
                 }
+                
                 // override local cmd null params with the getConfiguration()
                 cmd.copyConfigurationIntoCommand(getConfiguration());
 
+                // prepare configuration for layername and storename
                 final String layerName;
                 if (cmd.getLayerName()==null){
                     layerName=baseDir.getName();
@@ -280,14 +282,11 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         cmd.getGeoserverUID(),
                         cmd.getGeoserverPWD());
 
-                final String workspace = cmd.getDefaultNamespace() != null  
-                        ? cmd.getDefaultNamespace()
-                        : "";
+                final String workspace = cmd.getDefaultNamespace() != null  ? cmd.getDefaultNamespace(): "";
 
                 /*
                  * Check if ImageMosaic layer already exists...
                  */
-
                 final boolean layerExists;
 
                 if(cmd.getIgnoreGeoServer()) {
@@ -303,9 +302,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                 if (!layerExists) {
                     // layer does not exists so try to create a new one
 
-                    /*
-                     * CHECKING FOR datastore.properties
-                     */
+                    // looking for datastore.properties
                     final File datastore = ImageMosaicProperties.checkDataStore(cmd, getConfigDir(), baseDir);
                     if (datastore == null) {
                         if (LOGGER.isWarnEnabled()) {
@@ -313,9 +310,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         }
                     }
 
-                    /*
-                     * CHECKING FOR indexer.properties
-                     */
+                    // looking for indexer.properties
                     final File indexer = new File(baseDir, "indexer.properties");
                     final Properties indexerProp = ImageMosaicProperties.buildIndexer(indexer,
                                                                                       cmd);
@@ -329,6 +324,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
                     // store addeddFiles for rollback purposes
                     List<File> addedFiles = null;
+                    
                     // no base dir exists try to build a new one using
                     // addList()
                     if (cmd.getAddFiles() != null) {
@@ -376,8 +372,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     workspaceEnc.setName(workspace);
 
                     // coverage encoder
-                    final GSCoverageEncoder coverageEnc = ImageMosaicREST
-                        .createGSImageMosaicEncoder(mosaicDescriptor, cmd);
+                    final GSCoverageEncoder coverageEnc = ImageMosaicREST.createGSImageMosaicEncoder(mosaicDescriptor, cmd);
                     coverageEnc.setName(layerName);
                     // layerEnc.setWmsPath(cmd.getWmsPath()!=null?cmd.getWmsPath():"");
 
@@ -385,13 +380,13 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     final GSLayerEncoder layerEnc = new GSLayerEncoder();
                     
                     String style=cmd.getDefaultStyle();
-                    if (style==null || style.isEmpty())
+                    if (style==null || style.isEmpty()){ 
                     	style="raster";
+                    }
                     layerEnc.setDefaultStyle(style);
 
                     // create a new ImageMosaic layer...
-                    final boolean published = gsPublisher.publishExternalMosaic(workspace, storeName, baseDir,
-                                                                                coverageEnc, layerEnc);
+                    final boolean published = gsPublisher.publishExternalMosaic(workspace, storeName, baseDir,coverageEnc, layerEnc);
 
                     /**
                      * TODO gsPublisher.createExternalMosaic TODO
@@ -420,11 +415,9 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
                 } else {
                     // layer exists
-                    /**
-                     * If datastore Update ImageMosaic datastore...
-                     */
+
                     /*
-                     * CHECKING FOR datastore.properties
+                     * looking for datastore.properties
                      */
                     final File datastore = ImageMosaicProperties.checkDataStore(cmd, getConfigDir(), baseDir);
                     if (datastore == null) {
@@ -450,7 +443,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     }
 
                     // read the properties file
-                    final Properties dataStoreProp = ImageMosaicProperties.getProperty(datastore);
+                    final Properties dataStoreProp = ImageMosaicProperties.getPropertyFile(datastore);
 
                     /**
                      * This file is generated by the GeoServer and we need it to
@@ -464,7 +457,6 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                      * ExpandToRGB=false LocationAttribute=location
                      */
                     final File mosaicPropFile = new File(baseDir, layerName + ".properties");
-
                     if (!Utils.checkFileReadable(mosaicPropFile)) {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("Unable to locate the imagemosaic properties file at: "
@@ -473,7 +465,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         continue;
                     }
 
-                    final Properties mosaicProp = ImageMosaicProperties.getProperty(mosaicPropFile);
+                    final Properties mosaicProp = ImageMosaicProperties.getPropertyFile(mosaicPropFile);
 
                     // update
                     if (ImageMosaicUpdater.updateDataStore(mosaicProp, dataStoreProp, mosaicDescriptor, cmd)) {
@@ -527,32 +519,12 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
             // ... setting up the appropriate event for the next action
             return ret;
 
-        } catch (IOException t) {
+        } catch (Exception t) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(t.getLocalizedMessage(), t);
             listenerForwarder.failed(t);
             throw new ActionException(this, t.getMessage(), t);
-        } catch (IllegalArgumentException e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-            listenerForwarder.failed(e);
-            throw new ActionException(this, e.getMessage(), e);
-        } catch (InstantiationException e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-            listenerForwarder.failed(e);
-            throw new ActionException(this, e.getMessage(), e);
-        } catch (IllegalAccessException e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-            listenerForwarder.failed(e);
-            throw new ActionException(this, e.getMessage(), e);
-        } catch (ClassNotFoundException e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error(e.getLocalizedMessage(), e);
-            listenerForwarder.failed(e);
-            throw new ActionException(this, e.getMessage(), e);
-        }
+        } 
     }
 
     /**

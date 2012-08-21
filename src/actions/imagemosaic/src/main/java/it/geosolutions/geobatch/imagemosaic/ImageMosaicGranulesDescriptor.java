@@ -233,9 +233,7 @@ final class ImageMosaicGranulesDescriptor {
     protected static ImageMosaicGranulesDescriptor buildDescriptor(File inputDir,
             ImageMosaicConfiguration config) {
 
-        List<File> fileNameList = null;
-
-        fileNameList = coll.collect(inputDir);
+        List<File> fileNameList = coll.collect(inputDir);
 
         if (fileNameList == null) {
             if (LOGGER.isInfoEnabled()) {

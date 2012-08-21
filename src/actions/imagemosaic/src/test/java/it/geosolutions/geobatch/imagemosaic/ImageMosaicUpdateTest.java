@@ -30,6 +30,7 @@ import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -37,7 +38,7 @@ import java.util.Queue;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.geotools.test.TestData;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,14 +56,16 @@ public class ImageMosaicUpdateTest {
 
 	private final static Logger LOGGER = Logger
 			.getLogger(ImageMosaicUpdateTest.class);
+	
+	private static File BASE_DIR;
+
+	private static final String WORKSPACE = "topp";
+	
+	private static final String STORE = "external";
 
 	private ImageMosaicCommand cmd;
 	private File imgMscCmdFile;
-	private File imgMscCmdBaseDir;
 	private ImageMosaicAction action;
-
-	private static String workspace = "topp";
-	private static String store = "external";
 
 	@Before
 	public void setUp() throws Exception {
@@ -84,21 +87,20 @@ public class ImageMosaicUpdateTest {
 		addList.add(TestData.file(this,
 				"time_mosaic/world.200406.3x5400x2700.tiff"));
 
-		imgMscCmdBaseDir = new File(TestData.file(this, null), store);
+		BASE_DIR = new File(TestData.file(this, null), STORE);
 
-		cmd = new ImageMosaicCommand(imgMscCmdBaseDir, addList, null);
+		cmd = new ImageMosaicCommand(BASE_DIR, addList, null);
 
 		imgMscCmdFile = TestData.temp(this, "ImageMosaicCommand.xml");
+		
 		// serialize
 		ImageMosaicCommand.serialize(cmd, imgMscCmdFile.toString());
 
 		// action
-
 		File workingDir = TestData.file(this.getClass(), null);
 
 		// config
 		ImageMosaicConfiguration conf = new ImageMosaicConfiguration("", "", "");
-		conf.setConfigDir(workingDir);
 		conf.setTimeRegex("[0-9]{6}");
 		conf.setTimeDimEnabled("true");
 		conf.setTimePresentationMode("LIST");
@@ -111,29 +113,29 @@ public class ImageMosaicUpdateTest {
 			conf.setDatastorePropertiesPath(PostGisDataStoreTests.getDatastoreProperties().getAbsolutePath());
 		}
 
-		conf.setDefaultNamespace(workspace);
+		conf.setDefaultNamespace(WORKSPACE);
 		conf.setDefaultStyle("raster");
 		conf.setCrs("EPSG:4326");
-		// conf.addListenerConfiguration(TesD);
 
 		action = new ImageMosaicAction(conf);
+		action.setConfigDir(workingDir);
 		action.setRunningContext(TestData.file(this, null).getAbsolutePath());
 	}
 
-	@After
-	public void tearDown() throws Exception {
+	@AfterClass
+	public static void dispose() throws Exception {
 		if (GeoServerTests.skipTest()) {
 			return;
 		}
 		GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
 				GeoServerTests.URL, GeoServerTests.UID, GeoServerTests.PWD);
-		publisher.removeCoverageStore(workspace, store, true);
+		publisher.removeCoverageStore(WORKSPACE, STORE, true);
 		// remove created dir
-		FileUtils.deleteDirectory(imgMscCmdBaseDir);
+		FileUtils.deleteDirectory(BASE_DIR);
 	}
 
 	@Test
-	public void createTest() throws IOException {
+	public void create() throws IOException {
 		// check if we have to skip tests
 		if (GeoServerTests.skipTest()) {
 			return;
@@ -143,7 +145,7 @@ public class ImageMosaicUpdateTest {
 		Assert.assertNotNull(action);
 
 		// queue
-		Queue queue = new LinkedList<FileSystemEvent>();
+		Queue<EventObject> queue = new LinkedList<EventObject>();
 		queue.add(new FileSystemEvent(imgMscCmdFile,
 				FileSystemEventType.FILE_ADDED));
 
@@ -156,7 +158,7 @@ public class ImageMosaicUpdateTest {
 	}
 
 	@Test
-	public void updateTest() throws IOException {
+	public void update() throws IOException {
 		if (GeoServerTests.skipTest()) {
 			return;
 		}
@@ -171,7 +173,7 @@ public class ImageMosaicUpdateTest {
 				"time_mosaic/world.200407.3x5400x2700.tiff"));
 		// remove
 		List<File> delList = new ArrayList<File>();
-		delList.add(TestData.file(this, store
+		delList.add(TestData.file(this, STORE
 				+ "/world.200401.3x5400x2700.tiff"));
 		Assert.assertNotNull(cmd);
 
@@ -180,17 +182,11 @@ public class ImageMosaicUpdateTest {
 
 		Assert.assertNotNull(imgMscCmdFile);
 		ImageMosaicCommand.serialize(cmd, imgMscCmdFile.getAbsolutePath());
-
-		// check if we have to skip tests
-		if (GeoServerTests.skipTest())
-			return;
-
 		Assert.assertNotNull(action);
 
 		// queue
-		Queue queue = new LinkedList<FileSystemEvent>();
-		queue.add(new FileSystemEvent(imgMscCmdFile,
-				FileSystemEventType.FILE_ADDED));
+		Queue<EventObject> queue = new LinkedList<EventObject>();
+		queue.add(new FileSystemEvent(imgMscCmdFile,FileSystemEventType.FILE_ADDED));
 
 		try {
 			queue = action.execute(queue);
@@ -199,7 +195,5 @@ public class ImageMosaicUpdateTest {
 		} catch (ActionException e) {
 			Assert.fail(e.getLocalizedMessage());
 		}
-
 	}
-
 }

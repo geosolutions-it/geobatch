@@ -55,7 +55,7 @@ public abstract class ImageMosaicProperties {
      * @throws NullPointerException TODO
      * @throws IOException 
      */
-    protected static Properties getProperty(File properties) throws NullPointerException, IOException {
+    protected static Properties getPropertyFile(File properties) throws NullPointerException, IOException {
         URL url = DataUtilities.fileToURL(properties);
         Properties props = null;
         if (url != null) {
@@ -107,7 +107,7 @@ public abstract class ImageMosaicProperties {
                 throw new NullPointerException(
                         "Unable to build the property file using a null regex string");
 
-            return getProperty(regexFile);
+            return getPropertyFile(regexFile);
         }
         return null;
     }
@@ -208,13 +208,13 @@ public abstract class ImageMosaicProperties {
                 }
                 outFile = null;
             }
-            return getProperty(indexer);
+            return getPropertyFile(indexer);
         } else {
             // file -> indexer.properties
             /**
              * get the Caching property and set it to false
              */
-            Properties indexerProps = getProperty(indexer);
+            Properties indexerProps = getPropertyFile(indexer);
             String caching = indexerProps.getProperty(CACHING_KEY);
             if (caching != null) {
                 if (caching.equals("true")) {

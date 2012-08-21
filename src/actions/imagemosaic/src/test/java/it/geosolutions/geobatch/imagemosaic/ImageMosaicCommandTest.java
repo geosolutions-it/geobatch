@@ -86,9 +86,6 @@ public class ImageMosaicCommandTest {
 			final String path = cmdFile.getAbsolutePath();
 
 			// change params
-			
-			
-			
 			File out = ImageMosaicCommand.serialize(cmd, path);
 
 			if (!out.exists())

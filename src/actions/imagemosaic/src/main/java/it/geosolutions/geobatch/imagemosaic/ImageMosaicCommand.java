@@ -103,16 +103,9 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
      */
     public static File serialize(ImageMosaicCommand cmd, String path) throws IOException {
         final File outFile = new File(path);
-        FileOutputStream fos = null;
-        try{
-	        fos=new FileOutputStream(outFile);
-	        STREAM.toXML(cmd, fos);
-        } finally {
-        	if(fos!=null){
-
-    	        IOUtils.closeQuietly(fos);
-        	}
-        }
+        FileOutputStream fos = new FileOutputStream(outFile);
+        STREAM.toXML(cmd, fos);
+        IOUtils.closeQuietly(fos);
         return outFile;
     }
 
@@ -141,7 +134,11 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
         }
 
     }
-
+    @Deprecated
+    public ImageMosaicCommand() {
+        super("imageMosaicCommand", "imageMosaicCommand", "imageMosaicCommand config");
+    }
+    
     public ImageMosaicCommand(final File baseDir, final List<File> addFiles, final List<File> delFiles) {
         super("imageMosaicCommand_" + baseDir, "imageMosaicCommand", "imageMosaicCommand config");
         this.baseDir = baseDir;

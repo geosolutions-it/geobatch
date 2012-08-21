@@ -47,11 +47,14 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.Hints;
 import org.geotools.filter.text.cql2.CQL;
@@ -216,7 +219,7 @@ abstract class ImageMosaicUpdater {
 			// granule.getName().replaceAll("\\", "\\\\"));
 
 			final File indexer = new File(baseDir, org.geotools.gce.imagemosaic.Utils.INDEXER_PROPERTIES);
-			final Properties indexerProps = ImageMosaicProperties.getProperty(indexer);
+			final Properties indexerProps = ImageMosaicProperties.getPropertyFile(indexer);
 
 			/**
 			 * @see {@link #org.geotools.gce.imagemosaic.properties.RegExPropertiesCollector.collect(File)}
@@ -225,7 +228,7 @@ abstract class ImageMosaicUpdater {
 			if (indexerProps.getProperty("TimeAttribute") != null) {
 				// TODO move out of the cycle
 				final File timeregexFile = new File(baseDir, "timeregex.properties");
-				final Properties timeProps = ImageMosaicProperties.getProperty(timeregexFile);
+				final Properties timeProps = ImageMosaicProperties.getPropertyFile(timeregexFile);
                 String timeregex = timeProps.getProperty("regex");
                 if(LOGGER.isDebugEnabled()) {
                     LOGGER.debug("time regex: --->"+timeregex+"<--");
@@ -267,7 +270,7 @@ abstract class ImageMosaicUpdater {
 				final File elevationRegex = new File(baseDir,
 						"elevationregex.properties");
 				final Properties elevProps = ImageMosaicProperties
-						.getProperty(elevationRegex);
+						.getPropertyFile(elevationRegex);
 				final Pattern elevPattern = Pattern.compile(elevProps
 						.getProperty("regex"));
 				// TODO move out of the cycle
@@ -284,7 +287,7 @@ abstract class ImageMosaicUpdater {
 				final File runtimeRegex = new File(baseDir,
 						"runtimeregex.properties");
 				final Properties runtimeProps = ImageMosaicProperties
-						.getProperty(runtimeRegex);
+						.getPropertyFile(runtimeRegex);
 				final Pattern runtimePattern = Pattern.compile(runtimeProps
 						.getProperty("regex"));
 				// TODO move out of the cycle
@@ -400,12 +403,16 @@ abstract class ImageMosaicUpdater {
 	 * 
 	 * @param dataStore
 	 * @param delFilter
+	 * @param typeName the typeName of the index as a geotools feature. It usually is the mosaic name.
+	 * 
 	 * @return true if success
+	 * @throws IOException in case something wrong happens
 	 * 
 	 */
-	private static boolean removeFeatures(final DataStore dataStore,
-			final String store, final Filter delFilter) {
-		Transaction transaction = null;
+	private static boolean removeFeatures(
+			final DataStore dataStore,
+			final String typeName, 
+			final Filter delFilter) throws IOException {
 		if (delFilter == null) {
 			if (LOGGER.isInfoEnabled()) {
 				LOGGER.info("The file list is not used to query datastore: Probably it is empty");
@@ -413,100 +420,52 @@ abstract class ImageMosaicUpdater {
 			return true;
 		}
 
-		final String handle = "ImageMosaic:" + Thread.currentThread().getId();
+		// get a feature store to remove features in one step
+		SimpleFeatureSource featureSource = dataStore.getFeatureSource(typeName);
+		if (featureSource instanceof SimpleFeatureStore) {
+			// we have write access to the feature data
+			SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
 
-		FeatureWriter<SimpleFeatureType, SimpleFeature> fw = null;
-
-		try {
-			// once closed you have to renew the reference
-			if (transaction == null)
-				transaction = new DefaultTransaction(handle);
-
-			fw = dataStore.getFeatureWriter(store, delFilter, transaction);
-			if (fw == null) {
+			// add some new features
+			final String handle = "ImageMosaicUpdater:"
+					+ Thread.currentThread().getId();
+			Transaction t = new DefaultTransaction(handle);
+			featureStore.setTransaction(t);
+			try {
+				featureStore.removeFeatures(delFilter);
+				t.commit();
+			} catch (Exception ex) {
 				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error("The FeatureWriter is null, it's impossible to get a writer on the dataStore: "
-							+ dataStore.toString());
+					LOGGER.error(ex.getLocalizedMessage(), ex);
 				}
+				t.rollback();
+
 				return false;
+			} finally {
+				t.close();
 			}
-			// get the schema if this feature
-			// final FeatureType schema = fw.getFeatureType();
-
-			// TODO check needed??? final String geometryPropertyName =
-			// schema.getGeometryDescriptor().getLocalName();
-			
-			while (fw.hasNext()) {
-				fw.next();
-				fw.remove();
-			}
-
-		} catch (Exception e) {
-			if (transaction != null){
-				try {
-					transaction.rollback();
-				} catch (IOException ioe) {
-					if (LOGGER.isErrorEnabled()) {
-						LOGGER.error(ioe.getLocalizedMessage(), ioe);
-					}
-				}
-				try {
-					transaction.close();
-				} catch (IOException ioe) {
-					if (LOGGER.isErrorEnabled()) {
-						LOGGER.error(ioe.getLocalizedMessage(), ioe);
-					}
-				}
-				transaction=null;
-			}
-			// TODO recover removed file to rollback!
+		} else {
 			if (LOGGER.isErrorEnabled()) {
-				LOGGER.error(e.getLocalizedMessage(),e);
+				LOGGER.error("Unable to acquire a FeatureStore");
 			}
 			return false;
-		} finally {
-			if (transaction != null) {
-				try {
-					transaction.commit();
-				} catch (IOException ioe) {
-					if (LOGGER.isErrorEnabled()) {
-						LOGGER.error(ioe.getLocalizedMessage(), ioe);
-					}
-				}
-				try {
-					transaction.close();
-				} catch (IOException ioe) {
-					if (LOGGER.isErrorEnabled()) {
-						LOGGER.error(ioe.getLocalizedMessage(), ioe);
-					}
-				}
-				transaction = null; // once closed you have to renew the
-									// reference
-			}
-			if (fw != null) {
-				try {
-					fw.close();
-				} catch (IOException e) {
-					if (LOGGER.isErrorEnabled()) {
-						LOGGER.error(e.getLocalizedMessage(), e);
-					}
-				}
-				fw = null;
-			}
 		}
+
 		return true;
 	}
 
 	/**
 	 * Removes from the passed addFileList already present (into the passed
-	 * dataStore) features TODO this can be skipped to perform update (instead
+	 * dataStore) features 
+	 * 
+	 * TODO this can be skipped to perform update (instead
 	 * of perform remove+update)
 	 */
 	private static boolean purgeAddFileList(List<File> addFileList,
 			DataStore dataStore, String store, Filter addFilter,
 			final String locationKey, final File baseDir, boolean absolute) {
 
-		final String handle = "ImageMosaic:" + Thread.currentThread().getId();
+		
 
 		Transaction transaction = null;
 		/*
@@ -522,8 +481,8 @@ abstract class ImageMosaicUpdater {
 		FeatureReader<SimpleFeatureType, SimpleFeature> fr = null;
 		try {
 			// once closed you have to renew the reference
-			if (transaction == null)
-				transaction = new DefaultTransaction(handle);
+			final String handle = "ImageMosaic:" + Thread.currentThread().getId();
+			transaction = new DefaultTransaction(handle);
 
 			// get the schema if this feature
 			final SimpleFeatureType schema = dataStore.getSchema(store);
@@ -532,7 +491,7 @@ abstract class ImageMosaicUpdater {
 			 * same
 			 */
 
-			Query q = new Query(schema.getTypeName(), addFilter);
+			final Query q = new Query(schema.getTypeName(), addFilter);
 			fr = dataStore.getFeatureReader(q, transaction);
 			if (fr == null) {
 				if (LOGGER.isErrorEnabled()) {
@@ -578,12 +537,15 @@ abstract class ImageMosaicUpdater {
 				}
 
 			}
+			
+			//commit
+			if (transaction != null) {
+				transaction.commit();
+			}
 		} catch (Exception e) {
 			if (transaction != null)
 				try {
 					transaction.rollback();
-					transaction.close();
-					transaction = null;
 				} catch (IOException ioe) {
 					if (LOGGER.isErrorEnabled()) {
 						LOGGER.error(ioe.getLocalizedMessage(), ioe);
@@ -596,7 +558,6 @@ abstract class ImageMosaicUpdater {
 		} finally {
 			try {
 				if (transaction != null) {
-					transaction.commit();
 					transaction.close();
 					transaction = null; // once closed you have to renew
 										// the reference
@@ -627,46 +588,21 @@ abstract class ImageMosaicUpdater {
 	 * @param baseDir
 	 * @return
 	 */
-	private static boolean addFileToStore(List<File> addList,
-			DataStore dataStore, String store, final String locationKey,
+	private static boolean addFileToStore(
+			List<File> addList,
+			DataStore dataStore, 
+			String store, 
+			final String locationKey,
 			final File baseDir) {
-		// //////////////////////////////
-		/*
-		 * ADD FILES TO THE LAYER
-		 */
-
+		
+		// ADD FILES TO THE LAYER
 		final String handle = "ImageMosaic:" + Thread.currentThread().getId();
-
-		Transaction transaction = null;
+		final Transaction transaction = new DefaultTransaction(handle);
+		
 		FeatureWriter<SimpleFeatureType, SimpleFeature> fw = null;
 		try {
-			// once closed you have to renew the reference
-			if (transaction == null)
-				transaction = new DefaultTransaction(handle);
 
-			try {
-				fw = dataStore.getFeatureWriterAppend(store, transaction);
-			} catch (IOException ioe) {
-				try {
-
-					if (transaction != null) {
-						transaction.rollback();
-						transaction.close();
-						transaction = null;
-					}
-				} catch (Throwable t) {
-					if (LOGGER.isWarnEnabled()) {
-						LOGGER.warn(
-								"problem closing transaction: "
-										+ t.getLocalizedMessage(), t);
-					}
-				}
-				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error("unable to access to the datastore in append mode. Message: "
-							+ ioe.getLocalizedMessage());
-				}
-				return false;
-			}
+			fw = dataStore.getFeatureWriterAppend(store, transaction);
 			if (fw == null) {
 				if (LOGGER.isErrorEnabled()) {
 					LOGGER.error("The FeatureWriter is null, it's impossible"
@@ -680,8 +616,7 @@ abstract class ImageMosaicUpdater {
 			final FeatureType schema = fw.getFeatureType();
 
 			// TODO check needed???
-			final String geometryPropertyName = schema.getGeometryDescriptor()
-					.getLocalName();
+			final String geometryPropertyName = schema.getGeometryDescriptor().getLocalName();
 
 			for (File file : addList) {
 				// get the next feature to append
@@ -695,30 +630,23 @@ abstract class ImageMosaicUpdater {
 					fw.write();
 				}
 			}
-
+			
+			// commit
+			transaction.commit();
 		} catch (Exception e) {
 
-			if (transaction != null) {
 				try {
 					transaction.rollback();
-					transaction.close();
-					transaction = null;
 				} catch (Throwable t) {
 					if (LOGGER.isWarnEnabled()) {
-						LOGGER.warn(
-								"Problem during rollback"
-										+ t.getLocalizedMessage(), t);
+						LOGGER.warn("Problem during rollback"+ t.getLocalizedMessage(), t);
 					}
 				}
-			}
 			return false;
 		} finally {
-			if (transaction != null) {
+
 				try {
-					transaction.commit();
-					transaction.close();
-					transaction = null; // once closed you have to renew
-										// the reference
+					transaction.close();				
 				} catch (Throwable t) {
 					if (LOGGER.isWarnEnabled()) {
 						LOGGER.warn(
@@ -726,7 +654,6 @@ abstract class ImageMosaicUpdater {
 										+ t.getLocalizedMessage(), t);
 					}
 				}
-			}
 			if (fw != null) {
 				try {
 					fw.close();
@@ -761,7 +688,7 @@ abstract class ImageMosaicUpdater {
 	protected static boolean updateDataStore(Properties mosaicProp,
 			Properties dataStoreProp,
 			ImageMosaicGranulesDescriptor mosaicDescriptor,
-			ImageMosaicCommand cmd) throws IllegalArgumentException, InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
+			ImageMosaicCommand cmd) throws IOException {
 
 		if (mosaicProp == null) {
 			if (LOGGER.isErrorEnabled()) {
@@ -772,7 +699,7 @@ abstract class ImageMosaicUpdater {
 
 		DataStore dataStore = null;
 		try {
-			// SPI
+			// create the datastore
 			dataStore = getDataStore(dataStoreProp);
 
 			boolean absolute = isTrue(mosaicProp.get(org.geotools.gce.imagemosaic.Utils.Prop.ABSOLUTE_PATH));
@@ -792,8 +719,7 @@ abstract class ImageMosaicUpdater {
 							 * child of the layer baseDir
 							 */
 							final String path = file.getAbsolutePath();
-							if (!path.contains(cmd.getBaseDir()
-									.getAbsolutePath())) {
+							if (!path.contains(cmd.getBaseDir().getAbsolutePath())) {
 								// the path is absolute AND the file is outside
 								// the layer baseDir!
 								// files.remove(file); // remove it
@@ -815,12 +741,6 @@ abstract class ImageMosaicUpdater {
 			// TODO check object cast
 			// the attribute key location
 			final String locationKey = (String) mosaicProp.get(org.geotools.gce.imagemosaic.Utils.Prop.LOCATION_ATTRIBUTE);
-
-			// final String[] typeNames = dataStore.getTypeNames();
-			// if (typeNames.length <= 0)
-			// throw new IllegalArgumentException(
-			// "ImageMosaicAction: Problems when opening the index, no typenames for the schema are defined");
-
 			final String store = mosaicDescriptor.getCoverageStoreId();
 
 			final List<File> delList = cmd.getDelFiles();
@@ -829,11 +749,7 @@ abstract class ImageMosaicUpdater {
             if(delList != null && ! delList.isEmpty()) {
     			try {
                     delFilter = getQuery(delList, absolute, locationKey);
-                } catch (IllegalArgumentException e) {
-                    if (LOGGER.isWarnEnabled()) {
-                        LOGGER.warn(e.getLocalizedMessage());
-                    }
-                } catch (CQLException e) {
+                } catch (Exception e) {
                     if (LOGGER.isErrorEnabled()) {
                         LOGGER.error("Unable to build a query. Message: " + e, e);
                     }
@@ -872,8 +788,7 @@ abstract class ImageMosaicUpdater {
 			// purge the addlist
 			// TODO remove (ALERT please remove existing file from destination
 			// for the copyListFileToNFS()
-			purgeAddFileList(addList, dataStore, store, addFilter, locationKey,
-					cmd.getBaseDir(), absolute);
+			purgeAddFileList(addList, dataStore, store, addFilter, locationKey,cmd.getBaseDir(), absolute);
 			addFilter = null;
 
 			// //////////////////////////////////

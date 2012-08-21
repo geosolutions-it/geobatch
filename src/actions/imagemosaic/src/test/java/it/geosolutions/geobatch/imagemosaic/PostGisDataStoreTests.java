@@ -49,30 +49,30 @@ public class PostGisDataStoreTests {
 	/**
 	 * check if postgis datastore is enabled
 	 */
-	private static boolean postgis;
-	private static String datastore_path;
+	private static boolean POSTGIS;
+	private static String DATASTORE_PATH;
 	
 	static {
-		postgis = GeoServerTests.getenv("postgis", "false").equalsIgnoreCase(
+		POSTGIS = GeoServerTests.getenv("postgis", "false").equalsIgnoreCase(
 				"true");
-		datastore_path = GeoServerTests.getenv("datastore_path",
+		DATASTORE_PATH = GeoServerTests.getenv("datastore_path",
 				"datastore.properties");
 	}
 	
 	public static boolean existsPostgis(){
-		return postgis;
+		return POSTGIS;
 	}
 	
 	public static File getDatastoreProperties(){
-		return new File(datastore_path);
+		return new File(DATASTORE_PATH);
 	}
 	
 	@Before
 	public void setUP() throws FileNotFoundException, IOException{		
 		// check for postgis
-		File datastoreFile = new File(datastore_path);
+		File datastoreFile = new File(DATASTORE_PATH);
 		if (!datastoreFile.isAbsolute()) {
-			datastore_path=TestData.file(this,"datastore.properties").getAbsolutePath();
+			DATASTORE_PATH=TestData.file(this,"datastore.properties").getAbsolutePath();
 		}
 
 	}
@@ -83,7 +83,7 @@ public class PostGisDataStoreTests {
 		final Properties props;
 		try {
 
-			props = ImageMosaicProperties.getProperty(PostGisDataStoreTests
+			props = ImageMosaicProperties.getPropertyFile(PostGisDataStoreTests
 					.getDatastoreProperties());
 			/**
 			 * SPI=org.geotools.data.postgis.PostgisNGDataStoreFactory<br>
