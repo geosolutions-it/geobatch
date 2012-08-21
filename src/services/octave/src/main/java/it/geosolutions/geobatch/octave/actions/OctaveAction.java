@@ -75,7 +75,7 @@ public abstract class OctaveAction<T extends EventObject> extends BaseAction<T>
         OctaveEnv<OctaveExecutableSheet> env;
 
         if(config.getEmbeddedEnv() != null)
-            env = config.getEmbeddedEnv();
+            env = config.getEmbeddedEnv().clone();
         else if (config.getEnv() != null)
             env = loadEnv(config.getEnv());
         else

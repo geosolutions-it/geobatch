@@ -120,7 +120,7 @@ public class OctaveEnv<T extends OctaveExecutableSheet>{
     
     @SuppressWarnings("unchecked")
     @Override
-    public Object clone(){
+    public OctaveEnv clone(){
         OctaveEnv<T> oe=new OctaveEnv<T>();
         int index=0;
         int size=this.sheets.size();
