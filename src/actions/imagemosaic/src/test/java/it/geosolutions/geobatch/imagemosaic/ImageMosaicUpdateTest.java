@@ -56,7 +56,7 @@ import org.junit.Test;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class ImageMosaicUpdateTest {
+public class ImageMosaicUpdateTest extends Assert{
 
 	private final static Logger LOGGER = Logger
 			.getLogger(ImageMosaicUpdateTest.class);
@@ -164,20 +164,28 @@ public class ImageMosaicUpdateTest {
 			return;
 		}
 		// command
-		Assert.assertNotNull(imgMscCmdFile);
-		Assert.assertNotNull(action);
+		assertNotNull(imgMscCmdFile);
+		assertNotNull(action);
 
+		runAction(FileSystemEventType.FILE_ADDED,imgMscCmdFile);
+
+	}
+
+	/**
+	 * @param event 
+	 * @param cmdFile 
+	 * 
+	 */
+	private void runAction(FileSystemEventType event, File cmdFile) {
 		// queue
 		Queue<EventObject> queue = new LinkedList<EventObject>();
-		queue.add(new FileSystemEvent(imgMscCmdFile,
-				FileSystemEventType.FILE_ADDED));
+		queue.add(new FileSystemEvent(cmdFile,event));
 
 		try {
 			action.execute(queue);
 		} catch (ActionException e) {
-			Assert.fail(e.getLocalizedMessage());
+			fail(e.getLocalizedMessage());
 		}
-
 	}
 
 	@Test
@@ -198,26 +206,17 @@ public class ImageMosaicUpdateTest {
 		List<File> delList = new ArrayList<File>();
 		delList.add(TestData.file(this, STORE
 				+ "/world.200401.3x5400x2700.tiff"));
-		Assert.assertNotNull(cmd);
+		assertNotNull(cmd);
 
 		cmd.setAddFiles(addList);
 		cmd.setDelFiles(delList);
 		cmd.setDeleteGranules(true);
 
-		Assert.assertNotNull(imgMscCmdFile);
+		assertNotNull(imgMscCmdFile);
 		ImageMosaicCommand.serialize(cmd, imgMscCmdFile.getAbsolutePath());
-		Assert.assertNotNull(action);
+		assertNotNull(action);
 
-		// queue
-		Queue<EventObject> queue = new LinkedList<EventObject>();
-		queue.add(new FileSystemEvent(imgMscCmdFile,FileSystemEventType.FILE_ADDED));
-
-		try {
-			queue = action.execute(queue);
-			if (queue.size() == 0)
-				Assert.fail("Action produces no output");
-		} catch (ActionException e) {
-			Assert.fail(e.getLocalizedMessage());
-		}
+		// run action
+		runAction(FileSystemEventType.FILE_ADDED,imgMscCmdFile);
 	}
 }

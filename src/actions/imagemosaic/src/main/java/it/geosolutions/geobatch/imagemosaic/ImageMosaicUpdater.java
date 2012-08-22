@@ -756,8 +756,10 @@ abstract class ImageMosaicUpdater {
                     }
                 } else {
                 	
+                	//
                 	// should we remove the files for good? #81
-                	// TODO backup
+                	//
+                	// TODO backup files as needed
                 	if(cmd.isDeleteGranules()){
                 		for(File granule:cmd.getDelFiles()){
                 			if(!FileUtils.deleteQuietly(granule)){
