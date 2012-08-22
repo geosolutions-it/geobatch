@@ -136,7 +136,8 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
         }
 
     }
-    @Deprecated
+
+    
     public ImageMosaicCommand() {
         super("imageMosaicCommand", "imageMosaicCommand", "imageMosaicCommand config");
     }

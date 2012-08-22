@@ -57,7 +57,7 @@ public abstract class GeoServerTests {
     private static boolean existgs = false;
 
     static {
-        URL = getenv("gs_url", "http://localhost:8080/geoserver");
+        URL = getenv("gs_url", "http://localhost:8081/geoserver");
         UID = getenv("gs_uid", "admin");
         PWD = getenv("gs_pwd", "geoserver");
 
