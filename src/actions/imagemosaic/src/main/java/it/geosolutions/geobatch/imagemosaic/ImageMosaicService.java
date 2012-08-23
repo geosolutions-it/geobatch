@@ -44,6 +44,13 @@ public abstract class ImageMosaicService<T extends EventObject, C extends Action
         extends BaseService implements ActionService<T, C> {
     protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicService.class);
 
+    public ImageMosaicService(String id) {
+        super(id);
+    }
+
+    /**
+     * @deprecated name and description are not used
+     */
     public ImageMosaicService(String id, String name, String description) {
         super(id, name, description);
     }

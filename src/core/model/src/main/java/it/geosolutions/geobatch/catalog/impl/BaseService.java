@@ -31,11 +31,22 @@ public class BaseService extends BaseResource implements Service {
     
     private boolean available;
 
+    public BaseService(String id) {
+        this(id, true);
+    }
+
+    public BaseService(String id, boolean available) {
+        super(id);
+        this.available = available;
+    }
+
     /**
      * Constructor forcing initialization of: id ,name and description of this resource 
      * @param id
      * @param name
      * @param description
+     *
+     * @deprecated name and description are not used
      */
     public BaseService(String id, String name, String description) {
         super(id);
@@ -43,6 +54,14 @@ public class BaseService extends BaseResource implements Service {
         available = true;
     }
 
+    /**
+     * Constructor forcing initialization of: id ,name and description of this resource
+     * @param id
+     * @param name
+     * @param description
+     *
+     * @deprecated name and description are not used
+     */
     public BaseService(String id, String name, String description, boolean available) {
         super(id);
         LOGGER.debug("Creating service id:"+id+ " name:"+name + " descr:"+description + " -- but dropping name and descr"); // todo serveces should be Descrictable=

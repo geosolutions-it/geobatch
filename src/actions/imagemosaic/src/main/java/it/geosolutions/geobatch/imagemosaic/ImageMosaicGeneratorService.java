@@ -33,6 +33,9 @@ import org.slf4j.LoggerFactory;
 public class ImageMosaicGeneratorService extends
         ImageMosaicService<EventObject, ImageMosaicConfiguration> {
 
+    public ImageMosaicGeneratorService(String id) {
+        super(id);
+    }
     public ImageMosaicGeneratorService(String id, String name, String description) {
         super(id, name, description);
     }
