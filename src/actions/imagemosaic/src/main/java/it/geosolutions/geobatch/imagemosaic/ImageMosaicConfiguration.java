@@ -87,6 +87,9 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
     private String elevDimEnabled;
 
+    private String timeAttribute;
+    private String elevationAttribute;
+
     public String getElevDimEnabled() {
         return elevDimEnabled;
     }
@@ -347,6 +350,22 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
      */
     public String getRuntimeRegex() {
         return runtimeRegex;
+    }
+
+    public String getTimeAttribute() {
+        return timeAttribute;
+    }
+
+    public void setTimeAttribute(String timeAttribute) {
+        this.timeAttribute = timeAttribute;
+    }
+
+    public String getElevationAttribute() {
+        return elevationAttribute;
+    }
+
+    public void setElevationAttribute(String elevationAttribute) {
+        this.elevationAttribute = elevationAttribute;
     }
 
     /**

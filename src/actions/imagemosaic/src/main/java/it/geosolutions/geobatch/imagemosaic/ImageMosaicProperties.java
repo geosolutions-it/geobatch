@@ -41,6 +41,9 @@ public abstract class ImageMosaicProperties {
 
     private static final String CACHING_KEY = "Caching";
 
+    private static final String TIME_DEFAULT_ATTRIBUTE = "ingestion";
+    private static final String ELEV_DEFAULT_ATTRIBUTE = "elevation";
+
     /**
      * Default logger
      */
@@ -156,15 +159,23 @@ public abstract class ImageMosaicProperties {
                 
                 out.println(org.geotools.gce.imagemosaic.Utils.Prop.CACHING+"=false");
 
+                String timeAttrName = configuration.getTimeAttribute() != null?
+                        configuration.getTimeAttribute() :
+                        TIME_DEFAULT_ATTRIBUTE;
+
                 if (configuration.getTimeRegex() != null) {
-                    out.println(org.geotools.gce.imagemosaic.Utils.Prop.TIME_ATTRIBUTE+"=ingestion");
+                    out.println(org.geotools.gce.imagemosaic.Utils.Prop.TIME_ATTRIBUTE+"="+timeAttrName);
 
                     final File timeregex = new File(baseDir, "timeregex.properties");
                     ImageMosaicProperties.build(timeregex, configuration.getTimeRegex());
                 }
 
+                String elevAttrName = configuration.getElevationAttribute() != null?
+                        configuration.getElevationAttribute() :
+                        ELEV_DEFAULT_ATTRIBUTE;
+
                 if (configuration.getElevationRegex() != null) {
-                    out.println(org.geotools.gce.imagemosaic.Utils.Prop.ELEVATION_ATTRIBUTE+"=elevation");
+                    out.println(org.geotools.gce.imagemosaic.Utils.Prop.ELEVATION_ATTRIBUTE+"="+elevAttrName);
 
                     final File elevationRegex = new File(baseDir, "elevationregex.properties");
                     ImageMosaicProperties.build(elevationRegex, configuration.getElevationRegex());
@@ -178,19 +189,17 @@ public abstract class ImageMosaicProperties {
                 }
 
                 out.println("Schema=*the_geom:Polygon,location:String"
-                        + (configuration.getTimeRegex() != null ? ",ingestion:java.util.Date" : "")
-                        + (configuration.getElevationRegex() != null ? ",elevation:Double" : "")
+                        + (configuration.getTimeRegex() != null ? ","+timeAttrName+":java.util.Date" : "")
+                        + (configuration.getElevationRegex() != null ? ","+elevAttrName+":Double" : "")
                         + (configuration.getRuntimeRegex() != null ? ",runtime:Integer" : ""));
                 out.println("PropertyCollectors="
-                        + (configuration.getTimeRegex() != null ? "TimestampFileNameExtractorSPI[timeregex](ingestion)"
-                                : "")
-                        + (configuration.getElevationRegex() != null ? (configuration
-                                .getTimeRegex() != null ? "," : "")
-                                + "DoubleFileNameExtractorSPI[elevationregex](elevation)" : "")
-                        + (configuration.getRuntimeRegex() != null ? (configuration.getTimeRegex() != null
-                                || configuration.getElevationRegex() != null ? "," : "")
-                                + "TimestampFileNameExtractorSPI[runtimeregex](runtime)"
-                                : ""));
+                        + (configuration.getTimeRegex() != null ? "TimestampFileNameExtractorSPI[timeregex]("+timeAttrName+")" : "")
+                        + (configuration.getElevationRegex() != null ?
+                                (configuration.getTimeRegex() != null ? "," : "")
+                                + "DoubleFileNameExtractorSPI[elevationregex]("+elevAttrName+")" : "")
+                        + (configuration.getRuntimeRegex() != null ?
+                                (configuration.getTimeRegex() != null || configuration.getElevationRegex() != null ? "," : "")
+                                + "TimestampFileNameExtractorSPI[runtimeregex](runtime)" : ""));
             } catch (IOException e) {
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(
@@ -257,11 +266,11 @@ public abstract class ImageMosaicProperties {
         final File dsFile = Path.findLocation(configuration.getDatastorePropertiesPath(),configDir);
         if (dsFile == null) {
             if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn("Unable to get the absolute "
-                        + "path of the 'datastore.properties'");
+                LOGGER.warn("Unable to get the absolute path of the datastore properties file "
+                        + "(file: "+configuration.getDatastorePropertiesPath()+") "
+                        + "(cfgdir: "+configDir+")");
             }
-        }
-        if (dsFile != null) {
+        } else {
             if (!dsFile.isDirectory()) {
                 if (LOGGER.isInfoEnabled()) {
                     LOGGER.info("Configuration DataStore file found: '"
