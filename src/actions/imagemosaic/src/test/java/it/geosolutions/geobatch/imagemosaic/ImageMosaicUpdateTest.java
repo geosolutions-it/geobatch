@@ -218,5 +218,12 @@ public class ImageMosaicUpdateTest extends Assert{
 
 		// run action
 		runAction(FileSystemEventType.FILE_ADDED,imgMscCmdFile);
+		
+		try{
+			TestData.file(this,STORE+"/world.200401.3x5400x2700.tiff");
+			assertTrue("Unable to remove granule from disk",false);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 }
