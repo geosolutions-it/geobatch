@@ -180,7 +180,7 @@ public class ImageMosaicOutput {
             // HAS_TIME_DOMAIN this is a boolean String with values true|false. Meaning is obvious.
             // TIME_DOMAIN this returns a String that is a comma separated list of time values in
             // ZULU time using the ISO 8601 format (yyyy-MM-dd'T'HH:mm:ss.SSS)
-            if (reader.getMetadataValue(AbstractGridCoverage2DReader.HAS_TIME_DOMAIN) == "true") {
+            if ("true".equals(reader.getMetadataValue(AbstractGridCoverage2DReader.HAS_TIME_DOMAIN))) {
                 map.put(AbstractGridCoverage2DReader.HAS_TIME_DOMAIN, Boolean.TRUE);
                 final String times = reader.getMetadataValue(AbstractGridCoverage2DReader.TIME_DOMAIN);
                 final Set<String> timesList = new TreeSet<String>();
@@ -194,7 +194,7 @@ public class ImageMosaicOutput {
             }
             
             // ELEVATION
-            if (reader.getMetadataValue(AbstractGridCoverage2DReader.HAS_ELEVATION_DOMAIN) == "true") {
+            if ("true".equals(reader.getMetadataValue(AbstractGridCoverage2DReader.HAS_ELEVATION_DOMAIN))) {
                 map.put(AbstractGridCoverage2DReader.HAS_ELEVATION_DOMAIN, Boolean.TRUE);
                 final String elevations = reader.getMetadataValue(AbstractGridCoverage2DReader.ELEVATION_DOMAIN);
                 final Set<String> elevList = new TreeSet<String>();
