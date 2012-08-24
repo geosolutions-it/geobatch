@@ -153,14 +153,19 @@ public class ImageMosaicOutput {
                 LOGGER.info("Acquiring a reader for the provided directory...");
             }
 
-            if (!IMAGEMOSAIC_FORMAT.accepts(directory)) {
-                final String message = "IMAGEMOSAIC_FORMAT do not accept the directory: "
-                        + directory.getAbsolutePath();
-                final IOException ioe = new IOException(message);
-                if (LOGGER.isErrorEnabled())
-                    LOGGER.error(message, ioe);
-                throw ioe;
-            }
+            // ETj 20120824: ImageMosaicFormat.accepts() returns false when passing a dir,
+            // but the getReader will work anyway.
+            // Commenting out this check will make the action work properly.
+            // Pls recheck.
+
+//            if (!IMAGEMOSAIC_FORMAT.accepts(directory)) {
+//                final String message = "IMAGEMOSAIC_FORMAT do not accept the directory: "
+//                        + directory.getAbsolutePath();
+//                final IOException ioe = new IOException(message);
+//                if (LOGGER.isErrorEnabled())
+//                    LOGGER.error(message, ioe);
+//                throw ioe;
+//            }
             reader = (AbstractGridCoverage2DReader) IMAGEMOSAIC_FORMAT.getReader(directory,
                     new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
             if (reader == null) {
