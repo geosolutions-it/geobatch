@@ -456,13 +456,24 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                      * AbsolutePath=false Name=20101014T030000_pph
                      * ExpandToRGB=false LocationAttribute=location
                      */
-                    final File mosaicPropFile = new File(baseDir, layerName + ".properties");
+                    File mosaicPropFile = new File(baseDir, layerName + ".properties");
                     if (!Utils.checkFileReadable(mosaicPropFile)) {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("Unable to locate the imagemosaic properties file at: "
                                         + mosaicPropFile.getCanonicalPath());
                         }
-                        continue;
+
+                        // ETj: the prop file may be named as the mosaic dir name:
+                        final String upperParent = cmd.getBaseDir().getName();
+                        mosaicPropFile = new File(baseDir, upperParent + ".properties");
+                        if (!Utils.checkFileReadable(mosaicPropFile)) {
+                            if (LOGGER.isWarnEnabled()) {
+                                LOGGER.warn("Unable to locate the imagemosaic properties file at: "
+                                            + mosaicPropFile.getCanonicalPath());
+                            }
+
+                            continue;
+                        }
                     }
 
                     final Properties mosaicProp = ImageMosaicProperties.getPropertyFile(mosaicPropFile);
