@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.geoserver.test.GeoServerTests;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -156,20 +157,6 @@ public class ImageMosaicUpdateTest extends Assert{
 		
 	}
 
-	@Test
-	public void create() throws IOException {
-		// check if we have to skip tests
-		if (GeoServerTests.skipTest()) {
-			return;
-		}
-		// command
-		assertNotNull(imgMscCmdFile);
-		assertNotNull(action);
-
-		runAction(FileSystemEventType.FILE_ADDED,imgMscCmdFile);
-
-	}
-
 	/**
 	 * @param event 
 	 * @param cmdFile 
@@ -188,7 +175,7 @@ public class ImageMosaicUpdateTest extends Assert{
 	}
 
 	@Test
-	public void update() throws IOException {
+	public void createUpdate() throws Exception {
 		if (GeoServerTests.skipTest()) {
 			return;
 		}
@@ -196,7 +183,22 @@ public class ImageMosaicUpdateTest extends Assert{
 			// could not update a shape file
 			return;
 		}
+		
+		//testing creation
+		createMosaic();
+		
+		
 		// update command
+		updateMosaicWithDelete();
+		
+		// update command with backup
+		updateMosaicWithBackup();
+		
+		// update command with backup and no del
+		updateMosaicWithBackupNoDel();
+	}
+
+	private void updateMosaicWithDelete() throws Exception {
 		// add
 		List<File> addList = new ArrayList<File>();
 		addList.add(TestData.file(this,
@@ -206,7 +208,6 @@ public class ImageMosaicUpdateTest extends Assert{
 		delList.add(TestData.file(this, STORE
 				+ "/world.200401.3x5400x2700.tiff"));
 		assertNotNull(cmd);
-
 		cmd.setAddFiles(addList);
 		cmd.setDelFiles(delList);
 		cmd.setDeleteGranules(true);
@@ -224,5 +225,69 @@ public class ImageMosaicUpdateTest extends Assert{
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+		
+	}
+			
+	private void updateMosaicWithBackup() throws Exception {
+		// file to remove and backup
+		List<File> delList = new ArrayList<File>();
+		delList.add(TestData.file(this,"time_mosaic/world.200407.3x5400x2700.tiff"));
+
+		//back up dire
+		final File testDataDir=TestData.file(this,".");
+		final File backupDirectory= new File(testDataDir,STORE+"backup");
+		if(!backupDirectory.exists()){
+			assertTrue(backupDirectory.mkdir());
+		}
+		assertNotNull(cmd);
+		cmd.setAddFiles(null);
+		cmd.setDelFiles(delList);
+		cmd.setDeleteGranules(true);
+		cmd.setBackupDirectory(backupDirectory);
+
+		assertNotNull(imgMscCmdFile);
+		ImageMosaicCommand.serialize(cmd, imgMscCmdFile.getAbsolutePath());
+		assertNotNull(action);
+
+		// run action
+		runAction(FileSystemEventType.FILE_ADDED,imgMscCmdFile);
+		assertTrue("Unable to backup granule from disk",TestData.file(this,STORE+"backup/world.200407.3x5400x2700.tiff").exists());
+
+	}
+
+	private void updateMosaicWithBackupNoDel() throws Exception {
+		// file to remove and backup
+		List<File> delList = new ArrayList<File>();
+		delList.add(TestData.file(this,"time_mosaic/world.200404.3x5400x2700.tiff"));
+
+		//back up dire
+		final File testDataDir=TestData.file(this,".");
+		final File backupDirectory= new File(testDataDir,STORE+"backup");
+		if(!backupDirectory.exists()){
+			assertTrue(backupDirectory.mkdir());
+		}
+		assertNotNull(cmd);
+		//let's see what happens if we don't delete but provide a back up dir
+		cmd.setAddFiles(null);
+		cmd.setDelFiles(delList);
+		cmd.setDeleteGranules(false);
+		cmd.setBackupDirectory(backupDirectory);
+
+		assertNotNull(imgMscCmdFile);
+		ImageMosaicCommand.serialize(cmd, imgMscCmdFile.getAbsolutePath());
+		assertNotNull(action);
+
+		// run action
+		runAction(FileSystemEventType.FILE_ADDED,imgMscCmdFile);
+		
+		assertFalse("Unable to backup granule from disk",TestData.file(this,STORE+"backup/world.200404.3x5400x2700.tiff").exists());
+	}
+	private void createMosaic() {
+		//
+		// create command, we create the mosaic
+		//
+		assertNotNull(imgMscCmdFile);
+		assertNotNull(action);
+		runAction(FileSystemEventType.FILE_ADDED,imgMscCmdFile);
 	}
 }

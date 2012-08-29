@@ -23,6 +23,7 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.tools.commons.time.TimeParser;
 import it.geosolutions.tools.io.file.Copy;
+import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -756,24 +757,21 @@ abstract class ImageMosaicUpdater {
                 	
                 	//
                 	// should we remove the files for good? #81
+                	// do we want to back them up? #84
                 	//
-                	// TODO backup files as needed
-                	if(cmd.isDeleteGranules()){
-                		for(File granule:cmd.getDelFiles()){
-                			if(!FileUtils.deleteQuietly(granule)){
-                				try{
-                					FileUtils.forceDelete(granule);
-                				}catch (Exception e) {
-									if(LOGGER.isErrorEnabled()){
-										LOGGER.error(e.getLocalizedMessage(),e);
-									}
-									
-									// delete on exit
-									FileUtils.forceDeleteOnExit(granule);
-								}
-                			}
-                		}
-                	}
+                	final File backUpDirectory=cmd.getBackupDirectory();
+            		if(cmd.isDeleteGranules()){
+            			boolean delete=true;
+                    	if(backUpDirectory!=null){
+                    		//if we don't manage to move, we try to cancel
+                    		delete =(!backUpGranulesFiles(cmd.getDelFiles(),backUpDirectory));
+                    	} 
+                    	
+                    	// delete 
+                    	if(delete){
+                    		deleteGranulesFiles(cmd.getDelFiles());
+                    	}
+            		}
                 }
             } else {
                 if (LOGGER.isInfoEnabled()) {
@@ -867,4 +865,81 @@ abstract class ImageMosaicUpdater {
 		}
 		return true;
 	}
+
+	/**
+	 * Method to backup granules that have been removed from the index.
+	 * 
+	 * <P>
+	 * The provided backup dire must exist and be writable for the process.
+	 * 
+	 * @param filesToBackup {@link List} of files to backup, that is move to the backup directory
+	 * @param backUpDirectory target directory for the process
+	 * @return <code>false</code> in case we manage to move the files, <code>false</code> otherwise.
+	 */
+	static boolean backUpGranulesFiles(final List<File> filesToBackup, final File backUpDirectory) {
+
+		//checks on dir
+		if(backUpDirectory==null){
+			throw new IllegalArgumentException("Provided null back up directory");
+		}
+		if(!backUpDirectory.exists()||!backUpDirectory.isDirectory()||!backUpDirectory.canWrite()){
+			if(LOGGER.isErrorEnabled()){
+				LOGGER.error("Provided directory does not exist or it is not writable");
+			}			
+			return false;
+		}
+		
+		if(filesToBackup==null||filesToBackup.size()==0){
+			if(LOGGER.isInfoEnabled()){
+				LOGGER.info("Provided list of files to backup is empty");
+			}			
+			return true;
+		}		
+		
+		// now the magic
+		boolean retValue=true;
+		for(File granule:filesToBackup){
+			
+			// move
+			try {
+				FileUtils.moveFileToDirectory(granule, backUpDirectory, false);
+			} catch (IOException e) {
+				if(LOGGER.isInfoEnabled()){
+					LOGGER.info(e.getLocalizedMessage(),e);
+				}
+				// if we fail we try to remove the afterwards
+				retValue=false;
+			}
+		}
+		return retValue;
+	}
+
+	/**
+	 * Physically deletes granules from disk after having been removed from the index.
+	 * 
+	 * @param filesToDelete the list of files to delete.
+	 * 
+	 * @throws IOException in case something bad happens
+	 */
+	static void deleteGranulesFiles(final List<File> filesToDelete) throws IOException {
+		for(File granule:filesToDelete){
+			deleteFile(granule);
+		}
+	}
+
+	static void deleteFile(File granule) throws IOException {
+		if(!FileUtils.deleteQuietly(granule)){
+			try{
+				FileUtils.forceDelete(granule);
+			}catch (Exception e) {
+				if(LOGGER.isErrorEnabled()){
+					LOGGER.error(e.getLocalizedMessage(),e);
+				}
+				
+				// delete on exit
+				FileUtils.forceDeleteOnExit(granule);
+			}
+		}
+	}
+
 }

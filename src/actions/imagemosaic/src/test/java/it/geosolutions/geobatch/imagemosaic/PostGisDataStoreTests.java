@@ -53,10 +53,8 @@ public class PostGisDataStoreTests {
 	private static String DATASTORE_PATH;
 	
 	static {
-		POSTGIS = GeoServerTests.getenv("postgis", "false").equalsIgnoreCase(
-				"true");
-		DATASTORE_PATH = GeoServerTests.getenv("datastore_path",
-				"datastore.properties");
+		POSTGIS = GeoServerTests.getenv("postgis", "false").equalsIgnoreCase("true");
+		DATASTORE_PATH = GeoServerTests.getenv("datastore_path","datastore.properties");
 	}
 	
 	public static boolean existsPostgis(){
@@ -78,34 +76,24 @@ public class PostGisDataStoreTests {
 	}
 	
 	@Test
-	public void getPropertiesTest() throws UnsatisfiedLinkError,
-			FileNotFoundException {
-		final Properties props;
-		try {
+	public void getPropertiesTest() throws Exception {
+		final Properties props = ImageMosaicProperties.getPropertyFile(PostGisDataStoreTests.getDatastoreProperties());
+		/**
+		 * SPI=org.geotools.data.postgis.PostgisNGDataStoreFactory<br>
+		 * port=5432<br>
+		 * host=localhost<br>
+		 * schema=public<br>
+		 * database=db<br>
+		 * user=gis<br>
+		 * passwd=gis<br>
+		 */
+		Assert.assertNotNull(props.getProperty("port"));
+		Assert.assertNotNull(props.getProperty("host"));
+		Assert.assertNotNull(props.getProperty("schema"));
+		Assert.assertNotNull(props.getProperty("database"));
+		Assert.assertNotNull(props.getProperty("user"));
+		Assert.assertNotNull(props.getProperty("passwd"));
 
-			props = ImageMosaicProperties.getPropertyFile(PostGisDataStoreTests
-					.getDatastoreProperties());
-			/**
-			 * SPI=org.geotools.data.postgis.PostgisNGDataStoreFactory<br>
-			 * port=5432<br>
-			 * host=localhost<br>
-			 * schema=public<br>
-			 * database=db<br>
-			 * user=gis<br>
-			 * passwd=gis<br>
-			 */
-			Assert.assertNotNull(props.getProperty("port"));
-			Assert.assertNotNull(props.getProperty("host"));
-			Assert.assertNotNull(props.getProperty("schema"));
-			Assert.assertNotNull(props.getProperty("database"));
-			Assert.assertNotNull(props.getProperty("user"));
-			Assert.assertNotNull(props.getProperty("passwd"));
-			
-		} catch (NullPointerException e) {
-			Assert.fail(e.getLocalizedMessage());
-		} catch (IOException e) {
-			Assert.fail(e.getLocalizedMessage());
-		}
 	}
 
 }

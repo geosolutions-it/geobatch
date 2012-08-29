@@ -76,7 +76,11 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
     @XStreamAlias("base")
     private File baseDir;
     
+    /**Whether or not we should delete the granules once we remove them from the index.*/
     private boolean deleteGranules;
+    
+    /**The directory where to move the files we remove for backup purposes*/
+    private File backupDirectory;
 
     @XStreamImplicit(itemFieldName = "del")
     private List<File> delFiles;
@@ -87,8 +91,8 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
 	/** Whether or not we want to perform a reset call on GeoServer at the end of the process*/
     @XStreamAlias("finalReset")
 	private boolean finalReset;
-    
-    @XStreamAlias("NFSCopyWait")
+
+	@XStreamAlias("NFSCopyWait")
 	private int NFSCopyWait=ImageMosaicAction.DEFAULT_COPY_WAIT;
 
 	@XStreamOmitField
@@ -172,7 +176,15 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
             }
         }
     }
+    
+    public File getBackupDirectory() {
+		return backupDirectory;
+	}
 
+	public void setBackupDirectory(File backupDirectory) {
+		this.backupDirectory = backupDirectory;
+	}
+	
     public File getBaseDir() {
         return baseDir;
     }
