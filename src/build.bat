@@ -1,7 +1,7 @@
 @echo off
 
 rem profile needed for base demo (commons + geotiff + shapefiles)
-set PROFILES=geotiff,shapefile,commons
+set PROFILES=geotiff,shapefile,task-executor,freemarker,scripting,commons,imagemosaic,xstream
 
 rem profiles for base demo + task executor 
 rem set PROFILES=geotiff,shapefile,task-executor,freemarker,scripting,commons

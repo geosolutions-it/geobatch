@@ -26,7 +26,8 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
 public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
-    public ImageMosaicConfiguration(String id, String name, String description) {
+
+	public ImageMosaicConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
 
@@ -40,7 +41,7 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
      * to get ImageMosaicGranulesDescription info
      */
     private Boolean COARDS;
-
+    
     private String datastorePropertiesPath;
 
     private String timeRegex;
@@ -110,7 +111,7 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         this.elevationPresentationMode = elevationPresentationMode;
     }
 
-    // TODO removeme
+    // TODO remove me
     private String dirName;
 
     private String outputTransparentColor;

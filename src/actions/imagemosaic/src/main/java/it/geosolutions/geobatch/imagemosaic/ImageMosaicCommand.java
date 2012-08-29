@@ -84,7 +84,14 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
     @XStreamImplicit(itemFieldName = "add")
     private List<File> addFiles;
 
-    @XStreamOmitField
+	/** Whether or not we want to perform a reset call on GeoServer at the end of the process*/
+    @XStreamAlias("finalReset")
+	private boolean finalReset;
+    
+    @XStreamAlias("NFSCopyWait")
+	private int NFSCopyWait=ImageMosaicAction.DEFAULT_COPY_WAIT;
+
+	@XStreamOmitField
     private static final XStream STREAM;
     static {
         STREAM = new XStream();
@@ -196,6 +203,10 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
 
     }
 
+    public int getNFSCopyWait() {
+		return NFSCopyWait;
+	}
+    
     /**
      * clone
      */
@@ -257,8 +268,6 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
 
         if (getDefaultNamespace() != null)
             conf.setDefaultNamespace(getDefaultNamespace());
-
-        // configuration.setDefaultNamespaceUri(defaultNamespaceUri);
 
         if (getDefaultStyle() != null)
             conf.setDefaultStyle(getDefaultStyle());
@@ -379,6 +388,18 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
 
 	public void setDeleteGranules(boolean deleteGranules) {
 		this.deleteGranules = deleteGranules;
+	}
+
+	public Boolean getFinalReset() {
+		return finalReset;
+	}
+
+	public void setFinalReset(boolean finalReset) {
+		this.finalReset = finalReset;
+	}
+
+	public void setNFSCopyWait(int nFSCopyWait) {
+		NFSCopyWait = nFSCopyWait;
 	}
 
 }

@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author AlFa (r1)
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it (r2,r3)
+ * @author Simone Giannecchini, GeoSolutions SAS
  * 
  * @version <br>
  *          $ ImageMosaicConfiguratorAction.java Rev: 0.1 $ 12/feb/07 <br>
@@ -64,7 +65,8 @@ import org.slf4j.LoggerFactory;
 
 public class ImageMosaicAction extends BaseAction<EventObject> {
 
-    protected final static int WAIT = 10; // seconds to wait for nfs propagation
+	/** Seconds to wait for nfs propagation.*/
+    public final static int DEFAULT_COPY_WAIT = 10;
 
     /**
      * Default logger
@@ -333,7 +335,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                             // baseDir (do not
                             // preventing overwrite)
                             addedFiles = Copy.copyListFileToNFS(cmd.getAddFiles(), cmd.getBaseDir(), true,
-                                                                WAIT);
+                                                                cmd.getNFSCopyWait());
                             if (addedFiles == null || addedFiles.size() == 0) {
                                 // no file where transfer to the
                                 // destination dir
@@ -484,12 +486,16 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         if (LOGGER.isInfoEnabled()) {
                             LOGGER.info("Reset GeoServer Cache");
                         }
-                        // clear GeoServer cached readers
+                        
+                        //
+                        // Clear GeoServer cached readers if needed. This might be important when the BBOX has grown or shrunk
+                        // due to an add or remove operation.
+                        //
                         if(cmd.getIgnoreGeoServer()) {
                             if (LOGGER.isInfoEnabled()) {
                                 LOGGER.info("GeoServer is disabled by configuration. Reset will not be performed. ");
                             }
-                        } else {
+                        } else if(cmd.getFinalReset()){
                             if (gsPublisher.reset()) {
                                 // SUCCESS update the Catalog
                                 if (LOGGER.isInfoEnabled()) {

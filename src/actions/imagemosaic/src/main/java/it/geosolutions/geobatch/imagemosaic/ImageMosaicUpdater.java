@@ -23,8 +23,6 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.tools.commons.time.TimeParser;
 import it.geosolutions.tools.io.file.Copy;
-import it.geosolutions.tools.io.file.FileGarbageCollector;
-import it.geosolutions.tools.io.file.FileRemover;
 
 import java.io.File;
 import java.io.IOException;
@@ -828,7 +826,7 @@ abstract class ImageMosaicUpdater {
                         LOGGER.info("Starting file copy ("+cmd.getAddFiles().size()+" file/s)");
                     }
 					addedFile = Copy.copyListFileToNFS(cmd.getAddFiles(),
-							cmd.getBaseDir(), false, ImageMosaicAction.WAIT);
+							cmd.getBaseDir(), false, cmd.getNFSCopyWait());
 				}
 				if (!addFileToStore(addedFile, dataStore, store, locationKey,
 						cmd.getBaseDir())) {
@@ -864,10 +862,6 @@ abstract class ImageMosaicUpdater {
 					if (LOGGER.isWarnEnabled()) {
 						LOGGER.warn(t.getLocalizedMessage(), t);
 					}
-					/*
-					 * return false; TODO: check is this formally correct? if
-					 * the datastore failed to be disposed...
-					 */
 				}
 			}
 		}

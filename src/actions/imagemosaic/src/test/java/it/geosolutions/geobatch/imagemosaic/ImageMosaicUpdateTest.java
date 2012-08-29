@@ -58,8 +58,7 @@ import org.junit.Test;
  */
 public class ImageMosaicUpdateTest extends Assert{
 
-	private final static Logger LOGGER = Logger
-			.getLogger(ImageMosaicUpdateTest.class);
+	private final static Logger LOGGER = Logger.getLogger(ImageMosaicUpdateTest.class);
 	
 	private static File BASE_DIR;
 
