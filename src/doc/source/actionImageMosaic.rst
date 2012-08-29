@@ -1,33 +1,32 @@
 Image Mosaic Action
 ===================
 
-The image mosaic flow can be used to publish or update an http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html 
-ImageMosaic up to a single instance of the http://docs.geoserver.org/2.0.0/user/ GeoServer.
+The image mosaic flow can be used to publish or update an `ImageMosaic <http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html>`_ up to a single instance of the `GeoServer <http://docs.geoserver.org/2.0.0/user/>`_. It is fundamentally based on the GeoTools `ImageMosaic <http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html>`_ plugin and makes use of a series of REST calls to perform remote GeoServer update and queries via the GeoServer manager library.
 
-It is fundamentally based on the http://geotools.org/ GeoTools
-http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html 
-ImageMosaic library and make use of a series of http://docs.geoserver.org/2.0.0/user/extensions/rest/index.html REST calls to perform remote GeoServer update and queries.
 
 Input
 -----
 
-* A writeable directory (with readable geotiff)
+* A writeable directory full of with readable geotiff files that we may want to be ingested automatically in an index
 
 OR
 
-* An ImageMosaicCommand file:
+* An ImageMosaicCommand file to dirve the ingestione process, which would look like the following:
 
 .. sourcecode:: xml
 
 	<ImageMosaic>
 	  <base>/path/to/destination/layer/</base>
+	  
+	   ...
 	  <add>/path/of/file/to/add/geoN.tif</add>
-	   ...
 	  <add>/path/of/file/to/add/geo.tif</add>
-	  <del>/path/of/file/to/delete/geo.tif</del>
+	  
 	   ...
+	  <del>/path/of/file/to/delete/geo.tif</del>
 	  <del>/path/of/file/to/delete/geoM.tif</del>
 	   ...
+	   
 	  <backgroundValue>-9999</backgroundValue>
 	  <outputTransparentColor></outputTransparentColor>
 	  <inputTransparentColor></inputTransparentColor>
@@ -39,7 +38,17 @@ OR
 	  <projectionPolicy>NONE</projectionPolicy>
 	  ...
 	  <styles/>
-
+	  ...
+	  <deleteGranules>false</deleteGranules>
+	  <backupDirectory>Path_to_backup_directory</backupDirectory>
+	  
+	  ...
+	  <finalReset>false</finalReset>
+	  
+	  ...
+	  <NFSCopyWait>10</NFSCopyWait>
+	  
+	  ...
 	  <datastorePropertiesPath>imagemosaic_work/config/datastore.properties</datastorePropertiesPath>
 
 	  <!-- METADATA -->
@@ -60,11 +69,10 @@ OR
 
 *NOTE:*
  
-* 07/10/2011 -> ImageMosaicCommand is now able to *override* statically defined (into configuration) mosaic parameters
+* ImageMosaicCommand is now able to *override* statically defined (into configuration) mosaic parameters
 
-* 08/04/2011 -> delete operations are still not complete, do not use those functionalities
 
-If you use shape file as datastore and you need time support (with hours minutes and seconds) be shure to set: ::
+If you use shapefile as datastore and you need time support (with hours minutes and seconds) be shure to set: ::
 
 	-Dorg.geotools.shapefile.datetime=true 
 
@@ -73,6 +81,10 @@ into the: ::
 	JAVA_OPTS 
 
 of the *GeoServer* instance which may build the mosaic.
+
+Along the sameline, make sure to use the following java switch to make sure the TimeZone is GMT and avoid problems with parsing/encoding dates: ::
+
+  -Duser.timezone=GMT
 
 Output
 ------
@@ -98,11 +110,9 @@ Referring to the below Flow Chart Image you can see:
 
 *References*
 
-http://java.net/projects/imageio-ext ImageIO-EXT
-
-http://docs.geotools.org/latest/userguide/guide/library/coverage/index.html Coverage
-
-http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html ImageMosaic
+* `ImageIO-EXT <http://java.net/projects/imageio-ext>`_
+* `Coverage <http://docs.geotools.org/latest/userguide/guide/library/coverage/index.html>`_
+* `ImageMosaic <http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html>`_
 
 
 The Flow Chart
