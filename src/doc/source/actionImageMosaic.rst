@@ -11,14 +11,15 @@ Input
 
 OR
 
-* An ImageMosaicCommand file to dirve the ingestione process, which would look like the following:
+* An **ImageMosaicCommand** file to drive the ingestion process, which would look like the following:
 
 .. sourcecode:: xml
 
 	<ImageMosaic>
+	  <!-- Base directory for the mosaic -->
 	  <base>/path/to/destination/layer/</base>
 	  
-	   ...
+	  <!-- Files to add or remove from the index  -->
 	  <add>/path/of/file/to/add/geoN.tif</add>
 	  <add>/path/of/file/to/add/geo.tif</add>
 	  
@@ -42,24 +43,24 @@ OR
 	  <deleteGranules>false</deleteGranules>
 	  <backupDirectory>Path_to_backup_directory</backupDirectory>
 	  
-	  ...
+	  <!-- do we want to perform a Reset on GeoServer at the end
+	  of the process or not.  default to True.-->
 	  <finalReset>false</finalReset>
 	  
-	  ...
+	  <!-- Delay in Seconds to apply when moving files around when NFS is involved. Must be >=0-->
 	  <NFSCopyWait>10</NFSCopyWait>
 	  
 	  ...
 	  <datastorePropertiesPath>imagemosaic_work/config/datastore.properties</datastorePropertiesPath>
 
 	  <!-- METADATA -->
-
-	  <!-- TIME -->
+	  <!-- TIME Dimension -->
 	  <timeDimEnabled>false</timeDimEnabled>
 	  <!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
 	  <timePresentationMode>LIST</timePresentationMode>
 	  <timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>
 
-	  <!-- ELEVATION -->
+	  <!-- ELEVATION Dimension -->
 	  <elevDimEnabled>false</elevDimEnabled>
 	  <elevationPresentationMode>LIST</elevationPresentationMode>
 	  <elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>
@@ -125,18 +126,19 @@ The Flow Chart
 
 ImageMosaicAction Configuration
 --------------------------
+TODO 
 
 ImageMosaicCommand
 --------------------------
 We are now going to describe the ImageMosaicCommand which represents one of the possible inputs for the ImageMosaicActions, since, as mentioned above we can either pass a directory to it 
 or an XML file containing the XML serialization of an ImageMosaicCommand.
 
-Leveraging on the ImageMosaicCommand one could define on the fly most of the ImageMosaicAction options to use override the ImageMosaicActions configuration statically defined. 
+Leveraging on the ImageMosaicCommand we can the fly override the ImageMosaicActions configuration statically defined inside the flow configuration in order to add or delete granules from an existing mosaic or to create a new mosaic. 
 
 Inputs
 @@@@@@@
 
-The set of granules to add/remove or the entire mosaic:
+The set of granules to add/remove d the entire mosaic:
 
 .. sourcecode:: xml
 
