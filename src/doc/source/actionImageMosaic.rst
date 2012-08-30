@@ -154,7 +154,7 @@ The 'add' and 'del' file list is used to add or remove granules from an existing
 
 The target Geoserver
 @@@@@@@@@@@@@@@@@@@@
-You can control the target geoserver passing GeoServer URL, user and password.
+You can control the GeoServer to work against via the following parameters.
 
 .. sourcecode:: XML
 
