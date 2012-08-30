@@ -22,12 +22,16 @@ OR
 	  <!-- Files to add or remove from the index  -->
 	  <add>/path/of/file/to/add/geoN.tif</add>
 	  <add>/path/of/file/to/add/geo.tif</add>
-	  
-	   ...
 	  <del>/path/of/file/to/delete/geo.tif</del>
 	  <del>/path/of/file/to/delete/geoM.tif</del>
-	   ...
-	   
+	  <!-- physically delete the granules from disk 
+	  after removing them from the index -->
+	  <deleteGranules>false</deleteGranules>
+	  <!-- if and where to backp up granules when 
+	  removing them. It must be an absolute path -->
+	  <backupDirectory>Path_to_backup_directory</backupDirectory>
+	  
+	  <!-- ImageMosaicAction Configuration parameters -->	   
 	  <backgroundValue>-9999</backgroundValue>
 	  <outputTransparentColor></outputTransparentColor>
 	  <inputTransparentColor></inputTransparentColor>
@@ -37,11 +41,7 @@ OR
 	  <tileSizeW>256</tileSizeW>
 	  <!--NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED-->
 	  <projectionPolicy>NONE</projectionPolicy>
-	  ...
 	  <styles/>
-	  ...
-	  <deleteGranules>false</deleteGranules>
-	  <backupDirectory>Path_to_backup_directory</backupDirectory>
 	  
 	  <!-- do we want to perform a Reset on GeoServer at the end
 	  of the process or not.  default to True.-->
@@ -126,7 +126,7 @@ The Flow Chart
 
 ImageMosaicAction Configuration
 --------------------------
-TODO 
+The configuration for the ImageMosaicAction allows to specify the basic parameters for the actions plus various parameters for that are specific to the construction of the ImageMosaic itself in GeoServer.
 
 ImageMosaicCommand
 --------------------------
@@ -138,26 +138,30 @@ Leveraging on the ImageMosaicCommand we can the fly override the ImageMosaicActi
 Inputs
 @@@@@@@
 
-The set of granules to add/remove d the entire mosaic:
+The set of granules to add/remove d the entire mosaic and the base directory:
 
 .. sourcecode:: xml
 
 	  <base>/path/to/destination/layer/</base>
 	  <add>/path/of/file/to/add/geoN.tif</add>
-	   ...
 	  <add>/path/of/file/to/add/geo.tif</add>
 	  <del>/path/of/file/to/delete/geo.tif</del>
-	   ...
 	  <del>/path/of/file/to/delete/geoM.tif</del>
 
 Where 'base' represents the target directory to place the mosaic (if you are creating it); If you are updating a mosaic the 'base' folder may exists so all the files in that directory will be used to create the mosaic.
 
-The 'add' and 'del' file list is used to add or remove granules from an existing (or during creation) of an imagemosaic.
+The 'add' and 'del' file list is used to add or remove granules from an existing (or during creation for the add) of an imagemosaic.
 
 The target Geoserver
 @@@@@@@@@@@@@@@@@@@@
+You can control the target geoserver passing GeoServer URL, user and password.
 
-You could change on the fly the target geoserver passing GeoServer URL, user and password.
+.. sourcecode:: XML
+
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+
 
 The options used to configure the coverageStore/resource/layer
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
