@@ -117,16 +117,24 @@ Referring to the below Flow Chart Image you can see:
 
 The Flow Chart
 --------------
+.. figure:: images/ImageMosaicAction.jpg
+   :alt: ImageMosaicActions FlowChart
+   :align: center
+   
+   ImageMosaicActions FlowChart
 
-[[Image(ImageMosaicAction.jpg, align=center, nolink)]]
-
-
-ImageMosaicCommand options
+ImageMosaicAction Configuration
 --------------------------
-Passing an ImageMosaicCommand to the GeoBatch ImageMosaicAction you could define on the fly most of the ImageMosaicAction options to use (passed options will override the flow configuration):
+
+ImageMosaicCommand
+--------------------------
+We are now going to describe the ImageMosaicCommand which represents one of the possible inputs for the ImageMosaicActions, since, as mentioned above we can either pass a directory to it 
+or an XML file containing the XML serialization of an ImageMosaicCommand.
+
+Leveraging on the ImageMosaicCommand one could define on the fly most of the ImageMosaicAction options to use override the ImageMosaicActions configuration statically defined. 
 
 Inputs
-------
+@@@@@@@
 
 The set of granules to add/remove or the entire mosaic:
 
@@ -145,12 +153,12 @@ Where 'base' represents the target directory to place the mosaic (if you are cre
 The 'add' and 'del' file list is used to add or remove granules from an existing (or during creation) of an imagemosaic.
 
 The target Geoserver
---------------------
+@@@@@@@@@@@@@@@@@@@@
 
 You could change on the fly the target geoserver passing GeoServer URL, user and password.
 
 The options used to configure the coverageStore/resource/layer
---------------------------------------------------------------
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 To understand most of the following parameters please read the official GeoServer documentation ( http://docs.geoserver.org/latest/en/user/tutorials/image_mosaic_plugin/imagemosaic.html )
 
@@ -224,7 +232,7 @@ Your mosaic should contains files named as following::
 Which represents a granule with date 2012-12-31 23:59:59 and elevation 1.0.
 
 Datastore
----------
+@@@@@@@@@@@@
 
 The Datastore is a properties file which is used by the ImageMosaic to update the metadata store which is used by the GeoServer.
 
@@ -317,7 +325,7 @@ Here a complete example with all the acceptable options:
 	Expose\ primary\ keys=
 
 Using PostGis
--------------
+같같같같같같같같
 
 If you are using the PostGis (PostgreSQL) API:
 In addition to the above options you can use the below one.
@@ -343,7 +351,7 @@ Note the 'SPI' key can substitute the 'dbtype'::
 	preparedStatements=false
 
 Using JNDI on PostGis
----------------------
+같같같같같같같같같같�
 
 If you are using the API for the JNDI::
 

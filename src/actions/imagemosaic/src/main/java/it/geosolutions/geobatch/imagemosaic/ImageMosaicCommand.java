@@ -90,7 +90,7 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
 
 	/** Whether or not we want to perform a reset call on GeoServer at the end of the process*/
     @XStreamAlias("finalReset")
-	private boolean finalReset;
+	private boolean finalReset=ImageMosaicAction.DEFAULT_RESET_BEHAVIOR;
 
 	@XStreamAlias("NFSCopyWait")
 	private int NFSCopyWait=ImageMosaicAction.DEFAULT_COPY_WAIT;

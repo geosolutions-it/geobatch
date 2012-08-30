@@ -67,6 +67,9 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
 	/** Seconds to wait for nfs propagation.*/
     public final static int DEFAULT_COPY_WAIT = 10;
+    
+    /** Default behavior with geoserver rest.*/
+    public final static boolean DEFAULT_RESET_BEHAVIOR=true;
 
     /**
      * Default logger
@@ -482,10 +485,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
                     // update
                     if (ImageMosaicUpdater.updateDataStore(mosaicProp, dataStoreProp, mosaicDescriptor, cmd)) {
-                        // SUCCESS update the store
-                        if (LOGGER.isInfoEnabled()) {
-                            LOGGER.info("Reset GeoServer Cache");
-                        }
+
                         
                         //
                         // Clear GeoServer cached readers if needed. This might be important when the BBOX has grown or shrunk
@@ -496,6 +496,10 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                                 LOGGER.info("GeoServer is disabled by configuration. Reset will not be performed. ");
                             }
                         } else if(cmd.getFinalReset()){
+                            // SUCCESS update the store
+                            if (LOGGER.isInfoEnabled()) {
+                                LOGGER.info("Reset GeoServer Cache");
+                            }                        	
                             if (gsPublisher.reset()) {
                                 // SUCCESS update the Catalog
                                 if (LOGGER.isInfoEnabled()) {
