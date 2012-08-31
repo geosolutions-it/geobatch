@@ -1,7 +1,7 @@
 Image Mosaic Action
 ===================
 
-The image mosaic flow can be used to publish or update an `ImageMosaic <http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html>`_ up to a single instance of the `GeoServer <http://docs.geoserver.org/2.0.0/user/>`_. It is fundamentally based on the GeoTools `ImageMosaic <http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html>`_ plugin and makes use of a series of REST calls to perform remote GeoServer update and queries via the GeoServer manager library.
+The ImageMosaic Action can be used to publish or update an `ImageMosaic <http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html>`_ up to an instance of the `GeoServer <http://docs.geoserver.org/2.0.0/user/>`_. It is fundamentally based on the GeoTools `ImageMosaic <http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html>`_ plugin and makes use of a series of REST calls to perform remote GeoServer update and queries via the GeoServer-Manager library.
 
 
 Input
@@ -62,16 +62,14 @@ OR
 
 	  <!-- ELEVATION Dimension -->
 	  <elevDimEnabled>false</elevDimEnabled>
+	  <!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->	  
 	  <elevationPresentationMode>LIST</elevationPresentationMode>
 	  <elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>
 
 	  ...
 	</ImageMosaic>
 
-*NOTE:*
- 
-* ImageMosaicCommand is now able to *override* statically defined (into configuration) mosaic parameters
-
+ImageMosaicCommand can be used to *override* (more on this later) the parameters defined statically inside the action configuration.
 
 If you use shapefile as datastore and you need time support (with hours minutes and seconds) be shure to set: ::
 
@@ -88,7 +86,7 @@ Along the sameline, make sure to use the following java switch to make sure the 
   -Duser.timezone=GMT
 
 Output
-------
+---------
 
 * A file (queue) representing the output layer (if successfully configured)
 
@@ -104,32 +102,33 @@ Referring to the below Flow Chart Image you can see:
   * Update (adding or removing images)
 
 
-2. using the directory as input the only supported operation is:
+2. using the directory as input is acceptable only if we are creating the ImageMosaic in GeoServer, during updates we shall use an ImageMosaicCommand XML file as input.
 
+The Flow Chart
+--------------
 
-  * Creation
-
-*References*
+.. figure:: images/ImageMosaicAction.jpg
+   :alt: ImageMosaicActions FlowChart
+   :align: center
+   
+   ImageMosaicActions FlowChart
+   
+References
+----------- 
 
 * `ImageIO-EXT <http://java.net/projects/imageio-ext>`_
 * `Coverage <http://docs.geotools.org/latest/userguide/guide/library/coverage/index.html>`_
 * `ImageMosaic <http://docs.geoserver.org/stable/en/user/tutorials/image_mosaic_plugin/imagemosaic.html>`_
 
 
-The Flow Chart
---------------
-.. figure:: images/ImageMosaicAction.jpg
-   :alt: ImageMosaicActions FlowChart
-   :align: center
-   
-   ImageMosaicActions FlowChart
 
 ImageMosaicAction Configuration
 --------------------------
 The configuration for the ImageMosaicAction allows to specify the basic parameters for the actions plus various parameters for that are specific to the construction of the ImageMosaic itself in GeoServer.
 
 ImageMosaicCommand
---------------------------
+@@@@@@@@@@@@@@@@@@@@@
+
 We are now going to describe the ImageMosaicCommand which represents one of the possible inputs for the ImageMosaicActions, since, as mentioned above we can either pass a directory to it 
 or an XML file containing the XML serialization of an ImageMosaicCommand.
 
@@ -237,12 +236,12 @@ Your mosaic should contains files named as following::
 
 Which represents a granule with date 2012-12-31 23:59:59 and elevation 1.0.
 
-Datastore
+Minimal giode to using the datastore.properties file
 @@@@@@@@@@@@
 
-The Datastore is a properties file which is used by the ImageMosaic to update the metadata store which is used by the GeoServer.
+The datastore.properties is a properties file which is used by the ImageMosaic plugin in GeoTools (hence GeoServer) in order to place the mosac index in  a GeoTools datastore, which means not only a Shapefile (for which it is not needed as the ImageMosaic by default creates an ImageMosaci inside the mosaic root directory) but also a Postgis table, an H2 database and so on.
 
-Here a complete example with all the acceptable options:
+Here a complete example with all the acceptable options for Postgis. The files contains a first KVP whose key is **SPI** and whose values is the name of the SPI service (with package name) for the kind of datastore we want to use from GeoTools. The others KVPs are taken from the datastore connection parameters. Notice that for the datastores that support it we can also connect to an external JNDI datasource (see below).
 
 .. sourcecode:: xml
 
