@@ -127,5 +127,12 @@ public class Alias {
                 xstream.alias(entry.getKey(), entry.getValue());
             }
         }
+
+        // adding registered implicit collections
+        if (aliasRegistry != null) {
+            for (Entry<String, Class<?>> entry : aliasRegistry.implicitCollectionIterator()) {
+                xstream.addImplicitCollection(entry.getValue(), entry.getKey());
+            }
+        }
     }
 }

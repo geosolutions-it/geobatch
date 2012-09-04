@@ -37,6 +37,7 @@ public class AliasRegistry implements Iterable<Map.Entry<String, Class<?>>> {
     private final static Logger LOGGER = LoggerFactory.getLogger(AliasRegistrar.class.getName());
 
     private Map<String, Class<?>> alias = new HashMap<String, Class<?>>();
+    private Map<String, Class<?>> implicitCollections = new HashMap<String, Class<?>>();
     
     public AliasRegistry() {
     }
@@ -54,4 +55,15 @@ public class AliasRegistry implements Iterable<Map.Entry<String, Class<?>>> {
     public Iterator<Entry<String, Class<?>>> iterator() {
         return alias.entrySet().iterator();
     }
+
+    public void putImplicitCollection(String name, Class<?> clazz) {
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info("Adding implicit collection " + name + " for class " + clazz.getSimpleName());
+        implicitCollections.put(name, clazz);
+    }
+
+    public Iterable<Entry<String, Class<?>>> implicitCollectionIterator() {
+        return implicitCollections.entrySet();
+    }
+
 }
