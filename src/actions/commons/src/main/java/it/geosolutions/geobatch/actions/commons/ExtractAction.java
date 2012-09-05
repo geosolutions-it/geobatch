@@ -25,7 +25,9 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.tools.commons.file.Path;
 import it.geosolutions.tools.compress.file.Extract;
+import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
 import java.util.EventObject;
@@ -60,12 +62,12 @@ public class ExtractAction extends BaseAction<EventObject> {
     public ExtractAction(ExtractConfiguration configuration) throws IllegalArgumentException {
         super(configuration);
         conf = configuration;
-        if (conf.getDestination()==null){
+        if (conf.getDestination() == null) {
             throw new IllegalArgumentException("Unable to work with a null dest dir");
         }
-        if (!conf.getDestination().isAbsolute()){
+        if (!conf.getDestination().isAbsolute()) {
             // TODO LOG
-            conf.setConfigDir(new File(conf.getConfigDir(),conf.getDestination().getPath()));
+            conf.setConfigDir(new File(conf.getConfigDir(), conf.getDestination().getPath()));
         }
     }
 
@@ -81,76 +83,85 @@ public class ExtractAction extends BaseAction<EventObject> {
         final Queue<EventObject> ret = new LinkedList<EventObject>();
 
         listenerForwarder.setTask("Building/getting the root data structure");
-        
+
         boolean extractMultipleFile;
-        final int size=events.size();
-        if (size==0){
+        final int size = events.size();
+        if (size == 0) {
             throw new ActionException(this, "Empty file list");
-        } else if (size>1){
-            extractMultipleFile=true;
+        } else if (size > 1) {
+            extractMultipleFile = true;
         } else {
-            extractMultipleFile=false;
+            extractMultipleFile = false;
         }
         
-        final File dest=conf.getDestination();
-        
-        if (dest!=null && !dest.isDirectory()){
-            if (!dest.mkdirs()){
-                throw new ActionException(this, "bad destination (not writeable): "+dest);
+        // getting valid destination dir
+        File dest = conf.getDestination();
+        if (dest != null && !dest.isDirectory()) {
+            if (!dest.isAbsolute()){
+                dest = new File(getTempDir(), dest.getPath()); 
             }
+            if (!dest.mkdirs()) {
+                throw new ActionException(this, "bad destination (not writeable): " + dest);
+            }
+        } else {
+            dest = getTempDir();
         }
-        
-        
+
         while (!events.isEmpty()) {
             listenerForwarder.setTask("Generating the output");
-            
-            final EventObject event=events.remove();
-            if (event==null){
-                // TODO LOG
-                continue;
+
+            final EventObject event = events.remove();
+            if (event == null) {
+                final String message = "Incoming event is null";
+                if (!getConfiguration().isFailIgnored()) {
+                    ActionException ex = new ActionException(this.getClass(), message);
+                    listenerForwarder.failed(ex);
+                    throw ex;
+                } else {
+                    LOGGER.warn(message);
+                    continue;
+                }
             }
-            if (event instanceof FileSystemEvent){ 
+            if (event instanceof FileSystemEvent) {
                 File source = ((FileSystemEvent) event).getSource();
-                
+
                 try {
-                    listenerForwarder.setTask("Extracting file: "+source);
-                    final File extracted=Extract.extract(source,getTempDir(),false);
-                    if (extracted!=null){
-                            if (dest!=null){
-                                File newDest=new File(dest,extracted.getName());
-                                listenerForwarder.setTask("moving \'"+extracted+"\' to \'"+newDest+"\'");
-                                FileUtils.moveDirectoryToDirectory(extracted, newDest, true);
-                                listenerForwarder.terminated();
-                            ret.add(new FileSystemEvent(newDest, FileSystemEventType.DIR_CREATED));
-                        } else {
-                            throw new ActionException(this, "Unable to extracto file: "+source);
-                        }
-                    } else{
-                        final String message="Unable to extract "+source;
-                        if (!getConfiguration().isFailIgnored()){
-                        	ActionException ex = new ActionException(this.getClass(), message);
-                        	listenerForwarder.failed(ex);
+                    listenerForwarder.setTask("Extracting file: " + source);
+                    final File extracted = Extract.extract(source, dest, false);
+                    if (extracted != null) {
+                        File newDest = new File(dest, extracted.getName());
+                        listenerForwarder.setTask("moving \'" + extracted + "\' to \'" + newDest
+                                + "\'");
+                        FileUtils.moveDirectoryToDirectory(extracted, newDest, true);
+                        listenerForwarder.terminated();
+                        ret.add(new FileSystemEvent(newDest, FileSystemEventType.DIR_CREATED));
+                    } else {
+                        final String message = "Unable to extract " + source;
+                        if (!getConfiguration().isFailIgnored()) {
+                            ActionException ex = new ActionException(this.getClass(), message);
+                            listenerForwarder.failed(ex);
                             throw ex;
                         } else {
                             LOGGER.warn(message);
                         }
                     }
                 } catch (Exception e) {
-                	final String message="Unable to copy extracted archive";
-                    if (!getConfiguration().isFailIgnored()){
-                    	ActionException ex = new ActionException(this.getClass(), message);
-                    	listenerForwarder.failed(ex);
+                    final String message = "Unable to copy extracted archive";
+                    if (!getConfiguration().isFailIgnored()) {
+                        ActionException ex = new ActionException(this.getClass(), message);
+                        ex.initCause(e);
+                        listenerForwarder.failed(ex);
                         throw ex;
                     } else {
                         LOGGER.warn(e.getLocalizedMessage());
                     }
-                    
+
                 }
             } else {
-                final String message="Incoming instance is not a FileSystemEvent: "+event;
-                if (!getConfiguration().isFailIgnored()){
-                	ActionException ex = new ActionException(this.getClass(), message);
-                	listenerForwarder.failed(ex);
+                final String message = "Incoming instance is not a FileSystemEvent: " + event;
+                if (!getConfiguration().isFailIgnored()) {
+                    ActionException ex = new ActionException(this.getClass(), message);
+                    listenerForwarder.failed(ex);
                     throw ex;
                 } else {
                     LOGGER.warn(message);

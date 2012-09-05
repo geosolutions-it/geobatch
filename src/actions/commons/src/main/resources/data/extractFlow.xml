@@ -33,6 +33,11 @@
 			<listenerConfigurations/>
 			<failIgnored>false</failIgnored>
 			
+			<!-- Can be:
+			 NULL - tempDir will be used 
+			 Relative Directory - will be created into the tempDir 
+			 Absolute - it will be used as is
+			 -->
 			<destination>out/</destination>
 			
 		</ExtractConfiguration>
