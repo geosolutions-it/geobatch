@@ -6,17 +6,7 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
 	default-autowire="byName">
-	
-    <!-- bean id="placeholderProperties-database-ftp" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer" >
-		<property name="ignoreResourceNotFound" value="true" />
-        <property name="locations">
-            <list>
-                <value>file:///${user.home}/gb_database.properties</value>
-                <value>file:///${DATABASE_CONFIG_FILE}/gb_database.properties</value>
-                <value>file:///${GEOBATCH_CONFIG_DIR}/settings/gb_database.properties</value>
-            </list>
-        </property>
-    </bean-->	
+
     
 	<!--  Data source -->
 	<bean id="dataSource-gb-ftp-server" class="com.mchange.v2.c3p0.ComboPooledDataSource" depends-on="placeholderProperties-database">
