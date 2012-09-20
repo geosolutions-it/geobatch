@@ -7,8 +7,8 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
 	default-autowire="byName">
 	
-    <bean id="placeholderProperties-database-ftp" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer" >
-        <property name="ignoreResourceNotFound" value="true"/>
+    <!-- bean id="placeholderProperties-database-ftp" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer" >
+		<property name="ignoreResourceNotFound" value="true" />
         <property name="locations">
             <list>
                 <value>file:///${user.home}/gb_database.properties</value>
@@ -16,12 +16,12 @@
                 <value>file:///${GEOBATCH_CONFIG_DIR}/settings/gb_database.properties</value>
             </list>
         </property>
-    </bean>	
+    </bean-->	
     
 	<!--  Data source -->
-	<bean id="dataSource-gb-ftp-server" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+	<bean id="dataSource-gb-ftp-server" class="com.mchange.v2.c3p0.ComboPooledDataSource" depends-on="placeholderProperties-database">
 		<property name="driverClass" value="org.h2.Driver" />
-		<property name="jdbcUrl" value="jdbc:h2:${TMP:/tmp}/ftpusers" />
+		<property name="jdbcUrl" value="jdbc:h2:${TMP}/ftpusers" />
 		<property name="user" value="geobatch" />
 		<property name="password" value="geobatch" />	
 		<property name="minPoolSize" value="4" />
