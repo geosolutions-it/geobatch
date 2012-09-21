@@ -2,10 +2,8 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package it.geosolutions.geobatch.users;
+package it.geosolutions.geobatch.catalog.file;
 
-import it.geosolutions.geobatch.catalog.file.DataDirHandler;
-import it.geosolutions.tools.commons.file.Path;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -31,13 +29,14 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
  * @author Simone Giannecchini, GeoSolutions SAS.
  *
  */
-public class GeoBatchDataDirAwarePropertyOverrideConfigurer extends PropertyOverrideConfigurer{
+public abstract class GeoBatchDataDirAwarePropertyOverrideConfigurer extends PropertyOverrideConfigurer{
 	
 	/**Logger.*/
 	static final private Logger LOGGER= Logging.getLogger(GeoBatchDataDirAwarePropertyOverrideConfigurer.class);
 
 	/**This object mediates access to the GeoServer data directory.**/
 	protected final DataDirHandler dataDirectoryHandler;
+	
 	
 	/** 
 	 * Constructor.
@@ -48,7 +47,7 @@ public class GeoBatchDataDirAwarePropertyOverrideConfigurer extends PropertyOver
 	 * @param parentDirectory An absolute path to the directory where to look for properties files.
 	 * @param propertiesFiles List of names (with extension) of properties files to load.
 	 */
-	public GeoBatchDataDirAwarePropertyOverrideConfigurer(final DataDirHandler dataDirectory) {
+	public GeoBatchDataDirAwarePropertyOverrideConfigurer(final DataDirHandler dataDirectory, final boolean localOverride) {
 		//checks
 		if(dataDirectory==null){
 			throw new IllegalArgumentException("Unable to proceed with the placeholder initialization as the provided DataDirHandler is null!");
@@ -56,51 +55,28 @@ public class GeoBatchDataDirAwarePropertyOverrideConfigurer extends PropertyOver
 		this.dataDirectoryHandler = dataDirectory;
 		
 		// localOverride to true, so that what we do here takes precedence over external properties
-		setLocalOverride(false);
+		setLocalOverride(localOverride);
 		
 		//
 		// set the properties
 		//
-
-		// do we have a gb_database.properties file inside the config dir?
-		final File file=Path.findLocation("settings/gb_database.properties", dataDirectoryHandler.getBaseConfigDirectory());
-		if(file==null){
+		// load from properties file	
+		final Properties props=getCustomProperties();
+		if(props!=null){
 			if(LOGGER.isLoggable(Level.FINE)){
-				LOGGER.fine("Setting embedded database to work in the internal directory");
-			}
-			// move on with default
-			final File dbDir=Path.findLocation("settings/database", dataDirectoryHandler.getBaseConfigDirectory());
-			if(dbDir!=null&&dbDir.isDirectory()&&dbDir.canWrite()){
-
-				final Properties properties=new Properties();
-				properties.put("dataSource-gb-users.jdbcUrl", "jdbc:h2:"+dbDir.getAbsolutePath()+"/gbusers");
-				properties.put("dataSource-gb-ftp-server.jdbcUrl", "jdbc:h2:"+dbDir.getAbsolutePath()+"/ftpusers");
-				// set the properties we loaded as the default one to use
-				setProperties(properties);	
-				if(LOGGER.isLoggable(Level.FINE)){
-					LOGGER.fine("Set embedded database to work in the internal directory, using properties:\n"+properties.toString());
-				}				
-			} else {
-				if(LOGGER.isLoggable(Level.FINE)){
-					LOGGER.fine("Unable to set embedded database to work in the internal directory, check that it exists and it is writable");
-				}	
-			}
-		} else {
-			// load from properties file	
-			try {
-				final Properties props=loadProperties(file);
-				if(LOGGER.isLoggable(Level.FINE)){
-					LOGGER.fine("Trying to set embedded database from internal default properties file:\n"+props);
-				}						
-				setProperties(props);
-			} catch (IOException e) {
-				if(LOGGER.isLoggable(Level.INFO)){
-					LOGGER.log(Level.INFO,e.getLocalizedMessage(),e);
-				}
-			}
+				LOGGER.fine("Trying to set default properties:\n"+props);
+			}						
+			setProperties(props);
 		}
 	}
 
+	/**
+	 * Method that subclasses should implement to inject custom default properties in his override.
+	 * 
+	 * @return {@link Properties} to set as defaults
+	 */
+	protected abstract Properties getCustomProperties();
+	
 	/**
 	 * Tries to find the provided properties file and then returns its properties.
 	 * 
@@ -108,7 +84,7 @@ public class GeoBatchDataDirAwarePropertyOverrideConfigurer extends PropertyOver
 	 * @throws IOException in case something bad happens trying to read the proeprties from the file.
 	 * 
 	 */
-	private static Properties loadProperties(final File propertiesFile)
+	protected static Properties loadProperties(final File propertiesFile)
 			throws IOException {
 		// checks on provided file
 		if(!(propertiesFile!=null&&propertiesFile.exists()&&propertiesFile.isFile()&&propertiesFile.canRead())){
