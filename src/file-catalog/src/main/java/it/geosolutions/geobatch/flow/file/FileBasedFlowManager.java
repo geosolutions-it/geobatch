@@ -65,6 +65,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 
 /**
@@ -74,7 +77,7 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
  * 
  */
 public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowConfiguration> implements
-    FlowManager<FileSystemEvent, FileBasedFlowConfiguration>, Runnable, Job {
+    FlowManager<FileSystemEvent, FileBasedFlowConfiguration>, Runnable, Job, ApplicationListener<ContextClosedEvent> {
 
     /** Default Logger **/
     private static final Logger LOGGER = LoggerFactory.getLogger(FlowManager.class);
@@ -324,6 +327,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * 
      * @see it.geosolutions.geobatch.catalog.FlowManager#dispose()
      */
+    @Override
     public synchronized void dispose() {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("dispose: " + this.getId());
@@ -894,5 +898,10 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         public void eventGenerated(FileSystemEvent event) {
             postEvent(event);
         }
+    }
+
+    @Override
+    public void onApplicationEvent(ContextClosedEvent event) {
+        dispose();
     }
 }
