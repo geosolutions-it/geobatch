@@ -8,7 +8,7 @@
 	default-autowire="byName">
 	
 	<bean id="placeholderProperties-database"
-	        class="it.geosolutions.geobatch.users.GeoBatchDataDirAwarePropertyOverrideConfigurer" depends-on="dataDirHandler">
+	        class="it.geosolutions.geobatch.users.UsersDBPropertyOverrideConfigurer" depends-on="dataDirHandler">
 		<constructor-arg ref="dataDirHandler"/>
 		<property name="ignoreResourceNotFound" value="true" />
         <property name="locations">
