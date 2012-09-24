@@ -9,20 +9,22 @@ import it.geosolutions.geobatch.catalog.file.GeoBatchDataDirAwarePropertyOverrid
 import it.geosolutions.tools.commons.file.Path;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.util.logging.Logging;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 /**
  * 
- * GeoServer's specific subclass for {@link PropertyPlaceholderConfigurer} Spring bean to load properties file.
+ * Specific implementation of a {@link GeoBatchDataDirAwarePropertyOverrideConfigurer} for placing properly the database for
+ * users and ftp users in GeoBatch.
  * 
- * <p> This class is a special {@link PropertyPlaceholderConfigurer} that:
+ * <p> This class is a special {@link GeoBatchDataDirAwarePropertyOverrideConfigurer} that:
  * <ol>
- *   <li> By default load properties from a specific file inside a specific dir of the GeoServer data dir. Hence it is aware of the GeoServer data dir. This id done via setting internally {@link #setLocalOverride(boolean)} to <code>true</code> </li>
- *   <li> It still allows users to specify locations from where loading the properties. In this case we must set localovveride property to false though.
+ *   <li> By default looks first for a property override file gb_database.properties inside the <b>settings</b> directory 
+ *   <li> If there is no default gb_database.properties file inside the settings directory it tries to place the dbs inside the settings/database directory if that exists and is writable
+ *   <li> It still allows users to specify locations from where loading the properties. This can be done by placing a gb_datastore.properties file inside the home directory of the GeoServer process or directly specificng a full path for property file via the DATABASE_CONFIG_FILE env property.
  * </ol>
  * @author Simone Giannecchini, GeoSolutions SAS.
  *
@@ -33,14 +35,12 @@ public class UsersDBPropertyOverrideConfigurer extends GeoBatchDataDirAwarePrope
 	static final private Logger LOGGER= Logging.getLogger(UsersDBPropertyOverrideConfigurer.class);
 	
 	/** 
-	 * Constructor.
+	 * Constructor..
 	 * 
-	 * <p> Allows subclasses or users to specify from which directory which properties files to load.
-	 * 
-	 * @param dataDirectory a valid {@link GeoServerDataDirectory}. Cannot be <code>null</code>.
+	 * @param dataDirHandler a valid {@link DataDirHandler}. Cannot be <code>null</code>.
 	 */
-	public UsersDBPropertyOverrideConfigurer(final DataDirHandler dataDirectory) {
-		super(dataDirectory,false);
+	public UsersDBPropertyOverrideConfigurer(final DataDirHandler dataDirHandler) {
+		super(dataDirHandler,false);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class UsersDBPropertyOverrideConfigurer extends GeoBatchDataDirAwarePrope
 
 		// do we have a gb_database.properties file inside the config dir?
 		final File file=Path.findLocation("settings/gb_database.properties", dataDirectoryHandler.getBaseConfigDirectory());
-		if(file==null){
+		if(file==null||!(file.isFile()&&file.canRead()&&file.exists())){
 			if(LOGGER.isLoggable(Level.FINE)){
 				LOGGER.fine("Setting embedded database to work in the internal directory");
 			}
@@ -63,10 +63,24 @@ public class UsersDBPropertyOverrideConfigurer extends GeoBatchDataDirAwarePrope
 			
 			} else {
 				if(LOGGER.isLoggable(Level.FINE)){
-					LOGGER.fine("Unable to set embedded database to work in the internal directory, check that it exists and it is writable");
+					LOGGER.fine("Unable to set embedded database to work in the internal directory, check that such directory exists and it is writable");
 				}	
 			}
-		} 
+		} else {
+			if(file!=null&&file.isFile()&&file.canRead()&&file.exists()){
+				if(LOGGER.isLoggable(Level.FINE)){
+					LOGGER.fine("Loading default property file");
+				}
+
+				try {
+					return loadProperties(file);
+				} catch (IOException e) {
+					if(LOGGER.isLoggable(Level.SEVERE)){
+						LOGGER.log(Level.SEVERE,e.getLocalizedMessage(),e);
+					}
+				}
+			} 			
+		}
 		return null;
 	}
 }

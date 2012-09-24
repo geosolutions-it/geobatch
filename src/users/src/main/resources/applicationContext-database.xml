@@ -14,7 +14,6 @@
         <property name="locations">
             <list>
                 <value>file:///${user.home}/gb_database.properties</value>
-                <value>file:///${GEOBATCH_CONFIG_DIR}/settings/gb_database.properties</value>
                 <value>file:///${DATABASE_CONFIG_FILE}</value>                
             </list>
         </property>		
