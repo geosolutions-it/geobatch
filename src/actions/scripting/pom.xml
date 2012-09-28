@@ -58,7 +58,14 @@
       <artifactId>gb-action-tools</artifactId>
     </dependency>
     <!-- =========================================================== -->
-    <!-- -->
+    <!-- GEOTOOLS TEST DATA MODULE -->
+    <!-- =========================================================== -->
+    <dependency>
+        <groupId>org.geotools</groupId>
+    	<artifactId>gt-sample-data</artifactId>
+    </dependency>
+    <!-- =========================================================== -->
+    <!--  -->
     <!-- =========================================================== -->
     <dependency>
       <groupId>javax.script</groupId>
