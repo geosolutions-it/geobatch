@@ -103,8 +103,8 @@ public abstract class BaseConfiguration
     @Override
     public BaseConfiguration clone() {
         BaseConfiguration bc = (BaseConfiguration) super.clone();
-        bc.dirty = this.dirty;
-        bc.serviceID = this.serviceID;
+//        bc.dirty = this.dirty;
+//        bc.serviceID = this.serviceID;
         return bc;
     }
 

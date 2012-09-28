@@ -1,4 +1,4 @@
-package it.geosolutions.geobatch.geoserver.test;
+package it.geosolutions.geobatch.geoserver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,6 @@ public class GeoServerActionReloadTest {
 	@Test
 	public void testSerializer(){
 
-//		final File serialize=new File("test.xml");
 		XStream stream =new XStream();
 		List<Map<String, String>> list=new ArrayList<Map<String,String>>();
 		Map<String,String> map1=new HashMap<String, String>();
