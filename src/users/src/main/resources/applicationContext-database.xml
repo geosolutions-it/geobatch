@@ -19,7 +19,7 @@
     </bean>	
     
 	<!--  Data source -->
-	<bean id="dataSource-gb-users" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+	<bean id="dataSource-gb-users" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="org.h2.Driver" />
 		<property name="jdbcUrl" value="jdbc:h2:${TMP:/tmp}/gbusers" />
 		<property name="user" value="geobatch" />
@@ -31,7 +31,7 @@
 
 	<!-- Hibernate SessionFactory -->
 	<bean id="sessionFactory-gb-users"
-		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="destroy">
 		<property name="dataSource">
 			<ref local="dataSource-gb-users" />
 		</property>

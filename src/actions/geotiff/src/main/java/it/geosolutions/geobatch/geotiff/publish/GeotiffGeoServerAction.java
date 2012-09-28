@@ -28,7 +28,10 @@ import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.tools.WorkspaceUtils;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
+import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
+import it.geosolutions.geoserver.rest.encoder.GSWorkspaceEncoder;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
+import it.geosolutions.geoserver.rest.encoder.coverage.GSCoverageEncoder;
 
 import java.io.File;
 import java.io.IOException;
@@ -296,32 +299,45 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 
         }
 
-        // //
-        //
-        // Transferring the file
-        //
-        // //
+        GSCoverageEncoder coverage = new GSCoverageEncoder();
+        coverage.setName(configuration.getLayerName() == null
+              ? coverageStoreId : configuration.getLayerName());
+        coverage.setTitle(configuration.getTitle());
+        coverage.setDescription(configuration.getLayerDescription());
+        coverage.setSRS(finalEPSGCode);
+        coverage.setProjectionPolicy(projectionPolicy);
+        coverage.setAbstract(configuration.getLayerAbstract());
+        
+//        GSWorkspaceEncoder workspace=new GSWorkspaceEncoder(configuration.getDefaultNamespace());
+        
+        GSLayerEncoder layer=new GSLayerEncoder();
+        layer.setDefaultStyle(configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "raster");
+        layer.setQueryable(configuration.getQueryable());
+        
         if ("DIRECT".equalsIgnoreCase(transferMethod)) {
+            // Transferring the fil
             sent = publisher.publishGeoTIFF(configuration.getDefaultNamespace(),
-                                            configuration.getStoreName() == null
-                                                ? coverageStoreId : configuration.getStoreName(),
-                                            configuration.getLayerName() == null
-                                                ? coverageStoreId : configuration.getLayerName(),
-                                            inputFile,
-                                            finalEPSGCode,
-                                            projectionPolicy,
-                                            configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "raster",
-                                            		null);
+                    configuration.getStoreName() == null
+                    ? coverageStoreId : configuration.getStoreName(),
+                configuration.getLayerName() == null
+                    ? coverageStoreId : configuration.getLayerName(),
+                inputFile,
+                finalEPSGCode,
+                projectionPolicy,
+                configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "raster",
+                            null);
         } else if ("EXTERNAL".equalsIgnoreCase(configuration.getDataTransferMethod())) {
-            sent = publisher.publishExternalGeoTIFF(configuration.getDefaultNamespace(),// workspace
-                                                    configuration.getStoreName() == null
-                                                        ? coverageStoreId : configuration.getStoreName(),
-                                                    inputFile,
-                                                    configuration.getLayerName() == null
-                                                        ? coverageStoreId : configuration.getLayerName(),
-                                                    finalEPSGCode,
-                                                    projectionPolicy,
-                                                    configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "raster");
+            sent = publisher.publishExternalGeoTIFF(configuration.getDefaultNamespace(), configuration.getStoreName() == null
+                    ? coverageStoreId : configuration.getStoreName(), inputFile, coverage, layer)!=null?true:false;
+//            sent = publisher.publishExternalGeoTIFF(configuration.getDefaultNamespace(),// workspace
+//                                                    configuration.getStoreName() == null
+//                                                        ? coverageStoreId : configuration.getStoreName(),
+//                                                    inputFile,
+//                                                    configuration.getLayerName() == null
+//                                                        ? coverageStoreId : configuration.getLayerName(),
+//                                                    finalEPSGCode,
+//                                                    projectionPolicy,
+//                                                    configuration.getDefaultStyle() != null ? configuration.getDefaultStyle() : "raster");
         } else {
             final String message = "FATAL -> Unknown transfer method "
                                    + configuration.getDataTransferMethod();

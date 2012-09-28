@@ -279,7 +279,7 @@ if (type==FileSystemEventType.POLLING_EVENT){
                  * there is an internal Scheduler error.
                  */
                 if (LOGGER.isErrorEnabled())
-                    LOGGER.error("GBFileSystemMonitor.start(): SchedulerException - if the Job or Trigger cannot be "
+                    LOGGER.error("SchedulerException - if the Job or Trigger cannot be "
                             + "added to the Scheduler, or there is an internal Scheduler error.\n"
                             + e.getLocalizedMessage(), e);
                 throw e;
@@ -302,7 +302,7 @@ if (type==FileSystemEventType.POLLING_EVENT){
                 getScheduler().getContext().put(FS_JOBS_NUM_KEY, --numJob);
             } else
                 throw new SchedulerException(
-                        "GBFileSystemMonitor: The job is already stopped or the scheduler is down");
+                        "The job is already stopped or the scheduler is down");
         } catch (SchedulerException e) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(e.getLocalizedMessage(), e);
@@ -321,7 +321,7 @@ if (type==FileSystemEventType.POLLING_EVENT){
                 getScheduler().pauseJob(jobDetail.getKey());
             } else
                 throw new SchedulerException(
-                        "GBFileSystemMonitor: The job is already paused or the scheduler is down");
+                        "The job is already paused or the scheduler is down");
         } catch (SchedulerException e) {
             if (LOGGER.isErrorEnabled())
                 LOGGER.error(e.getLocalizedMessage(), e);
@@ -368,19 +368,30 @@ if (type==FileSystemEventType.POLLING_EVENT){
 
     public void dispose() {
         try {
-            /*
-             * if the job is NOT the last in its group do not stop the scheduler
-             */
-            int numJob = getScheduler().getContext().getInt(FS_JOBS_NUM_KEY);
-            if (numJob > 1) {
+            if (sched!=null){
+                //if the job is NOT the last in its group do not stop the scheduler
+                int numJob = getScheduler().getContext().getInt(FS_JOBS_NUM_KEY);
+                // unschedule current job
                 getScheduler().unscheduleJob(trigger.getKey());
-            } else {
-                getScheduler().shutdown();
-                // to make getScheduler() able to rebuild the scheduler
-                sched = null;
+                // reset counter
+                getScheduler().getContext().put(FS_JOBS_NUM_KEY, --numJob);
+                // if it was the leatest-> shutdown
+                if (numJob < 1) {
+                    try {
+                        getScheduler().shutdown();
+                    } catch (SchedulerException e) {
+                        if (LOGGER.isWarnEnabled())
+                            LOGGER.warn("Unable to stop the scheduler: "
+                                    + e.getLocalizedMessage(),e);
+                    } catch (InterruptedException e) {
+                        if (LOGGER.isWarnEnabled())
+                            LOGGER.warn("Unable to stop the scheduler: "
+                                    + e.getLocalizedMessage(),e);
+                    }
+                    // to make getScheduler() able to rebuild the scheduler
+                    sched = null;
+                }
             }
-
-            getScheduler().getContext().put(FS_JOBS_NUM_KEY, (--numJob < 0) ? 0 : numJob);
 
             if (listeners != null) {
                 Object[] listenerArray = listeners.getListenerList();
@@ -401,11 +412,13 @@ if (type==FileSystemEventType.POLLING_EVENT){
 
         } catch (SchedulerException e) {
             if (LOGGER.isWarnEnabled())
-                LOGGER.warn("GBFileSystemMonitor: Unable to stop the scheduler: "
-                        + e.getLocalizedMessage());
+                LOGGER.warn(e.getLocalizedMessage(),e);
         } catch (InterruptedException e) {
-            if (LOGGER.isErrorEnabled())
-                LOGGER.error("GBFileSystemMonitor: " + e.getLocalizedMessage(), e);
+            if (LOGGER.isWarnEnabled())
+                LOGGER.warn(e.getLocalizedMessage(),e);
+        } finally {
+            
+            
         }
     }
 

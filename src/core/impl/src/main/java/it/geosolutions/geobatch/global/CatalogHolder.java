@@ -23,15 +23,39 @@
 package it.geosolutions.geobatch.global;
 
 import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.flow.FlowManager;
 import it.geosolutions.geobatch.settings.GBSettingsCatalog;
+
+import java.util.List;
+
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextStoppedEvent;
 
 /**
  * @author Alessio Fabiani, GeoSolutions
+ * @author Carlo Cancellieri, GeoSolutions
  * 
  */
-public abstract class CatalogHolder {
+public abstract class CatalogHolder implements ApplicationListener<ApplicationEvent> {
     private static Catalog catalog;
+
     private static GBSettingsCatalog settingsCatalog;
+
+    /**
+     * Dispose all the handled flow managers on container stop/shutdown
+     */
+    @Override
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event.getClass().isAssignableFrom(ContextClosedEvent.class)
+                || event.getClass().isAssignableFrom(ContextStoppedEvent.class)) {
+            List<FlowManager> fms = getCatalog().getFlowManagers(FlowManager.class);
+            for (FlowManager fm : fms) {
+                fm.dispose();
+            }
+        }
+    }
 
     public synchronized static Catalog getCatalog() {
         return catalog;

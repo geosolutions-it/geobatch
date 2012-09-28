@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 public class GBEventNotifier implements Runnable {
 
     /** Default Logger **/
-    private final static Logger LOGGER = LoggerFactory.getLogger(GBEventNotifier.class.toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GBEventNotifier.class);
 
     // private long lockWaitThreshold = IOUtils.MAX_WAITING_TIME_FOR_LOCK;
 
