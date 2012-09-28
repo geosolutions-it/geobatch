@@ -1,11 +1,13 @@
 package it.geosolutions.geobatch.ftpserver.server;
 
+import it.geosolutions.geobatch.flow.FlowManager;
 import it.geosolutions.geobatch.ftpserver.dao.FtpServerConfigDAO;
 import it.geosolutions.geobatch.ftpserver.ftp.GeoBatchUserManager;
 import it.geosolutions.geobatch.ftpserver.model.FtpServerConfig;
 import it.geosolutions.geobatch.users.dao.DAOException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ftpserver.ConnectionConfigFactory;
@@ -18,10 +20,14 @@ import org.apache.ftpserver.listener.ListenerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextStoppedEvent;
 
-public class GeoBatchServer implements InitializingBean {
+public class GeoBatchServer implements InitializingBean, ApplicationListener<ApplicationEvent> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeoBatchServer.class.getName());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeoBatchServer.class);
 
     private FtpServer ftpServer;
 
@@ -166,6 +172,17 @@ public class GeoBatchServer implements InitializingBean {
 
     public GeoBatchUserManager getUserManager() {
         return userManager;
+    }
+
+    /**
+     * Dispose all the handled flow managers on container stop/shutdown
+     */
+    @Override
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event.getClass().isAssignableFrom(ContextClosedEvent.class)
+                || event.getClass().isAssignableFrom(ContextStoppedEvent.class)) {
+            this.stop();
+        }
     }
 
 }

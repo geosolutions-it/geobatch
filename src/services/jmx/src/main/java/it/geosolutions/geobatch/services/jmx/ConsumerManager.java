@@ -2,6 +2,7 @@ package it.geosolutions.geobatch.services.jmx;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public interface ConsumerManager extends Serializable {
@@ -52,11 +53,13 @@ public interface ConsumerManager extends Serializable {
      */
     public void run(Serializable event) throws Exception;
 	
-    public Map<String, String> getConfiguration();
+    public List<Map<String, String>> getConfigurations();
+    
+    public Map<String, String> getConfiguration(int i);
     
     public String getUuid();
     
     public Collection<JMXProgressListener> getListeners();
     
-    public Collection<JMXProgressListener> getListeners(Class<? extends JMXProgressListener> clazz);
+    public <T extends JMXProgressListener> Collection<T> getListeners(Class<T> clazz);
 }

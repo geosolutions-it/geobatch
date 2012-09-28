@@ -65,6 +65,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextStoppedEvent;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 
 /**
@@ -73,13 +77,14 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
-public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowConfiguration> implements
-    FlowManager<FileSystemEvent, FileBasedFlowConfiguration>, Runnable, Job {
+public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowConfiguration>
+        implements FlowManager<FileSystemEvent, FileBasedFlowConfiguration>, Runnable, Job {
 
     /** Default Logger **/
     private static final Logger LOGGER = LoggerFactory.getLogger(FlowManager.class);
 
     private String name;
+
     private String description;
 
     private boolean autorun = false;
@@ -122,16 +127,14 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     private final ConcurrentMap<String, EventConsumer> eventConsumers = new ConcurrentHashMap<String, EventConsumer>();
 
     /**
-     * The absolute configuration dir file
-     * {@link FileBasedFlowConfiguration#getOverrideConfigDir()}, with overrides
-     * already applied.<br/>
+     * The absolute configuration dir file {@link FileBasedFlowConfiguration#getOverrideConfigDir()}, with overrides already applied.<br/>
      * 
      * The default configuration dir is set as GEOBATCH_CONFIG_DIR/FLOW_ID.<br/>
      * 
-     * The optional override is set in the FlowConfiguration. If the override is
-     * a relative path, it will be rooted into GEOBATCH_CONFIG_DIR.
+     * The optional override is set in the FlowConfiguration. If the override is a relative path, it will be rooted into GEOBATCH_CONFIG_DIR.
      */
     private File flowConfigDir;
+
     private File flowTempDir;
 
     /**
@@ -140,6 +143,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @see #purgeConsumers(int)
      */
     private int maxStoredConsumers;
+
     /**
      * @see {@link FileBasedFlowConfiguration#isKeepConsumers()}
      */
@@ -148,12 +152,11 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     private ThreadPoolExecutor executor;
 
     /**
-     * @param configuration the fileBasedFlowConfiguration to use in
-     *            initialization
+     * @param configuration the fileBasedFlowConfiguration to use in initialization
      * @throws IOException
      */
     public FileBasedFlowManager(FileBasedFlowConfiguration configuration, DataDirHandler ddh)
-        throws Exception {
+            throws Exception {
 
         super(configuration.getId());
 
@@ -183,14 +186,14 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @throws IOException
      */
     public FileBasedFlowManager(String baseName, String name, String description, DataDirHandler ddh)
-        throws Exception {
+            throws Exception {
 
         super(baseName);
         this.name = name;
         this.description = description;
 
         initialize(new FileBasedFlowConfiguration(baseName, name, description, null, null),
-                   ddh.getBaseConfigDirectory(), ddh.getBaseTempDirectory());
+                ddh.getBaseConfigDirectory(), ddh.getBaseTempDirectory());
     }
 
     @ManagedAttribute
@@ -202,8 +205,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @param flowCfg
      * @throws IOException
      */
-    private void initialize(FileBasedFlowConfiguration flowCfg, File geoBatchConfigDir, File geoBatchTempDir)
-        throws Exception, NullPointerException {
+    private void initialize(FileBasedFlowConfiguration flowCfg, File geoBatchConfigDir,
+            File geoBatchTempDir) throws Exception, NullPointerException {
 
         this.initialized = false;
 
@@ -219,7 +222,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         final FlowSettings fs;
         settings = settingsCatalog.find("FLOW");
         if ((settings != null) && (settings instanceof FlowSettings)) {
-            fs = (FlowSettings)settings;
+            fs = (FlowSettings) settings;
         } else {
             fs = new FlowSettings();
             // store the file for further flow loads
@@ -227,9 +230,9 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         }
 
         this.keepConsumers = flowCfg.isKeepConsumers();
-        if (fs.isKeepConsumers() && keepConsumers==null)
-        	this.keepConsumers=true;
-        
+        if (fs.isKeepConsumers() && keepConsumers == null)
+            this.keepConsumers = true;
+
         this.maxStoredConsumers = flowCfg.getMaxStoredConsumers();
         if (maxStoredConsumers < 1) {
             this.maxStoredConsumers = fs.getMaxStoredConsumers(); // default
@@ -237,18 +240,18 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         }
 
         final int queueSize = (flowCfg.getWorkQueueSize() > 0) ? flowCfg.getWorkQueueSize() : fs
-            .getWorkQueueSize();
+                .getWorkQueueSize();
         final int corePoolSize = (flowCfg.getCorePoolSize() > 0) ? flowCfg.getCorePoolSize() : fs
-            .getCorePoolSize();
-        final int maximumPoolSize = (flowCfg.getMaximumPoolSize() > 0) ? flowCfg.getMaximumPoolSize() : fs
-            .getMaximumPoolSize();
+                .getCorePoolSize();
+        final int maximumPoolSize = (flowCfg.getMaximumPoolSize() > 0) ? flowCfg
+                .getMaximumPoolSize() : fs.getMaximumPoolSize();
         final long keepAlive = (flowCfg.getKeepAliveTime() > 0) ? flowCfg.getKeepAliveTime() : fs
-            .getKeepAliveTime(); // seconds
+                .getKeepAliveTime(); // seconds
 
         final BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(queueSize);
 
-        this.executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAlive, TimeUnit.SECONDS,
-                                               queue);
+        this.executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAlive,
+                TimeUnit.SECONDS, queue);
 
         this.paused = false;
         this.terminationRequest = false;
@@ -262,7 +265,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     public static File initConfigDir(FileBasedFlowConfiguration flowCfg, File geoBatchConfigDir)
-        throws FileNotFoundException {
+            throws FileNotFoundException {
 
         // set config dir
         File ret = null;
@@ -290,8 +293,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         return ret;
     }
 
-    public static File initTempDir(FileBasedFlowConfiguration flowConfiguration, File geoBatchTempDir)
-        throws FileNotFoundException {
+    public static File initTempDir(FileBasedFlowConfiguration flowConfiguration,
+            File geoBatchTempDir) throws FileNotFoundException {
 
         File ret = null;
 
@@ -300,7 +303,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             ret = overrideTempDir;
             if (!ret.isAbsolute())
                 throw new IllegalStateException("Override temp dir must be an absolute path ("
-                                                + overrideTempDir + ")");
+                        + overrideTempDir + ")");
         } else {
 
             String flowId = flowConfiguration.getId();
@@ -314,7 +317,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             throw new IllegalStateException("Can't write temp dir (" + ret + ")");
 
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Flow: " + flowConfiguration.getId() + " - temp dir is now set to -> " + ret);
+            LOGGER.info("Flow: " + flowConfiguration.getId() + " - temp dir is now set to -> "
+                    + ret);
         }
         return ret;
     }
@@ -324,6 +328,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * 
      * @see it.geosolutions.geobatch.catalog.FlowManager#dispose()
      */
+    @Override
     public synchronized void dispose() {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("dispose: " + this.getId());
@@ -344,8 +349,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     /**
      * Remove the given consumer instance from the ones handled by this flow.
      * <P>
-     * It should only be used on instances that are not running, i.e. in a
-     * COMPLETED or FAILED state.
+     * It should only be used on instances that are not running, i.e. in a COMPLETED or FAILED state.
      * 
      * @param fbec the consumer to be removed.
      * @throws IllegalArgumentException
@@ -361,8 +365,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * 
      * Remove the given consumer instance from the ones handled by this flow.
      * <P>
-     * It should only be used on instances that are not running, i.e. in a
-     * COMPLETED or FAILED state.
+     * It should only be used on instances that are not running, i.e. in a COMPLETED or FAILED state.
      * 
      * @param fbec the consumer to be removed.
      */
@@ -373,14 +376,15 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             throw new IllegalArgumentException("Unable to dispose a null consumer object");
         }
 
-        final EventConsumer<FileSystemEvent, EventConsumerConfiguration> fbec = eventConsumers.get(uuid);
+        final EventConsumer<FileSystemEvent, EventConsumerConfiguration> fbec = eventConsumers
+                .get(uuid);
 
         if (fbec == null) {
             throw new IllegalArgumentException("This flow is not managing consumer: " + uuid);
         }
 
         if ((fbec.getStatus() != EventConsumerStatus.COMPLETED)
-            && (fbec.getStatus() != EventConsumerStatus.FAILED)) {
+                && (fbec.getStatus() != EventConsumerStatus.FAILED)) {
             if (LOGGER.isWarnEnabled()) {
                 LOGGER.warn("Goning to dispose and uncompleted consumer " + fbec);
             }
@@ -428,7 +432,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                         break;
                     }
                 } catch (InterruptedException e) {
-                    final String message = "Error on dispatcher initialization: " + e.getLocalizedMessage();
+                    final String message = "Error on dispatcher initialization: "
+                            + e.getLocalizedMessage();
                     LOGGER.error(message);
                     throw new RuntimeException(message, e);
                 }
@@ -452,7 +457,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                                 createGenerator();
                             } catch (Throwable t) {
                                 String message = "Error on FS-Monitor initialization: "
-                                                 + t.getLocalizedMessage();
+                                        + t.getLocalizedMessage();
                                 LOGGER.error(message, t);
                                 throw new RuntimeException(message, t);
                             }
@@ -476,7 +481,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
 
     private void createGenerator() {
         final EventGeneratorConfiguration generatorConfig = getConfiguration()
-            .getEventGeneratorConfiguration();
+                .getEventGeneratorConfiguration();
         if (generatorConfig == null) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Unable to create a null event generator. Please configure one.");
@@ -489,7 +494,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         }
 
         final EventGeneratorService<FileSystemEvent, EventGeneratorConfiguration> generatorService = CatalogHolder
-            .getCatalog().getResource(serviceID, EventGeneratorService.class);
+                .getCatalog().getResource(serviceID, EventGeneratorService.class);
         if (generatorService != null) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("EventGeneratorService found");
@@ -512,7 +517,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                 throw new RuntimeException(message);
             }
         } else {
-            final String message = "Unable to get the " + "generator service as resource from the catalog";
+            final String message = "Unable to get the "
+                    + "generator service as resource from the catalog";
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error(message);
             }
@@ -554,8 +560,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * Implements the {@link Job#pause()} interface.
      * 
      * <P>
-     * Pausing is implemented by stopping and removing the EventGenerator so
-     * that no events are put into the mailbox.
+     * Pausing is implemented by stopping and removing the EventGenerator so that no events are put into the mailbox.
      * 
      * @see it.geosolutions.geobatch.catalog.FlowManager#stop()
      */
@@ -580,7 +585,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             while (it.hasNext()) {
                 final String key = it.next();
                 final EventConsumer<FileSystemEvent, EventConsumerConfiguration> consumer = eventConsumers
-                    .get(key);
+                        .get(key);
                 if (consumer != null) {
                     consumer.pause(true);
                 } else {
@@ -685,29 +690,28 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @return
      */
     public final Set<BaseEventConsumer> getEventConsumers() {
-        TreeSet tree=
-                new TreeSet<BaseEventConsumer<EventObject, EventConsumerConfiguration>>(
-                    new Comparator<BaseEventConsumer<EventObject, EventConsumerConfiguration>>() {
-                @Override
-                public int compare(BaseEventConsumer<EventObject, EventConsumerConfiguration> o1,
-                                   BaseEventConsumer<EventObject, EventConsumerConfiguration> o2) {
+        TreeSet tree = new TreeSet<BaseEventConsumer<EventObject, EventConsumerConfiguration>>(
+                new Comparator<BaseEventConsumer<EventObject, EventConsumerConfiguration>>() {
+                    @Override
+                    public int compare(
+                            BaseEventConsumer<EventObject, EventConsumerConfiguration> o1,
+                            BaseEventConsumer<EventObject, EventConsumerConfiguration> o2) {
                         Calendar cal = o1.getCreationTimestamp();
                         Calendar currentcal = o2.getCreationTimestamp();
-                        if(cal.before(currentcal))
-                                return 1;
-                        else if(cal.after(currentcal))
+                        if (cal.before(currentcal))
+                            return 1;
+                        else if (cal.after(currentcal))
                             return -1;
                         else
-                                return 0;
-                }
-            });
-            tree.addAll(eventConsumers.values());
-            return tree;
+                            return 0;
+                    }
+                });
+        tree.addAll(eventConsumers.values());
+        return tree;
     }
 
     /**
-     * Returns an unmodifiable set of all the consumers id, if you want to add
-     * or remove consumers, use the following methods:<br>
+     * Returns an unmodifiable set of all the consumers id, if you want to add or remove consumers, use the following methods:<br>
      * {@link FileBasedFlowManager#disposeConsumer(String)}<br>
      * {@link FileBasedFlowManager#addConsumer(EventConsumer)}<br>
      */
@@ -716,7 +720,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     @Override
-    public final EventConsumer<? extends EventObject, EventConsumerConfiguration> getConsumer(final String uuid) {
+    public final EventConsumer<? extends EventObject, EventConsumerConfiguration> getConsumer(
+            final String uuid) {
         return eventConsumers.get(uuid);
     }
 
@@ -727,20 +732,18 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * @see #disposeConsumer(EventConsumer)
      * 
      * @param consumer the consumer to add
-     * @return true if consumer is successfully added. If the
-     *         {@link FileBasedFlowConfiguration#isKeepConsumers()} parameter is
-     *         true, once
-     *         {@link FileBasedFlowConfiguration#getMaxStoredConsumers()} is
-     *         reached this method will return false until a consumer is
-     *         manually removed.
+     * @return true if consumer is successfully added. If the {@link FileBasedFlowConfiguration#isKeepConsumers()} parameter is true, once
+     *         {@link FileBasedFlowConfiguration#getMaxStoredConsumers()} is reached this method will return false until a consumer is manually
+     *         removed.
      * @throws IllegalArgumentException if consumer is null
      */
     @Override
-    synchronized public boolean addConsumer(final EventConsumer consumer) throws IllegalArgumentException {
+    synchronized public boolean addConsumer(final EventConsumer consumer)
+            throws IllegalArgumentException {
         if (consumer == null)
             throw new IllegalArgumentException("Unable to add a null consumer");
-        int diff=eventConsumers.size() - maxStoredConsumers;
-        if (diff>0) {
+        int diff = eventConsumers.size() - maxStoredConsumers;
+        if (diff > 0) {
             if (purgeConsumers(diff) > 0) {
                 eventConsumers.put(consumer.getId(), consumer);
             } else {
@@ -755,8 +758,7 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     /**
      * 
      * @param uuid the uid of the consumer to check for status
-     * @return the status of the selected consumer or null if consumer is not
-     *         found
+     * @return the status of the selected consumer or null if consumer is not found
      */
     public EventConsumerStatus getStatus(final String uuid) {
         EventConsumer consumer = null;
@@ -769,10 +771,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
     }
 
     /**
-     * Remove from the consumers map at least a 'quantity' (returned int) of completed, failed
-     * or canceled consumers. This method is thread-safe.<br>
-     * If keep consumers is true Consumers may be removed manually and this
-     * method will return always 0.
+     * Remove from the consumers map at least a 'quantity' (returned int) of completed, failed or canceled consumers. This method is thread-safe.<br>
+     * If keep consumers is true Consumers may be removed manually and this method will return always 0.
      * 
      * @see #disposeConsumer(EventConsumer)
      * @see #addConsumer(EventConsumer)
@@ -784,21 +784,22 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         int size = 0;
         if (keepConsumers)
             return 0;
-        
-    	// take a snapshot of the ordered consumer set
-        BaseEventConsumer[] snapshotList=getEventConsumers().toArray(new BaseEventConsumer[]{});
-        int snapshotListSize=snapshotList.length;
+
+        // take a snapshot of the ordered consumer set
+        BaseEventConsumer[] snapshotList = getEventConsumers().toArray(new BaseEventConsumer[] {});
+        int snapshotListSize = snapshotList.length;
         // iterate the snapshot in reverse order purging consumers
-        while (--snapshotListSize>=0 && size < quantity) {
-            
+        while (--snapshotListSize >= 0 && size < quantity) {
+
             final EventConsumer<FileSystemEvent, EventConsumerConfiguration> nextConsumer = snapshotList[snapshotListSize];
             final EventConsumerStatus status = nextConsumer.getStatus();
-            if ((status == EventConsumerStatus.CANCELED) || (status == EventConsumerStatus.COMPLETED)
-                || (status == EventConsumerStatus.FAILED)) {
-            	// remove from the FM consumer map
-            	disposeConsumer(nextConsumer);
-            	// remove from the ordered consumer list
-                snapshotList[snapshotListSize]=null;
+            if ((status == EventConsumerStatus.CANCELED)
+                    || (status == EventConsumerStatus.COMPLETED)
+                    || (status == EventConsumerStatus.FAILED)) {
+                // remove from the FM consumer map
+                disposeConsumer(nextConsumer);
+                // remove from the ordered consumer list
+                snapshotList[snapshotListSize] = null;
                 ++size;
             }
         }
@@ -809,10 +810,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
      * Run the given consumer into the threadpool.
      * 
      * @param consumer The instance to be executed.
-     * @throws IllegalStateException if the consumer is not in the EXECUTING
-     *             state.
-     * @throws IllegalArgumentException if the consumer is not in the
-     *             {@link #eventConsumers} list of this FlowManager.
+     * @throws IllegalStateException if the consumer is not in the EXECUTING state.
+     * @throws IllegalArgumentException if the consumer is not in the {@link #eventConsumers} list of this FlowManager.
      */
     Future<Queue<FileSystemEvent>> execute(EventConsumer consumer) {
         if (consumer.getStatus() != EventConsumerStatus.EXECUTING) {
@@ -824,7 +823,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         }
 
         if (!eventConsumers.containsKey(consumer.getId())) {
-            final String message = "Consumer " + consumer + " is not handled by the current flow manager.";
+            final String message = "Consumer " + consumer
+                    + " is not handled by the current flow manager.";
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error(message);
             }
@@ -835,33 +835,34 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         } catch (RejectedExecutionException r) {
 
             /*
-             * +
-             * "Will be rejected when the Executor has been shut down, and also "
-             * +
-             * "when the Executor uses finite bounds for both maximum threads and "
-             * + "work queue capacity, and is saturated." +
+             * + "Will be rejected when the Executor has been shut down, and also " +
+             * "when the Executor uses finite bounds for both maximum threads and " + "work queue capacity, and is saturated." +
              * " In either case, the execute method invokes the "
              */
             if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Unable to submit the consumer (id:" + consumer.getId()
-                                 + ") to the flow manager (id:" + this.getId() + ") queue.\nMessage is:"
-                                 + r.getLocalizedMessage() + "\nThread pool executor info:"
-                                 + "\nMaximum allowed number of threads: " + executor.getMaximumPoolSize()
-                                 + "\nWorking Queue size: " + executor.getQueue().size()
-                                 + "\nWorking Queue remaining capacity: "
-                                 + executor.getQueue().remainingCapacity() + "\nCurrent number of threads: "
-                                 + executor.getPoolSize()
-                                 + "\nApproximate number of threads that are actively executing : "
-                                 + executor.getActiveCount() + "\nCore number of threads: "
-                                 + executor.getCorePoolSize() + "\nKeepAliveTime [secs]: "
-                                 + executor.getKeepAliveTime(TimeUnit.SECONDS), r);
+                LOGGER.error(
+                        "Unable to submit the consumer (id:" + consumer.getId()
+                                + ") to the flow manager (id:" + this.getId()
+                                + ") queue.\nMessage is:" + r.getLocalizedMessage()
+                                + "\nThread pool executor info:"
+                                + "\nMaximum allowed number of threads: "
+                                + executor.getMaximumPoolSize() + "\nWorking Queue size: "
+                                + executor.getQueue().size()
+                                + "\nWorking Queue remaining capacity: "
+                                + executor.getQueue().remainingCapacity()
+                                + "\nCurrent number of threads: " + executor.getPoolSize()
+                                + "\nApproximate number of threads that are actively executing : "
+                                + executor.getActiveCount() + "\nCore number of threads: "
+                                + executor.getCorePoolSize() + "\nKeepAliveTime [secs]: "
+                                + executor.getKeepAliveTime(TimeUnit.SECONDS), r);
             }
             throw new RuntimeException(r);
         } catch (Throwable t) {
             if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Unable to submit the consumer (id:" + consumer.getId()
-                                 + ") to the flow manager (id:" + this.getId() + ") queue.\nMessage is:"
-                                 + t.getLocalizedMessage(), t);
+                LOGGER.error(
+                        "Unable to submit the consumer (id:" + consumer.getId()
+                                + ") to the flow manager (id:" + this.getId()
+                                + ") queue.\nMessage is:" + t.getLocalizedMessage(), t);
             }
             throw new RuntimeException(t);
         }
@@ -873,26 +874,26 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         } catch (NullPointerException npe) {
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error("Unable to add a null event to the flow manager (id:" + this.getId()
-                             + ") eventMailBox.\nMessage is:" + npe.getLocalizedMessage(), npe);
+                        + ") eventMailBox.\nMessage is:" + npe.getLocalizedMessage(), npe);
             }
             throw npe;
         } catch (InterruptedException e) {
             if (LOGGER.isErrorEnabled()) {
-                LOGGER
-                    .error("Unable to add event [" + event.toString() + "] to the flow manager (id:"
-                               + this.getId() + ") eventMailBox.\nMessage is:" + e.getLocalizedMessage(), e);
+                LOGGER.error("Unable to add event [" + event.toString()
+                        + "] to the flow manager (id:" + this.getId()
+                        + ") eventMailBox.\nMessage is:" + e.getLocalizedMessage(), e);
             }
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Will listen for the eventGenerator events, and put them in the blocking
-     * mailbox.
+     * Will listen for the eventGenerator events, and put them in the blocking mailbox.
      */
     private class GeneratorListener implements FlowEventListener<FileSystemEvent> {
         public void eventGenerated(FileSystemEvent event) {
             postEvent(event);
         }
     }
+
 }

@@ -23,7 +23,7 @@ package it.geosolutions.geobatch.geoserver;
 
 import java.util.List;
 
-public class GeoServerActionConfiguration extends GeoServerActionConfig {
+public class GeoServerActionConfiguration extends GeoServerActionConfig implements Cloneable{
 
     public GeoServerActionConfiguration(String id, String name, String description) {
         super(id, name, description);
@@ -40,6 +40,14 @@ public class GeoServerActionConfiguration extends GeoServerActionConfig {
     private String datatype; // ?
     
     private String layerName;
+    
+    private String title;
+    
+    private Boolean queryable=true;
+    
+    private String layerDescription;
+    
+    private String layerAbstract;
     
     private String storeName;
 
@@ -120,6 +128,38 @@ public class GeoServerActionConfiguration extends GeoServerActionConfig {
         this.layerName = layerName;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Boolean getQueryable() {
+        return queryable;
+    }
+
+    public String getLayerAbstract() {
+        return layerAbstract;
+    }
+
+    public void setQueryable(Boolean queryable) {
+        this.queryable = queryable;
+    }
+
+    public String getLayerDescription() {
+        return layerDescription;
+    }
+
+    public void setLayerDescription(String layerDescription) {
+        this.layerDescription = layerDescription;
+    }
+
+    public void setLayerAbstract(String layerAbstract) {
+        this.layerAbstract = layerAbstract;
+    }
+
     public String getDefaultNamespace() {
         return defaultNamespace;
     }
@@ -164,27 +204,28 @@ public class GeoServerActionConfiguration extends GeoServerActionConfig {
     public GeoServerActionConfiguration clone() { 
         final GeoServerActionConfiguration configuration = (GeoServerActionConfiguration) super
                 .clone();
-
-        configuration.setCrs(crs);
-        configuration.setDataTransferMethod(dataTransferMethod);
-        configuration.setDatatype(datatype);
-        configuration.setDefaultNamespace(defaultNamespace);
-        configuration.setDefaultNamespaceUri(defaultNamespaceUri);
-        configuration.setDefaultStyle(defaultStyle);
-        configuration.setEnvelope(envelope);
-        configuration.setStoreFilePrefix(storeFilePrefix);
-        configuration.setStyles(styles);
-        configuration.setWmsPath(wmsPath);
-
+//
+////        configuration.setCrs(crs);
+////        configuration.setDataTransferMethod(dataTransferMethod);
+////        configuration.setDatatype(datatype);
+////        configuration.setDefaultNamespace(defaultNamespace);
+////        configuration.setDefaultNamespaceUri(defaultNamespaceUri);
+////        configuration.setDefaultStyle(defaultStyle);
+////        configuration.setEnvelope(envelope);
+////        configuration.setStoreFilePrefix(storeFilePrefix);
+////        configuration.setStyles(styles);
+////        configuration.setWmsPath(wmsPath);
+//
         return configuration;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[" + "id:" + getId() + " name:" + getName()
-                + " srvId:" + getServiceID() + " wkdir:" + getConfigDir().toURI().toString() + " GSurl:"
-                + getGeoserverURL() + "]";
-    }
+//    @Override
+//    public String toString() {
+////        return getClass().getSimpleName() + "[" + "id:" + getId() + " name:" + getName()
+////                + " srvId:" + getServiceID() + " wkdir:" + getOverrideConfigDir() + " GSurl:"
+////                + getGeoserverURL() + "]";
+//        return toStringBean(this, true);
+//    }
 
 	public String getStoreName() {
 		return storeName;
@@ -193,5 +234,4 @@ public class GeoServerActionConfiguration extends GeoServerActionConfig {
 	public void setStoreName(String storeName) {
 		this.storeName = storeName;
 	}
-
 }
