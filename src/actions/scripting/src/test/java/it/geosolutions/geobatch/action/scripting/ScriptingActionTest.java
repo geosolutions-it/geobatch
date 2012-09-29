@@ -30,6 +30,7 @@ import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ import java.util.Queue;
 
 import junit.framework.Assert;
 
+import org.geotools.test.TestData;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -54,10 +56,11 @@ public class ScriptingActionTest extends Assert {
     
 
     @Test
-    public void testGroovyAction() throws ActionException, IOException{
+    public void testGroovyAction() throws ActionException, IOException, URISyntaxException{
 
-        File script = new ClassPathResource("test-data/TestNoDeps.groovy").getFile();
-
+        //File script = new ClassPathResource("test-data/TestNoDeps.groovy").getFile();
+        File script = null;
+        script = new File(TestData.url(null, "TestNoDeps.groovy").toURI());
         Map<String, Object> props = new HashMap<String, Object>();
         props.put("k1", "v1");
         props.put("k2", "v2");
@@ -70,7 +73,7 @@ public class ScriptingActionTest extends Assert {
         cfg.setServiceID("scriptingService");
         cfg.setLanguage("groovy");
         cfg.setProperties(props);
-        File dir=new File(Path.getAbsolutePath("./src/test/resources/"));
+        File dir=new File(TestData.url(null, null).toURI());
         cfg.setOverrideConfigDir(dir);
         
         Queue <FileSystemEvent> inq = new LinkedList<FileSystemEvent>();
@@ -98,7 +101,7 @@ public class ScriptingActionTest extends Assert {
     
     @Ignore
     @Test
-    public void testMassiveGroovyAction() throws ActionException, IOException{
+    public void testMassiveGroovyAction() throws ActionException, IOException, URISyntaxException{
     	for(int i=0; i<10000; i++){
     		testGroovyAction();
     	}
