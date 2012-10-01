@@ -1,7 +1,7 @@
 <FlowConfiguration>
 
 	<id>moveFlow</id>
-	<description>Get a pack of shapefiles.</description>
+	<description>Move a set of files to a destination</description>
 	<name>moveFlow</name>
 
 	<autorun>true</autorun>
@@ -12,12 +12,12 @@
 		<listenerId>Cumulator</listenerId>
 
 		<MoveConfiguration>
-			<serviceID>CollectorGeneratorService</serviceID>
+			<serviceID>MoveGeneratorService</serviceID>
 
-			<id>collect</id>
-			<name>CollectShapefiles</name>
-			<description>Get a pack of shapefiles.</description>
-			<destination>/</destination>
+			<id>move</id>
+			<name>moveAction</name>
+			<description>Move a set of files to the destination</description>
+			<destination>/path/to/destination/</destination>
 
 			<timeout>1000</timeout>
 		</MoveConfiguration>
