@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
 public class CopyGeneratorService extends BaseService implements
         ActionService<EventObject, CopyConfiguration> {
 
-    public CopyGeneratorService(String id, String name, String description) {
-        super(id, name, description);
+    public CopyGeneratorService(String id) {
+        super(id);
     }
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CopyGeneratorService.class);
