@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
-	default-autowire="byName">
+	default-autowire="byName" default-destroy-method="destroy">
 	
     <bean id="placeholderProperties-database-ftp" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer" >
         <property name="ignoreResourceNotFound" value="true"/>
@@ -19,7 +19,7 @@
     </bean>	
     
 	<!--  Data source -->
-	<bean id="dataSource-gb-ftp-server" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+	<bean id="dataSource-gb-ftp-server" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="org.h2.Driver" />
 		<property name="jdbcUrl" value="jdbc:h2:${TMP:/tmp}/ftpusers" />
 		<property name="user" value="geobatch" />
@@ -31,7 +31,7 @@
 
 	<!-- Hibernate SessionFactory -->
 	<bean id="sessionFactory-gb-ftp-server"
-		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="destroy">
 		<property name="dataSource">
 			<ref local="dataSource-gb-ftp-server" />
 		</property>

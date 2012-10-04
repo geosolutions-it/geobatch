@@ -20,14 +20,10 @@
 	
 	<bean id="MoveGeneratorService" class="it.geosolutions.geobatch.actions.commons.MoveGeneratorService">
 		<constructor-arg type="String"><value>MoveGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>MoveGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>MoveGeneratorService</value></constructor-arg>
 	</bean>
 	
 	<bean id="CopyGeneratorService" class="it.geosolutions.geobatch.actions.commons.CopyGeneratorService">
 		<constructor-arg type="String"><value>CopyGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>CopyGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>CopyGeneratorService</value></constructor-arg>
 	</bean>
 	
 	<bean id="CommonsAliasRegistrar" class="it.geosolutions.geobatch.actions.commons.CommonsAliasRegistrar" lazy-init="false">

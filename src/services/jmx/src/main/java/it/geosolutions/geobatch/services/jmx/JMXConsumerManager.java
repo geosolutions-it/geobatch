@@ -23,98 +23,125 @@ package it.geosolutions.geobatch.services.jmx;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.MapUtils;
-import org.springframework.jmx.export.annotation.ManagedOperationParameter;
-import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 
 /**
- * Maps the remote action call status, uuid and environment. 
+ * Maps the remote action call status, uuid and environment.
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
- *
+ * 
  */
-public class JMXConsumerManager implements Serializable,ConsumerManager {
+public class JMXConsumerManager implements Serializable, ConsumerManager {
 
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 8886665670245478248L;
-	
-	private final Map<String, String> configuration;
-	
-	// the consumer unique id
-	private final String uuid;
-	
-	private final transient ServiceManager manager;
-	// the consumer status
-	private ConsumerStatus status;
-	// switch (ask to the proxy / use cached values)
-	private boolean disposed=false;
-	// the listener collection
-	private Collection<JMXProgressListener> listeners;
-	
-	public JMXConsumerManager(Map<String, String> configuration, ServiceManager manager) throws Exception {
-		super();
-		if (configuration==null)
-			throw  new IllegalArgumentException("Unable to build the "+JMXConsumerManager.class+" using a null configuration");
+    private static final long serialVersionUID = 8886665670245478249L;
 
-		this.configuration=configuration;		
-		
-		this.manager=manager;
-		
-		this.uuid=manager.createConsumer(configuration);
-	}
+    private final List<Map<String, String>> configurations;
 
-	@Override
-	public Collection<JMXProgressListener> getListeners() {
-		return this.getListeners(JMXProgressListener.class);
-	}
-	
-	@Override
-	public Collection<JMXProgressListener> getListeners(Class<? extends JMXProgressListener> clazz) {
-		if (disposed){
-			return listeners;
-		}
-		return (listeners=manager.getListeners(uuid,clazz));
-	}
-	
-	/*protected */void addAll(Collection<JMXCumulatorListener> listeners){
-		this.listeners.addAll(listeners);
-	}
+    // the consumer unique id
+    private final String uuid;
 
-	@Override
-	public String getUuid() {
-		return uuid;
-	}
-	
-	@Override
-	public void dispose() throws Exception{
-		if (!disposed){
-				manager.disposeConsumer(uuid);
-				disposed=true;
-		}
-	}
+    private final transient ServiceManager manager;
 
-	@Override
-	public Map<String, String> getConfiguration() {
-		return MapUtils.unmodifiableMap(configuration);
-	}
+    // the consumer status
+    private ConsumerStatus status;
 
-	@Override
-	public ConsumerStatus getStatus() {
-		if (disposed){
-			return status;
-		}
-		return (status=manager.getStatus(uuid));
-	}
+    // switch (ask to the proxy / use cached values)
+    private boolean disposed = false;
 
-	@Override
+    // the listener collection
+    private Collection<JMXProgressListener> listeners;
+
+    public JMXConsumerManager(Map<String, String> configuration, ServiceManager manager)
+            throws Exception {
+        super();
+        if (configuration == null)
+            throw new IllegalArgumentException("Unable to build the " + JMXConsumerManager.class
+                    + " using a null configuration");
+
+        this.configurations = Collections.singletonList(configuration);
+
+        this.manager = manager;
+
+        this.uuid = manager.createConsumer(configuration);
+    }
+
+    public JMXConsumerManager(List<Map<String, String>> configurations, ServiceManager manager)
+            throws Exception {
+        super();
+        if (configurations == null)
+            throw new IllegalArgumentException("Unable to build the " + JMXConsumerManager.class
+                    + " using a null configuration");
+
+        this.configurations = configurations;
+
+        this.manager = manager;
+
+        this.uuid = manager.createConsumer(configurations);
+    }
+
+    @Override
+    public Collection<JMXProgressListener> getListeners() {
+        return this.getListeners(JMXProgressListener.class);
+    }
+
+    @Override
+    public  <T extends JMXProgressListener> Collection<T> getListeners(Class<T> clazz) {
+        if (disposed) {
+            return (Collection<T>)listeners;
+        }
+        listeners = (Collection<JMXProgressListener>)manager.getListeners(uuid, clazz);
+        return (Collection<T>)listeners;
+    }
+
+    /* protected */void addAll(Collection<JMXCumulatorListener> listeners) {
+        this.listeners.addAll(listeners);
+    }
+
+    @Override
+    public String getUuid() {
+        return uuid;
+    }
+
+    @Override
+    public void dispose() throws Exception {
+        if (!disposed) {
+            manager.disposeConsumer(uuid);
+            disposed = true;
+        }
+    }
+
+    @Override
+    public Map<String, String> getConfiguration(int i) {
+        return MapUtils.unmodifiableMap(configurations.get(i));
+    }
+
+    @Override
+    public List<Map<String, String>> getConfigurations() {
+        return ListUtils.unmodifiableList(configurations);
+    }
+
+    @Override
+    public ConsumerStatus getStatus() {
+        if (disposed) {
+            return status;
+        }
+        return (status = manager.getStatus(uuid));
+    }
+
+    @Override
     public void run(Serializable event) throws Exception {
-    	if (!disposed)
-    		manager.runConsumer(uuid, event);
-    	else
-    		throw new IllegalStateException("Unable to run consumer on a disposed "+this.getClass());
+        if (!disposed)
+            manager.runConsumer(uuid, event);
+        else
+            throw new IllegalStateException("Unable to run consumer on a disposed "
+                    + this.getClass());
     }
 }

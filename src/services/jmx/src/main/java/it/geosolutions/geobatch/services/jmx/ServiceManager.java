@@ -82,35 +82,47 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  */
 @ManagedResource(objectName = "bean:name=JMXServiceManager", description = "JMX Service Manager to start/monitor/dispose GeoBatch action", log = true, logFile = "jmx.log", persistName = "JMXServiceManager")
 public interface ServiceManager {
-	
-	public void disposeConsumer(final String uuid) throws Exception;
 
-	/**
-	 * returns the status of the selected consumer
-	 * 
-	 * @param uuid
-	 * @return {@link ConsumerStatus}
-	 */
-	public ConsumerStatus getStatus(String uuid);
+    public void disposeConsumer(final String uuid) throws Exception;
 
-    
-    public String createConsumer(java.util.Map<String, String> config) throws Exception;
-    
     /**
-     * create the configured action on the remote GeoBatch server through the
-     * JMX connection
+     * returns the status of the selected consumer
      * 
-     * @param config A map containing the list of needed parameters, inputs and
-     *            outputs used by the action
-     * @throws Exception if:
-     *             <ul>
-     *             <li>the passed map is null</li>
-     *             <li>the passed map doesn't contains needed keys</li>
-     *             <li>the connection is lost</li>
-     *             </ul>
+     * @param uuid
+     * @return {@link ConsumerStatus}
      */
-	public void runConsumer(String uuid, Serializable event) throws Exception;
-	
-	public Collection<JMXProgressListener> getListeners(String uuid, Class<? extends JMXProgressListener> type);
+    public ConsumerStatus getStatus(String uuid);
+
+    /**
+     * create a consumer with multiple actions
+     * @param configs
+     * @return
+     * @throws Exception
+     */
+    public String createConsumer(List<Map<String, String>> configs) throws Exception;
+
+    /**
+     * create a consumer with single action
+     * @param config
+     * @return
+     * @throws Exception
+     */
+    public String createConsumer(java.util.Map<String, String> config) throws Exception;
+
+    /**
+     * create the configured action on the remote GeoBatch server through the JMX connection
+     * 
+     * @param config A map containing the list of needed parameters, inputs and outputs used by the action
+     * @throws Exception if:
+     *         <ul>
+     *         <li>the passed map is null</li>
+     *         <li>the passed map doesn't contains needed keys</li>
+     *         <li>the connection is lost</li>
+     *         </ul>
+     */
+    public void runConsumer(String uuid, Serializable event) throws Exception;
+
+    public <T extends JMXProgressListener> Collection<T> getListeners(String uuid,
+            Class<T> type);
 
 }

@@ -77,20 +77,19 @@ public abstract class BaseDescriptableConfiguration
         this.name = name;
     }
 
-
     @Override
     public BaseDescriptableConfiguration clone() {
         BaseDescriptableConfiguration bc = (BaseDescriptableConfiguration) super.clone();
         return bc;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName()
-                + "["
-                + "id:" + getId()
-                + " name:" + getName()
-                + " srvId:" + getServiceID()
-                + " drty:" + isDirty() + "]";
-    }
+//    @Override
+//    public String toString() {
+//        return getClass().getSimpleName()
+//                + "["
+//                + "id:" + getId()
+//                + " name:" + getName()
+//                + " srvId:" + getServiceID()
+//                + " drty:" + isDirty() + "]";
+//    }
 }

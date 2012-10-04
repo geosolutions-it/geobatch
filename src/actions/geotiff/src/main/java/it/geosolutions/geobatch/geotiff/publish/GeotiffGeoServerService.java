@@ -33,17 +33,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Comments here ...
  * 
- * @author
+ * @author cancellieri
  * 
- * @version $ ShapeFileDTOProducerSPI.java $ Revision: x.x $ 19/feb/07 16:16:13
  */
 public class GeotiffGeoServerService extends
-        GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration>  implements Service{
+        GeoServerConfiguratorService<FileSystemEvent, GeoServerActionConfiguration> implements
+        Service {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffGeoServerAction.class
-            .toString());
+    private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffGeoServerAction.class);
 
     public GeotiffGeoServerService(String id, String name, String description) {
         super(id, name, description);
@@ -61,19 +59,20 @@ public class GeotiffGeoServerService extends
 
     public boolean canCreateAction(GeoServerActionConfiguration configuration) {
         // checks
-    	if (configuration==null){
-    		if(LOGGER.isInfoEnabled()){
-    			LOGGER.info("Null configuration provided");
-    		}
-    		return false;
-    	}
-    	
-    	if(configuration.getDefaultNamespace()==null|| configuration.getDefaultNamespace().length()<=0){
-    		if(LOGGER.isInfoEnabled()){
-    			LOGGER.info("Default Namespace is null");
-    		}
-    		return false;    		
-    	}
+        if (configuration == null) {
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Unable to create the consumer: Null configuration provided");
+            }
+            return false;
+        }
+
+        if (configuration.getDefaultNamespace() == null
+                || configuration.getDefaultNamespace().length() <= 0) {
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Unable to create the consumer: default Namespace is null!!");
+            }
+            return false;
+        }
         return true;
     }
 

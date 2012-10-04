@@ -73,14 +73,18 @@
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 
 			<crs>EPSG:4326</crs>
-
+			<title>title</title>
+			<layerDescription>layerDescription</layerDescription>
+			<layerAbstract>Abstract</layerAbstract>
+			<defaultStyle>raster</defaultStyle>
+			
 			<envelope />
-			<dataTransferMethod>DIRECT</dataTransferMethod>
+			<dataTransferMethod>EXTERNAL</dataTransferMethod>
 			<geoserverPWD>geoserver</geoserverPWD>
 			<geoserverUID>admin</geoserverUID>
 			<geoserverURL>http://localhost:8081/geoserver</geoserverURL>
 			<defaultNamespace>geosolutions</defaultNamespace>
-			<defaultStyle>raster</defaultStyle>
+			
 			<styles />
 		</GeoServerActionConfiguration>
 	</EventConsumerConfiguration>

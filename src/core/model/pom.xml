@@ -44,6 +44,10 @@
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->
   <dependencies>
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-commons</artifactId>
+    </dependency>
     <!-- ============================== -->
     <!-- 		logging					-->
     <!-- ============================== -->
