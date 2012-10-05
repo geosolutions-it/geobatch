@@ -11,32 +11,27 @@
 		</layout>
 	</appender>
 
-	<logger name="it.geosolutions" additivity="true">
-		<!-- <level value="warning" /> -->
-		<level value="debug" /><!--  DEBUG  -->
-		<appender-ref ref="console" />
+	<logger name="it.geosolutions">
+		<level value="debug" />
 	</logger>
 
 	<!-- SPRING  -->
-	<logger name="org.springframework" additivity="true">
+	<logger name="org.springframework">
 		<level value="info" />
-		<appender-ref ref="console" />
 	</logger>
 	
-	<logger name="org.junit" additivity="true">
+	<logger name="org.junit">
 		<level value="warning" /><!--  DEBUG  -->
-		<appender-ref ref="console" />
-	</logger>
-	
+	</logger>	
 	
 	<!-- JETTY  -->
-	<logger name="org.mortbay.jetty"  additivity="true">
+	<logger name="org.mortbay.jetty">
 		<level value="info" />
-		<appender-ref ref="console" />
 	</logger>
 
 	<root>
-		<level value="debug" />
+		<level value="info" />
+		<appender-ref ref="console" />
 	</root>
 
 </log4j:configuration>
