@@ -26,14 +26,34 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import javax.imageio.ImageReader;
+import javax.media.jai.PlanarImage;
+
 import org.apache.commons.io.FilenameUtils;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridCoverageWriter;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.grid.io.GridFormatFinder;
+import org.geotools.coverage.grid.io.UnknownFormat;
+import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams;
+import org.geotools.factory.Hints;
+import org.geotools.gce.geotiff.GeoTiffFormat;
+import org.geotools.gce.geotiff.GeoTiffWriteParams;
+import org.geotools.gce.geotiff.GeoTiffWriter;
+import org.geotools.resources.image.ImageUtilities;
+import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.media.jai.operator.ImageReadDescriptor;
 
 
 /**
@@ -55,7 +75,7 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
         super(configuration);
         this.configuration = configuration;
     }
-
+    
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         try {
 
@@ -218,4 +238,136 @@ public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
             throw exc;
         }
     }
+    
+    /**
+     * @deprecated replaced by {@link #GeoTiffRetilerUtils.reTile(...)}
+     */
+    @Deprecated
+    public static void reTile(
+            File inFile, 
+            File tiledTiffFile, 
+            double compressionRatio, 
+            String compressionType, 
+            int tileW, 
+            int tileH, 
+            boolean forceBigTiff) throws IOException {
+        //
+        // look for a valid file that we can read
+        //
+    
+        AbstractGridFormat format = null;
+        AbstractGridCoverage2DReader reader = null;
+        GridCoverage2D inCoverage = null;
+        AbstractGridCoverageWriter writer = null;
+        final Hints hints=new Hints(
+                Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE);
+    
+        // getting a format for the given input
+        format = (AbstractGridFormat) GridFormatFinder.findFormat(inFile,hints);
+        if (format == null || (format instanceof UnknownFormat)) {
+            throw new IllegalArgumentException("Unable to find the GridFormat for the provided file: "+ inFile);
+        }
+        
+        try {
+            //
+            // ACQUIRING A READER
+            //
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Acquiring a reader for the provided file...");
+            }
+    
+            // can throw UnsupportedOperationsException
+            reader = (AbstractGridCoverage2DReader) format.getReader(inFile, hints);
+            
+            
+            if (reader == null) {
+                final IOException ioe = new IOException("Unable to find a reader for the provided file: "
+                                + inFile);
+                throw ioe;
+            }
+    
+            //
+            // ACQUIRING A COVERAGE
+            //
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Acquiring a coverage provided file...");
+            }
+            inCoverage = (GridCoverage2D) reader.read(null);
+            if (inCoverage == null) {
+                final IOException ioe = new IOException("inCoverage == null");
+                throw ioe;
+            }
+            
+            //
+            // PREPARING A WRITE
+            //
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Writing down the file in the decoded directory...");
+            }
+    
+            final GeoTiffFormat wformat = new GeoTiffFormat();
+            final GeoTiffWriteParams wp = new GeoTiffWriteParams();
+            if (!Double.isNaN(compressionRatio) && compressionType != null) {
+                wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
+                wp.setCompressionType(compressionType);
+                wp.setCompressionQuality((float) compressionRatio);
+            }
+            wp.setForceToBigTIFF(forceBigTiff);            
+            wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
+            wp.setTiling(tileW, tileH);
+            final ParameterValueGroup wparams = wformat.getWriteParameters();
+            wparams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString()).setValue(wp);
+    
+            //
+            // ACQUIRING A WRITER AND PERFORMING A WRITE
+            //
+            writer = (AbstractGridCoverageWriter) new GeoTiffWriter(tiledTiffFile);
+            writer.write(inCoverage,
+                    (GeneralParameterValue[]) wparams.values()
+                            .toArray(new GeneralParameterValue[1]));
+    
+        } finally {
+            //
+            // PERFORMING FINAL CLEAN UP AFTER THE WRITE PROCESS
+            //
+            if (reader != null) {
+                try {
+                    reader.dispose();
+                } catch (Exception e) {
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(e.getLocalizedMessage(), e);
+                }
+    
+            }
+    
+            if (writer != null) {
+                try {
+                    writer.dispose();
+                } catch (Exception e) {
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn(e.getLocalizedMessage(), e);
+                }
+    
+            }
+    
+            if (inCoverage != null) {
+                final RenderedImage initImage = inCoverage.getRenderedImage();
+                ImageReader r = (ImageReader) initImage
+                        .getProperty(ImageReadDescriptor.PROPERTY_NAME_IMAGE_READER);
+                try {
+                    r.dispose();
+                } catch (Exception e) {
+                    if (LOGGER.isWarnEnabled())
+                        LOGGER.warn("GeotiffRetiler::reTile(): " + e.getLocalizedMessage(), e);
+                }
+    
+                // dispose
+                ImageUtilities.disposePlanarImageChain(PlanarImage.wrapRenderedImage(initImage));
+    
+            }
+        }
+
+}
+    
+    
 }
