@@ -26,6 +26,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.tools.compress.file.Extract;
+import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,13 +62,7 @@ public class MoveAction extends BaseAction<EventObject> {
     public MoveAction(MoveConfiguration configuration) throws IllegalArgumentException {
         super(configuration);
         conf = configuration;
-        if (conf.getDestination()==null){
-            throw new IllegalArgumentException("Unable to work with a null dest dir");
-        }
-        if (!conf.getDestination().isAbsolute()){
-            // TODO LOG
-            conf.setConfigDir(new File(conf.getConfigDir(),conf.getDestination().getPath()));
-        }
+
     }
 
     /**
@@ -91,6 +86,15 @@ public class MoveAction extends BaseAction<EventObject> {
             moveMultipleFile=true;
         } else {
             moveMultipleFile=false;
+        }
+        if (conf.getDestination()==null){
+            throw new IllegalArgumentException("Unable to work with a null dest dir");
+        }
+        if (!conf.getDestination().isAbsolute()){
+            conf.setDestination(new File(this.getConfigDir(),conf.getDestination().getPath()));
+            if (LOGGER.isWarnEnabled()){
+                LOGGER.warn("Destination is not an absolute path. Absolutizing destination using temp dir: "+conf.getDestination());
+            }
         }
         
         boolean moveToDir;
@@ -116,7 +120,7 @@ public class MoveAction extends BaseAction<EventObject> {
             if (event instanceof FileSystemEvent){ 
                 File source = ((FileSystemEvent) event).getSource();
                 File dest;
-                listenerForwarder.setTask("moving to dest");
+                listenerForwarder.setTask("moving to destination");
                 if (moveToDir){
                     dest=conf.getDestination();
                     try {
@@ -135,11 +139,12 @@ public class MoveAction extends BaseAction<EventObject> {
                     // LOG continue
                     continue;
                 }
+
+                // add the file to the return
+                ret.add(new FileSystemEvent(dest, FileSystemEventType.FILE_ADDED));
             }
         }
 
-        // add the file to the return
-        ret.add(new FileSystemEvent(new File(""), FileSystemEventType.FILE_ADDED));
 
         listenerForwarder.completed();
         return ret;

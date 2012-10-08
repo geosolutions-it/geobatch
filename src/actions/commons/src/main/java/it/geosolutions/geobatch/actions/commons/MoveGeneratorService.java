@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
 public class MoveGeneratorService extends BaseService implements
         ActionService<EventObject, MoveConfiguration> {
 
-    public MoveGeneratorService(String id, String name, String description) {
-        super(id, name, description);
+    public MoveGeneratorService(String id) {
+        super(id);
     }
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MoveGeneratorService.class);
