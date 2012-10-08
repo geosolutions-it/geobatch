@@ -25,75 +25,24 @@ Clicking on any link, login screen appears:
 
 Default user is ``admin``, default password is also ``admin``.
 
-TODO: How to change.
+It's strong recommended to change the default admin password.
 
 
-Embedded FTP server
+UserManagement and FTP server
 -------------------
 
-From main page, click on *Manage ftp and users*:
+From main page, click on *Manage ftp and users*
 
-.. figure:: images/ftp.png
-   :align: center
+You can configure or add users and specifyng FTP grant for each user.
 
-There you can |config| configure the server, or |start| start it.
-
-The configuration options are:
-
-.. figure:: images/ftp_config.png
-   :align: center
+For more info see section *Embedded FTP server and User Management*
 
 
-User management
----------------
-
-To configure or add user click on the user icon near the log out button near the 'Manage FTP server'.
 
 Flow management
 ---------------
 
+|GB| provide to User an usefull GUI with which start/stop and control each flow execution.
+
 .. figure:: images/flows.png
    :align: center
-
-
-Configuring vsftpd
-------------------
-
-Edit service conf::
-
-  $ nano /etc/vsftpd/vsftpd.conf
-
-::
-
-  -----------------vsftpd.conf----------------
-  anonymous_enable=NO
-  xferlog_file=/var/log/vsftpd.log
-  file_open_mode=0770
-  local_umask=007
-  ...
-  #Per user config
-  user_config_dir=/etc/vsftpd/users/
-  --------------------------------------------
-
-::
-
-  $ mkdir /etc/vsftpd/users
-
-Edit each user (let's call it ``$USER``), conf::
-
-  $ nano /etc/vsftpd/users/$USER
-
-::
-
-  -----------------$USER------------------
-  local_root=/opt/ingestion/
-  local_umask=0311
-  dirlist_enable=NO
-  file_open_mode=0466
-  ----------------------------------------
-
-Restart the service::
-
-  $ /etc/init.d/vsftpd start
-  $ chkconfig vsftpd on
-
