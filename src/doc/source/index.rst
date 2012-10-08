@@ -16,6 +16,7 @@
    geotiffDemo
    shapeFileDemo
    taskExecutorDemo
+   imageMosaicDemo
    flowConfiguration
    actionShapeFile
    actionGeoTiff
