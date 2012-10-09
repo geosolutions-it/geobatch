@@ -147,11 +147,13 @@ public class GranuleRemover {
         final SimpleDateFormat utcFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         utcFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        Calendar cal = (Calendar)baseDate.clone();
-        if(cal == null) {
+        final Calendar cal;
+        if(baseDate == null) {
             if(LOGGER.isDebugEnabled())
                 LOGGER.debug("No base date set; current date will be used");
             cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        } else {
+            cal = (Calendar)baseDate.clone();
         }
 
         if(LOGGER.isDebugEnabled()) {
@@ -171,7 +173,8 @@ public class GranuleRemover {
         Filter out =
                 ff.lessOrEqual(
                     ff.property(timeAttributeName),
-                    ff.literal(utc));
+//                    ff.literal(utc));
+                    ff.literal(cal));
 
         return out;
     }
