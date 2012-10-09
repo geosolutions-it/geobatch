@@ -1,6 +1,7 @@
 package it.geosolutions.geobatch.dblocation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import it.geosolutions.geobatch.catalog.file.DataDirHandler;
 import it.geosolutions.geobatch.users.UsersDBPropertyOverrideConfigurer;
 
@@ -59,7 +60,7 @@ public class DBLocationTest {
 			gb_database.setProperty("dataSource-gb-users.jdbcUrl", "jdbc:h2:OnlyForTestIfGBDATABASEisRead2");
 			gb_database.store(new FileOutputStream(propGB), null);
 			
-    		System.setProperty("GEOBATCH_CONFIG_DIR", gbConfigDir.getAbsolutePath());
+    		        System.setProperty("GEOBATCH_CONFIG_DIR", gbConfigDir.getAbsolutePath());
 			DataDirHandler dataDirHandler = new DataDirHandler();
 			dataDirHandler.init();
 			UserConfigurerTester configurer = new UserConfigurerTester(dataDirHandler);
@@ -71,7 +72,8 @@ public class DBLocationTest {
 		}
 		finally{
 			if (propGB != null && propGB.exists() && propGB.canWrite()){
-				propGB.delete();
+			    assertTrue(propGB.delete());
+				
 			}
 		}
 	}
