@@ -90,6 +90,8 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
     private String timeAttribute;
     private String elevationAttribute;
+    
+    private String granuleFormat;
 
     public String getElevDimEnabled() {
         return elevDimEnabled;
@@ -392,7 +394,20 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     public Boolean getUseJaiImageRead() {
         return useJaiImageRead;
     }
+    
+    /**
+     * @return the granuleFormat
+     */
+    public String getGranuleFormat() {
+        return granuleFormat;
+    }
 
+    /**
+     * @param granuleFormat the granuleFormat to set
+     */
+    public void setGranuleFormat(String granuleFormat) {
+        this.granuleFormat = granuleFormat;
+    }
 
     @Override
     public ImageMosaicConfiguration clone() {
