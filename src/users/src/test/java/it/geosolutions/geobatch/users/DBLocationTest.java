@@ -1,4 +1,4 @@
-package it.geosolutions.geobatch.dblocation;
+package it.geosolutions.geobatch.users;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.util.Properties;
 
 import org.geotools.test.TestData;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -18,6 +19,7 @@ import org.junit.Test;
  *
  */
 public class DBLocationTest {
+	
 
 	/**
 	 * Set a GEOBATCH_CONFIG_DIR mock location and test if the returned jdbc URLs correctly points 
@@ -28,15 +30,19 @@ public class DBLocationTest {
 	public void testNoGBDatabaseFile() throws Exception {
 		
 		File gbConfigDir = TestData.file(this, "config");
-		System.setProperty("GEOBATCH_CONFIG_DIR", gbConfigDir.getAbsolutePath());
+		
 		DataDirHandler dataDirHandler = new DataDirHandler();
 		dataDirHandler.init();
 		UserConfigurerTester configurer = new UserConfigurerTester(dataDirHandler);
 		Properties prop = configurer.retrievePropertiesLoaded();
 		String ftp_server = (String)prop.get("dataSource-gb-ftp-server.jdbcUrl");
 		String users = (String)prop.get("dataSource-gb-users.jdbcUrl");
-		assertEquals(ftp_server, "jdbc:h2:" + gbConfigDir + "/settings/database/ftpusers");
-		assertEquals(users,  "jdbc:h2:" + gbConfigDir + "/settings/database/gbusers");
+		assertEquals(
+				ftp_server.substring("jdbc:h2:".length()).replace("\\", "/"),
+				gbConfigDir.getAbsolutePath().replace("\\", "/")+"/settings/database/ftpusers");
+		assertEquals(
+				users.substring("jdbc:h2:".length()).replace("\\", "/"),
+				gbConfigDir .getAbsolutePath().replace("\\", "/")+ "/settings/database/gbusers");
 	}
 	
 	/**
@@ -51,16 +57,16 @@ public class DBLocationTest {
 		File propGB = null;
 		
 		try{
-			File gbConfigDir = TestData.file(this, "config");
 			File gbSettingsDir = TestData.file(this, "config/settings");
 			
 			propGB = new File(gbSettingsDir + "/gb_database.properties");
 			gb_database = new Properties();
 			gb_database.setProperty("dataSource-gb-ftp-server.jdbcUrl", "jdbc:h2:OnlyForTestIfGBDATABASEisRead1");
 			gb_database.setProperty("dataSource-gb-users.jdbcUrl", "jdbc:h2:OnlyForTestIfGBDATABASEisRead2");
-			gb_database.store(new FileOutputStream(propGB), null);
-			
-    		        System.setProperty("GEOBATCH_CONFIG_DIR", gbConfigDir.getAbsolutePath());
+			final FileOutputStream out= new FileOutputStream(propGB);
+			gb_database.store(out, null);
+			out.close();
+    		        
 			DataDirHandler dataDirHandler = new DataDirHandler();
 			dataDirHandler.init();
 			UserConfigurerTester configurer = new UserConfigurerTester(dataDirHandler);
@@ -78,6 +84,14 @@ public class DBLocationTest {
 		}
 	}
 	
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		System.setProperty("GEOBATCH_CONFIG_DIR", TestData.file(DBLocationTest.class,"config").getAbsolutePath());
+	}
+
 	/**
 	 * Extends UsersDBPropertyOverrideConfigurer in order to expose the retrievePropertiesLoaded Method
 	 * @author damiano
