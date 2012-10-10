@@ -24,6 +24,8 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
+import java.math.BigDecimal;
+
 public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
 
@@ -105,12 +107,32 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
     private String elevationPresentationMode;
 
+    private BigDecimal timeDiscreteInterval;
+    
+    private BigDecimal elevationDiscreteInterval;
+    
     public String getElevationPresentationMode() {
         return elevationPresentationMode;
     }
 
     public void setElevationPresentationMode(String elevationPresentationMode) {
         this.elevationPresentationMode = elevationPresentationMode;
+    }
+
+    public BigDecimal getTimeDiscreteInterval() {
+        return timeDiscreteInterval;
+    }
+
+    public void setTimeDiscreteInterval(BigDecimal timeDiscreteInterval) {
+        this.timeDiscreteInterval = timeDiscreteInterval;
+    }
+
+    public BigDecimal getElevationDiscreteInterval() {
+        return elevationDiscreteInterval;
+    }
+
+    public void setElevationDiscreteInterval(BigDecimal elevationDiscreteInterval) {
+        this.elevationDiscreteInterval = elevationDiscreteInterval;
     }
 
     // TODO remove me
