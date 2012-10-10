@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+	default-autowire="byName" default-init-method="init">
+		
+	<bean id="dataDirHandler" class="it.geosolutions.geobatch.catalog.file.DataDirHandler">
+	</bean>
+	
+	<bean id="placeholderProperties-database"
+	        class="it.geosolutions.geobatch.users.CustomPropertyOverride" depends-on="dataDirHandler">
+		<constructor-arg ref="dataDirHandler"/>
+		<property name="ignoreResourceNotFound" value="true" />
+        <property name="locations">
+            <list>
+                <value>file:///${user.home}/gb_database.properties</value>
+                <value>file:///${DATABASE_CONFIG_FILE}</value>                
+            </list>
+        </property>		
+	</bean>
+	
+	    
+	<!--  Data source -->
+	<bean id="dataSource-gb-users" class="com.mchange.v2.c3p0.ComboPooledDataSource" depends-on="placeholderProperties-database">
+		<property name="driverClass" value="org.h2.Driver" />
+		<property name="jdbcUrl" value="jdbc:h2:${TMP}/gbusers" />
+		<property name="user" value="geobatch" />
+		<property name="password" value="geobatch" />
+		<property name="minPoolSize" value="4" />
+		<property name="maxPoolSize" value="10" />
+		<property name="maxStatements" value="100" />
+	</bean>
+</beans>
