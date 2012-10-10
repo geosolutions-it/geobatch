@@ -21,9 +21,7 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
-import it.geosolutions.tools.commons.time.TimeParser;
 import it.geosolutions.tools.io.file.Copy;
-import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +55,7 @@ import org.geotools.factory.Hints;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.gce.imagemosaic.Utils;
+import org.geotools.gce.imagemosaic.properties.time.TimeParser;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -235,7 +234,9 @@ abstract class ImageMosaicUpdater {
                         if(LOGGER.isDebugEnabled()) {
                             LOGGER.debug("time regex is matching: ["+matchedGroup+"]");
                         }
-						List<Date> dates = TimeParser.parse(matchedGroup);
+//						List<Date> dates = TimeParser.parse(matchedGroup);
+                        TimeParser timeParser = new TimeParser();
+                        List<Date> dates = timeParser.parse(matchedGroup);
                         if(LOGGER.isDebugEnabled()) {
                             LOGGER.debug("TimeParser parsed dates:" + dates);
                         }
