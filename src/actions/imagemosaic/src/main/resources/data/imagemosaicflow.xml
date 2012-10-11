@@ -41,15 +41,15 @@
 			<tileSizeH>256</tileSizeH>
 			<tileSizeW>256</tileSizeW>
 			
-			<NativeMinBoundingBoxX>5</NativeMinBoundingBoxX>
-    		<NativeMinBoundingBoxY>5</NativeMinBoundingBoxY>
-    		<NativeMaxBoundingBoxX>15</NativeMaxBoundingBoxX>
-    		<NativeMaxBoundingBoxY>15</NativeMaxBoundingBoxY>
+			<NativeMinBoundingBoxX>-180</NativeMinBoundingBoxX>
+    		<NativeMinBoundingBoxY>-90</NativeMinBoundingBoxY>
+    		<NativeMaxBoundingBoxX>180</NativeMaxBoundingBoxX>
+    		<NativeMaxBoundingBoxY>90</NativeMaxBoundingBoxY>
 
-		    <latLonMinBoundingBoxX>15</latLonMinBoundingBoxX>
-		    <latLonMinBoundingBoxY>15</latLonMinBoundingBoxY>
-		    <latLonMaxBoundingBoxX>15</latLonMaxBoundingBoxX>
-		    <latLonMaxBoundingBoxY>15</latLonMaxBoundingBoxY>
+		    <latLonMinBoundingBoxX>-180</latLonMinBoundingBoxX>
+		    <latLonMinBoundingBoxY>-90</latLonMinBoundingBoxY>
+		    <latLonMaxBoundingBoxX>180</latLonMaxBoundingBoxX>
+		    <latLonMaxBoundingBoxY>180</latLonMaxBoundingBoxY>
 			
 			
 			

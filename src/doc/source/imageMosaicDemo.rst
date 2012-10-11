@@ -23,25 +23,33 @@ Locate into |GB| deployment the folder WEB-INF/data/
 
 Copy the folder imagemosaic and the file imagemosaic.xml and paste into your ``GEOBATCH_CONFIG_DIR``
 
-`Download one or many .tiff files <https://github.com/geosolutions-it/geoserver-manager/tree/master/src/test/resources/testdata/time_geotiff>`_ for example usage.
+`Download two (or many) .tiff files <https://github.com/geosolutions-it/geoserver-manager/tree/master/src/test/resources/testdata/time_geotiff>`_ for example usage.
 
 .. note::	For a correct download for each file click on the link and in the following window click on raw button. 
 	Remember to replace dot(.) with underscore(_).
 	Please dont't download the file right clicking on the link and selecting save as. The downloaded file may be corrupt.
+
+Rename the files world_2012_0001.000.tif and world_2013_0001.000.tif.
 	
 Save the downloaded tiff files where you want, for example /var/imagemosaic/tiff.
 
-Create the Image Mosaic Command, copy and paste in a new file the xml below. Change the values in the brackets with your custom path.
+Then let's make the Image Mosaic Command: create a new file called cmd.xml and copy and paste in a new file the xml below.
+
+Change the values in the brackets with your custom values:
+
+* {PATH_TO_TIFF_FILE} *the path where are stored the tif files with wich you want to create the mosaic*
+* {YOUR_IMAGE_MOSAIC_LOCATION} *the directory where will be created the mosaic*
+* {IMAGEMOSAIC_DIR_BACKUP} *a directory for granules backup*
 
 .. sourcecode:: xml
 		
 	<ImageMosaic>
-	  <!-- Base directory for the mosaic -->
-	  <base>{YOUR_IMAGE_MOSAIC_LOCATION}</base>
+  	  <!-- Base directory for the mosaic -->
+  	  <base>{YOUR_IMAGE_MOSAIC_LOCATION}</base>
 
-	  <!-- Files to add or remove from the index  -->
-	  <add>{PATH_TO_TIFF_FILE}{TIFF1_FILENAME}.tif</add>
-	  <add>{PATH_TO_TIFF_FILE}{TIFF1_FILENAME}.tif</add>
+  	  <!-- Files to add or remove from the index  -->
+	  <add>{PATH_TO_TIFF_FILE}\world_2012_0001.000.tif</add>
+	  <add>{PATH_TO_TIFF_FILE}\world_2013_0001.000.tif</add>
 	  <!-- physically delete the granules from disk
 	  after removing them from the index -->
 	  <deleteGranules>false</deleteGranules>
@@ -67,19 +75,10 @@ Create the Image Mosaic Command, copy and paste in a new file the xml below. Cha
 	  <NFSCopyWait>10</NFSCopyWait>
 
 	  <ignoreGeoServer>false</ignoreGeoServer>
-	  
-	  <!-- METADATA -->
-	  <!-- TIME Dimension -->
-	  <timeDimEnabled>false</timeDimEnabled>
-	  <!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
-	  <timePresentationMode>LIST</timePresentationMode>
-	  <timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>
 
-	  <!-- ELEVATION Dimension -->
-	  <elevDimEnabled>false</elevDimEnabled>
-	  <!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
-	  <elevationPresentationMode>LIST</elevationPresentationMode>
-	  <elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>
+	  <timeRegex>[0-9]{4}</timeRegex>
+	  <elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})]]></elevationRegex>
+  
 
 	</ImageMosaic>
 	
@@ -88,6 +87,12 @@ As you can see some value contained in the command are contained also in the flo
 In that case those contained in the commad will override the values specified in the flow configurations. 
 
 Only if a value is NOT specified into the command the action will take that contained in flow configuration.
+
+For example the value for *timeregex* is different. 
+
+The regex is much simple as that contained in the flow config. 
+
+The time specified in the file name (only the year) is simpler than that used in ImageMosaicAction Documentation so we have to use a different regex.
 
 
 Running
