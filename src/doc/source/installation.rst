@@ -107,13 +107,11 @@ Configuring Users database
 
 |GB| Users and Ftp Account are stored in two distinct database. The DBMS Engine is `H2 <http://www.h2database.com/html/main.html>`_ .
 
-By default |GB| create the temporary file for persist the database in the Temp dir of the OS where running GB.
+By default |GB| create the temporary file for persist the database into the **settings/database** dir located in the **geobatch config dir**.
 
-The usage of this default setting is higly NOT RECOMMENDED for production environment and stable testing environment.
+The usage of this default setting is good also for Production environment, the important thing is remember to setup the geobatch config dir outside geobatch deployment.
 
-Use this configuration only for out-of-the-box tests and demostrations.
-
-For specifing your custom and reliable location for storing the DB you can use the gb_database.properties file. Here is an example::
+However if you want to specifing another location for storing the DB you can create and configure the gb_database.properties file. Here is an example::
 
 	dataSource-gb-users.jdbcUrl=jdbc:h2:[absolute_path]/gbusers
 	dataSource-gb-ftp-server.jdbcUrl=jdbc:h2:[absolute_path]/ftpusers
@@ -126,25 +124,27 @@ Where can I create database.properties file?
 ..........................................
 
 There are 3 possible location where you can put the file:
-
-1) In the ``GEOBATCH_CONFIG_DIR`` under settings dir. Be sure of you have correctly set the ``GEOBATCH_CONFIG_DIR`` through an environment variable (see ``The configuration directory``).
 	
-2) In a custom path specified setting the env variable DATABASE_CONFIG_FILE after run |GB| .
+1) In a custom path specified setting the env variable DATABASE_CONFIG_FILE after run |GB| .
 
-3) In the home of the user running |GB|.
+2) In the home of the user running |GB|.
 
-The order of this list isn't random, in fact it indicate the priority of this location: if you put two different version of database.properties in path 1) and 3) the file in path 1) will be override that one in 3).
- 
-We suggest to use The ``GEOBATCH_CONFIG_DIR``/config for store database.properties and create a directory called ``db`` under ``GEOBATCH_CONFIG_DIR`` for databases location.
+The order of this list isn't random, in fact it indicate the priority of this location: if you put two different version of database.properties in path 1) and 2) the file in path 1) will be override that one in 2).
 
+Remember that if an error occurred in this process, |GB| try to store the db into the TMP dir of the user.
 
 The logging system
 ------------------
 
+For specifing any custom path for save the geobatch.log set the environment variable GEOBATCH_LOG.
+
+For example::
+
+	-DGEOBATCH_LOG=/var/geobatchconfig/logs
+
 |GB| uses `log4j <http://logging.apache.org/log4j/>`_ for logging, and by default is logging at ``INFO`` level, and output will be rolled into ``logs/geobatch.log``.
 
 To change logging setup, edit ``WEB-INF/log4j.xml`` file. Please refer to `log4j's manual <http://logging.apache.org/log4j/1.2/manual.html>`_ for details.
-
 
 Manteinance
 -----------
