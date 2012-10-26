@@ -799,7 +799,9 @@ abstract class ImageMosaicUpdater {
 			// purge the addlist
 			// TODO remove (ALERT please remove existing file from destination
 			// for the copyListFileToNFS()
-			purgeAddFileList(addList, dataStore, store, addFilter, locationKey,cmd.getBaseDir(), absolute);
+			if(!purgeAddFileList(addList, dataStore, store, addFilter, locationKey,cmd.getBaseDir(), absolute)){
+			    return false;
+			}
 			addFilter = null;
 
 			// //////////////////////////////////

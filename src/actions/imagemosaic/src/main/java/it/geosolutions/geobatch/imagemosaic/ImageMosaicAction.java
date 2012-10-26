@@ -523,8 +523,15 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     } else {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("The following command FAILED:\n" + cmd.toString() + "\n");
+                        } 
+                        // why we should continue???
+                        //continue;
+                        final String msg="Error updating the new mosaic: " + layerName;
+                        ActionException ex = new ActionException(this.getClass(), msg);
+                        if (!getConfiguration().isFailIgnored()){
+                                listenerForwarder.failed(ex);
+                                throw ex;
                         }
-                        continue;
                     }
 
                 } // layer exists
