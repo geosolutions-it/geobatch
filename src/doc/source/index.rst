@@ -13,9 +13,11 @@
    concepts
    installation
    use
+   ftpUsage
    geotiffDemo
    shapeFileDemo
    taskExecutorDemo
+   imageMosaicDemo
    flowConfiguration
    actionShapeFile
    actionGeoTiff

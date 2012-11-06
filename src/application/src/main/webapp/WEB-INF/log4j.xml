@@ -4,10 +4,15 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
 	threshold="null" debug="false">
 
-	<appender name="rolling" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="${webapp.root}/logs/geobatch.log" />
-		<!-- <param name="File" value="${catalina.base}/logs/geobatch.log" /> -->
+	<appender name="rolling" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${GEOBATCH_LOG}/geobatch.log" />
+		<!-- Geobatch internal logs dir <param name="File" value="${webapp.root}/logs/geobatch.log" /> -->
+        <!-- Tomcat Default logs dir <param name="File" value="${catalina.base}/logs/geobatch.log" /> -->
+		<param name="File" value="${webapp}/geobatch.log" />
 		<param name="DatePattern" value="yyyy-MM-dd" />
+		<param name="MaxFileSize" value="100MB" />
+        <param name="MaxBackupIndex" value="5" />
+        <param name="threshold" value="info" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ISO8601} %5p %24C{1}:%L - %m%n" />
 		</layout>

@@ -24,6 +24,8 @@ package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
+import java.math.BigDecimal;
+
 public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
 
@@ -90,6 +92,8 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
     private String timeAttribute;
     private String elevationAttribute;
+    
+    private String granuleFormat;
 
     public String getElevDimEnabled() {
         return elevDimEnabled;
@@ -103,12 +107,32 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
     private String elevationPresentationMode;
 
+    private BigDecimal timeDiscreteInterval;
+    
+    private BigDecimal elevationDiscreteInterval;
+    
     public String getElevationPresentationMode() {
         return elevationPresentationMode;
     }
 
     public void setElevationPresentationMode(String elevationPresentationMode) {
         this.elevationPresentationMode = elevationPresentationMode;
+    }
+
+    public BigDecimal getTimeDiscreteInterval() {
+        return timeDiscreteInterval;
+    }
+
+    public void setTimeDiscreteInterval(BigDecimal timeDiscreteInterval) {
+        this.timeDiscreteInterval = timeDiscreteInterval;
+    }
+
+    public BigDecimal getElevationDiscreteInterval() {
+        return elevationDiscreteInterval;
+    }
+
+    public void setElevationDiscreteInterval(BigDecimal elevationDiscreteInterval) {
+        this.elevationDiscreteInterval = elevationDiscreteInterval;
     }
 
     // TODO remove me
@@ -392,7 +416,20 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     public Boolean getUseJaiImageRead() {
         return useJaiImageRead;
     }
+    
+    /**
+     * @return the granuleFormat
+     */
+    public String getGranuleFormat() {
+        return granuleFormat;
+    }
 
+    /**
+     * @param granuleFormat the granuleFormat to set
+     */
+    public void setGranuleFormat(String granuleFormat) {
+        this.granuleFormat = granuleFormat;
+    }
 
     @Override
     public ImageMosaicConfiguration clone() {

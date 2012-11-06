@@ -165,7 +165,15 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         if (LOGGER.isInfoEnabled()) {
                             LOGGER.info("Input file event points to a directory: " + input.getAbsolutePath());
                         }
-                        final Collector coll = new Collector(new WildcardFileFilter("*.tif*", IOCase.INSENSITIVE));
+                        String format = ((ImageMosaicConfiguration)super.getConfiguration()).getGranuleFormat();
+                        if (format==null || format.isEmpty()){
+                            LOGGER.warn("No granule format specified in flow configuration... try force it to .tif");
+                            format="tif";
+                        }
+                        StringBuilder builder = new StringBuilder();
+                        builder.append("*.");
+                        builder.append(format);
+                        final Collector coll = new Collector(new WildcardFileFilter(builder.toString(), IOCase.INSENSITIVE));
                         // try to deserialize
                         cmd = new ImageMosaicCommand(input, coll.collect(input), null);
                     } else {
@@ -515,8 +523,15 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     } else {
                         if (LOGGER.isWarnEnabled()) {
                             LOGGER.warn("The following command FAILED:\n" + cmd.toString() + "\n");
+                        } 
+                        // why we should continue???
+                        //continue;
+                        final String msg="Error updating the new mosaic: " + layerName;
+                        ActionException ex = new ActionException(this.getClass(), msg);
+                        if (!getConfiguration().isFailIgnored()){
+                                listenerForwarder.failed(ex);
+                                throw ex;
                         }
-                        continue;
                     }
 
                 } // layer exists

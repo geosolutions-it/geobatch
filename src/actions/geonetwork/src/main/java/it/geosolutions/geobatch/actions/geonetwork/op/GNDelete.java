@@ -71,7 +71,9 @@ public class GNDelete {
 
             for (GNSearchResponse.GNMetadata metadata : searchResponse) {
                 Long metadataId = metadata.getId();
-                LOGGER.info("Deleting metadata #" + metadataId);
+                String uuid = metadata.getUUID();
+
+                LOGGER.info("Deleting metadata #" + metadataId + " UUID:"+uuid);
 
                 try {
                     gnClient.deleteMetadata(metadataId);

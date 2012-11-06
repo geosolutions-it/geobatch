@@ -75,11 +75,11 @@
 		<doc.sphinx.source>${project.basedir}/doc/source/</doc.sphinx.source>
 		<doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
 
-		<tools.version>1.1.2</tools.version>
+		<tools.version>1.1-SNAPSHOT</tools.version>
 		<geostore.version>1.0.1</geostore.version>
-		<geoserver.manager.version>1.4.4</geoserver.manager.version>
+		<geoserver.manager.version>1.5-SNAPSHOT</geoserver.manager.version>
 
-		<gt.version>8.0</gt.version>
+		<gt.version>8-SNAPSHOT</gt.version>
 		<imageio-ext.version>1.2-M102011</imageio-ext.version>
 		<spring.version>3.0.3.RELEASE</spring.version>
 		<spring.security.version>3.0.3.RELEASE</spring.security.version>

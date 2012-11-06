@@ -7,25 +7,26 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
 	default-autowire="byName">
 	
-    <bean id="placeholderProperties-database" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer" >
-        <property name="ignoreResourceNotFound" value="true"/>
+	<bean id="placeholderProperties-database"
+	        class="it.geosolutions.geobatch.users.UsersDBPropertyOverrideConfigurer" depends-on="dataDirHandler">
+		<constructor-arg ref="dataDirHandler"/>
+		<property name="ignoreResourceNotFound" value="true" />
         <property name="locations">
             <list>
                 <value>file:///${user.home}/gb_database.properties</value>
-                <value>file:///${DATABASE_CONFIG_FILE}/gb_database.properties</value>
-                <value>file:///${GEOBATCH_CONFIG_DIR}/settings/gb_database.properties</value>
+                <value>file:///${DATABASE_CONFIG_FILE}</value>                
             </list>
-        </property>
-    </bean>	
+        </property>		
+	</bean>
     
 	<!--  Data source -->
-	<bean id="dataSource-gb-users" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+	<bean id="dataSource-gb-users" class="com.mchange.v2.c3p0.ComboPooledDataSource" depends-on="placeholderProperties-database">
 		<property name="driverClass" value="org.h2.Driver" />
 		<property name="jdbcUrl" value="jdbc:h2:${TMP:/tmp}/gbusers" />
 		<property name="user" value="geobatch" />
 		<property name="password" value="geobatch" />
-		<property name="minPoolSize" value="4" />
-		<property name="maxPoolSize" value="10" />
+		<property name="minPoolSize" value="10" />
+		<property name="maxPoolSize" value="20" />
 		<property name="maxStatements" value="100" />
 	</bean>
 
@@ -70,6 +71,4 @@
 			<ref local="sessionFactory-gb-users" />
 		</property>
 	</bean>
-
-
 </beans>

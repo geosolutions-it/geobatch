@@ -27,8 +27,10 @@ import it.geosolutions.geoserver.rest.encoder.coverage.GSCoverageEncoder;
 import it.geosolutions.geoserver.rest.encoder.coverage.GSImageMosaicEncoder;
 import it.geosolutions.geoserver.rest.encoder.metadata.GSDimensionInfoEncoder;
 import it.geosolutions.geoserver.rest.encoder.metadata.GSDimensionInfoEncoder.Presentation;
+import it.geosolutions.geoserver.rest.encoder.metadata.GSDimensionInfoEncoder.PresentationDiscrete;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -131,8 +133,14 @@ public abstract class ImageMosaicREST {
 	        	if (presentation.equals(Presentation.LIST.toString())){
 	    			timeDimensionInfo.setPresentation(Presentation.LIST);
 	        	}
-	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
-	//        			timeDimensionInfo.addPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
+	        	else if (presentation.equals(PresentationDiscrete.DISCRETE_INTERVAL.toString())){
+	        	        BigDecimal interval = config.getTimeDiscreteInterval();
+	        	        if(interval == null || interval.intValue() < 1){
+	        	            interval = new BigDecimal(1);
+	        	            LOGGER.warn("setted timePresentation to DISCRETE_INTERVAL with a not valid interval value... force it to 1");
+	        	        }
+	        		timeDimensionInfo.setPresentation(PresentationDiscrete.DISCRETE_INTERVAL,interval);
+	        	}
 	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
         			timeDimensionInfo.setPresentation(Presentation.CONTINUOUS_INTERVAL);
 	        	}
@@ -152,8 +160,14 @@ public abstract class ImageMosaicREST {
 	        	if (presentation.equals(Presentation.LIST.toString())){
 	    			elevationDimensionInfo.setPresentation(Presentation.LIST);
 	        	}
-	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
-	//        			timeDimensionInfo.addPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
+	        	else if (presentation.equals(PresentationDiscrete.DISCRETE_INTERVAL.toString())){
+    	        	        BigDecimal interval = config.getElevationDiscreteInterval();
+                                if(interval == null || interval.intValue() < 1){
+                                    interval = new BigDecimal(1);
+                                    LOGGER.warn("setted elevationPresentation to DISCRETE_INTERVAL with a not valid interval value... force it to 1");
+                                }
+	        	        elevationDimensionInfo.setPresentation(PresentationDiscrete.DISCRETE_INTERVAL,config.getElevationDiscreteInterval());
+	        	}
 	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
         			elevationDimensionInfo.setPresentation(Presentation.CONTINUOUS_INTERVAL);
 	        	}
@@ -226,6 +240,7 @@ public abstract class ImageMosaicREST {
      * @throws IOException
      * @throws TransformerException
      */
+    @Deprecated
     protected static GSCoverageEncoder createGSCoverageEncoder(final String coverageID, ImageMosaicConfiguration config) {
 
 	    final GSCoverageEncoder coverageEnc=new GSCoverageEncoder();
