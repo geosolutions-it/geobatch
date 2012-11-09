@@ -257,14 +257,15 @@ if (type==FileSystemEventType.POLLING_EVENT){
             if (!getScheduler().isStarted()) {
                 getScheduler().start();
             }
-            // System.out.print("START");
+            
             try {
-
                 if (pause) {
                     getScheduler().resumeJob(jobDetail.getKey());
                     pause = false;
                 } else {
-                    // schedule the job
+                    // fire it now
+                    getScheduler().scheduleJob(TriggerBuilder.newTrigger().forJob(jobDetail).startNow().build());
+                    // then schedule the job
                     getScheduler().scheduleJob(jobDetail, trigger);
                     int numJob = 0;
                     if (getScheduler().getContext().containsKey(FS_JOBS_NUM_KEY)) {
