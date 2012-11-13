@@ -49,6 +49,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.geotools.data.DataStore;
 import org.geotools.data.Query;
+import org.geotools.data.postgis.PostgisDataStoreFactory;
+import org.geotools.data.postgis.PostgisNGDataStoreFactory;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -125,7 +127,7 @@ public class GranuleRemoverOnlineTest extends GeoBatchBaseTest {
         {
             Queue<EventObject> inputQ = new LinkedList<EventObject>();            
             inputQ.add(new FileSystemEvent(imcFile, FileSystemEventType.FILE_ADDED));
-            ImageMosaicAction action = createMosaicAction();
+            ImageMosaicAction action = createMosaicAction(createMosaicConfig());
             Queue<EventObject> outputQ = action.execute(inputQ);
         }
 
@@ -145,7 +147,7 @@ public class GranuleRemoverOnlineTest extends GeoBatchBaseTest {
         {
             Queue<EventObject> inputQ = new LinkedList<EventObject>();
             inputQ.add(new FileSystemEvent(imcFile, FileSystemEventType.FILE_ADDED));
-            ImageMosaicAction action = createMosaicAction();
+            ImageMosaicAction action = createMosaicAction(createMosaicConfig());
             Queue<EventObject> outputQ = action.execute(inputQ);
         }
 
@@ -172,9 +174,10 @@ public class GranuleRemoverOnlineTest extends GeoBatchBaseTest {
             remover.enrich(imc);
             LOGGER.info("remove " + imc.getDelFiles());
             assertEquals(3, imc.getDelFiles().size());
+            assertNotNull(imc.getAddFiles());
 
             // serialize
-            imcFile = new File(getTempDir(), "ImageMosaicCommand1.xml");
+            imcFile = new File(getTempDir(), "ImageMosaicCommand2.xml");
             LOGGER.info("Creating  " + imcFile);
             ImageMosaicCommand.serialize(imc, imcFile.toString());
         }
@@ -183,7 +186,9 @@ public class GranuleRemoverOnlineTest extends GeoBatchBaseTest {
         {
             Queue<EventObject> inputQ = new LinkedList<EventObject>();
             inputQ.add(new FileSystemEvent(imcFile, FileSystemEventType.FILE_ADDED));
-            ImageMosaicAction action = createMosaicAction();
+            ImageMosaicConfiguration conf = createMosaicConfig();
+//            conf.setFailIgnored(true);
+            ImageMosaicAction action = createMosaicAction(conf);
             Queue<EventObject> outputQ = action.execute(inputQ);
         }
 
@@ -194,24 +199,47 @@ public class GranuleRemoverOnlineTest extends GeoBatchBaseTest {
     }
 
     /**
+     * GranuleRemover used to throw NPE when applied over a still not existent layer.
+     */
+    @Test
+    public void removeFromNewLayer() throws Exception {
+        removeStore();
+
+        //=== Add first set of granules
+        {
+            ImageMosaicCommand imc = recreateIMC("20121004","20121005","20121006","20121007","20121008");
+            // serialize
+
+            GranuleRemover remover = new GranuleRemover();
+
+            Calendar cal = new GregorianCalendar(2012, 9, 7);
+            cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            remover.setBaseDate(cal);
+            remover.setDaysAgo(2);
+            remover.enrich(imc);
+            LOGGER.info("remove " + imc.getDelFiles());
+        }
+
+        //== Cleanup
+//        removeStore();
+    }
+
+    /**
      * * deletes existing store
      * * create a brand new mosaic dir
      * * create the mosaic on GS
      * 
      */
-	protected ImageMosaicAction createMosaicAction() throws IOException {
+	protected ImageMosaicConfiguration createMosaicConfig() throws IOException {
 
         // create datastore file
         Properties datastore = new Properties();
-        datastore.setProperty("SPI","org.geotools.data.postgis.PostgisNGDataStoreFactory");
-        datastore.setProperty("port", getFixture().getProperty("pg_port"));
-        datastore.setProperty("host", getFixture().getProperty("pg_host"));
-        datastore.setProperty("schema", getFixture().getProperty("pg_schema"));
-        datastore.setProperty("database", getFixture().getProperty("pg_database"));
-        datastore.setProperty("user", getFixture().getProperty("pg_user"));
-        datastore.setProperty("passwd", getFixture().getProperty("pg_password"));
-        datastore.setProperty("Loose bbox","true");
-        datastore.setProperty("Estimated extends","false");
+        datastore.putAll(getPostgisParams());
+        datastore.remove(PostgisDataStoreFactory.DBTYPE.key);
+        datastore.setProperty("SPI", "org.geotools.data.postgis.PostgisNGDataStoreFactory");
+        datastore.setProperty(PostgisNGDataStoreFactory.LOOSEBBOX.key, "true");
+        datastore.setProperty(PostgisNGDataStoreFactory.ESTIMATED_EXTENTS.key, "false");
         File datastoreFile = new File(getTempDir(), "datastore.properties");
         LOGGER.info("Creating  " + datastoreFile);
         FileOutputStream out = new FileOutputStream(datastoreFile);
@@ -233,6 +261,11 @@ public class GranuleRemoverOnlineTest extends GeoBatchBaseTest {
 		conf.setDefaultNamespace(WORKSPACE);
 		conf.setDefaultStyle("raster");
 		conf.setCrs("EPSG:4326");
+
+        return conf;
+	}
+
+	protected ImageMosaicAction createMosaicAction(ImageMosaicConfiguration conf) throws IOException {
 
 		ImageMosaicAction action = new ImageMosaicAction(conf);
         action.setTempDir(getTempDir());
@@ -258,7 +291,7 @@ public class GranuleRemoverOnlineTest extends GeoBatchBaseTest {
             st.execute("SELECT count(*) FROM "+getFixture().getProperty("pg_schema")+".\""+STORENAME+"\"");
             st.close();
 
-            // previous select did not issue an exception, so the table does exist.
+            // previous select did not throw, so the table does exist.
             try {
                 LOGGER.info("Removing PG table '"+STORENAME+"'");
 

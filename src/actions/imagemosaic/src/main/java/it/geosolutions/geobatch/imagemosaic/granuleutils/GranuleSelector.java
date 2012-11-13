@@ -94,7 +94,7 @@ public class GranuleSelector {
     }
 
     /**
-     * @return the locations strings as provided by the mosaic index
+     * @return the locations strings as provided by the mosaic index, or null if no mosaic index can be found.
      */
     public Set<String> getLocations(File mosaicDir) throws IOException, IllegalStateException {
 
@@ -128,10 +128,12 @@ public class GranuleSelector {
     }
 
     /**
-     * @return the locations Files, made absolute using the mosaicDir as starting root.
+     * @return the locations Files, made absolute using the mosaicDir as starting root, or null on error.
      */
     public Set<File> getFiles(File mosaicDir) throws IOException, IllegalStateException {
         Set<String> filesToBeRemoved = getLocations(mosaicDir);
+        if(filesToBeRemoved == null)
+            return null;
         return absolutizeFiles(mosaicDir, filesToBeRemoved);
     }
 

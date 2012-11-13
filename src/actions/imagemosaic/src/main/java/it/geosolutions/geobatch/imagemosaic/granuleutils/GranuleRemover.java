@@ -133,12 +133,14 @@ public class GranuleRemover {
         selector.setFilter(createBeforeNdaysAgoFilter(daysAgo));
 
         Set<File> filesToBeRemoved = selector.getFiles(imc.getBaseDir());
-        
-        if(imc.getDelFiles() == null) {
-            imc.setDelFiles(new ArrayList(filesToBeRemoved));
-        }
-        else {
-            imc.getDelFiles().addAll(filesToBeRemoved);
+
+        if(filesToBeRemoved != null) {
+            if(imc.getDelFiles() == null) {
+                imc.setDelFiles(new ArrayList(filesToBeRemoved));
+            }
+            else {
+                imc.getDelFiles().addAll(filesToBeRemoved);
+            }
         }
     }
 
