@@ -276,7 +276,7 @@ public abstract class GeoBatchBaseTest extends OnlineTestSupport {
         LOGGER.debug("geoserver connection is ok");
     }
 
-    public Map getParams() {
+    public Map getPostgisParams() {
         Map params = new HashMap();
 
         params.put(PostgisDataStoreFactory.DBTYPE.key, "postgis");
@@ -297,7 +297,7 @@ public abstract class GeoBatchBaseTest extends OnlineTestSupport {
     }
 
     protected DataStore createDatastore() throws IOException {
-        Map params = getParams();
+        Map params = getPostgisParams();
         DataStore dataStore = new PostgisDataStoreFactory().createDataStore(params);
         return dataStore;
     }

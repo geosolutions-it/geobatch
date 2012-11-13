@@ -28,11 +28,6 @@ import java.math.BigDecimal;
 
 public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
-
-	public ImageMosaicConfiguration(String id, String name, String description) {
-        super(id, name, description);
-    }
-
     /**
      * Only used when updating. We'll assume the layer exists, and the reset
      * will not be performed.
@@ -58,12 +53,51 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
                                     // FORCE_DECLARED
 
     private Double NativeMinBoundingBoxX;// BoundingBox
-
     private Double NativeMinBoundingBoxY;// BoundingBox
-
     private Double NativeMaxBoundingBoxX;// BoundingBox
-
     private Double NativeMaxBoundingBoxY;// BoundingBox
+
+    private Double latLonMinBoundingBoxX;// BoundingBox
+    private Double latLonMinBoundingBoxY;// BoundingBox
+    private Double latLonMaxBoundingBoxX;// BoundingBox
+    private Double latLonMaxBoundingBoxY;// BoundingBox
+
+    // <metadata>
+    // <entry key="timeDimEnabled">true</entry>
+    // <entry key="dirName">20101012T210000_wdi_20101012T210000_wdi</entry>
+    // <entry key="timePresentationMode">LIST</entry>
+    // </metadata>
+    private String timeDimEnabled;
+    private String timeAttribute;
+    private String timePresentationMode;
+    private BigDecimal timeDiscreteInterval;
+
+    private String elevDimEnabled;
+    private String elevationAttribute;
+    private String elevationPresentationMode;
+    private BigDecimal elevationDiscreteInterval;
+
+    private String granuleFormat;
+
+    // TODO remove me
+    /** @deprecated */
+    private String dirName;
+
+    private String outputTransparentColor;
+    private String inputTransparentColor;
+
+    private Boolean allowMultithreading;
+
+    private Boolean useJaiImageRead;
+
+    private Integer tileSizeH;
+    private Integer tileSizeW;
+
+    private boolean ignoreEmptyAddList = true;
+
+	public ImageMosaicConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
 
     public String getProjectionPolicy() {
         return projectionPolicy;
@@ -73,28 +107,6 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         this.projectionPolicy = projectionPolicy;
     }
 
-    private Double latLonMinBoundingBoxX;// BoundingBox
-
-    private Double latLonMinBoundingBoxY;// BoundingBox
-
-    private Double latLonMaxBoundingBoxX;// BoundingBox
-
-    private Double latLonMaxBoundingBoxY;// BoundingBox
-
-    // <metadata>
-    // <entry key="timeDimEnabled">true</entry>
-    // <entry key="dirName">20101012T210000_wdi_20101012T210000_wdi</entry>
-    // <entry key="timePresentationMode">LIST</entry>
-    // </metadata>
-    private String timeDimEnabled;
-
-    private String elevDimEnabled;
-
-    private String timeAttribute;
-    private String elevationAttribute;
-    
-    private String granuleFormat;
-
     public String getElevDimEnabled() {
         return elevDimEnabled;
     }
@@ -102,14 +114,6 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     public void setElevDimEnabled(String elevationDimEnabled) {
         this.elevDimEnabled = elevationDimEnabled;
     }
-
-    private String timePresentationMode;
-
-    private String elevationPresentationMode;
-
-    private BigDecimal timeDiscreteInterval;
-    
-    private BigDecimal elevationDiscreteInterval;
     
     public String getElevationPresentationMode() {
         return elevationPresentationMode;
@@ -134,21 +138,6 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     public void setElevationDiscreteInterval(BigDecimal elevationDiscreteInterval) {
         this.elevationDiscreteInterval = elevationDiscreteInterval;
     }
-
-    // TODO remove me
-    private String dirName;
-
-    private String outputTransparentColor;
-
-    private String inputTransparentColor;
-
-    private Boolean allowMultithreading;
-
-    private Boolean useJaiImageRead;
-
-    private Integer tileSizeH;
-
-    private Integer tileSizeW;
 
     public boolean isCOARDS() {
         if (COARDS==null)
@@ -232,10 +221,12 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         this.timeDimEnabled = timeDimEnabled;
     }
 
+    /** @deprecated */
     public String getDirName() {
         return dirName;
     }
 
+    /** @deprecated */
     public void setDirName(String dirName) {
         this.dirName = dirName;
     }
@@ -429,6 +420,14 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
      */
     public void setGranuleFormat(String granuleFormat) {
         this.granuleFormat = granuleFormat;
+    }
+
+    public boolean isIgnoreEmptyAddList() {
+        return ignoreEmptyAddList;
+    }
+
+    public void setIgnoreEmptyAddList(boolean ignoreEmptyAddList) {
+        this.ignoreEmptyAddList = ignoreEmptyAddList;
     }
 
     @Override

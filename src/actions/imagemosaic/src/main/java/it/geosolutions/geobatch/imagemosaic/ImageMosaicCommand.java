@@ -48,6 +48,10 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 
@@ -362,16 +366,19 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
             conf.setUseJaiImageRead(true);
     }
 
+
+    private static final Set<String> RESERVED_PROPS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("class", "listenerIds")));
+
     /**
      * set this instance null properties with the passed configuration
      * @param conf
      */
     public void copyConfigurationIntoCommand(final ImageMosaicConfiguration conf) {
 
-            final PropertyDescriptor[] props=PropertyUtils.getPropertyDescriptors(conf);
-            for (PropertyDescriptor prop:props){
-                final String name=prop.getName();
-                if (name=="class"){
+            final PropertyDescriptor[] props = PropertyUtils.getPropertyDescriptors(conf);
+            for (PropertyDescriptor prop: props){
+                final String name = prop.getName();
+                if ( RESERVED_PROPS.contains(name) ) {
                     continue;
                 }
                 final Object obj;

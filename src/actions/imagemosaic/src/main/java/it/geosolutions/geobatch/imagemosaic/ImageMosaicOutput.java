@@ -51,27 +51,19 @@ import com.thoughtworks.xstream.XStreamException;
 public class ImageMosaicOutput {
     
     public static String NATIVE_LOWER_CORNER_FIRST_KEY = "NATIVE_LOWER_CORNER_FIRST";
-
     public static String NATIVE_LOWER_CORNER_SECOND_KEY = "NATIVE_LOWER_CORNER_SECOND";
-
     public static String NATIVE_UPPER_CORNER_FIRST_KEY = "NATIVE_UPPER_CORNER_FIRST";
-
     public static String NATIVE_UPPER_CORNER_SECOND_KEY = "NATIVE_UPPER_CORNER_SECOND";
 
     public static String LONLAT_LOWER_CORNER_FIRST_KEY = "LONLAT_LOWER_CORNER_FIRST";
-
     public static String LONLAT_LOWER_CORNER_SECOND_KEY = "LONLAT_LOWER_CORNER_SECOND";
-
     public static String LONLAT_UPPER_CORNER_FIRST_KEY = "LONLAT_UPPER_CORNER_FIRST";
-
     public static String LONLAT_UPPER_CORNER_SECOND_KEY = "LONLAT_UPPER_CORNER_SECOND";
 
     public static String CRS_KEY = "CRS";
 
     public static String STORENAME = "STORENAME";
-
     public static String WORKSPACE = "WORKSPACE";
-
     public static String LAYERNAME = "LAYERNAME";
     
     public static String DEFAULT_STYLE = "DEFAULT_STYLE";
@@ -149,8 +141,8 @@ public class ImageMosaicOutput {
             // ACQUIRING A READER
             //
             // /////////////////////////////////////////////////////////////////////
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Acquiring a reader for the provided directory...");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Acquiring a reader for the provided directory...");
             }
 
             // ETj 20120824: ImageMosaicFormat.accepts() returns false when passing a dir,

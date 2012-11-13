@@ -68,6 +68,8 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
+import java.util.Collections;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * Abstract class to provide update functions to the ImageMosaic action
@@ -454,21 +456,45 @@ abstract class ImageMosaicUpdater {
 	 * of perform remove+update)
 	 */
 	private static boolean purgeAddFileList(List<File> addFileList,
-			DataStore dataStore, String store, Filter addFilter,
+			DataStore dataStore, String store,
 			final String locationKey, final File baseDir, boolean absolute) {
 
+        if(addFileList.isEmpty()) {
+			if (LOGGER.isInfoEnabled()) {
+				LOGGER.info("Add list is empty");
+            }
+            // we're not expecting empty list here
+            return false;
+        }
+
+        Filter addFilter = null;
+        // calculate the query
+        try {
+            addFilter = getQuery(addFileList, absolute, locationKey);
+
+            if (addFilter == null) { //
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("The ADD query is null. Should not happen");
+                }
+                return false;
+            }
+
+        } catch (IllegalArgumentException e) {
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn(e.getLocalizedMessage());
+            }
+        } catch (CQLException e) {
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Unable to build a query. Message: " + e,e);
+            }
+            return false;
+        }
 		
 		final String handle = "ImageMosaic:" + Thread.currentThread().getId();
 		final Transaction transaction = new DefaultTransaction(handle);
 		/*
 		 * CHECK IF ADD FILES ARE ALREADY INTO THE LAYER
 		 */
-		if (addFilter == null) {
-			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("the ADD query ins null. Probably add list is empty");
-			}
-			return false;
-		}
 
 		FeatureReader<SimpleFeatureType, SimpleFeature> fr = null;
 		try {
@@ -739,7 +765,7 @@ abstract class ImageMosaicUpdater {
 			final List<File> delList = cmd.getDelFiles();
 			Filter delFilter = null;
 			// query
-            if(delList != null && ! delList.isEmpty()) {
+            if( ! CollectionUtils.isEmpty(delList)) {
     			try {
                     delFilter = getQuery(delList, absolute, locationKey);
                 } catch (Exception e) {
@@ -780,41 +806,44 @@ abstract class ImageMosaicUpdater {
                 }
             }
 
-			// ///////////////////////////////////
-			final List<File> addList = cmd.getAddFiles();
-			Filter addFilter = null;
-			// calculate the query
-			try {
-				addFilter = getQuery(addList, absolute, locationKey);
-			} catch (IllegalArgumentException e) {
-				if (LOGGER.isWarnEnabled()) {
-					LOGGER.warn(e.getLocalizedMessage());
-				}
-			} catch (CQLException e) {
-				if (LOGGER.isErrorEnabled()) {
-					LOGGER.error("Unable to build a query. Message: " + e,e);
-				}
-				return false;
-			}
-			// purge the addlist
+			//========================================
+            // Handle the addFiles list
+			//========================================
+            
+            // if it's empty, we'll return anyway. The config is telling us if it's a problem or not.
+            // Notice that a un/marshalled empty list willb e probabily set to null
+            if( CollectionUtils.isEmpty(cmd.getAddFiles()) ) {
+                if( cmd.isIgnoreEmptyAddList() ) {
+                    if (LOGGER.isInfoEnabled()) {
+                        LOGGER.info("No items to add");
+                    }
+                    return true;
+                } else {
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("addFiles list is empty.");
+                    }
+                    return false;
+                }
+            }
+
+            // Remove from addList the granules already in the mosaic.
 			// TODO remove (ALERT please remove existing file from destination
 			// for the copyListFileToNFS()
-			if(!purgeAddFileList(addList, dataStore, store, addFilter, locationKey,cmd.getBaseDir(), absolute)){
+			if(!purgeAddFileList(cmd.getAddFiles(), dataStore, store, locationKey,cmd.getBaseDir(), absolute)){
 			    return false;
 			}
-			addFilter = null;
 
 			// //////////////////////////////////
-			if (cmd.getAddFiles() == null) {
-				if (LOGGER.isWarnEnabled()) {
-					LOGGER.warn("addFiles list is null.");
+			if (cmd.getAddFiles() == null) { // side effect in previous method call? should not happen.
+				if (LOGGER.isErrorEnabled()) {
+					LOGGER.error("Filtered addFiles list is null.");
 				}
 				return false;
 			} else if ( cmd.getAddFiles().isEmpty()) {
 				if (LOGGER.isWarnEnabled()) {
-					LOGGER.warn("No more images to add to the layer were found, please check the command.");
+					LOGGER.warn("All requested files are already in the mosaic.");
 				}
-				return false;
+				return true;
 			} else if (cmd.getAddFiles().size() > 0) {
 				/*
 				 * copy purged addFiles list of files to the baseDir and replace
@@ -837,10 +866,8 @@ abstract class ImageMosaicUpdater {
 					if (addedFile != null) {
 						for (File file : addedFile) {
 							if (LOGGER.isWarnEnabled())
-								LOGGER.warn("ImageMosaicAction: DELETING -> "
-										+ file.getAbsolutePath());
-							// this is done since addedFiles are copied
-							// not moved
+								LOGGER.warn("ImageMosaicAction: DELETING -> " + file.getAbsolutePath());
+							// this is done since addedFiles are copied not moved
 							file.delete();
 						}
 					}

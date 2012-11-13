@@ -137,7 +137,7 @@ public abstract class ImageMosaicREST {
 	        	        BigDecimal interval = config.getTimeDiscreteInterval();
 	        	        if(interval == null || interval.intValue() < 1){
 	        	            interval = new BigDecimal(1);
-	        	            LOGGER.warn("setted timePresentation to DISCRETE_INTERVAL with a not valid interval value... force it to 1");
+	        	            LOGGER.warn("Invalid value for time DISCRETE_INTERVAL value ("+interval+"). Forcing to 1.");
 	        	        }
 	        		timeDimensionInfo.setPresentation(PresentationDiscrete.DISCRETE_INTERVAL,interval);
 	        	}
@@ -164,7 +164,7 @@ public abstract class ImageMosaicREST {
     	        	        BigDecimal interval = config.getElevationDiscreteInterval();
                                 if(interval == null || interval.intValue() < 1){
                                     interval = new BigDecimal(1);
-                                    LOGGER.warn("setted elevationPresentation to DISCRETE_INTERVAL with a not valid interval value... force it to 1");
+                                    LOGGER.warn("Invalid value for elevation DISCRETE_INTERVAL value ("+interval+"). Forcing to 1.");
                                 }
 	        	        elevationDimensionInfo.setPresentation(PresentationDiscrete.DISCRETE_INTERVAL,config.getElevationDiscreteInterval());
 	        	}
