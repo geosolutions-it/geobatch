@@ -263,10 +263,10 @@ if (type==FileSystemEventType.POLLING_EVENT){
                     getScheduler().resumeJob(jobDetail.getKey());
                     pause = false;
                 } else {
+                    // schedule the job
+                    getScheduler().scheduleJob(jobDetail, trigger);
                     // fire it now
                     getScheduler().scheduleJob(TriggerBuilder.newTrigger().forJob(jobDetail).startNow().build());
-                    // then schedule the job
-                    getScheduler().scheduleJob(jobDetail, trigger);
                     int numJob = 0;
                     if (getScheduler().getContext().containsKey(FS_JOBS_NUM_KEY)) {
                         numJob = getScheduler().getContext().getInt(FS_JOBS_NUM_KEY);
