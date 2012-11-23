@@ -71,7 +71,8 @@ public class ProgressListenerForwarder extends ProgressListener implements
                 l.setProgress(100f); // forcing 100% progress
                 l.completed();
             } catch (Exception e) {
-                LOGGER.warn("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.error("Exception in event forwarder: " + e.getLocalizedMessage());
+                l.failed(e);
             }
         }
     }
@@ -84,7 +85,8 @@ public class ProgressListenerForwarder extends ProgressListener implements
                             + exception + ") to " + l.getClass().getSimpleName());
                 l.failed(exception);
             } catch (Exception e) {
-                LOGGER.warn("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.error("Exception in event forwarder: " + e.getLocalizedMessage());
+                l.failed(e);
             }
         }
     }
@@ -107,7 +109,7 @@ public class ProgressListenerForwarder extends ProgressListener implements
                             + l.getClass().getSimpleName());
                 l.paused();
             } catch (Exception e) {
-                LOGGER.warn("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.error("Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
@@ -123,7 +125,7 @@ public class ProgressListenerForwarder extends ProgressListener implements
                             + l.getClass().getSimpleName());
                 l.progressing();
             } catch (Exception e) {
-                LOGGER.warn("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.error("Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
@@ -136,7 +138,7 @@ public class ProgressListenerForwarder extends ProgressListener implements
                             + l.getClass().getSimpleName());
                 l.resumed();
             } catch (Exception e) {
-                LOGGER.warn("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.error("Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
@@ -149,7 +151,7 @@ public class ProgressListenerForwarder extends ProgressListener implements
                     LOGGER.trace(getClass().getSimpleName() + " FORWARDING setProgress message to "+ l.getClass().getSimpleName());
                 l.setProgress(progress);
             } catch (Exception e) {
-                LOGGER.warn("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.error("Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
@@ -162,7 +164,7 @@ public class ProgressListenerForwarder extends ProgressListener implements
             try {
                 l.setTask(currentTask);
             } catch (Exception e) {
-                LOGGER.warn("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.error("Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
@@ -174,7 +176,7 @@ public class ProgressListenerForwarder extends ProgressListener implements
             try {
                 l.started();
             } catch (Exception e) {
-                LOGGER.warn("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.error("Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }
@@ -186,7 +188,7 @@ public class ProgressListenerForwarder extends ProgressListener implements
             try {
                 l.terminated();
             } catch (Exception e) {
-                LOGGER.warn("Exception in event forwarder: " + e.getLocalizedMessage());
+                LOGGER.error("Exception in event forwarder: " + e.getLocalizedMessage());
             }
         }
     }

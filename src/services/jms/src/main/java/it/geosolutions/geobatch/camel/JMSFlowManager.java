@@ -99,7 +99,13 @@ public class JMSFlowManager implements AsyncProcessor {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT injecting consumer to the parent flow");
         }
-        parent.addConsumer(consumer);
+        if (parent.addConsumer(consumer)){
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Consumer started: "+consumer);
+            }
+        } else {
+            throw new Exception("Unable to add the consumer to the queue");
+        }
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("JMSFlowManager: INIT concluded");
         }

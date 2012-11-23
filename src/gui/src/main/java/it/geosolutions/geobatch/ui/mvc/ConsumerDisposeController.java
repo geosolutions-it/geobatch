@@ -48,8 +48,10 @@ public class ConsumerDisposeController extends ConsumerAbstractController {
 
     @Override
     protected void handleConsumer(ModelAndView mav, EventConsumer consumer) throws IllegalArgumentException {
-        final EventConsumerStatus status = consumer.getStatus();
-        disposeConsumer(status, fm, consumer);
+        if (consumer!=null){
+            final EventConsumerStatus status = consumer.getStatus();
+            disposeConsumer(status, fm, consumer);
+        }
     }
 
     public static void disposeConsumer(final EventConsumerStatus status, final FlowManager fm,
