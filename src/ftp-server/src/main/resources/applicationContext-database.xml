@@ -9,7 +9,7 @@
 
     
 	<!--  Data source -->
-	<bean id="dataSource-gb-ftp-server" class="com.mchange.v2.c3p0.ComboPooledDataSource" depends-on="placeholderProperties-database">
+	<bean id="dataSource-gb-ftp-server" class="com.mchange.v2.c3p0.ComboPooledDataSource" depends-on="placeholderProperties-database" destroy-method="close">
 		<property name="driverClass" value="org.h2.Driver" />
 		<property name="jdbcUrl" value="jdbc:h2:${TMP:/tmp}/ftpusers" />
 		<property name="user" value="geobatch" />
