@@ -393,8 +393,11 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
         fbec.dispose();
 
         // notify the dispatcher if it is waiting to dispatch new event
-        synchronized (dispatcher) {
-            dispatcher.notify();
+        if (dispatcher!=null){
+            // the dispatcher may be null for some service (JMX) 
+            synchronized (dispatcher) {
+                dispatcher.notify();
+            }
         }
     }
 
