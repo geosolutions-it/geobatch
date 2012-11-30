@@ -59,7 +59,13 @@ public class JMXActionConfigurator {
                     String key = it.next();
                     try {
                         // TODO add a pluggable configurators from the context
-                        smartCopy(LOGGER, actionConfig, key, config.get(key));
+                        String value = config.get(key);
+                        if (value != null) {
+                            smartCopy(LOGGER, actionConfig, key, value);
+                        } else {
+                            if (LOGGER.isWarnEnabled())
+                                LOGGER.warn("Unable to find the parameter called: " + key);
+                        }
                     } catch (Exception e) {
                         if (LOGGER.isErrorEnabled())
                             LOGGER.error(e.getLocalizedMessage(), e);
