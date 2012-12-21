@@ -63,14 +63,14 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
     /**
      * maximum numbers of stored executed (see Consumer.getStatus()) consumers
      */
-    private int maxStoredConsumers;
+    private Integer maxStoredConsumers;
 
     /**
      * if true once maxStoredConsumer is reached consumers removal is only
      * manually permitted (using {@link FileBasedFlowManager#disposeConsumer(String)} or via GUI)<br>
      * Default is false.
      */
-    private boolean keepConsumers = false;
+    private Boolean keepConsumers;
 
     /**
      * autorun: this attribute is used to autorun a flow on startup.
@@ -135,7 +135,7 @@ public class FileBasedFlowConfiguration extends BaseFlowConfiguration {
     /**
      * @return the maxStoredConsumers
      */
-    public int getMaxStoredConsumers() {
+    public Integer getMaxStoredConsumers() {
         return maxStoredConsumers;
     }
 

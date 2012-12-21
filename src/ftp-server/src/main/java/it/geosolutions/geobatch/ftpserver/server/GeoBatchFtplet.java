@@ -72,7 +72,7 @@ public class GeoBatchFtplet
 
     private void logStatus() {
         LOGGER
-                .info("FTP Stats: CONNECTIONS : {0} / {1} -- LOGINS : {2} / {3}",
+                .info("FTP Stats: CONNECTIONS : {} / {} -- LOGINS : {} / {}",
                         new Object[] { this.ftpStats.getCurrentConnectionNumber(),
                                 this.ftpStats.getTotalConnectionNumber(),
                                 this.ftpStats.getCurrentLoginNumber(),
@@ -188,7 +188,7 @@ public class GeoBatchFtplet
 
         if (LOGGER.isInfoEnabled())
             LOGGER.info(
-                    "File upload/append finished: - session working dir: ''{0}'' - file: ''{1}''",
+                    "File upload/append finished: - session working dir: ''{}'' - file: ''{}''",
                     new Object[] { currDirPath, filename });
 
         Catalog catalog = CatalogHolder.getCatalog();
@@ -210,11 +210,11 @@ public class GeoBatchFtplet
         }
 
         if (fm != null) {
-            LOGGER.info("Firing FILEADDED event to {0}", fm);
+            LOGGER.info("Firing FILEADDED event to {}", fm);
             fm.postEvent(new FileSystemEvent(targetFile,
                     FileSystemEventType.FILE_ADDED));
         } else {
-            LOGGER.info("No FlowManager ''{0}'' to notify about {1} -- {2}",
+            LOGGER.error("No FlowManager ''{}'' to notify about {} -- {}",
                     new Object[] { flowid, targetFile, availFmSb });
         }
 

@@ -23,6 +23,7 @@ package it.geosolutions.geobatch.flow.event.consumer.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
@@ -121,6 +122,7 @@ public class FileBasedEventConsumer
         this.flowConfigDir = flowConfigDir;
         
         this.flowInstanceTempDir = createFlowInstanceTempDir(flowBaseTempDir);
+        
         if(LOGGER.isDebugEnabled())
             LOGGER.debug("Prepared flowInstanceTempDir " + flowInstanceTempDir);
                
@@ -234,8 +236,8 @@ public class FileBasedEventConsumer
         super.addActions(loadedActions);
 
         if (loadedActions.isEmpty()) {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info(getClass().getSimpleName() + " initialized with " + loadedActions.size()
+            if (LOGGER.isWarnEnabled()) {
+                LOGGER.warn(getClass().getSimpleName() + " initialized with " + loadedActions.size()
                             + " actions");
             }
         }
@@ -582,7 +584,7 @@ public class FileBasedEventConsumer
     }
 
     @Override
-    protected void setStatus(EventConsumerStatus eventConsumerStatus) {
+    protected void setStatus(EventConsumerStatus eventConsumerStatus) throws IllegalArgumentException {
         super.setStatus(eventConsumerStatus);
         // // are we executing? If yes, let's trigger a thread!
         // if (eventConsumerStatus == EventConsumerStatus.EXECUTING)
