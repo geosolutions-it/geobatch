@@ -136,20 +136,28 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
      * it.geosolutions.geobatch.flow.event.consumer.EventConsumer#getStatus()
      */
     public EventConsumerStatus getStatus() {
-        return this.eventConsumerStatus;
+        synchronized (eventConsumerStatus) {
+            return this.eventConsumerStatus;
+        }
     }
 
     /**
      * Change status and fire events on listeners if status has really changed.
      */
-    protected void setStatus(EventConsumerStatus eventConsumerStatus) {
-
-        if (this.eventConsumerStatus != eventConsumerStatus) {
-            listenerForwarder.fireStatusChanged(this.eventConsumerStatus, eventConsumerStatus);
-            listenerForwarder.setTask(eventConsumerStatus.toString());
+    protected void setStatus(EventConsumerStatus eventConsumerStatus) throws IllegalArgumentException {
+        if (eventConsumerStatus == null) {
+            throw new IllegalArgumentException("Unable to set the status to NULL");
         }
-
-        this.eventConsumerStatus = eventConsumerStatus;
+        if (this.eventConsumerStatus == null) {
+            this.eventConsumerStatus = eventConsumerStatus;
+        }
+        if (this.eventConsumerStatus != eventConsumerStatus) {
+            synchronized (this.eventConsumerStatus){
+                this.eventConsumerStatus = eventConsumerStatus;   
+                listenerForwarder.fireStatusChanged(this.eventConsumerStatus, eventConsumerStatus);
+                listenerForwarder.setTask(eventConsumerStatus.toString());
+            }
+        }
     }
 
     public Action<XEO> getCurrentAction() {
@@ -157,14 +165,20 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
     }
 
     /**
-     * {@link it.geosolutions.geobatch.flow.event.consumer.EventConsumer}
+     * {@link it.geosolutions.geobatch.flow.event.consumer.EventConsumer#consume(EventObject)}
+     * 
+     * This implementation consumes
      */
     public boolean consume(XEO event) {
-        if (!eventsQueue.offer(event)) {
-            return false;
+        try {
+            if (eventsQueue.offer(event)) {
+                return true;
+            }
+        } catch (Exception e){
+            LOGGER.error(e.getLocalizedMessage());
         }
 
-        return true;
+        return false;
     }
 
     /**
