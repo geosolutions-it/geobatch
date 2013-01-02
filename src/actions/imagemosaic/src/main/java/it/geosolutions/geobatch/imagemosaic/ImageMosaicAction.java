@@ -31,6 +31,7 @@ import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
 import it.geosolutions.geoserver.rest.encoder.GSWorkspaceEncoder;
 import it.geosolutions.geoserver.rest.encoder.coverage.GSCoverageEncoder;
+import it.geosolutions.tool.errorhandling.ActionExceptionHandler;
 import it.geosolutions.tools.io.file.Collector;
 import it.geosolutions.tools.io.file.Copy;
 
@@ -125,8 +126,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                 final ImageMosaicCommand cmd;
 
                 if (evObj == null) {
-                    if (LOGGER.isWarnEnabled())
-                        LOGGER.warn("Input null object.");
+                    ActionExceptionHandler.handleError(getConfiguration(),this,"Input null object.");
                     continue;
                 }
 
@@ -137,9 +137,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     final File input = ((FileSystemEvent)evObj).getSource();
                     if (!input.exists()) {
                         // no file is found for this event try with the next one
-                        if (LOGGER.isWarnEnabled()) {
-                            LOGGER.warn("The input file does not exists at url: " + input.getAbsolutePath());
-                        }
+                        ActionExceptionHandler.handleError(getConfiguration(),this,"The input file does not exists at url: " + input.getAbsolutePath());
                         continue;
                     }
 
@@ -156,9 +154,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         // try to deserialize
                         cmd = ImageMosaicCommand.deserialize(input.getAbsoluteFile());
                         if (cmd == null) {
-                            if (LOGGER.isWarnEnabled())
-                                LOGGER.warn("Unable to deserialize the passed file: "
-                                            + input.getAbsolutePath());
+                            ActionExceptionHandler.handleError(getConfiguration(),this,"Unable to deserialize the passed file: " + input.getAbsolutePath());
                             continue;
                         }
 
@@ -178,13 +174,8 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         // try to deserialize
                         cmd = new ImageMosaicCommand(input, coll.collect(input), null);
                     } else {
-                        // the file event does not point to a directory nor to
-                        // an
-                        // xml file
-                        if (LOGGER.isWarnEnabled()) {
-                            LOGGER.warn("The file event does not point to a directory nor to an xml file: "
-                                        + input.getAbsolutePath());
-                        }
+                        // the file event does not point to a directory nor to an xml file
+                        ActionExceptionHandler.handleError(getConfiguration(),this,"The file event does not point to a directory nor to an xml file: " + input.getAbsolutePath());
                         continue;
                     }
                 } else if (evObj instanceof EventObject) {
@@ -192,19 +183,13 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     if (innerObject instanceof ImageMosaicCommand){
                         cmd = (ImageMosaicCommand)innerObject;
                     } else {
-                     // the file event does not point to a directory nor to an
-                        // xml file
-                        if (LOGGER.isWarnEnabled()) {
-                            LOGGER.warn("The file event does not point to a valid object: " + evObj);
-                        }
-                        continue;
+                     // the file event does not point to a directory nor to an xml file
+                     ActionExceptionHandler.handleError(getConfiguration(),this,"The file event does not point to a valid object: " + evObj);
+                     continue;
                     }
                 } else {
-                    // the file event does not point to a directory nor to an
-                    // xml file
-                    if (LOGGER.isWarnEnabled()) {
-                        LOGGER.warn("The file event does not point to a valid object: " + evObj);
-                    }
+                    // the file event does not point to a directory nor to an xml file
+                    ActionExceptionHandler.handleError(getConfiguration(),this,"The file event does not point to a valid object: " + evObj);
                     continue;
                 }
                 
@@ -220,9 +205,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     .buildDescriptor(baseDir, getConfiguration());
 
                 if (mosaicDescriptor == null) {
-                    if (LOGGER.isWarnEnabled()) {
-                        LOGGER.warn("Unable to build the imageMosaic descriptor" + cmd.getBaseDir());
-                    }
+                    ActionExceptionHandler.handleError(getConfiguration(),this,"Unable to build the imageMosaic descriptor" + cmd.getBaseDir());
                     continue;
                 }
 
@@ -234,27 +217,19 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                         if (cmd.getAddFiles().size() > 0) {
                             // try build the baseDir
                             if (!baseDir.mkdirs()) {
-                                if (LOGGER.isWarnEnabled())
-                                    LOGGER.warn("Unable to create the base directory named \'"
-                                                + baseDir.getAbsolutePath() + "\'.");
+                                ActionExceptionHandler.handleError(getConfiguration(),this,"Unable to create the base directory named \'" + baseDir.getAbsolutePath() + "\'.");
                                 continue;
                             }
                         } else {
-                            if (LOGGER.isWarnEnabled())
-                                LOGGER
-                                    .warn("Unexpected not existent baseDir for this layer '"
-                                          + baseDir.getAbsolutePath()
-                                          + "'.\n If you want to build a new layer try using an "
-                                          + "existent or writeable baseDir and append a list of file to use to the addFile list.");
+                            final StringBuilder msg = new StringBuilder();
+                            msg.append("Unexpected not existent baseDir for this layer '").append(baseDir.getAbsolutePath()).append("'.\n If you want to build a new layer try using an ").append("existent or writeable baseDir and append a list of file to use to the addFile list.");
+                            ActionExceptionHandler.handleError(getConfiguration(),this,msg.toString());
                             continue;
                         }
                     } else {
-                        if (LOGGER.isWarnEnabled())
-                            LOGGER
-                                .warn("Unexpected not existent baseDir for this layer '"
-                                      + baseDir.getAbsolutePath()
-                                      + "'.\n If you want to build a new layer try using an "
-                                      + "existent or writeable baseDir and append a list of file to use to the addFile list.");
+                        final StringBuilder msg = new StringBuilder();
+                        msg.append("Unexpected not existent baseDir for this layer '").append(baseDir.getAbsolutePath()).append("'.\n If you want to build a new layer try using an ").append("existent or writeable baseDir and append a list of file to use to the addFile list.");
+                        ActionExceptionHandler.handleError(getConfiguration(),this,msg.toString());
                         continue;
                     }
                 }
@@ -314,12 +289,16 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                 }
 
                 if ( layerExists ) {
-                    if ( ! updateMosaicLayer(cmd, baseDir, layerName, mosaicDescriptor, gsPublisher))
+                    if ( ! updateMosaicLayer(cmd, baseDir, layerName, mosaicDescriptor, gsPublisher)){
+                        ActionExceptionHandler.handleError(getConfiguration(),this,"an error message.");
                         continue;
+                    }
 
                 } else {
-                    if ( ! createMosaicLayer(cmd, baseDir, workspace, mosaicDescriptor, layerName, gsPublisher, storeName))
+                    if ( ! createMosaicLayer(cmd, baseDir, workspace, mosaicDescriptor, layerName, gsPublisher, storeName)){
+                        ActionExceptionHandler.handleError(getConfiguration(),this,"an error message.");
                         continue;
+                    }
                 }
 
                 /**
@@ -464,18 +443,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
          */
         if (!published) {
             final String msg="Error creating the new store: " + layerName;
-            ActionException ex = new ActionException(this.getClass(), msg);
-            if (!getConfiguration().isFailIgnored()) {
-                listenerForwarder.failed(ex);
-                throw ex;
-            } else {
-                // layer already exists
-                if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn(msg);
-                }
-                listenerForwarder.failed(ex);
-                return false;
-            }
+            ActionExceptionHandler.handleError(getConfiguration(),this,msg);
         }
         return true;
     }
@@ -528,11 +496,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
             final String upperParent = cmd.getBaseDir().getName();
             mosaicPropFile = new File(baseDir, upperParent + ".properties");
             if (!Utils.checkFileReadable(mosaicPropFile)) {
-                if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn("Unable to locate the imagemosaic properties file at: "
-                                + mosaicPropFile.getCanonicalPath());
-                }
-                return false;
+                ActionExceptionHandler.handleError(getConfiguration(),this,"Unable to locate the imagemosaic properties file at: " + mosaicPropFile.getCanonicalPath());
             }
         }
         final Properties mosaicProp = ImageMosaicProperties.getPropertyFile(mosaicPropFile);
@@ -564,22 +528,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                 }
             }
         } else {
-            // why we should continue???
-            //continue;
-            if (! getConfiguration().isFailIgnored()) {
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error("The following command FAILED:\n" + cmd.toString() + "\n");
-                }
-
-                ActionException ex = new ActionException(this, "Error updating the mosaic: " + layerName);
-                listenerForwarder.failed(ex);
-                throw ex;
-            } else {
-                if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn("The following command FAILED:\n" + cmd.toString() + "\n");
-                }
-                return false;
-            }
+            ActionExceptionHandler.handleError(getConfiguration(),this,"The following command FAILED:\n" + cmd.toString() + "\n");
         }
         return true;
     }
