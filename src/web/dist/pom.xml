@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+      =======================================================================
+        Maven Project Configuration File
+
+        GeoSolutions GeoBatch Project
+            http://geobatch.geo-solutions.it
+      =======================================================================
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>it.geosolutions.geobatch</groupId>
+    <artifactId>gb-web</artifactId>
+    <version>1.3-SNAPSHOT</version>
+  </parent>
+  <!-- =========================================================== -->
+  <!--     Module Description                                      -->
+  <!-- =========================================================== -->
+  <groupId>it.geosolutions.geobatch</groupId>
+  <artifactId>gb-dist</artifactId>
+  <packaging>pom</packaging>
+  <name>GeoBatch distributions</name>
+  <description>GeoSolutions GeoBatch distributions.</description>
+  <properties>
+	<root.basedir>${basedir}/../</root.basedir>
+  </properties>
+  
+  <!-- =========================================================== -->
+  <!--     Modules for the build in approximate dependency order   -->
+  <!-- =========================================================== -->
+  <profiles>
+    <profile>
+      <id>jetty</id>
+      <modules>
+        <module>jetty</module>
+      </modules>
+    </profile>
+  </profiles>
+  
+</project>

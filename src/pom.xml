@@ -69,9 +69,9 @@
         </mailingLists>
 
 	<properties>
-     <root.basedir>${project.basedir}</root.basedir>
-     <site.basedir>${root.basedir}/build/</site.basedir>
-       <site.outdir>${site.basedir}/${project.version}/</site.outdir>
+        <root.basedir>${project.basedir}</root.basedir>
+        <site.basedir>${root.basedir}/build/</site.basedir>
+        <site.outdir>${site.basedir}/${project.version}/</site.outdir>
 		<doc.sphinx.source>${project.basedir}/doc/source/</doc.sphinx.source>
 		<doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
 
@@ -237,6 +237,12 @@
 			<!--============================================================= -->
 			<!-- Geobatch =================================================== -->
 			<!--============================================================= -->
+			<dependency>
+				<groupId>it.geosolutions.geobatch</groupId>
+				<artifactId>gb-application</artifactId>
+				<version>${project.version}</version>
+				<type>test-jar</type>
+			</dependency>
 			<dependency>
 				<groupId>it.geosolutions.geobatch</groupId>
 				<artifactId>gb-core</artifactId>
@@ -1645,6 +1651,7 @@
 				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
 				<configuration>
 					<attach>false</attach>
 				</configuration>
@@ -1851,7 +1858,7 @@
 		<module>ftp-server</module>
 		<module>actions</module>
 		<module>gui</module>
-		<module>application</module>
+		<module>web</module>
 		<!-- other conditional modules are listed in the profiles section -->
 	</modules>
 </project>
