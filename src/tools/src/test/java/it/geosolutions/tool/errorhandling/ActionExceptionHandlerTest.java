@@ -69,9 +69,14 @@ public class ActionExceptionHandlerTest {
         Exception res = null;
         try {
             ActionExceptionHandler.handleError(null,new TestAction(),"a message");
-        } catch (ActionException e) {
-            res = e;
         }
+        catch (IllegalArgumentException e){
+            return;
+        }
+        catch (Exception e) {
+            fail();
+        }
+        fail();
     }
     
     @Test

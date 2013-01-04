@@ -290,13 +290,13 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
                 if ( layerExists ) {
                     if ( ! updateMosaicLayer(cmd, baseDir, layerName, mosaicDescriptor, gsPublisher)){
-                        ActionExceptionHandler.handleError(getConfiguration(),this,"an error message.");
+                        ActionExceptionHandler.handleError(getConfiguration(),this,"Mosaic not Updated...");
                         continue;
                     }
 
                 } else {
                     if ( ! createMosaicLayer(cmd, baseDir, workspace, mosaicDescriptor, layerName, gsPublisher, storeName)){
-                        ActionExceptionHandler.handleError(getConfiguration(),this,"an error message.");
+                        ActionExceptionHandler.handleError(getConfiguration(),this,"Mosaic not Created...");
                         continue;
                     }
                 }
@@ -444,6 +444,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
         if (!published) {
             final String msg="Error creating the new store: " + layerName;
             ActionExceptionHandler.handleError(getConfiguration(),this,msg);
+            return false;
         }
         return true;
     }
@@ -529,6 +530,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
             }
         } else {
             ActionExceptionHandler.handleError(getConfiguration(),this,"The following command FAILED:\n" + cmd.toString() + "\n");
+            return false;
         }
         return true;
     }
