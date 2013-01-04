@@ -1,8 +1,6 @@
 .. |GB| replace:: *GeoBatch*
 .. |GS| replace:: *GeoServer*
 
-.. _`keyConcepts`:
-
 Key concepts
 ============
 
