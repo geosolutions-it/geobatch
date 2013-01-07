@@ -8,26 +8,27 @@ Develop an action
 =================
 
 
-Write the action classes and naming convenctions
+Class naming conventions
 ------------------------------------------------
 
-A module that implements one or more actions related each other, must be called **gb-action-** plus a **modulename** so ``gb-action-modulename``.
+It is recommended to have one action per maven module, unless the actions are strictly related one another.
 
-An action is composed of 4 mandatory classes that should follow this naming convenction: Given an Action Name **ExampleAction** the four class must be called 
+A maven module implementing one (or more) actions should be called ``gb-action-modulename``, where  **modulename** is a name specific to the action.
 
-#.	ExampleActionAliasRegistar.java 
+An action is composed of 4 mandatory classes that should follow this naming convention: Given an Action named **ExampleAction** the four classes shall be called 
 
-#.	ExampleActionGeneratorService.java
+* **ExampleActionAction.java** -   the Actions business logic.
+* **ExampleActionConfiguration.java** - any configuration you need in the action.
+* **ExampleActionGeneratorService.java** - a Service that creates an ExampleActionAction using a ExampleActionConfiguration
+* **ExampleActionAliasRegistrar.java** - a bean used to register the GeneratorService into the Spring context.
 
-#.	ExampleActionConfiguration.java
 
-#.	ExampleActionAction.java
+The 4 classes (and any other utility class developed for the action) must be placed under a package called *it.geosolutions.geosolutions.modulename.exampleaction* 
 
-The 4 classes (and any other utility class developed for the action) must be reside under a package called *it.geosolutions.geosolutions.modulename.exampleaction* 
+Next paragraphs will show how the four classes are to be implemented. Some code templates are also provided.
 
-In the next paragraphs is shown how the four classes must be implemented. Are also provided some code templates, where are omissed the imports, the package declaration and the license.
-
-The reader can use these templates replacing the placeholder #ACTION_NAME# with the custom action name and implementing where the comments starts with TODO .
+You can use these templates replacing the placeholder ``#ACTION_NAME#`` with the custom action name and implementing where the comments starts with TODO.
+You'll need to fill in the imports, the package declaration and the license as well.
 
 
 
@@ -36,40 +37,40 @@ Configuration
 
 The class #ACTION_NAME#Configuration.java is the bean where the action configuration, extracted from the whole flow configuration, will be unmarshalled.
 
-a standard template is provided here:: 
+A standard template is provided here:: 
 
-	public class #ACTION_NAME#Configuration extends ActionConfiguration implements Configuration {
+	public class #ACTION_NAME#Configuration
+	                  extends ActionConfiguration 
+	                  implements Configuration {
 		
-		// TODO ADD YOUR CONFIGURATION MEMBERS
+		// TODO: add your conf members 
 		
 		public #ACTION_NAME#Configuration(String id, String name, String description) {
 			super(id, name, description);
-			// TODO INITIALIZE CONFIGURATION MEMBERS
+			
+			// TODO: your initialization
 		}
 		
 		@Override
 		public #ACTION_NAME#Configuration clone(){
 			final #ACTION_NAME#Configuration ret=(#ACTION_NAME#Configuration)super.clone();
 			
-			// TODO CLONE YOUR CONFIGURATION MEMBERS
+			// TODO: deep copy your members if needed
 		
-			ret.setWorkingDirectory(this.getWorkingDirectory());
-			ret.setServiceID(this.getServiceID());
-			ret.setListenerConfigurations(ret.getListenerConfigurations());
 			return ret;
 		}
 	}
 
-There are 3 mandatory task to implement in this template, but they are very simple: Declare the configuration members, inizialize them in the constructor and clone them.
+You have to fill in the 3 *todo* if needed.
 
 
 
-AliasRegistar
--------------
+AliasRegistrar
+--------------
 
-The class #ACTION_NAME#AliasRegistrar.java is responsible for settings the XStream aliases in order write a human readable Flow configuration.
+The class #ACTION_NAME#AliasRegistrar.java is responsible for settings the XStream aliases in order to write a human readable Flow configuration.
 
-a template is provided here::
+A template is provided here::
 
 	public class #ACTION_NAME#AliasRegistrar extends AliasRegistrar {
 
@@ -84,16 +85,17 @@ a template is provided here::
 		}
 	}
 
-Note that without settings the aliases the flow configuration tags must be contains the full qualified name for each class used.
+
+Note that ``registry.putAlias(aliasName, aliasedClass)`` calls the `XStream.alias  <http://xstream.codehaus.org/javadoc/com/thoughtworks/xstream/XStream.html#alias(java.lang.String,%20java.lang.Class)>`_ method. 
+We're using the AliasRegistrar class in order to decouple the action code from the XStream libs.
 
 For a deeper documentation about XStream aliases see the official documentations and `this tutorial <http://xstream.codehaus.org/alias-tutorial.html>`_.
-
 
 
 Action
 ------
 
-The class #ACTION_NAME#Action.java holds the business logic of the action. The implementation of the execute method is the main task for a |GB| action developer.
+The class #ACTION_NAME#Action.java holds the business logic of the action. The implementation of the ``execute()`` method is the main task for a |GB| action developer.
 
 The template below shows a typical structure of the execute method that iterate on all the events intercepted.
 
@@ -101,57 +103,59 @@ The whole loop body is wrapped inside a ``try`` block so any Exception that isn'
 
 The template::
 
-	public class #ACTION_NAME#Action extends BaseAction<EventObject> {
-		private final static Logger LOGGER = LoggerFactory.getLogger(#ACTION_NAME#Action.class);
+   public class #ACTION_NAME#Action extends BaseAction<EventObject> {
+      private final static Logger LOGGER = LoggerFactory.getLogger(#ACTION_NAME#Action.class);
 
-		// Action configuration
-		private final #ACTION_NAME#Configuration conf;
+      // Action configuration
+      private final #ACTION_NAME#Configuration conf;
 
-		public #ACTION_NAME#Action(#ACTION_NAME#Configuration configuration) {
-			super(configuration);
-			conf = configuration;
-			//TODO initialize your members here
-		}
-		
-		public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
+      public #ACTION_NAME#Action(#ACTION_NAME#Configuration configuration) {
+         super(configuration);
+         conf = configuration;
+         //TODO initialize your members here
+      }
 
-			// return object
-			final Queue<EventObject> ret=new LinkedList<EventObject>();
-			
-			while (events.size() > 0) {
-				final EventObject ev;
-				try {
-					if ((ev = events.remove()) != null) {
-						if (LOGGER.isTraceEnabled()) {
-							LOGGER.trace("#ACTION_NAME#Action.execute(): working on incoming event: "+ev.getSource());
-						}
-						// TODO: DO SOMETHING WITH THE INCOMING EVENT, ADD THE ACTION IMPLEMENTATION
-						
-						// add the event to the return
-						ret.add(ev);
-						
-					} else {
-						if (LOGGER.isErrorEnabled()) {
-							LOGGER.error("#ACTION_NAME#Action.execute(): Encountered a NULL event: SKIPPING...");
-						}
-						continue;
-					}
-				} catch (Exception ioe) {
-					final String message = "#ACTION_NAME#Action.execute(): Unable to produce the output: "
-							+ ioe.getLocalizedMessage();
-					if (LOGGER.isErrorEnabled())
-						LOGGER.error(message);
-					throw new ActionException(this, message);
-				}
-			}
-			return ret;
-		}   
-	}
+      public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
 
-An Action must extends the class ``BaseAction<XEO extends EventObject>``. Often is better use directly a |GB| event (for example FileSystemEvent) as type parameter, so some cast operation could be avoided.
+         // return object
+         final Queue<EventObject> ret=new LinkedList<EventObject>();
 
-Another aspect is the action fault tollerance. Sometimes, if an error occurs during an action execution, we want to terminate the whole flow execution and other times we want that the error could be skipped and continue to process the next event.
-In order to handle this situation there is a property called failIgnored in the class *ActionConfiguration* (so every configurations inherit it). The meaning of this flag is to specify if errors are tollerated during an action executions.
+         while (events.size() > 0) {
+            final EventObject ev;
+            try {
+               if ((ev = events.remove()) != null) {
+                  if (LOGGER.isTraceEnabled()) {
+                     LOGGER.trace("Working on incoming event: "+ev.getSource());
+                  }
+                  
+                  // TODO: DO SOMETHING WITH THE INCOMING EVENT, 
+                  //       ADD THE ACTION IMPLEMENTATION
+
+                  // add the event to the return
+                  ret.add(ev);
+
+               } else {
+                  if (LOGGER.isErrorEnabled()) {
+                     LOGGER.error("Encountered a NULL event: SKIPPING...");
+                  }
+                  continue;
+               }
+            } catch (Exception ioe) {
+               final String message = "Unable to produce the output: " + ioe.getLocalizedMessage();
+               if (LOGGER.isErrorEnabled())
+                  LOGGER.error(message);
+                  
+               throw new ActionException(this, message);
+            }
+         }
+         return ret;
+      }   
+   }
+
+An Action must extends the class ``BaseAction<XEO extends EventObject>``. Often it is better use directly a |GB| event (for example FileSystemEvent) as type parameter, so some cast operation could be avoided.
+
+Another aspect is the action fault tolerance. Sometimes, if an error occurs during an action execution, we want to terminate the whole flow execution; some other times we want that the error could be skipped and continue to process the next event.
+In order to handle this situation there is a property called ``failIgnored`` in the class *ActionConfiguration* (so every configurations inherit it). The meaning of this flag is to specify whether errors are tolerated during an action executions.
 In order to handle in a standard way this flag the class *ActionExceptionHandler.java* (module gb-tools package *it.geosolutions.tool.errorhandling*) provide the static method *handleError(...)* so, calling this, the error could be handled depending on the failIgnore flag value.
 
 GeneratorService
@@ -163,45 +167,38 @@ Must implement the methods createAction() and canCreateAction().
 
 a standard template is provided here::
 
-	public class #ACTION_NAME#GeneratorService extends BaseService implements
-			ActionService<EventObject, #ACTION_NAME#Configuration> {
+   public class #ACTION_NAME#GeneratorService 
+            extends BaseService 
+            implements ActionService<EventObject, #ACTION_NAME#Configuration> {
 
-		public #ACTION_NAME#GeneratorService(String id, String name, String description) {
-			super(id, name, description);
-		}
+      private final static Logger LOGGER = LoggerFactory.getLogger(#ACTION_NAME#GeneratorService.class);
 
-		private final static Logger LOGGER = LoggerFactory.getLogger(#ACTION_NAME#GeneratorService.class);
+            
+      public #ACTION_NAME#GeneratorService(String id, String name, String description) {
+         super(id, name, description);
+      }
 
-		public #ACTION_NAME#Action createAction(#ACTION_NAME#Configuration configuration) {
-			try {
-				return new #ACTION_NAME#Action(configuration);
-			} catch (Exception e) {
-				if (LOGGER.isInfoEnabled())
-					LOGGER.info(e.getLocalizedMessage(), e);
-				return null;
-			}
-		}
+      public #ACTION_NAME#Action createAction(#ACTION_NAME#Configuration configuration) {
+         try {
+            return new #ACTION_NAME#Action(configuration);
+         } catch (Exception e) {
+            if (LOGGER.isInfoEnabled())
+               LOGGER.info(e.getLocalizedMessage(), e);
+            return null; // ?!? should throw
+         }
+      }
 
-		public boolean canCreateAction(#ACTION_NAME#Configuration configuration) {
-			try {
-				// absolutize working dir
-				String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
-				if (wd != null) {
-					configuration.setWorkingDirectory(wd);
-					return true;
-				} else {
-					if (LOGGER.isWarnEnabled())
-						LOGGER.warn("#ACTION_NAME#GeneratorService::canCreateAction(): "
-								+ "unable to create action, it's not possible to get an absolute working dir.");
-				}
-			} catch (Throwable e) {
-				if (LOGGER.isErrorEnabled())
-					LOGGER.error(e.getLocalizedMessage(), e);
-			}
-			return false;
-		}
-	}
-
+      public boolean canCreateAction(#ACTION_NAME#Configuration configuration) {
+         if ( the input configuration is acceptable ) 
+            return true;
+         else {
+            if (LOGGER.isWarnEnabled())
+                  LOGGER.warn("Unable to create action: bad configuration (ADD DETAILS IF NEEDED)");
+         
+            return false;
+         }
+      }
+   }
 
 
 Unit Testing
@@ -256,14 +253,14 @@ For an explanation of how to write a flow configuration see the :ref:`flwCnfg` .
 build_archetype.sh and war creation
 -----------------------------------
 
-**TO BE FINISH**
+**TO BE COMPLETED**
 
-|GB| provide a usefull tool for the automatic creation of the the templates shown before.
+|GB| provide a useful tool for the automatic creation of the the templates shown before.
 Into the root dir of |GB| sources directory there is the script ``build_archetype.sh`` and a directory called ``.build``.
-The script generates, from the templates holded in ``.build`` a maven directory tree with all 4 classes described.
+The script generates, from the templates hold in ``.build`` a maven directory tree with all the 4 classes described.
 
-For compile the project and generate the war run the command::
+To compile the project and generate the .war run the command::
 
-	$ ~work/code/geobatch/src/application# mvn clean install
+   $ ~work/code/geobatch/src/application# mvn clean install
 	
-and the war will be copyed under the local maven repo.
+and the war will be copied under the local maven repo.
