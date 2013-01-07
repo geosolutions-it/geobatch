@@ -6,6 +6,9 @@
 *GeoBatch* Documentation
 ========================
 
+Users Documentation
+-------------------
+
 .. toctree::
    :maxdepth: 1
 
@@ -27,3 +30,13 @@
    serviceJM
    serviceOctave
 
+   
+Developer's Guide
+-----------------
+
+.. toctree::
+   :maxdepth: 1
+   
+   developerDoc
+   ideSettings
+   developAction

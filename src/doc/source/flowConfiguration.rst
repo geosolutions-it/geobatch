@@ -1,3 +1,5 @@
+.. _`flwCnfg`:
+
 Flow configuration
 ==================
 
