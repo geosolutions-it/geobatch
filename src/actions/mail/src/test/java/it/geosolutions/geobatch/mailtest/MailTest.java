@@ -79,15 +79,47 @@ public class MailTest extends MailOnlineBaseTest{
             SendMailAction sma = new SendMailAction(conf);
             Queue<EventObject> outputQ = sma.execute(inputQ);
         } catch (ActionException e) {
-            /*
-             MessagingException is catched and handled without throw back any ActionException... How test The correct submit???
-             * */
            LOGGER.error(e.getLocalizedMessage());
            fail(e.getLocalizedMessage());
         }
+    }
+    
+    @Test
+    public void testSendMailNegative() throws IOException{
         
+        SendMailConfiguration conf = new SendMailConfiguration("test","test","test");
+
+        conf.setFailIgnored(false);
         
+        conf.setServiceID("SendMailGeneratorServiceTest");
+        conf.setId("SendMailGeneratorServiceTest");
+        conf.setDescription("SendMail action Test");
+        conf.setName("SendMailConfigurationTest");
+        conf.setMailSubject("TEST mail Action");
         
+        Map<String,String> m = getParams();
+        
+        conf.setMailSmtpHost(m.get("mailSmtpHost"));
+        conf.setMailSmtpStarttlsEnable(m.get("mailSmtpStarttlsEnable"));
+        conf.setMailSmtpAuth(m.get("mailSmtpAuth"));              
+        conf.setMailSmtpPort(m.get("mailSmtpPort"));
+        conf.setMailAuthUsername(m.get("mailAuthUsername")); 
+        conf.setMailAuthPassword(m.get("mailAuthPassword"));               
+        conf.setMailToAddress("aWrongEmailAddress");
+        conf.setMailFromAddress(m.get("mailFromAddress"));
+        
+        conf.setMailContentHeader("this is a default content header.");
+        File mailBody = TestData.file(this, "mailContent.txt");
+            
+        try {
+            Queue<EventObject> inputQ = new LinkedList<EventObject>();
+            inputQ.add(new FileSystemEvent(mailBody, FileSystemEventType.FILE_ADDED));
+            SendMailAction sma = new SendMailAction(conf);
+            Queue<EventObject> outputQ = sma.execute(inputQ);
+            fail("this test must return an exception because the mail used don't exists..."); 
+        } catch (ActionException e) {
+           
+        }
     }
 
 }

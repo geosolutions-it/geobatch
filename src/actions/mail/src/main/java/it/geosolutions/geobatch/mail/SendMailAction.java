@@ -32,6 +32,7 @@ package it.geosolutions.geobatch.mail;
 
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.tool.errorhandling.ActionExceptionHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -148,14 +149,13 @@ public class SendMailAction extends BaseAction<EventObject> {
                             LOGGER.info("Sent message successfully....");
 
                     } catch (MessagingException exc) {
-                        if (LOGGER.isWarnEnabled())
-                            LOGGER.warn("An error occurrd when sent message ....", exc);
+                        ActionExceptionHandler.handleError(conf, this, "An error occurrd when sent message ...");
+                        continue;
                     }
                 } else {
                     if (LOGGER.isErrorEnabled()) {
                         LOGGER.error("Send Mail action.execute(): Encountered a NULL event: SKIPPING...");
                     }
-
                     continue;
                 }
             } catch (Exception ioe) {
