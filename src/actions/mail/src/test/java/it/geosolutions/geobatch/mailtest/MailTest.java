@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.EventObject;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 import org.apache.log4j.Logger;
@@ -42,12 +43,12 @@ import org.junit.Test;
  * @author DamianoG
  *
  */
-public class MailTest {
+public class MailTest extends MailOnlineBaseTest{
     
     private final static Logger LOGGER = Logger.getLogger(MailTest.class);
     
     @Test
-    public void test() throws IOException{
+    public void testSendMail() throws IOException{
         
         SendMailConfiguration conf = new SendMailConfiguration("test","test","test");
 
@@ -57,15 +58,19 @@ public class MailTest {
         conf.setDescription("SendMail action Test");
         conf.setName("SendMailConfigurationTest");
         conf.setMailSubject("TEST mail Action");
-        conf.setMailSmtpHost("smtp.gmail.com");// EXTERNALIZE
-        conf.setMailSmtpStarttlsEnable("true");   // EXTERNALIZE
-        conf.setMailSmtpAuth("true");              // EXTERNALIZE         
-        conf.setMailSmtpPort("587"); // EXTERNALIZE
-        conf.setMailAuthUsername("Insert a Valid Mail address here"); // EXTERNALIZE
-        conf.setMailAuthPassword("password for previous mail address");             // EXTERNALIZE  
-        conf.setMailToAddress("Insert a Valid Mail address here"); // EXTERNALIZE
-        conf.setMailFromAddress("nurc.portal.test@gmail.com"); // EXTERNALIZE
-        conf.setMailContentHeader("Copy and paste the URL inside the browser:");
+        
+        Map<String,String> m = getParams();
+        
+        conf.setMailSmtpHost(m.get("mailSmtpHost"));
+        conf.setMailSmtpStarttlsEnable(m.get("mailSmtpStarttlsEnable"));
+        conf.setMailSmtpAuth(m.get("mailSmtpAuth"));              
+        conf.setMailSmtpPort(m.get("mailSmtpPort"));
+        conf.setMailAuthUsername(m.get("mailAuthUsername")); 
+        conf.setMailAuthPassword(m.get("mailAuthPassword"));               
+        conf.setMailToAddress(m.get("mailToAddress"));
+        conf.setMailFromAddress(m.get("mailFromAddress"));
+        
+        conf.setMailContentHeader("this is a default content header.");
         File mailBody = TestData.file(this, "mailContent.txt");
             
         try {
