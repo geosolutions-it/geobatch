@@ -2,124 +2,134 @@
 <!-- ======================================================================= 
 	Maven Project Configuration File GeoSolutions GeoBatch Project http://geobatch.geo-solutions.it 
 	Version: 0.1 pom.xml 63 2011-05-02 18:55:57Z ccancellieri $ ======================================================================= -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <!-- START APPLICATION DESCRIPTION -->
-  <!-- Please do not remove the above placeholder -->
-  <parent>
-    <groupId>it.geosolutions.geobatch</groupId>
-    <artifactId>gb-dist</artifactId>
-    <version>1.3-SNAPSHOT</version>
-  </parent>
-  <!-- =========================================================== -->
-  <!-- Module Description -->
-  <!-- =========================================================== -->
-  <groupId>it.geosolutions.geobatch</groupId>
-  <artifactId>gb-jetty</artifactId>
-  <name>GeoBatch Jetty Application</name>
-  <description>GeoSolutions GeoBatch Jetty Application</description>
-  <organization>
-    <name>GeoSolutions</name>
-  </organization>
-  <properties>
-    <root.basedir>${basedir}/../../../</root.basedir>
-    <!-- JETTY stand alone application vars -->
-    <!-- Changes to the following variables also affects zip.xml and script files -->
-    <geobatch_starter.dir>geobatch</geobatch_starter.dir>
-    <geobatch_starter.temp.dir>${project.build.directory}/geobatch_starter</geobatch_starter.temp.dir>
-    <geobatch_starter.classpath>${geobatch_starter.dir}/WEB-INF/lib/</geobatch_starter.classpath>
-  </properties>
-
-  <profiles>
-    <!-- =========================================================== -->
-  	<!-- JETTY stand alone application build profile -->
-  	<!-- =========================================================== -->
-    <profile>
-		<id>jetty</id>
-		<dependencies>
-			<!-- ============================== -->
-			<!-- log4j -->
-			<!-- ============================== -->
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-			</dependency>
-			<!-- ============================== -->
-			<!-- Platform -->
-			<!-- ============================== -->
-			<dependency>
-				<groupId>it.geosolutions.geobatch</groupId>
-				<artifactId>gb-application</artifactId>
-				<type>test-jar</type>
-			</dependency>
-			<dependency>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty</artifactId>
-			</dependency>
-		</dependencies>
-		<build>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<version>2.4</version>
-					<executions>
-						<execution>
-							<id>unpack_war</id>
-							<phase>install</phase>
-							<goals>
-								<goal>unpack</goal>
-							</goals>
-							<configuration>
-								<artifactItems>
-									<artifactItem>
-										<groupId>it.geosolutions.geobatch</groupId>
-										<artifactId>gb-application</artifactId>
-										<type>war</type>
-										<overWrite>true</overWrite>
-										<outputDirectory>${geobatch_starter.temp.dir}</outputDirectory>
-									</artifactItem>
-								</artifactItems>
-								<overWriteReleases>true</overWriteReleases>
-								<overWriteSnapshots>true</overWriteSnapshots>
-							</configuration>
-						</execution>
-						<execution>
-							<phase>install</phase>
-							<goals>
-								<goal>copy-dependencies</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>${geobatch_starter.temp.dir}/WEB-INF/lib/</outputDirectory>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<!-- The configuration of maven-assembly-plugin -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.2.2</version>
-					<!-- The configuration of the plugin -->
-					<configuration>
-						<!-- Specifies the configuration file of the assembly plugin -->
-						<descriptors>
-							<descriptor>zip.xml</descriptor>
-						</descriptors>
-						<!-- lets put the zip to the site dir for automatic deploy -->
-						<outputDirectory>${site.outdir}</outputDirectory>
-					</configuration>
-					<executions>
-						<execution>
-							<phase>install</phase>
-							<goals>
-								<goal>single</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</build>
-	</profile>
-   </profiles>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<!-- START APPLICATION DESCRIPTION -->
+	<!-- Please do not remove the above placeholder -->
+	<parent>
+		<groupId>it.geosolutions.geobatch</groupId>
+		<artifactId>gb-dist</artifactId>
+		<version>1.3-SNAPSHOT</version>
+	</parent>
+	<!-- =========================================================== -->
+	<!-- Module Description -->
+	<!-- =========================================================== -->
+	<groupId>it.geosolutions.geobatch</groupId>
+	<artifactId>gb-jetty</artifactId>
+	<name>GeoBatch Jetty Application</name>
+	<description>GeoSolutions GeoBatch Jetty Application</description>
+	<organization>
+		<name>GeoSolutions</name>
+	</organization>
+	<properties>
+		<root.basedir>${basedir}/../../../</root.basedir>
+		<!-- JETTY stand alone application vars -->
+		<!-- Changes to the following variables also affects zip.xml and script 
+			files -->
+		<geobatch_starter.dir>geobatch</geobatch_starter.dir>
+		<geobatch_starter.temp.dir>${project.build.directory}/geobatch_starter</geobatch_starter.temp.dir>
+		<geobatch_starter.classpath>${geobatch_starter.dir}/WEB-INF/lib/</geobatch_starter.classpath>
+	</properties>
+	<profiles>
+		<!-- =========================================================== -->
+		<!-- JETTY stand alone application build profile -->
+		<!-- =========================================================== -->
+		<profile>
+			<id>jetty</id>
+			<dependencies>
+				<!-- ============================== -->
+				<!-- log4j -->
+				<!-- ============================== -->
+				<dependency>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</dependency>
+				<!-- ============================== -->
+				<!-- Platform -->
+				<!-- ============================== -->
+				<dependency>
+					<groupId>it.geosolutions.geobatch</groupId>
+					<artifactId>gb-application</artifactId>
+					<type>test-jar</type>
+				</dependency>
+				<dependency>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>jetty</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>jsp-2.0</artifactId>
+					<type>pom</type>
+				</dependency>
+				<dependency>
+					<groupId>org.javassist</groupId>
+					<artifactId>javassist</artifactId>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<id>unpack_war</id>
+								<phase>install</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>it.geosolutions.geobatch</groupId>
+											<artifactId>gb-application</artifactId>
+											<type>war</type>
+											<overWrite>true</overWrite>
+											<outputDirectory>${geobatch_starter.temp.dir}</outputDirectory>
+										</artifactItem>
+									</artifactItems>
+									<overWriteReleases>true</overWriteReleases>
+									<overWriteSnapshots>true</overWriteSnapshots>
+								</configuration>
+							</execution>
+							<execution>
+								<phase>install</phase>
+								<goals>
+									<goal>copy-dependencies</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${geobatch_starter.temp.dir}/WEB-INF/lib/</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- The configuration of maven-assembly-plugin -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.2.2</version>
+						<!-- The configuration of the plugin -->
+						<configuration>
+							<!-- Specifies the configuration file of the assembly plugin -->
+							<descriptors>
+								<descriptor>zip.xml</descriptor>
+							</descriptors>
+							<!-- lets put the zip to the site dir for automatic deploy -->
+							<outputDirectory>${site.outdir}</outputDirectory>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>install</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
