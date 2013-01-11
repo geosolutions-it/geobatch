@@ -40,10 +40,12 @@ Running
 
 .. figure:: images/cities_layer.jpg
    :align: center
+   :width: 800
    
 you should see the workspace ``it_geosolutions`` with the layer ``cities``   
    
 .. figure:: images/cities_point.jpg
    :align: center
+   :width: 800
 
 this is the layer you have published through geostore viewed in openlayers

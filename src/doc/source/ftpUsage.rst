@@ -13,6 +13,7 @@ Login as Admin and Access to FTP administration panel clicking on *Manage ftp an
 
 .. figure:: images/ftp.png
    :align: center
+   :width: 600
 
 By default the FTP server is turned off, start it clicking on |start| start button.
 

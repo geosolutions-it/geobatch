@@ -13,6 +13,7 @@ You should see |GB|'s main page:
 
 .. figure:: images/main.png
    :align: center
+   :width: 600
 
 
 Authentication

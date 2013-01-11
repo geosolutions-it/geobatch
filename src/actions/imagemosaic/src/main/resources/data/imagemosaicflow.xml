@@ -26,7 +26,7 @@
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
 			<geoserverPWD>geoserver</geoserverPWD>
 			<geoserverUID>admin</geoserverUID>
-			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<geoserverURL>http://localhost:8081/geoserver</geoserverURL>
 			
 			<defaultNamespace>geosolutions</defaultNamespace>
 			<defaultStyle>raster</defaultStyle>

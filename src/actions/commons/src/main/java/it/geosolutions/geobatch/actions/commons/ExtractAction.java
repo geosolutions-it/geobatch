@@ -132,7 +132,7 @@ public class ExtractAction extends BaseAction<EventObject> {
                         File newDest = new File(dest, extracted.getName());
                         listenerForwarder.setTask("moving \'" + extracted + "\' to \'" + newDest
                                 + "\'");
-                        FileUtils.moveDirectoryToDirectory(extracted, newDest, true);
+                        //FileUtils.moveDirectoryToDirectory(extracted, newDest, true);
                         listenerForwarder.terminated();
                         ret.add(new FileSystemEvent(newDest, FileSystemEventType.DIR_CREATED));
                     } else {
