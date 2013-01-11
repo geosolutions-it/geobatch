@@ -69,6 +69,105 @@
 			</dependencies>
 			<build>
 				<plugins>
+				
+				  <!-- GeoTIFF ======================================================== -->
+				  <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_geotiff</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-geotiff</artifactId>
+                      <version>${project.version}</version>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${geobatch_starter.temp.dir}/WEB-INF/</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+				  
+				  <!-- ShapeFile ====================================================== -->
+				  <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_shape</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-shapefile</artifactId>
+                      <version>${project.version}</version>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${geobatch_starter.temp.dir}/WEB-INF/</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          
+          
+				
+				  <!-- ImageMosaic ==================================================== -->
+				  <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_imagemosaic</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-imagemosaic</artifactId>
+                      <version>${project.version}</version>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${geobatch_starter.temp.dir}/WEB-INF/</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+				  
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
