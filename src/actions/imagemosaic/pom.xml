@@ -132,7 +132,7 @@
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-postgis</artifactId>
-      <version>8.4</version>
+      <version>8-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
