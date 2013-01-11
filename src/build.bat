@@ -10,6 +10,6 @@ rem other profiles unsupported yet
 rem PROFILES="$PROFILES,xstream,shp2pg,geonetwork,geostore,octave,jmx,jms"
 
 rem configure the command
-set CMD=mvn clean install eclipse:clean eclipse:eclipse -P%PROFILES% -e %1% -DskipTests=true
+set CMD=mvn clean install eclipse:clean eclipse:eclipse -P%PROFILES% -e %1%
 
 %CMD%

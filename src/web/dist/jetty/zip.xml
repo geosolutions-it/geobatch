@@ -1,0 +1,27 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+	<id>bin</id>
+	<baseDirectory>/</baseDirectory>
+	
+	<formats>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<outputDirectory>${geobatch_starter.dir}</outputDirectory>
+			<directory>${geobatch_starter.temp.dir}</directory>
+		</fileSet>
+		<!-- Adds startup scripts to the root directory of zip package. The startup 
+			scripts are located to src/main/scripts directory as stated by Maven conventions. -->
+		<fileSet>
+			<directory>${project.build.scriptSourceDirectory}</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>start.*</include>
+				<include>jetty.properties</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>
