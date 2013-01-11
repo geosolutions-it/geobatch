@@ -106,8 +106,8 @@
 		<div class="accordionInfo">	
 			<c:forEach var="ec" items="${ecList}" varStatus="ecCounter">
 				<hr/>
-			    <h6>
-			    	<B><c:out value="${ec.id}"/></B>
+			    <h6>			    	
+			    	<B><fmt:formatDate value="${ec.creationTimestamp.time}" type="both" dateStyle="SHORT" timeStyle="FULL"/></B>
 			    	- status :
 					    	<c:set var="status" value="${ec.status}"/>
 					    	<c:choose>
@@ -147,7 +147,8 @@
 			    </h6>
 			    <div>
 				    <UL>
-					    <LI> - <B>created</B>: <fmt:formatDate value="${ec.creationTimestamp.time}" type="both" dateStyle="SHORT" timeStyle="FULL"/></LI>
+					    <LI> - <B>id</B>: <c:out value="${ec.id}"/></LI>
+<!--					    <LI> - <B>created</B>: <fmt:formatDate value="${ec.creationTimestamp.time}" type="both" dateStyle="SHORT" timeStyle="FULL"/></LI> -->
 					    <LI> - <B>consumer info</B>: <c:out value="${ec}"/><br/></LI>
 				    </UL>
 				    <font style="font-style: italic; font-weight: bold; font-size: 12px; color: blue">Flow Start</font> -->&nbsp;
