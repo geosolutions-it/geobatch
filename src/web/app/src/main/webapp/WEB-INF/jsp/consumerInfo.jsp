@@ -2,7 +2,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.geo-solutions.it/
- *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2013 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -30,11 +30,31 @@
 
 <c:set var="ec" value="${consumer}"/>
 
+<h5> Consumer info </h5>
+<UL>
+    <LI>Id: <c:out value="${ec.id}"/></LI>
+    <LI>Status: <c:out value="${ec.status}"/></LI>
+    <LI>Dump: <c:out value="${ec}"/>
+
+    </LI>
+</UL>
+
 <h5>
-	Consumer Eventlist: <c:out value="${ec.id}"/>
+	Consumer eventlist
 </h5>
 <UL>
 	<c:forEach var="event" items="${eventlist}">
 		<LI><c:out value="${event}"/></LI>
 	</c:forEach>
+</UL>
+
+<h5>
+	Current/last action
+</h5>
+<UL>
+   <LI>Type: <c:out value="${action.class.simpleName}"/></LI>
+   <LI>Name: <c:out value="${action.name}"/></LI>
+   <c:if test="${action.paused}">
+       <LI>Status: paused</LI>
+   </c:if>
 </UL>
