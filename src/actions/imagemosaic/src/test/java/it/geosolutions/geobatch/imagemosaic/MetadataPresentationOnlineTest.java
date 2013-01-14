@@ -51,11 +51,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.geotools.data.DataStore;
 import org.geotools.data.Query;
+import org.geotools.data.postgis.PostgisNGDataStoreFactory;
+import org.geotools.jdbc.JDBCDataStoreFactory;
 import org.junit.Test;
 
 import com.thoughtworks.xstream.converters.basic.BigDecimalConverter;
-import org.geotools.data.postgis.PostgisDataStoreFactory;
-import org.geotools.data.postgis.PostgisNGDataStoreFactory;
 
 /**
  * @author DamianoG
@@ -315,7 +315,7 @@ public class MetadataPresentationOnlineTest extends GeoBatchBaseTest {
         // create datastore file
         Properties datastore = new Properties();
         datastore.putAll(getPostgisParams());
-        datastore.remove(PostgisDataStoreFactory.DBTYPE.key);
+        datastore.remove(JDBCDataStoreFactory.DBTYPE.key);
         datastore.setProperty("SPI", "org.geotools.data.postgis.PostgisNGDataStoreFactory");
         datastore.setProperty(PostgisNGDataStoreFactory.LOOSEBBOX.key, "true");
         datastore.setProperty(PostgisNGDataStoreFactory.ESTIMATED_EXTENTS.key, "false");

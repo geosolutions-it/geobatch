@@ -21,6 +21,9 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.imagemosaic.granuleutils.GranuleRemover;
@@ -49,9 +52,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.geotools.data.DataStore;
 import org.geotools.data.Query;
-import org.geotools.data.postgis.PostgisDataStoreFactory;
 import org.geotools.data.postgis.PostgisNGDataStoreFactory;
-import static org.junit.Assert.*;
+import org.geotools.jdbc.JDBCDataStoreFactory;
 import org.junit.Test;
 
 /**
@@ -236,7 +238,7 @@ public class GranuleRemoverOnlineTest extends GeoBatchBaseTest {
         // create datastore file
         Properties datastore = new Properties();
         datastore.putAll(getPostgisParams());
-        datastore.remove(PostgisDataStoreFactory.DBTYPE.key);
+        datastore.remove(PostgisNGDataStoreFactory.DBTYPE.key);
         datastore.setProperty("SPI", "org.geotools.data.postgis.PostgisNGDataStoreFactory");
         datastore.setProperty(PostgisNGDataStoreFactory.LOOSEBBOX.key, "true");
         datastore.setProperty(PostgisNGDataStoreFactory.ESTIMATED_EXTENTS.key, "false");
