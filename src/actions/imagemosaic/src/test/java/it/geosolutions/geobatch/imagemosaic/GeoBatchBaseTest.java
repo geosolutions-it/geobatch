@@ -19,10 +19,13 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
+import static org.junit.Assume.assumeTrue;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -30,17 +33,18 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.data.DataStore;
-import org.geotools.data.postgis.PostgisDataStoreFactory;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.postgis.PostgisNGDataStoreFactory;
+import org.geotools.jdbc.JDBCDataStoreFactory;
 import org.geotools.test.OnlineTestSupport;
 import org.junit.Before;
 import org.junit.Rule;
-import static org.junit.Assume.*;
 import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -276,29 +280,25 @@ public abstract class GeoBatchBaseTest extends OnlineTestSupport {
         LOGGER.debug("geoserver connection is ok");
     }
 
-    public Map getPostgisParams() {
-        Map params = new HashMap();
+    public Map<String,Serializable> getPostgisParams() {
+        Map<String,Serializable> params = new HashMap<String,Serializable>();
+        params.put(JDBCDataStoreFactory.DBTYPE.key, "postgis");
+        params.put(JDBCDataStoreFactory.HOST.key, getFixture().getProperty("pg_host"));
+        params.put(JDBCDataStoreFactory.PORT.key, getFixture().getProperty("pg_port"));
+        params.put(JDBCDataStoreFactory.SCHEMA.key, getFixture().getProperty("pg_schema"));
+        params.put(JDBCDataStoreFactory.DATABASE.key, getFixture().getProperty("pg_database"));
+        params.put(JDBCDataStoreFactory.USER.key, getFixture().getProperty("pg_user"));
+        params.put(JDBCDataStoreFactory.PASSWD.key, getFixture().getProperty("pg_password"));
 
-        params.put(PostgisDataStoreFactory.DBTYPE.key, "postgis");
-        params.put(PostgisDataStoreFactory.HOST.key, getFixture().getProperty("pg_host"));
-        params.put(PostgisDataStoreFactory.PORT.key, getFixture().getProperty("pg_port"));
-        params.put(PostgisDataStoreFactory.SCHEMA.key, getFixture().getProperty("pg_schema"));
-        params.put(PostgisDataStoreFactory.DATABASE.key, getFixture().getProperty("pg_database"));
-        params.put(PostgisDataStoreFactory.USER.key, getFixture().getProperty("pg_user"));
-        params.put(PostgisDataStoreFactory.PASSWD.key, getFixture().getProperty("pg_password"));
-
-        if (getFixture().containsKey("wkbEnabled")) {
-            params.put(PostgisDataStoreFactory.WKBENABLED.key, getFixture().getProperty("wkbEnabled"));
-        }
         if (getFixture().containsKey("looseBbox")) {
-            params.put(PostgisDataStoreFactory.LOOSEBBOX.key, getFixture().getProperty("looseBbox"));
+            params.put(PostgisNGDataStoreFactory.LOOSEBBOX.key, getFixture().getProperty("looseBbox"));
         }
         return params;
     }
 
     protected DataStore createDatastore() throws IOException {
         Map params = getPostgisParams();
-        DataStore dataStore = new PostgisDataStoreFactory().createDataStore(params);
+        DataStore dataStore = DataStoreFinder.getDataStore(params);
         return dataStore;
     }
 
