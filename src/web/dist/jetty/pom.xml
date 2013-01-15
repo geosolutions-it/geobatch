@@ -29,7 +29,6 @@
 			files -->
 		<geobatch_starter.dir>geobatch</geobatch_starter.dir>
 		<geobatch_starter.temp.dir>${project.build.directory}/geobatch_starter</geobatch_starter.temp.dir>
-		<geobatch_starter.classpath>${geobatch_starter.dir}/WEB-INF/lib/</geobatch_starter.classpath>
 	</properties>
 	<profiles>
 		<!-- =========================================================== -->

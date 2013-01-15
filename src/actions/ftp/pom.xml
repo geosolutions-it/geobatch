@@ -22,7 +22,7 @@
   <name>GeoBatch action: FTP client</name>
   <description>GeoSolutions GeoBatch support interactions with an FTP server</description>
   <properties>
-   <root.basedir>${project.parent.parent.basedir}</root.basedir>
+   <root.basedir>${basedir}/../../</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->

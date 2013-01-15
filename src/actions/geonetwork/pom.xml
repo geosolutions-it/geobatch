@@ -24,7 +24,7 @@
     GeoSolutions GeoBatch - Actions for GeoNetwork integration.
     </description>
   <properties>
-   <root.basedir>${project.parent.parent.basedir}</root.basedir>
+   <root.basedir>${basedir}/../../</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
