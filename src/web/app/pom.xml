@@ -130,7 +130,7 @@
         <executions>
           <execution>
             <id>install</id>
-            <phase>package</phase>
+            <phase>install</phase>
             <goals>
               <goal>war</goal>
             </goals>
