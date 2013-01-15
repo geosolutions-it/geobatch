@@ -11,7 +11,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-actions</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
@@ -22,7 +22,7 @@
   <name>GeoBatch action: splitting</name>
   <description>GeoSolutions GeoBatch flow managers - splitting</description>
   <properties>
-   <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>${project.parent.parent.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->

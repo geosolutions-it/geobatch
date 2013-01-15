@@ -12,7 +12,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-web</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
@@ -23,9 +23,8 @@
   <name>GeoBatch distributions</name>
   <description>GeoSolutions GeoBatch distributions.</description>
   <properties>
-	<root.basedir>${basedir}/../</root.basedir>
+    <root.basedir>${basedir}/../</root.basedir>
   </properties>
-  
   <!-- =========================================================== -->
   <!--     Modules for the build in approximate dependency order   -->
   <!-- =========================================================== -->
@@ -37,5 +36,4 @@
       </modules>
     </profile>
   </profiles>
-  
 </project>
