@@ -12,7 +12,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
@@ -26,7 +26,7 @@
     GeoSolutions GeoBatch tools.
   </description>
   <properties>
-        <root.basedir>${project.parent.basedir}</root.basedir>
+    <root.basedir>${project.parent.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependencies                                            -->
@@ -37,7 +37,7 @@
     <!-- ============================== -->
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
-  	  <artifactId>gb-core-model</artifactId>
+      <artifactId>gb-core-model</artifactId>
     </dependency>
     <!--=================================================================-->
     <!-- TOOLS MODULES -->

@@ -12,7 +12,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
@@ -23,13 +23,11 @@
   <name>GeoBatch web</name>
   <description>GeoSolutions GeoBatch web.</description>
   <properties>
-	<root.basedir>${basedir}/../</root.basedir>
+    <root.basedir>${basedir}/../</root.basedir>
   </properties>
-  
   <!-- default modules -->
   <modules>
-	<module>app</module>
-	<module>dist</module>
+    <module>app</module>
+    <module>dist</module>
   </modules>
-  
 </project>
