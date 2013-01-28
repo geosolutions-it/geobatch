@@ -110,5 +110,19 @@
         <module>octave</module>
       </modules>
     </profile>
+
+    <profile>
+      <id>rest</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>rest</module>
+      </modules>
+    </profile>
+
   </profiles>
 </project>
