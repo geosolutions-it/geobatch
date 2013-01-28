@@ -10,19 +10,24 @@
   <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb</artifactId>
   <packaging>pom</packaging>
+
   <version>1.4-SNAPSHOT</version>
+
   <name>GeoBatch</name>
-  <url>http://geobatch.geo-solutions.it</url>
   <description>
         Welcome to the home page of the GeoSolutions GeoBatch build process
         In the left side bar you should see a list of active modules,
         visit each for more details on the status of each module.
-	</description>
+  </description>
+  <inceptionYear>2008</inceptionYear>
+
+  <url>http://geobatch.geo-solutions.it</url>
+
   <organization>
     <name>GeoSolutions</name>
     <url>http://www.geo-solutions.it</url>
   </organization>
-  <inceptionYear>2008</inceptionYear>
+
   <licenses>
     <license>
       <name>Lesser General Public License (GPLv3 + Classpath exception)</name>
@@ -30,6 +35,7 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
   <scm>
     <connection>scm:git:[fetch=]git@github.com:geosolutions-it/geobatch.git[push=]git@github.com:geosolutions-it/geobatch.git</connection>
     <url>https://github.com/geosolutions-it/geobatch</url>
@@ -49,10 +55,12 @@
       <url>scp://demo.geo-solutions.it/var/www/share/github/geobatch/download/all/</url>
     </site>
   </distributionManagement>
+
   <issueManagement>
     <system>github</system>
     <url>https://github.com/geosolutions-it/geobatch/issues</url>
   </issueManagement>
+
   <mailingLists>
     <mailingList>
       <name>GeoBatch User List</name>
@@ -65,16 +73,19 @@
       <archive>http://groups.google.com/group/geobatch-devel/topics</archive>
     </mailingList>
   </mailingLists>
+
   <properties>
     <root.basedir>${project.basedir}</root.basedir>
     <site.basedir>${root.basedir}/build/</site.basedir>
     <site.outdir>${site.basedir}/${project.version}/</site.outdir>
+
     <doc.sphinx.source>${project.basedir}/doc/source/</doc.sphinx.source>
     <doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
+
     <tools.version>1.1.2</tools.version>
-    <geostore.version>1.0.1</geostore.version>
-    <geoserver.manager.version>1.5</geoserver.manager.version>
-    <gt.version>8.4</gt.version>
+    <geostore.version>1.1.0</geostore.version>
+
+    <gt.version>8.6</gt.version>
     <imageio-ext.version>1.2-M102011</imageio-ext.version>
     <spring.version>3.0.3.RELEASE</spring.version>
     <spring.security.version>3.0.3.RELEASE</spring.security.version>
@@ -84,9 +95,10 @@
     <slf4j.version>1.5.11</slf4j.version>
     <jt.version>1.2.0</jt.version>
     <jetty.version>6.1.8</jetty.version>
-    <nelios.restlet.version>1.1.6</nelios.restlet.version>
-    <dao.type>xstream</dao.type>
-    <!-- the default dao type -->
+    <nelios.restlet.version>1.1.10</nelios.restlet.version>
+    <cxf-version>2.5.8</cxf-version>
+
+    <dao.type>xstream</dao.type>    <!-- the default dao type -->
     <allow.test.skip>true</allow.test.skip>
     <allow.test.failure.ignore>false</allow.test.failure.ignore>
     <extensive.tests>false</extensive.tests>
@@ -96,6 +108,7 @@
     <test.maxHeapSize>512M</test.maxHeapSize>
     <src.output>${basedir}/target</src.output>
   </properties>
+  
   <!-- Profiles set on the command-line overwrite default properties. -->
   <profiles>
     <profile>
@@ -140,7 +153,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.7</version>
+            <version>2.9</version>
             <configuration>
               <source>1.6</source>
               <reportOutputDirectory>${site.outdir}/</reportOutputDirectory>
@@ -158,7 +171,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.7</version>
+            <version>2.9</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
@@ -262,7 +275,7 @@
       <dependency>
         <groupId>cglib</groupId>
         <artifactId>cglib</artifactId>
-        <version>2.2</version>
+        <version>2.2.2</version>
       </dependency>
       <!-- gb-users DEPENDENCY -->
       <dependency>
@@ -290,7 +303,7 @@
       <dependency>
         <groupId>org.quartz-scheduler</groupId>
         <artifactId>quartz</artifactId>
-        <version>2.0.1</version>
+        <version>2.1.6</version>
       </dependency>
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
@@ -356,7 +369,7 @@
         <groupId>org.freemarker</groupId>
         <artifactId>freemarker</artifactId>
         <!-- Latest 2.3.x (not 2.4.x), at least 2.3.16 -->
-        <version>2.3.16</version>
+        <version>2.3.19</version>
       </dependency>
       <!-- tools -->
       <dependency>
@@ -506,7 +519,7 @@
       <dependency>
         <groupId>net.sf.retrotranslator</groupId>
         <artifactId>retrotranslator-runtime</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.9</version>
       </dependency>
       <!-- JS -->
       <dependency>
@@ -529,7 +542,7 @@
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy-all</artifactId>
-        <version>1.8.6</version>
+        <version>2.0.6</version>
       </dependency>
       <!-- ruby -->
       <dependency>
@@ -551,7 +564,7 @@
       <dependency>
         <groupId>org.python</groupId>
         <artifactId>jython</artifactId>
-        <version>2.2</version>
+        <version>2.5.3</version>
       </dependency>
       <!-- END Scripting =========================================== -->
       <dependency>
@@ -563,7 +576,7 @@
       <dependency>
         <groupId>it.geosolutions</groupId>
         <artifactId>geoserver-manager</artifactId>
-        <version>${geoserver.manager.version}</version>
+        <version>1.5</version>
       </dependency>
       <!-- =========================================================== -->
       <!-- GeoStore -->
@@ -714,7 +727,7 @@
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
-        <version>1.1.2</version>
+        <version>1.2</version>
       </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>
@@ -765,9 +778,9 @@
         <version>2.5</version>
       </dependency>
       <dependency>
-        <groupId>aspectj</groupId>
+        <groupId>org.aspectj</groupId>
         <artifactId>aspectjrt</artifactId>
-        <version>1.5.4</version>
+        <version>1.7.1</version>
       </dependency>
       <!--============================================================= -->
       <!-- GeoTools =================================================== -->
@@ -1009,7 +1022,7 @@
       <dependency>
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
-        <version>1.7.0</version>
+        <version>1.8.3</version>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -1031,40 +1044,9 @@
       <dependency>
         <groupId>commons-dbcp</groupId>
         <artifactId>commons-dbcp</artifactId>
-        <version>1.2.2</version>
+        <version>1.4</version>
       </dependency>
-      <dependency>
-        <groupId>commons-pool</groupId>
-        <artifactId>commons-pool</artifactId>
-        <version>1.3</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-beanutils</groupId>
-        <artifactId>commons-beanutils</artifactId>
-        <version>1.7.0</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>3.1</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>commons-dbcp</groupId>
-        <artifactId>commons-dbcp</artifactId>
-        <version>1.2.2</version>
-      </dependency>
+
       <!-- ============================================================ -->
       <!-- === SLF4J ================================================== -->
       <!-- ============================================================ -->
@@ -1102,26 +1084,6 @@
         <scope>provided</scope>
       </dependency>
       <!-- ============================================================ -->
-      <dependency>
-        <groupId>velocity</groupId>
-        <artifactId>velocity</artifactId>
-        <version>1.4</version>
-      </dependency>
-      <dependency>
-        <groupId>xerces</groupId>
-        <artifactId>xercesImpl</artifactId>
-        <version>2.7.1</version>
-      </dependency>
-      <dependency>
-        <groupId>xml-apis</groupId>
-        <artifactId>xml-apis-xerces</artifactId>
-        <version>2.7.1</version>
-      </dependency>
-      <dependency>
-        <groupId>xpp3</groupId>
-        <artifactId>xpp3</artifactId>
-        <version>1.1.3.4.O</version>
-      </dependency>
       <dependency>
         <groupId>it.geosolutions.geobatch.services</groupId>
         <artifactId>gb-jmx</artifactId>
@@ -1196,85 +1158,53 @@
       <!--============================================================= -->
       <!-- restlet ==================================================== -->
       <!--============================================================= -->
-      <dependency>
-        <groupId>com.noelios.restlet</groupId>
-        <artifactId>com.noelios.restlet</artifactId>
-        <version>${nelios.restlet.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.noelios.restlet</groupId>
-        <artifactId>com.noelios.restlet.ext.servlet</artifactId>
-        <version>${nelios.restlet.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.noelios.restlet</groupId>
-        <artifactId>com.noelios.restlet.ext.spring</artifactId>
-        <version>${nelios.restlet.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.noelios.restlet</groupId>
-        <artifactId>com.noelios.restlet.ext.net</artifactId>
-        <version>${nelios.restlet.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.noelios.restlet</groupId>
-        <artifactId>com.noelios.restlet.ext.asyncweb</artifactId>
-        <version>1.0.9</version>
-      </dependency>
-      <dependency>
+<!--      <dependency>
         <groupId>org.restlet</groupId>
         <artifactId>org.restlet</artifactId>
-        <version>1.1.6</version>
-      </dependency>
-      <dependency>
+        <version>1.1.10</version>
+      </dependency>-->
+<!--      <dependency>
+        <groupId>org.restlet</groupId>
+        <artifactId>org.restlet.ext.servlet</artifactId>
+        <version>1.1.10</version>
+      </dependency>-->
+<!--      <dependency>
         <groupId>org.restlet</groupId>
         <artifactId>org.restlet.ext.spring</artifactId>
-        <version>1.1.5</version>
-      </dependency>
+        <version>1.1.10</version>
+      </dependency>-->
+<!--      <dependency>
+        <groupId>org.restlet</groupId>
+        <artifactId>org.restlet.ext.net</artifactId>
+        <version>1.1.10</version>
+      </dependency>-->
+<!--      <dependency>
+        <groupId>org.restlet</groupId>
+        <artifactId>org.restlet.ext.asyncweb</artifactId>
+        <version>1.0.11</version>
+      </dependency>-->
+
+        <dependency>
+          <groupId>org.restlet.jee</groupId>
+          <artifactId>org.restlet</artifactId>
+          <version>2.1.1</version>
+        </dependency>
+
+        <dependency>
+          <groupId>org.restlet.jee</groupId>
+          <artifactId>org.restlet.ext.spring</artifactId>
+          <version>2.1.1</version>
+        </dependency>
+        <dependency>
+          <groupId>org.restlet.jee</groupId>
+          <artifactId>org.restlet.ext.servlet</artifactId>
+          <version>2.1.1</version>
+        </dependency>
+
       <dependency>
         <groupId>org.codehaus.jettison</groupId>
         <artifactId>jettison</artifactId>
-        <version>1.0.1</version>
-      </dependency>
-      <dependency>
-        <groupId>com.noelios.restlet</groupId>
-        <artifactId>com.noelios.restlet</artifactId>
-        <version>${nelios.restlet.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.noelios.restlet</groupId>
-        <artifactId>com.noelios.restlet.ext.servlet</artifactId>
-        <version>${nelios.restlet.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.noelios.restlet</groupId>
-        <artifactId>com.noelios.restlet.ext.spring</artifactId>
-        <version>${nelios.restlet.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.noelios.restlet</groupId>
-        <artifactId>com.noelios.restlet.ext.net</artifactId>
-        <version>${nelios.restlet.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.noelios.restlet</groupId>
-        <artifactId>com.noelios.restlet.ext.asyncweb</artifactId>
-        <version>1.0.9</version>
-      </dependency>
-      <dependency>
-        <groupId>org.restlet</groupId>
-        <artifactId>org.restlet</artifactId>
-        <version>1.1.6</version>
-      </dependency>
-      <dependency>
-        <groupId>org.restlet</groupId>
-        <artifactId>org.restlet.ext.spring</artifactId>
-        <version>1.1.5</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.jettison</groupId>
-        <artifactId>jettison</artifactId>
-        <version>1.0.1</version>
+        <version>1.3.3</version>
       </dependency>
       <!--============================================================= -->
       <!-- JSON lib ================================================== -->
@@ -1282,7 +1212,7 @@
       <dependency>
         <groupId>net.sf.json-lib</groupId>
         <artifactId>json-lib</artifactId>
-        <version>2.1</version>
+        <version>2.4</version>
         <classifier>jdk15</classifier>
         <exclusions>
           <exclusion>
@@ -1334,19 +1264,97 @@
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.3.159</version>
+        <version>1.3.170</version>
       </dependency>
       <!-- POSTGRES - POSTGIS ======================================================= -->
       <dependency>
         <groupId>org.postgis</groupId>
         <artifactId>postgis-jdbc</artifactId>
-        <version>1.1.6</version>
+        <version>1.5.1</version>
       </dependency>
       <dependency>
         <groupId>postgresql</groupId>
         <artifactId>postgresql</artifactId>
-        <version>8.4-701.jdbc3</version>
+        <version>9.1-901.jdbc3</version>
       </dependency>
+
+      <!-- =========================================================== -->
+      <!--     APACHE CXF                                              -->
+      <!-- =========================================================== -->
+      <dependency>
+          <groupId>javax.xml.ws</groupId>
+          <artifactId>jaxws-api</artifactId>
+          <version>${jaxws-version}</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>javax.jws</groupId>
+                  <artifactId>jsr181-api</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-bindings-http</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-transports-http</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-transports-http-jetty</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-frontend-jaxws</artifactId>
+          <version>${cxf-version}</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.apache.geronimo.specs</groupId>
+                  <artifactId>geronimo-annotation_1.0_spec</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>org.apache.geronimo.specs</groupId>
+                  <artifactId>geronimo-javamail_1.4_spec</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-bindings-soap</artifactId>
+          <version>${cxf-version}</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.apache.geronimo.specs</groupId>
+                  <artifactId>geronimo-javamail_1.4_spec</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-databinding-aegis</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-ws-security</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-core</artifactId>
+          <version>${cxf-version}</version>
+      </dependency>
+
       <!--============================================================= -->
       <!-- TEST STUFF ================================================= -->
       <!--============================================================= -->
@@ -1378,32 +1386,32 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.8.2</version>
+        <version>4.11</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
-        <version>2.3</version>
+        <version>3.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymockclassextension</artifactId>
-        <version>2.3</version>
+        <version>3.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>com.mockrunner</groupId>
         <artifactId>mockrunner</artifactId>
-        <version>0.3.1</version>
+        <version>0.3.6</version>
         <scope>test</scope>
       </dependency>
       <!-- ===LOG4J==================================================== -->
       <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
-        <version>1.2.16</version>
+        <version>1.2.17</version>
         <scope>test</scope>
       </dependency>
       <!-- ===LOG4J==================================================== -->
@@ -1541,7 +1549,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.0.2</version>
+        <version>2.5.1</version>
         <configuration>
           <source>1.6</source>
           <!-- The -source argument for the Java compiler. -->
@@ -1597,7 +1605,7 @@
       <!-- eclipse ide integration -->
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.5</version>
+        <version>2.9</version>
         <configuration>
           <additionalProjectnatures>
             <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
@@ -1658,7 +1666,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.2.2</version>
+        <version>2.4</version>
         <configuration>
           <tagNameFormat>v@{project.version}</tagNameFormat>
         </configuration>
@@ -1667,7 +1675,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.1</version>
+        <version>3.2</version>
         <configuration>
           <locales>en</locales>
           <outputDirectory>${site.outdir}/maven</outputDirectory>
@@ -1705,7 +1713,7 @@
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ftp</artifactId>
-        <version>1.0-beta-7</version>
+        <version>2.3</version>
       </extension>
     </extensions>
   </build>

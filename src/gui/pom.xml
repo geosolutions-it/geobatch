@@ -67,21 +67,41 @@
     <!-- RESTLET -->
     <!-- ============================== -->
     <dependency>
-      <groupId>com.noelios.restlet</groupId>
-      <artifactId>com.noelios.restlet</artifactId>
+      <groupId>org.restlet.jee</groupId>
+      <artifactId>org.restlet</artifactId>
     </dependency>
+
     <dependency>
-      <groupId>com.noelios.restlet</groupId>
-      <artifactId>com.noelios.restlet.ext.servlet</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.noelios.restlet</groupId>
-      <artifactId>com.noelios.restlet.ext.spring</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.restlet</groupId>
+      <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.spring</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.restlet.jee</groupId>
+      <artifactId>org.restlet.ext.servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet.jee</groupId>
+      <artifactId>org.restlet.ext.xml</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet.jee</groupId>
+      <artifactId>org.restlet.ext.net</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+    
+<!--    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet</artifactId>
+    </dependency>-->
+<!--    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet.ext.servlet</artifactId>
+    </dependency>-->
+<!--    <dependency>
+      <groupId>org.restlet</groupId>
+      <artifactId>org.restlet.ext.spring</artifactId>
+    </dependency>-->
     <dependency>
       <groupId>org.codehaus.jettison</groupId>
       <artifactId>jettison</artifactId>
@@ -114,7 +134,7 @@
       <artifactId>standard</artifactId>
     </dependency>
     <dependency>
-      <groupId>aspectj</groupId>
+      <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
     </dependency>
     <dependency>

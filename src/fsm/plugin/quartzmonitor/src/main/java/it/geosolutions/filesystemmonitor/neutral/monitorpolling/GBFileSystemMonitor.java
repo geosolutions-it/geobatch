@@ -89,9 +89,9 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
 
     /*
      * This is discussed on 17 jan 2011 with Carlo Cancellieri and Alessio Fabiani
-     * 
+     *
      * The scheduler is a singleton and is used by all the GBFileSystemMonitor instances.
-     * 
+     *
      * This is due to the GeoBatch architecture.
      */
     // the scheduler
@@ -108,9 +108,9 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
 
     /**
      * TODO get a personalized scheduler using a properties file
-     * 
+     *
      * Return the scheduler singleton rebuilding it if it is necessary
-     * 
+     *
      * @return the Scheduler (singleton)
      * @throws SchedulerException
      *             from the scheduler factory
@@ -147,7 +147,7 @@ public class GBFileSystemMonitor implements FileSystemMonitor {
             final FileSystemEventType type, final String pollingInterval,
             final boolean lockInputFiles, final long maxLockingWait) throws SchedulerException,
             NullPointerException {
-    	
+
 // WORKAROUND
         /*
          * 1Giu2011 Carlo:<br>
@@ -168,11 +168,11 @@ if (type==FileSystemEventType.POLLING_EVENT){
 
         /*
          * Discussed on 17 01 2011 with Carlo Cancellieri and Simone Giannecchini
-         * 
+         *
          * Each FSM job can watch into the same dir but should use a different wildcard. Note that
          * in the case we have: - path1: /home/user/ wildcard: a* - path2: /home/user/ wildcard: *
          * rule is respected but some files of the first FSM job can be handled by the 2nd!
-         * 
+         *
          * No check on this condition is performed
          */
         if (wildcard != null && wildcard.length() > 0)
@@ -199,7 +199,7 @@ if (type==FileSystemEventType.POLLING_EVENT){
         if (jdm != null) {
             jdm.put(FileSystemMonitorSPI.SOURCE_KEY, path);
             jdm.put(FileSystemMonitorSPI.WILDCARD_KEY, wildcard);
-            
+
             /*
              * 1Giu2011 Carlo: added to the map to check if the event
              * is POLLING_EVENT. to implement a Quartz EventGenerator without
@@ -224,8 +224,10 @@ if (type==FileSystemEventType.POLLING_EVENT){
         else {
             try {
                 //lets try to parse a cron string
-            trigger = TriggerBuilder.newTrigger().withIdentity(new TriggerKey(path, wildcard))
-            .withSchedule(CronScheduleBuilder.cronSchedule(pollingInterval)).startAt(DateBuilder.evenSecondDateAfterNow())
+            trigger = TriggerBuilder.newTrigger()
+                    .withIdentity(new TriggerKey(path, wildcard))
+                    .withSchedule(CronScheduleBuilder.cronScheduleNonvalidatedExpression(pollingInterval))
+                    .startAt(DateBuilder.evenSecondDateAfterNow())
                     .build();
             }
             catch (ParseException e) {
@@ -257,7 +259,7 @@ if (type==FileSystemEventType.POLLING_EVENT){
             if (!getScheduler().isStarted()) {
                 getScheduler().start();
             }
-            
+
             try {
                 if (pause) {
                     getScheduler().resumeJob(jobDetail.getKey());
@@ -335,7 +337,7 @@ if (type==FileSystemEventType.POLLING_EVENT){
     /**
      * TODO: check: no sense to remove and re-add with the same trigger so no operation is
      * performed.
-     * 
+     *
      * @see getScheduler().rescheduleJob(triggerName, jobGroup,trigger);
      * @deprecated not implemented
      */
@@ -418,8 +420,8 @@ if (type==FileSystemEventType.POLLING_EVENT){
             if (LOGGER.isWarnEnabled())
                 LOGGER.warn(e.getLocalizedMessage(),e);
         } finally {
-            
-            
+
+
         }
     }
 
