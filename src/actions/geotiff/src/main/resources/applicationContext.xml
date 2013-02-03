@@ -1,31 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
-<beans>
-
-	<!-- Environment Initialization -->
-	<bean id="GeotiffGeoServerService" class="it.geosolutions.geobatch.geotiff.publish.GeotiffGeoServerService">
-		<constructor-arg type="String"><value>GeotiffGeoServerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffGeoServerService</value></constructor-arg>
-        <constructor-arg type="String"><value>GeotiffGeoServerService</value></constructor-arg>
-    </bean>	
-
-	<!-- Environment Initialization -->
-	<bean id="GeotiffOverviewsEmbedderService" class="it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderService">
-		<constructor-arg type="String"><value>GeotiffOverviewsEmbedderService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffOverviewsEmbedderService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffOverviewsEmbedderService</value></constructor-arg>
-    </bean>	    
-        
-	<!-- Environment Initialization -->
-	<bean id="GeotiffRetilerService" class="it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerService">
-		<constructor-arg type="String"><value>GeotiffRetilerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffRetilerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffRetilerService</value></constructor-arg>
-    </bean>	      
-
+<beans>	      
     <bean id="FlowGeotiffRegistrar" class="it.geosolutions.geobatch.geotiff.GeotiffAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
-
 </beans>

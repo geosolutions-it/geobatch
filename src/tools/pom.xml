@@ -39,6 +39,13 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-core-model</artifactId>
     </dependency>
+    <!-- ============================== -->
+    <!-- Spring -->
+    <!-- ============================== -->
+    <dependency>
+    	<groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+	</dependency>
     <!--=================================================================-->
     <!-- TOOLS MODULES -->
     <!--=================================================================-->
