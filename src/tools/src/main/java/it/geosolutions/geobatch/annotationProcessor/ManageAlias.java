@@ -1,6 +1,6 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  http://geobatch.geo-solutions.it/
+ *  https://github.com/nfms4redd/nfms-geobatch
  *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -19,25 +19,19 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package it.geosolutions.geobatch.annotationProcessor;
 
-package it.geosolutions.geobatch.geotiff;
-
-import it.geosolutions.geobatch.registry.AliasRegistrar;
-import it.geosolutions.geobatch.registry.AliasRegistry;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Register XStream aliases for the relevant services we ship in this class.
- * 
- * @author ETj <etj at geo-solutions.it>
+ * @author DamianoG
+ *
  */
-public class GeotiffAliasRegistrar extends AliasRegistrar {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ManageAlias {
 
-    public GeotiffAliasRegistrar(AliasRegistry registry) {
-        LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-        registry.putAlias("GeotiffOverviewsEmbedderConfiguration",
-                        it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderConfiguration.class);
-        registry.putAlias("GeotiffRetilerConfiguration",
-                it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerConfiguration.class);
-
-    }
 }

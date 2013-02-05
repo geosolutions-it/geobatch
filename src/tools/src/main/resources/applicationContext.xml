@@ -4,6 +4,7 @@
 <beans default-init-method="init" default-destroy-method="dispose">
 
 	<!-- The annotation processor used for discover annotations that indicates how manage Action Service -->
-    <bean id="actionAnnotationScanner" class="it.geosolutions.geobatch.annotationProcessor.ActionAnnotationScanner"  depends-on="fsFlowManagerService" />
-
+    <bean id="actionAnnotationScanner" class="it.geosolutions.geobatch.annotationProcessor.ActionAnnotationScanner"  depends-on="fsFlowManagerService" >
+    	<property name="aliasRegistry" ref="aliasRegistry"/>
+    </bean>
 </beans>

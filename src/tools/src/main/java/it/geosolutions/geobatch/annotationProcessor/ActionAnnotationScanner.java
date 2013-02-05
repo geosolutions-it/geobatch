@@ -21,7 +21,9 @@
  */
 package it.geosolutions.geobatch.annotationProcessor;
 
+import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.registry.AliasRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,16 +47,22 @@ public class ActionAnnotationScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionAnnotationScanner.class);
     
     private List<GenericActionService> actionList;
+    private AliasRegistry aliasRegistry;
     
     public void init() {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(ActionAnnotationScanner.class.getCanonicalName() + " INIT!");
         }
         actionList = scanForActionService();
+        scanForManageAlias();
     }
     
     public List<GenericActionService> getActionList(){
         return actionList;
+    }
+    
+    public void setAliasRegistry(AliasRegistry aliasRegistry){
+        this.aliasRegistry = aliasRegistry;
     }
 
     /**
@@ -78,7 +86,7 @@ public class ActionAnnotationScanner {
         Set<BeanDefinition> annotatedClasses = scanner.findCandidateComponents("it.geosolutions.geobatch");
         if (LOGGER.isInfoEnabled()) {
             sb = new StringBuilder();
-            sb.append("Found ").append(annotatedClasses.size()).append(" annotated Classes");
+            sb.append("Found ").append(annotatedClasses.size()).append(" ActionService annotated Classes");
             LOGGER.info(sb.toString());
         }
         for (BeanDefinition bd : annotatedClasses) {
@@ -106,6 +114,49 @@ public class ActionAnnotationScanner {
             }
         }
         return actionServiceList;
+    }
+    
+    private void scanForManageAlias() {
+
+        StringBuilder sb = new StringBuilder();
+        List<GenericActionService> actionServiceList = new ArrayList<GenericActionService>();
+        ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(
+                false);
+
+        scanner.addIncludeFilter(new AnnotationTypeFilter(ManageAlias.class));
+        // TODO How AND this 2 filter ??? scanner.addIncludeFilter(new AssignableTypeFilter(BaseAction.class));
+        
+        // TODO provide a method for provide from outside the base package
+        Set<BeanDefinition> annotatedClasses = scanner.findCandidateComponents("it.geosolutions.geobatch");
+        if (LOGGER.isInfoEnabled()) {
+            sb = new StringBuilder();
+            sb.append("Found ").append(annotatedClasses.size()).append(" ManageAlis annotated Classes");
+            LOGGER.info(sb.toString());
+        }
+        for (BeanDefinition bd : annotatedClasses) {
+            String className = bd.getBeanClassName();
+            sb = new StringBuilder();
+            sb.append("found annotated Configuration: ").append(className);
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info(sb.toString());
+            }
+            Class configurationClass = null;
+            try {
+                configurationClass = Class.forName(className);
+                // check if c is a subclass of ActionConfiguration, otherwise the asSubclass method throws ClassCastException
+                configurationClass.asSubclass(ActionConfiguration.class);
+                // Put the class in AliasRegistry
+                aliasRegistry.putProcessAnnotations(className, configurationClass);
+            } catch (ClassNotFoundException e) {
+                if(LOGGER.isWarnEnabled()){
+                    sb = new StringBuilder();
+                    sb.append("The configuration annotated class '").append(className)
+                            .append("' has caused and error, exception message is: ")
+                            .append(e.getLocalizedMessage());
+                    LOGGER.warn(sb.toString());
+                }
+            }
+        }
     }
 
     public void dispose() {

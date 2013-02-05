@@ -39,6 +39,10 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-core-model</artifactId>
     </dependency>
+    <dependency>
+		<groupId>it.geosolutions.geobatch</groupId>
+		<artifactId>gb-alias-registry</artifactId>
+	</dependency>
     <!-- ============================== -->
     <!-- Spring -->
     <!-- ============================== -->
