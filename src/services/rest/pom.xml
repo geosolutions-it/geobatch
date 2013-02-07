@@ -41,7 +41,7 @@
         <module>api</module>
         <module>impl</module>
         <module>test</module>
-        <!--<module>client</module>-->
+        <module>client</module>
     </modules>
  
 </project>
