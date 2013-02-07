@@ -304,7 +304,56 @@
 			the overlay mechanism (http://maven.apache.org/plugins/maven-war-plugin/overlays.html) 
 			was checked to accomplish this very task, but when more actions were specified, 
 			only one was choosen to extract the sample data from. -->
-    <profile>
+    <!-- Ds2ds ================================================== -->
+	<profile>
+      <id>ds2ds</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-ds2ds</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_ds2ds</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-ds2ds</artifactId>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+	<profile>
       <id>shp2pg</id>
       <activation>
         <property>

@@ -1,0 +1,16 @@
+<feature>
+    <dataStore>        
+        <parameters>
+           <entry>
+             <string>dbtype</string>
+             <string>h2</string>
+           </entry> 
+           <entry>
+             <string>database</string>
+             <string>mem:source;DB_CLOSE_DELAY=-1</string>
+           </entry>  
+        </parameters>
+    </dataStore>
+    <crs>EPSG:4326</crs>
+    <typeName>other</typeName>
+</feature>

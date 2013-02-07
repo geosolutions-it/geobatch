@@ -271,6 +271,12 @@
         <artifactId>gb-users</artifactId>
         <version>${project.version}</version>
       </dependency>
+	  <dependency>
+        <groupId>net.sourceforge.hatbox</groupId>
+        <artifactId>hatbox</artifactId>
+        <version>1.0.b9</version>
+      </dependency>
+	  
       <!-- gb-users DEPENDENCY -->
       <dependency>
         <groupId>cglib</groupId>
@@ -350,6 +356,12 @@
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-action-shp2pg</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+	  <!-- DataStore2DataStore -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-ds2ds</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- XSTREAM Action -->
@@ -889,6 +901,11 @@
         <artifactId>gt-jdbc-postgis</artifactId>
         <version>${gt.version}</version>
       </dependency>
+	  <dependency>
+	   <groupId>org.geotools.jdbc</groupId>
+	   <artifactId>gt-jdbc-h2</artifactId>
+	   <version>${gt.version}</version>
+	  </dependency>
       <dependency>
         <groupId>org.geotools</groupId>
         <artifactId>gt-matfile5</artifactId>
