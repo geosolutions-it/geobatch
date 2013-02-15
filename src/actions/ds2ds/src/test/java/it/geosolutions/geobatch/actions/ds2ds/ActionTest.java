@@ -169,7 +169,9 @@ public class ActionTest {
 	@Test
 	public void testActionProcessShapefile() {
 		try {			
-			executeAction("shp");
+			Queue<EventObject> result = executeAction("shp");
+			assertNotNull(result);
+			assertTrue(result.size() > 0);
 		} catch (ActionException e) {
 			fail("Action failure in execution: " + e.getLocalizedMessage());
 		} catch (URISyntaxException e) {
@@ -177,12 +179,25 @@ public class ActionTest {
 		}
 	}
 
-	
+	@Test
+	public void testWrongOutputConnection() {
+		boolean failure = false;
+		try {			
+			executeAction("wrongoutput","xml");
+		} catch (ActionException e) {
+			failure = true;			
+		} catch (URISyntaxException e) {
+			fail("Failure in loading resource file: " + e.getLocalizedMessage());
+		}
+		assertTrue(failure);
+	}
 	
 	@Test
 	public void testActionProcessZipFile() {
 		try {
-			executeAction("zip");
+			Queue<EventObject> result = executeAction("zip");
+			assertNotNull(result);
+			assertTrue(result.size() > 0);
 		} catch (ActionException e) {
 			fail("Action failure in execution: " + e.getLocalizedMessage());
 		} catch (URISyntaxException e) {
@@ -207,7 +222,9 @@ public class ActionTest {
 	public void testActionProcessXMLFile() {
 		try {						
 			configuration.getOutputFeature().getDataStore().setParameters(dataStoreParameters);
-			executeAction("xml");
+			Queue<EventObject> result = executeAction("xml");
+			assertNotNull(result);
+			assertTrue(result.size() > 0);
 		} catch (ActionException e) {
 			fail("Action failure in execution: " + e.getLocalizedMessage());
 		} catch (URISyntaxException e) {

@@ -83,8 +83,7 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(Ds2dsAction.class);
 	
-	private static final List<String> acceptedFileTypes = Arrays.asList("xml", "shp", "zip");
-	private static final List<String> compressedFormats = Arrays.asList("zip");
+	private static final List<String> acceptedFileTypes = Arrays.asList("xml", "shp");	
 	
 	private Ds2dsConfiguration configuration = null;
 		
@@ -92,7 +91,6 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 		super(actionConfiguration);		
 		configuration = (Ds2dsConfiguration)actionConfiguration;
 	}
-
 	/**
 	 * Imports data from the source DataStore to the output one
 	 * transforming the data as configured.
@@ -100,94 +98,140 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 	@Override
 	public Queue<EventObject> execute(Queue<EventObject> events)
 			throws ActionException {
-		
-		listenerForwarder.started();
-		Queue<EventObject> outputEvents = new LinkedList<EventObject>();
-				
-		Queue<FileSystemEvent> acceptedFiles=acceptableFiles(normalizeEvents(events));		
-		if(acceptedFiles.size() == 1) {			
-			FileSystemEvent fileEvent = (FileSystemEvent)acceptedFiles.peek();			
-					
-			DataStore sourceDataStore = null;			
-			DataStore destDataStore = null;				
-						
-			final Transaction transaction = new DefaultTransaction("create");
-			try {
-				// source
-				sourceDataStore = createSourceDataStore(fileEvent);
-				Query query = buildSourceQuery(sourceDataStore);
-				FeatureStore<SimpleFeatureType, SimpleFeature> featureReader = createSourceReader(
-						sourceDataStore, transaction, query);
 
-				// output
-				destDataStore = createOutputDataStore();
-				SimpleFeatureType schema = buildDestinationSchema(featureReader
-						.getSchema());
-				SimpleFeatureBuilder builder = new SimpleFeatureBuilder(schema);
-				FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter = createOutputWriter(
-						destDataStore, schema, transaction);	
-				
-				purgeData(featureWriter);
-				
-				updateTask("Reading data");
-				int total = featureReader.getCount(query);
-				FeatureIterator<SimpleFeature> iterator = createSourceIterator(
-						query, featureReader);
-				try {
-					int count = 0;
-					while (iterator.hasNext()) {
-						SimpleFeature feature = buildFeature(builder,
-								iterator.next());
-						featureWriter.addFeatures(DataUtilities
-								.collection(feature));
-						count++;
-						if (count % 100 == 0) {
-							updateImportProgress(count, total, "Importing data");							
+		// return object
+		final Queue<EventObject> outputEvents = new LinkedList<EventObject>();
+
+		while (events.size() > 0) {
+			final EventObject ev;
+			try {
+				if ((ev = events.remove()) != null) {
+					listenerForwarder.started();
+
+					updateTask("Working on incoming event: " + ev.getSource());
+
+					Queue<FileSystemEvent> acceptableFiles = acceptableFiles(unpackCompressedFiles(ev));
+					if (acceptableFiles.size() == 0) {
+						failAction("No file to process");
+					} else {
+						for (FileSystemEvent fileEvent : acceptableFiles) {
+							EventObject output = importFile(fileEvent);
+							if (output != null) {
+								// add the event to the return
+								outputEvents.add(output);
+							} else {
+								if (LOGGER.isWarnEnabled()) {
+									LOGGER.warn("No output produced");
+								}
+							}
 						}
 					}
-					listenerForwarder.progressing(100F, "Data imported");
-				
-				} finally {
-					iterator.close();
+
+				} else {
+					if (LOGGER.isErrorEnabled()) {
+						LOGGER.error("Encountered a NULL event: SKIPPING...");
+					}
+					continue;
 				}
-				updateTask("Data imported");
-				transaction.commit();
-				
-				buildOutputEvent(outputEvents);
-				
-			} catch (Throwable t) {
-				try {
-					transaction.rollback();
-				} catch (IOException e1) {
-					final String message = "Transaction rollback unsuccessful: "
-							+ e1.getLocalizedMessage();
-					if (LOGGER.isErrorEnabled())
-						LOGGER.error(message);
-					throw new ActionException(this, message);
-				}
-				failAction("Unable to import data: " + t.getLocalizedMessage(),t);				
-			} finally {		
-				updateTask("Closing connections");					
-				closeResource(sourceDataStore);										
-				closeResource(destDataStore);	
-				closeResource(transaction);
+			} catch (Exception ioe) {
+				failAction("Unable to produce the output: "
+						+ ioe.getLocalizedMessage());
 			}
-			
-			listenerForwarder.completed();
-		} else {
-			String message = acceptedFiles.size() == 0 ? "No files to process"
-					: "The action can process one file at a time";
-			failAction(message);
 		}
 		return outputEvents;
 	}
+	
 
+	/**
+	 * Does the actual import on the given file event.
+	 * 
+	 * @param fileEvent
+	 * @return ouput EventObject (an xml describing the output feature)
+	 * @throws ActionException 
+	 */
+	private EventObject importFile(FileSystemEvent fileEvent) throws ActionException {
+		DataStore sourceDataStore = null;			
+		DataStore destDataStore = null;				
+					
+		final Transaction transaction = new DefaultTransaction("create");
+		try {
+			// source
+			sourceDataStore = createSourceDataStore(fileEvent);
+			Query query = buildSourceQuery(sourceDataStore);
+			FeatureStore<SimpleFeatureType, SimpleFeature> featureReader = createSourceReader(
+					sourceDataStore, transaction, query);
+
+			// output
+			destDataStore = createOutputDataStore();
+			SimpleFeatureType schema = buildDestinationSchema(featureReader
+					.getSchema());
+			SimpleFeatureBuilder builder = new SimpleFeatureBuilder(schema);
+			FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter = createOutputWriter(
+					destDataStore, schema, transaction);	
+			
+			purgeData(featureWriter);
+			
+			updateTask("Reading data");
+			int total = featureReader.getCount(query);
+			FeatureIterator<SimpleFeature> iterator = createSourceIterator(
+					query, featureReader);
+			try {
+				int count = 0;
+				while (iterator.hasNext()) {
+					SimpleFeature feature = buildFeature(builder,
+							iterator.next());
+					featureWriter.addFeatures(DataUtilities
+							.collection(feature));
+					count++;
+					if (count % 100 == 0) {
+						updateImportProgress(count, total, "Importing data");							
+					}
+				}
+				listenerForwarder.progressing(100F, "Data imported");
+			
+			} finally {
+				iterator.close();
+			}
+			updateTask("Data imported");
+			transaction.commit();
+			listenerForwarder.completed();
+			return buildOutputEvent();
+		} catch (Exception ioe) {
+			try {
+				transaction.rollback();
+			} catch (IOException e1) {
+				final String message = "Transaction rollback unsuccessful: "
+						+ e1.getLocalizedMessage();
+				if (LOGGER.isErrorEnabled())
+					LOGGER.error(message);
+				throw new ActionException(this, message);
+			}
+			throw new ActionException(this, ioe.getMessage());
+							
+		} finally {		
+			updateTask("Closing connections");					
+			closeResource(sourceDataStore);										
+			closeResource(destDataStore);	
+			closeResource(transaction);
+		}
+		
+		
+		
+	}
 	private String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
 		return sw.toString();
 	}
 	
+	/**
+	 * Updates the import progress ( progress / total )
+	 * for the listeners.
+	 * 
+	 * @param progress
+	 * @param total
+	 * @param message
+	 */
 	private void updateImportProgress(int progress, int total, String message) {
 		listenerForwarder.progressing((float) progress , message);
 		if(LOGGER.isInfoEnabled()) {
@@ -255,7 +299,7 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 	 * @throws FileNotFoundException
 	 * @throws ActionException
 	 */
-	private FileOutputStream buildOutputEvent(Queue<EventObject> outputEvents)
+	private EventObject buildOutputEvent()
 			throws FileNotFoundException, ActionException {
 		updateTask("Building output event");
 		FileOutputStream outStream = null;
@@ -266,84 +310,55 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 			outStream = new FileOutputStream(outputFile);
 			configuration.getOutputFeature().toXML(outStream);
 
-			outputEvents.add(new FileSystemEvent(outputFile,
-					FileSystemEventType.FILE_ADDED));
 			updateTask("Output event built");
+			return new FileSystemEvent(outputFile,
+					FileSystemEventType.FILE_ADDED);
+			
 		} catch (Exception e) {
 			throw new ActionException(this, "Error writing output event");
 		} finally {
 			IOUtils.closeQuietly(outStream);
-		}
-		return outStream;
+		}		
 	}
 
 	/**
-	 * Normalizes the fileEvent to a common type.
-	 * Unpacks compressed files.
+	 * Eventually unpacks compressed files.
 	 * 
 	 * @param fileEvent
 	 * @return
 	 * @throws ActionException 
 	 */
-	private Queue<FileSystemEvent> normalizeEvents(Queue<EventObject> events)
+	private Queue<FileSystemEvent> unpackCompressedFiles(EventObject event)
 			throws ActionException {
 		Queue<FileSystemEvent> result = new LinkedList<FileSystemEvent>();
-		for (EventObject event : events) {
-			FileSystemEvent fileEvent = (FileSystemEvent) event;
-			if (isCompressed(fileEvent)) {
-				listenerForwarder.setTask("Extracting compressed file");
-				unCompress(result, fileEvent.getSource(),
-						fileEvent.getEventType());
-				listenerForwarder.setTask("File extracted");
+		
+		FileSystemEvent fileEvent = (FileSystemEvent) event;
+		updateTask("Looking for compressed file");		
+		try {
+			String filePath = fileEvent.getSource().getAbsolutePath();
+			String uncompressedFolder = Extract.extract(filePath);
+			if(!uncompressedFolder.equals(filePath)) {
+				updateTask("Compressed file extracted to " + uncompressedFolder);
+				Collector c = new Collector(null);
+				List<File> fileList = c.collect(new File(uncompressedFolder));
+				
+				if (fileList != null) {
+					for(File file : fileList) {
+						if(!file.isDirectory()) {
+							result.add(new FileSystemEvent(file, fileEvent.getEventType()));
+						}
+					}
+				}
 			} else {
+				// no compressed file, add as is
+				updateTask("File is not compressed");
 				result.add(fileEvent);
 			}
-		}
+		} catch (Exception e) {
+			throw new ActionException(this, e.getMessage());
+		}			
 
 		return result;
-	}
-
-	/**
-	 * Uncompress the given file and appends the extracted files as events to the queue.
-	 * 
-	 * @param result
-	 * @param compressedFile
-	 * @param eventType
-	 * @throws ActionException
-	 */
-	private void unCompress(Queue<FileSystemEvent> result,
-			File compressedFile, FileSystemEventType eventType) throws ActionException {			
-		
-		String tmpDirName = null;
-		try {
-			tmpDirName = Extract.extract(compressedFile.getAbsolutePath());
-		} catch (Exception e) {
-			final String message = "Ds2dsAction.execute(): Unable to read compressed file: "
-					+ e.getLocalizedMessage();
-			if (LOGGER.isErrorEnabled())
-				LOGGER.error(message);
-			throw new ActionException(this, message);
-		}
-		Collector c = new Collector(null);
-		List<File> fileList = c.collect(new File(tmpDirName));
-		
-		if (fileList != null) {
-			for(File file : fileList) {
-				if(!file.isDirectory()) {
-					result.add(new FileSystemEvent(file, eventType));
-				}
-			}
-		} else {
-			String message = "Input is not a compressed file";
-			if (LOGGER.isErrorEnabled()) {
-				LOGGER.error(message);
-			}
-			throw new ActionException(this, message);
-		}
-	}
-
-	private boolean isCompressed(FileSystemEvent fileEvent) {
-		return compressedFormats.contains(getFileType(fileEvent));		
 	}
 
 	/**
@@ -651,7 +666,7 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 	 * @return
 	 */
 	private Queue<FileSystemEvent> acceptableFiles(Queue<FileSystemEvent> events) {
-		listenerForwarder.setTask("Recognize file type");	
+		updateTask("Recognize file type");	
 		Queue<FileSystemEvent> accepted = new LinkedList<FileSystemEvent>();
 		for(FileSystemEvent event : events) {			
 			String fileType = getFileType(event);			
