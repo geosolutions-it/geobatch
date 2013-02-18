@@ -28,7 +28,6 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
@@ -36,11 +35,6 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 /**
  * DAO for the input / output XML file used by the action.
@@ -53,53 +47,15 @@ public class FeatureConfiguration {
 	private static final XStream xstream = new XStream();
 	
 	static {
-		xstream.alias("feature", FeatureConfiguration.class);		
-		/*xstream.alias("DataStore", DataStoreConfiguration.class);
-		xstream.aliasField("DataStore", FeatureConfiguration.class, "dataStore");
-		xstream.aliasField("TypeName", FeatureConfiguration.class, "typeName");
-		xstream.aliasField("CRS", FeatureConfiguration.class, "crs");*/
-		xstream.omitField(FeatureConfiguration.class, "coordinateReferenceSystem");
-		
-		/*xstream.registerConverter(new Converter() {
-
-			@Override
-			public boolean canConvert(Class arg0) {
-				return Map.class.isAssignableFrom(arg0);
-			}
-
-			@Override
-			public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-
-	            Map map = (Map) value;
-	            for (Object obj : map.entrySet()) {
-	                Entry entry = (Entry) obj;
-	                writer.startNode(entry.getKey().toString());
-	                writer.setValue(entry.getValue().toString());
-	                writer.endNode();
-	            }
-	        }
-
-			@Override
-			public Object unmarshal(HierarchicalStreamReader reader,
-					UnmarshallingContext context) {
-				Map<String, Serializable> map = new HashMap<String, Serializable>();
-
-			    while(reader.hasMoreChildren()) {
-			        reader.moveDown();			        
-			        map.put(reader.getNodeName(), reader.getValue());
-			        reader.moveUp();
-			    }
-			    return map;				
-			}
-			
-		});*/
+		xstream.alias("feature", FeatureConfiguration.class);				
+		xstream.omitField(FeatureConfiguration.class, "coordinateReferenceSystem");				
 	}
 	
 	private String typeName;
 	private String crs;
 	private CoordinateReferenceSystem coordinateReferenceSystem;
 	
-	private DataStoreConfiguration dataStore = new DataStoreConfiguration();
+	private Map<String,Serializable> dataStore;
 
 	/**
 	 * 
@@ -121,7 +77,10 @@ public class FeatureConfiguration {
 	 * 
 	 * @return the DataStore connection parameters.
 	 */
-	public DataStoreConfiguration getDataStore() {
+	public Map<String, Serializable> getDataStore() {
+		if(this.dataStore == null) {
+			this.dataStore = new HashMap<String, Serializable>();
+		}
 		return dataStore;
 	}
 
@@ -129,7 +88,8 @@ public class FeatureConfiguration {
 	 * Sets DataStore connection parameters.
 	 * @param dataStore
 	 */
-	public void setDataStore(DataStoreConfiguration dataStore) {
+	public void setDataStore(Map<String, Serializable> dataStore) {
+		
 		this.dataStore = dataStore;
 	}
 

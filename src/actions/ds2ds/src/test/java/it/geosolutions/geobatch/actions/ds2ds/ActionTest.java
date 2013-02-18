@@ -153,13 +153,13 @@ public class ActionTest {
 		dropAllDb(dbNameSource);
 		
 		// prepare source H2 db		
-		configuration.getOutputFeature().getDataStore().setParameters(sourceStoreParameters);		
+		configuration.getOutputFeature().getDataStore().putAll(sourceStoreParameters);		
 		executeAction("shp");
 		configuration.getOutputFeature().setTypeName("other");
 		executeAction("shp");
 		
 		configuration = new Ds2dsConfiguration("id", "name", "description");						
-		configuration.getOutputFeature().getDataStore().setParameters(dataStoreParameters);				
+		configuration.getOutputFeature().getDataStore().putAll(dataStoreParameters);				
 		
 		receivedEvents.clear();		
 	}
@@ -221,7 +221,7 @@ public class ActionTest {
 	@Test
 	public void testActionProcessXMLFile() {
 		try {						
-			configuration.getOutputFeature().getDataStore().setParameters(dataStoreParameters);
+			configuration.getOutputFeature().getDataStore().putAll(dataStoreParameters);
 			Queue<EventObject> result = executeAction("xml");
 			assertNotNull(result);
 			assertTrue(result.size() > 0);

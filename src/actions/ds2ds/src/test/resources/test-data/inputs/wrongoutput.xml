@@ -1,31 +1,29 @@
 <feature>
-    <dataStore>        
-        <parameters>
-           <entry>
-             <string>dbtype</string>
-             <string>postgis</string>
-           </entry>
-           <entry>
-             <string>host</string>
-             <string>localhost</string>
-           </entry>
-           <entry>
-             <string>port</string>
-             <string>5432</string>
-           </entry>
-           <entry>
-             <string>database</string>
-             <string>fakedb</string>
-           </entry>
-           <entry>
-             <string>user</string>
-             <string>postgres</string>
-           </entry>
-           <entry>
-             <string>passwd</string>
-             <string>postgres</string>
-           </entry>
-        </parameters>
+    <dataStore>                
+        <entry>
+          <string>dbtype</string>
+          <string>postgis</string>
+        </entry>
+        <entry>
+          <string>host</string>
+          <string>localhost</string>
+        </entry>
+        <entry>
+          <string>port</string>
+          <string>5432</string>
+        </entry>
+        <entry>
+          <string>database</string>
+          <string>fakedb</string>
+        </entry>
+        <entry>
+          <string>user</string>
+          <string>postgres</string>
+        </entry>
+        <entry>
+          <string>passwd</string>
+          <string>postgres</string>
+        </entry>        
     </dataStore>
     <crs>EPSG:4326</crs>
     <typeName>other</typeName>

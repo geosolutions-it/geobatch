@@ -51,7 +51,7 @@ public class ConfigurationTest {
 		Map<String,Serializable> parameters=new HashMap<String,Serializable>();
 		parameters.put("dbtype", "h2");
 		parameters.put("database", "mem:test");
-		configuration.getOutputFeature().getDataStore().setParameters(parameters);
+		configuration.getOutputFeature().getDataStore().putAll(parameters);
 	}
 	
 	@Test

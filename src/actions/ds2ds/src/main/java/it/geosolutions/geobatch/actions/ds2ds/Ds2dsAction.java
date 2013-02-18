@@ -498,7 +498,7 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 	 */
 	private DataStore createOutputDataStore() throws IOException, ActionException {
 		updateTask("Connecting to output DataStore");
-		return createDataStore(configuration.getOutputFeature().getDataStore().getParameters());
+		return createDataStore(configuration.getOutputFeature().getDataStore());
 	}
 	
 	/**
@@ -524,10 +524,10 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 	            IOUtils.closeQuietly(inputXML);
 	        }
 		} else if(fileType.equals("shp")) {			
-			sourceFeature.getDataStore().getParameters()
+			sourceFeature.getDataStore()
 					.put("url", DataUtilities.fileToURL(fileEvent.getSource()));
 		} 		
-		DataStore source = createDataStore(sourceFeature.getDataStore().getParameters());
+		DataStore source = createDataStore(sourceFeature.getDataStore());
 		// if no typeName is configured, takes the first one registered in store
 		if(sourceFeature.getTypeName() == null) {
 			sourceFeature.setTypeName(source.getTypeNames()[0]);
