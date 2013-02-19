@@ -92,7 +92,15 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
     private Integer tileSizeH;
     private Integer tileSizeW;
+    
+	/**
+	 * reload the store:<br>
+	 * should be set to true if the upload adds granules having
+	 * BBox greater then the previous one
+	 */
+    private Boolean reloadStore;
 
+    // TODO use Boolean
     private boolean ignoreEmptyAddList = true;
 
 	public ImageMosaicConfiguration(String id, String name, String description) {
@@ -295,13 +303,30 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         this.tileSizeW = tileSizeW;
     }
 
-
     public void setTileSizeH(Integer tileSizeH) {
         this.tileSizeH = tileSizeH;
     }
 
     public void setTileSizeW(Integer tileSizeW) {
         this.tileSizeW = tileSizeW;
+    }
+    
+    /**
+     * @see {@link #reloadStore}
+     * @return false by default (if reloadStore is null)
+     */
+    public Boolean isReloadStore() {
+        if (reloadStore==null)
+            return false;
+        return true;
+    }
+
+    /**
+     * @see {@link #reloadStore}
+     * @param reloadStore 
+     */
+    public void setReloadStore(final Boolean reloadStore) {
+        this.reloadStore = reloadStore;
     }
     
     public String getBackgroundValue() {
