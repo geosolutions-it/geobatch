@@ -27,7 +27,7 @@
   <properties>
     <netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
     <flow.dir>geobatch/WEB-INF/</flow.dir>
-    <!--     <root.basedir>${project.parent.basedir}</root.basedir> -->
+    <!--     <root.basedir>../${project.basedir}</root.basedir> -->
     <root.basedir>${basedir}/../../</root.basedir>
     <!-- JETTY jar classpath -->
     <geobatch_starter.classpath>${geobatch_starter.dir}/WEB-INF/lib/</geobatch_starter.classpath>

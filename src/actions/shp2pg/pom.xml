@@ -20,7 +20,7 @@
     GeoSolutions GeoBatch Action: shp2pg.
   </description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>../../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!-- Dependency Management -->

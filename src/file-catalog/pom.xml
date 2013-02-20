@@ -22,7 +22,7 @@
   <name>GeoBatch filesystem catalog</name>
   <description>GeoSolutions GeoBatch catalog file system persistence</description>
   <properties>
-    <root.basedir>${project.parent.basedir}</root.basedir>
+    <root.basedir>../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependencies                                            -->
@@ -32,6 +32,16 @@
     <dependency>
       <groupId>it.geosolutions.tools</groupId>
       <artifactId>tools-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-log4j12</artifactId>
+	  <scope>compile</scope>
     </dependency>
     <!-- ============================== -->
     <!--     Platform                   -->
