@@ -28,6 +28,11 @@
   <!--     Dependencies                                            -->
   <!-- =========================================================== -->
   <dependencies>
+  
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-io</artifactId>
+    </dependency>
     <!-- ============================== -->
     <!--     Platform                   -->
     <!-- ============================== -->

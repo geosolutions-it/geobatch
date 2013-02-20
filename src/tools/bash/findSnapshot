@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# Copyright (C) 2013 GeoSolutions - http://geo-solutions.it
+#
+# Author: ETj
+#
+#This library is free software; you can redistribute it and/or
+#modify it under the terms of the GNU Lesser General Public
+#License as published by the Free Software Foundation; either
+#version 2.1 of the License, or (at your option) any later version.
+#
+#This library is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#Lesser General Public License for more details.
+#
+#You should have received a copy of the GNU Lesser General Public
+#License along with this library; if not, write to the Free Software
+#Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+
+usage(){
+ echo "USAGE: $(basename $0) <BASE_DIR> \n"
+}
+
+if [ "$1" = "--help" ]; then
+   usage
+   exit 0
+fi
+
+if [ -z "$1" ]; then
+    echo "Missing root maven dir, default is $(pwd)"
+    BASE_DIR=$(pwd)
+elif [ -d $1 ] ; then
+    BASE_DIR=$1
+else 
+    echo Bad dir \"$1\"
+    usage
+    exit 1
+fi
+
+XML_COMMAND=xmlstarlet
+
+# check if xmlstarlet exists
+XML_COMMAND_PATH=$(which $XML_COMMAND)
+if [ $? -ne 0 ] ; then
+	echo "Command not found: " $XML_COMMAND
+	echo $XML_COMMAND is needed to run this script
+	exit 1
+fi
+
+TMP=/tmp/findSnapshot_123
+NS1="x=http://maven.apache.org/POM/4.0.0"
+
+for POM in $(find $BASE_DIR -name pom.xml); do 
+   $XML_COMMAND sel -N $NS1  -t  -f --nl  -c "//x:properties/*[contains(.,'SNAPSHOT')]" --nl \
+                                          -c "//x:plugin[contains(x:version,'SNAPSHOT')]" --nl \
+                                          -c "//x:dependency[contains(x:version,'SNAPSHOT')]" $POM > $TMP
+   if grep -q SNAPSHOT $TMP ; then
+      cat $TMP
+   fi
+done
+

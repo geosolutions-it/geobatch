@@ -23,7 +23,7 @@
   <name>GeoBatch optional services</name>
   <description>GeoSolutions GeoBatch optional services</description>
   <properties>
-    <root.basedir>${project.parent.basedir}</root.basedir>
+    <root.basedir>../${project.basedir}</root.basedir>
   </properties>
   <build>
     <plugins>

@@ -82,7 +82,6 @@
     <doc.sphinx.source>${project.basedir}/doc/source/</doc.sphinx.source>
     <doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
 
-    <tools.version>1.1.2</tools.version>
     <geostore.version>1.1.0</geostore.version>
 
     <gt.version>8.6</gt.version>
@@ -378,43 +377,123 @@
         <version>${project.version}</version>
       </dependency>
       <!-- tools -->
+      <!-- Apache Tika -->
+      <dependency>
+        <groupId>org.apache.tika</groupId>
+        <artifactId>tika-core</artifactId>
+        <version>0.8</version>
+      </dependency>
+      <!-- Apache Commons Compress -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>1.1</version>
+      </dependency>
+      <!-- Apache Ant Task-->
+      <dependency>
+        <groupId>org.apache.ant</groupId>
+        <artifactId>ant</artifactId>
+        <version>1.7.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.ant</groupId>
+        <artifactId>ant-launcher</artifactId>
+        <version>1.7.1</version>
+      </dependency>
+      <!-- Apache IO Utils -->
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.1</version>
+      </dependency>
+      <!-- geotools -->
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-main</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <!-- netcdf-java -->
+      <!--=============================================================-->
+      <!-- NetCDF =====================================================-->
+      <!--=============================================================-->
+
+      <dependency>
+         <groupId>edu.ucar</groupId>
+	 <artifactId>netcdf</artifactId>
+	 <version>4.2.32</version>
+	<exclusions>
+	   <exclusion>
+             <groupId>org.slf4j</groupId>
+	     <artifactId>slf4j-log4j12</artifactId>
+           </exclusion>
+	</exclusions>
+      </dependency>
+      <!-- xml -->
+      <dependency>
+        <groupId>org.jdom</groupId>
+        <artifactId>jdom</artifactId>
+        <version>1.1</version>
+      </dependency>
+      <!-- log -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
+      </dependency>
+      <!--================================================================= -->
+      <!-- TOOLS MODULES -->
+      <!--================================================================= -->
       <dependency>
         <groupId>it.geosolutions.tools</groupId>
         <artifactId>tools-commons</artifactId>
-        <version>${tools.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>it.geosolutions.tools</groupId>
         <artifactId>tools-io</artifactId>
-        <version>${tools.version}</version>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.tools</groupId>
+        <artifactId>tools-ant</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>it.geosolutions.tools</groupId>
         <artifactId>tools-compress</artifactId>
-        <version>${tools.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>it.geosolutions.tools</groupId>
         <artifactId>tools-netcdf</artifactId>
-        <version>${tools.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>it.geosolutions.tools</groupId>
         <artifactId>tools-geotools</artifactId>
-        <version>${tools.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>it.geosolutions.tools</groupId>
         <artifactId>tools-freemarker</artifactId>
-        <version>${tools.version}</version>
+        <version>${project.version}</version>
       </dependency>
-      <!-- action-tools -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>tools-geobatch</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-action-tools</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- gb-action-tools -->
+      <!-- gb-action-commons -->
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-action-commons</artifactId>
@@ -1627,11 +1706,11 @@
           <additionalProjectnatures>
             <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
           </additionalProjectnatures>
-          <additionalBuildcommands>
+          <!--additionalBuildcommands>
             <buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
           </additionalBuildcommands>
           <downloadSources>true</downloadSources>
-          <downloadJavadocs>true</downloadJavadocs>
+          <downloadJavadocs>true</downloadJavadocs-->
         </configuration>
       </plugin>
       <!-- ======================================================= -->
@@ -1865,12 +1944,13 @@
   <!-- Modules for the build in approximate dependency order -->
   <!-- =========================================================== -->
   <modules>
-    <module>fsm</module>
+    <!-- tools modules -->
     <module>tools</module>
+    <!-- geobatch -->
+    <module>fsm</module>
     <module>file-catalog</module>
     <module>core</module>
     <module>dao</module>
-    <module>action-tools</module>
     <module>services</module>
     <!-- optional services -->
     <module>users</module>
