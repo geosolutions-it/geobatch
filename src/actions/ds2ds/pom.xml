@@ -20,7 +20,7 @@
     GeoSolutions GeoBatch Action: ds2ds.
   </description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>../../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!-- Dependency Management -->

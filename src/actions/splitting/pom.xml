@@ -22,7 +22,7 @@
   <name>GeoBatch action: splitting</name>
   <description>GeoSolutions GeoBatch flow managers - splitting</description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>../../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->

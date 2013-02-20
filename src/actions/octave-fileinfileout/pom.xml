@@ -25,7 +25,7 @@
     GeoSolutions GeoBatch tools.
   </description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>../../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->

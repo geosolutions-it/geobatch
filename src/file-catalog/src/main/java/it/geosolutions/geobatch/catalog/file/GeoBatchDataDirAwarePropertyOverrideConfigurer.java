@@ -11,7 +11,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.apache.log4j.LogManager;
 import org.springframework.beans.factory.config.PropertyOverrideConfigurer;

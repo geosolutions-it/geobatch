@@ -21,7 +21,7 @@
   <name>GeoBatch FTP Server</name>
   <description>GeoSolutions GeoBatch support FTP Server service</description>
   <properties>
-    <root.basedir>${project.parent.basedir}</root.basedir>
+    <root.basedir>../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
