@@ -34,7 +34,7 @@
     </dependency>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
+      <artifactId>tools-geobatch</artifactId>
     </dependency>
     <!-- ============================== -->
     <!-- Spring -->

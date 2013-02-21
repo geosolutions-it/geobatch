@@ -92,6 +92,7 @@
     <online.skip.pattern>**/*OnlineTest.java</online.skip.pattern>
     <stress.skip.pattern>**/*StressTest.java</stress.skip.pattern>
     <test.maxHeapSize>512M</test.maxHeapSize>
+    <test.maxPermGen>256M</test.maxPermGen>
     <src.output>${basedir}/target</src.output>
   </properties>
   <!-- Profiles set on the command-line overwrite default properties. -->
@@ -335,12 +336,6 @@
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-camel</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- SHP2POSTGIS -->
-      <dependency>
-        <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb-action-shp2pg</artifactId>
         <version>${project.version}</version>
       </dependency>
 	  <!-- DataStore2DataStore -->
@@ -1593,7 +1588,7 @@
           </includes>
           <!-- <excludes> <exclude>${online.skip.pattern}</exclude> <exclude>${stress.skip.pattern}</exclude>
 						<exclude>${test.exclude.pattern}</exclude> </excludes> -->
-          <argLine>-Xmx${test.maxHeapSize} -Djava.awt.headless=${java.awt.headless}</argLine>
+          <argLine>-Xmx${test.maxHeapSize} -Djava.awt.headless=${java.awt.headless} -XX:MaxPermSize=${test.maxPermGen}</argLine>
           <!-- Ignores test failure only if we are generating a -->
           <!-- report for publication on the web site. See the -->
           <!-- profiles section at the begining of this pom.xml file. -->

@@ -40,19 +40,10 @@
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
-    </dependency>
-    
+    </dependency>    
     <dependency>
-      <groupId>it.geosolutions.tools</groupId>
-      <artifactId>tools-compress</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.tools</groupId>
-      <artifactId>tools-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.tools</groupId>
-      <artifactId>tools-freemarker</artifactId>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>tools-geobatch</artifactId>
     </dependency>
     
     <!-- ============================== -->
@@ -87,11 +78,5 @@
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- TESTS -->
-    <!--    <dependency>-->
-    <!--      <groupId>it.geosolutions.geobatch</groupId>-->
-    <!--      <artifactId>gb-fs-catalog</artifactId>-->
-    <!--      <scope>test</scope>-->
-    <!--    </dependency>-->
   </dependencies>
 </project>

@@ -17,8 +17,8 @@
   <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
   <dependencies>
     <dependency>
-      <groupId>it.geosolutions.tools</groupId>
-      <artifactId>tools-io</artifactId>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>tools-geobatch</artifactId>
     </dependency>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
