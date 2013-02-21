@@ -12,9 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.geotools.util.logging.Logging;
+import org.apache.log4j.LogManager;
 import org.springframework.beans.factory.config.PropertyOverrideConfigurer;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 /**
@@ -32,7 +31,7 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 public abstract class GeoBatchDataDirAwarePropertyOverrideConfigurer extends PropertyOverrideConfigurer{
 	
 	/**Logger.*/
-	static final private Logger LOGGER= Logging.getLogger(GeoBatchDataDirAwarePropertyOverrideConfigurer.class);
+	static final private org.apache.log4j.Logger LOGGER= LogManager.getLogger(GeoBatchDataDirAwarePropertyOverrideConfigurer.class);
 
 	/**This object mediates access to the GeoServer data directory.**/
 	protected final DataDirHandler dataDirectoryHandler;
@@ -63,8 +62,8 @@ public abstract class GeoBatchDataDirAwarePropertyOverrideConfigurer extends Pro
 		// load from properties file	
 		final Properties props=getCustomProperties();
 		if(props!=null){
-			if(LOGGER.isLoggable(Level.FINE)){
-				LOGGER.fine("Trying to set default properties:\n"+props);
+			if(LOGGER.isTraceEnabled()){
+				LOGGER.trace("Trying to set default properties:\n"+props);
 			}						
 			setProperties(props);
 		}
@@ -103,8 +102,8 @@ public abstract class GeoBatchDataDirAwarePropertyOverrideConfigurer extends Pro
 				try{
 					is.close();
 				}catch (Exception e) {
-					if(LOGGER.isLoggable(Level.FINE)){
-						LOGGER.log(Level.FINE,e.getLocalizedMessage(),e);
+					if(LOGGER.isTraceEnabled()){
+						LOGGER.trace(e.getLocalizedMessage(),e);
 					}
 				}
 			}

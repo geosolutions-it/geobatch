@@ -98,7 +98,7 @@
     </dependency>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-tools</artifactId>
+      <artifactId>tools-geobatch</artifactId>
     </dependency>
     <!-- imageio-ext ================================================-->
     <dependency>
