@@ -18,6 +18,10 @@
   <dependencies>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>tools-geobatch</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-core-impl</artifactId>
     </dependency>
     <dependency>

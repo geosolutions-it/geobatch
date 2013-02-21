@@ -19,7 +19,7 @@
   <name>GeoBatch GUI module</name>
   <description>GeoSolutions GeoBatch GUI module.</description>
   <properties>
-    <root.basedir>${project.parent.basedir}</root.basedir>
+    <root.basedir>../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!-- Dependencies -->
@@ -34,7 +34,7 @@
     </dependency>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
+      <artifactId>tools-geobatch</artifactId>
     </dependency>
     <!-- ============================== -->
     <!-- Spring -->

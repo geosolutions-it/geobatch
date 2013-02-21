@@ -12,12 +12,6 @@
     <artifactId>gb</artifactId>
     <version>1.3.0-SNAPSHOT</version>
   </parent>
-  <properties>
-    <allow.test.skip>true</allow.test.skip>
-    <allow.test.failure.ignore>false</allow.test.failure.ignore>
-    <extensive.tests>false</extensive.tests>
-    <root.basedir>${project.parent.basedir}</root.basedir>
-  </properties>
   <!-- ===================================================================== -->
   <!--     Project description (including license).                          -->
   <!-- ===================================================================== -->
@@ -29,12 +23,15 @@
   <description>
         FileSystemMonitor is the general project for the system that select one of avaiable method,
         with Abstract Factory for DirectoryWatching
-    </description>
+  </description>
+  <properties>
+    <root.basedir>../${project.basedir}</root.basedir>
+  </properties>
   <!-- ===================================================================== -->
   <!--     All FileSystemMonitor groups included in the build.               -->
   <!-- ===================================================================== -->
   <modules>
-    <module>module</module>
+    <module>monitor</module>
     <module>plugin</module>
   </modules>
 </project>

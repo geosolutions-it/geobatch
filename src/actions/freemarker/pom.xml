@@ -26,7 +26,7 @@
     GeoSolutions GeoBatch freemarker.
   </description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>../../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
@@ -40,11 +40,12 @@
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
-    </dependency>
+    </dependency>    
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
+      <artifactId>tools-geobatch</artifactId>
     </dependency>
+    
     <!-- ============================== -->
     <!--     Platform                   -->
     <!-- ============================== -->
@@ -77,11 +78,5 @@
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- TESTS -->
-    <!--    <dependency>-->
-    <!--      <groupId>it.geosolutions.geobatch</groupId>-->
-    <!--      <artifactId>gb-fs-catalog</artifactId>-->
-    <!--      <scope>test</scope>-->
-    <!--    </dependency>-->
   </dependencies>
 </project>

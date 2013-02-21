@@ -25,7 +25,7 @@
     GeoSolutions GeoBatch tools.
   </description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>../../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
@@ -40,35 +40,13 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
     </dependency>
-    <!-- WHICH IMPORTS        
-	        <dependency>
-	            <groupId>it.geosolutions.geobatch</groupId>
-	            <artifactId>gb-core-impl</artifactId>
-	        </dependency>
-		        <dependency>
-		            <groupId>it.geosolutions.geobatch</groupId>
-		            <artifactId>gb-core-model</artifactId>
-		        </dependency>
-				<dependency>
-				    <groupId>it.geosolutions.geobatch</groupId>
-		    		<artifactId>gb-alias-registry</artifactId>
-				</dependency>
-	        <dependency>
-	            <groupId>it.geosolutions.geobatch</groupId>
-	            <artifactId>gb-tools</artifactId>
-	        </dependency>
-		        <dependency>
-					<groupId>org.freemarker</groupId>
-					<artifactId>freemarker</artifactId>
-				</dependency>
-	         -->
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
-    </dependency>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-octave</artifactId>
+    </dependency>    
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>tools-geobatch</artifactId>
     </dependency>
     <!-- ============================== -->
     <!--     Platform                   -->
