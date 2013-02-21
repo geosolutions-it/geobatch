@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+    
+    <id>ds2ds</id>
+    <description>DataStore to DataStore configuration flow</description>
+    <name>ds2ds flow</name>
+    
+    <autorun>true</autorun>
+    
+    <EventGeneratorConfiguration>
+        <wildCard>*.shp</wildCard>
+        <watchDirectory>ds2ds/in</watchDirectory>
+        <osType>OS_UNDEFINED</osType>
+        <eventType>FILE_ADDED</eventType>
+        <id>Ds2dsFlow</id>
+        <keepFiles>true</keepFiles>
+        <serviceID>fsEventGeneratorService</serviceID>
+        <description>Ds2ds event generator description</description>
+        <name>Ds2ds</name>
+    </EventGeneratorConfiguration>
+    
+    <EventConsumerConfiguration>
+        <id>ds2ds</id>
+        <description>ds2ds</description>
+        <name>ds2ds</name>
+        <preserveInput>true</preserveInput>         
+        <performBackup>false</performBackup>
+                
+
+        <Ds2dsConfiguration>
+            <serviceID>Ds2dsGeneratorService</serviceID>
+            <id>Ds2dsGeneratorService</id>
+            <description>Ds2ds action</description>
+            <name>Ds2dsConfiguration</name>
+            
+            <listenerConfigurations/>
+            <failIgnored>false</failIgnored>
+            <purgeData>true</purgeData>
+                        
+            <outputFeature>
+                
+                <dataStore>                    
+                   <entry>
+                     <string>dbtype</string>
+                     <string>postgis</string>
+                   </entry>
+                   <entry>
+                     <string>host</string>
+                     <string>localhost</string>
+                   </entry>
+                   <entry>
+                     <string>port</string>
+                     <string>5432</string>
+                   </entry>
+                   <entry>
+                     <string>database</string>
+                     <string>postgres</string>
+                   </entry>
+                   <entry>
+                     <string>user</string>
+                     <string>postgres</string>
+                   </entry>
+                   <entry>
+                     <string>passwd</string>
+                     <string>postgres</string>
+                   </entry>                      
+                </dataStore>
+            </outputFeature>
+            <projectOnMappings>false</projectOnMappings>
+            <attributeMappings/>
+                
+        </Ds2dsConfiguration>
+                    
+        
+    </EventConsumerConfiguration>
+    
+    <ListenerConfigurations>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>Logger</id>
+            <loggerName>it.geosolutions.geobatch</loggerName>
+        </LoggingProgressListener>
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>Cumulator</id>
+        </CumulatingProgressListener>
+        <StatusProgressListener>
+            <serviceID>statusListenerService</serviceID>
+            <id>Status</id>
+        </StatusProgressListener>
+    </ListenerConfigurations>
+</FlowConfiguration>
