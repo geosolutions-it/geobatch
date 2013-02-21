@@ -26,7 +26,7 @@
     GeoSolutions GeoBatch freemarker.
   </description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>../../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
@@ -41,10 +41,20 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
     </dependency>
+    
     <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-compress</artifactId>
     </dependency>
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-freemarker</artifactId>
+    </dependency>
+    
     <!-- ============================== -->
     <!--     Platform                   -->
     <!-- ============================== -->

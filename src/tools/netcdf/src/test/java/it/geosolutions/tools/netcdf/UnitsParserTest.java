@@ -1,0 +1,59 @@
+/*
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ * 
+ *  GPLv3 + Classpath exception
+ * 
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ * 
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package it.geosolutions.tools.netcdf;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+/**
+ *
+ * @author ETj (etj at geo-solutions.it)
+ */
+public class UnitsParserTest {
+
+    /**
+     * Test of parse method, of class UnitsParser.
+     */
+    @Test
+    public void testParse1() {
+
+        System.out.println("parse");
+        String units = "seconds since 1980-1-1 0:0:0";
+        UnitsParser instance = new UnitsParser();
+        boolean ret = instance.parse(units);
+        assertTrue(ret);
+
+        System.out.println(instance);
+        
+    }
+
+    @Test
+    public void testParse2() {
+
+        System.out.println("parse");
+        String units = "days since 1970-01-01 0:0:0";
+        UnitsParser instance = new UnitsParser();
+        boolean ret = instance.parse(units);
+        assertTrue(ret);
+
+        System.out.println(instance);
+
+    }
+}

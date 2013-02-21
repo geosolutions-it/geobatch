@@ -22,12 +22,18 @@
   <name>GeoBatch action: FTP client</name>
   <description>GeoSolutions GeoBatch support interactions with an FTP server</description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>../../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
   <!-- =========================================================== -->
   <dependencies>
+  
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-compress</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
