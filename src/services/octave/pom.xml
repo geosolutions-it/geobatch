@@ -62,10 +62,6 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>tools-geobatch</artifactId>
     </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
-    </dependency>
     <!-- ============================== -->
     <!--     Platform                   -->
     <!-- ============================== -->

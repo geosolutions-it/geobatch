@@ -17,10 +17,7 @@
   <!-- ===================================================================== -->
   <groupId>it.geosolutions.geobatch</groupId>
   <artifactId>gb-fsm</artifactId>
-<<<<<<< HEAD
   <version>1.3.0-SNAPSHOT</version>
-=======
->>>>>>> 6b3a899... Re-Import geosolutions/tools project into geobatch
   <packaging>pom</packaging>
   <name>File System Monitor</name>
   <description>

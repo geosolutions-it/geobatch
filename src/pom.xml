@@ -71,16 +71,8 @@
     <site.outdir>${site.basedir}/${project.version}/</site.outdir>
     <doc.sphinx.source>${project.basedir}/doc/source/</doc.sphinx.source>
     <doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
-<<<<<<< HEAD
-    <tools.version>1.1.2</tools.version>
-    <geostore.version>1.0.1</geostore.version>
-    <gt.version>8.4</gt.version>
-=======
-
     <geostore.version>1.1.0</geostore.version>
-
     <gt.version>8.6</gt.version>
->>>>>>> 6b3a899... Re-Import geosolutions/tools project into geobatch
     <imageio-ext.version>1.2-M102011</imageio-ext.version>
     <spring.version>3.0.3.RELEASE</spring.version>
     <spring.security.version>3.0.3.RELEASE</spring.security.version>
