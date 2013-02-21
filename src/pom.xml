@@ -351,12 +351,6 @@
         <artifactId>gb-camel</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- SHP2POSTGIS -->
-      <dependency>
-        <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb-action-shp2pg</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 	  <!-- DataStore2DataStore -->
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
