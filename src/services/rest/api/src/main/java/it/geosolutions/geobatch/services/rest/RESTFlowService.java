@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import it.geosolutions.geobatch.services.rest.exception.BadRequestRestEx;
 import it.geosolutions.geobatch.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geobatch.services.rest.exception.NotFoundRestEx;
+import it.geosolutions.geobatch.services.rest.model.RESTConsumerList;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus;
 import it.geosolutions.geobatch.services.rest.model.RESTFlow;
 import it.geosolutions.geobatch.services.rest.model.RESTFlowList;
@@ -62,6 +63,13 @@ public interface RESTFlowService {
             @Multipart("data") byte[]data)
                 throws BadRequestRestEx, InternalErrorRestEx;
 
+    /**
+     */
+    @GET
+    @Path("/flow/{flowId}")
+    @Produces(MediaType.APPLICATION_XML)
+    RESTConsumerList getFlowConsumers(@PathParam("flowId") String flowId) throws NotFoundRestEx, InternalErrorRestEx;
+    
     /**
      */
     @GET
