@@ -229,18 +229,6 @@
         <module>xstream</module>
       </modules>
     </profile>
-    <profile>
-      <id>shp2pg</id>
-      <activation>
-        <property>
-          <name>all</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <modules>
-        <module>shp2pg</module>
-      </modules>
-    </profile>
 	<profile>
       <id>ds2ds</id>
       <activation>

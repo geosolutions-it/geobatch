@@ -30,9 +30,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-  <properties>
-    <root.basedir>../../${project.basedir}</root.basedir>
-  </properties>
   <!-- =========================================================== -->
   <!-- Dependency Management -->
   <!-- =========================================================== -->

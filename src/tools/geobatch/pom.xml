@@ -21,9 +21,6 @@
   <packaging>jar</packaging>
   <name>GeoSolutions geobatch tools</name>
   <description>GeoSolutions geobatch tools.</description>
-  <properties>
-    <root.basedir>../../${project.basedir}</root.basedir>
-  </properties>
   <!-- =========================================================== -->
   <!--     Dependencies                                            -->
   <!-- =========================================================== -->
