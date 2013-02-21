@@ -23,14 +23,8 @@
   <name>GeoBatch actions</name>
   <description>GeoSolutions GeoBatch actions.</description>
   <properties>
-    <root.basedir>${project.parent.basedir}</root.basedir>
+    <root.basedir>../${project.basedir}</root.basedir>
   </properties>
-  <dependencies>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
-    </dependency>
-  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -41,13 +35,13 @@
           <!-- Remove the flowdata files from the base jar ========-->
           <execution>
             <!--
-                          setting the phase as prep-pack is the only way I::etj found
-                          to have the excludes work.
-                          Once the basic jar is created with the exclusions,
-                          the jar will not be rebuilt in the jar:jar phase.
+	      setting the phase as prep-pack is the only way I::etj found
+	      to have the excludes work.
+	      Once the basic jar is created with the exclusions,
+	      the jar will not be rebuilt in the jar:jar phase.
 
-                          This exclusion will work with maven 2.1.0 but not with 2.0.9 or 2.0.10.
-                        -->
+	      This exclusion will work with maven 2.1.0 but not with 2.0.9 or 2.0.10.
+	    -->
             <phase>prepare-package</phase>
             <goals>
               <goal>jar</goal>

@@ -1,0 +1,28 @@
+<!-- AND -->
+<org.apache.commons.io.filefilter.AndFileFilter>
+  <fileFilters>
+  	<!-- AND LIST -->
+    <org.apache.commons.io.filefilter.DelegateFileFilter>
+      <!-- OR -->
+      <fileFilter class="org.apache.commons.io.filefilter.OrFileFilter">
+        <fileFilters>
+          <!-- OR LIST -->
+          <org.apache.commons.io.filefilter.DirectoryFileFilter/>
+          <org.apache.commons.io.filefilter.FileFileFilter/>
+        </fileFilters>
+      </fileFilter>
+    </org.apache.commons.io.filefilter.DelegateFileFilter>
+    <!-- NOT -->
+    <org.apache.commons.io.filefilter.NotFileFilter>
+      <!-- FILTER BY NAME -->
+      <filter class="org.apache.commons.io.filefilter.NameFileFilter">
+        <names>
+          <string>*.lck</string>
+        </names>
+        <caseSensitivity>
+          <name>Insensitive</name>
+        </caseSensitivity>
+      </filter>
+    </org.apache.commons.io.filefilter.NotFileFilter>
+  </fileFilters>
+</org.apache.commons.io.filefilter.AndFileFilter>

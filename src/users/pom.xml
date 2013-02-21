@@ -21,7 +21,7 @@
   <name>GeoBatch users management</name>
   <description>GeoSolutions GeoBatch user management module</description>
   <properties>
-    <root.basedir>${project.parent.basedir}</root.basedir>
+    <root.basedir>../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->

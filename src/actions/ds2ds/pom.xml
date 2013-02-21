@@ -20,7 +20,7 @@
     GeoSolutions GeoBatch Action: ds2ds.
   </description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>../../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!-- Dependency Management -->
@@ -58,8 +58,12 @@
     </dependency>
     <!-- tools -->
     <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.tools</groupId>
+      <artifactId>tools-compress</artifactId>
     </dependency>
 	<dependency>
 		<groupId>net.sourceforge.hatbox</groupId>

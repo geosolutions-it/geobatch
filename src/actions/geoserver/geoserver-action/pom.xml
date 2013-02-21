@@ -42,6 +42,10 @@
   <!--     Dependencies						                     -->
   <!-- =========================================================== -->
   <dependencies>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>tools-geobatch</artifactId>
+    </dependency>
     <!-- Reload (to deserialize geoserverList -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
