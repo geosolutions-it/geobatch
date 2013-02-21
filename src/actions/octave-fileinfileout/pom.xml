@@ -25,7 +25,7 @@
     GeoSolutions GeoBatch tools.
   </description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>../../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->
@@ -55,7 +55,7 @@
 				</dependency>
 	        <dependency>
 	            <groupId>it.geosolutions.geobatch</groupId>
-	            <artifactId>gb-tools</artifactId>
+	            <artifactId>tools-geobatch</artifactId>
 	        </dependency>
 		        <dependency>
 					<groupId>org.freemarker</groupId>
