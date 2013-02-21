@@ -41,6 +41,10 @@
 			<tileSizeH>256</tileSizeH>
 			<tileSizeW>256</tileSizeW>
 			
+			<!-- should be set to true if the upload adds 
+			granules having BBox greater then the previous one -->
+			<reloadStore>false</reloadStore>
+			
 			<NativeMinBoundingBoxX>-180</NativeMinBoundingBoxX>
     		<NativeMinBoundingBoxY>-90</NativeMinBoundingBoxY>
     		<NativeMaxBoundingBoxX>180</NativeMaxBoundingBoxX>

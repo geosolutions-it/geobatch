@@ -26,6 +26,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.StoreType;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
@@ -48,6 +49,7 @@ import java.util.Queue;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.pool.impl.GenericKeyedObjectPool.Config;
 import org.geotools.gce.imagemosaic.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -292,6 +294,11 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
                     if ( ! updateMosaicLayer(cmd, baseDir, layerName, mosaicDescriptor, gsPublisher)){
                         ActionExceptionHandler.handleError(getConfiguration(),this,"Mosaic not Updated...");
                         continue;
+                    } else if (getConfiguration().isReloadStore()){
+                    	if ( ! gsPublisher.reloadStore(workspace, storeName, StoreType.COVERAGESTORES)){
+                    		 ActionExceptionHandler.handleError(getConfiguration(),this,"Mosaic not Updated...");
+                             continue;
+                    	}
                     }
 
                 } else {

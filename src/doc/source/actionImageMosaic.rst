@@ -39,6 +39,11 @@ OR
 	  <useJaiImageRead>false</useJaiImageRead>
 	  <tileSizeH>256</tileSizeH>
 	  <tileSizeW>256</tileSizeW>
+
+	  <!-- should be set to true if the upload adds 
+	    granules having BBox greater then the previous one -->
+	  <reloadStore>false</reloadStore>
+
 	  <!--NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED-->
 	  <projectionPolicy>NONE</projectionPolicy>
 	  <styles/>
@@ -403,4 +408,5 @@ If you pass an ImageMosaicCommand (IMC) to the imagemosaic action (you can also 
  - Remove the selected granules from the datastore
  - Generate a query to update the granules to add to the datastore
  - Add the granules to the datastore
+ - if <reloadStore>true</reloadStore> reload the store on geoserver this should be set to true if the upload adds granules having BBox greater then the previous one.
 
