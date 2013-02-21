@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-init-method="init" default-destroy-method="dispose">
+
+	<!-- Environment Initialization -->
+	<bean id="Ds2dsGeneratorService" class="it.geosolutions.geobatch.actions.ds2ds.Ds2dsGeneratorService">
+		<constructor-arg type="String"><value>Ds2dsGeneratorService</value></constructor-arg>		
+	</bean>
+	<bean id="Ds2dsAliasRegistrar" class="it.geosolutions.geobatch.actions.ds2ds.Ds2dsAliasRegistrar" lazy-init="false">
+		<constructor-arg ref="aliasRegistry" />
+	</bean>
+</beans>

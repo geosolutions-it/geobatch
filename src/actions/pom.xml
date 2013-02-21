@@ -241,6 +241,18 @@
         <module>shp2pg</module>
       </modules>
     </profile>
+	<profile>
+      <id>ds2ds</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>ds2ds</module>
+      </modules>
+    </profile>
     <profile>
       <id>geostore</id>
       <activation>
