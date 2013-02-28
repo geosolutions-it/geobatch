@@ -12,7 +12,7 @@
             http://cxf.apache.org/jaxrs                     http://cxf.apache.org/schemas/jaxrs.xsd
             http://cxf.apache.org/core                      http://cxf.apache.org/schemas/core.xsd
             http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-3.0.xsd"
-       default-autowire="byName" default-init-method="init" default-destroy-method="dispose">
+       default-autowire="byName" default-init-method="init" default-destroy-method="dispose" >
 
    <!-- === CXF ======================================================== -->
 
@@ -24,11 +24,11 @@
     <!-- ====================================================================-->
     <!-- === Service providers ==============================================-->
     <!-- ====================================================================-->
-
-    <bean id="restFlowService" class="it.geosolutions.geobatch.services.rest.impl.RESTFlowServiceImpl" depends-on="catalog">
+    
+    <bean id="restFlowService" class="it.geosolutions.geobatch.services.rest.impl.RESTFileBasedFlowServiceImpl" depends-on="globalConfig">
 <!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
 <!--        <property name="userAdminService" ref="userAdminService"/>-->
-		<property name="catalog" ref="catalog" />
+	 		<property name="catalog" ref="catalog" />
     </bean>
 
     <!-- ====================================================================-->

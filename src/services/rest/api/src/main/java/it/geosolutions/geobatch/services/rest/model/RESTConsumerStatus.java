@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author Etj (etj at geo-solutions.it)
  */
 @XmlRootElement(name = "status")
-@XmlType(propOrder = {"errorMessage", "latestAction", "task", "completed"})
+@XmlType(propOrder = {"errorMessage", "latestAction"})
 public class RESTConsumerStatus implements  Serializable {
 
     public static enum Status {
@@ -44,9 +44,6 @@ public class RESTConsumerStatus implements  Serializable {
     private String errorMessage;
 
     private RESTActionShort latestAction;
-
-    private String task;
-    private String completed;
 
 
     public RESTConsumerStatus() {

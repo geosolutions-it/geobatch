@@ -51,12 +51,12 @@
         <!-- ================================================================-->
 		<dependency>
             <groupId>it.geosolutions.geobatch</groupId>
-    		<artifactId>gb-core-impl</artifactId>
+            <artifactId>gb-core-impl</artifactId>
         </dependency>
         <dependency>
         	<groupId>it.geosolutions.geobatch</groupId>
-  			<artifactId>gb-fs-catalog</artifactId>
-  		</dependency>	
+          <artifactId>gb-fs-catalog</artifactId>
+  		</dependency>
 
         <!-- ================================================================-->
         <!--  Misc support libs -->

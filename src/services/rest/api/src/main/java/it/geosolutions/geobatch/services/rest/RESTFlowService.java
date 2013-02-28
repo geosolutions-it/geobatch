@@ -29,34 +29,55 @@ import it.geosolutions.geobatch.services.rest.model.RESTConsumerList;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus;
 import it.geosolutions.geobatch.services.rest.model.RESTFlow;
 import it.geosolutions.geobatch.services.rest.model.RESTFlowList;
+import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus.Status;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
 /**
  *
  * @author Emanuele Tajariol (etj at geo-solutions.it)
+ * @author DamianoG
  */
 @Path("/")
 public interface RESTFlowService {
 
     /**
+     * Returns a List of flow that are available on the geobatch running instance.
+     * Each flow is described by a RESTFlowShort object that provide to user the flowId, flowName and flowDescription.
+     * 
+     * @return A RESTFlowList object hold the short flow list. 
+     * @throws InternalErrorRestEx
      */
     @GET
-    @Path("/flow")
+    @Path("/flows")
     @Produces(MediaType.APPLICATION_XML)
     RESTFlowList getFlowList() throws InternalErrorRestEx;
 
     /**
+     * Returns a RESTFlow object that hold all the useful informations about a flow.
+     * 
+     * @param id the flowId provided by the getFlowList method.
+     * @return A
+     * @throws NotFoundRestEx
+     * @throws InternalErrorRestEx
      */
     @GET
-    @Path("/flow/{id}")
+    @Path("/flows/{flowid}")
     @Produces(MediaType.APPLICATION_XML)
-    RESTFlow getFlow(@PathParam("id") String id) throws NotFoundRestEx, InternalErrorRestEx;
+    RESTFlow getFlow(@PathParam("flowid") String id) throws NotFoundRestEx, InternalErrorRestEx;
 
     /**
+     * Starts a flow copying the data provided into the watch dir of the flow.
+     * 
+     * @param flowId
+     * @param fastfail
+     * @param data It could be any file format.
+     * @return
+     * @throws BadRequestRestEx
+     * @throws InternalErrorRestEx
      */
     @POST
-    @Path("/flow/{flowid}")
+    @Path("/flows/{flowid}/run")
 //    @Produces(MediaType.APPLICATION_XML)
     String run(@PathParam("flowid") String flowId,
             @QueryParam("fastfail") Boolean fastfail,
@@ -64,42 +85,63 @@ public interface RESTFlowService {
                 throws BadRequestRestEx, InternalErrorRestEx;
 
     /**
+     * Returns all the consumers (with any state) for a given flow.
+     * Each flow is described by a RESTConsumerShort object that provide to user the status, uuid, startDate attributes.
+     * 
+     * @param flowId
+     * @return
+     * @throws NotFoundRestEx
+     * @throws InternalErrorRestEx
      */
     @GET
-    @Path("/flow/{flowId}")
+    @Path("/flows/{flowId}/consumers")
     @Produces(MediaType.APPLICATION_XML)
     RESTConsumerList getFlowConsumers(@PathParam("flowId") String flowId) throws NotFoundRestEx, InternalErrorRestEx;
     
     /**
+     * Returns a RESTFlow object that hold all the useful informations about a flow.
+     * 
+     * @param consumerId
+     * @return
      */
     @GET
-    @Path("/consumer/{consumerid}/status")
+    @Path("/consumers/{consumerid}/status")
     @Produces(MediaType.APPLICATION_XML)
     RESTConsumerStatus getConsumerStatus(@PathParam("consumerid") String consumerId);
 
     /**
+     * Return a status log of the consumer
+     * 
+     * @param consumerId
+     * @return
      */
     @GET
-    @Path("/consumer/{consumerid}/log")
+    @Path("/consumers/{consumerid}/log")
 //    @Produces(MediaType.APPLICATION_XML)
     String getConsumerLog(@PathParam("consumerid") String consumerId);
 
     /**
+     * Pause a running consumer
+     * 
      */
     @PUT
-    @Path("/consumer/{consumerid}/pause")
+    @Path("/consumers/{consumerid}/pause")
     void pauseConsumer(@PathParam("consumerid") String consumerId);
 
     /**
+     * Resume a paused consumer
+     * 
      */
     @PUT
-    @Path("/consumer/{consumerid}/resume")
+    @Path("/consumers/{consumerid}/resume")
     void resumeConsumer(@PathParam("consumerid") String consumerId);
 
     /**
+     * Delete a consumer if it isn't in an active state.
+     * 
      */
     @PUT
-    @Path("/consumer/{consumerid}/clean")
+    @Path("/consumers/{consumerid}/clean")
     void cleanupConsumer(@PathParam("consumerid") String consumerId);
 
 }

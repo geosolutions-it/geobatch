@@ -33,7 +33,7 @@
 	</servlet>
 	
 	<!-- Restlet adapter -->
-    <servlet>
+<!--     <servlet>
         <servlet-name>rservlet</servlet-name>
         <servlet-class>
              org.restlet.ext.spring.RestletFrameworkServlet
@@ -43,7 +43,7 @@
             <param-value>classpath*:/rservlet-servlet.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
-    </servlet>
+    </servlet> -->
 	
 	<!-- context-param>
 		<param-name>GEOBATCH_DATA_DIR</param-name>
@@ -59,10 +59,10 @@
 	</servlet-mapping>
 
     <!-- Catch all request URIs starting with  prefix /rest-->
-    <servlet-mapping>
+<!--     <servlet-mapping>
         <servlet-name>rservlet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping> -->
 
 	<filter>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -81,6 +81,17 @@
     <!-- listener>
       <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
     </listener -->
+    
+    <!-- CXF Servlet -->
+	<servlet>
+		<servlet-name>CXFServlet</servlet-name>
+		<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>CXFServlet</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
 
         
 	<welcome-file-list>
