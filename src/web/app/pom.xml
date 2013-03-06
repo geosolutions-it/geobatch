@@ -75,6 +75,19 @@
       <artifactId>org.restlet.ext.servlet</artifactId>
       <version>2.1.1</version>
     </dependency>
+    
+	<dependency>
+		<groupId>it.geosolutions.geobatch</groupId>
+		<artifactId>gb-rest-impl</artifactId>
+	</dependency>
+    
+    
+    
+<!--     <dependency> -->
+<!--       <groupId>javax.servlet.jsp</groupId> -->
+<!--       <artifactId>jsp-api</artifactId> -->
+<!--       <scope>provided</scope> -->
+<!--     </dependency> -->
     <!-- ============================== -->
     <!-- Test: JETTY -->
     <!-- ============================== -->
@@ -85,9 +98,14 @@
     </dependency>
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jsp-2.0</artifactId>
-      <type>pom</type>
+      <artifactId>jsp-2.1</artifactId>
       <scope>test</scope>
+<!--       <exclusions> -->
+<!-- 	    <exclusion> -->
+<!-- 	      <groupId>javax.servlet.jsp</groupId> -->
+<!-- 	      <artifactId>jsp-api</artifactId> -->
+<!-- 	    </exclusion> -->
+<!--      </exclusions> -->
     </dependency>
     <dependency>
       <groupId>org.javassist</groupId>
@@ -180,7 +198,56 @@
     </plugins>
   </build>
   <profiles>
-    <!-- GB-SERVICES==================================================== -->
+  	<!-- GB-SERVICES==================================================== -->
+    <!-- REST =========================================================== -->
+    <profile>
+      <id>rest</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-rest-impl</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_rest</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-rest-impl</artifactId>
+                      <classifier>flowsettings</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}/data/</outputDirectory>
+                      <includes>settings/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <!-- JMS =========================================================== -->
     <profile>
       <id>jms</id>

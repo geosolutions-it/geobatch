@@ -1,5 +1,7 @@
 /*
- *  Copyright (C) 2013 GeoSolutions S.A.S.
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  https://github.com/nfms4redd/nfms-geobatch
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -19,81 +21,58 @@
  */
 package it.geosolutions.geobatch.services.rest.model;
 
-import java.io.Serializable;
-import javax.xml.bind.annotation.XmlAttribute;
+import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus.Status;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * 
+ * @author DamianoG
  *
- * @author Etj (etj at geo-solutions.it)
  */
-@XmlRootElement(name = "status")
-@XmlType(propOrder = {"errorMessage", "latestAction"})
-public class RESTConsumerStatus implements  Serializable {
-
-    public static enum Status {
-        SUCCESS, FAIL, RUNNING
-    }
-
-    private String uuid;
+@XmlRootElement(name = "consumer")
+@XmlType(propOrder = {"uuid", "startDate"})
+public class RESTConsumerShort {
+    
     private Status status;
-
-    private String errorMessage;
-
-    private RESTActionShort latestAction;
-
-
-    public RESTConsumerStatus() {
-    }
-
-    @XmlAttribute(name = "uuid")
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
+    
+    private String uuid;
+    private String startDate;
+    
     @XmlAttribute(name = "status")
     public Status getStatus() {
         return status;
     }
-
+    
     public void setStatus(Status status) {
         this.status = status;
     }
-
-    public RESTActionShort getLatestAction() {
-        return latestAction;
+    
+    public String getUuid() {
+        return uuid;
     }
-
-    public void setLatestAction(RESTActionShort latestAction) {
-        this.latestAction = latestAction;
+    
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
-
-    public String getErrorMessage() {
-        return errorMessage;
+    
+    public String getStartDate() {
+        return startDate;
     }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
-
-
+    
     @Override
     public String toString() {
         return getClass().getSimpleName()
                 + "["
                 + (uuid!=null? " uuid=" + uuid : "")
                 + (status != null? " status=" + status : "")
-                + (latestAction != null? " action=" + latestAction : "")
+                + (startDate != null? " startDate=" + startDate : "")
                 + ']';
     }
-
-
 
 }

@@ -37,7 +37,7 @@
 
     <dependencies>
         <!-- ================================================================-->
-        <!-- GeoFence modules -->
+        <!-- API -->
         <!-- ================================================================-->
 
         <dependency>
@@ -47,8 +47,16 @@
 
 
         <!-- ================================================================-->
-        <!-- Core lib -->
+        <!-- GeoBatch Core -->
         <!-- ================================================================-->
+		<dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-core-impl</artifactId>
+        </dependency>
+        <dependency>
+        	<groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-fs-catalog</artifactId>
+  		</dependency>
 
         <!-- ================================================================-->
         <!--  Misc support libs -->

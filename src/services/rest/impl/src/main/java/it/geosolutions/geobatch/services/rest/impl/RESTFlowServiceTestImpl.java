@@ -24,6 +24,7 @@ import it.geosolutions.geobatch.services.rest.exception.BadRequestRestEx;
 import it.geosolutions.geobatch.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geobatch.services.rest.exception.NotFoundRestEx;
 import it.geosolutions.geobatch.services.rest.model.RESTActionShort;
+import it.geosolutions.geobatch.services.rest.model.RESTConsumerList;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus;
 import it.geosolutions.geobatch.services.rest.model.RESTFlow;
 import it.geosolutions.geobatch.services.rest.model.RESTFlowList;
@@ -36,10 +37,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author ETj (etj at geo-solutions.it)
  */
-public class RESTFlowServiceImpl
+public class RESTFlowServiceTestImpl
         implements RESTFlowService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RESTFlowServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RESTFlowServiceTestImpl.class);
 
     // we'll probably need some gb service injected ....
 
@@ -123,6 +124,16 @@ public class RESTFlowServiceImpl
     public void cleanupConsumer(String consumerId) {
         // TODO: this is dummy implementation
         LOGGER.warn("Dummy implementation");
+    }
+
+    /* (non-Javadoc)
+     * @see it.geosolutions.geobatch.services.rest.RESTFlowService#getFlowConsumers(java.lang.String)
+     */
+    @Override
+    public RESTConsumerList getFlowConsumers(String arg0) throws NotFoundRestEx,
+            InternalErrorRestEx {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
