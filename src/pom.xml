@@ -79,7 +79,7 @@
     <site.basedir>${root.basedir}/build/</site.basedir>
     <site.outdir>${site.basedir}/${project.version}/</site.outdir>
 
-    <doc.sphinx.source>${project.basedir}/doc/source/</doc.sphinx.source>
+    <doc.sphinx.source>${root.basedir}/doc/source/</doc.sphinx.source>
     <doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
 
     <geostore.version>1.1.0</geostore.version>
@@ -1799,6 +1799,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
+	<version>1.7</version>
         <executions>
           <execution>
             <id>build-docs</id>
@@ -1807,14 +1808,14 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <target>
+	      <target>
                 <exec executable="sphinx-build">
                   <arg value="-b"/>
                   <arg value="html"/>
                   <arg value="${doc.sphinx.source}"/>
                   <arg value="${doc.sphinx.outdir}"/>
                 </exec>
-              </target>
+	      </target>
             </configuration>
           </execution>
         </executions>
