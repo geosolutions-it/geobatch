@@ -22,7 +22,7 @@ import it.geosolutions.tools.compress.file.Extract;
 
 import java.io.File;
 
-import junit.framework.Assert;
+import static junit.framework.Assert.*;
 
 import org.apache.log4j.Logger;
 import org.geotools.test.TestData;
@@ -52,16 +52,19 @@ public class ExtractTest {
     	LOGGER.info("Extracting file: "+compressed);
     	LOGGER.info("Extracting here: "+compressed.getParentFile());
     	outFile=Extract.extract(compressed, compressed.getParentFile(), false);
-    	Assert.assertTrue(outFile.exists());
-    	Assert.assertTrue(outFile.isDirectory());
+    	assertTrue(outFile.exists());
+    	assertTrue(outFile.isDirectory());
     }
     
     @Test
     public void extractTgzTest() throws Exception {
         LOGGER.info("Extracting tgz file: "+compressedTgz);
-        LOGGER.info("Extracting here: "+compressedTgz.getParentFile());
-        outFile=Extract.extract(compressedTgz, compressedTgz.getParentFile(), false);
-        Assert.assertTrue(outFile.exists());
-        Assert.assertTrue(outFile.isDirectory());
+        File outdir = new File(compressedTgz.getParentFile(), Long.toString(System.currentTimeMillis()));
+        assertFalse(outdir.exists());
+        outdir.mkdir();
+        LOGGER.info("Extracting here: "+ outdir);
+        outFile=Extract.extract(compressedTgz, outdir, false);
+        assertTrue(outFile.exists());
+        assertTrue(outFile.isDirectory());
     }
 }
