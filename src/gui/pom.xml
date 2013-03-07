@@ -157,8 +157,7 @@
     </dependency>
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jsp-2.0</artifactId>
-      <type>pom</type>
+      <artifactId>jsp-2.1</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -856,7 +856,6 @@
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jsp-2.1</artifactId>
         <version>${jetty.version}</version>
-        <type>pom</type>
         <exclusions>
           <exclusion>
             <groupId>org.slf4j</groupId>
