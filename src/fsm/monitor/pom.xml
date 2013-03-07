@@ -22,7 +22,7 @@
   <name>Monitor module</name>
   <description>File System Monitor core module.</description>
   <properties>
-    <root.basedir>../../${project.basedir}</root.basedir>
+    <root.basedir>${project.basedir}/../..</root.basedir>
   </properties>
   <!-- ==================================================== -->
   <!--     Dependencies                                     -->

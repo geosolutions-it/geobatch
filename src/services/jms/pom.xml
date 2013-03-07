@@ -9,10 +9,6 @@
     <artifactId>gb-services</artifactId>
     <version>1.4-SNAPSHOT</version>
   </parent>
-  <properties>
-    <!-- <allow.test.skip>true</allow.test.skip> <allow.test.failure.ignore>false</allow.test.failure.ignore> 
-			<extensive.tests>false</extensive.tests> <path.native>/Windows/System32</path.native> -->
-  </properties>
   <!-- ===================================================================== -->
   <!-- Project description (including license). -->
   <!-- ===================================================================== -->
@@ -22,17 +18,10 @@
   <name>JMS Flow Manager service</name>
   <description>
         JMS Flow Manager component based on CAMEL
-    </description>
-  <url>http://www.geo-solutions.it/reports/</url>
-  <scm>
-    <connection>scm:svn:https://svn.codehaus.org/geobatch/trunk/</connection>
-    <url>https://svn.codehaus.org/geobatch/trunk/</url>
-  </scm>
-  <organization>
-    <name>GeoSolutions</name>
-    <url>http://www.geo-solutions.it</url>
-  </organization>
-  <inceptionYear>2011</inceptionYear>
+  </description>
+  <properties>
+    <root.basedir>${project.basedir}/../..</root.basedir>
+  </properties>
   <!-- ==================================================== -->
   <!-- Dependencies -->
   <!-- ==================================================== -->

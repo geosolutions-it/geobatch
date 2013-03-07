@@ -23,7 +23,7 @@
   <name>GeoBatch actions</name>
   <description>GeoSolutions GeoBatch actions.</description>
   <properties>
-    <root.basedir>../${project.basedir}</root.basedir>
+    <root.basedir>${project.basedir}/..</root.basedir>
   </properties>
   <dependencies>
     <dependency>

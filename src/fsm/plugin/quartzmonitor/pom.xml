@@ -20,15 +20,13 @@
   <artifactId>gb-fsm-quartz</artifactId>
   <packaging>jar</packaging>
   <name>Filesystem Monitor: quartz plugin</name>
-  <url>http://www.geo-solutions.it/reports/DirMonitorPolling/</url>
-  <scm>
-    <connection>scm:svn:https://www.geo-solutions.it/svn/repo/FileSystemMonitor/trunk/plugin/DirMonitorPolling/</connection>
-    <url>https://www.geo-solutions.it/svn/repo/FileSystemMonitor/trunk/plugin/DirMonitorPolling/</url>
-  </scm>
   <version>1.4-SNAPSHOT</version>
   <description>
     The FileSystemMonitor quartz plugin.
   </description>
+  <properties>
+    <root.basedir>${project.basedir}/../../..</root.basedir>
+  </properties>
   <!-- ==================================================== -->
   <!--     Dependencies                                     -->
   <!-- ==================================================== -->

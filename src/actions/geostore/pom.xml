@@ -23,7 +23,7 @@
   <name>GeoBatch action: geostore</name>
   <description>GeoSolutions GeoBatch Action: geostore</description>
   <properties>
-    <root.basedir>../../${project.basedir}</root.basedir>
+    <root.basedir>${project.basedir}/../..</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->

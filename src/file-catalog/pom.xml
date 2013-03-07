@@ -22,7 +22,7 @@
   <name>GeoBatch filesystem catalog</name>
   <description>GeoSolutions GeoBatch catalog file system persistence</description>
   <properties>
-    <root.basedir>../${project.basedir}</root.basedir>
+    <root.basedir>${project.basedir}/..</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependencies                                            -->

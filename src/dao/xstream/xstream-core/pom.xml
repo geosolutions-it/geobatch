@@ -14,7 +14,9 @@
   <!--<packaging>jar</packaging> -->
   <name>GeoBatch DAOs - XStream main</name>
   <description>GeoSolutions GeoBatch pluggable DAOs - XStream</description>
-  <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
+  <properties>
+    <root.basedir>${project.basedir}/../../..</root.basedir>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>it.geosolutions.tools</groupId>

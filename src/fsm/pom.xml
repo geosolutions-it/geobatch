@@ -24,7 +24,7 @@
         with Abstract Factory for DirectoryWatching
   </description>
   <properties>
-    <root.basedir>../${project.basedir}</root.basedir>
+    <root.basedir>${project.basedir}/..</root.basedir>
   </properties>
   <!-- ===================================================================== -->
   <!--     All FileSystemMonitor groups included in the build.               -->

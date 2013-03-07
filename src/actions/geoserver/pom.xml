@@ -25,7 +25,7 @@
         GeoSolutions GeoBatch base module for actions that configure data in GeoServer
   </description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>${project.basedir}/../..</root.basedir>
   </properties>
   <modules>
     <module>geoserver-action</module>

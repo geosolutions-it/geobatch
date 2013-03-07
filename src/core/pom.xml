@@ -22,7 +22,7 @@
   <name>GeoBatch core</name>
   <description>GeoSolutions GeoBatch core</description>
   <properties>
-    <root.basedir>${project.parent.basedir}</root.basedir>
+    <root.basedir>${project.basedir}/..</root.basedir>
   </properties>
   <modules>
     <module>model</module>

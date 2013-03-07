@@ -14,7 +14,9 @@
   <packaging>pom</packaging>
   <name>GeoBatch DAOs - XStream base project</name>
   <description>GeoSolutions GeoBatch pluggable DAOs - XStream parent</description>
-  <url>http://www.geo-solutions.it/maven_reports/gb/data/</url>
+  <properties>
+    <root.basedir>${project.basedir}/../..</root.basedir>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>

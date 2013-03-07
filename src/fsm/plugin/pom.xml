@@ -19,14 +19,12 @@
   <artifactId>gb-fsm-plugin</artifactId>
   <packaging>pom</packaging>
   <name>FileSystemMonitor plugins</name>
-  <url>http://www.geo-solutions.it/reports/plugin/</url>
-  <scm>
-    <connection>scm:svn:https://svn.codehaus.org/geobatch/trunk//</connection>
-    <url>https://svn.codehaus.org/geobatch/trunk//</url>
-  </scm>
   <description>
     File System Monitor Plugins.
   </description>
+  <properties>
+    <root.basedir>${project.basedir}/../..</root.basedir>
+  </properties>
   <!-- ===================================================================== -->
   <!--     External dependencies.                                            -->
   <!--     POM in subdirectories will inherit them.                          -->
