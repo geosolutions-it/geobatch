@@ -19,9 +19,6 @@
  */
 package it.geosolutions.geobatch.services.rest;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-
 import it.geosolutions.geobatch.services.rest.exception.BadRequestRestEx;
 import it.geosolutions.geobatch.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geobatch.services.rest.exception.NotFoundRestEx;
@@ -29,7 +26,16 @@ import it.geosolutions.geobatch.services.rest.model.RESTConsumerList;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus;
 import it.geosolutions.geobatch.services.rest.model.RESTFlow;
 import it.geosolutions.geobatch.services.rest.model.RESTFlowList;
-import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus.Status;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
@@ -79,6 +85,7 @@ public interface RESTFlowService {
     @POST
     @Path("/flows/{flowid}/run")
 //    @Produces(MediaType.APPLICATION_XML)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     String run(@PathParam("flowid") String flowId,
             @QueryParam("fastfail") Boolean fastfail,
             @Multipart("data") byte[]data)

@@ -75,6 +75,12 @@
       <artifactId>org.restlet.ext.servlet</artifactId>
       <version>2.1.1</version>
     </dependency>
+    
+    <dependency>
+	    <groupId>it.geosolutions.geobatch</groupId>
+	    <artifactId>gb-rest-impl</artifactId>
+    </dependency>
+    
     <!-- ============================== -->
     <!-- Test: JETTY -->
     <!-- ============================== -->
@@ -180,7 +186,56 @@
     </plugins>
   </build>
   <profiles>
-    <!-- GB-SERVICES==================================================== -->
+  	<!-- GB-SERVICES==================================================== -->
+    <!-- REST =========================================================== -->
+    <profile>
+      <id>rest</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-rest-impl</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_rest</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-rest-impl</artifactId>
+                      <classifier>flowsettings</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}/data/</outputDirectory>
+                      <includes>settings/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <!-- JMS =========================================================== -->
     <profile>
       <id>jms</id>

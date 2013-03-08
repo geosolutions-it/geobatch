@@ -36,6 +36,7 @@ import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
+import it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGenerator;
 import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
 import it.geosolutions.geobatch.flow.event.listeners.logger.LoggingProgressListener;
 import it.geosolutions.geobatch.flow.event.listeners.status.StatusProgressListener;
@@ -63,6 +64,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,19 +175,20 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
         OutputStream os = null;
         BufferedOutputStream bos = null;
         try{
-            FileBasedFlowManager rf =  new FileBasedFlowManager(null, null);       //flowManagerList.get(flowId);
-            String watchDirPath = ((FileBasedEventGeneratorConfiguration)(rf.getConfiguration().getEventGeneratorConfiguration())).getWatchDirectory();
-            File watchDir = new File(watchDirPath);
+            final FileBasedFlowManager fbfm =  catalog.getFlowManager(flowId, FileBasedFlowManager.class);
+            final String watchDirRelativePath = ((FileBasedEventGeneratorConfiguration)(fbfm.getConfiguration().getEventGeneratorConfiguration())).getWatchDirectory();
+            File watchDir = ((FileBasedEventGenerator)fbfm.getEventGenerator()).getWatchDirectory();
+            
             if(watchDir != null && watchDir.canWrite() && watchDir.isDirectory()){
                 StringBuffer fileName = new StringBuffer();
                 fileName.append("inputConfig").append(System.currentTimeMillis());
-                File temp = rf.getFlowTempDir().createTempFile(fileName.toString(), ".xml");
+                File temp = new File(fbfm.getFlowTempDir() + File.pathSeparator + fileName.toString() + ".tmp");
                 os = new FileOutputStream(temp);
                 bos = new BufferedOutputStream(os);
                 bos.write(data);
                 bos.flush();
-                File input = new File(watchDir.getAbsolutePath().concat("/").concat(fileName.toString()));
-                temp.renameTo(input);
+                File input = new File(watchDir.getAbsolutePath().concat("/").concat(fileName.toString()).concat(".tif"));
+                FileUtils.copyFile(temp, input);
             }
             else{
                 if(LOGGER.isErrorEnabled()){LOGGER.error("The watch dir not exist or geobatch hasn't the ");}
