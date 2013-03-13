@@ -21,22 +21,21 @@
  */
 package it.geosolutions.geobatch.services.rest.impl;
 
-import static it.geosolutions.geobatch.services.rest.impl.RESTFileBasedFlowUtils.fromCalendarToString;
-import static it.geosolutions.geobatch.services.rest.impl.RESTFileBasedFlowUtils.getConsumer;
-import static it.geosolutions.geobatch.services.rest.impl.RESTFileBasedFlowUtils.getConsumerList;
-import static it.geosolutions.geobatch.services.rest.impl.RESTFileBasedFlowUtils.getFlowManagerFromConsumerId;
-import static it.geosolutions.geobatch.services.rest.impl.RESTFileBasedFlowUtils.toRESTConsumerStatus;
+import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.fromCalendarToString;
+import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getConsumer;
+import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getConsumerList;
+import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getFlowManagerFromConsumerId;
+import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.toRESTConsumerStatus;
 import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.catalog.file.DataDirHandler;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
-import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
-import it.geosolutions.geobatch.flow.event.generator.file.FileBasedEventGenerator;
 import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
 import it.geosolutions.geobatch.flow.event.listeners.logger.LoggingProgressListener;
 import it.geosolutions.geobatch.flow.event.listeners.status.StatusProgressListener;
@@ -45,6 +44,7 @@ import it.geosolutions.geobatch.services.rest.RESTFlowService;
 import it.geosolutions.geobatch.services.rest.exception.BadRequestRestEx;
 import it.geosolutions.geobatch.services.rest.exception.InternalErrorRestEx;
 import it.geosolutions.geobatch.services.rest.exception.NotFoundRestEx;
+import it.geosolutions.geobatch.services.rest.impl.runutils.FlowRunner;
 import it.geosolutions.geobatch.services.rest.model.RESTActionShort;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerList;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerShort;
@@ -64,7 +64,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,12 +76,18 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
     private static Logger LOGGER = LoggerFactory.getLogger(RESTFileBasedFlowServiceImpl.class);
     
     private Catalog catalog;
+    private DataDirHandler dataDirHandler;
+    
     private List<FileBasedFlowManager> flowManagerList;
     private RESTFlowList flowsList;
     private Map<String,RESTFlow> flowsMap;
     
     public void setCatalog(Catalog catalog){
         this.catalog = catalog;
+    }
+    
+    public void setDataDirHandler(DataDirHandler dataDirHandler){
+        this.dataDirHandler = dataDirHandler;
     }
     
     public RESTFileBasedFlowServiceImpl(){
@@ -165,34 +170,28 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
         }
         return fbfm;
     }
-
+    
     /**
      * @see it.geosolutions.geobatch.services.rest.RESTFlowService#run(java.lang.String, java.lang.Boolean, byte[])
      */
     @Override
     public String run(String flowId, Boolean fastfail, byte[] data) throws BadRequestRestEx,
             InternalErrorRestEx {
+        
         OutputStream os = null;
         BufferedOutputStream bos = null;
+        File event = null;
         try{
-            final FileBasedFlowManager fbfm =  catalog.getFlowManager(flowId, FileBasedFlowManager.class);
-            final String watchDirRelativePath = ((FileBasedEventGeneratorConfiguration)(fbfm.getConfiguration().getEventGeneratorConfiguration())).getWatchDirectory();
-            File watchDir = ((FileBasedEventGenerator)fbfm.getEventGenerator()).getWatchDirectory();
             
-            if(watchDir != null && watchDir.canWrite() && watchDir.isDirectory()){
-                StringBuffer fileName = new StringBuffer();
-                fileName.append("inputConfig").append(System.currentTimeMillis());
-                File temp = new File(fbfm.getFlowTempDir() + File.pathSeparator + fileName.toString() + ".tmp");
-                os = new FileOutputStream(temp);
-                bos = new BufferedOutputStream(os);
-                bos.write(data);
-                bos.flush();
-                File input = new File(watchDir.getAbsolutePath().concat("/").concat(fileName.toString()).concat(".tif"));
-                FileUtils.copyFile(temp, input);
-            }
-            else{
-                if(LOGGER.isErrorEnabled()){LOGGER.error("The watch dir not exist or geobatch hasn't the ");}
-            }
+            final FileBasedFlowManager fbfm =  catalog.getFlowManager(flowId, FileBasedFlowManager.class);
+            
+            StringBuffer fileName = new StringBuffer();
+            fileName.append("inputConfig").append(System.currentTimeMillis());
+            event = new File(fbfm.getFlowTempDir() + File.pathSeparator + fileName.toString() + ".tmp");
+            os = new FileOutputStream(event);
+            bos = new BufferedOutputStream(os);
+            bos.write(data);
+            bos.flush();
         }
         catch(Exception e){
             throw new InternalErrorRestEx(e.getLocalizedMessage());
@@ -213,7 +212,17 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
                 }
             }
         }
-        return "";
+        final FileBasedFlowManager fbfm =  catalog.getFlowManager(flowId, FileBasedFlowManager.class);
+        final FlowRunner fr = new FlowRunner(fbfm, dataDirHandler);
+        String consumerUUID = null;
+        try {
+            consumerUUID = fr.createConsumer();
+            fr.runConsumer(consumerUUID, event);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            LOGGER.error(e.getMessage(), e);
+        }
+        return consumerUUID;
     }
     
     /**

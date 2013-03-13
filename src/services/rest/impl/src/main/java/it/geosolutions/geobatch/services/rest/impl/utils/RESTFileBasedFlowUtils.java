@@ -19,7 +19,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.services.rest.impl;
+package it.geosolutions.geobatch.services.rest.impl.utils;
+
+import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
+import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+import it.geosolutions.geobatch.services.rest.model.RESTConsumerList;
+import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus.Status;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,11 +33,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
-import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
-import it.geosolutions.geobatch.services.rest.model.RESTConsumerList;
-import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus.Status;
 
 /**
  * @author DamianoG
@@ -59,7 +59,7 @@ public class RESTFileBasedFlowUtils {
         return "dummy implementation";
     }
 
-    static FileBasedFlowManager getFlowManagerFromConsumerId(String consumerId,
+    public static FileBasedFlowManager getFlowManagerFromConsumerId(String consumerId,
             List<FileBasedFlowManager> flowManagerList) {
 
         FileBasedFlowManager fbfm = null;
@@ -72,7 +72,7 @@ public class RESTFileBasedFlowUtils {
         return fbfm;
     }
 
-    static BaseEventConsumer getConsumer(String consumerId, List<FileBasedFlowManager> flowManagerList) {
+    public static BaseEventConsumer getConsumer(String consumerId, List<FileBasedFlowManager> flowManagerList) {
 
         BaseEventConsumer bec = null;
         for (FileBasedFlowManager el : flowManagerList) {
@@ -84,7 +84,7 @@ public class RESTFileBasedFlowUtils {
         return bec;
     }
 
-    static List getConsumerList(String flowId, List<FileBasedFlowManager> flowManagerList) {
+    public static List getConsumerList(String flowId, List<FileBasedFlowManager> flowManagerList) {
 
         List<BaseEventConsumer> consumerList = new ArrayList<BaseEventConsumer>();
         FileBasedFlowManager currentFM = null;

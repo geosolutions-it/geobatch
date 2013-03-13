@@ -26,9 +26,8 @@
     <!-- ====================================================================-->
     
     <bean id="restFlowService" class="it.geosolutions.geobatch.services.rest.impl.RESTFileBasedFlowServiceImpl" depends-on="globalConfig">
-<!--        <property name="userGroupAdminService" ref="userGroupAdminService"/>-->
-<!--        <property name="userAdminService" ref="userAdminService"/>-->
-	 		<property name="catalog" ref="catalog" />
+        <property name="dataDirHandler" ref="dataDirHandler"/>
+ 		<property name="catalog" ref="catalog" />
     </bean>
 
     <!-- ====================================================================-->
