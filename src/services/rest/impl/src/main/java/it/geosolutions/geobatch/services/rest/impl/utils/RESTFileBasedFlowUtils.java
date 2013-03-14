@@ -21,15 +21,24 @@
  */
 package it.geosolutions.geobatch.services.rest.impl.utils;
 
+import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+import it.geosolutions.geobatch.services.rest.model.RESTActionShort;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerList;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus.Status;
+import it.geosolutions.geobatch.services.rest.model.RESTFlow;
+import it.geosolutions.geobatch.services.rest.model.RESTFlowList;
+import it.geosolutions.geobatch.services.rest.model.RESTFlowShort;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +68,18 @@ public class RESTFileBasedFlowUtils {
         return "dummy implementation";
     }
 
+    public static List<FileBasedFlowManager> getFlowManagerList(Catalog catalog) {
+        
+        List<FileBasedFlowManager> fbfm = null;
+        if(catalog != null){
+            fbfm = catalog.getFlowManagers(FileBasedFlowManager.class);
+        }
+        if(fbfm == null){
+            throw new IllegalStateException("The GB catalog is null or the requested resource 'FileBasedFlowManager' don't exist");
+        }
+        return fbfm;
+    }
+
     public static FileBasedFlowManager getFlowManagerFromConsumerId(String consumerId,
             List<FileBasedFlowManager> flowManagerList) {
 
@@ -72,7 +93,8 @@ public class RESTFileBasedFlowUtils {
         return fbfm;
     }
 
-    public static BaseEventConsumer getConsumer(String consumerId, List<FileBasedFlowManager> flowManagerList) {
+    public static BaseEventConsumer getConsumer(String consumerId,
+            List<FileBasedFlowManager> flowManagerList) {
 
         BaseEventConsumer bec = null;
         for (FileBasedFlowManager el : flowManagerList) {
@@ -113,4 +135,86 @@ public class RESTFileBasedFlowUtils {
         return consumerList;
     }
 
+    public static RESTFlowList getFlowsList(List<FileBasedFlowManager> flowManagerList) {
+
+        StringBuilder loggerString = new StringBuilder();
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Load needed data structures...");
+        }
+        List<RESTFlowShort> shortFlowsList = new ArrayList<RESTFlowShort>();
+        loggerString.append("found ").append(flowManagerList.size()).append(" flow(s)...");
+
+        RESTFlowList flowsList = new RESTFlowList();
+
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info(loggerString.toString());
+        }
+
+        for (FileBasedFlowManager el : flowManagerList) {
+
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Working on flow '" + el.getId() + "'");
+            }
+
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Flow " + el.getId() + ": add current flow to shortFlowsList");
+            }
+            RESTFlowShort rfs = new RESTFlowShort();
+            rfs.setId(el.getId());
+            rfs.setName(el.getName());
+            rfs.setDescription(el.getDescription());
+            shortFlowsList.add(rfs);
+        }
+        flowsList.setList(shortFlowsList);
+
+        return flowsList;
+    }
+
+    public static Map<String, RESTFlow> getFlowsMap(List<FileBasedFlowManager> flowManagerList) {
+
+        StringBuilder loggerString = new StringBuilder();
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Load needed data structures...");
+        }
+
+        Map<String, RESTFlow> flowsMap = new HashMap<String, RESTFlow>();
+
+        loggerString.append("found ").append(flowManagerList.size()).append(" flow(s)...");
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info(loggerString.toString());
+        }
+        for (FileBasedFlowManager el : flowManagerList) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Working on flow '" + el.getId() + "'");
+            }
+            EventConsumerConfiguration ecc = null;
+            if (el.getConfiguration() != null
+                    && el.getConfiguration().getEventConsumerConfiguration() != null) {
+                ecc = el.getConfiguration().getEventConsumerConfiguration();
+            } else {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Flow ").append(el.getId())
+                        .append(" configuration is not a valid geobatch configuration");
+                throw new IllegalStateException();
+            }
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Flow " + el.getId() + ": add current flow to flowsMap");
+            }
+            RESTFlow rf = new RESTFlow();
+            rf.setId(el.getId());
+            rf.setName(el.getName());
+            rf.setDescription(el.getDescription());
+            List<RESTActionShort> actionList = new ArrayList<RESTActionShort>();
+            for (ActionConfiguration el2 : ecc.getActions()) {
+                RESTActionShort ras = new RESTActionShort();
+                ras.setId(el2.getId());
+                ras.setName(el2.getName());
+                ras.setDescription(el2.getDescription());
+                actionList.add(ras);
+            }
+            rf.setActionList(actionList);
+            flowsMap.put(el.getId(), rf);
+        }
+        return flowsMap;
+    }
 }

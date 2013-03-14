@@ -21,23 +21,30 @@
  */
 package it.geosolutions.geobatch.services.rest.impl;
 
+//import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.fromCalendarToString;
+//import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getConsumer;
+//import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getConsumerList;
+//import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getFlowManagerFromConsumerId;
+//import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getFlowsList;
+//import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getFlowsMap;
 import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.fromCalendarToString;
 import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getConsumer;
 import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getConsumerList;
 import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getFlowManagerFromConsumerId;
+import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getFlowManagerList;
+import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getFlowsList;
+import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.getFlowsMap;
 import static it.geosolutions.geobatch.services.rest.impl.utils.RESTFileBasedFlowUtils.toRESTConsumerStatus;
 import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.catalog.file.DataDirHandler;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
-import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
+import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
-import it.geosolutions.geobatch.flow.event.listeners.logger.LoggingProgressListener;
 import it.geosolutions.geobatch.flow.event.listeners.status.StatusProgressListener;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.services.rest.RESTFlowService;
@@ -51,16 +58,14 @@ import it.geosolutions.geobatch.services.rest.model.RESTConsumerShort;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus;
 import it.geosolutions.geobatch.services.rest.model.RESTFlow;
 import it.geosolutions.geobatch.services.rest.model.RESTFlowList;
-import it.geosolutions.geobatch.services.rest.model.RESTFlowShort;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EventObject;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,10 +82,7 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
     
     private Catalog catalog;
     private DataDirHandler dataDirHandler;
-    
-    private List<FileBasedFlowManager> flowManagerList;
-    private RESTFlowList flowsList;
-    private Map<String,RESTFlow> flowsMap;
+
     
     public void setCatalog(Catalog catalog){
         this.catalog = catalog;
@@ -90,56 +92,11 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
         this.dataDirHandler = dataDirHandler;
     }
     
-    public RESTFileBasedFlowServiceImpl(){
-        flowManagerList = new ArrayList<FileBasedFlowManager>();
-        flowsList = new RESTFlowList();
-        flowsMap = new HashMap<String, RESTFlow>();
-    }
+    public RESTFileBasedFlowServiceImpl(){}
     
-    public void init(){
+    private List<FileBasedFlowManager> buildFlowManagerList(){
         
-        StringBuilder loggerString = new StringBuilder();
-        if(LOGGER.isInfoEnabled()){LOGGER.info("Load needed data structures...");}
-        flowManagerList = catalog.getFlowManagers(FileBasedFlowManager.class);
-        List<RESTFlowShort> shortFlowsList = new ArrayList<RESTFlowShort>();
-        
-        loggerString.append("found ").append(flowManagerList.size()).append(" flow(s)...");
-        if(LOGGER.isInfoEnabled()){LOGGER.info(loggerString.toString());}
-        for(FileBasedFlowManager el : flowManagerList){
-            if(LOGGER.isDebugEnabled()){LOGGER.debug("Working on flow '" + el.getId() + "'");}
-            EventConsumerConfiguration ecc = null;
-            if(el.getConfiguration()!=null && el.getConfiguration().getEventConsumerConfiguration()!=null){
-                ecc = el.getConfiguration().getEventConsumerConfiguration();
-            }
-            else{
-                StringBuilder sb = new StringBuilder();
-                sb.append("Flow ").append(el.getId()).append(" configuration is not a valid geobatch configuration");
-                throw new IllegalStateException();
-            }
-            if(LOGGER.isDebugEnabled()){LOGGER.debug("Flow " + el.getId() + ": add current flow to flowsMap");}
-            RESTFlow rf = new RESTFlow();
-            rf.setId(el.getId());
-            rf.setName(el.getName());
-            rf.setDescription(el.getDescription());
-            List<RESTActionShort> actionList = new ArrayList<RESTActionShort>();
-            for(ActionConfiguration el2 : ecc.getActions()){
-                RESTActionShort ras = new RESTActionShort();
-                ras.setId(el2.getId());
-                ras.setName(el2.getName());
-                ras.setDescription(el2.getDescription());
-                actionList.add(ras);
-            }
-            rf.setActionList(actionList);
-            flowsMap.put(el.getId(), rf);
-            
-            if(LOGGER.isDebugEnabled()){LOGGER.debug("Flow " + el.getId() + ": add current flow to shortFlowsList");}
-            RESTFlowShort rfs = new RESTFlowShort();
-            rfs.setId(el.getId());
-            rfs.setName(el.getName());
-            rfs.setDescription(el.getDescription());
-            shortFlowsList.add(rfs);
-        }
-        flowsList.setList(shortFlowsList);
+        return getFlowManagerList(catalog);
     }
     
     /**
@@ -147,7 +104,8 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
      */
     @Override
     public RESTFlowList getFlowList() throws InternalErrorRestEx {
-        return flowsList;
+        
+        return getFlowsList(buildFlowManagerList());
     }
 
     /**
@@ -155,6 +113,10 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
      */
     @Override
     public RESTFlow getFlow(String id) throws NotFoundRestEx, InternalErrorRestEx {
+        
+        List<FileBasedFlowManager> flowManagerList = buildFlowManagerList();
+        Map<String, RESTFlow> flowsMap = getFlowsMap(flowManagerList);
+        
         if(flowsMap == null || flowsMap.isEmpty()){
             StringBuilder sb = new StringBuilder();
             sb.append("An error occurs when search for Flow '").append(id).append("'. The Flow List is Null or Empty.");
@@ -177,7 +139,7 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
     @Override
     public String run(String flowId, Boolean fastfail, byte[] data) throws BadRequestRestEx,
             InternalErrorRestEx {
-        
+        if(LOGGER.isInfoEnabled()){LOGGER.info("File Upload finish without errors...");}
         OutputStream os = null;
         BufferedOutputStream bos = null;
         File event = null;
@@ -216,10 +178,11 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
         final FlowRunner fr = new FlowRunner(fbfm, dataDirHandler);
         String consumerUUID = null;
         try {
+            if(LOGGER.isInfoEnabled()){LOGGER.info("Creating new consumer...");}
             consumerUUID = fr.createConsumer();
+            if(LOGGER.isInfoEnabled()){LOGGER.info("Starting the flow");}
             fr.runConsumer(consumerUUID, event);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             LOGGER.error(e.getMessage(), e);
         }
         return consumerUUID;
@@ -231,9 +194,14 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
     @Override
     public RESTConsumerList getFlowConsumers(String flowId) throws NotFoundRestEx,
             InternalErrorRestEx {
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("Search consumers for flow '").append(flowId).append("' ");
+        if(LOGGER.isInfoEnabled()){LOGGER.info(sb.toString());}
+        List<FileBasedFlowManager> flowManagerList = buildFlowManagerList();
         List<FileBasedEventConsumer> consumerList = getConsumerList(flowId, flowManagerList);
         if(consumerList == null || consumerList.isEmpty()){
-            StringBuilder sb = new StringBuilder();
+            sb = new StringBuilder();
             sb.append("An error occurs when search for Flow '").append(flowId).append("'. The Flow List is Null or Empty.");
             if(LOGGER.isInfoEnabled()){LOGGER.info(sb.toString());}
             throw new NotFoundRestEx(sb.toString());
@@ -254,6 +222,9 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
      */
     @Override
     public RESTConsumerStatus getConsumerStatus(String consumerId) {
+        
+        if(LOGGER.isInfoEnabled()){LOGGER.info("Get consumer Status");}
+        List<FileBasedFlowManager> flowManagerList = buildFlowManagerList();
         BaseEventConsumer bec = getConsumer(consumerId, flowManagerList);
         RESTConsumerStatus rcs = new RESTConsumerStatus();
         rcs.setUuid(bec.getId());
@@ -273,13 +244,18 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
      */
     @Override
     public String getConsumerLog(String consumerId) {
-        BaseEventConsumer bec = getConsumer(consumerId, flowManagerList);
-        List<LoggingProgressListener> coll = (List) bec.getListeners(LoggingProgressListener.class);
+        
+        if(LOGGER.isInfoEnabled()){LOGGER.info("Get consumer log");}
+        List<FileBasedFlowManager> flowManagerList = buildFlowManagerList();
+        EventConsumer bec = getConsumer(consumerId, flowManagerList);
+        Collection<IProgressListener> coll = bec.getListeners();
+        if(coll != null && coll.isEmpty()){
+            if(LOGGER.isInfoEnabled()){LOGGER.info("No listeners found for this consumer");}
+        }
         StringBuilder sb = new StringBuilder();
         for (IProgressListener listener : coll) {
             if (listener == null) {
                 continue;
-                // TODO warn
             } else if (listener instanceof CumulatingProgressListener) {
                 CumulatingProgressListener cpl = (CumulatingProgressListener) listener;
                 for (String msg : cpl.getMessages()) {
@@ -289,7 +265,6 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
                 StatusProgressListener spl = (StatusProgressListener) listener;
                 sb.append("Consumer status: ").append(spl.toString()).append("<br />");
             } else if (listener instanceof ProgressListener) {
-                // get any pl
                 ProgressListener anypl = (ProgressListener) listener;
                 sb.append("Consumer action task: ").append(anypl.getTask()).append("<br />");
                 sb.append("Consumer action progress: ").append(anypl.getProgress()).append("%").append("<br />");
@@ -303,6 +278,11 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
      */
     @Override
     public void pauseConsumer(String consumerId) {
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("Pause consumer '").append(consumerId).append("' ");
+        if(LOGGER.isInfoEnabled()){LOGGER.info(sb.toString());}
+        List<FileBasedFlowManager> flowManagerList = buildFlowManagerList();
         BaseEventConsumer bec = getConsumer(consumerId, flowManagerList);
         bec.pause();
     }
@@ -312,6 +292,11 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
      */
     @Override
     public void resumeConsumer(String consumerId) {
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("Resume consumer '").append(consumerId).append("' ");
+        if(LOGGER.isInfoEnabled()){LOGGER.info(sb.toString());}
+        List<FileBasedFlowManager> flowManagerList = buildFlowManagerList();
         BaseEventConsumer bec = getConsumer(consumerId, flowManagerList);
         bec.resume();
     }
@@ -322,6 +307,10 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
     @Override
     public void cleanupConsumer(String consumerId) {
         
+        StringBuilder sb = new StringBuilder();
+        sb.append("Pause the consumer '").append(consumerId).append("' ");
+        if(LOGGER.isInfoEnabled()){LOGGER.info(sb.toString());}
+        List<FileBasedFlowManager> flowManagerList = buildFlowManagerList();
         BaseEventConsumer bec = getConsumer(consumerId, flowManagerList);
         FileBasedFlowManager fbfm = getFlowManagerFromConsumerId(consumerId, flowManagerList);
         EventConsumerStatus ecs = bec.getStatus();
@@ -339,13 +328,4 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
             }
         }
     }
-    
-    public void dispose(){
-        catalog = null;
-        flowManagerList = null;
-        flowsList = null;
-        flowsMap = null;
-    }
-
-   
 }
