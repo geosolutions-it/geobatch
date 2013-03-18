@@ -68,7 +68,7 @@ public class GeoBatchRESTClient {
     //==========================================================================
 
     public RESTFlowService getFlowService() {
-        return getService(RESTFlowService.class, "flows");
+        return getService(RESTFlowService.class, "/");
     }
 
     //==========================================================================
