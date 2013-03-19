@@ -1,4 +1,6 @@
 /*
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  http://geobatch.geo-solutions.it/
  *  Copyright (C) 2013 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -39,7 +41,9 @@ public class RESTConsumerStatus implements  Serializable {
     }
 
     private String uuid;
+    
     private Status status;
+    private String extendedStatus; // the real status of the consumer: IDLE, WAITING, EXECUTING, COMPLETED, FAILED, CANCELED, PAUSED;
 
     private String errorMessage;
 
@@ -67,6 +71,15 @@ public class RESTConsumerStatus implements  Serializable {
         this.status = status;
     }
 
+    @XmlAttribute(name = "extstatus")
+    public String getExtendedStatus() {
+        return extendedStatus;
+    }
+
+    public void setExtendedStatus(String extendedStatus) {
+        this.extendedStatus = extendedStatus;
+    }
+
     public RESTActionShort getLatestAction() {
         return latestAction;
     }
@@ -90,6 +103,7 @@ public class RESTConsumerStatus implements  Serializable {
                 + "["
                 + (uuid!=null? " uuid=" + uuid : "")
                 + (status != null? " status=" + status : "")
+                + (extendedStatus != null? " extstatus=" + extendedStatus : "")
                 + (latestAction != null? " action=" + latestAction : "")
                 + ']';
     }

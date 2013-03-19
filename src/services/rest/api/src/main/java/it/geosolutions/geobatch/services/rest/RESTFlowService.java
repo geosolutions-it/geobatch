@@ -1,4 +1,6 @@
 /*
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  http://geobatch.geo-solutions.it/
  *  Copyright (C) 2013 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -114,7 +116,7 @@ public interface RESTFlowService {
     @GET
     @Path("/consumers/{consumerid}/status")
     @Produces(MediaType.APPLICATION_XML)
-    RESTConsumerStatus getConsumerStatus(@PathParam("consumerid") String consumerId);
+    RESTConsumerStatus getConsumerStatus(@PathParam("consumerid") String consumerId) throws NotFoundRestEx;
 
     /**
      * Return a status log of the consumer
@@ -125,7 +127,7 @@ public interface RESTFlowService {
     @GET
     @Path("/consumers/{consumerid}/log")
 //    @Produces(MediaType.APPLICATION_XML)
-    String getConsumerLog(@PathParam("consumerid") String consumerId);
+    String getConsumerLog(@PathParam("consumerid") String consumerId) throws NotFoundRestEx;
 
     /**
      * Pause a running consumer
@@ -133,7 +135,7 @@ public interface RESTFlowService {
      */
     @PUT
     @Path("/consumers/{consumerid}/pause")
-    void pauseConsumer(@PathParam("consumerid") String consumerId);
+    void pauseConsumer(@PathParam("consumerid") String consumerId) throws NotFoundRestEx;
 
     /**
      * Resume a paused consumer
@@ -141,7 +143,7 @@ public interface RESTFlowService {
      */
     @PUT
     @Path("/consumers/{consumerid}/resume")
-    void resumeConsumer(@PathParam("consumerid") String consumerId);
+    void resumeConsumer(@PathParam("consumerid") String consumerId)  throws NotFoundRestEx;
 
     /**
      * Delete a consumer if it isn't in an active state.
@@ -149,6 +151,6 @@ public interface RESTFlowService {
      */
     @PUT
     @Path("/consumers/{consumerid}/clean")
-    void cleanupConsumer(@PathParam("consumerid") String consumerId);
+    void cleanupConsumer(@PathParam("consumerid") String consumerId)  throws NotFoundRestEx, BadRequestRestEx ;
 
 }

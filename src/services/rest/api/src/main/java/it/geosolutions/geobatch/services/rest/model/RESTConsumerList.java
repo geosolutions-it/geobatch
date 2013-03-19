@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
- *  https://github.com/nfms4redd/nfms-geobatch
- *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
+ *  http://geobatch.geo-solutions.it/
+ *  Copyright (C) 2013 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author DamianoG
  *
  */
-@XmlRootElement(name = "consumer")
+@XmlRootElement(name = "consumers")
 @XmlType(propOrder = {"flow", "consumerList"})
 public class RESTConsumerList implements Iterable<RESTConsumerShort>{
 
@@ -68,8 +68,9 @@ public class RESTConsumerList implements Iterable<RESTConsumerShort>{
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append(getClass().getSimpleName()).append("flow ").append(flow.getId()).append(" [  the flow contains:  ").append(consumerList.size()).append(" consumers ]");
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName())
+                .append("[id:").append(flow.getId()).append(" [  the flow contains:  ").append(consumerList.size()).append(" consumers ]");
         return  sb.toString();
     }
 

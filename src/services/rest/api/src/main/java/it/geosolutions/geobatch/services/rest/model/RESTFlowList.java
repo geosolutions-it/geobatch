@@ -1,4 +1,6 @@
 /*
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  http://geobatch.geo-solutions.it/
  *  Copyright (C) 2013 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
@@ -52,13 +54,13 @@ public class RESTFlowList implements Iterable<RESTFlowShort>{
         this.list = userList;
     }
 
-    public void add(RESTFlowShort user) {
-        list.add(user);
+    public void add(RESTFlowShort flow) {
+        list.add(flow);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[" + list.size() + " users]";
+        return getClass().getSimpleName() + "[" + list.size() + " flows]";
     }
 
     @Override

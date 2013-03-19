@@ -32,7 +32,7 @@
     <artifactId>gb-rest-client</artifactId>
     <packaging>jar</packaging>
     <name>GeoBatch REST services: Client</name>
-	
+
     <dependencies>
         <!-- ================================================================-->
         <!-- GeoFence modules -->
@@ -47,7 +47,7 @@
         <!-- Core lib -->
         <!-- ================================================================-->
 
-		<dependency>
+<!--		<dependency>
             <groupId>com.sun.jersey.contribs</groupId>
             <artifactId>jersey-apache-client</artifactId>
             <version>1.12</version>
@@ -57,7 +57,7 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
             <version>1.12</version>
-        </dependency>
+        </dependency>-->
 
         <!-- ================================================================-->
         <!--  Misc support libs -->
