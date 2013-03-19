@@ -12,7 +12,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.0</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
@@ -35,14 +35,14 @@
     <root.basedir>../${project.basedir}</root.basedir>
   </properties>
   <dependencies>
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-      </dependency>
-      <dependency>
-	<groupId>org.slf4j</groupId>
-	<artifactId>slf4j-log4j12</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
   </dependencies>
   <modules>
     <module>commons</module>

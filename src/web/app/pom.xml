@@ -9,7 +9,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-web</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.0</version>
   </parent>
   <!-- =========================================================== -->
   <!-- Module Description -->
@@ -288,7 +288,7 @@
 			was checked to accomplish this very task, but when more actions were specified, 
 			only one was choosen to extract the sample data from. -->
     <!-- Ds2ds ================================================== -->
-	<profile>
+    <profile>
       <id>ds2ds</id>
       <activation>
         <property>
@@ -335,7 +335,8 @@
           </plugin>
         </plugins>
       </build>
-    </profile><!-- Commons ================================================== -->
+    </profile>
+    <!-- Commons ================================================== -->
     <profile>
       <id>commons</id>
       <activation>

@@ -7,7 +7,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-actions</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.0</version>
   </parent>
   <!-- =========================================================== -->
   <!-- Module Description -->
@@ -39,11 +39,11 @@
       <groupId>org.geotools</groupId>
       <artifactId>gt-shapefile</artifactId>
     </dependency>
-	<dependency>
-	   <groupId>org.geotools.jdbc</groupId>
-	   <artifactId>gt-jdbc-h2</artifactId>	   
-	  </dependency>
-	<dependency>
+    <dependency>
+      <groupId>org.geotools.jdbc</groupId>
+      <artifactId>gt-jdbc-h2</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-epsg-hsql</artifactId>
     </dependency>
@@ -65,14 +65,14 @@
       <groupId>it.geosolutions.tools</groupId>
       <artifactId>tools-compress</artifactId>
     </dependency>
-	<dependency>
-		<groupId>net.sourceforge.hatbox</groupId>
-		<artifactId>hatbox</artifactId>        
-	  </dependency>
-	  <dependency>
-			<groupId>it.geosolutions.geobatch</groupId>
-			<artifactId>gb-dao-xstream</artifactId>
-			<scope>test</scope>
-      </dependency>
+    <dependency>
+      <groupId>net.sourceforge.hatbox</groupId>
+      <artifactId>hatbox</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-dao-xstream</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
