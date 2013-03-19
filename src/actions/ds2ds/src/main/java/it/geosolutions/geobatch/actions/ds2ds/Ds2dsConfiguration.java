@@ -155,4 +155,33 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 		 setAttributeMappings(mappings);
 		 setProjectOnMappings(true);
 	}
+	
+	@Override
+    public Ds2dsConfiguration clone() {
+        final Ds2dsConfiguration ret = (Ds2dsConfiguration)super.clone();
+
+        if (this.sourceFeature != null)
+            ret.sourceFeature = this.sourceFeature.clone();
+        else
+            ret.sourceFeature = null;
+        
+        if (this.outputFeature != null)
+            ret.outputFeature = this.outputFeature.clone();
+        else
+            ret.outputFeature = null;
+        
+        ret.purgeData = this.purgeData;
+        if(this.attributeMappings != null) {
+	    	ret.attributeMappings=new HashMap<String,Serializable>();
+	    	for(String key : this.attributeMappings.keySet()) {
+	    		ret.attributeMappings.put(key, this.attributeMappings.get(key));
+	    	}
+        } else {
+        	ret.attributeMappings = null;
+        }
+    	    	
+    	ret.projectOnMappings = this.projectOnMappings;
+
+        return ret;
+    }
 }

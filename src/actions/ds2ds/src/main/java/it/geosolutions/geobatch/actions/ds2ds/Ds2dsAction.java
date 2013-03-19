@@ -89,7 +89,7 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 		
 	public Ds2dsAction(ActionConfiguration actionConfiguration) {
 		super(actionConfiguration);		
-		configuration = (Ds2dsConfiguration)actionConfiguration;
+		configuration = (Ds2dsConfiguration)actionConfiguration.clone();
 	}
 	/**
 	 * Imports data from the source DataStore to the output one

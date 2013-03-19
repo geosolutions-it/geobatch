@@ -42,7 +42,7 @@ import com.thoughtworks.xstream.XStream;
  * @author Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it
  *
  */
-public class FeatureConfiguration {
+public class FeatureConfiguration implements Cloneable {
 	
 	private static final XStream xstream = new XStream();
 	
@@ -136,4 +136,26 @@ public class FeatureConfiguration {
 	public void toXML(OutputStream outXML) {
 		xstream.toXML(this, outXML);
 	}
+	
+	public FeatureConfiguration clone() {
+        try {
+        	FeatureConfiguration fc = (FeatureConfiguration) super.clone();
+        	fc.typeName = this.typeName ;
+        	fc.crs = this.crs;
+        	fc.coordinateReferenceSystem = this.coordinateReferenceSystem;
+        	if(this.dataStore != null) {
+	        	fc.dataStore=new HashMap<String,Serializable>();
+	        	for(String key : this.dataStore.keySet()) {
+	        		fc.dataStore.put(key, this.dataStore.get(key));
+	        	}
+        	} else {
+        		fc.dataStore = null;
+        	}
+        	
+            return fc;
+        } catch (CloneNotSupportedException e) {
+            // this shouldn't happen, since we are Cloneable
+            throw new InternalError();
+        }
+    }
 }
