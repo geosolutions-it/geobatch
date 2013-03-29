@@ -13,23 +13,29 @@ Users Documentation
    :maxdepth: 1
 
    introduction
+   installation 
    concepts
-   installation
+   flowConfiguration
    use
    ftpUsage
-   geotiffDemo
-   shapeFileDemo
-   taskExecutorDemo
-   imageMosaicDemo
-   flowConfiguration
-   actionShapeFile
-   actionGeoTiff
-   actionImageMosaic
-   actionGeoNetwork
-   actionFreeMarker
-   serviceJM
-   serviceOctave
 
+Users Actions
+^^^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   action*
+
+Users Services
+^^^^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   service*
    
 Developer's Guide
 -----------------
@@ -40,3 +46,12 @@ Developer's Guide
    developerDoc
    ideSettings
    developAction
+   tools
+
+HowTo
+-----
+
+.. toctree::
+   :glob:
+
+   *Demo
