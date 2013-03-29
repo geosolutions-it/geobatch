@@ -1788,7 +1788,7 @@
         <version>3.2</version>
         <configuration>
           <locales>en</locales>
-          <outputDirectory>${site.outdir}/maven</outputDirectory>
+          <!--outputDirectory>${site.outdir}/maven</outputDirectory-->
           <inputDirectory>${site.basedir}</inputDirectory>
           <!-- site to deploy -->
         </configuration>
@@ -1801,7 +1801,7 @@
         <executions>
           <execution>
             <id>build-docs</id>
-            <phase>site</phase>
+            <phase>pre-site</phase>
             <goals>
               <goal>run</goal>
             </goals>

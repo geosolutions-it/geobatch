@@ -209,6 +209,7 @@
               </descriptors>
               <!-- lets put the zip to the site dir for automatic deploy -->
               <outputDirectory>${site.outdir}</outputDirectory>
+	      <!--finalName>geobatch-${project.version}</finalName-->
             </configuration>
             <executions>
               <execution>
