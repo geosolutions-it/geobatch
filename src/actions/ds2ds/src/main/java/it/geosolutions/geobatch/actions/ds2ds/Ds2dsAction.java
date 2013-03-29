@@ -589,6 +589,7 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 	private Object getAttributeValue(SimpleFeature sourceFeature,
 			String attributeName) {
 		// gets mapping for renamed attributes
+		
 		if(configuration.getAttributeMappings().containsKey(attributeName)) {
 			attributeName = configuration.getAttributeMappings().get(attributeName).toString();
 		}

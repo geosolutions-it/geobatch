@@ -1,40 +1,51 @@
-Shapefile Action
+Ds2ds Action
 ================
 
-The Shapefile Action is used to publish a single shapefile, or a collection of shapefiles, in GeoServer.
+The Ds2ds (DataStore to DataStore) action is used to copy a feature from a source GeoTools DataStore to an output GeoTools DataStore.
+
+Any GeoTools DataStore (shapefiles, jdbc databases, etc.) can be used as a source or output.
+
+The action can be used to append or replace existing data, a flag (purgeData) in configuration specifies the desired mode.
+
+Feature typeName and attributes can be renamed, if needed. Attributes can also be projected.
+
+A common xml format is used as input and output event. Moreover the same format can be used in the configuration file to describe (fully or partially) the source and output features.
 
 Input
 -----
 
-The source and the destination of the copy can be any GeoTools datastore (shapefiles, jdbc databases, etc.).
+The default input event is a file in XML format. The file contains the source DataStore connection parameters and other options used to describe the source.
 
-The action should be used for appending or replacing existing data, so a flag is used in configuration to specify the desired mode.
+An example of the xml input is:
 
-The input event should be a file (in XML format) specifying the DataStore connection parameters.
+.. sourcecode:: xml
 
-To simplify things we will also support database files (directly or as a zip) as input for some datastore types (such as shapefiles), recognizing if the file is in a known format (e.g. zip, shp) or an xml and proceed accordingly.
+	<feature>
+		<!-- source datastore connection parameters -->
+		<dataStore>            
+		   <entry>
+			  <string>dbtype</string>
+			  <string>h2</string>
+			</entry> 
+			<entry>
+			  <string>database</string>
+			  <string>mem:source;DB_CLOSE_DELAY=-1</string>
+			</entry>                 
+		</dataStore>
+		<!-- source coordinate system (optional) -->
+		<crs>EPSG:4326</crs>
+		<!-- source feature type name -->
+		<typeName>source</typeName>
+	</feature>
 
-Finally the action should be chainable (now it's not), so we need to produce an output event. This event will be a file (an XML file), similar to the one used as an input event, with data of the output feature produced.
-
-
-Actions
----------
-
-* If the specified ``defaultNamespace`` does not exist, it will be created.
-* Create a `Shapefile datastore <http://docs.geoserver.org/stable/en/user/data/shapefile.html>`_ with the specified Datastore options.
-* Upload and publish each shapefile as a layer, using the specified layer publishing options.
-
-
-Output
---------
-
-The same collection of files provided as input.
-
+To simplify things we also support as an input:
+ * shapefiles
+ * compressed files (containing either an xml or a shapefile)
 
 Configuration
 ---------------
 
-Main element: ``GeoServerShapeActionConfiguration``.
+Main element: ``Ds2dsConfiguration``.
 
 Will contain the following child elements:
 
@@ -44,65 +55,151 @@ Will contain the following child elements:
     * **name**: A name for this action.
     * **description**: A description for this action.
 
-* GeoServer connection parameters:
-    * **host**: The base URL of the GeoServer instance to use. Example: http://localhost:8080/geoserver
-    * **user**: Privileged GeoServer user. Example: "admin"
-    * **passwd**: Password for the GeoServer user. Example: "geoserver"
+* Source feature configuration (optional, is usually received on the input event):
+    * **typeName**: typeName to read from the source DataStore
+    * **crs**: coordinate system of the source feature (optional, usually read from the source)
+    * **dataStore**: map of the DataStore connection parameters
 
-* Datastore options:
-    * **dbtype**: 
-    * **host**: The datastore name.
-    * ...
-
+* Output feature configuration (mandatory):
+    * **typeName**: typeName to write on the output DataStore
+    * **crs**: coordinate system of the output feature (optional, usually read from the source); a reprojection is NOT automatically done
+    * **dataStore**: map of the DataStore connection parameters
+	
 * Options:
-    * **sourceCRS**
-    * **destinationCRS** Some simple processing should be configurable too:
-    * **output** feature renaming
-    * **attributes** projection / renaming
+    * **purgeData**: remove existing data from the output feature
+    * **attributeMappings**: attribute mappings (from output to source) for projection (see projectOnMappings) / renaming
+    * **projectOnMappings**: if true only attribute present in attributeMappings are copied to the output feature
 
 Configuration example:
 
 .. sourcecode:: xml
 
-  <Ds2dsConfiguration>
-      <serviceID>Ds2dsGeneratorService</serviceID>
-      <id>Ds2dsGeneratorService</id>
-      <description>Ds2ds action</description>
-      <name>Ds2dsConfiguration</name>
-      
-      <listenerConfigurations/>
-      <failIgnored>false</failIgnored>
-      <purgeData>true</purgeData>
-		  
-      <outputFeature>                
-	  <dataStore>                    
-	      <entry>
-		<string>dbtype</string>
-		<string>postgis</string>
-	      </entry>
-	      <entry>
-		<string>host</string>
-		<string>localhost</string>
-	      </entry>
-	      <entry>
-		<string>port</string>
-		<string>5432</string>
-	      </entry>
-	      <entry>
-		<string>database</string>
-		<string>postgres</string>
-	      </entry>
-	      <entry>
-		<string>user</string>
-		<string>postgres</string>
-	      </entry>
-	      <entry>
-		<string>passwd</string>
-		<string>postgres</string>
-	      </entry>                     
-	  </dataStore>
-      </outputFeature>
-      <projectOnMappings>false</projectOnMappings>
-      <attributeMappings/>
-	  
-  </Ds2dsConfiguration>
+    <Ds2dsConfiguration>
+		<serviceID>Ds2dsGeneratorService</serviceID>
+		<id>Ds2dsGeneratorService</id>
+		<description>Ds2ds action</description>
+		<name>Ds2dsConfiguration</name>
+		
+		<listenerConfigurations/>
+		<failIgnored>false</failIgnored>
+					
+		<!-- Configures the output feature: mandatory -->      
+		<outputFeature>
+			<!-- feature typeName (schema): will be created if not
+				 already present in output DataStore -->
+			<typeName>OUTPUT</typeName> 
+			<!-- Coordinate system EPSG code: force output feature crs,
+				 if not defined the source crs is used -->
+			<crs>EPSG:4326</crs>
+			<!-- output GeoTools DataStore connection parameters:
+				 an entry for each connection parameter  -->              
+			<dataStore>                    
+				<entry>
+				  <string>dbtype</string>
+				  <string>postgis</string>
+				</entry>
+				<entry>
+				  <string>host</string>
+				  <string>localhost</string>
+				</entry>
+				<entry>
+				  <string>port</string>
+				  <string>5432</string>
+				</entry>
+				<entry>
+				  <string>database</string>
+				  <string>postgres</string>
+				</entry>
+				<entry>
+				  <string>user</string>
+				  <string>postgres</string>
+				</entry>
+				<entry>
+				  <string>passwd</string>
+				  <string>postgres</string>
+				</entry>                     
+			</dataStore>
+		</outputFeature>
+		<!-- Configures the source feature: optional, usually the source feature
+			 is received as an event. The sourceFeature can be used to fill missing
+			 metadata (such as the coordinate system) if needed. -->
+		<sourceFeature>   
+			<!-- feature typeName (schema) to read from the source DataStore -->
+			<typeName>SOURCE</typeName> 
+			<!-- Coordinate system EPSG code: force input feature crs,
+				 if not defined -->
+			<crs>EPSG:4326</crs>
+			<!-- source GeoTools DataStore connection parameters:
+				 an entry for each connection parameter  -->             
+			<dataStore>                    
+				<entry>
+				  <string>dbtype</string>
+				  <string>postgis</string>
+				</entry>
+				<entry>
+				  <string>host</string>
+				  <string>localhost</string>
+				</entry>
+				<entry>
+				  <string>port</string>
+				  <string>5432</string>
+				</entry>
+				<entry>
+				  <string>database</string>
+				  <string>postgres</string>
+				</entry>
+				<entry>
+				  <string>user</string>
+				  <string>postgres</string>
+				</entry>
+				<entry>
+				  <string>passwd</string>
+				  <string>postgres</string>
+				</entry>                     
+			</dataStore>
+		</sourceFeature>
+		<!-- do a projection of the input feature using the attributeMappings  
+			 property: only the attributes defined in mappings are copied to
+			 the output feature -->
+		<projectOnMappings>true</projectOnMappings>
+		<!-- attribute mappings from output names to source names
+			 permits attribute renaming  -->
+		<attributeMappings>
+			<entry>
+			  <string>NEWNAME</string>
+			  <string>OLDNAME</string>
+			</entry>
+		</attributeMappings>
+		<!-- remove data in the output feature before importing the new one -->
+		<purgeData>true</purgeData>
+			
+	</Ds2dsConfiguration>
+
+Output
+------
+
+The event is an XML file in the already described common format, describing the output feature produced.
+
+An example of the output file is:
+
+.. sourcecode:: xml
+
+	<feature>
+		<!-- output datastore connection parameters -->
+		<dataStore>            
+		   <entry>
+			  <string>dbtype</string>
+			  <string>h2</string>
+			</entry> 
+			<entry>
+			  <string>database</string>
+			  <string>mem:source;DB_CLOSE_DELAY=-1</string>
+			</entry>                 
+		</dataStore>
+		<!-- output coordinate system (optional) -->
+		<crs>EPSG:4326</crs>
+		<!-- output feature type name -->
+		<typeName>output</typeName>
+	</feature>
+
+

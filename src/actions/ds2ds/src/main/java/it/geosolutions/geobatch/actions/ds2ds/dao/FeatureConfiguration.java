@@ -51,10 +51,16 @@ public class FeatureConfiguration implements Cloneable {
 		xstream.omitField(FeatureConfiguration.class, "coordinateReferenceSystem");				
 	}
 	
+	// feature type (schema) name
 	private String typeName;
+	// feature coordinate system (EPSG code): if not defined it will be read from
+	// the input feature 
 	private String crs;
-	private CoordinateReferenceSystem coordinateReferenceSystem;
 	
+	// feature coordinate system (cached after decoding crs)
+	private transient CoordinateReferenceSystem coordinateReferenceSystem;
+	
+	// feature DataStore connection parameters
 	private Map<String,Serializable> dataStore;
 
 	/**
@@ -129,10 +135,21 @@ public class FeatureConfiguration implements Cloneable {
 		return coordinateReferenceSystem;
 	}
 	
+	/**
+	 * Read a FeatureConfiguration xml from the given stream.
+	 * 
+	 * @param inputXML
+	 * @return
+	 */
 	public static FeatureConfiguration fromXML(InputStream inputXML) {
 		return (FeatureConfiguration) xstream.fromXML(inputXML);		
 	}
 	
+	/**
+	 * Outputs the FeatureConfiguration in XML to the given stream.
+	 * 
+	 * @param outXML
+	 */
 	public void toXML(OutputStream outXML) {
 		xstream.toXML(this, outXML);
 	}
