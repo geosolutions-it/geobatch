@@ -11,7 +11,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
@@ -21,7 +21,7 @@
   <name>GeoBatch users management</name>
   <description>GeoSolutions GeoBatch user management module</description>
   <properties>
-    <root.basedir>${project.parent.basedir}</root.basedir>
+    <root.basedir>../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!--     Dependency Management                                   -->

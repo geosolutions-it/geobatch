@@ -12,7 +12,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!--     Module Description                                      -->
@@ -23,7 +23,7 @@
   <name>GeoBatch optional services</name>
   <description>GeoSolutions GeoBatch optional services</description>
   <properties>
-    <root.basedir>${project.parent.basedir}</root.basedir>
+    <root.basedir>../${project.basedir}</root.basedir>
   </properties>
   <build>
     <plugins>

@@ -7,7 +7,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-actions</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!-- Module Description -->
@@ -18,7 +18,7 @@
   <name>GeoBatch action: scripting</name>
   <description>GeoSolutions GeoBatch flow managers - Scripting</description>
   <properties>
-    <root.basedir>${project.parent.parent.basedir}</root.basedir>
+    <root.basedir>../../${project.basedir}</root.basedir>
   </properties>
   <!-- =========================================================== -->
   <!-- -->
@@ -55,7 +55,7 @@
     </dependency>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
+      <artifactId>tools-geobatch</artifactId>
     </dependency>
     <!-- =========================================================== -->
     <!-- GEOTOOLS TEST DATA MODULE -->

@@ -9,7 +9,7 @@
   <parent>
     <groupId>it.geosolutions.geobatch</groupId>
     <artifactId>gb-web</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
   </parent>
   <!-- =========================================================== -->
   <!-- Module Description -->
@@ -27,7 +27,7 @@
   <properties>
     <netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
     <flow.dir>geobatch/WEB-INF/</flow.dir>
-    <!--     <root.basedir>${project.parent.basedir}</root.basedir> -->
+    <!--     <root.basedir>../${project.basedir}</root.basedir> -->
     <root.basedir>${basedir}/../../</root.basedir>
     <!-- JETTY jar classpath -->
     <geobatch_starter.classpath>${geobatch_starter.dir}/WEB-INF/lib/</geobatch_starter.classpath>
@@ -287,8 +287,9 @@
 			the overlay mechanism (http://maven.apache.org/plugins/maven-war-plugin/overlays.html) 
 			was checked to accomplish this very task, but when more actions were specified, 
 			only one was choosen to extract the sample data from. -->
+    <!-- Ds2ds ================================================== -->
     <profile>
-      <id>shp2pg</id>
+      <id>ds2ds</id>
       <activation>
         <property>
           <name>all</name>
@@ -298,7 +299,7 @@
       <dependencies>
         <dependency>
           <groupId>it.geosolutions.geobatch</groupId>
-          <artifactId>gb-action-shp2pg</artifactId>
+          <artifactId>gb-action-ds2ds</artifactId>
         </dependency>
       </dependencies>
       <build>
@@ -309,7 +310,7 @@
             <version>2.4</version>
             <executions>
               <execution>
-                <id>unpack_shp2pg</id>
+                <id>unpack_ds2ds</id>
                 <phase>package</phase>
                 <goals>
                   <goal>unpack</goal>
@@ -318,7 +319,7 @@
                   <artifactItems>
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
-                      <artifactId>gb-action-shp2pg</artifactId>
+                      <artifactId>gb-action-ds2ds</artifactId>
                       <classifier>flowdata</classifier>
                       <type>jar</type>
                       <overWrite>false</overWrite>
