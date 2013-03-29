@@ -14,7 +14,9 @@ This is a sample file name: `REP12_20120809_20120811_RFVL.nc.gz`.
 The date you need is the first one ('20120809').  
 
 This is the configuration XML:
-.. sourcecode::
+
+.. sourcecode:: xml
+
  <dynamicTokens>
   <stringToken>
    <name>runtime</name>
@@ -43,7 +45,9 @@ You may have 3 kinds of token:
 You have to feed some known values to the dynamic tokens resolver in order to have it process its data.
 
 You feed the know data programmatically; in this example we are feeding the token name `FILENAME`:
-.. sourcecode::
+
+.. sourcecode:: xml
+
   DynTokenList tokenList = ...unmarshall the XML configuration...
   DynTokenResolver tokenResolver = new DynTokenResolver(tokenList);
   tokenResolver.setBaseToken("FILENAME", filename);
@@ -56,7 +60,9 @@ Note that you can define multiple tokens; once a token has been resolved, you ca
 
 Note that tokens are expanded both in `base` and `compose` elements.
 Here another example:
-.. sourcecode::
+
+.. sourcecode:: xml
+
   <dynamicTokens>
     <stringToken>
       <name>year</name>
@@ -85,6 +91,8 @@ Here another example:
   </dynamicTokens>
 
 This configuration will set the `runtime` token with the same value it had in the previous example; anyway here we are defining three more tokens (`year`,`month`,`day`) that can be used both as input for next token definition (e.g. `<compose>${year}-${month}-${day} 00:00:00</compose>`), and can be retrieved programmatically; e.g.
-.. sourcecode::
+
+.. sourcecode:: xml
+
   String y = tokenResolver.getResolvedTokens().get("year");
   String m = tokenResolver.getResolvedTokens().get("month");
