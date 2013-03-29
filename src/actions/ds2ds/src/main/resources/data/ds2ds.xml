@@ -33,9 +33,17 @@
             
             <listenerConfigurations/>
             <failIgnored>false</failIgnored>
-            <purgeData>true</purgeData>
                         
-            <outputFeature>                
+            <!-- Configures the output feature: mandatory -->      
+            <outputFeature>
+            	<!-- feature typeName (schema): will be created if not
+            	     already present in output DataStore -->
+            	<typeName>OUTPUT</typeName> 
+            	<!-- Coordinate system EPSG code: force output feature crs,
+            	     if not defined the source crs is used -->
+            	<crs>EPSG:4326</crs>
+            	<!-- output GeoTools DataStore connection parameters:
+            	     an entry for each connection parameter  -->              
                 <dataStore>                    
                     <entry>
                       <string>dbtype</string>
@@ -63,8 +71,58 @@
                     </entry>                     
                 </dataStore>
             </outputFeature>
-            <projectOnMappings>false</projectOnMappings>
-            <attributeMappings/>
+            <!-- Configures the source feature: optional, usually the source feature
+                 is received as an event. The sourceFeature can be used to fill missing
+                 metadata (such as the coordinate system) if needed. -->
+            <sourceFeature>   
+            	<!-- feature typeName (schema) to read from the source DataStore -->
+            	<typeName>SOURCE</typeName> 
+            	<!-- Coordinate system EPSG code: force input feature crs,
+            	     if not defined -->
+            	<crs>EPSG:4326</crs>
+            	<!-- source GeoTools DataStore connection parameters:
+            	     an entry for each connection parameter  -->             
+                <dataStore>                    
+                    <entry>
+                      <string>dbtype</string>
+                      <string>postgis</string>
+                    </entry>
+                    <entry>
+                      <string>host</string>
+                      <string>localhost</string>
+                    </entry>
+                    <entry>
+                      <string>port</string>
+                      <string>5432</string>
+                    </entry>
+                    <entry>
+                      <string>database</string>
+                      <string>postgres</string>
+                    </entry>
+                    <entry>
+                      <string>user</string>
+                      <string>postgres</string>
+                    </entry>
+                    <entry>
+                      <string>passwd</string>
+                      <string>postgres</string>
+                    </entry>                     
+                </dataStore>
+            </sourceFeature>
+            <!-- do a projection of the input feature using the attributeMappings  
+                 property: only the attributes defined in mappings are copied to
+                 the output feature -->
+            <projectOnMappings>true</projectOnMappings>
+            <!-- attribute mappings from output names to source names
+                 permits attribute renaming  -->
+            <attributeMappings>
+            	<entry>
+                  <string>NEWNAME</string>
+                  <string>OLDNAME</string>
+                </entry>
+            </attributeMappings>
+            <!-- remove data in the output feature before importing the new one -->
+            <purgeData>true</purgeData>
                 
         </Ds2dsConfiguration>
                     

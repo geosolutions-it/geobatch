@@ -30,21 +30,32 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Configuration Object for the Ds2ds action.
+ * This action copies a feature from a source GeoTools DataStore to an output GeoTools DataStore.
+ * 
+ * Both source and output features options can be configured.
  * 
  * @author Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it
  * 
  */
 public class Ds2dsConfiguration extends ActionConfiguration {
 
+	// source feature configuration object (optional)
 	private FeatureConfiguration sourceFeature;
+	
+	// output feature configuration object
 	private FeatureConfiguration outputFeature;
 	
-	private boolean purgeData = false;
+	// purge (remove) data from the output feature before importing
+	private Boolean purgeData = false;
 	
-	
+	// optional mappings (renaming) from source feature attributes to
+	// output (key is output attribute name, value is source attribute name
 	private Map<String,Serializable> attributeMappings; 
 	
-	private boolean projectOnMappings = false;
+	// execute a projection on the attribureMappings property, skipping
+	// source properties non included in the map
+	private Boolean projectOnMappings = false;
 	
 	public Ds2dsConfiguration(String id, String name, String description) {
 		super(id, name, description);		
