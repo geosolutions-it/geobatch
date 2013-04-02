@@ -2,8 +2,8 @@
 .. |demo| replace:: *geobatch-demo*
 .. |GS| replace:: *GeoServer*
 
-Easy Demo HOW-TO
-====================
+Demo for beginners
+==================
 
 The |demo| project uses |GB| to convert a bulk of GeoTIFFs files to tiled GeoTIFFs with overviews and publish them on |GS|
 

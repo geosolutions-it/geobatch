@@ -25,11 +25,11 @@ Where can I get it?
 Who contributed to this release?
 ================================
 
-* List authors of this release"
+* List authors of this release
+"
 git log $1..$2 --pretty="format:* %aN" | sort | uniq
 
-echo "What changed in detail?
-
+echo "
 =======================
 FIXES IN MAIN MODULES:
 =======================
