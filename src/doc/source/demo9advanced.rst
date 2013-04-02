@@ -1,8 +1,8 @@
 .. |GB| replace:: *GeoBatch*
 .. |demo| replace:: *geobatch-demo*
 
-Advanced Demo HOW-TO
-====================
+Demo for Advanced users
+=======================
 
 The |demo| project uses |GB| and *GDAL* to convert a bulk of raster files from almost any format to tiled GeoTIFFs with overviews.
 

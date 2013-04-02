@@ -6,7 +6,7 @@
 *GeoBatch* Documentation
 ========================
 
-Users Documentation
+User's Documentation
 -------------------
 
 .. toctree::
@@ -19,7 +19,7 @@ Users Documentation
    use
    ftpUsage
 
-Users Actions
+Actions
 ^^^^^^^^^^^^^
 
 .. toctree::
@@ -28,7 +28,7 @@ Users Actions
 
    action*
 
-Users Services
+Services
 ^^^^^^^^^^^^^^
 
 .. toctree::
@@ -48,10 +48,10 @@ Developer's Guide
    developAction
    tools
 
-HowTo
+Demos & Tutorials
 -----
 
 .. toctree::
    :glob:
 
-   *Demo
+   demo*
