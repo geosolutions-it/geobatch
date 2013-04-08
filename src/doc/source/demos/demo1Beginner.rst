@@ -3,7 +3,7 @@
 .. |GS| replace:: *GeoServer*
 
 Geotiff preprocessing and publishing in GeoServer
-==================
+=================================================
 
 Thise |demo| uses |GB| to preprocess GeoTIFFs files with tiling and overviews and then it publishes them on |GS|
 

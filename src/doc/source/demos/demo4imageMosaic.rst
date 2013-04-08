@@ -4,7 +4,7 @@
 .. |IM| replace:: ImageMosaic 
 
 |IM| Action Demonstration
-====================
+=========================
 
 |IM| project uses |GB| to create an Image Mosaic on |GS|. 
 
