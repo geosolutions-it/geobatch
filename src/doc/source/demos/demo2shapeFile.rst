@@ -2,10 +2,10 @@
 .. |demo| replace:: *geobatch-demo*
 .. |GS| replace:: *GeoServer*
 
-ShapeFile Demo HOW-TO
+Shapefile GeoServer Ingestion
 =====================
 
-The |demo| project uses |GB| Get a pack of shapefiles (zipped) and ingest them into a |GS| instance.
+This |demo| project uses |GB| Get a pack of shapefiles (zipped) and ingest them into a |GS| instance.
 
 
 Installing |demo|
@@ -26,7 +26,7 @@ Edit the |demo| flow configuration under ``/GEOBATCH_CONFIG_DIR/geotiff.xml``. T
 * ``geoserverURL``        pointing a running geoserver.
 * ``defaultStyle``	      with the shapefile linked above set ``point``. If you leave this field blank the action obtain the geometry type from the shapefile and set the style to a default geoserver style.
 * ``memoryMappedBuffer``  set ``true`` if you run geobatch on linux server ``false`` on windows (memoryMappedBuffer is not well supported by windows)
-* ``defaultNamespace``	  set ``it_geosolutions``
+* ``defaultNamespace``	  set ``it_geosolutions`` or another workspace present in |GS|
 
 
 Running

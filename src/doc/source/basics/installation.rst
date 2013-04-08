@@ -1,15 +1,15 @@
 .. |GB| replace:: *GeoBatch*
 
-Installing and Running |GB|
+Installing and Running 
 ===========================
 
-|GB| is distributed as a standalone java web application archive (``war`` file), to be used within a Java servlet container.
+|GB| is distributed as a java web application archive (``war`` file), to be used within a Java servlet container.
 
 
 Prerequisites: Java and Tomcat
 ------------------------------
 
-|GB| requires `Oracle Java SE 6 <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ or newer to be installed in your system, and a servlet container. |GB| has been tested with `Apache Tomcat 6 <http://tomcat.apache.org/download-60.cgi>`_ and its use is strongly recommended.
+|GB| requires `Oracle Java SE 6 <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_ to be installed in your system, and a servlet container. |GB| has been tested mostly with Jetty and with `Apache Tomcat 6 <http://tomcat.apache.org/download-60.cgi>`_ whichh is strongly recommended for production usage.
 
 
 The configuration directory
@@ -23,38 +23,11 @@ If you set the ``GEOBATCH_CONFIG_DIR`` the configuration into ``WEB-INF/data`` w
 
 To set the ``GEOBATCH_CONFIG_DIR``, set it as one environment variable in your operating system, *or* run tomcat with ``-D`` option to define it as a java system property.
 
-
-Windows
-.........
-
-`Download tomcat <http://tomcat.apache.org/download-60.cgi>`_ and extract the archive into C:\\Program Files
-
-Create the directory C:\\GEOBATCH_CONFIG
-
-Create a file named setenv.bat in C:\\Program Files\\apache-tomcat-6.0.35\\bin\\
-
-Open it and edit the file specifying the geobatch config dir ::
-
-  set GEOBATCH_CONFIG_DIR=c:\GEOBATCH_CONFIG
-
-
-
-Linux
-.....
-
-`Download tomcat <http://tomcat.apache.org/download-60.cgi>`_ and extract the archive into /usr/share/local/
-
-Create the directory /opt/GEOBATCH_CONFIG_DIR
-
-To apply this value every time Tomcat is started, you can set the ``GEOBATCH_CONFIG_DIR`` as a Java system property. Edit the file ``bin/setclasspath.sh`` under the root of the Tomcat installation. Specify the GEOBATCH_CONFIG_DIR system property by setting the CATALINA_OPTS variable using the ``-D`` option::
-
-  CATALINA_OPTS="-DGEOBATCH_CONFIG_DIR=/opt/GEOBATCH_CONFIG_DIR $CATALINA_OPTS"
-
   
 Deploy and running
 ------------------------
 
-Download `geobatch.war <demo.geo-solutions.it/share/github/geobatch/geobatch.war>`_ and copy it to the ``webapps`` directory in tomcat. Tomcat should unpack the web archive and automatically set up and run |GB|.
+Download `geobatch.war <http://geobatch.geo-solutions.it/download/latest/geobatch.war>`_ and copy it to the ``webapps`` directory in tomcat. Tomcat should unpack the web archive and automatically set up and run |GB|.
 
 
 Configuration directory structure
@@ -63,6 +36,7 @@ Configuration directory structure
 The configuration directory must contain these files/directory:
 
 * ``catalog.xml``
+
 This file is Mandatory and isn't created automatically at |GB| startup. You have to create it. 
 Below there is a basic example:
 
@@ -93,7 +67,7 @@ Each action needs a configuration dir. Its default location is ``GEOBATCH_CONFIG
 The temporary directory
 -----------------------
 
-The place where |GB| Actions will create their temporary files during execution, if not specified otherwise, will be placed in ``temp`` dir under ``GEOBATCH_CONFIG_DIR``.
+The place where |GB| Actions will create their temporary files during execution, if not specified otherwise, will be under ``temp`` dir within ``GEOBATCH_CONFIG_DIR``.
 
 The ``GEOBATCH_TEMP_DIR`` environment/system variable can be used to specify another location, the same way as ``GEOBATCH_CONFIG_DIR``.
 
@@ -103,7 +77,7 @@ The ``GEOBATCH_TEMP_DIR`` environment/system variable can be used to specify ano
 Configuring Users database
 --------------------------
 
-|GB| use an embedded SQL database to store Users and Ftp Accounts Credentials and their custom configurations.
+|GB| uses by default an embedded SQL database to store Users and Ftp Accounts Credentials and their custom configurations.
 
 |GB| Users and Ftp Account are stored in two distinct database. The DBMS Engine is `H2 <http://www.h2database.com/html/main.html>`_ .
 
@@ -121,7 +95,7 @@ In the properties file will must be specified two location, one for each databas
 After |GB| startup 4 files will be created: ftpusers.h2.db, ftpusers.lock.db, gbusers.h2.db, gbusers.lock.db .
 
 Where can I create database.properties file?
-..........................................
+............................................
 
 There are 3 possible location where you can put the file:
 	
@@ -146,8 +120,8 @@ For example::
 
 To change logging setup, edit ``WEB-INF/log4j.xml`` file. Please refer to `log4j's manual <http://logging.apache.org/log4j/1.2/manual.html>`_ for details.
 
-Manteinance
+Maintenance
 -----------
 
-|GB| will automatically remove the old temporal directories, but some old directories could remain undeleted in case of tomcat restart. Check occasionally for temporal directory size, and for log file sizes, and clean if necessary.
+|GB| will automatically remove the old temporal directories, but some old directories could remain undeleted in case of unexpected tomcat restart. Check occasionally for temporal directory size, and for log file sizes, and clean it if necessary.
 
