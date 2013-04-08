@@ -2,7 +2,7 @@
 .. |start| image:: images/start-icon.png
 .. |config| image:: images/config-icon.png
 
-Using |GB|
+Basic Usage Instructions
 ==========
 
 Go to the |GB| web interface:
@@ -30,7 +30,7 @@ It's strong recommended to change the default admin password.
 
 
 UserManagement and FTP server
--------------------
+-----------------------------
 
 From main page, click on *Manage ftp and users*
 

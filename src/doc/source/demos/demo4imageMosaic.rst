@@ -1,12 +1,12 @@
 .. |GB| replace:: *GeoBatch*
 .. |demo| replace:: *geobatch-demo*
 .. |GS| replace:: *GeoServer*
-.. |IMD| replace:: ImageMosaic DEMO
+.. |IM| replace:: ImageMosaic 
 
-|IMD| Demo HOW-TO
+|IM| Action Demonstration
 ====================
 
-|IMD| project uses |GB| to create an Image Mosaic on |GS|. 
+|IM| project uses |GB| to create an Image Mosaic on |GS|. 
 
 As explained in the paragraph Image Mosaic Action you can chose from 2 types of input: An ImageMosaic command or a directory with some geotiff inside.
 You can choose also if the spatial index will stored on a DBMS or a shapefile.
@@ -104,6 +104,7 @@ Running
 #. Check the instances tab to see how they run.
 #. Access to geoserver and verify that a new ImageMosaic Store is published.
 #. Open the ImageMosaic location that you have configured with <base> property into the command. 
+
 You must see the tiff granules that compose the mosaic, 
 the files elevationregex.properties and timeregex.properties that contain the regex specified into command, 
 3 file .dbf, .shp, .shx that are the shapefile and a file called sample_image.

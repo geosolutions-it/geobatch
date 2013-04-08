@@ -43,8 +43,8 @@ Navigate to `GeoBatch *GitHub* Page <https://github.com/geosolutions-it/geobatch
 
 .. figure:: images/urlRepo.png
    :width: 800
-
-	A snippet of GeoBatch *GitHub* homepage, where the url of the repo is provided.
+   
+   A snippet of GeoBatch *GitHub* homepage, where the url of the repo is provided.
 
 You can see three types of url, is suggested use the SSH one but you have to `setup the SSH keys <https://help.github.com/articles/generating-ssh-keys#platform-all>`_ before.
 

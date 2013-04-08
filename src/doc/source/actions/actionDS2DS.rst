@@ -1,7 +1,7 @@
-Ds2ds Action
+ds2ds (Datastore-to-Datastore) Action
 ================
 
-The Ds2ds (DataStore to DataStore) action is used to copy a feature from a source GeoTools DataStore to an output GeoTools DataStore.
+The ds2ds (DataStore to DataStore) action is used to copy a feature from a source GeoTools DataStore to an output GeoTools DataStore.
 
 Any GeoTools DataStore (shapefiles, jdbc databases, etc.) can be used as a source or output.
 
@@ -45,7 +45,7 @@ To simplify things we also support as an input:
 Configuration
 ---------------
 
-Main element: ``Ds2dsConfiguration``.
+Main element: ``ds2dsConfiguration``.
 
 Will contain the following child elements:
 
