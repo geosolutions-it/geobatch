@@ -9,51 +9,32 @@ The |demo| project uses |GB| and *GDAL* to convert a bulk of raster files from a
 Allowed input formats are those `supported by GDAL <http://www.gdal.org/formats_list.html>`_.
 
 
-Installing GDAL
----------------
-
-Download latest FWTools from: http://home.gdal.org/fwtools/
-
-Uncompress it::
-
-  $ tar -xvf FWTools-linux-x86_64-3.1.0.tar.gz -C /opt/
-
-Run installation script::
-
-  $ cd /opt/FWTools-linux-x86_64-3.1.0/
-  $ ./install.sh
-  $ chmod +x fwtools*
-
-Add the FWTools enviroment to the tomcat installation.
-Edit ``bin/startup.sh`` and add a call to ``fwtools_env.sh``:
-
- . /opt/FWTools-linux-x86_64-3.1.0/fwtools_env.sh
-
+NOTE: To be able to run this flow you need to download and install GDAL.
 
 Installing |demo|
 -----------------
 
-Download |demo| zip from: https://github.com/geosolutions-it/geobatch-demo/archive/BETA_2.zip
+Download |demo| zip from: https://github.com/geosolutions-it/geobatch-demo/archive/demo-v1.0.0.zip
 
 Unzip it::
 
-  $ unzip geosolutions-it-geobatch-demo-*.zip
+  $ unzip demo-*.zip
 
 Create ``output`` and ``backup`` directories::
 
   $ mkdir output_tiff
   $ mkdir output_backup
 
-Edit the |demo| flow configuration under ``geosolutions-it-geobatch-demo-*/GEOBATCH_CONFIG_DIR/geobatch_flow_tiff.xml``. There, edit:
+Edit the |demo| flow configuration under ``${geobatch-demo}/GEOBATCH_CONFIG_DIR/geobatch_flow_tiff.xml``. There, edit:
 
 * ``outputDirName`` pointing to your ``output_tiff`` directory (absolute path).
 * ``output_backup`` pointing to your ``output_backup`` directory (absolute path).
-* ``translateExecutable`` pointing to ``/opt/FWTools-linux-x86_64-3.1.0/bin/gdal_translate``
-* ``overviewExecutable`` pointing to ``/opt/FWTools-linux-x86_64-3.1.0/bin/gdaladdo``.
+* ``translateExecutable`` pointing to ``${GDAL_HOME}/bin/gdal_translate``
+* ``overviewExecutable`` pointing to ``${GDAL_HOME}/bin/gdaladdo``.
 
 Finally, set the ``GEOBATCH_CONFIG_DIR`` variable in ``startup.sh``::
 
-  export GEOBATCH_CONFIG_DIR=[...]/geosolutions-it-geobatch-demo-0dd29a9/GEOBATCH_CONFIG_DIR
+  export GEOBATCH_CONFIG_DIR=${geobatch-demo}/GEOBATCH_CONFIG_DIR
 
 Running
 -------
