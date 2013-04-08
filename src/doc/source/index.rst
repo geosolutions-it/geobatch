@@ -7,17 +7,17 @@
 ========================
 
 User's Documentation
--------------------
+--------------------
 
 .. toctree::
    :maxdepth: 1
 
-   introduction
-   installation 
-   concepts
-   flowConfiguration
-   use
-   ftpUsage
+   basics/introduction
+   basics/concepts
+   basics/installation 
+   basics/flowConfiguration
+   basics/use
+   basics/ftpUsage
 
 Actions
 ^^^^^^^^^^^^^
@@ -26,7 +26,7 @@ Actions
    :maxdepth: 1
    :glob:
 
-   action*
+   actions/action*
 
 Services
 ^^^^^^^^^^^^^^
@@ -35,7 +35,16 @@ Services
    :maxdepth: 1
    :glob:
 
-   service*
+   services/service*
+
+Demos & Tutorials
+-----------------
+
+.. toctree::
+   :glob:
+
+   demos/demo*
+
    
 Developer's Guide
 -----------------
@@ -43,15 +52,7 @@ Developer's Guide
 .. toctree::
    :maxdepth: 1
    
-   developerDoc
-   ideSettings
-   developAction
-   tools
-
-Demos & Tutorials
------
-
-.. toctree::
-   :glob:
-
-   demo*
+   developers/developerDoc
+   developers/ideSettings
+   developers/developAction
+   developers/tools

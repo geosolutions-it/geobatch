@@ -123,7 +123,8 @@ References
 
 
 ImageMosaicAction Configuration
---------------------------
+-------------------------------
+
 The configuration for the ImageMosaicAction allows to specify the basic parameters for the actions plus various parameters for that are specific to the construction of the ImageMosaic itself in GeoServer.
 
 ImageMosaicCommand
@@ -163,7 +164,7 @@ You can control the GeoServer to work against via the following parameters.
 
 
 The options used to configure the coverageStore/resource/layer
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 To understand most of the following parameters please read the official GeoServer documentation ( http://docs.geoserver.org/latest/en/user/tutorials/image_mosaic_plugin/imagemosaic.html )
 
@@ -237,7 +238,7 @@ Your mosaic should contains files named as following::
 Which represents a granule with date 2012-12-31 23:59:59 and elevation 1.0.
 
 Minimal giode to using the datastore.properties file
-@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 The datastore.properties is a properties file which is used by the ImageMosaic plugin in GeoTools (hence GeoServer) in order to place the mosac index in  a GeoTools datastore, which means not only a Shapefile (for which it is not needed as the ImageMosaic by default creates an ImageMosaci inside the mosaic root directory) but also a Postgis table, an H2 database and so on.
 
@@ -330,7 +331,7 @@ Here a complete example with all the acceptable options for Postgis. The files c
 	Expose\ primary\ keys=
 
 Using PostGis
-같같같같같같같같
+--------------
 
 If you are using the PostGis (PostgreSQL) API:
 In addition to the above options you can use the below one.
@@ -356,7 +357,7 @@ Note the 'SPI' key can substitute the 'dbtype'::
 	preparedStatements=false
 
 Using JNDI on PostGis
-같같같같같같같같같같�
+---------------------
 
 If you are using the API for the JNDI::
 

@@ -5,7 +5,10 @@
 Geotiff preprocessing and publishing in GeoServer
 =================================================
 
-The |demo| project uses |GB| to convert a bulk of GeoTIFFs files to tiled GeoTIFFs with overviews and publish them on |GS|
+Thise |demo| uses |GB| to preprocess GeoTIFFs files with tiling and overviews and then it publishes them on |GS|
+
+The demo assumes you have a running instance of |GS| to which you intend to publish your data. It also assumes you are using the standalone version of GeoBatch (which is ok for personale use 
+but not for production use!).
 
 
 Installing |demo|
@@ -15,7 +18,7 @@ if you haven't already done, setup the ``GEOBATCH_CONFIG_DIR`` and make sure tha
 
 Locate into |GB| deployment the folder WEB-INF/data/
 
-Copy the folder geotiff and the file geotiff.xml and paste into your ``GEOBATCH_CONFIG_DIR``
+Copy the folder geotiff and the file geotiff.xml and paste them into your ``GEOBATCH_CONFIG_DIR``
 
 Create ``output`` and ``backup`` directories::
 
@@ -26,7 +29,7 @@ Edit the |demo| flow configuration under ``/GEOBATCH_CONFIG_DIR/geotiff.xml``. T
 
 * ``outputDirName``    pointing to your ``output_tiff`` directory (absolute path).
 * ``output_backup``    pointing to your ``output_backup`` directory (absolute path).
-* ``geoserverURL``     pointing a running geoserver.
+* ``geoserverURL``     pointing a running |GS| instance.
 
 create a workspace named ``it_geosolutions``
 
