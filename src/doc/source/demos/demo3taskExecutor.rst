@@ -1,7 +1,7 @@
 .. |GB| replace:: *GeoBatch*
 .. |demo| replace:: *geobatch-demo*
 
-TaskExecutor Demo HOW-TO
+Preprocessing GeoTiff files with the TaskExecutor 
 ========================
 
 The |demo| project uses |GB| and *GDAL* to convert a bulk of raster files from almost any format to tiled GeoTIFFs with overviews.

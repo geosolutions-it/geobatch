@@ -26,11 +26,13 @@ How to use
 Compile GeoBatch including profile 'jmx' and all the profile you may want to include (depending on which action do you want to use).
 
 .. sourcecode:: xml
+
 	# mvn clean install -Pjmx
 
 
 Run GeoBatch setting JAVA_OPTS as following:
 .. sourcecode:: xml
+
 	IP=x.x.x.x
 	GEOBATCH_DATA_DIR="/opt/gb_data_dir/"
 	JAVA_OPTS="-Xmx1024m /
@@ -45,6 +47,7 @@ Run GeoBatch setting JAVA_OPTS as following:
 Setup the firewall accepting connection on the 1099 port:
 
 .. sourcecode:: xml
+
 	# iptables -L
 	# iptables -A INPUT -i eth0 -p tcp --dport 1099 -j ACCEPT
 	Check the differences:
@@ -53,9 +56,11 @@ Setup the firewall accepting connection on the 1099 port:
 Set the java policy to accept connection on that port:
 
 .. sourcecode:: xml
+
 	# nano ${JAVA_HOME}/jre/lib/security/java.policy
 	
 .. sourcecode:: xml
+
 	grant codeBase "jar:file:${java.home}/jre/lib/rt.jar!/-" {
 	permission java.net.SocketPermission "localhost:4446", "connect,read,write";
 	};
@@ -67,6 +72,7 @@ Once geobatch (compiled with the jmx profile) is started it creates the default 
 It will be something like the following:
 
 .. sourcecode:: xml
+
 		<?xml version="1.0" encoding="UTF-8"?>
 		<FlowConfiguration>
 			
@@ -99,6 +105,7 @@ A simple client
 ---------------
 
 .. sourcecode:: java
+
 	/*
 	 *  GeoBatch - Open Source geospatial batch processing system
 	 *  http://geobatch.codehaus.org/
@@ -233,6 +240,7 @@ The result is that for each CSV row of the file we run  a different flow (using 
 Note that each flow can run different actions with differents configurations.
 
 .. sourcecode:: java
+
 	package it.geosolutions.geobatch.client;
 
 	import it.geosolutions.geobatch.services.jmx.ConsumerManager;
@@ -325,19 +333,23 @@ Note that each flow can run different actions with differents configurations.
 
 Compile the JMX client:
 .. sourcecode:: xml
+
 	$ mvn clean install
 
 Copy the security.policy file into the config dir:
 .. sourcecode:: xml
+
 	# cp security.policy /my/app/config/
 
 Add the security.policy to the JVM configuration into the config/sos.ini file:
 .. sourcecode:: xml
+
 	-Djava.security.policy=security.policy
 
 Copy the jmx.property file to the client config dir:
 
 .. sourcecode:: xml
+
 	# cp jmx.properties /my/app/config/
 	
 Edit it to point to the GeoBatch url/port
@@ -348,6 +360,7 @@ Setup a new consumer
 To setup a new consumer on the client side you could use a property file:
 
 .. sourcecode:: xml
+
 	# remote JMX server url
 	gb_jmx_url=localhost
 	# remote JMX server port
@@ -363,6 +376,7 @@ Example
 The following is a complete consumer flow configuration which simply run a Collector Action (see commons actions).
 
 .. sourcecode:: xml
+
 	# remote JMX server url
 	gb_jmx_url=localhost
 	# remote JMX server port
