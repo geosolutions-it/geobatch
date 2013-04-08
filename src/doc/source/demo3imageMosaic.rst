@@ -3,8 +3,8 @@
 .. |GS| replace:: *GeoServer*
 .. |IMD| replace:: ImageMosaic DEMO
 
-|IMD| Demo HOW-TO
-====================
+|IM| Action Demonstration
+=========================
 
 |IMD| project uses |GB| to create an Image Mosaic on |GS|. 
 

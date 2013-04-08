@@ -1,8 +1,8 @@
 .. |GB| replace:: *GeoBatch*
 .. |demo| replace:: *geobatch-demo*
 
-TaskExecutor Demo HOW-TO
-========================
+Preprocessing GeoTiff files with the TaskExecutor 
+=================================================
 
 The |demo| project uses |GB| and *GDAL* to convert a bulk of raster files from almost any format to tiled GeoTIFFs with overviews.
 
@@ -33,18 +33,18 @@ Edit ``bin/startup.sh`` and add a call to ``fwtools_env.sh``:
 Installing |demo|
 -----------------
 
-Download |demo| zip from: https://github.com/geosolutions-it/geobatch-demo/zipball/BETA_1
+Download |demo| zip from: https://github.com/geosolutions-it/geobatch-demo/archive/BETA_2.zip
 
 Unzip it::
 
-  $ unzip geosolutions-it-geobatch-demo-0dd29a9.zip
+  $ unzip geosolutions-it-geobatch-demo-*.zip
 
 Create ``output`` and ``backup`` directories::
 
   $ mkdir output_tiff
   $ mkdir output_backup
 
-Edit the |demo| flow configuration under ``geosolutions-it-geobatch-demo-0dd29a9/GEOBATCH_CONFIG_DIR/geobatch_flow_tiff.xml``. There, edit:
+Edit the |demo| flow configuration under ``geosolutions-it-geobatch-demo-*/GEOBATCH_CONFIG_DIR/geobatch_flow_tiff.xml``. There, edit:
 
 * ``outputDirName`` pointing to your ``output_tiff`` directory (absolute path).
 * ``output_backup`` pointing to your ``output_backup`` directory (absolute path).

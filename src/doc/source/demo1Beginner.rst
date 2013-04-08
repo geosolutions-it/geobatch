@@ -2,8 +2,8 @@
 .. |demo| replace:: *geobatch-demo*
 .. |GS| replace:: *GeoServer*
 
-Demo for beginners
-==================
+Geotiff preprocessing and publishing in GeoServer
+=================================================
 
 The |demo| project uses |GB| to convert a bulk of GeoTIFFs files to tiled GeoTIFFs with overviews and publish them on |GS|
 

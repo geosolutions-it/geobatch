@@ -2,8 +2,8 @@
 .. |demo| replace:: *geobatch-demo*
 .. |GS| replace:: *GeoServer*
 
-ShapeFile Demo HOW-TO
-=====================
+Shapefile GeoServer Ingestion
+=============================
 
 The |demo| project uses |GB| Get a pack of shapefiles (zipped) and ingest them into a |GS| instance.
 

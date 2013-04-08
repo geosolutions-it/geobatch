@@ -1,5 +1,5 @@
-Using tools library
-===================
+Using the tools library
+=======================
 
 Geobatch is developed leveraging on a huge set of tools.
 Tools is a modular subproject of Geobatch which can be located here:
