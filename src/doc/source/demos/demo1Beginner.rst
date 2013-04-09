@@ -25,20 +25,10 @@ Create ``output`` and ``backup`` directories::
   $ mkdir output_tiff
   $ mkdir output_backup
 
-Edit the |demo| flow configuration under ``/GEOBATCH_CONFIG_DIR/geotiff.xml``. There, edit:
-
-* ``outputDirName``    pointing to your ``output_tiff`` directory (absolute path).
-* ``output_backup``    pointing to your ``output_backup`` directory (absolute path).
-* ``geoserverURL``     pointing a running |GS| instance.
-
-create a workspace named ``it_geosolutions``
-
 Running
 -------
 
-#. Start tomcat via ``startup.sh``.
-#. Go to http://localhost:8080/geobatch/flows.do You should see a stopped ``geotiff``. Start it.
-#. Put some raster files in ``geotiff/in``.
-#. Check the instances tab to see how they run.
-#. Get the processed files in your ``output_tiff`` directory. In case of failure, recover the original files and check the error cause from ``output_backup``.
+#. Go to http://localhost:8081/geobatch/flows.do You should see a stopped ``geotiff``. Start it.
+#. Put some raster files in ``geotiff_publish/in``.
+#. Access to geoserver and verify that a new geotiff coverage store is published.
 

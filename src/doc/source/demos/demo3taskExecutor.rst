@@ -11,37 +11,37 @@ Allowed input formats are those `supported by GDAL <http://www.gdal.org/formats_
 
 NOTE: To be able to run this flow you need to download and install GDAL.
 
-Installing |demo|
------------------
+Setup the |demo| flow
+---------------------
 
-Download |demo| zip from: https://github.com/geosolutions-it/geobatch-demo/archive/demo-v1.0.0.zip
+if you haven't already done, please read the demo setup :doc:`here <./demo0setup>`.
 
-Unzip it::
-
-  $ unzip demo-*.zip
-
-Create ``output`` and ``backup`` directories::
-
-  $ mkdir output_tiff
-  $ mkdir output_backup
-
-Edit the |demo| flow configuration under ``${geobatch-demo}/GEOBATCH_CONFIG_DIR/geobatch_flow_tiff.xml``. There, edit:
+Edit the |demo| flow configuration under ``GEOBATCH_CONFIG_DIR/raster_preprocess.xml``:
 
 * ``outputDirName`` pointing to your ``output_tiff`` directory (absolute path).
 * ``output_backup`` pointing to your ``output_backup`` directory (absolute path).
 * ``translateExecutable`` pointing to ``${GDAL_HOME}/bin/gdal_translate``
 * ``overviewExecutable`` pointing to ``${GDAL_HOME}/bin/gdaladdo``.
 
-Finally, set the ``GEOBATCH_CONFIG_DIR`` variable in ``startup.sh``::
+Create ``output`` and ``backup`` directories::
 
-  export GEOBATCH_CONFIG_DIR=${geobatch-demo}/GEOBATCH_CONFIG_DIR
+  $ mkdir output_tiff
+  $ mkdir output_backup
 
 Running
 -------
 
 #. Start tomcat via ``startup.sh``.
-#. Go to http://localhost:8080/geobatch/flows.do You should see a stopped ``geobatch_flow_tiff``. Start it.
-#. Put some raster files in ``geobatch_flow_tiff/in``.
+#. Go to http://localhost:8081/geobatch/flows.do You should see a stopped ``geobatch_flow_tiff``. Start it.
+#. Put some raster files in ``raster_preprocess/in``.
 #. Check the instances tab to see how they run.
 #. Get the processed files in your ``output_tiff`` directory. In case of failure, recover the original files and check the error cause from ``output_backup``.
 
+
+Cleaning
+--------
+
+To completely remove the output (needed if you want to run the same test) remember to:
+
+* Remove the content of the outputDirName
+* Remove the content of the output_backup

@@ -21,6 +21,8 @@
 			<includes>
 				<include>start.*</include>
 				<include>jetty.properties</include>
+				<include>GEOBATCH_CONFIG_DIR/**</include>
+				<include>data/**</include>
 			</includes>
 		</fileSet>
 	</fileSets>
