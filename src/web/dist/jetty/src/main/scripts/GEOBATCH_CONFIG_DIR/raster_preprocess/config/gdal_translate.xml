@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<GdalTranslate>
+    <!--<ot>Int16</ot>-->
+    <of>GTIFF</of>
+    <!--<outsize>50% 50%</outsize>-->
+    <!--<strict>true</strict>-->
+    <!--<scale>10 10</scale>-->
+    <co_params>
+    	<co>TILED=YES</co>
+    	<co>BLOCKXSIZE=256</co>
+    	<co>BLOCKYSIZE=256</co>
+    	<co>COMPRESS=LZW</co>
+    	<!--<co>BIGTIFF=YES</co>-->
+    </co_params>
+    <!--<srcwin>0 0 2000 2000</srcwin>-->
+    <source>${event[0].PARENT}/${event[0].FILENAME}.${event[0].EXTENSION}</source><!--changed "/" in "\" for properly path into win os -->
+    <destination>${DESTDIR}/${FILENAME}</destination>
+</GdalTranslate>

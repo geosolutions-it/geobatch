@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<GdalAddo>
+    <r>nearest</r>
+    <filename>${DESTDIR}/${FILENAME}</filename>
+    <levels>2 4 8 16 32</levels>
+</GdalAddo>
