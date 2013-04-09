@@ -47,25 +47,7 @@
       <artifactId>geonetwork-manager</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
-    <!-- ============================== -->
-    <!--     Spring                     -->
-    <!-- ============================== -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc</artifactId>
-    </dependency>
+ 
     <!-- ============================== -->
     <!--     Apache commons             -->
     <!-- ============================== -->
@@ -73,32 +55,7 @@
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
     </dependency>
-    <!-- ============================== -->
-    <!--     Platform                   -->
-    <!-- ============================== -->
-    <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>standard</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-    </dependency>
-    <!-- dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <scope>test</scope>
-        </dependency-->
-    <!-- dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <scope>test</scope>
-        </dependency-->
+
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-dao-xstream</artifactId>
