@@ -67,23 +67,23 @@
     <!-- =========================================================== -->
     <!--  -->
     <!-- =========================================================== -->
-    <dependency>
+    <!--dependency>
       <groupId>javax.script</groupId>
       <artifactId>script-api</artifactId>
       <classifier>jdk14</classifier>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>net.sf.retrotranslator</groupId>
       <artifactId>retrotranslator-runtime</artifactId>
     </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>javax.script</groupId>
       <artifactId>js-engine</artifactId>
-    </dependency>
-    <dependency>
+    </dependency-->
+    <!--dependency>
       <groupId>rhino</groupId>
       <artifactId>js</artifactId>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>javax.script</groupId>
       <artifactId>groovy-engine</artifactId>
