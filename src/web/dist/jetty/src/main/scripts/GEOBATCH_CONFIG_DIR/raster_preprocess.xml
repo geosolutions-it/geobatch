@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>raster_preprocess</id>
+	<description>Flow to run gdaltranslate gdaladdo and compressions
+		operations</description>
+	<name>raster_preprocess</name>
+
+	<corePoolSize>5</corePoolSize>
+	<maximumPoolSize>10</maximumPoolSize>
+	<keepAliveTime>3600</keepAliveTime> <!--seconds -->
+	<workQueueSize>100</workQueueSize>
+
+	<autorun>true</autorun>
+
+	<EventConsumerConfiguration>
+
+		<listenerId>cumulating</listenerId>
+
+		<performBackup>false</performBackup>
+
+		<ScriptingConfiguration>
+			<id>ScriptingService</id>
+			<description>Geobatch Groovy Script</description>
+			<name>GEOBATCH GroovyScript</name>
+
+			<listenerId>logging</listenerId>
+			<listenerId>status</listenerId>
+
+			<overrideConfigDir>./</overrideConfigDir>
+
+			<serviceID>ScriptingService</serviceID>
+
+			<language>groovy</language>
+			<scriptFile>config/raster_preprocess.groovy</scriptFile>
+			<properties>
+				<!-- Where to put output data (absolute existing dirs) -->
+				<entry>
+					<string>outputDirName</string>
+					<string>/home/carlo/work/code/java/geobatch/src/web/dist/jetty/src/main/scripts/data/output_tiff/</string>
+				</entry>
+				<entry>
+					<string>backupDirName</string>
+					<string>/home/carlo/work/code/java/geobatch/src/web/dist/jetty/src/main/scripts/data/output_backup/</string>
+				</entry>
+
+
+				<!-- xml template for translate -->
+				<entry>
+					<string>forcePrj</string>
+					<!--relative to the config dir -->
+					<string>config/epsg4326.prj</string>
+				</entry>
+				<entry>
+					<string>translateTemplateName</string>
+					<!--relative to the config dir -->
+					<string>config/gdal_translate.xml</string>
+				</entry>
+				<entry>
+					<string>defaultScriptName</string>
+					<string>config/gdal_translate.xml</string>
+				</entry>
+				<entry>
+					<string>translateExecutable</string>
+					<string>/usr/bin/gdal_translate</string>
+				</entry>
+				<entry>
+					<string>translateXslName</string>
+					<string>config/gdal_translate.xsl</string>
+				</entry>
+
+				<!-- xml template for overview -->
+				<entry>
+					<string>overviewTemplateName</string>
+					<!--relative to the working dir -->
+					<string>config/gdaladdo.xml</string>
+				</entry>
+				<entry>
+					<string>overviewExecutable</string>
+					<string>/usr/bin/gdaladdo</string>
+				</entry>
+				<entry>
+					<string>overviewXslName</string>
+					<string>config/gdaladdo.xsl</string>
+				</entry>
+			</properties>
+		</ScriptingConfiguration>
+
+	</EventConsumerConfiguration>
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>raster_preprocess/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+
+		<!-- CRON: every 10 secs -->
+		<interval>*/10 * * * * ?</interval>
+
+		<serviceID>fsEventGeneratorService</serviceID>
+	</EventGeneratorConfiguration>
+
+	<ListenerConfigurations>
+		<StatusProgressListener>
+			<serviceID>statusListenerService</serviceID>
+			<id>status</id>
+		</StatusProgressListener>
+
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>logging</id>
+			<loggerName>loggingListener</loggerName>
+		</LoggingProgressListener>
+
+		<CumulatingProgressListener>
+			<serviceID>cumulatingListenerService</serviceID>
+			<id>cumulating</id>
+		</CumulatingProgressListener>
+	</ListenerConfigurations>
+
+
+</FlowConfiguration>

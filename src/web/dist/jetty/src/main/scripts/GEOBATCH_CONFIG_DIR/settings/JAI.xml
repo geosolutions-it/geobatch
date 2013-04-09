@@ -1,0 +1,14 @@
+<JAISettings>
+    <id>JAI</id>
+    
+    <allowInterpolation>false</allowInterpolation>
+    <recycling>false</recycling>
+    <tilePriority>9</tilePriority>
+    <tileThreads>7</tileThreads>
+    <memoryCapacity>0.4</memoryCapacity>
+    <memoryThreshold>0.65</memoryThreshold>
+    <imageIOCache>false</imageIOCache>
+    <pngAcceleration>true</pngAcceleration>
+    <jpegAcceleration>false</jpegAcceleration>
+    <allowNativeMosaic>false</allowNativeMosaic>
+</JAISettings>
