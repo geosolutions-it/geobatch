@@ -31,9 +31,9 @@ Most of our demo require a running geoserver instance on the 8080 port (which is
 
 To change this, please check the flow configuration under ``/GEOBATCH_CONFIG_DIR/FLOW_NAME.xml``:
 
-* ``geoserverURL``     The |GS| URL.
-* ``geoserverPWD``     The |GS| password.
-* ``geoserverUID``     The |GS| username.
+* ``geoserverURL``     The geoserver URL.
+* ``geoserverPWD``     The geoserver password.
+* ``geoserverUID``     The geoserver username.
 
 Setup config dir
 ----------------

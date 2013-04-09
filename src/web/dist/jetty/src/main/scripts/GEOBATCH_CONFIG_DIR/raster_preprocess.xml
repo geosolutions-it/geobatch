@@ -36,11 +36,11 @@
 				<!-- Where to put output data (absolute existing dirs) -->
 				<entry>
 					<string>outputDirName</string>
-					<string>/home/carlo/work/code/java/geobatch/src/web/dist/jetty/src/main/scripts/data/output_tiff/</string>
+					<string>/data/output_tiff/</string>
 				</entry>
 				<entry>
 					<string>backupDirName</string>
-					<string>/home/carlo/work/code/java/geobatch/src/web/dist/jetty/src/main/scripts/data/output_backup/</string>
+					<string>/data/output_backup/</string>
 				</entry>
 
 

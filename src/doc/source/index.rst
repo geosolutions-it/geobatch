@@ -41,6 +41,7 @@ Demos & Tutorials
 -----------------
 
 .. toctree::
+   :maxdepth: 1
    :glob:
 
    demos/demo*
