@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<id>geotiffFlow</id>
+	<id>geotiff_publish</id>
 	<name>Prepare GeoTIFF and publish</name>
 	<description>Create overviews, retile the image and publish on GeoServer</description>
 
@@ -13,7 +13,7 @@
 
 	<EventGeneratorConfiguration>
 		<wildCard>*.*</wildCard>
-		<watchDirectory>geotiffFlow/in</watchDirectory>
+		<watchDirectory>geotiff_publish/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<!--interval>0 * * * * ?</interval--> <!-- CRON: every minute at sec 0 -->
@@ -82,7 +82,7 @@
 			<dataTransferMethod>EXTERNAL</dataTransferMethod>
 			<geoserverPWD>geoserver</geoserverPWD>
 			<geoserverUID>admin</geoserverUID>
-			<geoserverURL>http://localhost:8081/geoserver</geoserverURL>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
 			<defaultNamespace>geosolutions</defaultNamespace>
 			
 			<styles />
