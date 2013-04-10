@@ -53,12 +53,19 @@
           <type>test-jar</type>
         </dependency>
         <dependency>
+          <groupId>javax.servlet</groupId>
+       	  <artifactId>jstl</artifactId>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jetty</artifactId>
+    	  <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.mortbay.jetty</groupId>
           <artifactId>jsp-2.1</artifactId>
+          <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.javassist</groupId>
@@ -209,6 +216,7 @@
               </descriptors>
               <!-- lets put the zip to the site dir for automatic deploy -->
               <outputDirectory>${site.outdir}</outputDirectory>
+	      <!--finalName>geobatch-${project.version}</finalName-->
             </configuration>
             <executions>
               <execution>

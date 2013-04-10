@@ -1,0 +1,39 @@
+<ImageMosaic>
+  <!-- Base directory for the mosaic -->
+  <base>${MOSAIC_DESTINATION}</base>
+
+  <!-- Files to add or remove from the index  -->
+  <add>${SOURCE_DATA}/mosaic/world_2012.tiff</add>
+  <add>${SOURCE_DATA}/mosaic/world_2013.tiff</add>
+  
+  <!-- physically delete the granules from disk
+  after removing them from the index -->
+  <deleteGranules>false</deleteGranules>
+  <!-- if and where to backup up granules when removing them. It must be an absolute path -->
+  <!--backupDirectory>{IMAGEMOSAIC_DIR_BACKUP}</backupDirectory-->
+
+  <!-- ImageMosaicAction Configuration parameters -->
+  <backgroundValue>-9999</backgroundValue>
+  <outputTransparentColor></outputTransparentColor>
+  <inputTransparentColor></inputTransparentColor>
+  <allowMultithreading>true</allowMultithreading>
+  <useJaiImageRead>false</useJaiImageRead>
+  <tileSizeH>256</tileSizeH>
+  <tileSizeW>256</tileSizeW>
+  <!--NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED-->
+  <projectionPolicy>NONE</projectionPolicy>
+  <styles/>
+
+  <!-- do we want to perform a Reset on GeoServer at the end of the process or not.  default to True.-->
+  <finalReset>false</finalReset>
+
+  <!-- Delay in Seconds to apply when moving files around when NFS is involved. Must be >=0-->
+  <NFSCopyWait>10</NFSCopyWait>
+
+  <ignoreGeoServer>false</ignoreGeoServer>
+
+  <timeDimEnabled>true</timeDimEnabled>
+  <timeRegex>[0-9]{4}</timeRegex>
+
+
+</ImageMosaic>  

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<GdalTranslate>
+    <!--<ot>Int16</ot>-->
+    <of>GTIFF</of>
+    <!--<outsize>50% 50%</outsize>-->
+    <!--<strict>true</strict>-->
+    <!--<scale>10 10</scale>-->
+    <#assign size = event?size>
+    <!-- if size==2 we appended the prj file -->
+    <#if size==2>
+      <a_srs>${event[1].PARENT}/${event[1].FILENAME}.${event[1].EXTENSION}</a_srs>
+    </#if>
+<!-- ${size} -->
+    <co_params>
+    	<co>TILED=YES</co>
+    	<co>BLOCKXSIZE=64</co>
+    	<co>BLOCKYZISE=64</co>
+    	<co>COMPRESS=LZW</co>
+    	<!--<co>BIGTIFF=YES</co>-->
+    </co_params>
+    <!--<srcwin>0 0 2000 2000</srcwin>-->
+	<source>${event[0].PARENT}/${event[0].FILENAME}.${event[0].EXTENSION}</source>
+	<destination>${DESTDIR}/${FILENAME}</destination>
+</GdalTranslate>

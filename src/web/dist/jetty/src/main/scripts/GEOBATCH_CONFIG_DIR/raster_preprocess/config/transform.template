@@ -1,0 +1,4 @@
+<#list GDALRasterAttributeTable.FieldDefn as var>${var.Name}<#if var_has_next>,</#if></#list>
+<#list GDALRasterAttributeTable.Row as row>
+<#list row.F as column><#if column_has_next>${column},<#else>"${column}"</#if></#list>
+</#list><#--${GDALRasterAttributeTable.FieldDefn[0].@index}-->
