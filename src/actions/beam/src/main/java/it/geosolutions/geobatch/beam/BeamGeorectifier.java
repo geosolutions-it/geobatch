@@ -54,7 +54,6 @@ import org.slf4j.LoggerFactory;
  * Action to georectify beam products
  * 
  * @author Daniele Romagnoli, GeoSolutions SAS
- * @author (r2)Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
 public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
 

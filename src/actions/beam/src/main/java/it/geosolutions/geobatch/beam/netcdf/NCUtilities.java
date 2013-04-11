@@ -1,3 +1,24 @@
+/*
+ *  GeoBatch - Open Source geospatial batch processing system
+ *  http://geobatch.geo-solutions.it/
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package it.geosolutions.geobatch.beam.netcdf;
 
 import java.awt.image.DataBuffer;
@@ -42,6 +63,9 @@ public class NCUtilities {
 
     public final static String LAT_UNITS = "degrees_north";
 
+    /**
+     * NetCDF Coordinate holder (Dimension and data values)
+     */
     static class NCCoordinate {
         public NCCoordinate(Dimension dimension, ArrayFloat data) {
             super();
@@ -156,36 +180,23 @@ public class NCUtilities {
         case DataBuffer.TYPE_UNDEFINED:
         default:
             throw new IllegalArgumentException("Invalid input data type:" + dataType);
-
         }
     }
-    
-    public static Array getArray(final int dimension,
-            final DataType dataType) {
-        if (dimension < 1)
-            throw new IllegalArgumentException(
-                    "dimension should be greater than zero");
-        int[] dim = new int[] { dimension };
-        if (dataType == DataType.FLOAT)
-            return new ArrayFloat(dim);
-        else if (dataType == DataType.DOUBLE)
-            return new ArrayDouble(dim);
-        else if (dataType == DataType.BYTE)
-            return new ArrayByte(dim);
-        else if (dataType == DataType.SHORT)
-            return new ArrayShort(dim);
-        else if (dataType == DataType.INT)
-            return new ArrayInt(dim);
-        throw new IllegalArgumentException("Actually unsupported Datatype");
 
-    }
-    
+    /**
+     * Get an Array of proper size and type.
+     * 
+     * @param dimensions the dimensions
+     * @param varDataType the DataType of the required array 
+     * @return
+     */
     public static Array getArray(int[] dimensions, DataType varDataType) {
         if (dimensions == null)
             throw new IllegalArgumentException("Illegal dimensions");
         final int nDims = dimensions.length;
         switch (nDims) {
         case 4:
+            // 4D Arrays
             if (varDataType == DataType.FLOAT) {
                 return new ArrayFloat.D4(dimensions[0], dimensions[1],
                         dimensions[2], dimensions[3]);
@@ -206,6 +217,7 @@ public class NCUtilities {
                         "Actually unsupported Datatype");
 
         case 3:
+            // 3D Arrays
             if (varDataType == DataType.FLOAT) {
                 return new ArrayFloat.D3(dimensions[0], dimensions[1],
                         dimensions[2]);
@@ -225,6 +237,7 @@ public class NCUtilities {
                 throw new IllegalArgumentException(
                         "Actually unsupported Datatype");
         case 2:
+            // 2D Arrays
             if (varDataType == DataType.FLOAT) {
                 return new ArrayFloat.D2(dimensions[0], dimensions[1]);
             } else if (varDataType == DataType.DOUBLE) {
