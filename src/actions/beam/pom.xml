@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =======================================================================    
+        Maven Project Configuration File
+
+        GeoSolutions GeoBatch Project
+            http://geobatch.codehaus.org
+
+        Version: $Id: pom.xml 63 2008-04-04 11:22:11Z alessio $
+======================================================================= -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>it.geosolutions.geobatch</groupId>
+    <artifactId>gb-actions</artifactId>
+    <version>1.4-SNAPSHOT</version>
+  </parent>
+  <!-- =========================================================== -->
+  <!--     Module Description                                      -->
+  <!-- =========================================================== -->
+  <groupId>it.geosolutions.geobatch</groupId>
+  <artifactId>gb-action-beam</artifactId>
+  <packaging>jar</packaging>
+  <name>GeoBatch action: Beam</name>
+  <description>GeoSolutions GeoBatch flow managers - Beam georectification flow.</description>
+  <properties>
+    <root.basedir>${project.basedir}/../..</root.basedir>
+    <beam.version>5.0-SNAPSHOT</beam.version>
+    <beam.netcdf.version>1.1.3.${beam.version}</beam.netcdf.version>
+  </properties>
+
+    <repositories>
+        <repository>
+            <id>bc-mvn</id>
+            <name>Public Maven Repository at Brockmann Consult</name>
+            <url>http://www.brockmann-consult.de/mvn/os</url>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+ <pluginRepositories>
+        <pluginRepository>
+            <id>bc-mvn-repo</id>
+            <name>Public Maven Repository at Brockmann Consult</name>
+            <url>http://www.brockmann-consult.de/mvn/os</url>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>apache.org</id>
+            <name>Maven Plugin Snapshots</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+  <!-- =========================================================== -->
+  <!--     Dependency Management                                   -->
+  <!-- =========================================================== -->
+  <dependencies>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>tools-geobatch</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-core-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-fs-catalog</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-geoserver</artifactId>
+    </dependency>
+    <dependency>
+        <version>${beam.version}</version>
+        <groupId>org.esa.beam</groupId>
+        <artifactId>beam-core</artifactId>
+    </dependency>
+    <dependency>
+        <version>${beam.netcdf.version}</version>
+        <groupId>org.esa.beam</groupId>
+        <artifactId>beam-netcdf</artifactId>
+    </dependency>
+    <dependency>
+        <version>${beam.version}</version>
+        <groupId>org.esa.beam</groupId>
+        <artifactId>beam-gpf</artifactId>
+    </dependency>
+  </dependencies>
+</project>
