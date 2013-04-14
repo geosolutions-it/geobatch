@@ -230,31 +230,64 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
      * @throws IOException
      */
     public void georectify(final File inputFile) throws IOException {
-        final String outputFilePath = "c:\\outputfolder\\" + System.currentTimeMillis() + inputFile.getName();
+        final String outputFilePath = configuration.getOutputFolder() + "\\" + System.currentTimeMillis() + inputFile.getName();
         // Get product from inputFile
         if (inputFile == null || !inputFile.exists() || !inputFile.canRead()) {
             throw new IllegalArgumentException("Need to provide a valid file");
         }
 
-        final boolean geophysics = configuration.isGeophysics();
-        
-        // Reading product
-        final Product inputProduct = ProductIO.readProduct(inputFile);
+        Product inputProduct = null;
+        Product reducedProduct = null;
+        Product reprojectedProduct = null;
 
-        // Refining products through filters
-        final Product product = refineProductsList(inputProduct);
+        try {
+            // Reading product
+            inputProduct = ProductIO.readProduct(inputFile);
 
-        // Reprojecting
-        final Product reprojectedProduct = GPF.createProduct("Reproject", DEFAULT_PARAMS, product);
+            // Refining products through filters
+            reducedProduct = refineProductsList(inputProduct);
 
-        // Get a store depending on the requested format
-        final BeamFormatWriter writer = BeamGeorectifierConfiguration.getFormatWriter(configuration.getOutputFormat());
-        if (writer == null) {
-            throw new IllegalArgumentException("No writers have been found for that output format: " + configuration.getOutputFormat());
+            // Reprojecting
+            reprojectedProduct = GPF.createProduct("Reproject", DEFAULT_PARAMS, reducedProduct);
+
+            // Get a store depending on the requested format
+            final BeamFormatWriter writer = BeamGeorectifierConfiguration.getFormatWriter(configuration.getOutputFormat());
+            if (writer == null) {
+                throw new IllegalArgumentException("No writers have been found for that output format: " + configuration.getOutputFormat());
+            }
+
+            Map<String, Object> storingParams = new HashMap<String, Object>();
+            storingParams.put(BeamFormatWriter.PARAM_GEOPHYSIC, configuration.isGeophysics());
+            storingParams.put(BeamFormatWriter.PARAM_CUSTOMDIMENSION, configuration.getDimensions()); // Get from config
+
+            // store the resulting product 
+            writer.storeProduct(outputFilePath, inputProduct, reprojectedProduct, storingParams);
+        } finally {
+            
+            // Disposing products, releasing resources
+            if (inputProduct != null) {
+                try {
+                    inputProduct.dispose();
+                } catch (Throwable t) {
+                    // Does nothing
+                }
+            }
+            if (reducedProduct != null) {
+                try {
+                    reducedProduct.dispose();
+                } catch (Throwable t) {
+                    // Does nothing
+                }
+            }
+            if (reprojectedProduct != null) {
+                try {
+                    reprojectedProduct.dispose();
+                } catch (Throwable t) {
+                    // Does nothing
+                }
+            }
         }
-
-        // store the resulting product 
-        writer.storeProduct(outputFilePath, inputProduct, reprojectedProduct, geophysics);
+        
     }
 
     /**

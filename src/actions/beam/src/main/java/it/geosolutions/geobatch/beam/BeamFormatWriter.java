@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.beam;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.esa.beam.framework.datamodel.Product;
 
@@ -33,6 +34,10 @@ import org.esa.beam.framework.datamodel.Product;
  *
  */
 public interface BeamFormatWriter {
+    
+    public final static String PARAM_GEOPHYSIC = "geophysics";
+    
+    public final static String PARAM_CUSTOMDIMENSION = "customDimensions";
 
-    public void storeProduct(final String outputFilePath, Product inputProduct, Product reprojectedProduct, boolean geophysics) throws IOException; 
+    public void storeProduct(final String outputFilePath, Product inputProduct, Product reprojectedProduct, Map<String, Object> params) throws IOException; 
 }

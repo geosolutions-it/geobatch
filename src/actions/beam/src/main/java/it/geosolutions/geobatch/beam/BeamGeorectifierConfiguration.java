@@ -52,13 +52,17 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
 
     private String wildcardString = "*.*";
 
+    private String dimensions;
+
     private boolean logNotification = true;
-    
+
     private String filterVariables;
 
     private boolean filterInclude = true;
 
     private boolean geophysics = false;
+
+    private String outputFolder;
 
     private String outputFormat = "NETCDF"; // default 
    
@@ -147,5 +151,21 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
 
     public void setOutputFormat(String outputFormat) {
         this.outputFormat = outputFormat;
+    }
+
+    public String getOutputFolder() {
+        return outputFolder;
+    }
+
+    public void setOutputFolder(String outputFolder) {
+        this.outputFolder = outputFolder;
+    }
+
+    public String getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(String dimensions) {
+        this.dimensions = dimensions;
     }
 }

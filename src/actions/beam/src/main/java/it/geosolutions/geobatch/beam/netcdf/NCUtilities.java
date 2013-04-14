@@ -21,9 +21,23 @@
  */
 package it.geosolutions.geobatch.beam.netcdf;
 
-import java.awt.image.DataBuffer;
+import it.geosolutions.geobatch.beam.netcdf.NCUtilities.NCCoordinateDimension;
+import it.geosolutions.geobatch.beam.netcdf.NCUtilities.NCCoordinates;
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.DataBuffer;
+import java.awt.image.RenderedImage;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.esa.beam.framework.datamodel.Band;
+import org.esa.beam.framework.datamodel.MetadataAttribute;
+import org.esa.beam.framework.datamodel.MetadataElement;
+import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.datamodel.ProductData;
+import org.geotools.util.Utilities;
+import org.opengis.referencing.operation.MathTransform;
 
 import ucar.ma2.Array;
 import ucar.ma2.ArrayByte;
@@ -32,7 +46,10 @@ import ucar.ma2.ArrayFloat;
 import ucar.ma2.ArrayInt;
 import ucar.ma2.ArrayShort;
 import ucar.ma2.DataType;
+import ucar.ma2.Index;
 import ucar.nc2.Dimension;
+import ucar.nc2.NetcdfFileWriteable;
+import ucar.nc2.Variable;
 
 /**
  * A NetCDF Utilities class 
@@ -66,22 +83,25 @@ public class NCUtilities {
     /**
      * NetCDF Coordinate holder (Dimension and data values)
      */
-    static class NCCoordinate {
-        public NCCoordinate(Dimension dimension, ArrayFloat data) {
+    static class NCCoordinateDimension {
+        public NCCoordinateDimension(Dimension dimension, Variable variable, Array data) {
             super();
             this.dimension = dimension;
+            this.variable = variable;
             this.data = data;
         }
 
         private Dimension dimension;
-        
-        private ArrayFloat data;
 
-        public ArrayFloat getData() {
+        private Array data;
+
+        private Variable variable;
+
+        public Array getData() {
             return data;
         }
 
-        public void setData(ArrayFloat data) {
+        public void setData(Array data) {
             this.data = data;
         }
 
@@ -92,6 +112,14 @@ public class NCUtilities {
         public void setDimension(Dimension dimension) {
             this.dimension = dimension;
         }
+
+        public Variable getVariable() {
+            return variable;
+        }
+
+        public void setVariable(Variable variable) {
+            this.variable = variable;
+        }
     }
     
     static class NCCoordinates
@@ -99,29 +127,29 @@ public class NCUtilities {
         public NCCoordinates() {
         }
 
-        public NCCoordinates(NCCoordinate longitude, NCCoordinate latitude) {
+        public NCCoordinates(NCCoordinateDimension longitude, NCCoordinateDimension latitude) {
             super();
             this.longitude = longitude;
             this.latitude = latitude;
         }
 
-        private NCCoordinate longitude;
+        private NCCoordinateDimension longitude;
         
-        private NCCoordinate latitude;
+        private NCCoordinateDimension latitude;
 
-        public NCCoordinate getLongitude() {
+        public NCCoordinateDimension getLongitude() {
             return longitude;
         }
 
-        public void setLongitude(NCCoordinate longitude) {
+        public void setLongitude(NCCoordinateDimension longitude) {
             this.longitude = longitude;
         }
 
-        public NCCoordinate getLatitude() {
+        public NCCoordinateDimension getLatitude() {
             return latitude;
         }
 
-        public void setLatitude(NCCoordinate latitude) {
+        public void setLatitude(NCCoordinateDimension latitude) {
             this.latitude = latitude;
         }
     }
@@ -254,5 +282,145 @@ public class NCUtilities {
         }
         throw new IllegalArgumentException(
                 "Unable to create a proper array unsupported Datatype");
+    }
+
+    static boolean isLatLon(String bandName) {
+        return bandName.equalsIgnoreCase(LON)
+                || bandName.equalsIgnoreCase(LAT);
+    }
+
+    static void addAttributes(NetcdfFileWriteable ncFileOut, Band band,
+            final String varName, boolean isGeophysics) {
+        Utilities.ensureNonNull("ncFileOut", ncFileOut);
+        Utilities.ensureNonNull("band", band);
+        ncFileOut.addVariableAttribute(varName, DESCRIPTION, band.getDescription());
+        String unit = band.getUnit();
+        if (unit != null) {
+            ncFileOut.addVariableAttribute(varName, UNITS, band.getUnit());
+        }
+        ncFileOut.addVariableAttribute(varName, FILLVALUE,
+                isGeophysics ? band.getGeophysicalNoDataValue() : band.getNoDataValue());
+    
+        // TODO need to add more attributes when dealing with non geophysical values
+    }
+
+    static void copyGlobalAttributes(NetcdfFileWriteable ncFileOut, Product netcdfProduct) {
+        // TODO Auto-generated method stub
+        Utilities.ensureNonNull("netcdfProduct", netcdfProduct);
+        MetadataElement root = netcdfProduct.getMetadataRoot();
+        if (root != null) {
+            MetadataElement attribs = root.getElement("global_attributes");
+            if (attribs != null) {
+                MetadataAttribute[] attributes = attribs.getAttributes();
+                for (MetadataAttribute attrib : attributes) {
+                    // TODO: Brute setting, fix that
+                    ncFileOut
+                            .addGlobalAttribute(attrib.getName(), attrib.getData().getElemString());
+                }
+            }
+        }
+    }
+    
+    /**
+     * Setup lat lon dimension and related coordinates variable
+     * 
+     * @param ncFileOut
+     * @param ri
+     * @param transform
+     * @param latLonCoordinates
+     */
+    static void setupLatLon(NetcdfFileWriteable ncFileOut, RenderedImage ri,
+            MathTransform transform, NCCoordinates latLonCoordinates) {
+        final int numLat = ri.getHeight();
+        final int numLon = ri.getWidth();
+
+        AffineTransform at = (AffineTransform) transform;
+
+        // Setup resolutions and bbox extrema to populate regularly gridded coordinate data
+        double ymax = at.getTranslateY();
+        double xmin = at.getTranslateX();
+        double periodY = -at.getScaleY();
+        double periodX = at.getScaleX();
+        double ymin = ymax - (periodY * numLat);
+
+        // Adding lat lon dimensions
+        Dimension latDim = ncFileOut.addDimension(NCUtilities.LAT, numLat);
+        Dimension lonDim = ncFileOut.addDimension(NCUtilities.LON, numLon);
+
+        // lat Variable
+        ArrayFloat latData = new ArrayFloat(new int[] { numLat });
+        Index latIndex = latData.getIndex();
+        ncFileOut.addVariable(NCUtilities.LAT, DataType.FLOAT, new Dimension[] { latDim });
+        ncFileOut.addVariableAttribute(NCUtilities.LAT, NCUtilities.LONGNAME, NCUtilities.LATITUDE);
+        ncFileOut.addVariableAttribute(NCUtilities.LAT, NCUtilities.UNITS, NCUtilities.LAT_UNITS);
+
+        // Flipping Y Axis
+        for (int yPos = 0; yPos < numLat; yPos++) {
+            latData.setFloat(latIndex.set(yPos),
+            // new Float(
+            // ymax
+            // - (new Float(yPos)
+            // .floatValue() * periodY))
+            // .floatValue());
+                    new Float(ymin + (new Float(yPos).floatValue() * periodY)).floatValue());
+        }
+
+        // lon Variable
+        ArrayFloat lonData = new ArrayFloat(new int[] { numLon });
+        Index lonIndex = lonData.getIndex();
+        ncFileOut.addVariable(NCUtilities.LON, DataType.FLOAT, new Dimension[] { lonDim });
+        ncFileOut
+                .addVariableAttribute(NCUtilities.LON, NCUtilities.LONGNAME, NCUtilities.LONGITUDE);
+        ncFileOut.addVariableAttribute(NCUtilities.LON, NCUtilities.UNITS, NCUtilities.LON_UNITS);
+        for (int xPos = 0; xPos < numLon; xPos++) {
+            lonData.setFloat(lonIndex.set(xPos), new Float(xmin
+                    + (new Float(xPos).floatValue() * periodX)).floatValue());
+        }
+
+        // Setting lat lon coordinates values
+        final NCCoordinateDimension latitude = new NCCoordinateDimension(latDim, null, latData);
+        final NCCoordinateDimension longitude = new NCCoordinateDimension(lonDim, null, lonData);
+        latLonCoordinates.setLongitude(longitude);
+        latLonCoordinates.setLatitude(latitude);
+
+    }
+
+    /**
+     * 
+     * @param ncFileOut
+     * @param ri
+     * @param transform
+     * @param latLonCoordinates
+     * @param coordinateDimensions
+     */
+    static void addDimensions(NetcdfFileWriteable ncFileOut, RenderedImage ri,
+            MathTransform transform, NCCoordinates latLonCoordinates,
+            Map<String, NCCoordinateDimension> coordinateDimensions) {
+
+        // Setting up LatLon
+        NCUtilities.setupLatLon(ncFileOut, ri, transform, latLonCoordinates);
+
+        // Dealing with custom dimensions
+        if (coordinateDimensions != null) {
+
+            // Initializing coordinates for those dimensions
+            Set<String> dimensionNames = coordinateDimensions.keySet();
+            Iterator<String> dimensionsIterator = dimensionNames.iterator();
+            while (dimensionsIterator.hasNext()) {
+                String dimensioName = dimensionsIterator.next();
+                NCCoordinateDimension nccoord = coordinateDimensions.get(dimensioName);
+                Variable var = nccoord.getVariable();
+                ncFileOut.addDimension(dimensioName, nccoord.getDimension().getLength());
+                ncFileOut.addVariable(var.getName(), var.getDataType(),
+                        new Dimension[] { nccoord.getDimension() });
+                ncFileOut.addVariableAttribute(var.getName(), NCUtilities.LONGNAME,
+                        var.getFullName());
+                ncFileOut.addVariableAttribute(var.getName(), NCUtilities.DESCRIPTION,
+                        var.getDescription());
+                ncFileOut.addVariableAttribute(var.getName(), NCUtilities.UNITS,
+                        var.getUnitsString());
+            }
+
+        }
     }
 }
