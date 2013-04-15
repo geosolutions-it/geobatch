@@ -64,7 +64,7 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
     static {
         
         //TODO: parse it from configuration
-        JAI.getDefaultInstance().getTileCache().setMemoryCapacity(1096 * 1024 * 1024);
+        JAI.getDefaultInstance().getTileCache().setMemoryCapacity(1024 * 1024 * 1024);
         GPF.getDefaultInstance().getOperatorSpiRegistry().addOperatorSpi(new ReprojectionOp.Spi());
 
         DEFAULT_PARAMS.put("resamplingName", "Nearest");

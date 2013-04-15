@@ -416,7 +416,7 @@ public class NCUtilities {
                 ncFileOut.addVariableAttribute(var.getName(), NCUtilities.LONGNAME,
                         var.getFullName());
                 ncFileOut.addVariableAttribute(var.getName(), NCUtilities.DESCRIPTION,
-                        var.getDescription());
+                        var.getFullName());
                 ncFileOut.addVariableAttribute(var.getName(), NCUtilities.UNITS,
                         var.getUnitsString());
             }

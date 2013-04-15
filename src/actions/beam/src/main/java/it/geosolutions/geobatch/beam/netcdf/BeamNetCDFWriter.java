@@ -25,6 +25,7 @@ import it.geosolutions.geobatch.beam.BeamFormatWriter;
 import it.geosolutions.geobatch.beam.netcdf.NCUtilities.NCCoordinateDimension;
 import it.geosolutions.geobatch.beam.netcdf.NCUtilities.NCCoordinates;
 
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.media.jai.PlanarImage;
 import javax.media.jai.iterator.RandomIter;
 import javax.media.jai.iterator.RandomIterFactory;
 
@@ -75,29 +77,29 @@ import com.bc.ceres.glevel.MultiLevelImage;
 public class BeamNetCDFWriter implements BeamFormatWriter {
 
     /**
-     * Simple holder which group different Beam Product Bands for the same dimension.
+     * Simple holder which group different Variables which have the same dimension.
      */
-    static class DimensionGroup {
+    static class VariablesGroup {
 
-        public DimensionGroup(Map<String, BeamVariableBands> variableBands) {
+        public VariablesGroup(Map<String, BandsGroup> variables) {
             super();
-            this.variableBands = variableBands;
+            this.variables = variables;
         }
 
-        public DimensionGroup() {
+        public VariablesGroup() {
             super();
         }
 
-        public Map<String, BeamVariableBands> getVariableBands() {
-            return variableBands;
+        public Map<String, BandsGroup> getVariables() {
+            return variables;
         }
 
-        public void setVariableBands(Map<String, BeamVariableBands> variableBands) {
-            this.variableBands = variableBands;
+        public void setVariables(Map<String, BandsGroup> variables) {
+            this.variables = variables;
         }
 
-        /** All the variables and related bands for that dimensions */
-        Map<String, BeamVariableBands> variableBands;
+        /** Mapping between variables and related bands for this dimension */
+        Map<String, BandsGroup> variables;
     }
 
     /**
@@ -106,12 +108,12 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * cloud_formations=3) will result has 3 different bands: - fractional_cloud_cover_cloud_formation_1, fractional_cloud_cover_cloud_formation_2,
      * fractional_cloud_cover_cloud_formation_3
      */
-    static class BeamVariableBands {
-        public BeamVariableBands() {
+    static class BandsGroup {
+        public BandsGroup() {
             this.bands = new ArrayList<Band>();
         }
 
-        public BeamVariableBands(List<Band> bands) {
+        public BandsGroup(List<Band> bands) {
             super();
             this.bands = bands;
         }
@@ -194,7 +196,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
 
             // Let's do the first step
             final NCUtilities.NCCoordinates latLonCoordinates = new NCUtilities.NCCoordinates();
-            Map<String, DimensionGroup> bandsGroupedByDimension = defineOutputNetCDF(ncFileOut,
+            Map<String, VariablesGroup> dimensionsGroup = defineOutputNetCDF(ncFileOut,
                     inputProduct, outputProduct, latLonCoordinates, geophysics,
                     coordinateDimensions);
 
@@ -209,7 +211,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             writeCoordinates(ncFileOut, latLonCoordinates, coordinateDimensions);
 
             // Fill variable with values
-            writeValues(ncFileOut, outputProduct, bandsGroupedByDimension, geophysics);
+            writeValues(ncFileOut, outputProduct, dimensionsGroup, geophysics);
             // /////////////////////////////////////WRITE VALUES
 
         } catch (InvalidRangeException e) {
@@ -239,16 +241,16 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * 
      * @param ncFileOut
      * @param product
-     * @param bandsGroupedByDimension
+     * @param dimensionsGroup
      * @param geophysics
      * @throws IOException
      * @throws InvalidRangeException
      */
     private static void writeValues(NetcdfFileWriteable ncFileOut, Product product,
-            Map<String, DimensionGroup> bandsGroupedByDimension, boolean geophysics)
+            Map<String, VariablesGroup> dimensionsGroup, boolean geophysics)
             throws IOException, InvalidRangeException {
-        if (!bandsGroupedByDimension.isEmpty()) {
-            Set<String> keys = bandsGroupedByDimension.keySet();
+        if (!dimensionsGroup.isEmpty()) {
+            Set<String> keys = dimensionsGroup.keySet();
             Iterator<String> iterator = keys.iterator();
 
             // Loop over dimensions.
@@ -256,17 +258,15 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                 String dimension = iterator.next();
 
                 // Get all the variables pertaining to that dimension
-                final DimensionGroup variablesForThisDimension = bandsGroupedByDimension
-                        .get(dimension);
-                final Map<String, BeamVariableBands> variablesMap = variablesForThisDimension
-                        .getVariableBands();
-                final Set<String> variablesKeys = variablesMap.keySet();
+                final VariablesGroup variablesForCurrentDimension = dimensionsGroup.get(dimension);
+                final Map<String, BandsGroup> variables = variablesForCurrentDimension.getVariables();
+                final Set<String> variablesKeys = variables.keySet();
                 final Iterator<String> variablesIterator = variablesKeys.iterator();
 
                 // Set data for each variable related to that dimension
                 while (variablesIterator.hasNext()) {
                     String variableName = variablesIterator.next();
-                    BeamVariableBands bands = variablesMap.get(variableName);
+                    BandsGroup bands = variables.get(variableName);
                     setData(ncFileOut, bands, variableName, geophysics);
                 }
             }
@@ -282,11 +282,10 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                         || bandName.equalsIgnoreCase(NCUtilities.LAT)) {
                     continue;
                 }
-                final BeamVariableBands beamVariableBands = new BeamVariableBands(
-                        Collections.singletonList(band));
+                final BandsGroup bandsGroup = new BandsGroup(Collections.singletonList(band));
 
                 // Writing variable
-                setData(ncFileOut, beamVariableBands, bandName, geophysics);
+                setData(ncFileOut, bandsGroup, bandName, geophysics);
             }
 
         }
@@ -347,7 +346,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * @throws InvalidRangeException
      */
     private static void setData(final NetcdfFileWriteable ncFileOut,
-            final BeamVariableBands beamVariableBands, String variableName, final boolean geophysics)
+            final BandsGroup beamVariableBands, String variableName, final boolean geophysics)
             throws IOException, InvalidRangeException {
 
         // Retrieve all bands for this variable
@@ -370,7 +369,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
 
         // get a properly sized array for this dimension to fill it with values
         final Array matrix = NCUtilities.getArray(dimensions, datatype);
-        setValues(ri, bands, numBands, matrix, width, height, datatype, geophysics);
+        setValues(bands, numBands, matrix, datatype, geophysics);
         ncFileOut.write(variableName, matrix);
 
     }
@@ -378,87 +377,142 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
     /**
      * Write values from product bands to NetCDF Array
      * 
-     * @param ri
      * @param bands
      * @param numBands
      * @param matrix
-     * @param width
-     * @param height
      * @param datatype
      * @param geophysics
      */
-    private static void setValues(RenderedImage ri, List<Band> bands, int numBands, Array matrix,
-            int width, int height, DataType datatype, boolean geophysics) {
+    private static void setValues(List<Band> bands, int numBands, Array matrix,
+            DataType datatype, boolean geophysics) {
+
+        // Getting first band as sample
+        final Band bandProduct = bands.get(0);
+
+        // Note that BEAM seems is always returning geophysic images 
+        final MultiLevelImage image = geophysics ? bandProduct.getGeophysicalImage() : bandProduct
+                .getSourceImage();
+        final RenderedImage ri = image.getImage(0);
+
+        //
+        // Preparing tile properties for future scan
+        //
+        int width = ri.getWidth();
+        int height = ri.getHeight();
+        int minX = ri.getMinX();
+        int minY = ri.getMinY();
+        int maxX = minX + width - 1;
+        int maxY = minY + height - 1;
+        int tileWidth = Math.min(ri.getTileWidth(), width);
+        int tileHeight = Math.min(ri.getTileHeight(), height);
+
+        int minTileX = minX / tileWidth - (minX < 0 ? (-minX % tileWidth > 0 ? 1 : 0): 0);
+        int minTileY = minY / tileHeight - (minY < 0 ? (-minY % tileHeight > 0 ? 1 : 0): 0);
+        int maxTileX = maxX / tileWidth - (maxX < 0 ? (-maxX % tileWidth > 0 ? 1 : 0): 0);
+        int maxTileY = maxY / tileHeight - (maxY < 0 ? (-maxY % tileHeight > 0 ? 1 : 0): 0);
+
         final Index Tima = matrix.getIndex();
+
+        // 
+        // Fill data matrix
+        //
 
         // Simple case... just one band. Scan index will be 2D
         if (numBands == 1) {
-            RandomIter data = RandomIterFactory.create(ri, null);
-            for (int j = 0; j < height; j++) {
-                for (int k = 0; k < width; k++) {
-                    // need to flip on Y axis
-                    final int yPos = height - j - 1;
-                    switch (datatype) {
-                    case BYTE:
-                        byte sampleByte = (byte) data.getSampleFloat(k, j, 0);
-                        matrix.setByte(Tima.set(yPos, k), sampleByte);
-                        break;
-                    case SHORT:
-                        short sampleShort = (short) data.getSampleFloat(k, j, 0);
-                        matrix.setShort(Tima.set(yPos, k), sampleShort);
-                        break;
-                    case INT:
-                        int sampleInt = (int) data.getSampleFloat(k, j, 0);
-                        matrix.setInt(Tima.set(yPos, k), sampleInt);
-                        break;
-                    case FLOAT:
-                        float sampleFloat = data.getSampleFloat(k, j, 0);
-                        matrix.setFloat(Tima.set(yPos, k), sampleFloat);
-                        break;
-                    case DOUBLE:
-                        double sampleDouble = data.getSampleDouble(k, j, 0);
-                        matrix.setDouble(Tima.set(yPos, k), sampleDouble);
-                        break;
+            final Band band = bandProduct;
+            final RandomIter data = RandomIterFactory.create(ri, null);
+            for (int tileY = minTileY; tileY <= maxTileY; tileY++) {
+                for (int tileX = minTileX; tileX <= maxTileX; tileX++) {
+                    for (int trow = 0; trow < tileHeight; trow++) {
+                        int j = (tileY * tileHeight) + trow;
+                        if ((j >= minY) && (j <= maxY)) {
+                            for (int tcol = 0; tcol < tileWidth; tcol++) {
+                                int col = (tileX * tileWidth) + tcol;
+                                if ((col >= minX) && (col <= maxX)) {
+                                    int k = col;
+                                    final int yPos = height - j - 1;
+                                    switch (datatype) {
+                                    case BYTE:
+                                        byte sampleByte = (byte) data.getSampleFloat(k, j, 0);
+                                        matrix.setByte(Tima.set(yPos, k), sampleByte);
+                                        break;
+                                    case SHORT:
+                                        short sampleShort = (short) data.getSampleFloat(k, j, 0);
+                                        matrix.setShort(Tima.set(yPos, k), sampleShort);
+                                        break;
+                                    case INT:
+                                        int sampleInt = (int) data.getSampleFloat(k, j, 0);
+                                        matrix.setInt(Tima.set(yPos, k), sampleInt);
+                                        break;
+                                    case FLOAT:
+                                        float sampleFloat = data.getSampleFloat(k, j, 0);
+                                        matrix.setFloat(Tima.set(yPos, k), sampleFloat);
+                                        break;
+                                    case DOUBLE:
+                                        double sampleDouble = data.getSampleDouble(k, j, 0);
+                                        matrix.setDouble(Tima.set(yPos, k), sampleDouble);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
+            // Finalize the iterator and dispose the Band
+            data.done();
+            band.dispose();
         } else {
             // Loop over bands using a 3D index
             for (int b = 0; b < numBands; b++) {
                 Band band = bands.get(b);
                 MultiLevelImage imageBand = geophysics ? band.getGeophysicalImage() : band
                         .getSourceImage();
-                final RenderedImage rImage = imageBand.getImage(0);
-                RandomIter data = RandomIterFactory.create(rImage, null);
-                for (int j = 0; j < height; j++) {
-                    for (int k = 0; k < width; k++) {
-                        // need to flip on Y axis
-                        final int yPos = height - j - 1;
-                        switch (datatype) {
-                        case BYTE:
-                            byte sampleByte = (byte) data.getSampleFloat(k, j, 0);
-                            matrix.setByte(Tima.set(b, yPos, k), sampleByte);
-                            break;
-                        case SHORT:
-                            short sampleShort = (short) data.getSampleFloat(k, j, 0);
-                            matrix.setShort(Tima.set(b, yPos, k), sampleShort);
-                            break;
-                        case INT:
-                            int sampleInt = (int) data.getSampleFloat(k, j, 0);
-                            matrix.setInt(Tima.set(b, yPos, k), sampleInt);
-                            break;
-                        case FLOAT:
-                            float sampleFloat = data.getSampleFloat(k, j, 0);
-                            matrix.setFloat(Tima.set(b, yPos, k), sampleFloat);
-                            break;
-                        case DOUBLE:
-                            double sampleDouble = data.getSampleDouble(k, j, 0);
-                            matrix.setDouble(Tima.set(b, yPos, k), sampleDouble);
-                            break;
+                final RenderedImage inputRI = imageBand.getImage(0);
+                final RandomIter data = RandomIterFactory.create(inputRI, null);
+                for (int tileY = minTileY; tileY <= maxTileY; tileY++) {
+                    for (int tileX = minTileX; tileX <= maxTileX; tileX++) {
+                        for (int trow = 0; trow < tileHeight; trow++) {
+                            int j = (tileY * tileHeight) + trow;
+                            if ((j >= minY) && (j <= maxY)) {
+                                for (int tcol = 0; tcol < tileWidth; tcol++) {
+                                    int col = (tileX * tileWidth) + tcol;
+                                    if ((col >= minX) && (col <= maxX)) {
+                                        int k = col;
+                                        final int yPos = height - j - 1;
+                                        switch (datatype) {
+                                        case BYTE:
+                                            byte sampleByte = (byte) data.getSampleFloat(k, j, 0);
+                                            matrix.setByte(Tima.set(b, yPos, k), sampleByte);
+                                            break;
+                                        case SHORT:
+                                            short sampleShort = (short) data
+                                                    .getSampleFloat(k, j, 0);
+                                            matrix.setShort(Tima.set(b, yPos, k), sampleShort);
+                                            break;
+                                        case INT:
+                                            int sampleInt = (int) data.getSampleFloat(k, j, 0);
+                                            matrix.setInt(Tima.set(b, yPos, k), sampleInt);
+                                            break;
+                                        case FLOAT:
+                                            float sampleFloat = data.getSampleFloat(k, j, 0);
+                                            matrix.setFloat(Tima.set(b, yPos, k), sampleFloat);
+                                            break;
+                                        case DOUBLE:
+                                            double sampleDouble = data.getSampleDouble(k, j, 0);
+                                            matrix.setDouble(Tima.set(b, yPos, k), sampleDouble);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-            }
+                // Finalize the iterator and dispose the Band
+                data.done();
+                band.dispose();
+          }
         }
     }
 
@@ -472,7 +526,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * @throws IOException
      * @throws InvalidRangeException
      */
-    private static Map<String, DimensionGroup> defineOutputNetCDF(NetcdfFileWriteable ncFileOut,
+    private static Map<String, VariablesGroup> defineOutputNetCDF(NetcdfFileWriteable ncFileOut,
             Product inputProduct, Product outputProduct, NCCoordinates latLonCoordinates,
             final boolean geophysics, final Map<String, NCCoordinateDimension> coordinateDimensions)
             throws IOException, InvalidRangeException {
@@ -482,7 +536,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
         initialize(ncFileOut, inputProduct, outputProduct, latLonCoordinates, coordinateDimensions);
 
         final int numBands = outputProduct.getNumBands();
-        Map<String, BeamVariableBands> dimensionToBandsMap = new HashMap<String, BeamVariableBands>();
+        Map<String, BandsGroup> dimensionToBandsMap = new HashMap<String, BandsGroup>();
         Set<String> variableCoordinates = new HashSet<String>();
 
         //
@@ -502,13 +556,13 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                     bands.add(band);
                 }
             }
-            dimensionToBandsMap.put(NONE, new BeamVariableBands(bands));
+            dimensionToBandsMap.put(NONE, new BandsGroup(bands));
         }
 
         //
         // STEP 2: Create variable to netcdf output file
         //
-        Map<String, DimensionGroup> dimensionGroup = initializeVariables(ncFileOut,
+        Map<String, VariablesGroup> dimensionGroup = initializeVariables(ncFileOut,
                 dimensionToBandsMap, geophysics, latLonCoordinates, coordinateDimensions);
         return dimensionGroup;
     }
@@ -550,45 +604,42 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * @param dimensions
      * @return
      */
-    private static Map<String, DimensionGroup> initializeVariables(NetcdfFileWriteable ncFileOut,
-            Map<String, BeamVariableBands> dimensionToBandsMap, boolean geophysics,
+    private static Map<String, VariablesGroup> initializeVariables(NetcdfFileWriteable ncFileOut,
+            Map<String, BandsGroup> dimensionToBandsMap, boolean geophysics,
             NCCoordinates latLonCoordinates, Map<String, NCCoordinateDimension> dimensions) {
 
         // Default dimensions for each variable are latitude and longitude
         Set<String> dimension = dimensionToBandsMap.keySet();
         Iterator<String> dimensionIt = dimension.iterator();
-        Map<String, DimensionGroup> dimensionsGroupMap = new HashMap<String, DimensionGroup>();
+        Map<String, VariablesGroup> dimensionGroup = new HashMap<String, VariablesGroup>();
 
         // Scan dimensions
         while (dimensionIt.hasNext()) {
             String dimensionsName = dimensionIt.next();
-
-            DimensionGroup dimensionGroup = new DimensionGroup();
+            VariablesGroup variablesGroup = new VariablesGroup();
+            dimensionGroup.put(dimensionsName, variablesGroup);
             if (dimensionsName.equalsIgnoreCase(NONE)) {
                 // CASE A: Dealing with Single bands
-                // Default dimension where all simple 2D variables have been previously collected
-                HashMap<String, BeamVariableBands> variableBands = new HashMap<String, BeamVariableBands>();
-                dimensionGroup.setVariableBands(variableBands);
-                dimensionsGroupMap.put(NONE, dimensionGroup);
+                // NONE is a Default dimension where all 2D variables have been previously collected
+                HashMap<String, BandsGroup> variables = new HashMap<String, BandsGroup>();
+                variablesGroup.setVariables(variables);
 
-                BeamVariableBands singleBands = dimensionToBandsMap.get(dimensionsName);
+                BandsGroup singleBands = dimensionToBandsMap.get(dimensionsName);
                 for (Band band : singleBands.bands) {
-                    addVariable(band, variableBands, latLonCoordinates, ncFileOut, geophysics);
+                    addVariable(band, variables, latLonCoordinates, ncFileOut, geophysics);
                 }
 
             } else {
                 // CASE B: Dealing with bands to be grouped by dimension and then by variable
 
                 // Get all bands pertaining to that dimension and group them by variable
-                final BeamVariableBands bandsForThisDimension = dimensionToBandsMap
-                        .get(dimensionsName);
+                final BandsGroup bandsForThisDimension = dimensionToBandsMap.get(dimensionsName);
                 for (Band band : bandsForThisDimension.bands) {
-                    handleBand(band, dimensionsName, dimensionGroup, ncFileOut, dimensions,
-                            latLonCoordinates, geophysics);
+                    handleBand(band, dimensionsName, variablesGroup, ncFileOut, dimensions, latLonCoordinates, geophysics);
                 }
             }
         }
-        return dimensionsGroupMap;
+        return dimensionGroup;
     }
 
     /**
@@ -600,7 +651,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * @param ncFileOut
      * @param geophysics
      */
-    private static void addVariable(Band band, HashMap<String, BeamVariableBands> variableBands,
+    private static void addVariable(Band band, HashMap<String, BandsGroup> variableBands,
             NCCoordinates latLonCoordinates, NetcdfFileWriteable ncFileOut, boolean geophysics) {
 
         // Get lat lon dimensions
@@ -613,7 +664,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
 
         ncFileOut.addVariable(bandName, dataType, new Dimension[] { latDim, lonDim });
         NCUtilities.addAttributes(ncFileOut, band, bandName, geophysics);
-        variableBands.put(bandName, new BeamVariableBands(Collections.singletonList(band)));
+        variableBands.put(bandName, new BandsGroup(Collections.singletonList(band)));
 
     }
 
@@ -623,17 +674,17 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * 
      * @param band
      * @param dimensionName
-     * @param dimensionGroup
+     * @param variablesGroup
      * @param ncFileOut
      * @param dimensions
      * @param latLonCoordinates
      * @param geophysics
      */
-    private static void handleBand(Band band, String dimensionName, DimensionGroup dimensionGroup,
+    private static void handleBand(Band band, String dimensionName, VariablesGroup variablesGroup,
             NetcdfFileWriteable ncFileOut, Map<String, NCCoordinateDimension> dimensions,
             NCCoordinates latLonCoordinates, boolean geophysics) {
-        Map<String, BeamVariableBands> variablesForCurrentDimension = dimensionGroup
-                .getVariableBands();
+        Map<String, BandsGroup> variablesForCurrentDimension = variablesGroup
+                .getVariables();
 
         // BEAM Bands related to ND Dimensions will have a suffix in the name
         // containing the dimension name to which they are related... e.g.:
@@ -656,14 +707,14 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             if (remaining.length() > 0) {
 
                 // Getting the variableName without progressive numbering
-                // so that atmospheric_temperature_nlt1 will become atmospheric_temperature
+                // so that "atmospheric_temperature_nlt1" will become "atmospheric_temperature"
                 final String varName = bandName.substring(0, startOfMatching);
-                BeamVariableBands bandsForThisVariable = null;
+                BandsGroup bandsForThisVariable = null;
 
-                // check if we have already created a mapping for that dimension
+                // check if we have already created a dimensions<->variables grouping for that dimension
                 if (variablesForCurrentDimension == null) {
-                    variablesForCurrentDimension = new HashMap<String, BeamVariableBands>();
-                    dimensionGroup.setVariableBands(variablesForCurrentDimension);
+                    variablesForCurrentDimension = new HashMap<String, BandsGroup>();
+                    variablesGroup.setVariables(variablesForCurrentDimension);
                 }
 
                 // check if we have already defined a Bands group for the current variable
@@ -696,15 +747,15 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * @param geophysics
      * @return
      */
-    private static BeamVariableBands addVariable(NetcdfFileWriteable ncFileOut,
-            Map<String, BeamVariableBands> variablesForCurrentDimension, String varName, Band band,
+    private static BandsGroup addVariable(NetcdfFileWriteable ncFileOut,
+            Map<String, BandsGroup> variablesForCurrentDimension, String varName, Band band,
             Map<String, NCCoordinateDimension> dimensions, String dimensionName,
             NCCoordinates latLonCoordinates, boolean geophysics) {
 
         final Dimension latDim = latLonCoordinates.getLatitude().getDimension();
         final Dimension lonDim = latLonCoordinates.getLongitude().getDimension();
 
-        BeamVariableBands bandsForThisVariable = new BeamVariableBands();
+        BandsGroup bandsForThisVariable = new BandsGroup();
         variablesForCurrentDimension.put(varName, bandsForThisVariable);
 
         // Create the variable
@@ -725,7 +776,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * @param dimensionToBandsMap
      */
     private static boolean linkBandToDimension(String dimensioName, Band band,
-            Map<String, BeamVariableBands> dimensionToBandsMap) {
+            Map<String, BandsGroup> dimensionToBandsMap) {
         final String searchKey = "_" + dimensioName;
         final String bandName = band.getName();
         if (bandName.contains(searchKey)) {
@@ -750,7 +801,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      */
     private static void groupDimensions(Product outputProduct,
             Map<String, NCCoordinateDimension> dimensions,
-            Map<String, BeamVariableBands> dimensionToBandsMap, Set<String> variableCoordinates) {
+            Map<String, BandsGroup> dimensionToBandsMap, Set<String> variableCoordinates) {
 
         // Group Bands for dimension
         Set<String> dimensionNames = dimensions.keySet();
@@ -759,7 +810,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             String dimensionName = dimensionsIterator.next();
 
             // Create a BeamVariableBands for that dimensions to be populated
-            dimensionToBandsMap.put(dimensionName, new BeamVariableBands());
+            dimensionToBandsMap.put(dimensionName, new BandsGroup());
 
             // Populating the coordinates set in order to exclude Bands representing coordinates
             // since they have been already initialized
@@ -767,7 +818,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
         }
 
         // Add default NONE Dimension for variables which won't be grouped together
-        dimensionToBandsMap.put(NONE, new BeamVariableBands());
+        dimensionToBandsMap.put(NONE, new BandsGroup());
 
         final int numBands = outputProduct.getNumBands();
 
