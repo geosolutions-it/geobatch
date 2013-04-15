@@ -22,7 +22,7 @@
  */
 %>
 <%@ page contentType="text/html" import="java.sql.*, java.io.*, java.util.*, it.geosolutions.geobatch.catalog.*" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
@@ -88,8 +88,8 @@
 		    <td>Server ID</td>
 		    <td>
 		    	<spring:bind path="ftpConfigDataBean.id">
-					<input type="hidden" name="id" value="${status.value}" />
-					${ftpConfigDataBean.id}
+					<input type="hidden" name="id" value="<c:out value="${status.value}"/>" />
+					<c:out value="${ftpConfigDataBean.id}"/>
 	      		</spring:bind>
 	      	</td>
 		  </tr>
@@ -97,7 +97,7 @@
 		    <td>FTP Base Dir</td>
 		    <td>
 		    	<spring:bind path="ftpConfigDataBean.ftpBaseDir">
-					<input type="text" name="ftpBaseDir" value="${status.value}" />
+					<input type="text" name="ftpBaseDir" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 	      	</td>
 		  </tr>
@@ -105,7 +105,7 @@
 		    <td>Port</td>
 		    <td>
 		    	<spring:bind path="ftpConfigDataBean.port">
-					<input type="text" name="port" value="${status.value}" />
+					<input type="text" name="port" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 	      	</td>
 		  </tr>
@@ -140,7 +140,7 @@
 		    <td>Max Anonim Logins</td>
 		    <td>
 		    	<spring:bind path="ftpConfigDataBean.maxAnonLogins">
-					<input type="text" name="maxAnonLogins" value="${status.value}" />
+					<input type="text" name="maxAnonLogins" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
@@ -148,7 +148,7 @@
 		    <td>Max Logins</td>
 		    <td>
 		    	<spring:bind path="ftpConfigDataBean.maxLogins">
-					<input type="text" name="maxLogins" value="${status.value}" />
+					<input type="text" name="maxLogins" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
@@ -156,7 +156,7 @@
 		    <td>Max Login Failures</td>
 		    <td>
 		    	<spring:bind path="ftpConfigDataBean.maxLoginFailures">
-					<input type="text" name="maxLoginFailures" value="${status.value}" />
+					<input type="text" name="maxLoginFailures" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
@@ -164,7 +164,7 @@
 		    <td>Login Failure Delay</td>
 		    <td>
 		    	<spring:bind path="ftpConfigDataBean.loginFailureDelay">
-					<input type="text" name="loginFailureDelay" value="${status.value}" />
+					<input type="text" name="loginFailureDelay" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
@@ -173,11 +173,11 @@
 		
 		<font style="font-style: italic; font-size: 13px; color: red">
       <spring:hasBindErrors name="ftpConfigDataBean">
-         <p>There were ${errors.errorCount} error(s) in total:</p>
+         <p>There were <c:out value="${errors.errorCount}"/> error(s) in total:</p>
          <ul>
             <c:forEach var="errMsgObj" items="${errors.allErrors}">
                <li>
-                  <spring:message code="${errMsgObj.code}" text="${errMsgObj.defaultMessage}"/>
+                  <spring:message code='<c:out value="${errMsgObj.code}"/>' text='<c:out value="${errMsgObj.defaultMessage}"/>'/>
                </li>
             </c:forEach>
          </ul>

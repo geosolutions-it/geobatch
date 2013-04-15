@@ -22,7 +22,7 @@
  */
 %>
 <%@ page contentType="text/html" import="java.sql.*, java.io.*, java.util.*, it.geosolutions.geobatch.catalog.*" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
@@ -95,8 +95,8 @@
 					<td><c:out value="${us.maxLoginNumber}"/></td>
 					<td><c:out value="${us.maxIdleTime}"/></td>
 					<td align="center">
-						<a href='deleteFtpUser.do?userId=${us.id}' onclick="javascript:return confirm('Delete user ${us.name}?');"><image src='img/dispose.png' border='0' title='delete' alt='delete' width='16' height='16'/></a>
-						<a href='updateFtpUser.form?userId=${us.id}'><image src='img/hammer_screwdriver.png' border='0' title='modify' alt='modify' width='16' height='16'/></a>
+						<a href='deleteFtpUser.do?userId=<c:out value="${us.id}"/>' onclick="javascript:return confirm('Delete user <c:out value="${us.name}"/>?');"><image src='img/dispose.png' border='0' title='delete' alt='delete' width='16' height='16'/></a>
+						<a href='updateFtpUser.form?userId=<c:out value="${us.id}"/>'><image src='img/hammer_screwdriver.png' border='0' title='modify' alt='modify' width='16' height='16'/></a>
 					</td>
 				</tr>
 			</c:forEach>
