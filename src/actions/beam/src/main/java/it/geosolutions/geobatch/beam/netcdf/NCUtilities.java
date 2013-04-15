@@ -411,13 +411,13 @@ public class NCUtilities {
                 NCCoordinateDimension nccoord = coordinateDimensions.get(dimensioName);
                 Variable var = nccoord.getVariable();
                 ncFileOut.addDimension(dimensioName, nccoord.getDimension().getLength());
-                ncFileOut.addVariable(var.getName(), var.getDataType(),
+                ncFileOut.addVariable(dimensioName, var.getDataType(),
                         new Dimension[] { nccoord.getDimension() });
-                ncFileOut.addVariableAttribute(var.getName(), NCUtilities.LONGNAME,
+                ncFileOut.addVariableAttribute(dimensioName, NCUtilities.LONGNAME,
                         var.getFullName());
-                ncFileOut.addVariableAttribute(var.getName(), NCUtilities.DESCRIPTION,
+                ncFileOut.addVariableAttribute(dimensioName, NCUtilities.DESCRIPTION,
                         var.getFullName());
-                ncFileOut.addVariableAttribute(var.getName(), NCUtilities.UNITS,
+                ncFileOut.addVariableAttribute(dimensioName, NCUtilities.UNITS,
                         var.getUnitsString());
             }
 

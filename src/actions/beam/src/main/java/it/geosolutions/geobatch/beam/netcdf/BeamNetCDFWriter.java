@@ -589,8 +589,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             Set<String> coordinates = coordinateDimensions.keySet();
             for (String coordinateName : coordinates) {
                 NCCoordinateDimension coordinate = coordinateDimensions.get(coordinateName);
-                ncFileOut
-                        .write(coordinate.getVariable().getName(), coordinate.getVariable().read());
+                ncFileOut.write(coordinate.getDimension().getName(), coordinate.getVariable().read());
             }
         }
     }
