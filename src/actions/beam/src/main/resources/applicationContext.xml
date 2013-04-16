@@ -4,27 +4,13 @@
 <beans>
 
 	<!-- Environment Initialization -->
-	<bean id="GeotiffGeoServerService" class="it.geosolutions.geobatch.geotiff.publish.GeotiffGeoServerService">
-		<constructor-arg type="String"><value>GeotiffGeoServerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffGeoServerService</value></constructor-arg>
-        <constructor-arg type="String"><value>GeotiffGeoServerService</value></constructor-arg>
+	<bean id="BeamGeorectifierService" class="it.geosolutions.geobatch.beam.BeamGeorectifierService">
+		<constructor-arg type="String"><value>BeamGeorectifierService</value></constructor-arg>
+    	<constructor-arg type="String"><value>BeamGeorectifierService</value></constructor-arg>
+        <constructor-arg type="String"><value>BeamGeorectifierService</value></constructor-arg>
     </bean>	
 
-	<!-- Environment Initialization -->
-	<bean id="GeotiffOverviewsEmbedderService" class="it.geosolutions.geobatch.geotiff.overview.GeotiffOverviewsEmbedderService">
-		<constructor-arg type="String"><value>GeotiffOverviewsEmbedderService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffOverviewsEmbedderService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffOverviewsEmbedderService</value></constructor-arg>
-    </bean>	    
-        
-	<!-- Environment Initialization -->
-	<bean id="GeotiffRetilerService" class="it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerService">
-		<constructor-arg type="String"><value>GeotiffRetilerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffRetilerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeotiffRetilerService</value></constructor-arg>
-    </bean>	      
-
-    <bean id="FlowGeotiffRegistrar" class="it.geosolutions.geobatch.geotiff.GeotiffAliasRegistrar" lazy-init="false">
+    <bean id="FlowGeorectifierRegistrar" class="it.geosolutions.geobatch.beam.BeamGeorectifierAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />
     </bean>
 

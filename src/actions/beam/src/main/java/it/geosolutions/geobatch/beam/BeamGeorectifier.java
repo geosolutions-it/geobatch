@@ -230,7 +230,7 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
      * @throws IOException
      */
     public void georectify(final File inputFile) throws IOException {
-        final String outputFilePath = configuration.getOutputFolder() + "\\" + System.currentTimeMillis() + inputFile.getName();
+        final String outputFilePath = configuration.getOutputFolder() + File.separatorChar + inputFile.getName();
         // Get product from inputFile
         if (inputFile == null || !inputFile.exists() || !inputFile.canRead()) {
             throw new IllegalArgumentException("Need to provide a valid file");
