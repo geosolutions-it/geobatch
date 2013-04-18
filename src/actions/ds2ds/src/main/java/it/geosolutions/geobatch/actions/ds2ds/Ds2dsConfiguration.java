@@ -104,7 +104,7 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 	 * @return purge data on output feature
 	 */
 	public boolean isPurgeData() {
-		return purgeData;
+		return purgeData == null ? false : purgeData;
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 	 * @return projection on mapping attributes executed 
 	 */
 	public boolean isProjectOnMappings() {
-		return projectOnMappings;
+		return projectOnMappings == null ? false : projectOnMappings;
 	}
 
 	/**
