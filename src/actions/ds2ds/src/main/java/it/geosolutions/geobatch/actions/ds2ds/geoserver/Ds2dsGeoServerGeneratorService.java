@@ -40,8 +40,8 @@ public class Ds2dsGeoServerGeneratorService extends /**AutoregisteringService*/ 
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(Ds2dsGeoServerGeneratorService.class);
 	
-	public Ds2dsGeoServerGeneratorService(String id, String name, String description){
-		super(id, name, description);
+	public Ds2dsGeoServerGeneratorService(String id){
+		super(id);
 	}
 
 	@Override
