@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.actions.ds2ds;
 
+import it.geosolutions.geobatch.actions.ds2ds.geoserver.Ds2dsGeoServerConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 
@@ -36,6 +37,7 @@ public class Ds2dsAliasRegistrar extends AliasRegistrar {
 		LOGGER.info(getClass().getSimpleName() + ": registering alias.");
 		
 		registry.putAlias("Ds2dsConfiguration", Ds2dsConfiguration.class);
+		registry.putAlias("Ds2dsGeoServerConfiguration", Ds2dsGeoServerConfiguration.class);
 	}
 	
 }

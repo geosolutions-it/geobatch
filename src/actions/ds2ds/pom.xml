@@ -56,6 +56,11 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
     </dependency>
+    <!-- GB other actions -->
+     <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-geoserver</artifactId>
+    </dependency>
     <!-- tools -->
     <dependency>
       <groupId>it.geosolutions.tools</groupId>
