@@ -34,8 +34,8 @@ public class Ds2dsGeoServerConfiguration extends GeoServerActionConfiguration {
 	
 
 	private String operation;
-	private boolean createDataStore;
-	private boolean createNameSpace;
+	private Boolean createDataStore = false;
+	private Boolean createNameSpace = false;
 	private FeatureConfiguration featureConfig;
 
 	/**
@@ -82,7 +82,7 @@ public class Ds2dsGeoServerConfiguration extends GeoServerActionConfiguration {
 	 * 
 	 * @return
 	 */
-	public boolean getCreateDataStore(){
+	public Boolean getCreateDataStore(){
 		return this.createDataStore;
 	}
 	
@@ -100,7 +100,7 @@ public class Ds2dsGeoServerConfiguration extends GeoServerActionConfiguration {
 	 * 
 	 * @return
 	 */
-	public boolean getCreateNameSpace(){
+	public Boolean getCreateNameSpace(){
 		return this.createNameSpace;
 	}
 	

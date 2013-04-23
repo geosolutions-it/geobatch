@@ -31,12 +31,8 @@ import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy
 import it.geosolutions.geoserver.rest.encoder.datastore.GSOracleNGDatastoreEncoder;
 import it.geosolutions.geoserver.rest.encoder.datastore.GSPostGISDatastoreEncoder;
 import it.geosolutions.geoserver.rest.encoder.feature.GSFeatureTypeEncoder;
-import it.geosolutions.tools.compress.file.Extract;
-import it.geosolutions.tools.io.file.Collector;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +46,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EventObject;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -120,6 +115,7 @@ public class Ds2dsGeoServerAction extends BaseAction<EventObject> {
 
 		}
 		//TODO how to check if GS user/password are correct?
+		listenerForwarder.progressing(5,"GeoServer configuration checked");
 		
 		//Check operation
 		//---------------
@@ -128,6 +124,7 @@ public class Ds2dsGeoServerAction extends BaseAction<EventObject> {
 		if(op == null || !(op.equalsIgnoreCase("PUBLISH") || op.equalsIgnoreCase("REMOVE"))){
 			failAction("Bad operation: " + op + " in configuration");
 		}
+		listenerForwarder.progressing(10,"Operation checked");
 		
 		//Check WorkSpace
 		//---------------
@@ -164,7 +161,7 @@ public class Ds2dsGeoServerAction extends BaseAction<EventObject> {
 			}
 		}
 		
-		updateActionProgress(10,100,"Global configurations checked");
+		listenerForwarder.progressing(25,"GeoServer workspace checked");
 		
 		//event-based business logic
 		while (events.size() > 0) {
@@ -174,144 +171,126 @@ public class Ds2dsGeoServerAction extends BaseAction<EventObject> {
 
 					updateTask("Working on incoming event: " + ev.getSource());
 					
-					updateTask("Check acceptable file(s)");
-					
-					Queue<FileSystemEvent> acceptableFiles = acceptableFiles(unpackCompressedFiles(ev));
-					if (acceptableFiles.size() == 0) {
-						failAction("No acceptable XML file to process");
-						
-					} else {
-						
-						int progress = 10;
-						
-						//feature-based business logic
-						for (FileSystemEvent fileEvent : acceptableFiles) {
-							
-							//set FeatureConfiguration
-							updateTask("Set Feature Configuration");
-							this.createFeatureConfiguration(fileEvent);
-							FeatureConfiguration featureConfig = conf.getFeatureConfiguration();
-						
-							//TODO check FeatureConfiguration
-							updateTask("Check Feature Configuration");
-							if(featureConfig.getTypeName() == null){
-								failAction("feature typeName cannot be null");
-							}
-							
-							//TODO check if the typeName already exists for the target workspace?
-							
-							//datastore check (and eventually creation)
-							updateTask("Check datastore configuration");
-							String ds = conf.getStoreName();
-							
-							Boolean existDS = false;
-							synchronized(existDS){
-								
-								existDS = gsMan.getReader().getDatastores(ws).getNames().contains(ds);
-								if(!existDS){	
-									boolean createDS = conf.getCreateDataStore();
-									if(createDS){
-										
-										//create datastore
-										updateTask("Create datastore in GeoServer");
-										Map<String,Object> datastore = this.deserialize(featureConfig.getDataStore());							
+					updateTask("Check acceptable file");
+					FileSystemEvent fileEvent = (FileSystemEvent) ev;
 
-								        String dbType = (String) datastore.get("dbtype");
-								        
-										boolean created = false;
-										if(dbType.equalsIgnoreCase("postgis")){
-											GSPostGISDatastoreEncoder encoder = new GSPostGISDatastoreEncoder(ds);
-											encoder.setName(ds);
-											encoder.setEnabled(true);
-											encoder.setHost((String) datastore.get("host"));
-											encoder.setPort(Integer.parseInt((String) datastore.get("port")));
-											encoder.setDatabase((String) datastore.get("database"));
-											encoder.setSchema((String) datastore.get("schema"));
-											encoder.setUser((String) datastore.get("user"));
-											encoder.setPassword((String) datastore.get("passwd"));
-
-											created = gsMan.getDatastoreManager().create(ws, encoder);
-											if(!created){
-												failAction("FATAL: unable to create PostGIS datastore "+ds+" in GeoServer");
-											}
-											
-										}else if(dbType.equalsIgnoreCase("oracle")){
-											String dbname = (String) datastore.get("database");
-											GSOracleNGDatastoreEncoder encoder = new GSOracleNGDatastoreEncoder(ds, dbname);
-											encoder.setName(ds);
-											encoder.setEnabled(true);
-											encoder.setHost((String) datastore.get("host"));
-											encoder.setPort(Integer.parseInt((String) datastore.get("port")));
-											encoder.setDatabase(dbname);
-											encoder.setSchema((String) datastore.get("schema"));
-											encoder.setUser((String) datastore.get("user"));
-											encoder.setPassword((String) datastore.get("passwd"));
-
-											created = gsMan.getDatastoreManager().create(ws, encoder);
-											if(!created){
-												failAction("FATAL: unable to create Oracle NG datastore "+ds+" in GeoServer");
-											}
-										}else{
-											failAction("The datastore type "+dbType+" is not supported");
-										}
-
-									}else{
-										failAction("Bad datastore:"+ ds +" in configuration. Datastore "+ds+" doesn't exist in workspace (namespace) "+ws);
-									}
-								}
-							}
-							
-							
-							//feature type publication/removal
-							boolean done = false;
-							if(op.equalsIgnoreCase("PUBLISH")){
-								if(!gsMan.getReader().getLayers().getNames().contains(featureConfig.getTypeName())){
-									
-									updateTask("Publish DBLayer "+featureConfig.getTypeName()+" in GeoServer");
-									
-									//featuretype
-									final GSFeatureTypeEncoder fte = new GSFeatureTypeEncoder();
-									fte.setName(featureConfig.getTypeName());
-									fte.setTitle(featureConfig.getTypeName());
-									fte.setSRS(featureConfig.getCrs());
-							        fte.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
-							        
-							        //layer & default style
-							        final GSLayerEncoder layerEncoder = new GSLayerEncoder();
-							       layerEncoder.setDefaultStyle(this.defineLayerStyle(featureConfig, gsMan));
-									
-							       //publish
-									done = gsMan.getPublisher().publishDBLayer(ws, ds, fte, layerEncoder);
-									if(done){
-										progress = progress + 90 / acceptableFiles.size();
-										updateActionProgress(progress, 100, "Publishing on GeoServer");
-									}else{
-										failAction("Impossible to publish DBLayer "+featureConfig.getTypeName()+" in GeoServer");
-									}
-								}
-										
-							}else if(op.equalsIgnoreCase("REMOVE")){
-								if(gsMan.getReader().getLayers().getNames().contains(featureConfig.getTypeName())){
-									
-									//remove
-									updateTask("Remove DBLayer "+featureConfig.getTypeName()+" from GeoServer");
-									
-									done = gsMan.getPublisher().unpublishFeatureType(ws, ds, featureConfig.getTypeName());
-									if(done){
-										progress = progress + 90 / acceptableFiles.size();
-										updateActionProgress(progress, 100, "Removing from GeoServer");
-									}else{
-										failAction("Impossible to remove DBLayer "+featureConfig.getTypeName()+" in GeoServer");
-									}
-								}
-							}
-							
-							
-						}
+					//set FeatureConfiguration
+					updateTask("Set Feature Configuration");
+					this.createFeatureConfiguration(fileEvent);
+					FeatureConfiguration featureConfig = conf.getFeatureConfiguration();
 						
-						listenerForwarder.progressing(100F, "Successful Geoserver operation(s) ("+op+")");
-						listenerForwarder.completed();
+					//TODO check FeatureConfiguration
+					updateTask("Check Feature Configuration");
+					if(featureConfig.getTypeName() == null){
+						failAction("feature typeName cannot be null");
 					}
+							
+					//TODO check if the typeName already exists for the target workspace?
+						
+					//datastore check (and eventually creation)
+					updateTask("Check datastore configuration");
+					String ds = conf.getStoreName();
+							
+					Boolean existDS = false;
+					synchronized(existDS){
+								
+						existDS = gsMan.getReader().getDatastores(ws).getNames().contains(ds);
+						if(!existDS){	
+							boolean createDS = conf.getCreateDataStore();
+							if(createDS){
+										
+								//create datastore
+								updateTask("Create datastore in GeoServer");
+								Map<String,Object> datastore = this.deserialize(featureConfig.getDataStore());							
+
+								   String dbType = (String) datastore.get("dbtype");
+								        
+								boolean created = false;
+								if(dbType.equalsIgnoreCase("postgis")){
+									GSPostGISDatastoreEncoder encoder = new GSPostGISDatastoreEncoder(ds);
+									encoder.setName(ds);
+									encoder.setEnabled(true);
+									encoder.setHost((String) datastore.get("host"));
+									encoder.setPort(Integer.parseInt((String) datastore.get("port")));
+									encoder.setDatabase((String) datastore.get("database"));
+									encoder.setSchema((String) datastore.get("schema"));
+									encoder.setUser((String) datastore.get("user"));
+									encoder.setPassword((String) datastore.get("passwd"));
+
+									created = gsMan.getDatastoreManager().create(ws, encoder);
+									if(!created){
+										failAction("FATAL: unable to create PostGIS datastore "+ds+" in GeoServer");
+									}
+											
+								}else if(dbType.equalsIgnoreCase("oracle")){
+									String dbname = (String) datastore.get("database");
+									GSOracleNGDatastoreEncoder encoder = new GSOracleNGDatastoreEncoder(ds, dbname);
+									encoder.setName(ds);
+									encoder.setEnabled(true);
+									encoder.setHost((String) datastore.get("host"));
+									encoder.setPort(Integer.parseInt((String) datastore.get("port")));
+									encoder.setDatabase(dbname);
+									encoder.setSchema((String) datastore.get("schema"));
+									encoder.setUser((String) datastore.get("user"));
+									encoder.setPassword((String) datastore.get("passwd"));
+
+									created = gsMan.getDatastoreManager().create(ws, encoder);
+									if(!created){
+										failAction("FATAL: unable to create Oracle NG datastore "+ds+" in GeoServer");
+									}
+								}else{
+									failAction("The datastore type "+dbType+" is not supported");
+								}
+
+							}else{
+								failAction("Bad datastore:"+ ds +" in configuration. Datastore "+ds+" doesn't exist in workspace (namespace) "+ws);
+							}
+						}
+					}
+					listenerForwarder.progressing(50,"Check GeoServer datastore");
+							
+							
+					//feature type publication/removal
+					boolean done = false;
+					if(op.equalsIgnoreCase("PUBLISH")){
+						if(!gsMan.getReader().getLayers().getNames().contains(featureConfig.getTypeName())){
+									
+							updateTask("Publish DBLayer "+featureConfig.getTypeName()+" in GeoServer");
+									
+							//featuretype
+							final GSFeatureTypeEncoder fte = new GSFeatureTypeEncoder();
+							fte.setName(featureConfig.getTypeName());
+							fte.setTitle(featureConfig.getTypeName());
+							fte.setSRS(featureConfig.getCrs());
+							fte.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+							        
+							//layer & default style
+							final GSLayerEncoder layerEncoder = new GSLayerEncoder();
+							layerEncoder.setDefaultStyle(this.defineLayerStyle(featureConfig, gsMan));
+									
+							//publish
+							done = gsMan.getPublisher().publishDBLayer(ws, ds, fte, layerEncoder);
+							if(!done){
+								failAction("Impossible to publish DBLayer "+featureConfig.getTypeName()+" in GeoServer");
+							}
+						}
+										
+					}else if(op.equalsIgnoreCase("REMOVE")){
+						if(gsMan.getReader().getLayers().getNames().contains(featureConfig.getTypeName())){
+									
+							//remove
+							updateTask("Remove DBLayer "+featureConfig.getTypeName()+" from GeoServer");
+									
+							done = gsMan.getPublisher().unpublishFeatureType(ws, ds, featureConfig.getTypeName());
+							if(!done){
+								failAction("Impossible to remove DBLayer "+featureConfig.getTypeName()+" in GeoServer");
+							}
+						}
+					}
+						
+					listenerForwarder.progressing(100F, "Successful Geoserver "+op+" operation");
+					listenerForwarder.completed();
+
 				} else {
 					if (LOGGER.isErrorEnabled()) {
 						LOGGER.error("Encountered a NULL event: SKIPPING...");
@@ -339,7 +318,7 @@ public class Ds2dsGeoServerAction extends BaseAction<EventObject> {
 			
 		String fileType =  FilenameUtils.getExtension(fileEvent.getSource().getName()).toLowerCase();		
 		FeatureConfiguration featureConfig = conf.getFeatureConfiguration();
-		if(fileType.equals("xml")){
+		if(fileType.equals(acceptedFileType)){
 			InputStream inputXML = null;
 			try {
 				inputXML = new FileInputStream(fileEvent.getSource());				
@@ -350,28 +329,39 @@ public class Ds2dsGeoServerAction extends BaseAction<EventObject> {
 	            IOUtils.closeQuietly(inputXML);
 	        }
 		}else{
-			String message = "Bad input file extension: "+fileEvent.getSource().getName()+". Input must be an XML file";
-			if (LOGGER.isErrorEnabled())
-				LOGGER.error(message);
-			ActionException ae = new ActionException(this, message);
-			listenerForwarder.failed(ae);
-			throw ae;
-			
+			failAction("Bad input file extension: "+fileEvent.getSource().getName()+". Input must be an XML file");
+	
 		}		
 		conf.setFeatureConfiguration(featureConfig);
 	}
-	
+
 	/**
 	 * Get the geometry type binding of the given layer
 	 * 
 	 * @param connect
+	 * @throws ActionException
 	 * @throws IOException
 	 */
-	private Class<?> getGeometryTypeBinding(FeatureConfiguration featureConfig) throws IOException{
-		DataStore datastore = DataStoreFinder.getDataStore(featureConfig.getDataStore());
-		SimpleFeatureSource sfs = datastore.getFeatureSource(featureConfig.getTypeName());
-		Class<?> binding = sfs.getSchema().getGeometryDescriptor().getType().getBinding();
-		datastore.dispose();
+	private Class<?> getGeometryTypeBinding(FeatureConfiguration featureConfig)
+			throws ActionException {
+		DataStore datastore = null;
+		Class<?> binding = null;
+
+		try {
+			datastore = DataStoreFinder.getDataStore(featureConfig
+					.getDataStore());
+			SimpleFeatureSource sfs = datastore.getFeatureSource(featureConfig
+					.getTypeName());
+			binding = sfs.getSchema().getGeometryDescriptor().getType()
+					.getBinding();
+
+		} catch (IOException ioe) {
+			failAction(ioe.getMessage());
+
+		} finally {
+			datastore.dispose();
+		}
+
 		return binding;
 	}
 	
@@ -432,78 +422,15 @@ public class Ds2dsGeoServerAction extends BaseAction<EventObject> {
         Map<String,Object> connect = (Map<String, Object>) objIn.readObject();
         return connect;
 	}
-	
-	/**
-	 * Eventually unpacks compressed files.
-	 * 
-	 * @param fileEvent
-	 * @return
-	 * @throws ActionException 
-	 */
-	private Queue<FileSystemEvent> unpackCompressedFiles(EventObject event)
-			throws ActionException {
-		Queue<FileSystemEvent> result = new LinkedList<FileSystemEvent>();
-		
-		FileSystemEvent fileEvent = (FileSystemEvent) event;
-		updateTask("Looking for compressed file");		
-		try {
-			String filePath = fileEvent.getSource().getAbsolutePath();
-			String uncompressedFolder = Extract.extract(filePath);
-			if(!uncompressedFolder.equals(filePath)) {
-				updateTask("Compressed file extracted to " + uncompressedFolder);
-				Collector c = new Collector(null);
-				List<File> fileList = c.collect(new File(uncompressedFolder));
-				
-				if (fileList != null) {
-					for(File file : fileList) {
-						if(!file.isDirectory()) {
-							result.add(new FileSystemEvent(file, fileEvent.getEventType()));
-						}
-					}
-				}
-			} else {
-				// no compressed file, add as is
-				updateTask("File is not compressed");
-				result.add(fileEvent);
-			}
-		} catch (Exception e) {
-			throw new ActionException(this, e.getMessage());
-		}			
 
-		return result;
-	}
 	
 	/**
-	 * Gets the list of received file events, filtering out those not correct for
-	 * this action.
+	 * From ds2ds action
 	 * 
-	 * @param events
-	 * @return
+	 * @param message
+	 * @param t
+	 * @throws ActionException
 	 */
-	private Queue<FileSystemEvent> acceptableFiles(Queue<FileSystemEvent> events) {
-		updateTask("List the acceptable files (XML)");	
-		Queue<FileSystemEvent> accepted = new LinkedList<FileSystemEvent>();
-		for(FileSystemEvent event : events) {			
-			String fileType = getFileType(event);			
-			if(acceptedFileType.equals(fileType)) {
-				if(LOGGER.isTraceEnabled()) {
-					LOGGER.trace("Accepted file: "+event.getSource().getName());
-				}
-				accepted.add(event);
-			} else {
-				if(LOGGER.isTraceEnabled()) {
-					LOGGER.trace("Skipped file: "+event.getSource().getName());
-				}
-			}
-		}
-		return accepted;
-	}
-	
-	private String getFileType(FileSystemEvent event) {
-		updateTask("Check file type = "+FilenameUtils.getExtension(event.getSource().getName()).toLowerCase());
-		return FilenameUtils.getExtension(event.getSource().getName()).toLowerCase();
-	}
-	
 	private void failAction(String message, Throwable t) throws ActionException {
 		if (LOGGER.isErrorEnabled()) {
 			LOGGER.error(message);
@@ -518,36 +445,37 @@ public class Ds2dsGeoServerAction extends BaseAction<EventObject> {
 		}
 	}
 	
+	/**
+	 * From ds2ds action
+	 * 
+	 * @param message
+	 * @throws ActionException
+	 */
 	private void failAction(String message) throws ActionException {
 		failAction(message, null);
 	}
 	
+	/**
+	 * From ds2ds action
+	 * 
+	 * @param t
+	 * @return
+	 */
 	private String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
 		return sw.toString();
 	}
 
-	
+	/**
+	 * From ds2ds action
+	 * 
+	 * @param task
+	 */
 	private void updateTask(String task) {
 		listenerForwarder.setTask(task);
 		if(LOGGER.isInfoEnabled()) {
 			LOGGER.info(task);					
-		}
-	}
-	
-	/**
-	 * Updates the import progress ( progress / total )
-	 * for the listeners.
-	 * 
-	 * @param progress
-	 * @param total
-	 * @param message
-	 */
-	private void updateActionProgress(int progress, int total, String message) {
-		listenerForwarder.progressing((float) progress , message);
-		if(LOGGER.isInfoEnabled()) {
-			LOGGER.info("Importing data: "+progress + "/" + total);
 		}
 	}
 
