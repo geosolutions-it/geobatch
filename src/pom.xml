@@ -961,6 +961,11 @@
         <artifactId>gt-jdbc-postgis</artifactId>
         <version>${gt.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.geotools.jdbc</groupId>
+        <artifactId>gt-jdbc-oracle</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
 	  <dependency>
 	   <groupId>org.geotools.jdbc</groupId>
 	   <artifactId>gt-jdbc-h2</artifactId>
@@ -1371,6 +1376,13 @@
         <artifactId>postgresql</artifactId>
         <version>9.1-901.jdbc3</version>
       </dependency>
+      <!-- ORACLE ======================================================= -->
+      <dependency>
+        <artifactId>ojdbc14</artifactId>
+        <groupId>com.oracle</groupId>
+        <version>10.2.0.3.0</version>
+      </dependency>
+      
 
       <!-- =========================================================== -->
       <!--     APACHE CXF                                              -->
