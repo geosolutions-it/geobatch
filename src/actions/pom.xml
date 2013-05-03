@@ -265,5 +265,17 @@
         <module>commons</module>
       </modules>
     </profile>
+    <profile>
+      <id>beam</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <modules>
+        <module>beam</module>
+      </modules>
+    </profile>
   </profiles>
 </project>

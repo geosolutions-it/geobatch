@@ -21,13 +21,12 @@
  */
 package it.geosolutions.geobatch.beam.netcdf;
 
-import it.geosolutions.geobatch.beam.netcdf.NCUtilities.NCCoordinateDimension;
-import it.geosolutions.geobatch.beam.netcdf.NCUtilities.NCCoordinates;
-
 import java.awt.geom.AffineTransform;
 import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,6 +46,7 @@ import ucar.ma2.ArrayInt;
 import ucar.ma2.ArrayShort;
 import ucar.ma2.DataType;
 import ucar.ma2.Index;
+import ucar.nc2.Attribute;
 import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
@@ -70,6 +70,8 @@ public class NCUtilities {
 
     public final static String LONGNAME = "long_name";
     
+    public final static String STANDARD_NAME = "standard_name";
+    
     public final static String DESCRIPTION = "description";
     
     public final static String FILLVALUE = "_FillValue";
@@ -79,6 +81,15 @@ public class NCUtilities {
     public final static String LON_UNITS = "degrees_east";
 
     public final static String LAT_UNITS = "degrees_north";
+    
+    final static Set<String> EXCLUDED_ATTRIBUTES = new HashSet<String>();
+    
+    static {
+        EXCLUDED_ATTRIBUTES.add(UNITS);
+        EXCLUDED_ATTRIBUTES.add(LONGNAME);
+        EXCLUDED_ATTRIBUTES.add(DESCRIPTION);
+        EXCLUDED_ATTRIBUTES.add(STANDARD_NAME);
+    }
 
     /**
      * NetCDF Coordinate holder (Dimension and data values)
@@ -407,20 +418,33 @@ public class NCUtilities {
             Set<String> dimensionNames = coordinateDimensions.keySet();
             Iterator<String> dimensionsIterator = dimensionNames.iterator();
             while (dimensionsIterator.hasNext()) {
-                String dimensioName = dimensionsIterator.next();
-                NCCoordinateDimension nccoord = coordinateDimensions.get(dimensioName);
+                String dimensionName = dimensionsIterator.next();
+                NCCoordinateDimension nccoord = coordinateDimensions.get(dimensionName);
                 Variable var = nccoord.getVariable();
-                ncFileOut.addDimension(dimensioName, nccoord.getDimension().getLength());
-                ncFileOut.addVariable(dimensioName, var.getDataType(),
+                ncFileOut.addDimension(dimensionName, nccoord.getDimension().getLength());
+                ncFileOut.addVariable(dimensionName, var.getDataType(),
                         new Dimension[] { nccoord.getDimension() });
-                ncFileOut.addVariableAttribute(dimensioName, NCUtilities.LONGNAME,
+                ncFileOut.addVariableAttribute(dimensionName, NCUtilities.LONGNAME,
                         var.getFullName());
-                ncFileOut.addVariableAttribute(dimensioName, NCUtilities.DESCRIPTION,
+                ncFileOut.addVariableAttribute(dimensionName, NCUtilities.DESCRIPTION,
                         var.getFullName());
-                ncFileOut.addVariableAttribute(dimensioName, NCUtilities.UNITS,
+                ncFileOut.addVariableAttribute(dimensionName, NCUtilities.UNITS,
                         var.getUnitsString());
+                copyAttributes(ncFileOut, dimensionName, var, EXCLUDED_ATTRIBUTES);
+                
             }
 
+        }
+    }
+
+    private static void copyAttributes(NetcdfFileWriteable ncFileOut, String dimensionName,
+            Variable var, Set<String> excludedAttributes) {
+        List<Attribute> inputAttributes = var.getAttributes();
+        for (Attribute inputAttribute: inputAttributes) {
+            String attributeName = inputAttribute.getName();
+            if (!excludedAttributes.contains(attributeName)) {
+                ncFileOut.addVariableAttribute(dimensionName, inputAttribute);
+            }
         }
     }
 }
