@@ -19,25 +19,22 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package it.geosolutions.geobatch.actions.ds2ds.geoserver;
 
-package it.geosolutions.geobatch.actions.ds2ds;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
-import it.geosolutions.geobatch.actions.ds2ds.geoserver.Ds2dsGeoServerConfiguration;
-import it.geosolutions.geobatch.registry.AliasRegistrar;
-import it.geosolutions.geobatch.registry.AliasRegistry;
+public class Ds2dsGeoServerGeneratorServiceTest {
 
-/**
- * Register XStream aliases for the relevant services we ship in this class.
- * 
- * @author Mauro Bartolomeoli <mauro.bartolomeoli@geo-solutions.it>
- */
-public class Ds2dsAliasRegistrar extends AliasRegistrar {
+	private static Ds2dsGeoServerConfiguration CONFIGURATION = new Ds2dsGeoServerConfiguration("id", "name", "description");
+	private Ds2dsGeoServerGeneratorService generatorService = new Ds2dsGeoServerGeneratorService("Ds2dsGeoServerGeneratorService");
 
-	public Ds2dsAliasRegistrar(AliasRegistry registry) {
-		LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-		
-		registry.putAlias("Ds2dsConfiguration", Ds2dsConfiguration.class);
-		registry.putAlias("Ds2dsGeoServerConfiguration", Ds2dsGeoServerConfiguration.class);
+	@Test
+	public void testConfigurationIsGenerated() {		
+		assertTrue(generatorService.canCreateAction(
+				CONFIGURATION));
+		assertNotNull(generatorService.createAction(CONFIGURATION));
+		assertTrue(generatorService.createAction(CONFIGURATION) instanceof Ds2dsGeoServerAction);
 	}
-	
 }
