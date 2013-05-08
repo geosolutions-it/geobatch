@@ -52,15 +52,31 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
 
     private String wildcardString = "*.*";
 
+    /** 
+     * The only dimensions to be taken into account
+     */
     private String dimensions;
 
     private boolean logNotification = true;
 
+    /** 
+     * A comma separated list of variables to be filtered (in or out depending on the filterInclude param)
+     */
     private String filterVariables;
 
+    /**
+     * Whether the variables filter is inclusive (listed variables should be taken into account) 
+     * or exclusive (listed variables shouldn't be taken into account)
+     */
     private boolean filterInclude = true;
 
     private boolean geophysics = false;
+
+    /**
+     *  Whether to create custom coordinates for input dimensions 
+     * which don't have coordinates associated 
+     */
+    private boolean forceCoordinates = false;
 
     private String outputFolder;
 
@@ -167,5 +183,15 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
 
     public void setDimensions(String dimensions) {
         this.dimensions = dimensions;
+    }
+
+
+    public boolean isForceCoordinates() {
+        return forceCoordinates;
+    }
+
+
+    public void setForceCoordinates(boolean forceCoordinates) {
+        this.forceCoordinates = forceCoordinates;
     }
 }

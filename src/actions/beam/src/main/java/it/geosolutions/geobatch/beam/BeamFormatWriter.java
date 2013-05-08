@@ -34,10 +34,12 @@ import org.esa.beam.framework.datamodel.Product;
  *
  */
 public interface BeamFormatWriter {
-    
+
     public final static String PARAM_GEOPHYSIC = "geophysics";
-    
+
     public final static String PARAM_CUSTOMDIMENSION = "customDimensions";
+
+    public final static String PARAM_FORCECOORDINATE = "forceCoordinate";
 
     public void storeProduct(final String outputFilePath, Product inputProduct, Product reprojectedProduct, Map<String, Object> params) throws IOException; 
 }

@@ -25,7 +25,6 @@ import it.geosolutions.geobatch.beam.BeamFormatWriter;
 import it.geosolutions.geobatch.beam.netcdf.NCUtilities.NCCoordinateDimension;
 import it.geosolutions.geobatch.beam.netcdf.NCUtilities.NCCoordinates;
 
-import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.media.jai.PlanarImage;
 import javax.media.jai.iterator.RandomIter;
 import javax.media.jai.iterator.RandomIterFactory;
 
@@ -48,6 +46,7 @@ import org.geotools.util.Utilities;
 import org.opengis.referencing.operation.MathTransform;
 
 import ucar.ma2.Array;
+import ucar.ma2.ArrayInt;
 import ucar.ma2.DataType;
 import ucar.ma2.Index;
 import ucar.ma2.InvalidRangeException;
@@ -154,6 +153,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             final Product outputProduct, final Map<String, Object> params) throws IOException {
 
         boolean geophysics = false;
+        boolean forceCoordinate = false;
 
         NetcdfFile ncFileIn = null;
         HashMap<String, NCCoordinateDimension> coordinateDimensions = null;
@@ -164,6 +164,9 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             if (params != null) {
                 if (params.containsKey(BeamFormatWriter.PARAM_GEOPHYSIC)) {
                     geophysics = (Boolean) params.get(BeamFormatWriter.PARAM_GEOPHYSIC);
+                }
+                if (params.containsKey(BeamFormatWriter.PARAM_FORCECOORDINATE)) {
+                    forceCoordinate = (Boolean) params.get(BeamFormatWriter.PARAM_FORCECOORDINATE);
                 }
 
                 // In case requested dimensions are not specified, the resulting file will contains different
@@ -197,7 +200,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             // Let's do the first step
             final NCUtilities.NCCoordinates latLonCoordinates = new NCUtilities.NCCoordinates();
             Map<String, VariablesGroup> dimensionsGroup = defineOutputNetCDF(ncFileOut,
-                    inputProduct, outputProduct, latLonCoordinates, geophysics,
+                    inputProduct, outputProduct, latLonCoordinates, geophysics, forceCoordinate, 
                     coordinateDimensions);
 
             // This will prevent a time consuming phase where the NetCDF lib will fill all arrays with
@@ -208,7 +211,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             ncFileOut.create();
 
             // Fill coordinates with values
-            writeCoordinates(ncFileOut, latLonCoordinates, coordinateDimensions);
+            writeCoordinates(ncFileOut, latLonCoordinates, coordinateDimensions, forceCoordinate);
 
             // Fill variable with values
             writeValues(ncFileOut, outputProduct, dimensionsGroup, geophysics);
@@ -312,7 +315,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
 
                 // Check whether that dimension is requested to be handled
                 if (requestedDimensionSet.contains(name)) {
-
+                    boolean foundCoordinate = false;
                     // Look for coordinates variable related to dimensions
                     for (Variable variable : variables) {
 
@@ -327,8 +330,15 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                                 NCCoordinateDimension ncCoordDim = new NCCoordinateDimension(
                                         varDim, variable, null);
                                 coordinateDimensions.put(name, ncCoordDim);
+                                foundCoordinate = true;
+                                break;
                             }
                         }
+                    }
+                    if (!foundCoordinate) {
+                        // Assign a dimension without coordinates
+                        NCCoordinateDimension ncCoordDim = new NCCoordinateDimension(dimension);
+                        coordinateDimensions.put(name, ncCoordDim);
                     }
                 }
             }
@@ -523,17 +533,18 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * @param outputProduct
      * @param latLonCoordinates
      * @param geophysics
+     * @param forceCoordinates
      * @throws IOException
      * @throws InvalidRangeException
      */
     private static Map<String, VariablesGroup> defineOutputNetCDF(NetcdfFileWriteable ncFileOut,
             Product inputProduct, Product outputProduct, NCCoordinates latLonCoordinates,
-            final boolean geophysics, final Map<String, NCCoordinateDimension> coordinateDimensions)
+            final boolean geophysics, final boolean forceCoordinates, final Map<String, NCCoordinateDimension> coordinateDimensions)
             throws IOException, InvalidRangeException {
         Utilities.ensureNonNull("ncFileOut", ncFileOut);
 
         // Initialize dimensions and global attributes to the ouput file
-        initialize(ncFileOut, inputProduct, outputProduct, latLonCoordinates, coordinateDimensions);
+        initialize(ncFileOut, inputProduct, outputProduct, latLonCoordinates, coordinateDimensions, forceCoordinates);
 
         final int numBands = outputProduct.getNumBands();
         Map<String, BandsGroup> dimensionToBandsMap = new HashMap<String, BandsGroup>();
@@ -574,11 +585,13 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * @param ncFileOut
      * @param latLonCoordinates
      * @param coordinateDimensions
+     * @param forceCoordinates Specify whether we need to create a coordinate variable in case it missing on the related dimensions
      * @throws IOException
      * @throws InvalidRangeException
      */
     private static void writeCoordinates(NetcdfFileWriteable ncFileOut,
-            NCCoordinates latLonCoordinates, Map<String, NCCoordinateDimension> coordinateDimensions)
+            NCCoordinates latLonCoordinates, Map<String, NCCoordinateDimension> coordinateDimensions, 
+            final boolean forceCoordinates)
             throws IOException, InvalidRangeException {
 
         ncFileOut.write(NCUtilities.LAT, latLonCoordinates.getLatitude().getData());
@@ -589,7 +602,16 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             Set<String> coordinates = coordinateDimensions.keySet();
             for (String coordinateName : coordinates) {
                 NCCoordinateDimension coordinate = coordinateDimensions.get(coordinateName);
-                ncFileOut.write(coordinate.getDimension().getName(), coordinate.getVariable().read());
+                if (coordinate.isHasCoords()) {
+                    ncFileOut.write(coordinate.getDimension().getName(), coordinate.getVariable().read());
+                } else if (forceCoordinates) {
+                    final int length = coordinate.getDimension().getLength();
+                    Array array = new ArrayInt(new int[]{3});
+                    for (int i = 0; i < length; i++) {
+                        array.setInt(i, i);
+                    }
+                    ncFileOut.write(coordinate.getDimension().getName(), array);
+                }
             }
         }
     }
@@ -813,7 +835,10 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
 
             // Populating the coordinates set in order to exclude Bands representing coordinates
             // since they have been already initialized
-            variableCoordinates.add(dimensions.get(dimensionName).getVariable().getName());
+            Variable var = dimensions.get(dimensionName).getVariable();
+            if (var != null) {
+                variableCoordinates.add(var.getName());
+            }
         }
 
         // Add default NONE Dimension for variables which won't be grouped together
@@ -859,12 +884,13 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * @param reprojectedProduct
      * @param latLonCoordinates
      * @param coordinateDimensions
+     * @param forceCoordinates
      * @return
      * @throws IOException
      */
     private static NetcdfFileWriteable initialize(NetcdfFileWriteable ncFileOut,
             Product inputProduct, Product reprojectedProduct, NCCoordinates latLonCoordinates,
-            Map<String, NCCoordinateDimension> coordinateDimensions) throws IOException {
+            Map<String, NCCoordinateDimension> coordinateDimensions, final boolean forceCoordinates) throws IOException {
 
         // Get geocoding from a coordinate band
         final Band band = reprojectedProduct.getBand(NCUtilities.LAT);
@@ -877,7 +903,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
 
         // Add dimensions and related coordinates
         NCUtilities
-                .addDimensions(ncFileOut, ri, transform, latLonCoordinates, coordinateDimensions);
+                .addDimensions(ncFileOut, ri, transform, latLonCoordinates, coordinateDimensions, forceCoordinates);
 
         // copy global attributes
         NCUtilities.copyGlobalAttributes(ncFileOut, inputProduct);

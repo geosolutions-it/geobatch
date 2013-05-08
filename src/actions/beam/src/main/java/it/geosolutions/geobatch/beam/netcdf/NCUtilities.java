@@ -58,6 +58,18 @@ import ucar.nc2.Variable;
  *
  */
 public class NCUtilities {
+    private static final String UP = "up";
+
+    private static final String COORDINATE_ZIS_POSITIVE = "_CoordinateZisPositive";
+
+    private static final String GEO_Z = "GeoZ";
+
+    private static final String COORDINATE_AXIS_TYPE = "_CoordinateAxisType";
+
+    private static final String VERTICAL = "Vertical";
+
+    private static final String COORDINATE_TRANSFORM_TYPE = "_CoordinateTransformType";
+
     public final static String LAT = "lat";
 
     public final static String LON = "lon";
@@ -69,21 +81,23 @@ public class NCUtilities {
     public final static String UNITS = "units";
 
     public final static String LONGNAME = "long_name";
-    
+
     public final static String STANDARD_NAME = "standard_name";
-    
+
     public final static String DESCRIPTION = "description";
-    
+
     public final static String FILLVALUE = "_FillValue";
-    
+
     public final static String MISSING_VALUE = "missing_value";
 
     public final static String LON_UNITS = "degrees_east";
 
     public final static String LAT_UNITS = "degrees_north";
-    
+
+    public final static String NO_COORDS = "NoCoords";
+
     final static Set<String> EXCLUDED_ATTRIBUTES = new HashSet<String>();
-    
+
     static {
         EXCLUDED_ATTRIBUTES.add(UNITS);
         EXCLUDED_ATTRIBUTES.add(LONGNAME);
@@ -95,11 +109,19 @@ public class NCUtilities {
      * NetCDF Coordinate holder (Dimension and data values)
      */
     static class NCCoordinateDimension {
+
+        public NCCoordinateDimension(Dimension dimension) {
+            this.dimension = dimension;
+            this.variable = null;
+            this.data = null;
+            this.hasCoords = false;
+        }
+        
         public NCCoordinateDimension(Dimension dimension, Variable variable, Array data) {
-            super();
             this.dimension = dimension;
             this.variable = variable;
             this.data = data;
+            this.hasCoords = true;
         }
 
         private Dimension dimension;
@@ -107,6 +129,8 @@ public class NCUtilities {
         private Array data;
 
         private Variable variable;
+        
+        private boolean hasCoords;
 
         public Array getData() {
             return data;
@@ -130,6 +154,14 @@ public class NCUtilities {
 
         public void setVariable(Variable variable) {
             this.variable = variable;
+        }
+
+        public boolean isHasCoords() {
+            return hasCoords;
+        }
+
+        public void setHasCoords(boolean hasCoords) {
+            this.hasCoords = hasCoords;
         }
     }
     
@@ -393,7 +425,6 @@ public class NCUtilities {
         final NCCoordinateDimension longitude = new NCCoordinateDimension(lonDim, null, lonData);
         latLonCoordinates.setLongitude(longitude);
         latLonCoordinates.setLatitude(latitude);
-
     }
 
     /**
@@ -406,7 +437,7 @@ public class NCUtilities {
      */
     static void addDimensions(NetcdfFileWriteable ncFileOut, RenderedImage ri,
             MathTransform transform, NCCoordinates latLonCoordinates,
-            Map<String, NCCoordinateDimension> coordinateDimensions) {
+            Map<String, NCCoordinateDimension> coordinateDimensions, final boolean forceCoordinates) {
 
         // Setting up LatLon
         NCUtilities.setupLatLon(ncFileOut, ri, transform, latLonCoordinates);
@@ -421,19 +452,26 @@ public class NCUtilities {
                 String dimensionName = dimensionsIterator.next();
                 NCCoordinateDimension nccoord = coordinateDimensions.get(dimensionName);
                 Variable var = nccoord.getVariable();
-                ncFileOut.addDimension(dimensionName, nccoord.getDimension().getLength());
-                ncFileOut.addVariable(dimensionName, var.getDataType(),
-                        new Dimension[] { nccoord.getDimension() });
-                ncFileOut.addVariableAttribute(dimensionName, NCUtilities.LONGNAME,
-                        var.getFullName());
-                ncFileOut.addVariableAttribute(dimensionName, NCUtilities.DESCRIPTION,
-                        var.getFullName());
-                ncFileOut.addVariableAttribute(dimensionName, NCUtilities.UNITS,
-                        var.getUnitsString());
-                copyAttributes(ncFileOut, dimensionName, var, EXCLUDED_ATTRIBUTES);
-                
-            }
+                final Dimension coordDim = nccoord.getDimension();
+                ncFileOut.addDimension(dimensionName, coordDim.getLength());
 
+                // Assign coordinates to dimensions having coordinates
+                if (nccoord.isHasCoords()) {
+                    ncFileOut.addVariable(dimensionName, var.getDataType(),
+                            new Dimension[] { nccoord.getDimension() });
+                    ncFileOut.addVariableAttribute(dimensionName, NCUtilities.LONGNAME, var.getFullName());
+                    ncFileOut.addVariableAttribute(dimensionName, NCUtilities.DESCRIPTION, var.getFullName());
+                    ncFileOut.addVariableAttribute(dimensionName, NCUtilities.UNITS, var.getUnitsString());
+                    copyAttributes(ncFileOut, dimensionName, var, EXCLUDED_ATTRIBUTES);
+                } else if (forceCoordinates){
+                    ncFileOut.addVariable(dimensionName, DataType.INT, new Dimension[] { nccoord.getDimension() });
+                    ncFileOut.addVariableAttribute(dimensionName, NCUtilities.LONGNAME, dimensionName);
+                    ncFileOut.addVariableAttribute(dimensionName, NCUtilities.DESCRIPTION, dimensionName);
+                    ncFileOut.addVariableAttribute(dimensionName, COORDINATE_TRANSFORM_TYPE, VERTICAL);
+                    ncFileOut.addVariableAttribute(dimensionName, COORDINATE_AXIS_TYPE, GEO_Z);
+                    ncFileOut.addVariableAttribute(dimensionName, COORDINATE_ZIS_POSITIVE, UP);
+                }
+            }
         }
     }
 
