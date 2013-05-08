@@ -8,10 +8,10 @@
 		<constructor-arg type="String"><value>Ds2dsGeneratorService</value></constructor-arg>		
 	</bean>
 	
-	<bean id="Ds2dsGeoServerGeneratorService" class="it.geosolutions.geobatch.actions.ds2ds.geoserver.Ds2dsGeoServerGeneratorService">
-		<constructor-arg type="String"><value>Ds2dsGeoServerGeneratorService</value></constructor-arg>
-		<constructor-arg type="String"><value>Ds2dsGeoServerGeneratorService</value></constructor-arg>
-		<constructor-arg type="String"><value>Ds2dsGeoServerGeneratorService</value></constructor-arg>		
+	<bean id="DSGeoServerGeneratorService" class="it.geosolutions.geobatch.actions.ds2ds.geoserver.Ds2dsGeoServerGeneratorService">
+		<constructor-arg type="String"><value>DSGeoServerGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>DSGeoServerGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>DSGeoServerGeneratorService</value></constructor-arg>		
 	</bean>
 	
 	<bean id="Ds2dsAliasRegistrar" class="it.geosolutions.geobatch.actions.ds2ds.Ds2dsAliasRegistrar" lazy-init="false">

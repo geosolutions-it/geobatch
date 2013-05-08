@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DSGeoServerConfiguration>
+	<serviceID>DSGeoServerGeneratorService</serviceID>
+	<id>DSGeoServerGeneratorService</id>
+	<description>publishing action</description>
+	<name>DSGeoServerConfiguration</name>
+	<failIgnored>false</failIgnored>
+
+	<geoserverUID>uid</geoserverUID>
+	<geoserverPWD>pwd</geoserverPWD>
+	<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+
+	<defaultNamespace>geosolutions</defaultNamespace>
+	<storeName>states</storeName>
+	<createNameSpace>true</createNameSpace>
+	<createDataStore>true</createDataStore>
+	<operation>PUBLISH</operation>
+
+</DSGeoServerConfiguration>

@@ -23,7 +23,7 @@
 package it.geosolutions.geobatch.actions.ds2ds;
 
 import static org.junit.Assert.assertTrue;
-import it.geosolutions.geobatch.actions.ds2ds.geoserver.Ds2dsGeoServerConfiguration;
+import it.geosolutions.geobatch.actions.ds2ds.geoserver.DSGeoServerConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 
 import java.util.Map.Entry;
@@ -38,9 +38,9 @@ public class AliasRegistrarTest {
 		new Ds2dsAliasRegistrar(registry);
 		
 		assertTrue(containsAlias(registry, "Ds2dsConfiguration"));
-		assertTrue(containsAlias(registry,"Ds2dsGeoServerConfiguration"));
+		assertTrue(containsAlias(registry,"DSGeoServerConfiguration"));
 		assertTrue(Ds2dsConfiguration.class.isAssignableFrom(getAlias(registry, "Ds2dsConfiguration")));
-		assertTrue(Ds2dsGeoServerConfiguration.class.isAssignableFrom(getAlias(registry, "Ds2dsGeoServerConfiguration")));
+		assertTrue(DSGeoServerConfiguration.class.isAssignableFrom(getAlias(registry, "DSGeoServerConfiguration")));
 	}
 
 	private Class<?> getAlias(AliasRegistry registry, String alias) {
