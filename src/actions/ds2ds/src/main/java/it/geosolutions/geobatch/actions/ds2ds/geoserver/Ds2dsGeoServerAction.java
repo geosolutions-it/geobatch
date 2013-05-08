@@ -217,7 +217,7 @@ public class Ds2dsGeoServerAction extends BaseAction<EventObject> {
 									encoder.setUser((String) datastore.get("user"));
 									encoder.setPassword((String) datastore.get("passwd"));
 
-									created = gsMan.getDatastoreManager().create(ws, encoder);
+									created = gsMan.getStoreManager().create(ws, encoder);
 									if(!created){
 										failAction("FATAL: unable to create PostGIS datastore "+ds+" in GeoServer");
 									}
@@ -234,7 +234,7 @@ public class Ds2dsGeoServerAction extends BaseAction<EventObject> {
 									encoder.setUser((String) datastore.get("user"));
 									encoder.setPassword((String) datastore.get("passwd"));
 
-									created = gsMan.getDatastoreManager().create(ws, encoder);
+									created = gsMan.getStoreManager().create(ws, encoder);
 									if(!created){
 										failAction("FATAL: unable to create Oracle NG datastore "+ds+" in GeoServer");
 									}
