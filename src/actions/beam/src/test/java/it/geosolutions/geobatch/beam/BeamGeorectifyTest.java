@@ -28,7 +28,8 @@ public class BeamGeorectifyTest {
         BeamGeorectifierConfiguration configuration = new BeamGeorectifierConfiguration();
         configuration.setFilterInclude(false);
         configuration.setGeophysics(false);
-        configuration.setOutputFolder("C:\\data\\outputBEAM\\");
+        configuration.setJAICapacity(256*1024*1024);
+        configuration.setOutputFolder("C:\\data\\outputBEAMnew\\");
         configuration.setOutputFormat("NETCDF");
 
         final ConfigSamplePair[] cases = new ConfigSamplePair[] {
@@ -45,20 +46,24 @@ public class BeamGeorectifyTest {
 //                new ConfigSamplePair(
 //                        "c:/data/dlr/W_XX-EUMETSAT-Darmstadt,IASI,METOPA+IASI_C_EUMP_20121120062959_31590_eps_o_l2.nc", // METOPA IASI L2
 //                        configuration.clone()),
-//                new ConfigSamplePair(
-//                        "c:/data/dlr/W_XX-EUMETSAT-Darmstadt,SURFACE+SATELLITE,METOPA+ASCAT_C_EUMP_20110620020000_24214_eps_o_125_l1.nc", // METOPA
-//                                                                                                                                          // ASCAT L1
-//                        configuration.clone()),
                 new ConfigSamplePair(
-                        "c:/data/dlr/W_XX-EUMETSAT-Darmstadt,SURFACE+SATELLITE,METOPA+ASCAT_C_EUMP_20110620020000_24214_eps_o_125_ssm_l2.nc", // METOPA
-                                                                                                                                              // ASCAT L2
+                        "c:/data/dlr/W_XX-EUMETSAT-Darmstadt,SURFACE+SATELLITE,METOPA+ASCAT_C_EUMP_20110620020000_24214_eps_o_125_l1.nc", // METOPA
+                                                                                                                                          // ASCAT L1
                         configuration.clone()),
+//                new ConfigSamplePair(
+//                        "c:/data/dlr/W_XX-EUMETSAT-Darmstadt,SURFACE+SATELLITE,METOPA+ASCAT_C_EUMP_20110620020000_24214_eps_o_125_ssm_l2.nc", // METOPA
+//                                                                                                                                              // ASCAT L2
+//                        configuration.clone()),
 
         };
 
         for (ConfigSamplePair singlecase : cases) {
             if (singlecase.file.endsWith("C_EUMP_20121120062959_31590_eps_o_l2.nc")) {
                 singlecase.config.setDimensions("nlt, nlq, new, nlo, surf_temp, cloud_formations");
+            } else if (singlecase.file.endsWith("ASCAT_C_EUMP_20110620020000_24214_eps_o_125_l1.nc")) {
+                singlecase.config.setDimensions("numSigma");
+                // Forcing coordinates creation for numSigma dimension to use stacking dimensions
+                singlecase.config.setForceCoordinates(true);
             }
             BeamGeorectifier georectifier = new BeamGeorectifier(singlecase.config);
 

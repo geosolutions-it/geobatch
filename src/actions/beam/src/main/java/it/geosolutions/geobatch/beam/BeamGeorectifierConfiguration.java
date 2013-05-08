@@ -26,6 +26,7 @@ import it.geosolutions.geobatch.beam.netcdf.BeamNetCDFWriter;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import javax.media.jai.Interpolation;
+import javax.media.jai.JAI;
 
 public class BeamGeorectifierConfiguration extends ActionConfiguration {
 
@@ -105,6 +106,7 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
 
     public void setJAICapacity(long JAICapacity) {
         this.JAICapacity = JAICapacity;
+        JAI.getDefaultInstance().getTileCache().setMemoryCapacity(JAICapacity);
     }
 
     public String getWildcardString() {
