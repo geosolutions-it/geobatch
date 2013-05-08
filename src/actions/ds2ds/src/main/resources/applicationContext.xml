@@ -7,6 +7,13 @@
 	<bean id="Ds2dsGeneratorService" class="it.geosolutions.geobatch.actions.ds2ds.Ds2dsGeneratorService">
 		<constructor-arg type="String"><value>Ds2dsGeneratorService</value></constructor-arg>		
 	</bean>
+	
+	<bean id="Ds2dsGeoServerGeneratorService" class="it.geosolutions.geobatch.actions.ds2ds.geoserver.Ds2dsGeoServerGeneratorService">
+		<constructor-arg type="String"><value>Ds2dsGeoServerGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>Ds2dsGeoServerGeneratorService</value></constructor-arg>
+		<constructor-arg type="String"><value>Ds2dsGeoServerGeneratorService</value></constructor-arg>		
+	</bean>
+	
 	<bean id="Ds2dsAliasRegistrar" class="it.geosolutions.geobatch.actions.ds2ds.Ds2dsAliasRegistrar" lazy-init="false">
 		<constructor-arg ref="aliasRegistry" />
 	</bean>
