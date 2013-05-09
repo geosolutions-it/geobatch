@@ -22,7 +22,7 @@
  */
 %>
 <%@ page contentType="text/html" import="java.sql.*, java.io.*, java.util.*, it.geosolutions.geobatch.catalog.*" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
@@ -88,7 +88,7 @@
 		    <td>User ID</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.userId">
-					<input type="hidden" name="userId" value="${status.value}" />
+					<input type="hidden" name="userId" value="<c:out value="${status.value}"/>" />
 					${ftpUserDataBean.userId}
 	      		</spring:bind>
 	      	</td>
@@ -97,7 +97,7 @@
 		    <td>User Name <i>(no spaces allowed)</i></td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.userName">
-					<input type="text" name="userName" value="${status.value}" />
+					<input type="text" name="userName" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 	      	</td>
 		  </tr>
@@ -105,7 +105,7 @@
 		    <td>Password</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.password">
-					<input type="password" name="password" value="${status.value}" />
+					<input type="password" name="password" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
@@ -113,7 +113,7 @@
 		    <td>Repeat Password</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.repeatPassword">
-					<input type="password" name="repeatPassword" value="${status.value}" />
+					<input type="password" name="repeatPassword" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
@@ -123,7 +123,7 @@
 		    	<spring:bind path="ftpUserDataBean.role">
 					<select name="role" title="Select Role">
 						<c:forEach var="role" items="${ftpUserDataBean.availableRoles}">
-							<option value="${role}"><c:out value="${role}"/></option>
+							<option value="<c:out value="${role}"/>"><c:out value="${role}"/></option>
 						</c:forEach>
 					</select>
 	      		</spring:bind>
@@ -142,7 +142,7 @@
 		    <td>Upload Rate (Bytes)</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.uploadRate">
-					<input type="text" name="uploadRate" value="${status.value}" />
+					<input type="text" name="uploadRate" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
@@ -150,7 +150,7 @@
 		    <td>Download Rate (Bytes)</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.downloadRate">
-					<input type="text" name="downloadRate" value="${status.value}" />
+					<input type="text" name="downloadRate" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
@@ -158,7 +158,7 @@
 		    <td>Max Login per Ip</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.maxLoginPerIp">
-					<input type="text" name="maxLoginPerIp" value="${status.value}" />
+					<input type="text" name="maxLoginPerIp" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
@@ -166,7 +166,7 @@
 		    <td>Max Login Number</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.maxLoginNumber">
-					<input type="text" name="maxLoginNumber" value="${status.value}" />
+					<input type="text" name="maxLoginNumber" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
@@ -174,7 +174,7 @@
 		    <td>Idle Time (ms)</td>
 		    <td>
 		    	<spring:bind path="ftpUserDataBean.idleTime">
-					<input type="text" name="idleTime" value="${status.value}" />
+					<input type="text" name="idleTime" value="<c:out value="${status.value}"/>" />
 	      		</spring:bind>
 		    </td>
 		  </tr>
@@ -184,7 +184,7 @@
 		    	<spring:bind path="ftpUserDataBean.allowedFlowManagers">
 					<select multiple="multiple" name="allowedFlowManagers" title="Select Allowed Flow-Managers">
 						<c:forEach var="fm" items="${ftpUserDataBean.availableFlowManagers}">
-							<option value="${fm.configuration.id}" 
+							<option value="<c:out value="${fm.configuration.id}"/>" 
 								<c:if test="${ftpUserDataBean.allowedFlowManagers != null}">
 									<c:forEach var="fmA" items="${ftpUserDataBean.allowedFlowManagers}">
 										<c:if test="${fmA == fm.configuration.id}">
@@ -206,7 +206,7 @@
          <ul>
             <c:forEach var="errMsgObj" items="${errors.allErrors}">
                <li>
-                  <spring:message code="${errMsgObj.code}" text="${errMsgObj.defaultMessage}"/>
+                  <spring:message code='<c:out value="${errMsgObj.code}"/>' text='<c:out value="${errMsgObj.defaultMessage}"/>'/>
                </li>
             </c:forEach>
          </ul>

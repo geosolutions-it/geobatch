@@ -34,7 +34,16 @@
     <dependency>
       <groupId>org.geotools.jdbc</groupId>
       <artifactId>gt-jdbc-postgis</artifactId>
+    </dependency>    
+    <dependency>
+      <groupId>org.geotools.jdbc</groupId>
+      <artifactId>gt-jdbc-oracle</artifactId>
     </dependency>
+    <dependency>
+        <artifactId>ojdbc14</artifactId>
+        <groupId>com.oracle</groupId>        
+      </dependency>
+      
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-shapefile</artifactId>
@@ -55,6 +64,11 @@
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
+    </dependency>
+    <!-- GB other actions -->
+     <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-geoserver</artifactId>
     </dependency>
     <!-- tools -->
     <dependency>

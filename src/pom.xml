@@ -667,7 +667,7 @@
       <dependency>
         <groupId>it.geosolutions</groupId>
         <artifactId>geoserver-manager</artifactId>
-        <version>1.5</version>
+        <version>1.6-SNAPSHOT</version>
       </dependency>
       <!-- =========================================================== -->
       <!-- GeoStore -->
@@ -810,11 +810,11 @@
       <!--============================================================= -->
       <!-- =========================================== -->
       <!--============================================================= -->
-      <!--dependency>
+      <dependency>
         <groupId>taglibs</groupId>
         <artifactId>standard</artifactId>
         <version>1.1.2</version>
-      </dependency-->
+      </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
@@ -959,6 +959,11 @@
       <dependency>
         <groupId>org.geotools.jdbc</groupId>
         <artifactId>gt-jdbc-postgis</artifactId>
+        <version>${gt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools.jdbc</groupId>
+        <artifactId>gt-jdbc-oracle</artifactId>
         <version>${gt.version}</version>
       </dependency>
 	  <dependency>
@@ -1371,6 +1376,13 @@
         <artifactId>postgresql</artifactId>
         <version>9.1-901.jdbc3</version>
       </dependency>
+      <!-- ORACLE ======================================================= -->
+      <dependency>
+        <artifactId>ojdbc14</artifactId>
+        <groupId>com.oracle</groupId>
+        <version>10.2.0.3.0</version>
+      </dependency>
+      
 
       <!-- =========================================================== -->
       <!--     APACHE CXF                                              -->

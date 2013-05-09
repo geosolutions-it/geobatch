@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -165,9 +166,14 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 			destDataStore = createOutputDataStore();
 			SimpleFeatureType schema = buildDestinationSchema(featureReader
 					.getSchema());
-			SimpleFeatureBuilder builder = new SimpleFeatureBuilder(schema);
+			
 			FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter = createOutputWriter(
 					destDataStore, schema, transaction);	
+			SimpleFeatureType destSchema = featureWriter.getSchema();
+			
+			// check for schema case differences from input to output
+			Map<String, String> schemaDiffs = compareSchemas(destSchema, schema);
+			SimpleFeatureBuilder builder = new SimpleFeatureBuilder(destSchema);
 			
 			purgeData(featureWriter);
 			
@@ -179,7 +185,7 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 				int count = 0;
 				while (iterator.hasNext()) {
 					SimpleFeature feature = buildFeature(builder,
-							iterator.next());
+							iterator.next(), schemaDiffs);
 					featureWriter.addFeatures(DataUtilities
 							.collection(feature));
 					count++;
@@ -218,6 +224,39 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 		
 		
 	}
+	/**
+	 * Compare input and output schemas for different case mapping in attribute names.
+	 * 
+	 * @param destSchema
+	 * @param schema
+	 * @return
+	 */
+	private Map<String, String> compareSchemas(SimpleFeatureType destSchema,
+			SimpleFeatureType schema) {
+		Map<String, String> diffs = new HashMap<String,String>();
+		for (AttributeDescriptor ad :destSchema.getAttributeDescriptors()) {
+			String attribute = ad.getLocalName();
+			if(schema.getDescriptor(attribute) == null) {
+				for(String variant : getNameVariants(attribute)) {
+					if(schema.getDescriptor(variant) != null) {
+						diffs.put(attribute, variant);
+						break;
+					}					
+				}
+			}							
+		}
+		return diffs;
+	}
+	/**
+	 * Returns case variants for the given name.
+	 *  
+	 * @param name
+	 * @return
+	 */
+	private String[] getNameVariants(String name) {
+		return new String[] {name.toLowerCase(), name.toUpperCase()};
+	}
+	
 	private String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
@@ -478,10 +517,17 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 		for (String typeName : store.getTypeNames()) {
 			if (typeName.equalsIgnoreCase(destTypeName)) {
 				createSchema = false;
+				destTypeName = typeName;
 			}
 		}
+		// check for case changing in typeName
 		if (createSchema) {
 			store.createSchema(schema);
+			for (String typeName : store.getTypeNames()) {
+				if (! typeName.equals(destTypeName) && typeName.equalsIgnoreCase(destTypeName)) {
+					destTypeName = typeName;
+				}
+			}
 		}
 		FeatureStore<SimpleFeatureType, SimpleFeature> result = (FeatureStore<SimpleFeatureType, SimpleFeature>) store
 				.getFeatureSource(destTypeName);
@@ -572,10 +618,10 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 	 * @param sourceFeature
 	 * @return
 	 */
-	private SimpleFeature buildFeature(SimpleFeatureBuilder builder, SimpleFeature sourceFeature) {
+	private SimpleFeature buildFeature(SimpleFeatureBuilder builder, SimpleFeature sourceFeature, Map<String, String> mappings) {
 		for (AttributeDescriptor ad : builder.getFeatureType().getAttributeDescriptors()) {
 			String attribute = ad.getLocalName();
-			builder.set(attribute, getAttributeValue(sourceFeature, attribute));
+			builder.set(attribute, getAttributeValue(sourceFeature, attribute, mappings));
 		}
 		return builder.buildFeature(null);
 	}
@@ -587,11 +633,13 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 	 * @return
 	 */
 	private Object getAttributeValue(SimpleFeature sourceFeature,
-			String attributeName) {
+			String attributeName, Map<String, String> mappings) {
 		// gets mapping for renamed attributes
 		
 		if(configuration.getAttributeMappings().containsKey(attributeName)) {
 			attributeName = configuration.getAttributeMappings().get(attributeName).toString();
+		} else if(mappings.containsKey(attributeName)) {
+			attributeName = mappings.get(attributeName);
 		}
 		return sourceFeature.getAttribute(attributeName);
 	}

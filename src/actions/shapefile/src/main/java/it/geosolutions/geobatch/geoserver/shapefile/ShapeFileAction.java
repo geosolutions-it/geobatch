@@ -32,7 +32,7 @@ import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 import it.geosolutions.geoserver.rest.encoder.datastore.GSShapefileDatastoreEncoder;
-import it.geosolutions.geoserver.rest.manager.GeoServerRESTDatastoreManager;
+import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
 import it.geosolutions.tools.compress.file.Compressor;
 import it.geosolutions.tools.compress.file.Extract;
 import it.geosolutions.tools.io.file.Collector;
@@ -375,7 +375,7 @@ public class ShapeFileAction extends BaseAction<EventObject> {
             	// Get managers from geoserver-manager
             	GeoServerRESTManager manager = new GeoServerRESTManager(new URL(shpConfig.getGeoserverURL()),
             			shpConfig.getGeoserverUID(), shpConfig.getGeoserverPWD());
-            	GeoServerRESTDatastoreManager dsManager = manager.getDatastoreManager();
+            	GeoServerRESTStoreManager dsManager = manager.getStoreManager();
             	
             	// Read config from GS
             	RESTDataStore dsRead = manager.getReader().getDatastore(wsName, dsName);

@@ -42,7 +42,7 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-<!--       <scope>runtime</scope> -->
+      <scope>runtime</scope>
     </dependency>
     <!-- ============================== -->
     <!-- Platform -->
@@ -108,10 +108,20 @@
 <!--      </exclusions> -->
     </dependency>
     <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-transports-http</artifactId>
+          <scope>test</scope>
+      </dependency>
+    <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-bindings-http</artifactId>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -129,12 +139,12 @@
           </execution>
         </executions>
         <dependencies>
-          <dependency>
+          <!-- dependency>
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-application</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
-          </dependency>
+          </dependency -->
         </dependencies>
         <!-- The configuration of the plugin -->
         <configuration>
