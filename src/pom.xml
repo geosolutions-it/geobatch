@@ -369,6 +369,12 @@
         <artifactId>gb-action-geotiff</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- BEAM STUFF -->
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-beam</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- FreeMarker -->
       <dependency>
         <groupId>org.freemarker</groupId>
@@ -1922,6 +1928,19 @@
         <enabled>true</enabled>
       </releases>
     </repository>
+    <repository>
+      <id>bc-mvn</id>
+      <name>Public Maven Repository at Brockmann Consult</name>
+      <url>http://www.brockmann-consult.de/mvn/os</url>
+      <releases>
+          <enabled>true</enabled>
+          <checksumPolicy>warn</checksumPolicy>
+      </releases>
+      <snapshots>
+          <enabled>true</enabled>
+          <checksumPolicy>warn</checksumPolicy>
+      </snapshots>
+    </repository>
   </repositories>
   <!-- =========================================================== -->
   <!-- Plugin repositories. -->
@@ -1950,6 +1969,30 @@
         <enabled>false</enabled>
       </snapshots>
     </pluginRepository>
+    <pluginRepository>
+      <id>bc-mvn-repo</id>
+      <name>Public Maven Repository at Brockmann Consult</name>
+      <url>http://www.brockmann-consult.de/mvn/os</url>
+      <releases>
+          <enabled>true</enabled>
+          <checksumPolicy>warn</checksumPolicy>
+      </releases>
+      <snapshots>
+          <enabled>true</enabled>
+          <checksumPolicy>warn</checksumPolicy>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>apache.org</id>
+      <name>Maven Plugin Snapshots</name>
+      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+      <releases>
+          <enabled>false</enabled>
+      </releases>
+      <snapshots>
+          <enabled>true</enabled>
+      </snapshots>
+  </pluginRepository>
   </pluginRepositories>
   <!-- =========================================================== -->
   <!-- Modules for the build in approximate dependency order -->

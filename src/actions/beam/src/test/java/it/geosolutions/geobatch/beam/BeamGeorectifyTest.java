@@ -68,7 +68,7 @@ public class BeamGeorectifyTest {
             BeamGeorectifier georectifier = new BeamGeorectifier(singlecase.config);
 
             // configuration.setGeophysics(false);
-            georectifier.georectify(new File(singlecase.file));
+            georectifier.georectify(new File(singlecase.file), null);
         }
     }
 }

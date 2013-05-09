@@ -37,8 +37,15 @@ public interface BeamFormatWriter {
 
     public final static String PARAM_GEOPHYSIC = "geophysics";
 
+    /** 
+     * This parameter is used to specify the dimensions to be parsed  
+     */
     public final static String PARAM_CUSTOMDIMENSION = "customDimensions";
 
+    /**
+     * This parameter is used to specify whether we want to create coordinate variables for 
+     * each additional dimension if they are missing from the input dataset
+     */
     public final static String PARAM_FORCECOORDINATE = "forceCoordinate";
 
     public void storeProduct(final String outputFilePath, Product inputProduct, Product reprojectedProduct, Map<String, Object> params) throws IOException; 

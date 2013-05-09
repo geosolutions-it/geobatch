@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>gome2harvest</id>
+	<name>NetCDF granule harvest</name>
+	<description>NETCDF granules harvesting</description>
+
+	<autorun>true</autorun>
+
+	<corePoolSize>10</corePoolSize>
+	<maximumPoolSize>30</maximumPoolSize>
+	<keepAliveTime>15</keepAliveTime> <!--seconds -->
+	<workQueueSize>100</workQueueSize>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>gome2harvest/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<!--interval>0 * * * * ?</interval--> <!-- CRON: every minute at sec 0 -->
+		<!-- <interval>20</interval> -->  <!--  each 20 sec -->
+		<serviceID>fsEventGeneratorService</serviceID>
+	</EventGeneratorConfiguration>
+
+	<EventConsumerConfiguration>
+		<id>gome2harvest</id>
+		
+		<listenerId>BeamConsumerLogger0</listenerId>
+		<listenerId>BeamCumulator0</listenerId>
+		
+		<performBackup>true</performBackup>
+		<preserveInput>false</preserveInput>
+	
+ 		<HarvestGeoServerActionConfiguration>
+			<serviceID>HarvestGeoServerService</serviceID>
+			<id>netcdf</id>
+			<description>Action to ingest NetCDF on GeoServer</description>
+			<name>NetCDF harvest action</name>
+
+			<listenerId>HarvestStatusActionLogger0</listenerId>
+			<listenerId>HarvestActionLogger0</listenerId>
+
+			<crs>EPSG:4326</crs>
+			<title>title</title>
+			<layerDescription>layerDescription</layerDescription>
+			<layerAbstract>Abstract</layerAbstract>
+			<defaultStyle>raster</defaultStyle>
+			
+			<envelope />
+			<dataTransferMethod>EXTERNAL</dataTransferMethod>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+			<defaultNamespace>it.geosolutions</defaultNamespace>
+			<storeName>GOME2</storeName>
+			<outputFolder>C:/data/dlr/GOME2Data</outputFolder>
+			<styles />
+		</HarvestGeoServerActionConfiguration>
+	</EventConsumerConfiguration>
+
+	<ListenerConfigurations>
+	<StatusProgressListener>
+			<serviceID>statusListenerService</serviceID>
+			<id>HarvestStatusActionLogger0</id>
+		</StatusProgressListener>
+
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>HarvestActionLogger0</id>
+
+			<loggerName>HarvestActionLogger0</loggerName>
+		</LoggingProgressListener>
+	</ListenerConfigurations> 
+</FlowConfiguration>

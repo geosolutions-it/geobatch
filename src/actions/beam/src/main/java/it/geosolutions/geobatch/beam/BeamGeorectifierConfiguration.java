@@ -30,6 +30,9 @@ import javax.media.jai.JAI;
 
 public class BeamGeorectifierConfiguration extends ActionConfiguration {
 
+    /**
+     * The output Format specifying how the georectified product should be encoded. 
+     */
     enum OutputFormat {
         NETCDF {
             BeamFormatWriter getFormatWriter() {
@@ -54,7 +57,7 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
     private String wildcardString = "*.*";
 
     /** 
-     * The only dimensions to be taken into account
+     * The only dimensions to be taken into account (comma separated values)
      */
     private String dimensions;
 
@@ -71,6 +74,10 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
      */
     private boolean filterInclude = true;
 
+    /**
+     * Whether we want geophysics values back or not. Note that BEAM always seems 
+     * returning geophysics when missing values are defined. Need to investigate on it.
+     */
     private boolean geophysics = false;
 
     /**
@@ -81,15 +88,17 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
 
     private String outputFolder;
 
-    private String outputFormat = "NETCDF"; // default 
+    /**
+     * The outputFormat defining how should we encode the result.
+     * Default value is NETCDF.
+     */
+    private String outputFormat = "NETCDF"; 
    
     public static BeamFormatWriter getFormatWriter(String storeType) {
         if (storeType.equalsIgnoreCase(OutputFormat.NETCDF.toString())) {
             return OutputFormat.NETCDF.getFormatWriter();
         }
-        
-        return null;
-        
+        throw new IllegalArgumentException("The specified store type hasn't been implemented yet: " + storeType);
     }
     /**
      *
@@ -187,11 +196,9 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
         this.dimensions = dimensions;
     }
 
-
     public boolean isForceCoordinates() {
         return forceCoordinates;
     }
-
 
     public void setForceCoordinates(boolean forceCoordinates) {
         this.forceCoordinates = forceCoordinates;

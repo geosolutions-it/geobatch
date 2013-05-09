@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.beam;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
@@ -112,7 +113,7 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
             while (events.size() > 0) {
 
                 // run
-                listenerForwarder.progressing(0, "Georectifying");
+                listenerForwarder.setTask("Georectifying");
 
                 final FileSystemEvent event = events.remove();
 
@@ -127,7 +128,7 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
 
                     if (eventFile.isDirectory()) {
 
-                        final FileFilter filter = new RegexFileFilter(".+\\.[tT][iI][fF]([fF]?)");
+                        final FileFilter filter = new RegexFileFilter(".+\\.[nN][cC]");
                         final Collector collector = new Collector(filter);
                         final List<File> fileList = collector.collect(eventFile);
                         int size = fileList.size();
@@ -138,8 +139,8 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
                             try {
                                 //
                                 // georectify;
-                                georectify(inFile);
-
+                                georectify(inFile, ret);
+                                
                             } catch (UnsupportedOperationException uoe) {
                                 listenerForwarder.failed(uoe);
                                 if (LOGGER.isWarnEnabled())
@@ -161,7 +162,7 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
                     } else {
                         try {
                             //
-                            georectify(eventFile);
+                            georectify(eventFile, ret);
 
                         } catch (UnsupportedOperationException uoe) {
                             listenerForwarder.failed(uoe);
@@ -181,8 +182,6 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
                         }
                     }
 
-                    // add the directory to the return
-                    ret.add(event);
                 } else {
                     final String message = "BeamGeorectifier::execute(): The passed file event refers to a not existent "
                             + "or not readable/writeable file! File: "
@@ -223,9 +222,10 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
     /**
      * Georectify the specified inputFile
      * @param inputFile the inputFile to be georectified
+     * @param ret 
      * @throws IOException
      */
-    public void georectify(final File inputFile) throws IOException {
+    public void georectify(final File inputFile, Queue<FileSystemEvent> ret) throws IOException {
         final String outputFilePath = configuration.getOutputFolder() + File.separatorChar + inputFile.getName();
         // Get product from inputFile
         if (inputFile == null || !inputFile.exists() || !inputFile.canRead()) {
@@ -238,6 +238,7 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
 
         try {
             // Reading product
+            listenerForwarder.setTask("Reading input data");
             inputProduct = ProductIO.readProduct(inputFile);
 
             // Refining products through filters
@@ -256,8 +257,18 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
             storingParams.put(BeamFormatWriter.PARAM_GEOPHYSIC, configuration.isGeophysics());
             storingParams.put(BeamFormatWriter.PARAM_CUSTOMDIMENSION, configuration.getDimensions()); // Get from config
 
-            // store the resulting product 
+            // store the resulting product
+            listenerForwarder.setTask("storing results");
             writer.storeProduct(outputFilePath, inputProduct, reprojectedProduct, storingParams);
+            if (outputFilePath != null) {
+//              listenerForwarder.failed(thrn"null output file");
+              final File outputFile = new File(outputFilePath);
+              if (outputFile.exists() && outputFile.canRead()) {
+                  ret.add(new FileSystemEvent(outputFile, FileSystemEventType.FILE_ADDED));
+              } else {
+                  listenerForwarder.failed(new IllegalStateException("The specified file path doesn't exist or can't be read"));
+              }
+          }
         } finally {
             
             // Disposing products, releasing resources

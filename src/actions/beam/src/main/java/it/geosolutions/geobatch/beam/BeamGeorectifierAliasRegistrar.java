@@ -35,6 +35,8 @@ public class BeamGeorectifierAliasRegistrar extends AliasRegistrar {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
         registry.putAlias("BeamGeorectifierConfiguration",
                         it.geosolutions.geobatch.beam.BeamGeorectifierConfiguration.class);
+        registry.putAlias("HarvestGeoServerActionConfiguration",
+                it.geosolutions.geobatch.beam.HarvestGeoServerActionConfiguration.class);
 
     }
 }

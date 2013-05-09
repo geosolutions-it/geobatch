@@ -8,6 +8,12 @@
 		<constructor-arg type="String"><value>BeamGeorectifierService</value></constructor-arg>
     	<constructor-arg type="String"><value>BeamGeorectifierService</value></constructor-arg>
         <constructor-arg type="String"><value>BeamGeorectifierService</value></constructor-arg>
+    </bean>
+    
+	<bean id="HarvestGeoServerService" class="it.geosolutions.geobatch.beam.HarvestGeoServerService">
+		<constructor-arg type="String"><value>HarvestGeoServerService</value></constructor-arg>
+    	<constructor-arg type="String"><value>HarvestGeoServerService</value></constructor-arg>
+        <constructor-arg type="String"><value>HarvestGeoServerService</value></constructor-arg>
     </bean>	
 
     <bean id="FlowGeorectifierRegistrar" class="it.geosolutions.geobatch.beam.BeamGeorectifierAliasRegistrar" lazy-init="false">
