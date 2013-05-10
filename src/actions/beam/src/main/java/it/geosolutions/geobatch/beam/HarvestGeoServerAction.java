@@ -25,7 +25,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-import it.geosolutions.geoserver.rest.manager.GeoServerRESTStructuredCoverageGridReaderManager;
+import it.geosolutions.geoserver.rest.manager.GeoServerRESTStructuredGridCoverageReaderManager;
 import it.geosolutions.tools.io.file.Copy;
 
 import java.io.File;
@@ -179,7 +179,7 @@ public class HarvestGeoServerAction extends BaseAction<FileSystemEvent> {
         //
         // SENDING data to GeoServer via REST protocol.
         //
-        final GeoServerRESTStructuredCoverageGridReaderManager manager = new GeoServerRESTStructuredCoverageGridReaderManager(
+        final GeoServerRESTStructuredGridCoverageReaderManager manager = new GeoServerRESTStructuredGridCoverageReaderManager(
                 new URL(configuration.getGeoserverURL()), configuration.getGeoserverUID(), configuration.getGeoserverPWD());
 
         // check transfer method
