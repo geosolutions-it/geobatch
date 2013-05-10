@@ -285,6 +285,7 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
             Map<String, Object> storingParams = new HashMap<String, Object>();
             storingParams.put(BeamFormatWriter.PARAM_GEOPHYSIC, configuration.isGeophysics());
             storingParams.put(BeamFormatWriter.PARAM_CUSTOMDIMENSION, configuration.getDimensions()); // Get from config
+            storingParams.put(BeamFormatWriter.PARAM_FORCECOORDINATE, configuration.isForceCoordinates());
 
             // store the resulting product
             listenerForwarder.setTask("storing results");

@@ -303,7 +303,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                     setData(ncFileOut, bands, variableName, geophysics);
                     progress++;
                     if (listenerForwarder != null) {
-                        listenerForwarder.progressing((int)((progress * 100) / numVariables), "writingVariable");
+                        listenerForwarder.progressing((int)((progress * 100) / numVariables), "writingVariable: " + variableName);
                     }
                 }
                 dimensionProgress++;
