@@ -29,6 +29,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.tools.io.file.Collector;
 
+import java.awt.image.renderable.RenderedImageFactory;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -38,6 +39,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+
+import javax.media.jai.JAI;
+import javax.media.jai.OperationDescriptor;
+import javax.media.jai.OperationRegistry;
+import javax.media.jai.RegistryElementDescriptor;
+import javax.media.jai.registry.RenderedRegistryMode;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.esa.beam.framework.dataio.ProductIO;
@@ -49,6 +56,9 @@ import org.esa.beam.gpf.operators.standard.reproject.ReprojectionOp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bc.ceres.jai.operator.ReinterpretDescriptor;
+import com.bc.ceres.jai.opimage.ReinterpretRIF;
+
 /**
  * Action to georectify beam products
  * 
@@ -59,12 +69,30 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
     // Externalize this through configuration
     static Map<String, Object> DEFAULT_PARAMS = new HashMap<String, Object>();
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(BeamGeorectifier.class);
+    
     private final static String wgs84code = "EPSG:4326";
     static {
         
-        //TODO: parse it from configuration
+        OperationRegistry registry = JAI.getDefaultInstance().getOperationRegistry();
+        
+        try {
+            final OperationDescriptor op = new ReinterpretDescriptor();
+            final String descName = op.getName();
+            
+            RegistryElementDescriptor desc = registry.getDescriptor(RenderedRegistryMode.MODE_NAME, descName);
+            if (desc == null) {
+                registry.registerDescriptor(op);
+                final RenderedImageFactory rif = new ReinterpretRIF();
+                registry.registerFactory(RenderedRegistryMode.MODE_NAME, descName, "com.bc.ceres.jai", rif);
+            }
+            
+        } catch (Exception e) {
+            LOGGER.error(e.getLocalizedMessage(), e);
+        }
         GPF.getDefaultInstance().getOperatorSpiRegistry().addOperatorSpi(new ReprojectionOp.Spi());
 
+        //TODO: Parse them from configuration
         DEFAULT_PARAMS.put("resamplingName", "Nearest");
         DEFAULT_PARAMS.put("includeTiePointGrids", false);
         DEFAULT_PARAMS.put("region", null);
@@ -75,8 +103,6 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
     }
 
     private BeamGeorectifierConfiguration configuration;
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(BeamGeorectifier.class);
 
     public BeamGeorectifier(BeamGeorectifierConfiguration configuration) throws IOException {
         super(configuration);
