@@ -22,6 +22,8 @@
 
 package it.geosolutions.geobatch.beam;
 
+import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -48,5 +50,9 @@ public interface BeamFormatWriter {
      */
     public final static String PARAM_FORCECOORDINATE = "forceCoordinate";
 
-    public void storeProduct(final String outputFilePath, Product inputProduct, Product reprojectedProduct, Map<String, Object> params) throws IOException; 
+    public void storeProduct(final String outputFilePath, 
+            final Product inputProduct, 
+            final Product reprojectedProduct, 
+            final Map<String, Object> params, 
+            final ProgressListenerForwarder forwarder) throws IOException; 
 }

@@ -238,14 +238,17 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
 
         try {
             // Reading product
-            listenerForwarder.setTask("Reading input data");
+            listenerForwarder.setTask("Reading");
             inputProduct = ProductIO.readProduct(inputFile);
-
+            listenerForwarder.progressing(10f, "Reading");
+            
             // Refining products through filters
             reducedProduct = refineProductsList(inputProduct);
 
             // Reprojecting
+            listenerForwarder.setTask("Reprojecting");
             reprojectedProduct = GPF.createProduct("Reproject", DEFAULT_PARAMS, reducedProduct);
+            listenerForwarder.progressing(20f, "Reprojecting");
 
             // Get a store depending on the requested format
             final BeamFormatWriter writer = BeamGeorectifierConfiguration.getFormatWriter(configuration.getOutputFormat());
@@ -259,7 +262,7 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
 
             // store the resulting product
             listenerForwarder.setTask("storing results");
-            writer.storeProduct(outputFilePath, inputProduct, reprojectedProduct, storingParams);
+            writer.storeProduct(outputFilePath, inputProduct, reprojectedProduct, storingParams, listenerForwarder);
             if (outputFilePath != null) {
 //              listenerForwarder.failed(thrn"null output file");
               final File outputFile = new File(outputFilePath);

@@ -26,9 +26,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geoserver.rest.manager.GeoServerRESTStructuredCoverageGridReaderManager;
-import it.geosolutions.tools.commons.file.Path;
 import it.geosolutions.tools.io.file.Copy;
-import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +34,6 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,22 +123,32 @@ public class HarvestGeoServerAction extends BaseAction<FileSystemEvent> {
                     }
                 }
 
-                final String outputFolderDir = configuration.getOutputFolder();
-                final File outputDir = new File(outputFolderDir);
-                if (!outputDir.exists()) {
-                    outputDir.mkdir();
+                File fileToBeHarvested = inputFile;
+                final String outputFolderPath = configuration.getOutputFolder();
+
+                // Check if we need to copy the file into an outputFolder before doing the harvesting.
+                if (outputFolderPath != null) {
+                    final File outputDir = new File(outputFolderPath);
+                    if (!outputDir.exists()) {
+                        outputDir.mkdir();
+                    }
+                    fileToBeHarvested = new File(outputDir.getAbsolutePath(), FilenameUtils.getName(inputFile.getAbsolutePath()));
+                    final String copiedFilePath = fileToBeHarvested.getAbsolutePath();
+                    fileToBeHarvested = Copy.copyFileToNFS(inputFile, fileToBeHarvested, 5);
+                    if (fileToBeHarvested == null) {
+                        LOGGER.warn("Unable to copy file " + inputFile + " to " + copiedFilePath);
+                    }
+
                 }
-                File copiedFile = new File(outputDir.getAbsolutePath(), FilenameUtils.getName(inputFile.getAbsolutePath()));
-                copiedFile = Copy.copyFileToNFS(inputFile, copiedFile, 5);
-                if (copiedFile == null) {
-                    LOGGER.warn("Unable to copy file " + inputFile + " to " + copiedFile.getAbsolutePath());
-                } else {
-                    listenerForwarder.setTask("Publishing: " + copiedFile);
-                // try to publish on geoserver
-                if (harvestFile(copiedFile, configuration)) {
-                    // Log it
-//                    listenerForwarder.completed();
-                }
+                if (fileToBeHarvested != null) {
+                    listenerForwarder.setTask("Publishing: " + fileToBeHarvested);
+
+                    // try to harvest on geoserver
+                    if (harvestFile(fileToBeHarvested, configuration)) {
+                        listenerForwarder.progressing();
+                    } else {
+                        
+                    }
                 }
             }
             listenerForwarder.completed();
