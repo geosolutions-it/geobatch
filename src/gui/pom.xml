@@ -126,10 +126,10 @@
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>taglibs</groupId> -->
-<!--       <artifactId>standard</artifactId> -->
-<!--     </dependency> -->
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+    </dependency>
     <dependency>
       <groupId>aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
