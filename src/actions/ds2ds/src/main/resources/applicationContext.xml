@@ -8,7 +8,7 @@
 		<constructor-arg type="String"><value>Ds2dsGeneratorService</value></constructor-arg>		
 	</bean>
 	
-	<bean id="DSGeoServerGeneratorService" class="it.geosolutions.geobatch.actions.ds2ds.geoserver.Ds2dsGeoServerGeneratorService">
+	<bean id="DSGeoServerGeneratorService" class="it.geosolutions.geobatch.actions.ds2ds.geoserver.DSGeoServerGeneratorService">
 		<constructor-arg type="String"><value>DSGeoServerGeneratorService</value></constructor-arg>
 		<constructor-arg type="String"><value>DSGeoServerGeneratorService</value></constructor-arg>
 		<constructor-arg type="String"><value>DSGeoServerGeneratorService</value></constructor-arg>		
