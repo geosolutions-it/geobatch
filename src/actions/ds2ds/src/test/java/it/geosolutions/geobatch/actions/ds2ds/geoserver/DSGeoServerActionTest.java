@@ -16,15 +16,21 @@ import org.junit.Test;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * Ds2dsGeoServerAction test class
- * The test is based on a postgis instance whose parameters
- * are specified in the input states.xml (see test-data/inputs/states.xml)
+ * Ds2dsGeoServerAction test class The test is based on a postgis instance
+ * containing 2 different tables coming from the Geoserver 'states' sample data:
+ * - pgstates: table resulting from the shapefile import
+ * - pgstates_stats: geometryless version of pgstates
  * 
- * Environment variable to set:
- * <b>ds2ds_test</b> - string{true|false} - to enable|disable the tests
- *
+ * The postgis datastore parameters in both states.xml and states_stats.xml
+ * files that are the input files for this test class. See:
+ * - test-data/inputs/states.xml
+ * - test-data/inputs/states_stats.xml
+ * 
+ * Environment variable to set: <b>ds2ds_test</b> - string{true|false} - to
+ * enable|disable the tests
+ * 
  * @author Emmanuel Blondel (FAO)
- *
+ * 
  */
 public class DSGeoServerActionTest{
 
@@ -39,7 +45,7 @@ public class DSGeoServerActionTest{
 			enabled = getenv("ds2ds_test", "false").equalsIgnoreCase("true");
 	        if (!enabled) {
 	            LOGGER.warn("Tests on GeoServer are disabled. Please read the documentation to enable them.");
-	        } 
+	        }
 		}
 		
 		public static String getenv(String envName, String envDefault) {
@@ -60,7 +66,7 @@ public class DSGeoServerActionTest{
 		}
 		
 		@Test
-		public void testExecuteXml() throws Exception {
+		public void testGeomDataPublication() throws Exception {
 
 			if(enabled){
 				configuration.setFeatureConfiguration(FeatureConfiguration.fromXML(
@@ -68,6 +74,24 @@ public class DSGeoServerActionTest{
 				
 				Queue<EventObject> events = new LinkedList<EventObject>();
 				events.add(new FileSystemEvent(getResourceFile("states.xml"),
+						FileSystemEventType.FILE_ADDED));
+
+				DSGeoServerAction action = new DSGeoServerAction(configuration);
+				action.setTempDir(new File("/tmp"));
+				action.execute(events);
+			}
+			
+		}
+		
+		@Test
+		public void testGeomlessDataPublication() throws Exception {
+
+			if(enabled){
+				configuration.setFeatureConfiguration(FeatureConfiguration.fromXML(
+						new FileInputStream(getResourceFile("states_stats.xml"))));
+				
+				Queue<EventObject> events = new LinkedList<EventObject>();
+				events.add(new FileSystemEvent(getResourceFile("states_stats.xml"),
 						FileSystemEventType.FILE_ADDED));
 
 				DSGeoServerAction action = new DSGeoServerAction(configuration);

@@ -55,6 +55,7 @@ import org.apache.commons.io.IOUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.vividsolutions.jts.geom.LineString;
@@ -261,7 +262,12 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 							final GSFeatureTypeEncoder fte = new GSFeatureTypeEncoder();
 							fte.setName(featureConfig.getTypeName());
 							fte.setTitle(featureConfig.getTypeName());
-							fte.setSRS(featureConfig.getCrs());
+							String crs = featureConfig.getCrs();
+							if(crs != null){
+								fte.setSRS(featureConfig.getCrs());
+							}else{
+								fte.setSRS("EPSG:4326");
+							}
 							fte.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
 							        
 							//layer & default style
@@ -352,9 +358,10 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 					.getDataStore());
 			SimpleFeatureSource sfs = datastore.getFeatureSource(featureConfig
 					.getTypeName());
-			binding = sfs.getSchema().getGeometryDescriptor().getType()
-					.getBinding();
-
+			GeometryDescriptor geomDescriptor = sfs.getSchema().getGeometryDescriptor();
+			if(geomDescriptor != null){
+				binding = geomDescriptor.getType().getBinding();
+			}
 		} catch (IOException ioe) {
 			failAction(ioe.getMessage());
 
@@ -391,10 +398,14 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 			}
 		} else {
 			Class<?> geomBinding = this.getGeometryTypeBinding(featureConfig);
-			if(geomBinding.equals(Polygon.class) || geomBinding.equals(MultiPolygon.class)){
-				defaultStyle = "polygon";
-			}else if(geomBinding.equals(LineString.class) || geomBinding.equals(MultiLineString.class)){
+			if(geomBinding != null){
+				if(geomBinding.equals(Polygon.class) || geomBinding.equals(MultiPolygon.class)){
+					defaultStyle = "polygon";
+				}else if(geomBinding.equals(LineString.class) || geomBinding.equals(MultiLineString.class)){
 				defaultStyle = "line";
+				}else{
+					defaultStyle = "point";
+				}
 			}else{
 				defaultStyle = "point";
 			}
