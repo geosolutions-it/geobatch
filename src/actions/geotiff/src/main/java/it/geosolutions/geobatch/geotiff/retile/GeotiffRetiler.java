@@ -23,6 +23,7 @@ package it.geosolutions.geobatch.geotiff.retile;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.annotations.ActionService;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
@@ -65,6 +66,7 @@ import com.sun.media.jai.operator.ImageReadDescriptor;
  * @version $GeoTIFFOverviewsEmbedder.java Revision: 0.1 $ 23/mar/07 11:42:25 Revision: 0.2 $
  *          15/Feb/11 14:40:00
  */
+@ActionService(serviceId = "GeotiffRetilerService")
 public class GeotiffRetiler extends BaseAction<FileSystemEvent> {
 
     private GeotiffRetilerConfiguration configuration;

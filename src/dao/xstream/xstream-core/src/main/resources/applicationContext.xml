@@ -26,10 +26,11 @@
 
 	<!-- Environment Initialization -->
 	<bean id="globalConfig" class="it.geosolutions.geobatch.global.XStreamCatalogLoader"
-		depends-on="catalog,settingsProcessor">
+		depends-on="catalog,settingsProcessor,actionAnnotationScanner">
 		<constructor-arg ref="catalog" />
 		<constructor-arg ref="alias" />
         <property name="settingsCatalog" ref="settingsCatalog"/>
+        <property name="actionAnnotationScanner" ref="actionAnnotationScanner"/>
 	</bean>
 
 	<!-- XStream flow manager DAO -->
