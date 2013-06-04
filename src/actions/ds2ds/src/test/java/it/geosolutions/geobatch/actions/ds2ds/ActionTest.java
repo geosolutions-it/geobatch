@@ -256,16 +256,16 @@ public class ActionTest {
 	}
 
 	@Test
-	public void testActionReturnsEventsIfCompleted() {
+	public void testActionReturnsEventsIfCompletedTest() {
 		try {
 			Queue<EventObject> result = executeAction("xml");			
 			assertNotNull(result);
-			assertTrue(result.size() > 0);
-			
+			assertFalse( result.isEmpty() );			
 			assertTrue(result.peek() instanceof FileSystemEvent);
 			FileSystemEvent event = (FileSystemEvent) result.peek();
 			FeatureConfiguration output = FeatureConfiguration.fromXML(new FileInputStream(event.getSource()));
-			assertEquals("test",output.getTypeName());
+			assertNotNull(output);
+            assertEquals("test",output.getTypeName());
 		} catch (ActionException e) {
 			fail("Action failure in execution: " + e.getLocalizedMessage());
 		} catch (URISyntaxException e) {

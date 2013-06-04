@@ -157,18 +157,18 @@ public class FeatureConfiguration implements Cloneable {
 	public FeatureConfiguration clone() {
         try {
         	FeatureConfiguration fc = (FeatureConfiguration) super.clone();
-        	fc.typeName = this.typeName ;
-        	fc.crs = this.crs;
-        	fc.coordinateReferenceSystem = this.coordinateReferenceSystem;
+//        	fc.typeName = this.typeName ;
+//        	fc.crs = this.crs;
+//        	fc.coordinateReferenceSystem = this.coordinateReferenceSystem;
         	if(this.dataStore != null) {
-	        	fc.dataStore=new HashMap<String,Serializable>();
-	        	for(String key : this.dataStore.keySet()) {
-	        		fc.dataStore.put(key, this.dataStore.get(key));
-	        	}
+	        	fc.dataStore = new HashMap<String,Serializable>();
+                for (Map.Entry<String, Serializable> entry : dataStore.entrySet()) {
+	        		fc.dataStore.put(entry.getKey(), entry.getValue());
+                }
         	} else {
         		fc.dataStore = null;
         	}
-        	
+
             return fc;
         } catch (CloneNotSupportedException e) {
             // this shouldn't happen, since we are Cloneable
