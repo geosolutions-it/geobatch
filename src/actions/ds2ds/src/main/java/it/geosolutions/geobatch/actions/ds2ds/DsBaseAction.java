@@ -282,7 +282,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         return new String[]{name.toLowerCase(), name.toUpperCase()};
     }
 
-	private String getStackTrace(Throwable t) {
+	protected String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
 		return sw.toString();
