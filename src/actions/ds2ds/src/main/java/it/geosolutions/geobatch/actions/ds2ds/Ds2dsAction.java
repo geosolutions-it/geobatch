@@ -233,25 +233,6 @@ public class Ds2dsAction extends DsBaseAction {
 	}
 
 	/**
-	 * Creates the source datastore reader.
-	 * 
-	 * @param sourceDataStore
-	 * @param transaction
-	 * @param query
-	 * @return
-	 * @throws IOException
-	 */
-	private FeatureStore<SimpleFeatureType, SimpleFeature> createSourceReader(
-			DataStore sourceDataStore, final Transaction transaction,
-			Query query) throws IOException {
-		FeatureStore<SimpleFeatureType, SimpleFeature> featureReader = 
-				(FeatureStore<SimpleFeatureType, SimpleFeature>) sourceDataStore
-				.getFeatureSource(query.getTypeName());							
-		featureReader.setTransaction(transaction);
-		return featureReader;
-	}
-
-	/**
 	 * Eventually unpacks compressed files.
 	 * 
 	 * @param fileEvent
@@ -400,52 +381,9 @@ public class Ds2dsAction extends DsBaseAction {
 	 * @throws IOException
 	 * @throws ActionException 
 	 */
-	private DataStore createSourceDataStore(FileSystemEvent fileEvent) throws IOException, ActionException {
-		updateTask("Connecting to source DataStore");		
-		String fileType = getFileType(fileEvent);
-		FeatureConfiguration sourceFeature = configuration.getSourceFeature();
-		if(fileType.equals("xml")) {
-			InputStream inputXML = null;
-			try {
-				inputXML = new FileInputStream(fileEvent.getSource());				
-				sourceFeature  = FeatureConfiguration.fromXML(inputXML);							
-			} catch (Exception e) {
-	            throw new IOException("Unable to load input XML", e);
-	        } finally {
-	            IOUtils.closeQuietly(inputXML);
-	        }
-		} else if(fileType.equals("shp")) {			
-			sourceFeature.getDataStore()
-					.put("url", DataUtilities.fileToURL(fileEvent.getSource()));
-		} 		
-		DataStore source = createDataStore(sourceFeature.getDataStore());
-		// if no typeName is configured, takes the first one registered in store
-		if(sourceFeature.getTypeName() == null) {
-			sourceFeature.setTypeName(source.getTypeNames()[0]);
-		}
-		// if no CRS is configured, takes if from the feature
-		if (sourceFeature.getCrs() == null) {
-			sourceFeature.setCoordinateReferenceSystem(source.getSchema(
-					sourceFeature.getTypeName())
-					.getCoordinateReferenceSystem());
-		}
-		configuration.setSourceFeature(sourceFeature);
-		return source;
-	}
 
-	/**
-	 * Builds a Query Object for the source Feature.
-	 * 
-	 * @param sourceStore
-	 * @return
-	 * @throws IOException
-	 */
-	private Query buildSourceQuery(DataStore sourceStore) throws IOException {
-		Query query = new Query();		
-		query.setTypeName(configuration.getSourceFeature().getTypeName());
-		query.setCoordinateSystem(configuration.getSourceFeature().getCoordinateReferenceSystem());		
-		return query;
-	}
+
+
 
 	/**
 	 * Gets the list of received file events, filtering out those not correct for
@@ -473,7 +411,5 @@ public class Ds2dsAction extends DsBaseAction {
 		return accepted;
 	}
 
-	private static String getFileType(FileSystemEvent event) {
-		return FilenameUtils.getExtension(event.getSource().getName()).toLowerCase();
-	}
+
 }

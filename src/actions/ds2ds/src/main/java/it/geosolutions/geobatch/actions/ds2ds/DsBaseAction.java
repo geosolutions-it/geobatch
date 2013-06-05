@@ -21,23 +21,29 @@ package it.geosolutions.geobatch.actions.ds2ds;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureStore;
+import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -303,4 +309,74 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         }
         return dataStore;
     }
+
+	protected DataStore createSourceDataStore(FileSystemEvent fileEvent) throws IOException, ActionException {
+		updateTask("Connecting to source DataStore");
+		String fileType = getFileType(fileEvent);
+		FeatureConfiguration sourceFeature = configuration.getSourceFeature();
+		if(fileType.equals("xml")) {
+			InputStream inputXML = null;
+			try {
+				inputXML = new FileInputStream(fileEvent.getSource());
+				sourceFeature  = FeatureConfiguration.fromXML(inputXML);
+			} catch (Exception e) {
+	            throw new IOException("Unable to load input XML", e);
+	        } finally {
+	            IOUtils.closeQuietly(inputXML);
+	        }
+		} else if(fileType.equals("shp")) {
+			sourceFeature.getDataStore()
+					.put("url", DataUtilities.fileToURL(fileEvent.getSource()));
+		}
+		DataStore source = createDataStore(sourceFeature.getDataStore());
+		// if no typeName is configured, takes the first one registered in store
+		if(sourceFeature.getTypeName() == null) {
+			sourceFeature.setTypeName(source.getTypeNames()[0]);
+		}
+		// if no CRS is configured, takes if from the feature
+		if (sourceFeature.getCrs() == null) {
+			sourceFeature.setCoordinateReferenceSystem(source.getSchema(
+					sourceFeature.getTypeName())
+					.getCoordinateReferenceSystem());
+		}
+		configuration.setSourceFeature(sourceFeature);
+		return source;
+	}
+
+	/**
+	 * Builds a Query Object for the source Feature.
+	 *
+	 * @param sourceStore
+	 * @return
+	 * @throws IOException
+	 */
+	protected Query buildSourceQuery(DataStore sourceStore) throws IOException {
+		Query query = new Query();
+		query.setTypeName(configuration.getSourceFeature().getTypeName());
+		query.setCoordinateSystem(configuration.getSourceFeature().getCoordinateReferenceSystem());
+		return query;
+	}
+
+    /**
+	 * Creates the source datastore reader.
+	 *
+	 * @param sourceDataStore
+	 * @param transaction
+	 * @param query
+	 * @return
+	 * @throws IOException
+	 */
+	protected FeatureStore<SimpleFeatureType, SimpleFeature> createSourceReader(
+			DataStore sourceDataStore, final Transaction transaction,
+			Query query) throws IOException {
+		FeatureStore<SimpleFeatureType, SimpleFeature> featureReader =
+				(FeatureStore<SimpleFeatureType, SimpleFeature>) sourceDataStore
+				.getFeatureSource(query.getTypeName());
+		featureReader.setTransaction(transaction);
+		return featureReader;
+	}
+    
+	public static String getFileType(FileSystemEvent event) {
+		return FilenameUtils.getExtension(event.getSource().getName()).toLowerCase();
+	}
 }
