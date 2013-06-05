@@ -22,9 +22,9 @@
 package it.geosolutions.geobatch.actions.ds2ds.geoserver;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.ds2ds.DsBaseAction;
 import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
@@ -38,9 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -72,7 +70,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author Emmanuel Blondel (FAO) - emmanuel.blondel1@gmail.com |
  *         emmanuel.blondel@fao.org
  */
-public class DSGeoServerAction extends BaseAction<EventObject> {
+public class DSGeoServerAction extends DsBaseAction {
 
 	protected final static Logger LOGGER = LoggerFactory
 			.getLogger(DSGeoServerAction.class);
@@ -344,9 +342,8 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 	/**
 	 * Get the geometry type binding of the given layer
 	 * 
-	 * @param connect
+	 * @param featureConfig
 	 * @throws ActionException
-	 * @throws IOException
 	 */
 	private Class<?> getGeometryTypeBinding(FeatureConfiguration featureConfig)
 			throws ActionException {
@@ -382,6 +379,9 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 	 * makes GeoServer choosing the appropriate default style (polygon, style or point), it can result
 	 * in an GeoServer error when trying to access the Layer Publication panel.
 	 * 
+	 * 
+	 * @param featureConfig
+	 * @param gsMan (instance of GeoserverRESTManager)
 	 * @return
 	 * @throws ActionException 
 	 * @throws IOException 
@@ -434,60 +434,5 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
         return connect;
 	}
 
-	
-	/**
-	 * From ds2ds action
-	 * 
-	 * @param message
-	 * @param t
-	 * @throws ActionException
-	 */
-	private void failAction(String message, Throwable t) throws ActionException {
-		if (LOGGER.isErrorEnabled()) {
-			LOGGER.error(message);
-			if(t != null) {
-				LOGGER.error(getStackTrace(t));
-			}
-		}
-		if(!conf.isFailIgnored()) {
-			final ActionException e = new ActionException(this, message, t);
-			listenerForwarder.failed(e);		
-			throw e;
-		}
-	}
-	
-	/**
-	 * From ds2ds action
-	 * 
-	 * @param message
-	 * @throws ActionException
-	 */
-	private void failAction(String message) throws ActionException {
-		failAction(message, null);
-	}
-	
-	/**
-	 * From ds2ds action
-	 * 
-	 * @param t
-	 * @return
-	 */
-	private String getStackTrace(Throwable t) {
-		StringWriter sw = new StringWriter();
-		t.printStackTrace(new PrintWriter(sw));
-		return sw.toString();
-	}
-
-	/**
-	 * From ds2ds action
-	 * 
-	 * @param task
-	 */
-	private void updateTask(String task) {
-		listenerForwarder.setTask(task);
-		if(LOGGER.isInfoEnabled()) {
-			LOGGER.info(task);					
-		}
-	}
 
 }
