@@ -36,6 +36,14 @@
       <artifactId>gt-jdbc-postgis</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.geotools.jdbc</groupId>
+      <artifactId>gt-jdbc-oracle</artifactId>
+    </dependency>
+    <dependency>
+      <artifactId>ojdbc14</artifactId>
+      <groupId>com.oracle</groupId>        
+    </dependency>
+    <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-shapefile</artifactId>
     </dependency>
@@ -57,10 +65,6 @@
       <artifactId>gb-fs-catalog</artifactId>
     </dependency>
     <!-- tools -->
-    <dependency>
-      <groupId>it.geosolutions.tools</groupId>
-      <artifactId>tools-io</artifactId>
-    </dependency>
     <dependency>
       <groupId>it.geosolutions.tools</groupId>
       <artifactId>tools-compress</artifactId>
