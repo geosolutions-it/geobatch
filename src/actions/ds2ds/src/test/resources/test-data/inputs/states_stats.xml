@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature>
+
+	<typeName>pgstates_stats</typeName>
+
+	<dataStore>
+		<entry>
+			<string>dbtype</string>
+			<string>postgis</string>
+		</entry>
+		<entry>
+			<string>host</string>
+			<string>localhost</string>
+		</entry>
+		<entry>
+			<string>port</string>
+			<string>5432</string>
+		</entry>
+		<entry>
+			<string>database</string>
+			<string>statesdb</string>
+		</entry>
+		<entry>
+			<string>schema</string>
+			<string>public</string>
+		</entry>
+		<entry>
+			<string>user</string>
+			<string>admin</string>
+		</entry>
+		<entry>
+			<string>passwd</string>
+			<string>password</string>
+		</entry>
+	</dataStore>
+</feature>
