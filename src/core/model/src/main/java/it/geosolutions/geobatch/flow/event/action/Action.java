@@ -43,7 +43,7 @@ import java.util.Queue;
  * @param <XEO>
  */
 public interface Action<XEO extends EventObject> extends Identifiable, Job, ListenerRegistry<IProgressListener> {
-
+	
     public Queue<XEO> execute(Queue<XEO> events) throws ActionException;
 
     public void destroy();

@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.global;
 
-import it.geosolutions.geobatch.annotations.ActionAnnotationScanner;
+import it.geosolutions.geobatch.annotations.ActionServicePostProcessor;
 import it.geosolutions.geobatch.annotations.GenericActionService;
 import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.catalog.Service;
@@ -63,15 +63,6 @@ public class XStreamCatalogLoader extends CatalogHolder {
     private static final Logger LOGGER = LoggerFactory.getLogger(XStreamCatalogLoader.class);
 
     private final Alias alias;
-
-    private ActionAnnotationScanner actionAnnotationScanner;
-    
-    /**
-     * @param actionAnnotationScanner the actionAnnotationScanner to set
-     */
-    public void setActionAnnotationScanner(ActionAnnotationScanner actionAnnotationScanner) {
-        this.actionAnnotationScanner = actionAnnotationScanner;
-    }
 
     // enforcing singleton
     private XStreamCatalogLoader(Catalog catalog, Alias alias) {
@@ -131,7 +122,7 @@ public class XStreamCatalogLoader extends CatalogHolder {
         }
         // That's the GB 1.4.x way... just an experiment for now...
         //  if (!service.isAvailable()) TODO this type of control? how replicate it?
-        List<GenericActionService> list = actionAnnotationScanner.getActionList();
+        List<GenericActionService> list = ActionServicePostProcessor.getActionList();
         for(GenericActionService el : list){
             catalog.add(el);
         }

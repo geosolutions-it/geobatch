@@ -50,7 +50,7 @@ public abstract class BaseAction<XEO extends EventObject>
     extends BaseDescriptable
     implements Action<XEO>, Job {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
+    protected final static Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 
     /**
      * the context where action is running in...<br>
