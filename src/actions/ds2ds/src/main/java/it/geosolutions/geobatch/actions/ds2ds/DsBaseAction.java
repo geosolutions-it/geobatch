@@ -45,7 +45,11 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQL;
+import org.geotools.filter.text.ecql.ECQLCompiler;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -62,7 +66,9 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(DsBaseAction.class);
 
 	protected Ds2dsConfiguration configuration = null;
-
+	
+	private Filter filter;
+	
 	public DsBaseAction(ActionConfiguration actionConfiguration) {
 		super(actionConfiguration);
 		configuration = (Ds2dsConfiguration)actionConfiguration.clone();
@@ -74,10 +80,15 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @param featureWriter
      * @throws IOException
      */
-    protected void purgeData(FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter) throws IOException {
-        if (configuration.isPurgeData()) {
-            updateTask("Purging existing data");
+    protected void purgeData(FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter) throws Exception {
+        if(configuration.isForcePurgeAllData()){
+            updateTask("Purging ALL existing data");
             featureWriter.removeFeatures(Filter.INCLUDE);
+            updateTask("Data purged");
+        }
+        else if (configuration.isPurgeData()) {
+            updateTask("Purging existing data");
+            featureWriter.removeFeatures(buildFilter());
             updateTask("Data purged");
         }
     }
@@ -86,6 +97,27 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         listenerForwarder.setTask(task);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(task);
+        }
+    }
+    
+    protected Filter buildFilter() throws Exception {
+        if(filter != null){
+            return filter;
+        }
+        String cqlFilter = configuration.getEcqlFilter();
+        if(cqlFilter == null || cqlFilter.isEmpty()){
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("No cql source store filter setted...");
+            }
+            return Filter.INCLUDE;
+        }
+        ECQLCompiler compiler = new ECQLCompiler(cqlFilter, CommonFactoryFinder.getFilterFactory2());
+        try {
+            compiler.compileFilter();
+            return compiler.getFilter();
+        } catch (CQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new Exception("Error while cql filter compilation. please check and be sure that the cql filter specified in configuration is correct, see the log for more infos about the error.");
         }
     }
 
@@ -350,10 +382,11 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 	 * @return
 	 * @throws IOException
 	 */
-	protected Query buildSourceQuery(DataStore sourceStore) throws IOException {
+	protected Query buildSourceQuery(DataStore sourceStore) throws Exception {
 		Query query = new Query();
 		query.setTypeName(configuration.getSourceFeature().getTypeName());
 		query.setCoordinateSystem(configuration.getSourceFeature().getCoordinateReferenceSystem());
+		query.setFilter(buildFilter());
 		return query;
 	}
 

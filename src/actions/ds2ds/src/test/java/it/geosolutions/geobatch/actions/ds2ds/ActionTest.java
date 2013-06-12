@@ -320,6 +320,48 @@ public class ActionTest {
 	}
 	
 	@Test
+        public void testDataIsImportedFromShapefileWithFilter() { 
+                try {
+                        configuration.setEcqlFilter("LAND_KM < 3000 OR STATE_NAME = 'California'");
+                        executeAction("shp");                   
+                        assertTrue(getRecordCountFromDatabase("test") == 3);                     
+                } catch (ActionException e) {
+                        fail("Action failure in execution: " + e.getLocalizedMessage());
+                } catch (URISyntaxException e) {
+                        fail("Failure in loading resource file: " + e.getLocalizedMessage());
+                } catch (SQLException e) {
+                        fail("Failure in testing the output on database: " + e.getLocalizedMessage());
+                }               
+        }
+	
+	@Test
+        public void testWrongCqlFilterSpecification() { 
+                try {
+                        configuration.setEcqlFilter("AND AND AND");
+                        executeAction("shp");
+                } catch (ActionException e) {
+                        assertTrue(e.getLocalizedMessage().startsWith("Unable to produce the output: Error while cql filter compilation."));
+                } catch (URISyntaxException e) {
+                        fail("Failure in loading resource file: " + e.getLocalizedMessage());
+                }               
+        }
+	
+	@Test
+        public void testEmptyCqlFilterSpecification() { 
+                try {
+                        configuration.setEcqlFilter("");
+                        executeAction("shp");
+                        assertTrue(getRecordCountFromDatabase("test") == 49);
+                } catch (ActionException e) {
+                        assertTrue(e.getLocalizedMessage().startsWith("Unable to produce the output: Error while cql filter compilation."));
+                } catch (URISyntaxException e) {
+                        fail("Failure in loading resource file: " + e.getLocalizedMessage());
+                } catch (SQLException e) {
+                    fail("Failure in testing the output on database: " + e.getLocalizedMessage());
+                }               
+        }
+	
+	@Test
 	public void testDataIsImportedFromXML() {	
 		try {
 			executeAction("xml");			
@@ -425,6 +467,43 @@ public class ActionTest {
 			fail("Failure in decoding CRS: " + e.getLocalizedMessage());
 		}		
 	}
+	
+	@Test
+        public void testPurgeDataWithFilter() {   
+                try {
+                                        
+                        executeAction("shp");                   
+                        long firstRun = getRecordCountFromDatabase("test");
+                        
+                        configuration.setEcqlFilter("LAND_KM < 3000 OR STATE_NAME = 'California'");
+                        configuration.setPurgeData(true);       
+                        executeAction("shp");
+                        assertEquals(getRecordCountFromDatabase("test"), firstRun);
+                } catch (ActionException e) {
+                        fail("Action failure in execution: " + e.getLocalizedMessage());
+                } catch (Exception e) {
+                        fail("Failure in decoding CRS: " + e.getLocalizedMessage());
+                }               
+        }
+	
+	@Test
+        public void testPurgeAllDataWithFilter() {   
+                try {
+                                        
+                        executeAction("shp");                   
+                        long firstRun = getRecordCountFromDatabase("test");
+                        
+                        configuration.setEcqlFilter("LAND_KM < 3000 OR STATE_NAME = 'California'");
+                        configuration.setPurgeData(false);
+                        configuration.setForcePurgeAllData(true);
+                        executeAction("shp");
+                        assertEquals(getRecordCountFromDatabase("test"), 3);
+                } catch (ActionException e) {
+                        fail("Action failure in execution: " + e.getLocalizedMessage());
+                } catch (Exception e) {
+                        fail("Failure in decoding CRS: " + e.getLocalizedMessage());
+                }               
+        }
 	
 	@Test
 	public void testOutputCRS() {	
