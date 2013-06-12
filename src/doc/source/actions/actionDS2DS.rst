@@ -66,7 +66,9 @@ Will contain the following child elements:
     * **dataStore**: map of the DataStore connection parameters
 	
 * Options:
-    * **purgeData**: remove existing data from the output feature
+    * **ecqlFilter**: specify an ECQL filter to the source datastore. Just the features filtered will be copyed.
+    * **purgeData**: remove existing data from the output feature, if a filter is specified remove just the features filtered. The default value is false.
+    * **forcePurgeAllData**: remove ALL existing data from the output feature although a filter is specified. If this flag is set to TRUE the flag purgeData has no effect. The default value is false.
     * **attributeMappings**: attribute mappings (from output to source) for projection (see projectOnMappings) / renaming
     * **projectOnMappings**: if true only attribute present in attributeMappings are copied to the output feature
 
@@ -172,6 +174,7 @@ Configuration example:
 		</attributeMappings>
 		<!-- remove data in the output feature before importing the new one -->
 		<purgeData>true</purgeData>
+		<ecqlFilter>LAND_KM < 3000 OR STATE_NAME = 'California'</ecqlFilter>
 			
 	</Ds2dsConfiguration>
 
