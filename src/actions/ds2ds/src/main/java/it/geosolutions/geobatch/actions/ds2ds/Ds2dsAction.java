@@ -23,16 +23,13 @@
 package it.geosolutions.geobatch.actions.ds2ds;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.tools.compress.file.Extract;
 import it.geosolutions.tools.io.file.Collector;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,8 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
@@ -175,7 +170,7 @@ public class Ds2dsAction extends DsBaseAction {
 				int count = 0;
 				while (iterator.hasNext()) {
 					SimpleFeature feature = buildFeature(builder,
-							iterator.next(), schemaDiffs);
+							iterator.next(), schemaDiffs, sourceDataStore);
 					featureWriter.addFeatures(DataUtilities
 							.collection(feature));
 					count++;
