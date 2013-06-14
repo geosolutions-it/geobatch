@@ -181,7 +181,7 @@ public class Ds2dsConfiguration extends ActionConfiguration {
          * @return the forcePurgeAllData
          */
         public Boolean isForcePurgeAllData() {
-            return forcePurgeAllData;
+            return (forcePurgeAllData == null) ? false : forcePurgeAllData;
         }
 
         /**
