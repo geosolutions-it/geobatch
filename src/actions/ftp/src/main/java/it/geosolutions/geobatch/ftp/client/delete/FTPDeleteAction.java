@@ -22,6 +22,7 @@
 package it.geosolutions.geobatch.ftp.client.delete;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.ftp.client.FTPHelper;
 import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
@@ -54,10 +55,17 @@ public class FTPDeleteAction extends FTPBaseAction<FileSystemEvent> {
      *            The action configuration.
      * @throws IOException
      */
-    protected FTPDeleteAction(FTPActionConfiguration configuration) throws IOException {
+	public FTPDeleteAction(FTPActionConfiguration configuration) throws IOException {
         super(configuration);
     }
 
+	@Override
+	@CheckConfiguration
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
     /**
      * Method to launch the action operations when a file system monitor event occurred.
      * 

@@ -25,6 +25,9 @@ package it.geosolutions.geobatch.actions.ds2ds;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
+import it.geosolutions.geobatch.actions.ds2ds.geoserver.DSGeoServerConfiguration;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
@@ -80,6 +83,7 @@ import org.slf4j.LoggerFactory;
  * @author Mauro Bartolomeoli - mauro.bartolomeoli@geo-solutions.it
  * 
  */
+@Action(configurationClass=Ds2dsConfiguration.class)
 public class Ds2dsAction extends BaseAction<EventObject> {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(Ds2dsAction.class);
@@ -92,6 +96,14 @@ public class Ds2dsAction extends BaseAction<EventObject> {
 		super(actionConfiguration);		
 		configuration = (Ds2dsConfiguration)actionConfiguration.clone();
 	}
+	
+	@Override
+	@CheckConfiguration
+	public boolean checkConfiguration(){
+	    LOGGER.info("Calculating if this action could be Created...");
+	    return true;
+	}
+	
 	/**
 	 * Imports data from the source DataStore to the output one
 	 * transforming the data as configured.

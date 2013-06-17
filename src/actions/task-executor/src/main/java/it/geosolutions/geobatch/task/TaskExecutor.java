@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.task;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
@@ -65,6 +66,7 @@ import org.slf4j.LoggerFactory;
  * @author Daniele Romagnoli, GeoSolutions S.a.S.
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  */
+@it.geosolutions.geobatch.annotations.Action(configurationClass=TaskExecutorConfiguration.class)
 public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 		Action<FileSystemEvent> {
 
@@ -87,6 +89,13 @@ public class TaskExecutor extends BaseAction<FileSystemEvent> implements
 		this.configuration = configuration;
 	}
 
+	@Override
+	@CheckConfiguration
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 	public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
 			throws ActionException {
 

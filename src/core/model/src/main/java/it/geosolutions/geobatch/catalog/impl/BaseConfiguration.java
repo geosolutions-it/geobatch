@@ -27,90 +27,94 @@ import it.geosolutions.geobatch.catalog.Configuration;
 import org.slf4j.LoggerFactory;
 
 public abstract class BaseConfiguration
-    extends BaseIdentifiable
-    implements Configuration, Cloneable {
-    
-    private String serviceID;
-    
-    private boolean dirty;
+extends BaseIdentifiable
+implements Configuration, Cloneable {
 
-    public BaseConfiguration() {
-        super();
-    }
+	private String serviceID;
 
-    /**
-     * @deprecated name and description not needed here
-     */
-    public BaseConfiguration(String id, String name) {
-        super(id);
-        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
-    }
-    
-    public BaseConfiguration(String id) {
-        super(id);
-    }
+	private boolean dirty;
 
-    /**
-     * @deprecated name and description not needed here
-     */
-    public BaseConfiguration(String id, String name, String description) {
-        super(id);
-        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
-    }
+	public BaseConfiguration() {
+		super();
+	}
 
-    /**
-     * @deprecated name and description not needed here
-     */
-    public BaseConfiguration(String id, String name, String description, boolean dirty) {
-        super(id);
-        this.dirty = dirty;
-        LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
-    }
+	/**
+	 * @deprecated name and description not needed here
+	 */
+	public BaseConfiguration(String id, String name) {
+		super(id);
+		LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
+	}
 
-    public BaseConfiguration(String id, boolean dirty) {
-        super(id);
-        this.dirty = dirty;
-    }
+	public BaseConfiguration(String id) {
+		super(id);
+	}
 
-    /**
-     * @return
-     */
-    public boolean isDirty() {
-        return dirty;
-    }
+	/**
+	 * @deprecated name and description not needed here
+	 */
+	public BaseConfiguration(String id, String name, String description) {
+		super(id);
+		LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
+	}
 
-    /**
-     * @param dirty
-     */
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
+	/**
+	 * @deprecated name and description not needed here
+	 */
+	public BaseConfiguration(String id, String name, String description, boolean dirty) {
+		super(id);
+		this.dirty = dirty;
+		LoggerFactory.getLogger("ROOT").error("Deprecated constructor called from " + getClass().getName() , new Throwable("TRACE!") );
+	}
 
-    /**
-     * @return  the serviceID
-     */
-    public String getServiceID() {
-        return serviceID;
-    }
+	public BaseConfiguration(String id, boolean dirty) {
+		super(id);
+		this.dirty = dirty;
+	}
 
-    /**
-     * @param serviceID  the serviceID to set
-     */
-    public void setServiceID(String serviceID) {
-        this.serviceID = serviceID;
-    }
+	/**
+	 * @return
+	 */
+	public boolean isDirty() {
+		return dirty;
+	}
 
-    @Override
-    public BaseConfiguration clone() {
-        BaseConfiguration bc = (BaseConfiguration) super.clone();
-//        bc.dirty = this.dirty;
-//        bc.serviceID = this.serviceID;
-        return bc;
-    }
+	/**
+	 * @param dirty
+	 */
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[" + "id:" + getId() + " srvId:" + serviceID
-                + " drty:" + isDirty() + "]";
-    }
+	/**
+	 * @return  the serviceID
+	 */
+	public String getServiceID() {
+		if(serviceID != null){
+			return serviceID;
+		}else{
+			return this.getClass().getSimpleName();
+		}
+	}
+
+	/**
+	 * @param serviceID  the serviceID to set
+	 */
+	public void setServiceID(String serviceID) {
+		this.serviceID = serviceID;
+	}
+
+	@Override
+	public BaseConfiguration clone() {
+		BaseConfiguration bc = (BaseConfiguration) super.clone();
+		//        bc.dirty = this.dirty;
+		//        bc.serviceID = this.serviceID;
+		return bc;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[" + "id:" + getId() + " srvId:" + getServiceID()
+				+ " drty:" + isDirty() + "]";
+	}
 }

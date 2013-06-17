@@ -28,7 +28,6 @@
                 
 
         <Ds2dsConfiguration>
-            <serviceID>Ds2dsGeneratorService</serviceID>
             <id>Ds2dsGeneratorService</id>
             <description>Ds2ds action</description>
             <name>Ds2dsConfiguration</name>

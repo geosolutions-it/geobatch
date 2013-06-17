@@ -35,7 +35,7 @@ public abstract class AbstractActionServicePostProcessor {
 
 	protected void justChecking(){
 
-		isAnnotationPresent(ActionService.class, null);
+		isAnnotationPresent(Action.class, null);
 	}
 
 }

@@ -23,9 +23,10 @@ package it.geosolutions.geobatch.actions.commons;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.tools.io.file.Collector;
 
 import java.io.File;
 import java.util.EventObject;
@@ -33,8 +34,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
@@ -46,9 +45,17 @@ import org.slf4j.LoggerFactory;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
+@Action(configurationClass=CollectorConfiguration.class)
 public class CollectorAction extends BaseAction<EventObject> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CollectorAction.class);
+    
+    @Override
+	@CheckConfiguration
+	public boolean checkConfiguration(){
+	    LOGGER.info("Calculating if this action could be Created...");
+	    return true;
+	}
 
     /**
      * configuration
@@ -84,8 +91,7 @@ public class CollectorAction extends BaseAction<EventObject> {
             conf.setWildcard("*");
         }
 
-        Collector collector = new Collector(new WildcardFileFilter(conf.getWildcard(), IOCase.INSENSITIVE),
-                                            conf.getDeep());
+        it.geosolutions.tools.io.file.Collector collector = new it.geosolutions.tools.io.file.Collector(new WildcardFileFilter(conf.getWildcard(), IOCase.INSENSITIVE),conf.getDeep());
         while (!events.isEmpty()) {
 
             final EventObject event = events.remove();

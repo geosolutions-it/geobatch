@@ -54,6 +54,10 @@
       <groupId>it.geosolutions.tools</groupId>
       <artifactId>tools-freemarker</artifactId>
     </dependency>
-    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

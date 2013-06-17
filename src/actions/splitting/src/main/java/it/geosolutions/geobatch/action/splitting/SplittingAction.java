@@ -22,6 +22,8 @@
 package it.geosolutions.geobatch.action.splitting;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
@@ -39,6 +41,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author etj
  */
+@Action(configurationClass=SplittingConfiguration.class)
 public class SplittingAction extends BaseAction<FileSystemEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SplittingAction.class.getName());
 
@@ -93,4 +96,11 @@ public class SplittingAction extends BaseAction<FileSystemEvent> {
             throw new ActionException(this, t.getMessage(), t);
         }
     }
+    
+	@Override
+	@CheckConfiguration
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }

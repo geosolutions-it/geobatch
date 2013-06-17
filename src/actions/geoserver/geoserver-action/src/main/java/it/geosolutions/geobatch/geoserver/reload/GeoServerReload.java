@@ -1,7 +1,8 @@
 package it.geosolutions.geobatch.geoserver.reload;
 
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
-import it.geosolutions.geobatch.flow.event.IProgressListener;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
@@ -10,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EventObject;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
+@Action(configurationClass=GeoServerReloadConfiguration.class)
 public class GeoServerReload extends BaseAction<EventObject> {
 
 	protected final static Logger LOGGER = LoggerFactory
@@ -48,6 +49,13 @@ public class GeoServerReload extends BaseAction<EventObject> {
 		es = Executors.newScheduledThreadPool(conf.getExecutorSize());
 	}
 
+    @Override
+	@CheckConfiguration
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
 	@Override
 	public Queue<EventObject> execute(Queue<EventObject> events)
 			throws ActionException {
@@ -216,6 +224,7 @@ public class GeoServerReload extends BaseAction<EventObject> {
 			}
 		}
 	}
+
 
 
 }

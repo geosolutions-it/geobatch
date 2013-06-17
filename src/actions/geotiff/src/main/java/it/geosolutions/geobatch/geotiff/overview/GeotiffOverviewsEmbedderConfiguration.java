@@ -22,7 +22,7 @@
 
 package it.geosolutions.geobatch.geotiff.overview;
 
-import it.geosolutions.geobatch.annotations.ActionService;
+import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import javax.media.jai.Interpolation;

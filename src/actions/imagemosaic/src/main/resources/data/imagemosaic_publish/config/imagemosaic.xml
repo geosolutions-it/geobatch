@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<!-- ID MUST be the same as file name -->
+	<id>imagemosaic_publish</id>
+	<name>Prepare ImageMosaic and publish</name>
+	<description>Create indexes and publish on GeoServer</description>
+
+	<autorun>true</autorun>
+
+	<EventConsumerConfiguration>
+
+		<listenerId>ImageMosaicConsumerLogger0</listenerId>
+		<listenerId>ImageMosaicCumulator0</listenerId>
+
+		<performBackup>false</performBackup>
+
+		<ImageMosaicActionConfiguration>
+			<id>imagemosaic</id>
+
+			<description>ImageMosaicService</description>
+			<name>ImageMosaicService</name>
+
+			<crs>EPSG:4326</crs>
+			
+			<dataTransferMethod>EXTERNAL</dataTransferMethod>
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+
+			<defaultNamespace>geosolutions</defaultNamespace>
+			<defaultStyle>raster</defaultStyle>
+
+			<backgroundValue>-9999</backgroundValue>
+			<outputTransparentColor></outputTransparentColor>
+			<inputTransparentColor></inputTransparentColor>
+			<allowMultithreading>true</allowMultithreading>
+			<useJaiImageRead>false</useJaiImageRead>
+			<tileSizeH>256</tileSizeH>
+			<tileSizeW>256</tileSizeW>
+
+			<NativeMinBoundingBoxX>-180</NativeMinBoundingBoxX>
+			<NativeMinBoundingBoxY>-90</NativeMinBoundingBoxY>
+			<NativeMaxBoundingBoxX>180</NativeMaxBoundingBoxX>
+			<NativeMaxBoundingBoxY>90</NativeMaxBoundingBoxY>
+
+			<latLonMinBoundingBoxX>-180</latLonMinBoundingBoxX>
+			<latLonMinBoundingBoxY>-90</latLonMinBoundingBoxY>
+			<latLonMaxBoundingBoxX>180</latLonMaxBoundingBoxX>
+			<latLonMaxBoundingBoxY>180</latLonMaxBoundingBoxY>
+
+			<!--NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED -->
+			<projectionPolicy>NONE</projectionPolicy>
+			<!-- METADATA -->
+			<timeDimEnabled>true</timeDimEnabled>
+			<timeRegex>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</timeRegex>
+			<!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
+			<timePresentationMode>LIST</timePresentationMode>
+
+		</ImageMosaicActionConfiguration>
+
+	</EventConsumerConfiguration>
+
+	<EventGeneratorConfiguration>
+		<serviceID>fsEventGeneratorService</serviceID>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>imagemosaic_publish/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+	</EventGeneratorConfiguration>
+
+	<ListenerConfigurations>
+		<StatusProgressListener>
+			<serviceID>statusListenerService</serviceID>
+			<id>ImageMosaicStatusActionLogger0</id>
+		</StatusProgressListener>
+
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ImageMosaicActionLogger0</id>
+
+			<loggerName>ImageMosaicActionLogger0</loggerName>
+		</LoggingProgressListener>
+
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ImageMosaicConsumerLogger0</id>
+
+			<loggerName>ImageMosaicConsumerLogger0</loggerName>
+		</LoggingProgressListener>
+
+		<CumulatingProgressListener>
+			<serviceID>cumulatingListenerService</serviceID>
+			<id>ImageMosaicCumulator0</id>
+		</CumulatingProgressListener>
+	</ListenerConfigurations>
+
+</FlowConfiguration>

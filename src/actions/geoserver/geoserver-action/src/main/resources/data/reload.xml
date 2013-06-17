@@ -27,7 +27,6 @@
 		<preserveInput>false</preserveInput>
 
 		<GeoServerReloadConfiguration>
-			<serviceID>GeoServerReloadService</serviceID>
 			<id>GeoServerReloadAction</id>
 			<name>GeoServerReloadAction</name>
 			<description>GeoServerReload</description>

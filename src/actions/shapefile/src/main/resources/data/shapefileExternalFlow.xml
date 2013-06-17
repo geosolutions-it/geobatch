@@ -15,8 +15,7 @@
 
 
 		<!-- Extractor and Collector Actions before GeoServerShapeActionConfiguration are necessary for EXTERNAL geoserver publication-->
-		<ExtractConfiguration>
-			<serviceID>ExtractGeneratorService</serviceID>			
+		<ExtractConfiguration>	
 			<id>extract</id>
 			<description>description</description>
 			<name>ExtractConfiguration</name>
@@ -30,7 +29,6 @@
 		</ExtractConfiguration>
 		
 		 <CollectorConfiguration>
-            <serviceID>CollectorGeneratorService</serviceID>
             <listenerId>StatusActionLogger0</listenerId>
             <id>collect</id>
             <name>CollectShapefiles</name>
@@ -42,7 +40,6 @@
 		
 		
 		<GeoServerShapeActionConfiguration>
-			<serviceID>ShapeFileGeoServerService</serviceID>
 			<id>shapefile</id>
 			<name>ShapeFileIngestion</name>
 			<description>Get a pack of shapefiles (zipped) and ingest them into a GeoServer instance.</description>

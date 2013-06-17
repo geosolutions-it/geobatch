@@ -3,7 +3,6 @@
 	<EventConsumerConfiguration>
 		<performBackup>true</performBackup>
         <TaskExecutorConfiguration>
-			<serviceID>TaskExecutorService</serviceID>
 			<errorFile>config/errorlog.txt</errorFile>
 			<timeOut>1200000</timeOut> <!-- milliseconds -->
 			<executable>D:\work\programs\Java\jdk1.5.0_17\bin\gdalwarp.exe</executable>

@@ -99,6 +99,8 @@ public abstract class BaseAction<XEO extends EventObject>
         failIgnored = actionConfiguration.isFailIgnored();
     }
 
+    public abstract boolean checkConfiguration();
+    
     /**
      * @return the runningContext
      */

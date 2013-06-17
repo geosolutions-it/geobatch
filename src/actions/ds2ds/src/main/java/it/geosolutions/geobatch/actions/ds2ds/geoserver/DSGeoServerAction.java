@@ -23,6 +23,8 @@ package it.geosolutions.geobatch.actions.ds2ds.geoserver;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
@@ -72,6 +74,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author Emmanuel Blondel (FAO) - emmanuel.blondel1@gmail.com |
  *         emmanuel.blondel@fao.org
  */
+@Action(configurationClass=DSGeoServerConfiguration.class)
 public class DSGeoServerAction extends BaseAction<EventObject> {
 
 	protected final static Logger LOGGER = LoggerFactory
@@ -91,6 +94,13 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 		this.conf = actionConfiguration;
 	}
 
+	@Override
+	@CheckConfiguration
+	public boolean checkConfiguration(){
+	    LOGGER.info("Calculating if this action could be Created...");
+	    return true;
+	}
+	
 	@Override
 	public Queue<EventObject> execute(Queue<EventObject> events)
 			throws ActionException {

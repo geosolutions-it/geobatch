@@ -28,7 +28,6 @@
 		<preserveInput>false</preserveInput>
 
 		<GeoServerStyleConfiguration>
-			<serviceID>GeoServerStyleService</serviceID>
 			<id>GeoServerStyleAction</id>
 			<name>GeoServerStyleAction</name>
 			<description>GeoServerStyle</description>

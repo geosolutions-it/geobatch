@@ -42,6 +42,12 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-alias-registry</artifactId>
     </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-dao-xstream</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
     <!-- ============================== -->
     <!--     edt FTP            -->
     <!-- ============================== -->
@@ -49,6 +55,11 @@
       <groupId>com.enterprisedt</groupId>
       <artifactId>edtFTPj</artifactId>
       <version>2.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

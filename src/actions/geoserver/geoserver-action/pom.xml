@@ -64,5 +64,23 @@
       <artifactId>slf4j-log4j12</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-dao-xstream</artifactId>
+      <scope>test</scope>
+    </dependency>
+	<dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-core-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-fs-catalog</artifactId>
+    </dependency>
   </dependencies>
 </project>

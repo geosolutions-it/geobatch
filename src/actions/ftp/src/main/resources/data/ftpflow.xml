@@ -19,7 +19,7 @@
 			<ftpserverPort>21</ftpserverPort>
 			<connectMode>ACTIVE</connectMode>
 			<localTempDir>C:/gbTemp</localTempDir>
-			<serviceID>ftpUploadActionService</serviceID>
+			<operationID>Upload</operationID>
 			<id>a1</id>
 			<description>description</description>
 			<name>test</name>
@@ -36,7 +36,7 @@
 			<ftpserverPort>21</ftpserverPort>
 			<connectMode>ACTIVE</connectMode>
 			<localTempDir>C:/gbTemp</localTempDir>
-			<serviceID>ftpDownloadActionService</serviceID>
+			<operationID>Download</operationID>
 			<id>a1</id>
 			<description>description</description>
 			<name>test</name>
@@ -53,7 +53,7 @@
 			<ftpserverPort>21</ftpserverPort>
 			<connectMode>ACTIVE</connectMode>
 			<localTempDir>C:/gbTemp</localTempDir>
-			<serviceID>ftpDeleteActionService</serviceID>
+			<operationID>Delete</operationID>
 			<id>a1</id>
 			<description>description</description>
 			<name>test</name>
