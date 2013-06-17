@@ -21,15 +21,23 @@
  */
 package it.geosolutions.geobatch.annotations;
 
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author DamianoG
+ * Indicates that the annotated Method contains the logic to check action configuration before action can be executed
+ * This annotation should be used only in class annotated as {@link Action} and extending {@link BaseAction}
  *
+ * @author	Sandro Salari
+ * @see     ActionServicePostProcessor
+ * @see		FileBasedEventConsumer
+ * @see     GenericActionService
  */
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface CheckConfiguration {}
