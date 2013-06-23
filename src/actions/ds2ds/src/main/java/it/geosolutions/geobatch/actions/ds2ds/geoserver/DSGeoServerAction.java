@@ -46,6 +46,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EventObject;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -96,6 +97,9 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 			throws ActionException {
 
 		listenerForwarder.started();
+		
+		// return object
+		final Queue<EventObject> outputEvents = new LinkedList<EventObject>();
 		
 		//check global configurations
 		//Geoserver config
@@ -296,6 +300,7 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 						
 					listenerForwarder.progressing(100F, "Successful Geoserver "+op+" operation");
 					listenerForwarder.completed();
+					outputEvents.add(ev);
 
 				} else {
 					if (LOGGER.isErrorEnabled()) {
@@ -308,7 +313,7 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 						+ ioe.getLocalizedMessage());
 			}
 		}
-		return events;
+		return outputEvents;
 
 	}
 	
