@@ -36,6 +36,29 @@
   <!-- Dependencies -->
   <!-- =========================================================== -->
   <dependencies>
+
+    <!-- ============================== -->
+    <!-- GeoBatch modules               -->
+    <!-- ============================== -->
+
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-web-core</artifactId>
+      <type>war</type>
+      <scope>runtime</scope>
+      <version>1.4-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-dao-xstream</artifactId>
+    </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+
     <!-- ============================== -->
     <!-- log4j -->
     <!-- ============================== -->
@@ -47,31 +70,6 @@
     <!-- ============================== -->
     <!-- Platform -->
     <!-- ============================== -->
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-gui</artifactId>
-    </dependency>
-    <!-- ============================== -->
-    <!-- DAO XStream -->
-    <!-- ============================== -->
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-dao-xstream</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.restlet.jee</groupId>
-      <artifactId>org.restlet</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.restlet.jee</groupId>
-      <artifactId>org.restlet.ext.spring</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.restlet.jee</groupId>
-      <artifactId>org.restlet.ext.servlet</artifactId>
-    </dependency>
 
     <!--
         Provides class org.apache.cxf.transport.servlet.CXFServlet
@@ -81,6 +79,18 @@
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-rt-transports-http</artifactId>
     </dependency>
+
+<!--     <dependency> -->
+<!--       <groupId>javax.servlet.jsp</groupId> -->
+<!--       <artifactId>jsp-api</artifactId> -->
+<!--       <scope>provided</scope> -->
+<!--     </dependency> -->
+    
+<!--     <dependency> -->
+<!--       <groupId>javax.servlet.jsp</groupId> -->
+<!--       <artifactId>jsp-api</artifactId> -->
+<!--       <scope>provided</scope> -->
+<!--     </dependency> -->
 
     <!-- ============================== -->
     <!-- Test: JETTY -->
@@ -101,12 +111,15 @@
 <!-- 	    </exclusion> -->
 <!--      </exclusions> -->
     </dependency>
+    
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
       <scope>test</scope>
     </dependency>
+    
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -147,14 +160,26 @@
           </archive>
         </configuration>
       </plugin>
+      
       <plugin>
         <inherited>true</inherited>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
+        <version>2.3</version>
         <configuration>
           <warName>geobatch</warName>
           <outputDirectory>${site.outdir}</outputDirectory>
           <webappDirectory>${project.build.directory}/geobatch</webappDirectory>
+          <overlays>
+            <overlay>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-web-core</artifactId>
+              <excludes>
+                <exclude>WEB-INF/classes/images/sampleimage-dependency.jpg</exclude>
+              </excludes>
+            </overlay>
+          </overlays>
+
         </configuration>
         <executions>
           <execution>
@@ -172,6 +197,23 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <overlays>
+            <overlay>
+              <groupId>it.geosolutions.geobatch</groupId>
+              <artifactId>gb-web-core</artifactId>
+<!--              <excludes>
+                <exclude>WEB-INF/classes/images/sampleimage-dependency.jpg</exclude>
+              </excludes>-->
+            </overlay>
+          </overlays>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
