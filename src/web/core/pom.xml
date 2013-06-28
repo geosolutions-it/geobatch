@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-web</artifactId>
+        <version>1.4-SNAPSHOT</version>
+    </parent>
+
+    <!-- =========================================================== -->
+    <!-- Module Description -->
+    <!-- =========================================================== -->
+    <groupId>it.geosolutions.geobatch</groupId>
+    <artifactId>gb-web-core</artifactId>
+    <packaging>war</packaging>
+
+    <name>GeoBatch Core GUI</name>
+    <description>
+        This WAR is a bare GeoBatch Application, with all the GUI stuff but without any action or service defined.
+        This module is used in the main GeoBatch webapp, and may be used as overlay in customized GeoBatch applications.
+    </description>
+
+    <organization>
+        <name>GeoSolutions</name>
+    </organization>
+
+    <properties>
+        <!--<netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>-->
+        <!--        <flow.dir>geobatch/WEB-INF/</flow.dir>-->
+    
+        <!--<root.basedir>${basedir}/../../</root.basedir>-->
+        <!-- JETTY jar classpath -->
+        <!--<geobatch_starter.classpath>${geobatch_starter.dir}/WEB-INF/lib/</geobatch_starter.classpath>-->
+    </properties>
+
+    <!-- =========================================================== -->
+    <!-- Dependencies -->
+    <!-- =========================================================== -->
+    <dependencies>
+        <!-- ============================== -->
+        <!-- GeoBatch                       -->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-dao-xstream</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-ftp-server</artifactId>
+        </dependency>
+<!--        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-action-tools</artifactId>
+        </dependency>-->
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>tools-geobatch</artifactId>
+        </dependency>
+
+
+        <!-- ============================== -->
+        <!-- log4j -->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- ============================== -->
+        <!-- Platform -->
+        <!-- ============================== -->
+        <!--        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-gui</artifactId>
+        </dependency>-->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        
+        <!-- ============================== -->
+        <!-- Spring Security -->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-acl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+        </dependency>
+
+        <!-- ============================== -->
+        <!-- Test: JETTY -->
+        <!-- ============================== -->
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jsp-2.1</artifactId>
+            <scope>test</scope>
+            <!--       <exclusions> -->
+            <!-- 	    <exclusion> -->
+            <!-- 	      <groupId>javax.servlet.jsp</groupId> -->
+            <!-- 	      <artifactId>jsp-api</artifactId> -->
+            <!-- 	    </exclusion> -->
+            <!--      </exclusions> -->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-bindings-http</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <!--            <plugin>
+                <inherited>true</inherited>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>site</id>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
+
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <version>6.1.26</version>
+                <configuration>
+                    <contextPath>geobatch</contextPath>
+                    <connectors>
+                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                            <port>8081</port>
+                            <maxIdleTime>10000</maxIdleTime>
+                        </connector>
+                    </connectors>
+                    <contextPath>geobatch</contextPath>
+                    <!--<webAppSourceDirectory>${project.build.directory}/geobatch</webAppSourceDirectory>-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
