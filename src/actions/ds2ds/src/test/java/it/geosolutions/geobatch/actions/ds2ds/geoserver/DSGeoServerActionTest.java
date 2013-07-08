@@ -18,12 +18,13 @@ import com.thoughtworks.xstream.XStream;
 /**
  * Ds2dsGeoServerAction test class The test is based on a postgis instance
  * containing 2 different tables coming from the Geoserver 'states' sample data:
- * - pgstates: table resulting from the shapefile import - pgstates_stats:
- * geometryless version of pgstates
+ * - pgstates: table resulting from the shapefile import
+ * - pgstates_stats: geometryless version of pgstates
  * 
  * The postgis datastore parameters in both states.xml and states_stats.xml
- * files that are the input files for this test class. See: -
- * test-data/inputs/states.xml - test-data/inputs/states_stats.xml
+ * files that are the input files for this test class. See:
+ * - test-data/inputs/states.xml
+ * - test-data/inputs/states_stats.xml
  * 
  * Environment variable to set: <b>ds2ds_test</b> - string{true|false} - to
  * enable|disable the tests
