@@ -30,7 +30,9 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.xstream.Alias;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -64,6 +66,12 @@ public class DSGeoServerConfigurationTest {
 		configuration.setCreateNameSpace(true);
 		configuration.setCreateDataStore(true);
 		
+		configuration.setDefaultStyle("main_style");
+		List<String> styles = new ArrayList<String>();
+		styles.add("style2");
+		styles.add("style3");
+		configuration.setStyles(styles);
+		
 	}
 	
 	@Test
@@ -83,5 +91,11 @@ public class DSGeoServerConfigurationTest {
 		assertEquals("PUBLISH",config.getOperation());
 		assertTrue(config.getCreateNameSpace());
 		assertTrue(config.getCreateDataStore());
+		
+		assertEquals("main_style",config.getDefaultStyle());
+		List<String> styles = config.getStyles();
+		assertEquals(2, styles.size());
+		assertEquals("style2", styles.get(0));
+		assertEquals("style3", styles.get(1));
 	}
 }
