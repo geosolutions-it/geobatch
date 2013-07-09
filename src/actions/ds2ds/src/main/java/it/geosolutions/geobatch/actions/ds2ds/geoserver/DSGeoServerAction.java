@@ -274,9 +274,16 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 							}
 							fte.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
 							        
-							//layer & default style
+							//layer & styles
 							final GSLayerEncoder layerEncoder = new GSLayerEncoder();
-							layerEncoder.setDefaultStyle(this.defineLayerStyle(featureConfig, gsMan));
+							layerEncoder.setDefaultStyle(this.defineLayerStyle(featureConfig, gsMan)); //default style
+							
+							if(conf.getStyles() != null){
+								//add available styles
+								for(String style : conf.getStyles()){
+									layerEncoder.addStyle(style);
+								}
+							}
 									
 							//publish
 							done = gsMan.getPublisher().publishDBLayer(ws, ds, fte, layerEncoder);
