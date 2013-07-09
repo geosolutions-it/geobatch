@@ -29,6 +29,10 @@ import com.thoughtworks.xstream.XStream;
  * Environment variable to set: <b>ds2ds_test</b> - string{true|false} - to
  * enable|disable the tests
  * 
+ * For testing the assignment of multiple styles to a published layer, two
+ * additional styles 'point2' and 'point3' (clones of default 'point'style) have
+ * to be created and published to the test GeoServer.
+ * 
  * @author Emmanuel Blondel (FAO)
  * 
  */
