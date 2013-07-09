@@ -15,5 +15,9 @@
 	<createNameSpace>true</createNameSpace>
 	<createDataStore>true</createDataStore>
 	<operation>PUBLISH</operation>
-
+	
+	<styles>
+   		<string>point2</string>
+   		<string>point3</string>
+	</styles>
 </DSGeoServerConfiguration>
