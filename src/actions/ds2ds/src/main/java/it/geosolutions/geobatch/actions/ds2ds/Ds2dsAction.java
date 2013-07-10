@@ -124,7 +124,10 @@ public class Ds2dsAction extends DsBaseAction {
 					}
 					continue;
 				}
-			} catch (Exception ioe) {
+			}catch (ActionException ioe) {
+                            failAction("Unable to produce the output, "
+                                            + ioe.getLocalizedMessage());
+                        }catch (Exception ioe) {
 				failAction("Unable to produce the output: "
 						+ ioe.getLocalizedMessage());
 			}
@@ -202,7 +205,9 @@ public class Ds2dsAction extends DsBaseAction {
 					LOGGER.error(message);
 				throw new ActionException(this, message);
 			}
-			throw new ActionException(this, ioe.getMessage());
+			String cause = ioe.getCause() == null ? null : ioe.getCause().getMessage();  
+			String msg = "MESSAGE: " + ioe.getMessage() + " - CAUSE: " + cause;
+			throw new ActionException(this, msg);
 							
 		} finally {		
 			updateTask("Closing connections");					
