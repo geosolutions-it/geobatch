@@ -25,6 +25,7 @@ import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,9 +35,13 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.geotools.data.DataStore;
@@ -45,7 +50,16 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.Hints;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.text.ecql.ECQLCompiler;
+import org.geotools.jdbc.JDBCDataStore;
+import org.geotools.jdbc.NonIncrementingPrimaryKeyColumn;
+import org.geotools.jdbc.PrimaryKey;
+import org.geotools.jdbc.PrimaryKeyColumn;
+import org.geotools.jdbc.PrimaryKeyFinder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -62,10 +76,18 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(DsBaseAction.class);
 
 	protected Ds2dsConfiguration configuration = null;
-
+	
+	private Filter filter;
+	
+	private List<PrimaryKeyColumn> pks;
+	
+	private Boolean isPkGenerated;
+	
 	public DsBaseAction(ActionConfiguration actionConfiguration) {
 		super(actionConfiguration);
-		configuration = (Ds2dsConfiguration)actionConfiguration.clone();
+		this.configuration = (Ds2dsConfiguration)actionConfiguration.clone();
+		this.pks = null;
+		this.isPkGenerated = false;
 	}
     
     /**
@@ -74,10 +96,15 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @param featureWriter
      * @throws IOException
      */
-    protected void purgeData(FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter) throws IOException {
-        if (configuration.isPurgeData()) {
-            updateTask("Purging existing data");
+    protected void purgeData(FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter) throws Exception {
+        if(configuration.isForcePurgeAllData()){
+            updateTask("Purging ALL existing data");
             featureWriter.removeFeatures(Filter.INCLUDE);
+            updateTask("Data purged");
+        }
+        else if (configuration.isPurgeData()) {
+            updateTask("Purging existing data");
+            featureWriter.removeFeatures(buildFilter());
             updateTask("Data purged");
         }
     }
@@ -86,6 +113,27 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         listenerForwarder.setTask(task);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(task);
+        }
+    }
+    
+    protected Filter buildFilter() throws Exception {
+        if(filter != null){
+            return filter;
+        }
+        String cqlFilter = configuration.getEcqlFilter();
+        if(cqlFilter == null || cqlFilter.isEmpty()){
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("No cql source store filter setted...");
+            }
+            return Filter.INCLUDE;
+        }
+        ECQLCompiler compiler = new ECQLCompiler(cqlFilter, CommonFactoryFinder.getFilterFactory2());
+        try {
+            compiler.compileFilter();
+            return compiler.getFilter();
+        } catch (CQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new Exception("Error while cql filter compilation. please check and be sure that the cql filter specified in configuration is correct, see the log for more infos about the error.");
         }
     }
 
@@ -127,10 +175,61 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @param sourceFeature
      * @return
      */
-    protected SimpleFeature buildFeature(SimpleFeatureBuilder builder, SimpleFeature sourceFeature, Map<String, String> mappings) {
+    protected SimpleFeature buildFeature(SimpleFeatureBuilder builder, SimpleFeature sourceFeature, Map<String, String> mappings, DataStore srcDataStore) {
         for (AttributeDescriptor ad : builder.getFeatureType().getAttributeDescriptors()) {
             String attribute = ad.getLocalName();
             builder.set(attribute, getAttributeValue(sourceFeature, attribute, mappings));
+        }
+        SimpleFeature smf = null;
+        if (srcDataStore != null && srcDataStore instanceof JDBCDataStore && isPkGenerated == false) {
+            if (pks == null) {
+                SimpleFeatureType schema = builder.getFeatureType();
+                JDBCDataStore jdbcDS = ((JDBCDataStore) srcDataStore);
+                Connection cx = null;
+                PrimaryKeyFinder pkFinder = jdbcDS.getPrimaryKeyFinder();
+                try {
+                    cx = jdbcDS.getDataSource().getConnection();
+                    PrimaryKey pk = pkFinder.getPrimaryKey(jdbcDS, null, schema.getTypeName(), cx);
+                    pks = pk.getColumns();
+                    for(PrimaryKeyColumn el : pks){
+                        if(el instanceof NonIncrementingPrimaryKeyColumn){
+                            isPkGenerated = false;
+                        }
+                        else{
+                            isPkGenerated = true;
+                            break;
+                        }
+                    }
+                
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage(), e);
+                    throw new IllegalStateException("Error Occurred while search for the PK");
+                } finally {
+                    if (cx != null) {
+                        try {
+                            cx.close();
+                        } catch (SQLException e) {
+                            LOGGER.error(e.getMessage(), e);
+                        }
+                    }
+                }
+            }
+            if(!isPkGenerated){
+                StringBuilder sb = new StringBuilder();
+                boolean first = true;
+                for (PrimaryKeyColumn el : pks) {
+                    if (!first) {
+                        sb.append(".");
+                    }
+                    first = false;
+                    sb.append(sourceFeature.getAttribute(el.getName()));
+                }
+                String fid = sb.toString();
+                smf = builder.buildFeature(fid);
+                Map map = smf.getUserData();
+                map.put(Hints.USE_PROVIDED_FID, true);
+                return smf;
+            }
         }
         return builder.buildFeature(null);
     }
@@ -350,10 +449,11 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 	 * @return
 	 * @throws IOException
 	 */
-	protected Query buildSourceQuery(DataStore sourceStore) throws IOException {
+	protected Query buildSourceQuery(DataStore sourceStore) throws Exception {
 		Query query = new Query();
 		query.setTypeName(configuration.getSourceFeature().getTypeName());
 		query.setCoordinateSystem(configuration.getSourceFeature().getCoordinateReferenceSystem());
+		query.setFilter(buildFilter());
 		return query;
 	}
 
