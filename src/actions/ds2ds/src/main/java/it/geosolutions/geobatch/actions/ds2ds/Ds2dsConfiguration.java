@@ -47,7 +47,13 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 	private FeatureConfiguration outputFeature;
 	
 	// purge (remove) data from the output feature before importing
+	// If the configuration specify an ecqlFilter only the features selected by the filter will be purged
+	// If no filter are provided this flag remove all feature as forcePurgeAllData
 	private Boolean purgeData = false;
+	
+	// purge (remove) ALL data from the output feature before importing although a filter is specified
+	// if this flag is set to TRUE the flag purgeData has no effect.
+	private Boolean forcePurgeAllData = false;
 	
 	// optional mappings (renaming) from source feature attributes to
 	// output (key is output attribute name, value is source attribute name
@@ -56,6 +62,9 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 	// execute a projection on the attribureMappings property, skipping
 	// source properties non included in the map
 	private Boolean projectOnMappings = false;
+	
+	//optional ecql filter in order to filter the source store
+	private String ecqlFilter;
 	
 	public Ds2dsConfiguration(String id, String name, String description) {
 		super(id, name, description);		
@@ -154,7 +163,35 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 		this.projectOnMappings = projectOnMappings;
 	}	
 	
-	/**
+    	/**
+         * @return the ecqlFilter
+         */
+        public String getEcqlFilter() {
+            return ecqlFilter;
+        }
+    
+        /**
+         * @param ecqlFilter the ecqlFilter to set
+         */
+        public void setEcqlFilter(String ecqlFilter) {
+            this.ecqlFilter = ecqlFilter;
+        }
+        
+        /**
+         * @return the forcePurgeAllData
+         */
+        public Boolean isForcePurgeAllData() {
+            return (forcePurgeAllData == null) ? false : forcePurgeAllData;
+        }
+
+        /**
+         * @param forcePurgeAllData the forcePurgeAllData to set
+         */
+        public void setForcePurgeAllData(Boolean forcePurgeAllData) {
+            this.forcePurgeAllData = forcePurgeAllData;
+        }
+    
+        /**
 	 * Shortcut to set projection on source attributes.
 	 * @param attributes
 	 */
@@ -167,21 +204,16 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 		 setProjectOnMappings(true);
 	}
 	
-	@Override
+    @Override
     public Ds2dsConfiguration clone() {
         final Ds2dsConfiguration ret = (Ds2dsConfiguration)super.clone();
 
-        if (this.sourceFeature != null)
-            ret.sourceFeature = this.sourceFeature.clone();
-        else
-            ret.sourceFeature = null;
-        
-        if (this.outputFeature != null)
-            ret.outputFeature = this.outputFeature.clone();
-        else
-            ret.outputFeature = null;
-        
+        ret.sourceFeature = (this.sourceFeature != null)?this.sourceFeature.clone():null;
+        ret.outputFeature = (this.outputFeature != null)?this.outputFeature.clone():null;
+        ret.ecqlFilter = (this.ecqlFilter != null)?this.ecqlFilter:null;
         ret.purgeData = this.purgeData;
+        ret.projectOnMappings = this.projectOnMappings;
+        
         if(this.attributeMappings != null) {
 	    	ret.attributeMappings=new HashMap<String,Serializable>();
 	    	for(String key : this.attributeMappings.keySet()) {
@@ -190,8 +222,6 @@ public class Ds2dsConfiguration extends ActionConfiguration {
         } else {
         	ret.attributeMappings = null;
         }
-    	    	
-    	ret.projectOnMappings = this.projectOnMappings;
 
         return ret;
     }
