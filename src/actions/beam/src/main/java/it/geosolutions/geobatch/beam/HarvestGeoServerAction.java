@@ -188,7 +188,7 @@ public class HarvestGeoServerAction extends BaseAction<FileSystemEvent> {
             transferMethod = "EXTERNAL"; // default one
         }
 
-        boolean result = manager.createOrHarvestExternal(configuration.getDefaultNamespace(), configuration.getStoreName(), "imagemosaic", inputFile.getAbsolutePath());
+        boolean result = manager.harvestExternal(configuration.getDefaultNamespace(), configuration.getStoreName(), "imagemosaic", inputFile.getAbsolutePath());
         
         if (result) {
             if (LOGGER.isInfoEnabled()) {
