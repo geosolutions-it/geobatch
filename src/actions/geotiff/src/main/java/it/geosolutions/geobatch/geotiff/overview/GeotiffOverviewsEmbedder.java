@@ -24,8 +24,6 @@ package it.geosolutions.geobatch.geotiff.overview;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.annotations.ActionService;
-import it.geosolutions.geobatch.annotations.CanCreateAction;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.tools.io.file.Collector;
@@ -45,8 +43,6 @@ import org.geotools.utils.imageoverviews.OverviewsEmbedder.SubsampleAlgorithm;
 import org.geotools.utils.progress.ExceptionEvent;
 import org.geotools.utils.progress.ProcessingEvent;
 import org.geotools.utils.progress.ProcessingEventListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Action to add overview to an input geotif image. NOTE: only one image is
@@ -58,27 +54,24 @@ import org.slf4j.LoggerFactory;
  * @version $GeoTIFFOverviewsEmbedder.java Revision: 0.1 $ 23/mar/07 11:42:25
  *          Revision: 0.2 $ 15/Feb/11 13:00:00
  */
-@ActionService(serviceId = "GeotiffOverviewsEmbedderService")
+
+@ActionService(configurationClass=GeotiffOverviewsEmbedderConfiguration.class)
+
 public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 
 	private GeotiffOverviewsEmbedderConfiguration configuration;
-
-	private final static Logger LOGGER = LoggerFactory
-			.getLogger(GeotiffOverviewsEmbedder.class);
-
-	public GeotiffOverviewsEmbedder(
-			GeotiffOverviewsEmbedderConfiguration configuration)
-			throws IOException {
-		super(configuration);
-		this.configuration = configuration;		
-	}
 	
-	@CanCreateAction
-	public static boolean canCreateAction(){
+	public GeotiffOverviewsEmbedder(GeotiffOverviewsEmbedderConfiguration configuration) throws IOException {
+		super(configuration);	
+		this.configuration = configuration;
+	}
+
+	public static boolean canCreateAction(GeotiffOverviewsEmbedderConfiguration configuration){
 	    LOGGER.info("Calculating if this action could be Created...");
 	    return true;
 	}
 
+	@Override
 	public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)
 			throws ActionException {
 
@@ -284,8 +277,5 @@ public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 		}
 	}
 
-	public ActionConfiguration getConfiguration() {
-		return configuration;
-	}
 
 }

@@ -22,12 +22,11 @@
 package it.geosolutions.geobatch.geotiff.publish;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.annotations.ActionService;
-import it.geosolutions.geobatch.annotations.CanCreateAction;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 import it.geosolutions.geobatch.geoserver.tools.WorkspaceUtils;
+import it.geosolutions.geobatch.geotiff.retile.GeotiffRetilerConfiguration;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
@@ -56,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: 0.2 $ 25/Apr/11 11:00:00
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: 0.2 $ 09/May/12 12:00:00
  */
-@ActionService(serviceId = "GeotiffGeoServerService")
+
 public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffGeoServerAction.class);
@@ -67,11 +66,11 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
         super(configuration);
     }
     
-    @CanCreateAction
-    private static boolean canCreateActionGeotiffGeoServerAction(){
-        LOGGER.info("Calculating if this action could be Created...");
-        return true;
-    }
+	public static boolean canCreateAction(GeotiffRetilerConfiguration configuration) {
+		 LOGGER.info("Calculating if this action could be Created...");
+		return true;
+	}
+
 
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         try {

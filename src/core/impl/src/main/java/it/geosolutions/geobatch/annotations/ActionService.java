@@ -21,10 +21,14 @@
  */
 package it.geosolutions.geobatch.annotations;
 
+import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.springframework.stereotype.Service;
 
 /**
  * @author DamianoG
@@ -33,5 +37,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ActionService {
-    String serviceId();
+	Class<? extends ActionConfiguration> configurationClass();
 }

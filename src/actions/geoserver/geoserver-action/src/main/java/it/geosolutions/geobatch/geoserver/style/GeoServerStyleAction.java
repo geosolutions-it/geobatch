@@ -1,10 +1,12 @@
 package it.geosolutions.geobatch.geoserver.style;
 
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.Queue;
 

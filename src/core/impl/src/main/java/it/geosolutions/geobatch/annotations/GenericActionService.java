@@ -65,7 +65,9 @@ public class GenericActionService implements Resource {
         Boolean canCreateAction = true;
         boolean foundAtLeastOneMethod = false;
         for (Method el : methods) {
-            if (el.isAnnotationPresent(CanCreateAction.class)) {
+        	if(el.getName().equals("canCreateAction"))
+            //if (el.isAnnotationPresent(CanCreateAction.class)) {
+        	{
                 el.setAccessible(true);
                 foundAtLeastOneMethod = true;
                 StringBuilder sb = new StringBuilder();
@@ -74,7 +76,7 @@ public class GenericActionService implements Resource {
                     LOGGER.debug(sb.toString());
                 }
                 try {
-                    canCreateAction = (Boolean) el.invoke(actionConfig);
+                    canCreateAction = (Boolean) el.invoke(null,actionConfig);
                 } catch (Exception e) {
                     StringBuilder sb2 = new StringBuilder();
                     sb2.append("An exception has occurred while invoking the canCreateAction").append(". The result will be forced to false, please check and fix this abnormal situation. - ").append(e.getLocalizedMessage());

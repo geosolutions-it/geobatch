@@ -1,6 +1,7 @@
 package it.geosolutions.geobatch.geoserver.reload;
 
 import it.geosolutions.geobatch.actions.tools.configuration.Path;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.List;
 import java.util.Map;
@@ -214,5 +216,6 @@ public class GeoServerReload extends BaseAction<EventObject> {
 			}
 		}
 	}
+
 
 }
