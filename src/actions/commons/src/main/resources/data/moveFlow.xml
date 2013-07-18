@@ -12,7 +12,6 @@
 		<listenerId>Cumulator</listenerId>
 
 		<MoveConfiguration>
-			<serviceID>MoveGeneratorService</serviceID>
 
 			<id>move</id>
 			<name>moveAction</name>

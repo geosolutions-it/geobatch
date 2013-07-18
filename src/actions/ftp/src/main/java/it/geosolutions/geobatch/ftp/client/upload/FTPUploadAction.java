@@ -23,6 +23,7 @@
 package it.geosolutions.geobatch.ftp.client.upload;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
 import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
@@ -55,10 +56,17 @@ public class FTPUploadAction extends FTPBaseAction<FileSystemEvent> {
      *            The action configuration.
      * @throws IOException
      */
-    protected FTPUploadAction(FTPActionConfiguration configuration) throws IOException {
+	public FTPUploadAction(FTPActionConfiguration configuration) throws IOException {
         super(configuration);
     }
 
+	@Override
+	@CheckConfiguration
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
     /**
      * Method to launch the action operations when a file system monitor event occurred.
      * 

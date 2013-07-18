@@ -522,8 +522,8 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                 throw new RuntimeException(message);
             }
         } else {
-            final String message = "Unable to get the "
-                    + "generator service as resource from the catalog";
+            final String message = "Unable to get the " + serviceID 
+                    + " generator service as resource from the catalog";
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error(message);
             }

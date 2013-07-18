@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+
+	<id>ftpflow</id>
+	<description>test ftp push</description>
+	<name>flowFtpPush</name>
+	<autorun>true</autorun>
+	
+	<EventConsumerConfiguration>
+		<performBackup>false</performBackup>
+
+		<FTPActionConfiguration>
+			<dataTransferMethod />
+			<timeout>10000</timeout>
+			<zipInput>false</zipInput>
+			<zipFileName>ftpZip</zipFileName>
+			<ftpserverPWD>AA</ftpserverPWD>
+			<ftpserverUSR>AA</ftpserverUSR>
+			<ftpserverHost>127.0.0.1</ftpserverHost>
+			<ftpserverPort>211</ftpserverPort>
+			<connectMode>ACTIVE</connectMode>
+			<localTempDir>C:/gbTemp</localTempDir>
+			<operationId>Upload</operationId>
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+		</FTPActionConfiguration>
+
+		<FTPActionConfiguration>
+			<dataTransferMethod />
+			<timeout>10000</timeout>
+			<zipInput>false</zipInput>
+			<zipFileName>ftpZip</zipFileName>
+			<ftpserverPWD>AA</ftpserverPWD>
+			<ftpserverUSR>AA</ftpserverUSR>
+			<ftpserverHost>127.0.0.1</ftpserverHost>
+			<ftpserverPort>211</ftpserverPort>
+			<connectMode>ACTIVE</connectMode>
+			<localTempDir>C:/gbTemp</localTempDir>
+			<operationId>Download</operationId>
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+		</FTPActionConfiguration>
+
+		<FTPActionConfiguration>
+			<dataTransferMethod />
+			<timeout>10000</timeout>
+			<zipInput>false</zipInput>
+			<zipFileName>ftpZip</zipFileName>
+			<ftpserverPWD>AA</ftpserverPWD>
+			<ftpserverUSR>AA</ftpserverUSR>
+			<ftpserverHost>127.0.0.1</ftpserverHost>
+			<ftpserverPort>211</ftpserverPort>
+			<connectMode>ACTIVE</connectMode>
+			<localTempDir>C:/gbTemp</localTempDir>
+			<operationId>Delete</operationId>
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+		</FTPActionConfiguration>
+		
+	</EventConsumerConfiguration>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>ftpflow/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<serviceID>fsEventGeneratorService</serviceID>
+	</EventGeneratorConfiguration>
+
+</FlowConfiguration>

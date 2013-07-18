@@ -3,16 +3,4 @@
 
 <beans default-init-method="init" default-destroy-method="dispose">
 
-	<!-- Environment Initialization -->
-	<bean id="Ds2dsGeneratorService" class="it.geosolutions.geobatch.actions.ds2ds.Ds2dsGeneratorService">
-		<constructor-arg type="String"><value>Ds2dsGeneratorService</value></constructor-arg>		
-	</bean>
-	
-	<bean id="DSGeoServerGeneratorService" class="it.geosolutions.geobatch.actions.ds2ds.geoserver.DSGeoServerGeneratorService">
-		<constructor-arg type="String"><value>DSGeoServerGeneratorService</value></constructor-arg>		
-	</bean>
-	
-	<bean id="Ds2dsAliasRegistrar" class="it.geosolutions.geobatch.actions.ds2ds.Ds2dsAliasRegistrar" lazy-init="false">
-		<constructor-arg ref="aliasRegistry" />
-	</bean>
 </beans>

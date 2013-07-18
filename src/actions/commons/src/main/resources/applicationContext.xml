@@ -4,30 +4,5 @@
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd" 
-        default-init-method="init" default-destroy-method="dispose">
-
-	<bean id="CollectorGeneratorService" class="it.geosolutions.geobatch.actions.commons.CollectorGeneratorService">
-		<constructor-arg type="String"><value>CollectorGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>CollectorGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>CollectorGeneratorService</value></constructor-arg>
-	</bean>
-	
-	<bean id="ExtractGeneratorService" class="it.geosolutions.geobatch.actions.commons.ExtractGeneratorService">
-		<constructor-arg type="String"><value>ExtractGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>ExtractGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>ExtractGeneratorService</value></constructor-arg>
-	</bean>
-	
-	<bean id="MoveGeneratorService" class="it.geosolutions.geobatch.actions.commons.MoveGeneratorService">
-		<constructor-arg type="String"><value>MoveGeneratorService</value></constructor-arg>
-	</bean>
-	
-	<bean id="CopyGeneratorService" class="it.geosolutions.geobatch.actions.commons.CopyGeneratorService">
-		<constructor-arg type="String"><value>CopyGeneratorService</value></constructor-arg>
-	</bean>
-	
-	<bean id="CommonsAliasRegistrar" class="it.geosolutions.geobatch.actions.commons.CommonsAliasRegistrar" lazy-init="false">
-        <constructor-arg ref="aliasRegistry" />
-    </bean>
- 
+        default-init-method="init" default-destroy-method="dispose"> 
 </beans>

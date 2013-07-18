@@ -27,7 +27,7 @@ package it.geosolutions.geobatch.action.scripting;
  **/
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
@@ -64,9 +64,17 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  **/
+@it.geosolutions.geobatch.annotations.Action(configurationClass=ScriptingConfiguration.class)
 public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 		Action<FileSystemEvent> {
 
+	@Override
+	@CheckConfiguration
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 	/**
 	 * set of well known keys
 	 */

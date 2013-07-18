@@ -3,14 +3,4 @@
 
 <beans>
 
-	<!-- Environment Initialization -->
-	<bean id="ShapeFileGeoServerService" class="it.geosolutions.geobatch.geoserver.shapefile.ShapeFileGeoServerService">
-		<constructor-arg type="String"><value>ShapeFileGeoServerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>ShapeFileGeoServerService</value></constructor-arg>
-    	<constructor-arg type="String"><value>ShapeFileGeoServerService</value></constructor-arg>	
-	</bean>
-
-    <bean id="ShapeFileRegistrar" class="it.geosolutions.geobatch.geoserver.shapefile.ShapeFileAliasRegistrar" lazy-init="false">
-        <constructor-arg ref="aliasRegistry" />
-    </bean>
 </beans>

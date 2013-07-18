@@ -118,6 +118,12 @@ public class ActionExceptionHandlerTest {
             return null;
         }
 
+        @Override
+		public boolean checkConfiguration() {
+			// TODO Auto-generated method stub
+			return true;
+		}
+
 
     }
 }

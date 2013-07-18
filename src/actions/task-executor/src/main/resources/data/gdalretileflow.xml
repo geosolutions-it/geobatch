@@ -13,8 +13,6 @@
 			<description>Flow to run gdalretile operations</description>
 			<name>gdalretile flow</name>
 			
-			<serviceID>TaskExecutorService</serviceID>
-			
 			<errorFile>config/errorlog.txt</errorFile>
 			<timeOut>1200000</timeOut> <!-- milliseconds -->
 			<executable>D:\work\Programs\FWTools2.3.0\python\python.exe</executable>

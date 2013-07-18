@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>style</id>
+	<name>StyleAction</name>
+	<description>Publish Update or remove styles on GeoServer</description>
+	
+	<corePoolSize>5</corePoolSize>
+	<maximumPoolSize>30</maximumPoolSize>
+	<keepAliveTime>1500</keepAliveTime>
+	<workQueueSize>100</workQueueSize>
+	
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+		<wildCard>*.sld</wildCard>
+		<watchDirectory>style/in/</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<serviceID>fsEventGeneratorService</serviceID>
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		
+		<listenerId>Logger</listenerId>
+		<listenerId>Cumulator</listenerId>
+
+		<performBackup>false</performBackup>
+		<preserveInput>false</preserveInput>
+
+		<GeoServerStyleConfiguration>
+			<id>GeoServerStyleAction</id>
+			<name>GeoServerStyleAction</name>
+			<description>GeoServerStyle</description>
+
+		    <listenerId>Logger</listenerId>
+			<listenerId>Cumulator</listenerId>
+			<listenerId>Status</listenerId>
+			
+			<dirty>false</dirty>
+			<failIgnored>false</failIgnored>
+			
+		  	<!-- PUBLISH | REMOVE | UPDATE -->
+		  	<operation>PUBLISH</operation>
+		  
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
+
+		</GeoServerStyleConfiguration>
+		
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>

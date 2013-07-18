@@ -16,7 +16,7 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 public class ActionServicePostProcessor extends AbstractActionServicePostProcessor implements BeanPostProcessor{
 
 	private static List<GenericActionService> actionList = new ArrayList<GenericActionService>();
-	
+
 	public static List<GenericActionService> getActionList() {
 		return actionList;
 	}
@@ -27,25 +27,29 @@ public class ActionServicePostProcessor extends AbstractActionServicePostProcess
 		if(bean.getClass().equals(AliasRegistry.class)){
 			AliasRegistry aliasRegistry = (AliasRegistry)bean;
 			ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(true);
-			scanner.addIncludeFilter(new AnnotationTypeFilter(ActionService.class));
+			scanner.addIncludeFilter(new AnnotationTypeFilter(Action.class));
 			for (BeanDefinition bd : scanner.findCandidateComponents("it.geosolutions")){
 				try {
-					Class serviceClass = Class.forName(bd.getBeanClassName());
-					
-					//Find costructor with ActionConfiguration argument type or use annotation
-					Constructor costr = serviceClass.getConstructors()[0];
-					Class<? extends ActionConfiguration> configurationClass = costr.getParameterTypes()[0];
-					
-					//ActionService annotation = (ActionService) serviceClass.getAnnotation(ActionService.class);
-					//Class<? extends ActionConfiguration> configurationClass = annotation.configurationClass();
-					
-					String standardAlias = configurationClass.getSimpleName();
-					aliasRegistry.putAlias(standardAlias, configurationClass);
-					
-					//Register service to classpath
-					GenericActionService asr = new GenericActionService(serviceClass.getSimpleName()+"Service",serviceClass);
-					actionList.add(asr); 
+					Class actionClass = Class.forName(bd.getBeanClassName());
 
+					//Find costructor with ActionConfiguration argument type or use annotation
+					//Constructor costr = actionClass.getConstructors()[0];
+					//Class<? extends ActionConfiguration> configurationClass = costr.getParameterTypes()[0];
+
+					Action annotation = (Action) actionClass.getAnnotation(Action.class);
+					if(annotation != null){
+						Class<? extends ActionConfiguration> configurationClass = annotation.configurationClass();
+						
+						String alias = configurationClass.getSimpleName();
+						if(annotation.configurationAlias() != null && !annotation.configurationAlias().isEmpty()){
+							alias = annotation.configurationAlias();
+						}
+						aliasRegistry.putAlias(alias, configurationClass);
+
+						//Register service to classpath
+						GenericActionService asr = new GenericActionService(annotation.configurationClass().getSimpleName(),actionClass);
+						actionList.add(asr); 
+					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

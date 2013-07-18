@@ -23,8 +23,7 @@
 		<performBackup>false</performBackup>
 		
 		<ExtractConfiguration>
-			<serviceID>ExtractGeneratorService</serviceID>
-			
+					
 			<id>extract</id>
 			<description>description</description>
 			<name>ExtractConfiguration</name>

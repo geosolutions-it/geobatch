@@ -24,6 +24,8 @@ package it.geosolutions.geobatch.actions.geostore;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.geostore.model.ResourceList;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geostore.core.model.Resource;
@@ -58,6 +60,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 @XmlSeeAlso(ResourceList.class)
+@Action(configurationClass=GeostoreActionConfiguration.class)
 public class GeostoreAction extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GeostoreAction.class);
@@ -114,6 +117,13 @@ public class GeostoreAction extends BaseAction<FileSystemEvent> {
     public List<Resource> getResourceList() {
         return resourceList.getResourceList();
     }
+    
+    @Override
+	@CheckConfiguration
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
     /**
      * Removes TemplateModelEvents from the queue and put

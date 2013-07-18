@@ -187,7 +187,9 @@ public class FileBasedEventConsumer
         final Catalog catalog = CatalogHolder.getCatalog();
 
         for (ActionConfiguration actionConfig : configuration.getActions()) {
-            final String actionServiceID = actionConfig.getServiceID();
+            //final String actionServiceID = actionConfig.getServiceID();
+            // Geobatch 1.4.x way: service name convenction:  actionServiceID is <configuration name> + "Service"
+        	final String actionServiceID = actionConfig.getServiceID();
             if(LOGGER.isDebugEnabled())
                 LOGGER.debug("Loading actionService " + actionServiceID 
                         + " from " + actionConfig.getClass().getSimpleName()
@@ -217,7 +219,7 @@ public class FileBasedEventConsumer
                 Action<? extends EventObject> action = null;
                 Class actionType = service.getType();
 
-                if (service.canCreateAction(actionConfig)) {
+                if (service.checkConfiguration(actionConfig)) {
                     action = service.createAction(actionType, actionConfig);
                     if (action == null) { // TODO this control may be useless due to createAction never returns null...
                         throw new IllegalArgumentException(

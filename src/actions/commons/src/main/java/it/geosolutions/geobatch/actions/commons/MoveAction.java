@@ -23,6 +23,8 @@ package it.geosolutions.geobatch.actions.commons;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.tools.compress.file.Extract;
@@ -44,6 +46,7 @@ import org.slf4j.LoggerFactory;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
+@Action(configurationClass=MoveConfiguration.class)
 public class MoveAction extends BaseAction<EventObject> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MoveAction.class);
@@ -64,6 +67,13 @@ public class MoveAction extends BaseAction<EventObject> {
         conf = configuration;
 
     }
+    
+    @Override
+	@CheckConfiguration
+	public boolean checkConfiguration(){
+	    LOGGER.info("Calculating if this action could be Created...");
+	    return true;
+	}
 
     /**
      * Removes TemplateModelEvents from the queue and put

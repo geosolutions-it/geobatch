@@ -21,6 +21,8 @@
  */
 package it.geosolutions.geobatch.geoserver.shapefile;
 
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
@@ -89,6 +91,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @version 0.1 - date: 11 feb 2007
  * @version 0.2 - date: 25 Apr 2011
  */
+@Action(configurationClass=GeoServerShapeActionConfiguration.class)
 public class ShapeFileAction extends BaseAction<EventObject> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ShapeFileAction.class);
@@ -97,6 +100,12 @@ public class ShapeFileAction extends BaseAction<EventObject> {
         super(configuration);
     }
 
+	@Override
+	@CheckConfiguration
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return false;
+	}
     /**
      * 
      */

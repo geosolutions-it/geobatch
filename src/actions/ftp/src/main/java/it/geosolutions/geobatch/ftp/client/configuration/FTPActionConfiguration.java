@@ -36,6 +36,13 @@ public class FTPActionConfiguration extends ActionConfiguration {
     public FTPActionConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
+    
+    public enum Operation {
+        Delete,
+        Download,
+        Upload
+    } 
+    
 
     public static final String DEFAULT_PORT = "21";
 
@@ -60,6 +67,8 @@ public class FTPActionConfiguration extends ActionConfiguration {
     private FTPConnectMode connectMode;
 
     private String localTempDir;
+    
+    private Operation operationId;
 
     public enum FTPConnectMode {
         ACTIVE, PASSIVE;
@@ -215,7 +224,15 @@ public class FTPActionConfiguration extends ActionConfiguration {
         this.dataTransferMethod = dataTransferMethod;
     }
 
-    @Override
+	public Operation getOperationId() {
+		return operationId;
+	}
+
+	public void setOperationId(Operation operationId) {
+		this.operationId = operationId;
+	}
+
+	@Override
     public FTPActionConfiguration clone() { // throws CloneNotSupportedException
         // {
         final FTPActionConfiguration configuration = new FTPActionConfiguration(getId(),getName(),getDescription());

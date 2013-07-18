@@ -9,7 +9,6 @@
 		<performBackup>true</performBackup>
 
         <TaskExecutorConfiguration>
-			<serviceID>TaskExecutorService</serviceID>
 			
 			<id>inventory</id>
 			<description>Flow to run wgrib inventory</description>

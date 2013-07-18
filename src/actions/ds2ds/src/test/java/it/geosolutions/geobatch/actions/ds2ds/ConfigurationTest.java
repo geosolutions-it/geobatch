@@ -33,19 +33,30 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.thoughtworks.xstream.XStream;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"test-context.xml"})
 public class ConfigurationTest {
-	private AliasRegistry registry = new AliasRegistry();
+	@Autowired
+	private AliasRegistry aliasRegistry;
+
 	private Ds2dsConfiguration configuration = null;
 	private static final XStream xstream = new XStream();
-	
+
+	@Configuration
+	static class ContextConfiguration {}
+
 	@Before
 	public void setUp() {
-		new Ds2dsAliasRegistrar(registry);
 		Alias alias=new Alias();
-		alias.setAliasRegistry(registry);
+		alias.setAliasRegistry(aliasRegistry);
 		alias.setAliases(xstream);
 		configuration = new Ds2dsConfiguration("id", "name", "description");
 		Map<String,Serializable> parameters=new HashMap<String,Serializable>();
@@ -53,12 +64,12 @@ public class ConfigurationTest {
 		parameters.put("database", "mem:test");
 		configuration.getOutputFeature().getDataStore().putAll(parameters);
 	}
-	
+
 	@Test
 	public void testSerialize() {		
 		assertNotNull(xstream.toXML(configuration));
 	}
-	
+
 	@Test
 	public void testDeserialize() {		
 		Object cfg = xstream.fromXML(xstream.toXML(configuration));

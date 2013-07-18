@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+
+	<id>shapefileFlow</id>	
+	<description>Check and publish on a running geoserver instance a collection of shapefiles. The publication process is made in DIRECT mode.</description>
+	<name>Shapefile</name>
+
+	<!-- you must manually start this action -->
+	<autorun>true</autorun>
+
+	<EventConsumerConfiguration>
+
+		<listenerId>ConsumerLogger0</listenerId>
+		<listenerId>Cumulator</listenerId> 	
+		
+		<GeoServerShapeActionConfiguration>
+			<id>shapefile</id>
+			<name>ShapeFileIngestion</name>
+			<description>Get a pack of shapefiles (zipped) and ingest them into a GeoServer instance.</description>
+			<!-- 'point', 'polygon' or 'line', depends on shapefile geometry type. Leave blank for autoconfiguration and make sure that geoserver has these styles configured -->
+			<defaultStyle></defaultStyle>
+			<!-- used in case we do not have a valid Coordinate Reference System in the shapefile -->
+			<crs>EPSG:4326</crs>
+			<envelope /><!-- let GeoServer autoconfigure it -->
+			<dataTransferMethod>DIRECT</dataTransferMethod><!-- direct upload to GeoServer, EXTERNAL mode need more other 2 action before this. See shapefileflowExt.xml -->
+			<wmsPath>/</wmsPath>
+			<!-- use alphanumeric characters, separate word with '_'  -->
+			<defaultNamespace>it_geosolutions</defaultNamespace>
+			<storeName>shapefile_plus</storeName>
+			<styles /><!-- let GeoServer decide what it should do it -->
+			
+			<charset>UTF-8</charset>
+			<createSpatialIndex>true</createSpatialIndex>
+			<!-- better use 'true' on linux and 'false' on windows because of memorymapped buffering isn't well supported on windows -->
+			<memoryMappedBuffer>false</memoryMappedBuffer> 
+			<cacheAndReuseMemoryMaps>false</cacheAndReuseMemoryMaps>
+			
+			<!-- GeoServer we are taling to -->
+			<geoserverPWD>geoserver</geoserverPWD>
+			<geoserverUID>admin</geoserverUID>
+			<geoserverURL>http://localhost:8081/geoserver</geoserverURL>
+		</GeoServerShapeActionConfiguration>
+
+	</EventConsumerConfiguration>
+
+	<EventGeneratorConfiguration>
+		<serviceID>fsEventGeneratorService</serviceID>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>shapefileFlow/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+	</EventGeneratorConfiguration>
+
+</FlowConfiguration>
