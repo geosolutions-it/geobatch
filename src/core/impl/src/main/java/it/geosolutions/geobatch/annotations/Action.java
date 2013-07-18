@@ -22,6 +22,7 @@
 package it.geosolutions.geobatch.annotations;
 
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -29,9 +30,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author DamianoG
+ * Indicates the annotated Class as an Action to execute aliasing and action processing on it
  *
+ * @author	Sandro Salari
+ * @param 	configurationClass	an {@link ActionConfiguration} class that implements action logic
+ * @param  	configurationAlias 	an alias String used in configuration XML to identify the configuration class
+ * @see     ActionServicePostProcessor
+ * @see     BaseAction
  */
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Action {

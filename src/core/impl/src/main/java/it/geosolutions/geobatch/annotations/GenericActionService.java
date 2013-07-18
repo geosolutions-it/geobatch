@@ -53,7 +53,7 @@ public class GenericActionService implements Resource {
 	}
 
 	/**
-	 * The canCreateAction method lookup for a CanCreateAction annotated method and invoke it, the result of that method will be returned to the caller.
+	 * The canCreateAction method lookup for a checkConfiguration annotated method and invoke it, the result of that method will be returned to the caller.
 	 * If no annotated method will be found the result returned will be forced to TRUE (but log a message under WARN level)
 	 * If an exception occurrs during the method invocation the result will be forced to FALSE
 	 * Please note that it executes (or try to executes) just the first method found. So annotate more than one method per class does not make sense. 
