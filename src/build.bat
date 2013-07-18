@@ -1,5 +1,6 @@
 @echo off
 
+set PROFILES=geotiff
 rem profile needed for base demo (commons + geotiff + shapefiles)
 rem set PROFILES=geotiff,shapefile,commons
 

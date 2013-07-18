@@ -22,8 +22,8 @@
 package it.geosolutions.geobatch.flow.event.consumer.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.annotations.GenericActionService;
 import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
@@ -33,7 +33,6 @@ import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
@@ -47,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -192,45 +192,67 @@ public class FileBasedEventConsumer
                 LOGGER.debug("Loading actionService " + actionServiceID 
                         + " from " + actionConfig.getClass().getSimpleName()
                         + " " + actionConfig.getId()+":"+actionConfig.getName());
-            final ActionService<FileSystemEvent, ActionConfiguration> actionService = catalog.getResource(actionServiceID, ActionService.class);
-            if (actionService != null) {
-                Action<FileSystemEvent> action = null;
-                if (actionService.canCreateAction(actionConfig)) {
-                    action = actionService.createAction(actionConfig);
-                    if (action == null) {
-                        throw new IllegalArgumentException("Action could not be instantiated for config "
-                                                           + actionConfig);
+            // Geobatch 1.3.x way: use a Service implemented by the Action developer and added to appcontext...
+//            final ActionService<FileSystemEvent, ActionConfiguration> actionService = catalog.getResource(actionServiceID, ActionService.class);
+//            if (actionService != null) {
+//                Action<FileSystemEvent> action = null;
+//                if (actionService.canCreateAction(actionConfig)) {
+//                    action = actionService.createAction(actionConfig);
+//                    if (action == null) {
+//                        throw new IllegalArgumentException("Action could not be instantiated for config "
+//                                                           + actionConfig);
+//                    }
+//                } else {
+//                    throw new IllegalArgumentException("Cannot create the action using the service "
+//                                                       + actionServiceID + " check the configuration.");
+//                }
+//
+//                // add default status listener (Used by the GUI to track action
+//                // stat)
+//                // TODO
+            
+            // Geobatch 1.4.x way: runtime creation of the service starting by the annotations of an action class
+            final  GenericActionService service = catalog.getResource(actionServiceID, GenericActionService.class);
+            if (service != null) {
+                Action<? extends EventObject> action = null;
+                Class actionType = service.getType();
+
+                if (service.canCreateAction(actionConfig)) {
+                    action = service.createAction(actionType, actionConfig);
+                    if (action == null) { // TODO this control may be useless due to createAction never returns null...
+                        throw new IllegalArgumentException(
+                                "Action could not be instantiated for config " + actionConfig);
                     }
                 } else {
-                    throw new IllegalArgumentException("Cannot create the action using the service "
-                                                       + actionServiceID + " check the configuration.");
+                    throw new IllegalArgumentException(
+                            "Cannot create the action using the service " + actionServiceID
+                                    + " check the configuration.");
                 }
-
-                // add default status listener (Used by the GUI to track action
-                // stat)
-                // TODO
-
+                // end of the patch
+                
                 // attach listeners to actions
-                for (ProgressListenerConfiguration plConfig : actionConfig.getListenerConfigurations()) {
+                for (ProgressListenerConfiguration plConfig : actionConfig
+                        .getListenerConfigurations()) {
                     final String listenerServiceID = plConfig.getServiceID();
-                    final ProgressListenerService progressListenerService = CatalogHolder.getCatalog()
-                        .getResource(listenerServiceID, ProgressListenerService.class);
+                    final ProgressListenerService progressListenerService = CatalogHolder
+                            .getCatalog().getResource(listenerServiceID,
+                                    ProgressListenerService.class);
                     if (progressListenerService != null) {
                         ProgressListener progressListener = progressListenerService
-                            .createProgressListener(plConfig, action);
+                                .createProgressListener(plConfig, action);
                         action.addListener(progressListener);
                     } else {
                         throw new IllegalArgumentException("Could not find '" + listenerServiceID
-                                                           + "' listener," + " declared in "
-                                                           + actionConfig.getId() + " action configuration,"
-                                                           + " in " + configuration.getId() + " consumer");
+                                + "' listener," + " declared in " + actionConfig.getId()
+                                + " action configuration," + " in " + configuration.getId()
+                                + " consumer");
                     }
                 }
 
-                loadedActions.add((BaseAction<FileSystemEvent>)action);
+                loadedActions.add((BaseAction<FileSystemEvent>) action);
             } else {
                 throw new IllegalArgumentException("ActionService not found '" + actionServiceID
-                                                   + "' for ActionConfig '" + actionConfig.getName() + "'");
+                        + "' for ActionConfig '" + actionConfig.getName() + "'");
             }
         }
         super.addActions(loadedActions);

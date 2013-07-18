@@ -23,6 +23,8 @@
 package it.geosolutions.geobatch.geotiff.overview;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.annotations.ActionService;
+import it.geosolutions.geobatch.annotations.CanCreateAction;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
@@ -56,6 +58,7 @@ import org.slf4j.LoggerFactory;
  * @version $GeoTIFFOverviewsEmbedder.java Revision: 0.1 $ 23/mar/07 11:42:25
  *          Revision: 0.2 $ 15/Feb/11 13:00:00
  */
+@ActionService(serviceId = "GeotiffOverviewsEmbedderService")
 public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 
 	private GeotiffOverviewsEmbedderConfiguration configuration;
@@ -68,6 +71,12 @@ public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 			throws IOException {
 		super(configuration);
 		this.configuration = configuration;		
+	}
+	
+	@CanCreateAction
+	public static boolean canCreateAction(){
+	    LOGGER.info("Calculating if this action could be Created...");
+	    return true;
 	}
 
 	public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events)

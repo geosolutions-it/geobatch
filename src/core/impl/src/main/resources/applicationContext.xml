@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans default-init-method="init" default-destroy-method="dispose">
-
+ 	<!-- Annotations suff ====================================================== -->
+	<!-- The annotation processor used for discover annotations that indicates how manage Action Service -->
+    <bean id="actionAnnotationScanner" class="it.geosolutions.geobatch.annotations.ActionAnnotationScanner"  depends-on="fsFlowManagerService" >
+    	<property name="aliasRegistry" ref="aliasRegistry"/>
+    </bean>
+    
     <!-- XStream suff ====================================================== -->
 
     <bean id="loggingListenerConfigRegistrar" class="it.geosolutions.geobatch.flow.event.listeners.logger.LoggingProgressListenerConfigurationAliasRegistrar" lazy-init="false">
