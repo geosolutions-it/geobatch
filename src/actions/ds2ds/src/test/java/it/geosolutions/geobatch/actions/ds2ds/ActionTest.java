@@ -340,7 +340,7 @@ public class ActionTest {
                         configuration.setEcqlFilter("AND AND AND");
                         executeAction("shp");
                 } catch (ActionException e) {
-                        assertTrue(e.getLocalizedMessage().startsWith("Unable to produce the output: Error while cql filter compilation."));
+                        assertTrue(e.getMessage().toLowerCase().contains("cql"));
                 } catch (URISyntaxException e) {
                         fail("Failure in loading resource file: " + e.getLocalizedMessage());
                 }               

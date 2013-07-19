@@ -77,7 +77,7 @@ public class Ds2dsAction extends DsBaseAction {
 	
 	private Ds2dsConfiguration configuration = null;
 		
-	public Ds2dsAction(ActionConfiguration actionConfiguration) {
+	public Ds2dsAction(Ds2dsConfiguration actionConfiguration) {
 		super(actionConfiguration);
         configuration = super.configuration; // this has been cloned and should be shared between DsBaseAction and this.
 	}
