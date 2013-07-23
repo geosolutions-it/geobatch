@@ -24,9 +24,7 @@ package it.geosolutions.geobatch.actions.geonetwork;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkConfiguration;
 import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkDeleteConfiguration;
-import it.geosolutions.geobatch.actions.geonetwork.configuration.GeonetworkInsertConfiguration;
 import it.geosolutions.geobatch.actions.geonetwork.op.GNDelete;
-import it.geosolutions.geobatch.actions.geonetwork.op.GNInsert;
 import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -70,8 +68,7 @@ public class GeonetworkDeleteAction extends BaseAction<FileSystemEvent> {
 	@Override
 	@CheckConfiguration
 	public boolean checkConfiguration() {
-		// TODO Auto-generated method stub
-		return true;
+		return cfg instanceof GeonetworkDeleteConfiguration;
 	}
 
 	/**
