@@ -658,11 +658,6 @@
         <version>2.5.3</version>
       </dependency>
       <!-- END Scripting =========================================== -->
-      <dependency>
-        <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb-action-splitting</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <!-- GeoServer REST Manager ==================================== -->
       <dependency>
         <groupId>it.geosolutions</groupId>

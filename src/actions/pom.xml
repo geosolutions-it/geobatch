@@ -194,18 +194,6 @@
       </modules>
     </profile>
     <profile>
-      <id>splitting</id>
-      <activation>
-        <property>
-          <name>all</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <modules>
-        <module>splitting</module>
-      </modules>
-    </profile>
-    <profile>
       <id>geonetwork</id>
       <activation>
         <property>
