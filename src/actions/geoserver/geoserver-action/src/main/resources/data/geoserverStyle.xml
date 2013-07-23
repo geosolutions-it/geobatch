@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<id>style</id>
+	<id>geoserverStyle</id>
 	<name>StyleAction</name>
 	<description>Publish Update or remove styles on GeoServer</description>
 	
@@ -13,7 +13,7 @@
 	
 	<EventGeneratorConfiguration>
 		<wildCard>*.sld</wildCard>
-		<watchDirectory>style/in/</watchDirectory>
+		<watchDirectory>geoserverStyle/in/</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<serviceID>fsEventGeneratorService</serviceID>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
     
-    <id>ds2ds</id>
+    <id>ds2ds_shp2pg</id>
     <description>DataStore to DataStore configuration flow</description>
     <name>ds2ds flow</name>
     
@@ -20,7 +20,7 @@
     </EventGeneratorConfiguration>
     
     <EventConsumerConfiguration>
-        <id>ds2ds</id>
+        <id>ds2ds_pg</id>
         <description>ds2ds</description>
         <name>ds2ds</name>
         <preserveInput>true</preserveInput>         

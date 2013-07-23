@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
-	<id>reload</id>
-	<name>Prepare  and publish</name>
+	<id>geoserverReload</id>
+	<name>Reload geoserver configuration</name>
 	<description>Create overviews, retile the image and publish on GeoServer</description>
 	
 	<corePoolSize>5</corePoolSize>
@@ -13,7 +13,7 @@
 	
 	<EventGeneratorConfiguration>
 		<wildCard>*.grb</wildCard>
-		<watchDirectory>reload/in/</watchDirectory>
+		<watchDirectory>geoserverReload/in/</watchDirectory>
 		<osType>OS_UNDEFINED</osType>
 		<eventType>FILE_ADDED</eventType>
 		<serviceID>fsEventGeneratorService</serviceID>
