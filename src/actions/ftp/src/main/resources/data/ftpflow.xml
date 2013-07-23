@@ -9,7 +9,13 @@
 		<performBackup>false</performBackup>
 
 		<FTPActionConfiguration>
-			<dataTransferMethod />
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+
+            <operationId>Upload</operationId>
+
+            <dataTransferMethod />
 			<timeout>10000</timeout>
 			<zipInput>false</zipInput>
 			<zipFileName>ftpZip</zipFileName>
@@ -19,14 +25,16 @@
 			<ftpserverPort>21</ftpserverPort>
 			<connectMode>ACTIVE</connectMode>
 			<localTempDir>C:/gbTemp</localTempDir>
-			<operationID>Upload</operationID>
-			<id>a1</id>
-			<description>description</description>
-			<name>test</name>
 		</FTPActionConfiguration>
 
 		<FTPActionConfiguration>
-			<dataTransferMethod />
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+
+            <operationId>Download</operationId>
+
+            <dataTransferMethod />
 			<timeout>10000</timeout>
 			<zipInput>false</zipInput>
 			<zipFileName>ftpZip</zipFileName>
@@ -36,14 +44,16 @@
 			<ftpserverPort>21</ftpserverPort>
 			<connectMode>ACTIVE</connectMode>
 			<localTempDir>C:/gbTemp</localTempDir>
-			<operationID>Download</operationID>
-			<id>a1</id>
-			<description>description</description>
-			<name>test</name>
 		</FTPActionConfiguration>
 
 		<FTPActionConfiguration>
-			<dataTransferMethod />
+			<id>a1</id>
+			<description>description</description>
+			<name>test</name>
+
+            <operationId>Delete</operationId>
+
+            <dataTransferMethod />
 			<timeout>10000</timeout>
 			<zipInput>false</zipInput>
 			<zipFileName>ftpZip</zipFileName>
@@ -53,10 +63,6 @@
 			<ftpserverPort>21</ftpserverPort>
 			<connectMode>ACTIVE</connectMode>
 			<localTempDir>C:/gbTemp</localTempDir>
-			<operationID>Delete</operationID>
-			<id>a1</id>
-			<description>description</description>
-			<name>test</name>
 		</FTPActionConfiguration>
 		
 	</EventConsumerConfiguration>
