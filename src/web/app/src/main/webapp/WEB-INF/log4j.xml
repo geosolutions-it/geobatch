@@ -16,51 +16,46 @@
 		<param name="maxBackupIndex" value="5" />
 		<param name="threshold" value="info" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{ISO8601} %5p %-25C{1}:%L - %m%n" />
+            <!-- in log file we want the full timestamp -->
+			<param name="ConversionPattern" value="%d{ISO8601} %-5p %-25C{1}:%L - %m%n" />
 		</layout>
 	</appender>
 
 	<appender name="console" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
+            <!-- in console we'll only have the time, no date needed -->
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %-5p %-25C{1} - %m%n" /> <!-- c:category C:class -->
 		</layout>
 	</appender>
 
 
 	<!-- CAMEL -->
-	<logger name="org.apache.camel" additivity="true">
+	<logger name="org.apache.camel">
+		<level value="info" />
 		<!-- <level value="warning" /> -->
-		<level value="info" /><!-- DEBUG -->
-		<appender-ref ref="rolling" />
 	</logger>
-	<logger name="it.geosolutions.geobatch" additivity="true">
-		<!-- <level value="warning" /> -->
-		<level value="info" /><!-- DEBUG -->
-		<appender-ref ref="rolling" />
+	<logger name="it.geosolutions.geobatch">
+		<!--<level value="debug" />-->
+		<level value="info" />
 	</logger>
 
-	<logger name="org.quartz" additivity="true">
+	<logger name="org.quartz">
 		<level value="info" />
-		<appender-ref ref="rolling" />
 	</logger>
 
-	<logger name="org.hibernate" additivity="true">
+	<logger name="org.hibernate">
 		<level value="info" />
-		<appender-ref ref="rolling" />
 	</logger>
 
 	<!-- SPRING -->
-	<logger name="org.springframework" additivity="true">
+	<logger name="org.springframework">
 		<level value="info" />
-		<appender-ref ref="rolling" />
 	</logger>
 
 	<!-- JETTY -->
-	<logger name="org.mortbay.jetty" additivity="true">
+	<logger name="org.mortbay.jetty" >
 		<level value="info" />
-		<appender-ref ref="rolling" />
-		<appender-ref ref="console" />
 	</logger>
 
 	<root>
