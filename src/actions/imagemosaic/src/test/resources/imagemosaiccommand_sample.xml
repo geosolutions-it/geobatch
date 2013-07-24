@@ -1,0 +1,75 @@
+<ImageMosaic>
+
+    <!--
+    In order to use this sample file as input to the flow, you need to copy some data to tmp:
+       mkdir -p  /tmp/imagemosaic/{src,dst,bk}
+       cp actions/imagemosaic/src/test/resources/time_mosaic/* /tmp/imagemosaic/src/
+       cp actions/imagemosaic/src/main/resources/data/imagemosaic/config/datastore.properties /tmp/imagemosaic/
+    Edit the datastore file to match your DB.
+
+    Then run the flow by:
+    cp actions/imagemosaic/src/test/resources/imagemosaiccommand_sample.xml web/app/target/geobatch/WEB-INF/data/imagemosaic/in/
+
+    If you need to repeat the test, remember to:
+    1) remove the dst store in geoserver
+    2) remove the dir /tmp/imagemosaic/dst
+    3) drop the table dst in pg
+    -->
+
+  <!-- Base directory for the mosaic -->
+  <base>/tmp/imagemosaic/dst</base>
+
+  <!-- Files to add or remove from the index  -->
+  <add>/tmp/imagemosaic/src/world.3x5400x2700_20121004.tiff</add>
+  <add>/tmp/imagemosaic/src/world.3x5400x2700_20121005.tiff</add>
+  <add>/tmp/imagemosaic/src/world.3x5400x2700_20121006.tiff</add>
+  <add>/tmp/imagemosaic/src/world.3x5400x2700_20121007.tiff</add>
+  <add>/tmp/imagemosaic/src/world.3x5400x2700_20121008.tiff</add>
+  <add>/tmp/imagemosaic/src/world.3x5400x2700_20121009.tiff</add>
+  <add>/tmp/imagemosaic/src/world.3x5400x2700_20121010.tiff</add>
+
+<!--  <del>/path/of/file/to/delete/geo.tif</del>
+  <del>/path/of/file/to/delete/geoM.tif</del>-->
+
+  <!-- physically delete the granules from disk after removing them from the index -->
+  <deleteGranules>false</deleteGranules>
+
+  <!-- if and where to backp up granules when removing them. It must be an absolute path -->
+
+ <backupDirectory>/tmp/imagemosaic/bk</backupDirectory>
+
+  <!-- ImageMosaicAction Configuration parameters -->
+  <backgroundValue>-9999</backgroundValue>
+  <outputTransparentColor></outputTransparentColor>
+  <inputTransparentColor></inputTransparentColor>
+  <allowMultithreading>true</allowMultithreading>
+  <useJaiImageRead>false</useJaiImageRead>
+  <tileSizeH>256</tileSizeH>
+  <tileSizeW>256</tileSizeW>
+  <!--NONE, REPROJECT_TO_DECLARED, FORCE_DECLARED-->
+  <projectionPolicy>NONE</projectionPolicy>
+  <styles/>
+
+  <!-- do we want to perform a Reset on GeoServer at the end
+  of the process or not.  default to True.-->
+  <finalReset>false</finalReset>
+
+  <!-- Delay in Seconds to apply when moving files around when NFS is involved. Must be >=0-->
+  <NFSCopyWait>0</NFSCopyWait>
+
+  <datastorePropertiesPath>/tmp/imagemosaic/datastore.properties</datastorePropertiesPath>
+
+  <!-- METADATA -->
+  <!-- TIME Dimension -->
+  <timeDimEnabled>true</timeDimEnabled>
+  <!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
+  <timePresentationMode>LIST</timePresentationMode>
+  <timeRegex>[0-9]{8}</timeRegex>
+
+  <!-- ELEVATION Dimension -->
+  <elevDimEnabled>false</elevDimEnabled>
+  <!-- LIST, CONTINUOUS_INTERVAL, DISCRETE_INTERVAL -->
+<!--  <elevationPresentationMode>LIST</elevationPresentationMode>
+  <elevationRegex><![CDATA[(?<=_)(\\d{4}\\.\\d{3})(?=_)]]></elevationRegex>-->
+
+</ImageMosaic>

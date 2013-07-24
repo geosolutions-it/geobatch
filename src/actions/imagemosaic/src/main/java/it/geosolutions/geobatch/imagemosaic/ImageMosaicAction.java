@@ -308,7 +308,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 					}
 					layerExists = true;
 				} else {
-					final RESTLayer layer = cmd.getIgnoreGeoServer()? null: gsReader.getLayer(layerName);
+					final RESTLayer layer = gsReader.getLayer(layerName);
 					layerExists = layer != null;
 				}
 
@@ -333,7 +333,9 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
 				// generate a RETURN file and append it to the return queue
 				// TODO get info about store and workspace name...
-				if ((layerDescriptor = ImageMosaicOutput.writeReturn(baseDir, baseDir, cmd)) != null) {
+				layerDescriptor = ImageMosaicOutput.writeReturn(baseDir, baseDir, cmd);
+				if (layerDescriptor != null) {
+                    LOGGER.info("Created layer descriptor file " + layerDescriptor);
 					ret.add(new FileSystemEvent(layerDescriptor, FileSystemEventType.FILE_ADDED));
 				}
 

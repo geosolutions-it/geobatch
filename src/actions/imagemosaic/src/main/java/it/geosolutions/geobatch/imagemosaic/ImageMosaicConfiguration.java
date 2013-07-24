@@ -28,11 +28,13 @@ import java.math.BigDecimal;
 
 public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
+    private final static Boolean DEFAULT_IGNORE_GEOSERVER = Boolean.FALSE;
+
     /**
      * Only used when updating. We'll assume the layer exists, and the reset
      * will not be performed.
      */
-    private Boolean ignoreGeoServer = false;
+    private Boolean ignoreGeoServer = DEFAULT_IGNORE_GEOSERVER;
     /**
      * Try to use COARDS file name convention to parse file name. This is used
      * to get ImageMosaicGranulesDescription info
@@ -389,10 +391,10 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
      * will not be performed.
      */
     public Boolean getIgnoreGeoServer() {
-        return ignoreGeoServer;
+        return ignoreGeoServer == null? DEFAULT_IGNORE_GEOSERVER : ignoreGeoServer;
     }
 
-    public void setIgnoreGeoServer(boolean ignoreGeoServer) {
+    public void setIgnoreGeoServer(Boolean ignoreGeoServer) {
         this.ignoreGeoServer = ignoreGeoServer;
     }
 

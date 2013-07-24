@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 	<!-- ID MUST be the same as file name -->
-	<id>imagemosaic_publish</id>
+	<id>imagemosaic</id>
 	<name>Prepare ImageMosaic and publish</name>
 	<description>Create indexes and publish on GeoServer</description>
 
 	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<serviceID>fsEventGeneratorService</serviceID>
+		<wildCard>*</wildCard>
+		<watchDirectory>imagemosaic/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+	</EventGeneratorConfiguration>
 
 	<EventConsumerConfiguration>
 
@@ -16,9 +24,8 @@
 
 		<ImageMosaicActionConfiguration>
 			<id>imagemosaic</id>
-
+			<name>ImageMosaic</name>
 			<description>ImageMosaicService</description>
-			<name>ImageMosaicService</name>
 
 			<crs>EPSG:4326</crs>
 			
@@ -60,13 +67,6 @@
 
 	</EventConsumerConfiguration>
 
-	<EventGeneratorConfiguration>
-		<serviceID>fsEventGeneratorService</serviceID>
-		<wildCard>*.*</wildCard>
-		<watchDirectory>imagemosaic_publish/in</watchDirectory>
-		<osType>OS_UNDEFINED</osType>
-		<eventType>FILE_ADDED</eventType>
-	</EventGeneratorConfiguration>
 
 	<ListenerConfigurations>
 		<StatusProgressListener>
