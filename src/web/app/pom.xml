@@ -62,32 +62,26 @@
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet</artifactId>
-      <version>2.1.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.spring</artifactId>
-      <version>2.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.servlet</artifactId>
-      <version>2.1.1</version>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>javax.servlet.jsp</groupId> -->
-<!--       <artifactId>jsp-api</artifactId> -->
-<!--       <scope>provided</scope> -->
-<!--     </dependency> -->
-    
-    
-    
-<!--     <dependency> -->
-<!--       <groupId>javax.servlet.jsp</groupId> -->
-<!--       <artifactId>jsp-api</artifactId> -->
-<!--       <scope>provided</scope> -->
-<!--     </dependency> -->
+
+    <!--
+        Provides class org.apache.cxf.transport.servlet.CXFServlet
+        when the rest profile is not enabled
+    -->
+    <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-transports-http</artifactId>
+    </dependency>
+
     <!-- ============================== -->
     <!-- Test: JETTY -->
     <!-- ============================== -->
@@ -108,20 +102,10 @@
 <!--      </exclusions> -->
     </dependency>
     <dependency>
-          <groupId>org.apache.cxf</groupId>
-          <artifactId>cxf-rt-transports-http</artifactId>
-          <scope>test</scope>
-      </dependency>
-    <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-          <groupId>org.apache.cxf</groupId>
-          <artifactId>cxf-rt-bindings-http</artifactId>
-          <scope>test</scope>
-      </dependency>
   </dependencies>
   <build>
     <plugins>

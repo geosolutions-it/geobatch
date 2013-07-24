@@ -2,8 +2,11 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-	
-    
+
+    <!-- Needed in case the rest profile is not enabled -->
+    <import resource="classpath*:META-INF/cxf/cxf.xml"/>
+
+
 <bean id="logger" class="org.springframework.beans.factory.config.CommonsLogFactoryBean">
   
 <property name="logName" value="log"/></bean>
