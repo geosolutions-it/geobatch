@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.catalog.file.DataDirHandler;
 import it.geosolutions.geobatch.catalog.impl.BasePersistentResource;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.generator.EventGeneratorConfiguration;
+import it.geosolutions.geobatch.configuration.event.generator.file.FileBasedEventGeneratorConfiguration;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedFlowConfiguration;
 import it.geosolutions.geobatch.flow.FlowManager;
 import it.geosolutions.geobatch.flow.Job;
@@ -456,12 +457,11 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
                     if (initialized) {
                         if (eventGenerator == null) {
                             // (re)Creating the FileBasedEventGenerator, which
-                            // waits for
-                            // new events
+                            // waits for new events
                             try {
                                 createGenerator();
-                            } catch (Throwable t) {
-                                String message = "Error on FS-Monitor initialization: "
+                            } catch (Exception t) {
+                                String message = "Error on FS-Monitor initialization for '"+name+"': "
                                         + t.getLocalizedMessage();
                                 LOGGER.error(message, t);
                                 throw new RuntimeException(message, t);
@@ -507,12 +507,15 @@ public class FileBasedFlowManager extends BasePersistentResource<FileBasedFlowCo
             eventGenerator = generatorService.createEventGenerator(generatorConfig);
             if (eventGenerator != null) {
                 if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info("FileSystemEventGenerator created");
+                    LOGGER.info("FileSystemEventGenerator created (" + getId() +")" );
                 }
                 eventGenerator.addListener(new GeneratorListener());
                 eventGenerator.start();
                 if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info("FileSystemEventGenerator started");
+                    if(generatorConfig instanceof FileBasedEventGeneratorConfiguration)
+                        LOGGER.info("FileSystemEventGenerator started on "+((FileBasedEventGeneratorConfiguration)generatorConfig).getWatchDirectory());
+                    else
+                        LOGGER.info("FileSystemEventGenerator started");
                 }
             } else {
                 final String message = "Error on EventGenerator creations";

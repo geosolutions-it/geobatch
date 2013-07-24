@@ -86,8 +86,8 @@ class FSSPIRegistry implements ApplicationContextAware, InitializingBean {
             }
         }
         if (ret != null){
-            if (LOGGER.isInfoEnabled())
-                LOGGER.info("Creating an instance of: "+monitorSPI.getClass());
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Creating an instance of: "+monitorSPI.getClass());
             return ret.createInstance(config);
         }
 
