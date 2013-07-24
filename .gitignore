@@ -15,3 +15,6 @@ target/
 *.h2.db
 src/doc/build
 src/application/src/main/webapp/logs/
+*/geobatch.log
+*~
+
