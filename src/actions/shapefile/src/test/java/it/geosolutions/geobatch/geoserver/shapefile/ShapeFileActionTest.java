@@ -1,7 +1,6 @@
 package it.geosolutions.geobatch.geoserver.shapefile;
 
 import java.io.File;
-import java.net.URI;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -24,14 +23,14 @@ public class ShapeFileActionTest extends GeoServerTests {
 	static final String FLOW_XML = "shapefile.xml";
 	static final String MULTI_SHP_ZIP = "multipleshapefiles.zip";
 	
-	GeoServerActionConfiguration configuration;
+	GeoServerShapeActionConfiguration configuration;
 	
 	@Before
 	public void setUp() throws Exception {
 		XStream stream = new XStream();
         stream.alias("GeoServerShapeActionConfiguration",
         		it.geosolutions.geobatch.geoserver.shapefile.GeoServerShapeActionConfiguration.class);
-		configuration = (GeoServerActionConfiguration)stream.fromXML(
+		configuration = (GeoServerShapeActionConfiguration)stream.fromXML(
 				getClass().getResourceAsStream(FLOW_XML));
 	}
 
