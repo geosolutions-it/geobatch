@@ -131,16 +131,16 @@ public class Ds2dsAction extends DsBaseAction {
 					}
 					continue;
 				}
-			}catch (ActionException ioe) {
-                            failAction("Unable to produce the output, "
-                                            + ioe.getLocalizedMessage());
-                        }catch (Exception ioe) {
-				failAction("Unable to produce the output: "
-						+ ioe.getLocalizedMessage());
-			}
-		}
-		return outputEvents;
-	}
+            } catch (ActionException ioe) {
+                failAction("Unable to produce the output, "
+                        + ioe.getLocalizedMessage());
+            } catch (Exception ioe) {
+                failAction("Unable to produce the output: "
+                        + ioe.getLocalizedMessage());
+            }
+        }
+        return outputEvents;
+    }
 	
 
 	/**
@@ -181,8 +181,8 @@ public class Ds2dsAction extends DsBaseAction {
 			int total = featureReader.getCount(query);
 			FeatureIterator<SimpleFeature> iterator = createSourceIterator(
 					query, featureReader);
+    		int count = 0;
 			try {
-				int count = 0;
 				while (iterator.hasNext()) {
 					SimpleFeature feature = buildFeature(builder,
 							iterator.next(), schemaDiffs, sourceDataStore);
@@ -198,7 +198,7 @@ public class Ds2dsAction extends DsBaseAction {
 			} finally {
 				iterator.close();
 			}
-			updateTask("Data imported");
+			updateTask("Data imported ("+count+" features)");
 			transaction.commit();
 			listenerForwarder.completed();
 			return buildOutputEvent();

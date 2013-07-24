@@ -123,7 +123,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         String cqlFilter = configuration.getEcqlFilter();
         if(cqlFilter == null || cqlFilter.isEmpty()){
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("No cql source store filter setted...");
+                LOGGER.debug("No cql source store filter set...");
             }
             return Filter.INCLUDE;
         }
@@ -278,7 +278,8 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @param message
      */
     protected void updateImportProgress(int progress, int total, String message) {
-        listenerForwarder.progressing((float) progress, message);
+        float f = total == 0 ? 0 : (float) progress / total;
+        listenerForwarder.progressing(f, message);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Importing data: " + progress + "/" + total);
         }
@@ -342,13 +343,16 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
     }
 
     protected void failAction(String message, Throwable t) throws ActionException {
+
         if (LOGGER.isErrorEnabled()) {
-            LOGGER.error(message);
-            if (t != null) {
-                LOGGER.error(getStackTrace(t));
-            }
+            // checkme: this check may be useless: null checks may be performed by the log libs
+            if(t != null)
+                LOGGER.error(message, t);
+            else
+                LOGGER.error(message);
         }
         if (!configuration.isFailIgnored()) {
+            // checkme: the flowmanager should already be dealing with failIgnored checks and notification to the listenerForwarder
             final ActionException e = new ActionException(this, message, t);
             listenerForwarder.failed(e);
             throw e;
@@ -381,12 +385,6 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         return new String[]{name.toLowerCase(), name.toUpperCase()};
     }
 
-	private String getStackTrace(Throwable t) {
-		StringWriter sw = new StringWriter();
-		t.printStackTrace(new PrintWriter(sw));
-		return sw.toString();
-	}
-
     /**
      * Creates a DataStore from the given connection parameters.
      *
@@ -399,7 +397,12 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("DataStore connection parameters:");
             for (String connectKey : connect.keySet()) {
-                LOGGER.info(connectKey + " -> " + connect.get(connectKey));
+                Serializable value = connect.get(connectKey);
+                if(connectKey.equalsIgnoreCase("pw") || 
+                        connectKey.equalsIgnoreCase("password") ||
+                        connectKey.equalsIgnoreCase("passwd"))
+                    value = "***HIDDEN***";
+                LOGGER.info("     " + connectKey + " -> " + value);
             }
         }
         DataStore dataStore = DataStoreFinder.getDataStore(connect);
