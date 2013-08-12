@@ -36,12 +36,26 @@
       <artifactId>tools-geobatch</artifactId>
     </dependency>
     <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-action-commons</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-shapefile</artifactId>
     </dependency>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-action-geoserver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-dao-xstream</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

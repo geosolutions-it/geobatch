@@ -5,7 +5,6 @@
 	<description>Check and publish on a running geoserver instance a collection of shapefiles. The publication process is made in DIRECT mode.</description>
 	<name>Shapefile</name>
 
-	<!-- you must manually start this action -->
 	<autorun>true</autorun>
 
 	<EventConsumerConfiguration>
@@ -14,7 +13,6 @@
 		<listenerId>Cumulator</listenerId> 	
 		
 		<GeoServerShapeActionConfiguration>
-			<serviceID>ShapeFileGeoServerService</serviceID>
 			<id>shapefile</id>
 			<name>ShapeFileIngestion</name>
 			<description>Get a pack of shapefiles (zipped) and ingest them into a GeoServer instance.</description>
@@ -39,7 +37,7 @@
 			<!-- GeoServer we are taling to -->
 			<geoserverPWD>geoserver</geoserverPWD>
 			<geoserverUID>admin</geoserverUID>
-			<geoserverURL>http://localhost:8081/geoserver</geoserverURL>
+			<geoserverURL>http://localhost:8080/geoserver</geoserverURL>
 		</GeoServerShapeActionConfiguration>
 
 	</EventConsumerConfiguration>

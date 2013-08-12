@@ -267,29 +267,23 @@ if (jdm.get(FileSystemMonitorSPI.TYPE_KEY)==FileSystemEventType.POLLING_EVENT){
                 // System.out.println("if1 + synch done if2");
                 if ((observer = getObserver(jdm)) == null) {
                     // System.out.println("all is done building");
-                    if (LOGGER.isInfoEnabled())
-                        LOGGER.info("Building the observer tree...");
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug("Building the observer tree...");
 
                     observer = buildObserver(jdm);
 
-                    if (LOGGER.isInfoEnabled())
-                        LOGGER.info("Observer tree complete.");
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug("Observer tree complete.");
                 }
-            } catch (InterruptedException ie) {
-                // NOT HANDLED
-                // DEBUG
-                // ie.printStackTrace();
-            } catch (Throwable t) {
-                if (LOGGER.isErrorEnabled())
-                    LOGGER.error(
-                            "GBFileSystemMonitorJob JOB throws a throwable: "
-                                    + t.getLocalizedMessage(), t);
-                // DEBUG
-                // t.printStackTrace();
+            } catch (InterruptedException ex) {
+                 LOGGER.error("GBFileSystemMonitorJob interrupted during setup", ex);
+
+            } catch (Exception ex) {
+                 LOGGER.error("GBFileSystemMonitorJob interrupted during setup", ex);
+
             } finally {
                 lock.unlock();
             }
-            // System.out.println("build");
 
         } // first time initializer ends
 

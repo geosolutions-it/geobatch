@@ -12,7 +12,6 @@
         <listenerId>Cumulator</listenerId>
 
         <CollectorConfiguration>
-            <serviceID>CollectorGeneratorService</serviceID>
             
             <id>collect</id>
             <name>CollectShapefiles</name>

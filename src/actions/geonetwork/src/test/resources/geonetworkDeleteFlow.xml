@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	
+	<id>geonetworkflow</id>
+	<name>Geonetwork sample flow</name>
+	<description>A sample flow for GeoNetwork</description>
+	
+	<autorun>true</autorun>
+	
+	<EventGeneratorConfiguration>
+	
+		<serviceID>fsEventGeneratorService</serviceID>
+	
+		<wildCard>*.xml</wildCard>
+		<watchDirectory>geonetworkflow/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<interval>0 * * * * ?</interval><!-- CRON: every minute at sec 0 -->
+		<!--<interval>20</interval> each 20 sec -->
+	</EventGeneratorConfiguration>
+	
+	<EventConsumerConfiguration>
+		
+		<performBackup>false</performBackup>
+		
+		<GeonetworkDelete>
+			<id>GeonetworkGeneratorService</id>
+			<name>GeonetworkConfiguration</name>
+			<description>description</description>
+            		  
+			<dirty>false</dirty>
+			<failIgnored>false</failIgnored>
+			<listenerConfigurations/>
+
+            <!-- geonetwork generic params -->
+            <geonetworkServiceURL>http://localhost:8080/geonetwork</geonetworkServiceURL>
+			<loginUsername>admin</loginUsername>
+			<loginPassword>admin</loginPassword>
+
+        </GeonetworkDelete>
+		
+	</EventConsumerConfiguration>
+
+</FlowConfiguration>

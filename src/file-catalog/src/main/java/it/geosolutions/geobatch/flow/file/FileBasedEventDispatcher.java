@@ -78,7 +78,7 @@ import org.slf4j.LoggerFactory;
      */
     public void shutdown() {
         if (LOGGER.isInfoEnabled()) {
-            LOGGER.info("Shutting down the dispatcher ... NOW!");
+            LOGGER.info("Shutting down the dispatcher for flow " + flowManager.getId() );
         }
         interrupt();
     }
@@ -164,7 +164,7 @@ import org.slf4j.LoggerFactory;
                 try {
                     event = eventMailBox.take(); // blocking call
                 } catch (InterruptedException e) {
-                    LOGGER.error(e.getLocalizedMessage(), e);
+                    LOGGER.warn("Dispatcher thread interrupted (" + flowManager.getId()+")");
                     this.interrupt();
                     return;
                 }

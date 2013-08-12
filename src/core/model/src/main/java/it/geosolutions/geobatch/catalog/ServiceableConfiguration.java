@@ -35,7 +35,7 @@ public interface ServiceableConfiguration extends Configuration {
 
     /**
      * @param serviceID  the serviceID to set
-     */
+   
     public void setServiceID(String serviceID);
-    
+      */
 }

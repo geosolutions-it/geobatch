@@ -23,6 +23,8 @@ package it.geosolutions.geobatch.actions.xstream;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
@@ -50,6 +52,7 @@ import com.thoughtworks.xstream.XStreamException;
  * 
  * @param <DATA_CONF>
  */
+@Action(configurationClass=XstreamConfiguration.class)
 public class XstreamAction extends BaseAction<EventObject> {
     private final static Logger LOGGER = LoggerFactory.getLogger(XstreamAction.class);
 
@@ -66,6 +69,13 @@ public class XstreamAction extends BaseAction<EventObject> {
         xstream = new XStream(); // TODO set the reflection provider
     }
 
+	@Override
+	@CheckConfiguration
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
     public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
 
         // the output

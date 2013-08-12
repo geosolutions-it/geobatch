@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
-<beans default-init-method="init" default-destroy-method="dispose">
-		 
-	<bean id="GeonetworkGeneratorService" class="it.geosolutions.geobatch.actions.geonetwork.GeonetworkGeneratorService">
-		<constructor-arg type="String"><value>GeonetworkGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeonetworkGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>GeonetworkGeneratorService</value></constructor-arg>
-	</bean>
-	
-	<bean id="GeonetworkAliasRegistrar" class="it.geosolutions.geobatch.actions.geonetwork.GeonetworkAliasRegistrar" lazy-init="false">
-        <constructor-arg ref="aliasRegistry" />
-    </bean>
- 
+<beans default-init-method="init" default-destroy-method="dispose"> 
 </beans>

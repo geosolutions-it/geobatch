@@ -30,8 +30,6 @@
 			
 			<listenerId>ScriptActionLogger0</listenerId>
 			<listenerId>ScriptActionStatus0</listenerId>
-						
-			<serviceID>ScriptingService</serviceID>
 
             <language>groovy</language>
             <!-- Can be relative to the working dir or absolute -->

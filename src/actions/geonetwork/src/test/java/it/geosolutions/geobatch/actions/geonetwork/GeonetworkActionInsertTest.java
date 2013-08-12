@@ -62,7 +62,7 @@ public class GeonetworkActionInsertTest extends GeonetworkAbstractTest {
         Queue<FileSystemEvent> queue = new LinkedList<FileSystemEvent>();
         queue.add(event);
         
-        GeonetworkAction action = new GeonetworkAction(cfg);
+        GeonetworkInsertAction action = new GeonetworkInsertAction(cfg);
         Queue<FileSystemEvent> retQueue = action.execute(queue);
 
         assertEquals(0, retQueue.size());
@@ -83,7 +83,7 @@ public class GeonetworkActionInsertTest extends GeonetworkAbstractTest {
         Queue<FileSystemEvent> queue = new LinkedList<FileSystemEvent>();
         queue.add(event);
         
-        GeonetworkAction action = new GeonetworkAction(cfg);
+        GeonetworkInsertAction action = new GeonetworkInsertAction(cfg);
         action.setTempDir(File.createTempFile("test", "test").getParentFile()); // TODO checkme
         Queue<FileSystemEvent> retQueue = action.execute(queue);
 

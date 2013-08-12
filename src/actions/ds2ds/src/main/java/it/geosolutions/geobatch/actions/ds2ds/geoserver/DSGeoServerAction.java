@@ -23,6 +23,8 @@ package it.geosolutions.geobatch.actions.ds2ds.geoserver;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geoserver.rest.GeoServerRESTManager;
@@ -46,6 +48,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EventObject;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -72,6 +75,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author Emmanuel Blondel (FAO) - emmanuel.blondel1@gmail.com |
  *         emmanuel.blondel@fao.org
  */
+@Action(configurationClass=DSGeoServerConfiguration.class)
 public class DSGeoServerAction extends BaseAction<EventObject> {
 
 	protected final static Logger LOGGER = LoggerFactory
@@ -92,10 +96,20 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 	}
 
 	@Override
+	@CheckConfiguration
+	public boolean checkConfiguration(){
+	    LOGGER.info("Calculating if this action could be Created...");
+	    return true;
+	}
+	
+	@Override
 	public Queue<EventObject> execute(Queue<EventObject> events)
 			throws ActionException {
 
 		listenerForwarder.started();
+		
+		// return object
+		final Queue<EventObject> outputEvents = new LinkedList<EventObject>();
 		
 		//check global configurations
 		//Geoserver config
@@ -270,9 +284,16 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 							}
 							fte.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
 							        
-							//layer & default style
+							//layer & styles
 							final GSLayerEncoder layerEncoder = new GSLayerEncoder();
-							layerEncoder.setDefaultStyle(this.defineLayerStyle(featureConfig, gsMan));
+							layerEncoder.setDefaultStyle(this.defineLayerStyle(featureConfig, gsMan)); //default style
+							
+							if(conf.getStyles() != null){
+								//add available styles
+								for(String style : conf.getStyles()){
+									layerEncoder.addStyle(style);
+								}
+							}
 									
 							//publish
 							done = gsMan.getPublisher().publishDBLayer(ws, ds, fte, layerEncoder);
@@ -296,6 +317,7 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 						
 					listenerForwarder.progressing(100F, "Successful Geoserver "+op+" operation");
 					listenerForwarder.completed();
+					outputEvents.add(ev);
 
 				} else {
 					if (LOGGER.isErrorEnabled()) {
@@ -305,10 +327,10 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 				}
 			} catch (Exception ioe) {
 				failAction("Unable to produce the output: "
-						+ ioe.getLocalizedMessage());
+						+ ioe.getLocalizedMessage(),ioe);
 			}
 		}
-		return events;
+		return outputEvents;
 
 	}
 	

@@ -22,6 +22,8 @@
 
 package it.geosolutions.geobatch.global;
 
+import it.geosolutions.geobatch.annotations.ActionServicePostProcessor;
+import it.geosolutions.geobatch.annotations.GenericActionService;
 import it.geosolutions.geobatch.catalog.Catalog;
 import it.geosolutions.geobatch.catalog.Service;
 import it.geosolutions.geobatch.catalog.dao.DAO;
@@ -37,6 +39,7 @@ import it.geosolutions.geobatch.xstream.Alias;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -48,7 +51,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 /**
  * The application configuration facade.
@@ -105,6 +107,7 @@ public class XStreamCatalogLoader extends CatalogHolder {
         // Force loading all services
         //
         // //
+        // That's the GB 1.3.x way to load services mantain uncomment because other service must be loaded (f.e. those relative to EventGenerator)
         final Map<String, ? extends Service> services = context.getBeansOfType(Service.class);
         for (Entry<String, ? extends Service> servicePair : services.entrySet()) {
             final Service service = servicePair.getValue();
@@ -116,6 +119,12 @@ public class XStreamCatalogLoader extends CatalogHolder {
             if (LOGGER.isInfoEnabled())
                 LOGGER.info("Loading service " + servicePair.getKey() + " (" +service.getClass()+ ")");
             catalog.add(servicePair.getValue());
+        }
+        // That's the GB 1.4.x way... just an experiment for now...
+        //  if (!service.isAvailable()) TODO this type of control? how replicate it?
+        List<GenericActionService> list = ActionServicePostProcessor.getActionList();
+        for(GenericActionService el : list){
+            catalog.add(el);
         }
 
         loadFlows(dataDir, catalog);

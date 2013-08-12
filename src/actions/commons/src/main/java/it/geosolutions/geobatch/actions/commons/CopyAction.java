@@ -23,9 +23,10 @@ package it.geosolutions.geobatch.actions.commons;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.tools.io.file.Copy;
 
 import java.io.File;
 import java.util.EventObject;
@@ -41,10 +42,18 @@ import org.slf4j.LoggerFactory;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
+@Action(configurationClass=CopyConfiguration.class)
 public class CopyAction extends BaseAction<EventObject> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CopyAction.class);
 
+    @Override
+	@CheckConfiguration
+	public boolean checkConfiguration(){
+	    LOGGER.info("Calculating if this action could be Created...");
+	    return true;
+	}
+    
     /**
      * configuration
      */
@@ -121,7 +130,7 @@ public class CopyAction extends BaseAction<EventObject> {
                     continue;
                 }
 
-                File out = Copy.copyFileToNFS(source, dest, conf.getTimeout());
+                File out = it.geosolutions.tools.io.file.Copy.copyFileToNFS(source, dest, conf.getTimeout());
                 if (out != null) {
                     // add the file to the return
                     ret.add(new FileSystemEvent(out, FileSystemEventType.FILE_ADDED));

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans default-init-method="init" default-destroy-method="dispose">
-
+    
+    <bean class="it.geosolutions.geobatch.annotations.ActionServicePostProcessor" />
+    
     <!-- XStream suff ====================================================== -->
 
     <bean id="loggingListenerConfigRegistrar" class="it.geosolutions.geobatch.flow.event.listeners.logger.LoggingProgressListenerConfigurationAliasRegistrar" lazy-init="false">

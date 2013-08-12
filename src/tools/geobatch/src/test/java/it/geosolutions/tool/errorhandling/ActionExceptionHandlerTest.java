@@ -22,9 +22,11 @@
 package it.geosolutions.tool.errorhandling;
 
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.Queue;
 
@@ -115,5 +117,13 @@ public class ActionExceptionHandlerTest {
             // TODO Auto-generated method stub
             return null;
         }
+
+        @Override
+		public boolean checkConfiguration() {
+			// TODO Auto-generated method stub
+			return true;
+		}
+
+
     }
 }

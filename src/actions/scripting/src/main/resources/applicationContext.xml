@@ -2,16 +2,5 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-        
-	<!-- Environment Initialization -->
-	<bean id="ScriptingService" class="it.geosolutions.geobatch.action.scripting.ScriptingService">
-    	<constructor-arg type="String"><value>ScriptingService</value></constructor-arg>
-    	<constructor-arg type="String"><value>ScriptingService</value></constructor-arg>
-    	<constructor-arg type="String"><value>ScriptingService</value></constructor-arg>
-    </bean>	      
-
-    <bean id="ScriptingRegistrar" class="it.geosolutions.geobatch.action.scripting.ScriptingAliasRegistrar" lazy-init="false">
-        <constructor-arg ref="aliasRegistry" />
-    </bean>
 
 </beans>

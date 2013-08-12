@@ -3,7 +3,6 @@
 	<EventConsumerConfiguration>
 		<performBackup>true</performBackup>
         <TaskExecutorConfiguration>
-			<serviceID>TaskExecutorService</serviceID>
 			<errorFile>config/errorlog.txt</errorFile>
 			<timeOut>1200000</timeOut> <!-- milliseconds -->
 			<executable>C:\Program Files\FWTools2.2.8\bin\gdal_contour.exe</executable>

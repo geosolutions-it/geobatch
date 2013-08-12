@@ -39,7 +39,6 @@
 		</FileEventRule>
 		
 		<XstreamConfiguration>
-			<serviceID>XstreamGeneratorService</serviceID>
 			<id>XstreamGeneratorService</id>
 			<description>Xstream action</description>
 			<name>XstreamConfiguration</name>

@@ -47,5 +47,15 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>tools-geobatch</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-dao-xstream</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

@@ -5,18 +5,5 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd" 
         default-init-method="init" default-destroy-method="dispose">
-
-		 
-	<!-- Environment Initialization -->
-	
-	<bean id="FreeMarkerGeneratorService" class="it.geosolutions.geobatch.actions.freemarker.FreeMarkerGeneratorService">
-		<constructor-arg type="String"><value>FreeMarkerGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>FreeMarkerGeneratorService</value></constructor-arg>
-    	<constructor-arg type="String"><value>FreeMarkerGeneratorService</value></constructor-arg>
-	</bean>
-	
-	<bean id="FreeMarkerAliasRegistrar" class="it.geosolutions.geobatch.actions.freemarker.FreeMarkerAliasRegistrar" lazy-init="false">
-        <constructor-arg ref="aliasRegistry" />
-    </bean>
  
 </beans>

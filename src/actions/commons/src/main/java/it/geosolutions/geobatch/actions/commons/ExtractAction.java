@@ -23,18 +23,16 @@ package it.geosolutions.geobatch.actions.commons;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.tools.commons.file.Path;
-import it.geosolutions.tools.compress.file.Extract;
-import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,10 +42,18 @@ import org.slf4j.LoggerFactory;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
+@Action(configurationClass=ExtractConfiguration.class)
 public class ExtractAction extends BaseAction<EventObject> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ExtractAction.class);
 
+    @Override
+	@CheckConfiguration
+	public boolean checkConfiguration(){
+	    LOGGER.info("Calculating if this action could be Created...");
+	    return true;
+	}
+	
     /**
      * configuration
      */
@@ -127,7 +133,7 @@ public class ExtractAction extends BaseAction<EventObject> {
 
                 try {
                     listenerForwarder.setTask("Extracting file: " + source);
-                    final File extracted = Extract.extract(source, dest, false);
+                    final File extracted = it.geosolutions.tools.compress.file.Extract.extract(source, dest, false);
                     if (extracted != null) {
                         File newDest = new File(dest, extracted.getName());
                         listenerForwarder.setTask("moving \'" + extracted + "\' to \'" + newDest

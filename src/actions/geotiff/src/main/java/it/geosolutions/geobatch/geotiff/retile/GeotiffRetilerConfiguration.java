@@ -26,6 +26,7 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import org.geotools.utils.CoverageToolsConstants;
 
+
 public class GeotiffRetilerConfiguration extends ActionConfiguration {
 
 

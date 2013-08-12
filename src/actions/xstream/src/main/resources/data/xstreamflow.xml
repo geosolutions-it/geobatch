@@ -8,9 +8,7 @@
 	<autorun>true</autorun>
 	
 	<EventGeneratorConfiguration>
-	
 		<serviceID>fsEventGeneratorService</serviceID>
-		
 		<wildCard>*.*</wildCard>
 		<watchDirectory>xstreamflow/in</watchDirectory>
 		<osType>OS_UNDEFINED</osType>

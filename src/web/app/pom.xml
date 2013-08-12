@@ -62,32 +62,26 @@
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet</artifactId>
-      <version>2.1.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.spring</artifactId>
-      <version>2.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.restlet.jee</groupId>
       <artifactId>org.restlet.ext.servlet</artifactId>
-      <version>2.1.1</version>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>javax.servlet.jsp</groupId> -->
-<!--       <artifactId>jsp-api</artifactId> -->
-<!--       <scope>provided</scope> -->
-<!--     </dependency> -->
-    
-    
-    
-<!--     <dependency> -->
-<!--       <groupId>javax.servlet.jsp</groupId> -->
-<!--       <artifactId>jsp-api</artifactId> -->
-<!--       <scope>provided</scope> -->
-<!--     </dependency> -->
+
+    <!--
+        Provides class org.apache.cxf.transport.servlet.CXFServlet
+        when the rest profile is not enabled
+    -->
+    <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-transports-http</artifactId>
+    </dependency>
+
     <!-- ============================== -->
     <!-- Test: JETTY -->
     <!-- ============================== -->
@@ -108,20 +102,10 @@
 <!--      </exclusions> -->
     </dependency>
     <dependency>
-          <groupId>org.apache.cxf</groupId>
-          <artifactId>cxf-rt-transports-http</artifactId>
-          <scope>test</scope>
-      </dependency>
-    <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-          <groupId>org.apache.cxf</groupId>
-          <artifactId>cxf-rt-bindings-http</artifactId>
-          <scope>test</scope>
-      </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -1015,56 +999,6 @@
                     <artifactItem>
                       <groupId>it.geosolutions.geobatch</groupId>
                       <artifactId>gb-action-scripting</artifactId>
-                      <version>${project.version}</version>
-                      <classifier>flowdata</classifier>
-                      <type>jar</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
-                      <includes>data/**</includes>
-                    </artifactItem>
-                  </artifactItems>
-                  <overWriteReleases>true</overWriteReleases>
-                  <overWriteSnapshots>true</overWriteSnapshots>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- SPLITTING ====================================================== -->
-    <profile>
-      <id>splitting</id>
-      <activation>
-        <property>
-          <name>all</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>it.geosolutions.geobatch</groupId>
-          <artifactId>gb-action-splitting</artifactId>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>2.4</version>
-            <executions>
-              <execution>
-                <id>unpack_splitting</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>it.geosolutions.geobatch</groupId>
-                      <artifactId>gb-action-splitting</artifactId>
                       <version>${project.version}</version>
                       <classifier>flowdata</classifier>
                       <type>jar</type>

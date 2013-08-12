@@ -89,8 +89,8 @@ public class GBEventNotifier implements Runnable {
      */
     public void start() {
         if (this.isStopped()) {
-            if (LOGGER.isInfoEnabled())
-                LOGGER.info("Starting the event consumer...");
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("Starting the event consumer...");
             threadPool.execute(this);
             stop = false;
         } else if (LOGGER.isWarnEnabled())

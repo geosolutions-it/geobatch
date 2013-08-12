@@ -134,5 +134,13 @@ public class Alias {
                 xstream.addImplicitCollection(entry.getValue(), entry.getKey());
             }
         }
+        
+        // adding class for XStream alias Annotation Process
+        if (aliasRegistry != null) {
+            for (Entry<String, Class<?>> entry : aliasRegistry.processAnnotationsIterator()) {
+                xstream.processAnnotations(entry.getValue());
+            }
+        }
     }
+    
 }

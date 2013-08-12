@@ -24,30 +24,44 @@ package it.geosolutions.geobatch.actions.ds2ds.geoserver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import it.geosolutions.geobatch.actions.ds2ds.Ds2dsAliasRegistrar;
 import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.registry.AliasRegistry;
 import it.geosolutions.geobatch.xstream.Alias;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.thoughtworks.xstream.XStream;
 
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"../test-context.xml"})
 public class DSGeoServerConfigurationTest {
-	private AliasRegistry registry = new AliasRegistry();
+	
+	@Autowired
+	private AliasRegistry aliasRegistry;
+	
 	private DSGeoServerConfiguration configuration = null;
 	private static final XStream xstream = new XStream();
 	
+	@Configuration
+	static class ContextConfiguration {}
+	
 	@Before
 	public void setUp() {
-		new Ds2dsAliasRegistrar(registry);
 		Alias alias=new Alias();
-		alias.setAliasRegistry(registry);
+		alias.setAliasRegistry(aliasRegistry);
 		alias.setAliases(xstream);
 		
 		configuration = new DSGeoServerConfiguration("id", "name", "description");
@@ -63,6 +77,12 @@ public class DSGeoServerConfigurationTest {
 		configuration.setOperation("PUBLISH");
 		configuration.setCreateNameSpace(true);
 		configuration.setCreateDataStore(true);
+		
+		configuration.setDefaultStyle("main_style");
+		List<String> styles = new ArrayList<String>();
+		styles.add("style2");
+		styles.add("style3");
+		configuration.setStyles(styles);
 		
 	}
 	
@@ -83,5 +103,11 @@ public class DSGeoServerConfigurationTest {
 		assertEquals("PUBLISH",config.getOperation());
 		assertTrue(config.getCreateNameSpace());
 		assertTrue(config.getCreateDataStore());
+		
+		assertEquals("main_style",config.getDefaultStyle());
+		List<String> styles = config.getStyles();
+		assertEquals(2, styles.size());
+		assertEquals("style2", styles.get(0));
+		assertEquals("style3", styles.get(1));
 	}
 }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+	<id>scripting</id>
+	<name>Test groovy flow</name>
+	<description>A test flow for scripting actions</description>
+
+	<autorun>true</autorun>
+
+	<EventGeneratorConfiguration>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>scripting/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<interval>0 * * * * ?</interval><!-- CRON: every minute at sec 0 -->
+		<!--<interval>20</interval> each 20 sec -->
+        <serviceID>fsEventGeneratorService</serviceID>
+	</EventGeneratorConfiguration>
+
+    <EventConsumerConfiguration>
+
+		<listenerId>ScriptConsumerLogger0</listenerId>
+        <listenerId>ScriptCumulator0</listenerId>
+        
+		<performBackup>false</performBackup>
+
+		<ScriptingConfiguration>
+			<id>scriptGroovyTest</id>
+			<description>Groovy test action</description>
+			<name>Groovy test action</name>
+			
+			<listenerId>ScriptActionLogger0</listenerId>
+			<listenerId>ScriptActionStatus0</listenerId>
+
+            <language>groovy</language>
+            <!-- Can be relative to the working dir or absolute -->
+            <scriptFile>G:/tmp/TestAction.groovy</scriptFile>
+
+		    <properties>
+				 <entry>
+				    <string>key0</string>
+				    <string>content0</string>
+				  </entry>
+				  <entry>
+				    <string>key1</string>
+				    <string>data1</string>
+				  </entry>
+				  <!-- do not use lang reserved key (f.e.: int, String, etc...) -->
+				  <entry>
+				    <string>intVal</string>
+				    <int>500</int>
+				  </entry>
+			</properties>
+		</ScriptingConfiguration>
+		
+	</EventConsumerConfiguration>
+    
+</FlowConfiguration>

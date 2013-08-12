@@ -23,7 +23,6 @@
 		<performBackup>false</performBackup>
 		
 		<FreeMarker>
-			<serviceID>FreeMarkerGeneratorService</serviceID>
 			<id>FreeMarkerGeneratorService</id>
 			<description>description</description>
 			<name>FreeMarkerConfiguration</name>

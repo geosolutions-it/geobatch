@@ -1,10 +1,15 @@
 package it.geosolutions.geobatch.geoserver.style;
 
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.geoserver.reload.GeoServerReloadConfiguration;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.Queue;
 
@@ -12,6 +17,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Action(configurationClass=GeoServerStyleConfiguration.class)
 public class GeoServerStyleAction extends BaseAction<EventObject> {
 
 	protected final static Logger LOGGER = LoggerFactory
@@ -28,6 +34,13 @@ public class GeoServerStyleAction extends BaseAction<EventObject> {
 		conf = actionConfiguration;
 	}
 
+    @Override
+	@CheckConfiguration
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
 	@Override
 	public Queue<EventObject> execute(Queue<EventObject> events)
 			throws ActionException {

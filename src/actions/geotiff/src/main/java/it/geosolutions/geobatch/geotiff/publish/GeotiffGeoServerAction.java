@@ -22,6 +22,8 @@
 package it.geosolutions.geobatch.geotiff.publish;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
@@ -29,7 +31,6 @@ import it.geosolutions.geobatch.geoserver.tools.WorkspaceUtils;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
-import it.geosolutions.geoserver.rest.encoder.GSWorkspaceEncoder;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 import it.geosolutions.geoserver.rest.encoder.coverage.GSCoverageEncoder;
 
@@ -55,6 +56,8 @@ import org.slf4j.LoggerFactory;
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: 0.2 $ 25/Apr/11 11:00:00
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: 0.2 $ 09/May/12 12:00:00
  */
+
+@Action(configurationClass=GeoServerActionConfiguration.class)
 public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffGeoServerAction.class);
@@ -64,6 +67,13 @@ public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
     public GeotiffGeoServerAction(GeoServerActionConfiguration configuration) throws IOException {
         super(configuration);
     }
+    
+	@CheckConfiguration
+	public boolean checkConfiguration(){
+	    LOGGER.info("Calculating if this action could be Created...");
+	    return true;
+	}
+
 
     public Queue<FileSystemEvent> execute(Queue<FileSystemEvent> events) throws ActionException {
         try {

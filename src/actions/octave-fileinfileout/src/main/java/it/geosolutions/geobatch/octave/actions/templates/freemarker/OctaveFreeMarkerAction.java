@@ -22,21 +22,20 @@
 
 package it.geosolutions.geobatch.octave.actions.templates.freemarker;
 
-import com.thoughtworks.xstream.XStream;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.octave.OctaveEnv;
 import it.geosolutions.geobatch.octave.OctaveExecutableSheet;
 import it.geosolutions.geobatch.octave.OctaveFunctionSheet;
 import it.geosolutions.geobatch.octave.SheetBuilder;
 import it.geosolutions.geobatch.octave.actions.OctaveAction;
-import it.geosolutions.tools.commons.file.Path;
 import it.geosolutions.tools.compress.file.Extract;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
@@ -46,15 +45,19 @@ import org.slf4j.LoggerFactory;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 import dk.ange.octave.exception.OctaveEvalException;
-import java.io.StringWriter;
-import java.util.HashMap;
-import javax.xml.bind.JAXB;
 
-
+@Action(configurationClass=OctaveFreeMarkerConfiguration.class)
 public class OctaveFreeMarkerAction extends OctaveAction<FileSystemEvent> {
        
     private final static Logger LOGGER = LoggerFactory.getLogger(OctaveFreeMarkerAction.class);
     
+	@Override
+	@CheckConfiguration
+	public boolean checkConfiguration() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
     private final OctaveFreeMarkerConfiguration config;
 
     @XStreamOmitField
