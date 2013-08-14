@@ -32,11 +32,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
@@ -189,7 +188,8 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
                 PrimaryKeyFinder pkFinder = jdbcDS.getPrimaryKeyFinder();
                 try {
                     cx = jdbcDS.getDataSource().getConnection();
-                    PrimaryKey pk = pkFinder.getPrimaryKey(jdbcDS, null, schema.getTypeName(), cx);
+                    PrimaryKey pk = pkFinder.getPrimaryKey(jdbcDS, jdbcDS.getDatabaseSchema(), schema.getTypeName(), cx);
+                    List<PrimaryKeyColumn> pkc = new ArrayList<PrimaryKeyColumn>();
                     pks = pk.getColumns();
                     for(PrimaryKeyColumn el : pks){
                         if(el instanceof NonIncrementingPrimaryKeyColumn){
@@ -416,6 +416,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 		updateTask("Connecting to source DataStore");
 		String fileType = getFileType(fileEvent);
 		FeatureConfiguration sourceFeature = configuration.getSourceFeature();
+        if(sourceFeature == null){
 		if(fileType.equals("xml")) {
 			InputStream inputXML = null;
 			try {
@@ -429,6 +430,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 		} else if(fileType.equals("shp")) {
 			sourceFeature.getDataStore()
 					.put("url", DataUtilities.fileToURL(fileEvent.getSource()));
+        }
 		}
 		DataStore source = createDataStore(sourceFeature.getDataStore());
 		// if no typeName is configured, takes the first one registered in store

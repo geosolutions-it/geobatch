@@ -327,7 +327,7 @@ public class DSGeoServerAction extends BaseAction<EventObject> {
 				}
 			} catch (Exception ioe) {
 				failAction("Unable to produce the output: "
-						+ ioe.getLocalizedMessage());
+						+ ioe.getLocalizedMessage(),ioe);
 			}
 		}
 		return outputEvents;
