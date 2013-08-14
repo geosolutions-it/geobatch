@@ -133,10 +133,10 @@ public class Ds2dsAction extends DsBaseAction {
 				}
             } catch (ActionException ioe) {
                 failAction("Unable to produce the output, "
-                        + ioe.getLocalizedMessage());
+                        + ioe.getLocalizedMessage(),ioe);
             } catch (Exception ioe) {
                 failAction("Unable to produce the output: "
-                        + ioe.getLocalizedMessage());
+                        + ioe.getLocalizedMessage(),ioe);
             }
         }
         return outputEvents;
