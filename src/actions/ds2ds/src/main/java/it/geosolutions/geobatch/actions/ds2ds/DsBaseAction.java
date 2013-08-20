@@ -416,7 +416,9 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 		updateTask("Connecting to source DataStore");
 		String fileType = getFileType(fileEvent);
 		FeatureConfiguration sourceFeature = configuration.getSourceFeature();
-        if(sourceFeature == null){
+		if(fileType.equals("run")) {
+			LOGGER.info("Processing file event with RUN file");
+		}
 		if(fileType.equals("xml")) {
 			InputStream inputXML = null;
 			try {
@@ -427,11 +429,11 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 	        } finally {
 	            IOUtils.closeQuietly(inputXML);
 	        }
-		} else if(fileType.equals("shp")) {
+		} 
+		if(fileType.equals("shp")) {
 			sourceFeature.getDataStore()
 					.put("url", DataUtilities.fileToURL(fileEvent.getSource()));
         }
-		}
 		DataStore source = createDataStore(sourceFeature.getDataStore());
 		// if no typeName is configured, takes the first one registered in store
 		if(sourceFeature.getTypeName() == null) {
