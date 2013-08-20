@@ -75,7 +75,7 @@ public class Ds2dsAction extends DsBaseAction {
 	
 	private static final List<String> acceptedFileTypes = Arrays.asList("xml", "shp", "run");	
 	
-	private Ds2dsConfiguration configuration = null;
+	protected Ds2dsConfiguration configuration = null;
 		
 	public Ds2dsAction(Ds2dsConfiguration actionConfiguration) {
 		super(actionConfiguration);

@@ -40,6 +40,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -159,7 +160,8 @@ public class ActionTest {
 		executeAction("shp");
 		
 		configuration = new Ds2dsConfiguration("id", "name", "description");						
-		configuration.getOutputFeature().getDataStore().putAll(dataStoreParameters);				
+		
+		configuration.getOutputFeature().getDataStore().putAll(dataStoreParameters);		
 		
 		receivedEvents.clear();		
 	}
@@ -419,6 +421,28 @@ public class ActionTest {
 	}
 	
 	@Test
+	public void testStaticConfig() {
+		try {
+			String originalTypeName = "other";
+			configuration.getSourceFeature().getDataStore().putAll(sourceStoreParameters);
+			configuration.getSourceFeature().setTypeName(originalTypeName);	
+
+			executeAction("run");
+			
+			assertReceivedEvent("completed");
+			assertTrue("RUN extension input file changes runtime source configuration", configuration.getSourceFeature().getTypeName().equals(action.configuration.getSourceFeature().getTypeName()));
+			
+			executeAction("xml");
+			
+			assertReceivedEvent("completed");
+			assertFalse("XML extension input file NOT changes runtime source configuration", configuration.getSourceFeature().getTypeName().equals(action.configuration.getSourceFeature().getTypeName()));
+
+		} catch (Exception e) {
+			fail("Action failure in execution: " + e.getLocalizedMessage());
+		} 
+	}
+	
+	@Test
 	public void testAttributeRenaming() {	
 		try {
 			Map<String,Serializable> attributes=new HashMap<String,Serializable>();
@@ -571,7 +595,12 @@ public class ActionTest {
 	}
 
 	private File getResourceFile(String resource) throws URISyntaxException {
-		return new File(this.getClass().getResource("/test-data/"+resource).toURI());
+		URL resUrl = this.getClass().getResource("/test-data/"+resource);
+		if(resUrl == null){
+			return new File(resource);
+		}else{
+			return new File(resUrl.toURI());
+		}
 	}
 	
 	private long getRecordCountFromDatabase(String tableName) throws SQLException {
