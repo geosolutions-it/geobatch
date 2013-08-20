@@ -73,7 +73,7 @@ public class Ds2dsAction extends DsBaseAction {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(Ds2dsAction.class);
 	
-	private static final List<String> acceptedFileTypes = Arrays.asList("xml", "shp");	
+	private static final List<String> acceptedFileTypes = Arrays.asList("xml", "shp", "run");	
 	
 	private Ds2dsConfiguration configuration = null;
 		
@@ -256,6 +256,10 @@ public class Ds2dsAction extends DsBaseAction {
 		Queue<FileSystemEvent> result = new LinkedList<FileSystemEvent>();
 		
 		FileSystemEvent fileEvent = (FileSystemEvent) event;
+		if(! fileEvent.getSource().exists()) {
+            result.add(fileEvent);
+            return result;        
+        }
 		updateTask("Looking for compressed file");	
 		try {
 			String filePath = fileEvent.getSource().getAbsolutePath();
