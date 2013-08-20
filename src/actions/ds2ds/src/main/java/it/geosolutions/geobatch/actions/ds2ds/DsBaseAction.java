@@ -416,12 +416,14 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 		updateTask("Connecting to source DataStore");
 		String fileType = getFileType(fileEvent);
 		FeatureConfiguration sourceFeature = configuration.getSourceFeature();
-        if(sourceFeature == null){
 		if(fileType.equals("xml")) {
 			InputStream inputXML = null;
 			try {
 				inputXML = new FileInputStream(fileEvent.getSource());
-				sourceFeature  = FeatureConfiguration.fromXML(inputXML);
+				FeatureConfiguration inputSourceFeature  = FeatureConfiguration.fromXML(inputXML);
+				if(inputSourceFeature != null){
+					sourceFeature = inputSourceFeature;
+				}
 			} catch (Exception e) {
 	            throw new IOException("Unable to load input XML", e);
 	        } finally {
@@ -431,7 +433,6 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 			sourceFeature.getDataStore()
 					.put("url", DataUtilities.fileToURL(fileEvent.getSource()));
         }
-		}
 		DataStore source = createDataStore(sourceFeature.getDataStore());
 		// if no typeName is configured, takes the first one registered in store
 		if(sourceFeature.getTypeName() == null) {
