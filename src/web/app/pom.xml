@@ -151,17 +151,13 @@
           </dependency -->
         </dependencies>
         <!-- The configuration of the plugin -->
-        <configuration>
-          <!-- Configuration of the archiver -->
-          <archive>
-            <!-- Manifest specific configuration -->
-            <manifest>
-              <!-- Classpath is added to the manifest of the created jar file. -->
+        <configuration>  <!-- Configuration of the archiver -->
+          <archive>      <!-- Manifest specific configuration -->
+            <manifest>   <!-- Classpath is added to the manifest of the created jar file. -->
               <addClasspath>true</addClasspath>
               <!-- Configures the classpath prefix. This configuration option is used 
 						to specify that all needed libraries are found under lib/ directory. -->
-              <classpathPrefix>${geobatch_starter.classpath}</classpathPrefix>
-              <!-- Specifies the main class of the application -->
+              <classpathPrefix>${geobatch_starter.classpath}</classpathPrefix> <!-- Specifies the main class of the application -->
               <mainClass>it.geosolutions.geobatch.jetty.Start</mainClass>
             </manifest>
           </archive>
@@ -225,17 +221,24 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
-        <version>6.1.8</version>
+        <version>6.1.26</version>
+<!--        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>9.0.4.v20130625</version>        -->
+
         <configuration>
           <contextPath>geobatch</contextPath>
+
           <connectors>
             <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
               <port>8081</port>
               <maxIdleTime>10000</maxIdleTime>
             </connector>
           </connectors>
-          <contextPath>geobatch</contextPath>
+
           <webAppSourceDirectory>${project.build.directory}/geobatch</webAppSourceDirectory>
+          <war>${basedir}/target/geobatch</war> <!-- used by run-exploded - new plugin -->
+          <webApp>${basedir}/target/geobatch</webApp> <!-- used by run-exploded - old plugin -->
         </configuration>
       </plugin>
     </plugins>
