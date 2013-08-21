@@ -1,6 +1,9 @@
-<web-app id="geobatch" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_5.xsd">
+<web-app id="geobatch" version="2.5"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" >
+    
 	<display-name>GeoBatch</display-name>
 	<description>GeoSolutions GeoBatch</description>
  
@@ -18,7 +21,7 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 			classpath*:/applicationContext.xml 
-			WEB-INF/applicationContextSecurity.xml</param-value>
+			classpath:applicationContextGBSecurity.xml</param-value>
 	</context-param>
 	<!--  spring context loader -->
 	<listener>

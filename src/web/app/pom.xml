@@ -51,6 +51,13 @@
 
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
+      <artifactId>gb-web-core</artifactId>
+      <classifier>classes</classifier>
+      <version>1.4-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-dao-xstream</artifactId>
     </dependency>
 
@@ -166,6 +173,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>2.3</version>
+
         <configuration>
           <warName>geobatch</warName>
           <outputDirectory>${site.outdir}</outputDirectory>
@@ -174,13 +182,14 @@
             <overlay>
                 <groupId>it.geosolutions.geobatch</groupId>
                 <artifactId>gb-web-core</artifactId>
-              <excludes>
-                <exclude>WEB-INF/classes/images/sampleimage-dependency.jpg</exclude>
-              </excludes>
+                <excludes>
+                   <exclude>WEB-INF/classes/**/*</exclude> <!-- imported as jar -->
+                   <exclude>WEB-INF/lib/**/*</exclude>     <!-- imported as dependencies -->
+                </excludes>
             </overlay>
           </overlays>
-
         </configuration>
+
         <executions>
           <execution>
             <id>install</id>
@@ -199,7 +208,7 @@
         </executions>
       </plugin>
 
-      <plugin>
+<!--      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>2.3</version>
@@ -208,13 +217,11 @@
             <overlay>
               <groupId>it.geosolutions.geobatch</groupId>
               <artifactId>gb-web-core</artifactId>
-<!--              <excludes>
-                <exclude>WEB-INF/classes/images/sampleimage-dependency.jpg</exclude>
-              </excludes>-->
             </overlay>
           </overlays>
         </configuration>
-      </plugin>
+      </plugin>-->
+
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
