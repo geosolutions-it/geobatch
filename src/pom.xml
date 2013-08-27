@@ -342,9 +342,10 @@
       </dependency>
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb-gui</artifactId>
+        <artifactId>gb-web-core</artifactId>
         <version>${project.version}</version>
       </dependency>
+
       <!-- CAMEL -->
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
@@ -1455,6 +1456,11 @@
           <artifactId>cxf-rt-core</artifactId>
           <version>${cxf-version}</version>
       </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-api</artifactId>
+          <version>${cxf-version}</version>
+        </dependency>
 
       <!--============================================================= -->
       <!-- TEST STUFF ================================================= -->
@@ -1962,7 +1968,7 @@
     <module>users</module>
     <module>ftp-server</module>
     <module>actions</module>
-    <module>gui</module>
+<!--    <module>gui</module> -->
     <module>web</module>
     <!-- other conditional modules are listed in the profiles section -->
   </modules>
