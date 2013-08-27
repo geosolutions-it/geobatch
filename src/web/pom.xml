@@ -27,6 +27,7 @@
   </properties>
   <!-- default modules -->
   <modules>
+    <module>core</module>
     <module>app</module>
     <module>dist</module>
   </modules>

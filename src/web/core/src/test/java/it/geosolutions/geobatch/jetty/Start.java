@@ -1,7 +1,7 @@
 /*
  *  GeoBatch - Open Source geospatial batch processing system
  *  http://geobatch.geo-solutions.it/
- *  Copyright (C) 2007-2013 GeoSolutions S.A.S.
+ *  Copyright (C) 2007-2012 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -25,14 +25,13 @@ package it.geosolutions.geobatch.jetty;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.util.Iterator;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.bio.SocketConnector;
-import org.mortbay.jetty.webapp.WebAppClassLoader;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.thread.BoundedThreadPool;
 import org.slf4j.Logger;
@@ -44,7 +43,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Andrea Aime - GeoSolutions SAS
  * @author Carlo Cancellieri - GeoSolutions SAS
- * @author Emanuele Tajariol - GeoSolutions SAS
  * 
  */
 public class Start {
@@ -75,6 +73,7 @@ public class Start {
             server.setHandler(configureContext(prop));
 
             conn = configureConnection(prop);
+
             server.setConnectors(new Connector[] { conn });
 
             server.start();
@@ -104,6 +103,10 @@ public class Start {
         }
     }
 
+    public final static String JETTY_PORT = "jetty.port";
+
+    public final static String JETTY_PORT_DEFAULT = "8080";
+
     private static Properties loadProperties(final File props) throws IllegalArgumentException,
             IOException {
         Properties prop = new Properties();
@@ -122,25 +125,16 @@ public class Start {
     }
 
     private static int parseInt(String portVariable) {
+        if (portVariable == null) {
+            return -1;
+        }
+
         try {
-            return Integer.parseInt(portVariable);
-        } catch (Exception e) {
+            return Integer.valueOf(portVariable).intValue();
+        } catch (NumberFormatException e) {
             return -1;
         }
     }
-
-    public final static String JETTY_PORT_PROP = "jetty.port";
-    public final static String JETTY_PORT_DEFAULT = "8080";
-
-    public final static String CONTEXT_PATH_PROP = "context.path";
-    public final static String CONTEXT_PATH_DEFAULT = "/geobatch";
-
-    public final static String WAR_PATH_PROP = "war.path";
-    public final static String WAR_PATH_DEFAULT = "target/geobatch"; // working with WAR overlays
-//    public final static String WAR_PATH_DEFAULT = "src/main/webapp";
-
-    public final static String TEMP_DIR_PROP = "temp.dir";
-    public final static String TEMP_DIR_DEFAULT = "target/work";
 
     private static SocketConnector configureConnection(final Properties prop) {
         // don't even think of serving more than XX requests in parallel...
@@ -150,71 +144,39 @@ public class Start {
 
         SocketConnector conn = new SocketConnector();
 
-        conn.setPort(parseInt(prop.getProperty(JETTY_PORT_PROP, JETTY_PORT_DEFAULT)));
+        conn.setPort(parseInt(prop.getProperty(JETTY_PORT, JETTY_PORT_DEFAULT)));
         conn.setThreadPool(tp);
         conn.setAcceptQueueSize(100);
 
         return conn;
     }
 
+    public final static String CONTEXT_PATH = "context.path";
+
+    public final static String CONTEXT_PATH_DEFAULT = "/geobatch";
+
+    public final static String WAR_PATH = "war.path";
+
+    public final static String WAR_PATH_DEFAULT = "src/main/webapp";
+
+    public final static String TEMP_DIR = "temp.dir";
+
+    public final static String TEMP_DIR_DEFAULT = "target/work";
+
     private static WebAppContext configureContext(final Properties prop) {
         WebAppContext wah = new WebAppContext();
 
-        wah.setContextPath(prop.getProperty(CONTEXT_PATH_PROP, CONTEXT_PATH_DEFAULT));
-
-        final String warPath = prop.getProperty(WAR_PATH_PROP, WAR_PATH_DEFAULT);
-        wah.setWar(warPath);
-
-        wah.setTempDirectory(new File(prop.getProperty(TEMP_DIR_PROP, TEMP_DIR_DEFAULT)));
-
-        // we need to skip the libs in WEB-INF bc they are already included as dependencies.
-        try {
-            String skipPath = warPath;
-            if( ! skipPath.endsWith("/"))
-                skipPath += "/";
-            skipPath += "WEB-INF/lib";
-            log.info("Libs with path containing " + skipPath + " will be skipped");
-
-            final FilterClassLoader classLoader = new FilterClassLoader(wah);
-            classLoader.setSkipPath(skipPath);
-            wah.setClassLoader(classLoader);
-        } catch (IOException ex) {
-            log.error("Cannot set classloader", ex);
-        }
-
+        wah.setContextPath(prop.getProperty(CONTEXT_PATH, CONTEXT_PATH_DEFAULT));
+        wah.setWar(prop.getProperty(WAR_PATH, WAR_PATH_DEFAULT));
+        wah.setTempDirectory(new File(prop.getProperty(TEMP_DIR, TEMP_DIR_DEFAULT)));
         return wah;
     }
 
     private static void setSystemProperties(final Properties prop) {
-        for (Object key : prop.keySet()) {
-            System.out.println(" --- Setting prop '"+key+"' --> "+ prop.get(key));
+        Iterator<?> it = prop.keySet().iterator();
+        while (it.hasNext()) {
+            Object key = it.next();
             System.setProperty(key.toString(), prop.get(key).toString());
         }
-        System.out.println("");
-    }
-
-    static class FilterClassLoader extends WebAppClassLoader {
-
-        private String skipPath;
-
-        public FilterClassLoader(WebAppContext context) throws IOException {
-            super(context);
-        }
-
-        public void setSkipPath(String skipPath) {
-            this.skipPath = skipPath;
-        }
-
-        @Override
-        protected void addURL(URL url) {
-            if(url.toString().contains(skipPath)) {
-                log.debug("Skipping lib " + url);
-            } else {
-                super.addURL(url);
-            }
-        }
-
     }
 }
-
-

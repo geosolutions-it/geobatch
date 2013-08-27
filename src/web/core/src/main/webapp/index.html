@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title wicket:id="pageTitle">GeoBatch</title>
+<link href="img/favicon.ico" rel="shortcut icon" />
+<link rel="stylesheet" href="css/blueprint/screen.css" type="text/css"
+	media="screen, projection" />
+<link rel="stylesheet" href="css/blueprint/print.css" type="text/css"
+	media="print" />
+<link rel="stylesheet" href="css/app.css" type="text/css"
+	media="screen, projection" />
+<!--[if IE]>
+        <link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection" />
+	    <link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" />
+      <![endif]-->
+</head>
+<body>
+<div id="header">
+<div class="wrap">
+<h2><a wicket:id="home" class="pngfix" href="#"><span
+	wicket:id="label">GeoBatch</span></a></h2>
+<div class="button-group selfclear"></div>
+</div>
+<!-- /.wrap --></div>
+<!-- /#header -->
+<div id="main">
+<div class="wrap selfclear"><!--div id="sidebar">
+
+
+    </div--><!-- /#sidebar -->
+<div id="page" class="selfclear">
+<div class="page-header">
+
+<div class="header-panel"></div>
+<h1>Info</h1>
+<p><b>Geobatch</b> is an event-based geospatial aware batch
+processing system to ease the development, the deploy, and the
+management of jobs on streams of geospatial data.Geobatch provides basic
+components for the collection, processing and publication of data.</p>
+<br />
+<h2>Flow Manager</h2>
+<p>
+<ul>
+	<li>- A batch job in GeoBatch is an XML configuration file called
+	"<b>flow</b>".</li>
+	<li>- Each flow consists of three sections: a descriptive part, a
+	second one which is dedicated to data streams monitoring
+	(eventGeneratorConfiguration) and the final one which is devoted to
+	recognition of particular files within a stream, its elaboration and
+	final publication (eventConsumerConfiguration).</li>
+</ul>
+</p>
+<br />
+<h2>Job Execution and Management</h2>
+<p>
+<ul>
+	<li>- A simple web application can be used to run jobs, view the
+	list, check the status, start, stop or dispose</li>
+	<li>- Flow can start automatically on application server startup.</li>
+</ul>
+</p>
+</div>
+</div>
+<center>
+<table width="60%">
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+		<center><a href='flows.do'><img src="img/manageFlows.png"
+			alt="Manage flows" /></a></center>
+		</td>
+		<td>
+		<center><a href='ftp.do?view=status'><img
+			src="img/manageFTP.png" alt="Manage ftp and users" /></a></center>
+		</td>
+		<td>
+		<center><a href='memoryController.do'><img
+			src="img/activity_monitor.png" alt="Memory monitor" /></a></center>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+		<center><B><a href='flows.do'>Manage flows</a></B></center>
+		</td>
+		<td>
+		<center><B><a href='ftp.do?view=status'>Manage ftp
+		and users</a></B></center>
+		</td>
+		<td>
+		<center><B><a href='memoryController.do'>Memory
+		monitor</a></B></center>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td></td>
+		<td>
+		<center>
+		<a href="http://www.geo-solutions.it/"><img
+			src="img/geoSolutions-logo.png" alt="Geo-Solutions" /></a></p>
+		</center>
+		<center>
+		<p><small><small><a href="http://www.geo-solutions.it/">
+			Copyright &copy; 2005 - 20011 GeoSolutions</a></small></small></p>
+		</center>
+		</td>
+		<td></td>
+		<td>&nbsp;</td>
+	</tr>
+</table>
+</center>
+
+<div class="page-pane selfclear"></div>
+<!-- /#page --></div>
+<!-- /.wrap> --></div>
+<!-- /#main -->
+
+</body>
+</html>
