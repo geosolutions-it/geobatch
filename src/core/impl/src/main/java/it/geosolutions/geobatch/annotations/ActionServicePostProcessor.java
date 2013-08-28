@@ -31,6 +31,8 @@ import java.util.List;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
@@ -57,9 +59,11 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
  * @see     BeanPostProcessor
  */
 
-public class ActionServicePostProcessor extends AbstractActionServicePostProcessor implements BeanPostProcessor{
+public class ActionServicePostProcessor extends AbstractActionServicePostProcessor implements BeanPostProcessor, ApplicationContextAware {
 
 	private static List<GenericActionService> actionList = new ArrayList<GenericActionService>();
+
+    private ApplicationContext applicationContext;
 
 	public static List<GenericActionService> getActionList() {
 		return actionList;
@@ -86,6 +90,7 @@ public class ActionServicePostProcessor extends AbstractActionServicePostProcess
 						aliasRegistry.putAlias(alias, configurationClass);
 
 						GenericActionService asr = new GenericActionService(annotation.configurationClass().getSimpleName(),actionClass);
+                        asr.setApplicationContext(applicationContext);
 						actionList.add(asr); 
 					}
 				} catch (Exception e) {
@@ -102,5 +107,9 @@ public class ActionServicePostProcessor extends AbstractActionServicePostProcess
 		return bean;
 	}
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
 }

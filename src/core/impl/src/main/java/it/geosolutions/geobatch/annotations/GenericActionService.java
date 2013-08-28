@@ -31,6 +31,8 @@ import java.util.EventObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractRefreshableApplicationContext;
 
 /**
  * @author DamianoG
@@ -42,6 +44,8 @@ public class GenericActionService implements Resource {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GenericActionService.class);
 	private Class<? extends BaseAction<? extends EventObject>> actionType;
 	private String id;
+
+    private ApplicationContext applicationContext;
 
 	public GenericActionService(String id, Class<? extends BaseAction<? extends EventObject>> actionType){
 		this.id = id;
@@ -72,16 +76,18 @@ public class GenericActionService implements Resource {
 		if(el != null){
 			el.setAccessible(true);
 			StringBuilder sb = new StringBuilder();
-			sb.append("Find an CanCreateAction annotated method called: ").append(el.getName());
+			sb.append("Found a @CheckConfiguration annotated method called: ").append(el.getName());
 			if(LOGGER.isDebugEnabled()){
 				LOGGER.debug(sb.toString());
 			}
 			try {			
 				isConfigurationOk = (Boolean) el.invoke(actionType.getDeclaredConstructor(actionConfig.getClass()).newInstance(actionConfig));
 			} catch (Exception e) {
-				StringBuilder sb2 = new StringBuilder();
-				sb2.append("An exception has occurred while invoking the canCreateAction").append(". The result will be forced to false, please check and fix this abnormal situation. - ").append(e.getLocalizedMessage());
 				if(LOGGER.isWarnEnabled()){
+                    StringBuilder sb2 = new StringBuilder();
+                    sb2.append("An exception has occurred while invoking the CheckConfiguration")
+                            .append(". The result will be forced to false, please check and fix this abnormal situation. - ")
+                            .append(e.getLocalizedMessage());
 					LOGGER.warn(sb2.toString(), e);
 				}
 				isConfigurationOk = false;
@@ -96,19 +102,24 @@ public class GenericActionService implements Resource {
 	 * @param actionConfig
 	 * @return
 	 */
-	public BaseAction<? extends EventObject> createAction(Class<? extends BaseAction<? extends EventObject>> actionClass,
+	public <T extends BaseAction<? extends EventObject>> T createAction(
+            Class<T> actionClass,
 			ActionConfiguration actionConfig) {
-
-		Constructor<? extends BaseAction<? extends EventObject>> constructor;
+		
 		try {
-			constructor = actionClass.getConstructor(actionConfig.getClass());
-			return constructor.newInstance(actionConfig);
+            LOGGER.info("Instantiating action " + actionClass.getSimpleName());
+			Constructor<T> constructor =
+                    actionClass.getConstructor(actionConfig.getClass());
+            T newInstance = constructor.newInstance(actionConfig);
+
+            ((AbstractRefreshableApplicationContext)applicationContext).getBeanFactory().autowireBean(newInstance);
+            return newInstance;
 		} catch (Exception e) {
 			if (LOGGER.isErrorEnabled()) {
 				LOGGER.error(e.getLocalizedMessage(), e);
 			}
 			throw new IllegalStateException(
-					"A fatal error occurred while instantiate the action class... "
+					"A fatal error occurred while instantiate the action class " + actionClass.getSimpleName() +": "
 							+ e.getLocalizedMessage());
 		}
 	}
@@ -128,5 +139,9 @@ public class GenericActionService implements Resource {
 	public void dispose() {
 		// TODO wich implementation goes here???
 	}
+
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
 }
