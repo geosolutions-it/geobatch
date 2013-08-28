@@ -31,6 +31,7 @@ import java.util.EventObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractRefreshableApplicationContext;
 
@@ -86,8 +87,9 @@ public class GenericActionService implements Resource {
 				if(LOGGER.isWarnEnabled()){
                     StringBuilder sb2 = new StringBuilder();
                     sb2.append("An exception has occurred while invoking the CheckConfiguration")
-                            .append(". The result will be forced to false, please check and fix this abnormal situation. - ")
-                            .append(e.getLocalizedMessage());
+                            .append(". The result will be forced to false, please check and fix this abnormal situation. ");
+                    if(e.getMessage() != null)
+                            sb2.append(e.getMessage());
 					LOGGER.warn(sb2.toString(), e);
 				}
 				isConfigurationOk = false;
@@ -97,7 +99,12 @@ public class GenericActionService implements Resource {
 	}
 
 	/**
-	 * Istantiate an action class from the Class type and the ActionConfig provided
+	 * Istantiate an action class from the Class type and the ActionConfig provided.
+     * <p/>
+     * Once the class is instantiated: <ol>
+     * <li>{@code @autowire} fields are autowired</li>
+     * <li>{@code afterPropertiesSet()} is called if {@code InitializingBean} is declared</li>
+     * </ol>
 	 * @param actionClass
 	 * @param actionConfig
 	 * @return
@@ -113,6 +120,10 @@ public class GenericActionService implements Resource {
             T newInstance = constructor.newInstance(actionConfig);
 
             ((AbstractRefreshableApplicationContext)applicationContext).getBeanFactory().autowireBean(newInstance);
+            if(InitializingBean.class.isAssignableFrom(actionClass)) {
+                ((InitializingBean)newInstance).afterPropertiesSet();
+            }
+
             return newInstance;
 		} catch (Exception e) {
 			if (LOGGER.isErrorEnabled()) {
