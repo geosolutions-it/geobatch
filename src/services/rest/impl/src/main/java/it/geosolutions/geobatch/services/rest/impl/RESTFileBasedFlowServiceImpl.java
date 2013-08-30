@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
+import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
 import it.geosolutions.geobatch.flow.event.listeners.status.StatusProgressListener;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
@@ -43,14 +44,22 @@ import it.geosolutions.geobatch.services.rest.model.RESTConsumerShort;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus;
 import it.geosolutions.geobatch.services.rest.model.RESTFlow;
 import it.geosolutions.geobatch.services.rest.model.RESTFlowList;
+import it.geosolutions.geobatch.services.rest.model.RESTRunInfo;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EventObject;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import org.slf4j.Logger;
@@ -141,18 +150,95 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
         }
 
         final FlowRunner fr = new FlowRunner(flowMan, dataDirHandler);
-        String consumerUUID = null;
+        FileBasedEventConsumer consumer = null;
         try {
-            if(LOGGER.isInfoEnabled()){LOGGER.info("Creating new consumer...");}
-            consumerUUID = fr.createConsumer();
-            if(LOGGER.isInfoEnabled()){LOGGER.info("Starting the flow");}
-            fr.runConsumer(consumerUUID, eventFile);
+            if(LOGGER.isInfoEnabled()){LOGGER.info("Creating new consumer for flow " + flowId);}
+            consumer = fr.createConsumer();
+            if(LOGGER.isInfoEnabled()){LOGGER.info("Starting the consumer " + flowId+"::"+consumer.getId());}
+
+            fr.runConsumer(consumer.getId(), Collections.singletonList(eventFile));
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
+            throw new InternalErrorRestEx(e.getMessage());
         }
-        return consumerUUID;
+        return consumer.getId();
     }
-    
+
+    @Override
+    public String runLocal(String flowId, Boolean fastfail, RESTRunInfo info) throws BadRequestRestEx, InternalErrorRestEx {
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Running instance of flow " + flowId +" -- " + info);
+        }
+
+        if(info.getFileList() == null || info.size()==0) {
+                throw new BadRequestRestEx("No file provided");
+        }
+
+        final FileBasedFlowManager flowMan = getAuthFlowManager(flowId);
+        if(flowMan == null) {
+            if(LOGGER.isInfoEnabled()) {
+                LOGGER.info("Flow not found: " + flowId);
+            }
+            throw new NotFoundRestEx("Flow not found: " + flowId);
+        }
+
+        List<File> fileList = new ArrayList<File>();
+        Set<String> filenames = new HashSet<String>(); // avoid name clash, files willb e copies
+        for (String filepath : info) {
+            File file = new File(filepath);
+            if( ! file.exists() ) {
+                LOGGER.warn("File not found " + filepath); // we don't want to expose this info outside
+                throw new NotFoundRestEx(("File not found"));
+            }
+            // check for dups
+            String name = file.getName();
+            if(filenames.contains(name))
+                throw new BadRequestRestEx("Duplicated names in list");
+            filenames.add(name);
+
+            fileList.add(file);
+        }
+
+        final FlowRunner fr = new FlowRunner(flowMan, dataDirHandler);
+        FileBasedEventConsumer consumer = null;
+        try {
+            if(LOGGER.isInfoEnabled()){LOGGER.info("Creating new consumer for flow " + flowId);}
+            consumer = fr.createConsumer();
+            if(LOGGER.isInfoEnabled()){LOGGER.info("Starting the consumer " + flowId+"::"+consumer.getId());}
+
+            List<File> copiedFiles = createWorkCopy(fileList, consumer.getFlowInstanceTempDir());
+
+            fr.runConsumer(consumer.getId(), copiedFiles);
+        } catch (InternalErrorRestEx e) {
+            LOGGER.error(e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new InternalErrorRestEx(e.getMessage());
+        }
+        return consumer.getId();
+    }
+
+    public static final String REST_INPUT_DIR = "rest_input";
+
+    private static List<File> createWorkCopy(List<File> fileList, File flowInstanceTempDir) throws InternalErrorRestEx {
+        File dstDir = new File(flowInstanceTempDir, REST_INPUT_DIR);
+        List<File> ret = new ArrayList<File>(fileList.size());
+        try {
+            for (File file : fileList) {
+                File dstFile = new File(dstDir, file.getName());
+                FileUtils.copyFile(file, dstFile);
+                ret.add(dstFile);
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new InternalErrorRestEx("Error while copying files");
+        }
+        return ret;
+    }
+
+
+
     /**
      * @see it.geosolutions.geobatch.services.rest.RESTFlowService#getFlowConsumers(java.lang.String)
      */

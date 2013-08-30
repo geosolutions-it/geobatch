@@ -61,7 +61,7 @@ public class FlowRunner {
         this.dataDirHandler = dataDirHandler;
     }
 
-    public String createConsumer() throws Exception {
+    public FileBasedEventConsumer createConsumer() throws Exception {
 
         if (flowManager == null || flowManager.getConfiguration() == null) {
             throw new IllegalArgumentException("Unable to work with null configuration");
@@ -102,19 +102,25 @@ public class FlowRunner {
                             + "Please dispose some completed consumer before submit a new one.");
         }
 
-        return consumer.getId();
+        return consumer;
     }
 
-    public void runConsumer(String uuid, File event) throws Exception {
+    public void runConsumer(String uuid, List<File> fileList) throws Exception {
 
-        if (uuid == null || event == null) {
+        if (uuid == null || fileList == null) {
             throw new IllegalArgumentException("Unable to run using null arguments: uuid=" + uuid
-                    + " event=" + event);
+                    + " event=" + fileList);
+        }
+
+        if (fileList.isEmpty()) {
+            throw new IllegalArgumentException("Unable to run using empty event list: uuid=" + uuid);
         }
 
         EventConsumer consumer = getConsumer(uuid);
 
-        consumer.consume(new FileSystemEvent(event, FileSystemEventType.FILE_ADDED));
+        for (File file : fileList) {
+            consumer.consume(new FileSystemEvent(file, FileSystemEventType.FILE_ADDED));
+        }
 
         // Run consumer
         flowManager.getExecutor().submit(consumer);

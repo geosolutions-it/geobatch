@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.services.rest.model.RESTConsumerList;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus;
 import it.geosolutions.geobatch.services.rest.model.RESTFlow;
 import it.geosolutions.geobatch.services.rest.model.RESTFlowList;
+import it.geosolutions.geobatch.services.rest.model.RESTRunInfo;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -91,6 +92,34 @@ public interface RESTFlowService {
     String run(@PathParam("flowid") String flowId,
             @QueryParam("fastfail") Boolean fastfail,
             @Multipart("data") byte[]data)
+                throws BadRequestRestEx, InternalErrorRestEx;
+
+    /**
+     * Starts a flow using the file list provided.
+     *
+     * The info param contains one or more filepaths that will be used to create the FileSystemEvents.
+     *
+     * <B>WARNING</B>: This operation exposes all system files accessible by GB, so we'll may want to implement
+     * some sort of filtering to accessible resources.
+     *
+     * Since many actions are used to delete or manipulate the input files, the listed files will be copied in a work directory
+     * and the process will be performed on the copied files.
+     * <br/> To prevent filename clash when copying all the files, all the file should have different names.
+     * Input files will not be renamed since the filename could have some extra info encoded.
+     *
+     * @param flowId
+     * @param fastfail
+     * @param info filepaths to be provided as FileSystemEvents to the Action's input queue
+     * @return
+     * @throws BadRequestRestEx
+     * @throws InternalErrorRestEx
+     * @throws NotFoundRestEx
+     */
+    @POST
+    @Path("/flows/{flowid}/runlocal")
+    String runLocal(@PathParam("flowid") String flowId,
+            @QueryParam("fastfail") Boolean fastfail,
+            @Multipart("info") RESTRunInfo info)
                 throws BadRequestRestEx, InternalErrorRestEx;
 
     /**
