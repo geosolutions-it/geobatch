@@ -59,10 +59,14 @@ import org.geotools.jdbc.NonIncrementingPrimaryKeyColumn;
 import org.geotools.jdbc.PrimaryKey;
 import org.geotools.jdbc.PrimaryKeyColumn;
 import org.geotools.jdbc.PrimaryKeyFinder;
+import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -456,13 +460,38 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 	 * @return
 	 * @throws IOException
 	 */
-	protected Query buildSourceQuery(DataStore sourceStore) throws Exception {
-		Query query = new Query();
-		query.setTypeName(configuration.getSourceFeature().getTypeName());
-		query.setCoordinateSystem(configuration.getSourceFeature().getCoordinateReferenceSystem());
-		query.setFilter(buildFilter());
-		return query;
-	}
+        protected Query buildSourceQuery(DataStore sourceStore) throws Exception {
+            Query query = new Query();
+            query.setTypeName(configuration.getSourceFeature().getTypeName());
+            
+            // Used to force the CRS of the source feature: it doesn't perform a reprojection, just force the CRS
+            // if the configuration doesn't specify it the Crs will be read from the source feature
+            query.setCoordinateSystem(configuration.getSourceFeature().getCoordinateReferenceSystem());
+            
+            // Used to reproject the source feature: if the CRS has been forced (see before) the reprojection
+            // is performed between the forced CRS (query.getCoordinateSystem()) and the CRS specified for reprojection (query.getCoordinateSystemReproject)
+            // otherwise the origin CRS is read from src feature
+            CoordinateReferenceSystem coordinateReferenceSystemTarget = null;
+            String epsgCode = configuration.getReprojectedCrs();
+            if(epsgCode != null){
+                // In case this property is still not set we have to set it before start with reprojection
+                // to avoid wrong axis ordering 
+                if (System.getProperty("org.geotools.referencing.forceXY") == null) {
+                    System.setProperty("org.geotools.referencing.forceXY", "true");
+                }
+                try {
+                    coordinateReferenceSystemTarget = CRS.decode(epsgCode);
+                } catch (NoSuchAuthorityCodeException e) {
+                    throw new IllegalArgumentException("Invalid crs: " + epsgCode);
+                } catch (FactoryException e) {
+                    throw new IllegalArgumentException("Invalid crs: " + epsgCode);
+                }
+            }
+            query.setCoordinateSystemReproject(coordinateReferenceSystemTarget);
+            query.setFilter(buildFilter());
+            return query;
+        }
+
 
     /**
 	 * Creates the source datastore reader.
