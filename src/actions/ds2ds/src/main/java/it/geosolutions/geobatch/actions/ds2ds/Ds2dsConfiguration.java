@@ -46,25 +46,37 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 	// output feature configuration object
 	private FeatureConfiguration outputFeature;
 	
-	// purge (remove) data from the output feature before importing
-	// If the configuration specify an ecqlFilter only the features selected by the filter will be purged
-	// If no filter are provided this flag remove all feature as forcePurgeAllData
+	/**
+	 * purge (remove) data from the output feature before importing
+	 * If the configuration specify an ecqlFilter only the features selected by the filter will be purged
+	 * If no filter are provided this flag remove all feature as forcePurgeAllData
+	 */
 	private Boolean purgeData = false;
 	
-	// purge (remove) ALL data from the output feature before importing although a filter is specified
-	// if this flag is set to TRUE the flag purgeData has no effect.
+	/**
+	 *  purge (remove) ALL data from the output feature before importing although a filter is specified if this flag is set to TRUE the flag purgeData has no effect.
+	 */
 	private Boolean forcePurgeAllData = false;
 	
-	// optional mappings (renaming) from source feature attributes to
-	// output (key is output attribute name, value is source attribute name
+	/**
+	 *  optional mappings (renaming) from source feature attributes to output (key is output attribute name, value is source attribute name
+	 */
 	private Map<String,Serializable> attributeMappings; 
 	
-	// execute a projection on the attribureMappings property, skipping
-	// source properties non included in the map
+	/**
+	 *  execute a projection on the attribureMappings property, skipping source properties non included in the map
+	 */
 	private Boolean projectOnMappings = false;
 	
-	//optional ecql filter in order to filter the source store
+	/**
+	 * optional ecql filter in order to filter the source store
+	 */
 	private String ecqlFilter;
+	
+	/**
+         * coordinate system (EPSG code) used for feature reprojection.
+         */
+        private String reprojectedCrs;
 	
 	public Ds2dsConfiguration(String id, String name, String description) {
 		super(id, name, description);		
@@ -204,6 +216,20 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 		 setProjectOnMappings(true);
 	}
 	
+        /**
+         * @param reprojectedCrs the reprojectedCrs to set
+         */
+        public void setReprojectedCrs(String reprojectedCrs) {
+            this.reprojectedCrs = reprojectedCrs;
+        }
+        
+        /**
+         * @return the reprojectedCrs
+         */
+        public String getReprojectedCrs() {
+            return reprojectedCrs;
+        }
+
     @Override
     public Ds2dsConfiguration clone() {
         final Ds2dsConfiguration ret = (Ds2dsConfiguration)super.clone();
