@@ -467,7 +467,6 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
             // Used to force the CRS of the source feature: it doesn't perform a reprojection, just force the CRS
             // if the configuration doesn't specify it the Crs will be read from the source feature
             query.setCoordinateSystem(configuration.getSourceFeature().getCoordinateReferenceSystem());
-            
             // Used to reproject the source feature: if the CRS has been forced (see before) the reprojection
             // is performed between the forced CRS (query.getCoordinateSystem()) and the CRS specified for reprojection (query.getCoordinateSystemReproject)
             // otherwise the origin CRS is read from src feature
