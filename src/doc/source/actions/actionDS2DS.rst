@@ -71,6 +71,7 @@ Will contain the following child elements:
     * **forcePurgeAllData**: remove ALL existing data from the output feature although a filter is specified. If this flag is set to TRUE the flag purgeData has no effect. The default value is false.
     * **attributeMappings**: attribute mappings (from output to source) for projection (see projectOnMappings) / renaming
     * **projectOnMappings**: if true only attribute present in attributeMappings are copied to the output feature
+    * **ReprojectedCrs**: specify a CRS as EPSG code used to perform a reprojection from SourceFeature to OutputFeature. Note that this feature is affected by *Source feature* and *Output feature crs* attributes settings. If *Source-crs* is not null the projection is performed from that CRS to the projectedCRS without read CRS from feature. If *Output-crs* is not null the projection will not affected but the feature will be stored as *Output-crs* otherwise the *ReprojectedCrs* code will be used.
 
 Configuration example:
 

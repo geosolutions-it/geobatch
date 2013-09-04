@@ -25,7 +25,6 @@ package it.geosolutions.geobatch.actions.ds2ds;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.annotations.CheckConfiguration;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.tools.compress.file.Extract;
 import it.geosolutions.tools.io.file.Collector;
@@ -52,6 +51,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -305,8 +305,19 @@ public class Ds2dsAction extends DsBaseAction {
 		CoordinateReferenceSystem crs = configuration.getOutputFeature()
 				.getCoordinateReferenceSystem();
 		if (crs == null) {
-			crs = sourceSchema.getCoordinateReferenceSystem();
-			configuration.getOutputFeature().setCoordinateReferenceSystem(crs);
+		        String reprojCrs = configuration.getReprojectedCrs();
+		        if(reprojCrs != null && !reprojCrs.isEmpty()){
+		            try {
+                                crs = CRS.decode(reprojCrs);
+                            } catch (Exception e) {
+                                LOGGER.error("Failed to decode reprojCrs, use src CRS for now but please fix the configuration. The exception occurred is " + e.getClass());
+                                crs = sourceSchema.getCoordinateReferenceSystem();
+                            }
+		        }
+		        else{
+		            crs = sourceSchema.getCoordinateReferenceSystem();
+		        }
+		        configuration.getOutputFeature().setCoordinateReferenceSystem(crs);
 		}
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setCRS(crs);

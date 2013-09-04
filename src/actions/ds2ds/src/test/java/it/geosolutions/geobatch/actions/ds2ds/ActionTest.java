@@ -56,13 +56,28 @@ import java.util.Queue;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureReader;
+import org.geotools.data.Query;
+import org.geotools.data.Transaction;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.referencing.CRS;
 import org.junit.Before;
 import org.junit.Test;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 public class ActionTest {
+        
+        private final static Logger LOGGER = LoggerFactory.getLogger(ActionTest.class);
+    
 	private static final Map<String,Serializable> dataStoreParameters = new HashMap<String, Serializable>();
 	private static final String dbName="mem:test;DB_CLOSE_DELAY=-1";
 	static {
@@ -518,7 +533,84 @@ public class ActionTest {
 		}		
 	}
 	
-
+	@Test
+        public void testReprojection() {   
+                try {
+                        final String CRS_SRC = "EPSG:4326";
+                        final String CRS_FOR_REPROJ = "EPSG:4322";
+                        //STEP 0 - obtain a geom in CRS_SRC to be compared later
+                        //Load the table with with a non reprojected import and get a feature to use as test 
+                        executeAction("shp");
+                        Geometry srcGeomCRS_SRC = getExampleGeomFromTableTest();
+                        Geometry trgGeom = null;
+                        assertEquals(getRecordCountFromDatabase("test"),49);
+                        
+                        dropAllDb(dbName);
+                        dropAllDb(dbNameSource);
+                        
+                        //STEP 1 - Do a on-the-fly reprojection to CRS_FOR_REPROJ, 
+                        //the reprojection will be performed:  
+                        //from EPSG:CRS_SRC
+                        configuration.getSourceFeature().setCrs(CRS_SRC);
+                        //to CRS_FOR_REPROJ
+                        configuration.setReprojectedCrs(CRS_FOR_REPROJ);
+                        //and set the output feature correctly to CRS_FOR_REPROJ
+                        configuration.getOutputFeature().setCrs(CRS_FOR_REPROJ);
+                        executeAction("shp");
+                        trgGeom = getExampleGeomFromTableTest();
+                        assertEquals(getRecordCountFromDatabase("test"),49);
+                        //Src and output features must be different (the reprojection has been done)
+                        assertFalse(srcGeomCRS_SRC.equals(trgGeom));
+                        //Check if CRS has been correctly assigned
+                        assertEquals(CRS.decode(CRS_FOR_REPROJ),getCrsFromDb("test"));
+//                        
+                        dropAllDb(dbName);
+                        dropAllDb(dbNameSource);
+                        
+                        //STEP 2 - Similar to the STEP1 but without forcing the output CRS...
+                        // the result must be the same as before
+                        configuration.getSourceFeature().setCrs(CRS_SRC);
+                        configuration.setReprojectedCrs(CRS_FOR_REPROJ);
+                        configuration.getOutputFeature().setCrs(null); // Reset the outputCRS
+                        executeAction("shp");
+                        assertEquals(getRecordCountFromDatabase("test"),49);
+                        assertFalse(srcGeomCRS_SRC.equals(trgGeom));
+                        assertEquals(CRS.decode(CRS_FOR_REPROJ),getCrsFromDb("test"));
+                        
+                        dropAllDb(dbName);
+                        dropAllDb(dbNameSource);
+                        
+                        //STEP 3 - Force source feature to CRS_FOR_REPROJ and reproject with the same CRS...
+                        //Although the source feature is in CRS_SRC we must get the same features due to src crs forcing
+                        configuration.setReprojectedCrs(CRS_FOR_REPROJ);
+                        configuration.getSourceFeature().setCrs(CRS_FOR_REPROJ);
+                        configuration.getOutputFeature().setCrs(CRS_FOR_REPROJ);
+                        executeAction("shp");
+                        trgGeom = getExampleGeomFromTableTest();
+                        assertEquals(getRecordCountFromDatabase("test"),49);
+                        assertTrue(srcGeomCRS_SRC.equals(trgGeom));
+                        assertEquals(CRS.decode(CRS_FOR_REPROJ),getCrsFromDb("test"));
+                        
+                        dropAllDb(dbName);
+                        dropAllDb(dbNameSource);
+                        
+                        //STEP 4 - Reproject trg in the same CRS as src... nothing should changes in trg feature
+                        configuration.setReprojectedCrs(CRS_SRC);
+                        configuration.getSourceFeature().setCrs(CRS_SRC);
+                        configuration.getOutputFeature().setCrs(null);
+                        executeAction("shp");
+                        trgGeom = getExampleGeomFromTableTest();
+                        assertEquals(getRecordCountFromDatabase("test"),49);
+                        assertTrue(srcGeomCRS_SRC.equals(trgGeom));
+                        assertEquals(CRS.decode(CRS_SRC),getCrsFromDb("test"));
+                        
+                } catch (ActionException e) {
+                        fail("Action failure in execution: " + e.getLocalizedMessage());
+                } catch (Exception e) {
+                        fail("Failure in decoding CRS: " + e.getLocalizedMessage());
+                }               
+        }
+	
 	private CoordinateReferenceSystem getCrsFromDb(String table) throws IOException {
 		DataStore dataStore = null;
 		try {
@@ -585,6 +677,41 @@ public class ActionTest {
 			return "";
 		}				
 	}
+	
+	/**
+	 * This utility method is useful when a test is needed between different imports using different reprojections
+	 * 
+	 * @return the geometry of the feature with the attribute STATE_NAME = Wyoming, null if the feature is not found
+	 */
+	private Geometry getExampleGeomFromTableTest() {
+	    Transaction t = new DefaultTransaction();
+	    DataStore ds = null;
+	    FeatureReader<SimpleFeatureType, SimpleFeature> fr = null;
+	    Query q = new Query();
+	    FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(); 
+	    Filter f = ff.equals(ff.property("STATE_NAME"), ff.literal("Wyoming"));
+	    q.setFilter(f);
+	    q.setTypeName("test");
+	    try {
+	            ds = DataStoreFinder.getDataStore(dataStoreParameters);
+                    fr = ds.getFeatureReader(q, t);
+                    return (Geometry)fr.next().getDefaultGeometry();
+            } catch (Exception e) {
+                    return null;
+            } finally{
+                try {
+                    t.close();
+                } catch (IOException e) {
+                    LOGGER.error("Error while closing transaction...");
+                }
+                try {
+                    fr.close();
+                } catch (IOException e) {
+                    LOGGER.error("Error while closing feature reader...");
+                }
+                ds.dispose();
+            }
+        }
 	
 	private void dropAllDb(String databaseName) throws SQLException {
 		executeOnDb(databaseName, "drop all objects", false);		
