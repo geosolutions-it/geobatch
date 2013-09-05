@@ -44,4 +44,6 @@ import java.lang.annotation.Target;
 public @interface Action {
 	Class<? extends ActionConfiguration> configurationClass();
 	String configurationAlias() default "";
+    Class[] aliases() default {};
+    String[] implicitCollections() default {};
 }

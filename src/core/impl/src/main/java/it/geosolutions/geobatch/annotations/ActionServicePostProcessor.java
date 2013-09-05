@@ -27,6 +27,9 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.lang.model.type.NullType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -61,6 +64,8 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 
 public class ActionServicePostProcessor extends AbstractActionServicePostProcessor implements BeanPostProcessor, ApplicationContextAware {
 
+		private static final Logger LOGGER = LoggerFactory.getLogger(ActionServicePostProcessor.class);
+
 	private static List<GenericActionService> actionList = new ArrayList<GenericActionService>();
 
     private ApplicationContext applicationContext;
@@ -88,6 +93,22 @@ public class ActionServicePostProcessor extends AbstractActionServicePostProcess
 							alias = annotation.configurationAlias();
 						}
 						aliasRegistry.putAlias(alias, configurationClass);
+
+                        if(annotation.aliases() != null) {
+                            for (Class a : annotation.aliases()) {
+                                if(NullType.class == a)
+                                    continue;
+                                aliasRegistry.putAlias(a.getSimpleName(), a);
+                            }
+                        }
+
+                        if(annotation.implicitCollections() != null) {
+                            for (String ic : annotation.implicitCollections()) {
+                                if( ic == null || ic.isEmpty())
+                                    continue;
+                                aliasRegistry.putImplicitCollection(ic, configurationClass);
+                            }
+                        }
 
 						GenericActionService asr = new GenericActionService(annotation.configurationClass().getSimpleName(),actionClass);
                         asr.setApplicationContext(applicationContext);
