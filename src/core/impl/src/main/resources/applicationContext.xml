@@ -1,52 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans default-init-method="init" default-destroy-method="dispose">
-    
+
+    <import resource="applicationContext-listeners.xml"/>
+
     <bean class="it.geosolutions.geobatch.annotations.ActionServicePostProcessor" />
     
-    <!-- XStream suff ====================================================== -->
-
-    <bean id="loggingListenerConfigRegistrar" class="it.geosolutions.geobatch.flow.event.listeners.logger.LoggingProgressListenerConfigurationAliasRegistrar" lazy-init="false">
-        <constructor-arg ref="aliasRegistry" />
-    </bean>
-
-    <bean id="cumulatingListenerConfigRegistrar" class="it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListenerConfigurationAliasRegistrar" lazy-init="false">
-        <constructor-arg ref="aliasRegistry" />
-    </bean>
-
-    <bean id="statusListenerConfigRegistrar" class="it.geosolutions.geobatch.flow.event.listeners.status.StatusProgressListenerConfigurationAliasRegistrar" lazy-init="false">
-        <constructor-arg ref="aliasRegistry" />
-    </bean>
-
-    <!-- Stuff for geobatch service loading ================================ -->
-
-    <bean id="loggingListenerService" class="it.geosolutions.geobatch.flow.event.listeners.logger.LoggingProgressListenerService">
-    <constructor-arg type="String"><value>loggingListenerService</value></constructor-arg>
-    <constructor-arg type="String"><value>Logging ProgressListener Service</value></constructor-arg>
-    <constructor-arg type="String"><value>Instantiates ProgressListeners that will dump events on the system logger</value></constructor-arg>
-<!--        <property name="id" value="loggingListenerService"/>-->
-<!--        <property name="name" value="Logging ProgressListener Service"/>-->
-<!--        <property name="description"><value> Instantiates ProgressListeners that will dump events on the system logger.</value></property>-->
-    </bean>
-
-    <bean id="cumulatingListenerService" class="it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListenerService">
-    <constructor-arg type="String"><value>cumulatingListenerService</value></constructor-arg>
-    <constructor-arg type="String"><value>Cumulator ProgressListener Service</value></constructor-arg>
-    <constructor-arg type="String"><value>Instantiates ProgressListeners that will store all events received in an internal structure</value></constructor-arg>
-<!--        <property name="id" value="cumulatingListenerService"/>-->
-<!--        <property name="name" value="Cumulator ProgressListener Service"/>-->
-<!--        <property name="description"><value> Instantiates ProgressListeners that will store all events received in an internal structure.</value></property>-->
-    </bean>
-
-    <bean id="statusListenerService" class="it.geosolutions.geobatch.flow.event.listeners.status.StatusProgressListenerService">
-    <constructor-arg type="String"><value>statusListenerService</value></constructor-arg>
-    <constructor-arg type="String"><value>Status ProgressListener Service</value></constructor-arg>
-    <constructor-arg type="String"><value>Instantiates ProgressListeners that will hold the latest received events</value></constructor-arg>
-<!--        <property name="id" value="statusListenerService"/>-->
-<!--        <property name="name" value="Status ProgressListener Service"/>-->
-<!--        <property name="description"><value> Instantiates ProgressListeners that will hold the latest received events.</value></property>-->
-    </bean>
-
     <!-- GB Global Settings ================================================ -->
 
     <bean id="settingsCatalog" class="it.geosolutions.geobatch.settings.GBSettingsCatalogImpl">

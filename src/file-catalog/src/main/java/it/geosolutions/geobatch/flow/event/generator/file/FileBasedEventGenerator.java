@@ -132,6 +132,8 @@ public class FileBasedEventGenerator<T extends EventObject> extends BaseEventGen
             watchDirectory = Path.findLocation(configuration.getWatchDirectory(),
                                                ((FileBaseCatalog)CatalogHolder.getCatalog())
                                                    .getConfigDirectory());
+            LOGGER.info("Setting watchdir on directory " + watchDirectory);
+
         } catch (Exception e) {
             // eat
             LOGGER.warn("Unable to setup the watchDirectory, this may be a problem! [configured: "+configuration.getWatchDirectory()+"]");
