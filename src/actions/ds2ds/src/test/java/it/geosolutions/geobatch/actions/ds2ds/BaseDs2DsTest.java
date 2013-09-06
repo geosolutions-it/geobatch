@@ -25,14 +25,11 @@ package it.geosolutions.geobatch.actions.ds2ds;
 import static org.junit.Assert.*;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
@@ -42,7 +39,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -57,9 +53,7 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.referencing.CRS;
 import org.junit.Before;
-import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -69,10 +63,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
 abstract public class BaseDs2DsTest {
-        
-        private final static Logger LOGGER = LoggerFactory.getLogger(BaseDs2DsTest.class);
+
+    @Rule
+    public TestName _testName = new TestName();
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(BaseDs2DsTest.class);
     
 	protected static final Map<String,Serializable> dataStoreParameters = new HashMap<String, Serializable>();
 	protected static final String dbName="mem:test;DB_CLOSE_DELAY=-1";
@@ -157,7 +156,13 @@ abstract public class BaseDs2DsTest {
 	};
 	
 	@Before
-	public void setUp() throws ActionException, URISyntaxException, SQLException {	
+	public void setUp() throws ActionException, URISyntaxException, SQLException {
+        LOGGER.warn("");
+        LOGGER.warn("======================================================================");
+        LOGGER.warn("=== TEST " + _testName.getMethodName());
+        LOGGER.warn("======================================================================");
+        LOGGER.warn("");
+
 		configuration = new Ds2dsConfiguration("id", "name", "description");
 				
 		dropAllDb(dbName);

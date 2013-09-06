@@ -56,6 +56,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.feature.type.Name;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,10 +163,18 @@ public class Ds2dsAction extends DsBaseAction {
 			FeatureStore<SimpleFeatureType, SimpleFeature> featureReader = createSourceReader(
 					sourceDataStore, transaction, query);
 
+            if(LOGGER.isDebugEnabled())
+                for (Name name : sourceDataStore.getNames()) {
+                    LOGGER.debug("Source CRS is " + sourceDataStore.getSchema(sourceDataStore.getNames().get(0)).getCoordinateReferenceSystem().getName() + " ["+getName()+"]");
+                }
+
 			// output
 			destDataStore = createOutputDataStore();
 			SimpleFeatureType schema = buildDestinationSchema(featureReader
 					.getSchema());
+
+            if(LOGGER.isDebugEnabled())
+                LOGGER.debug("Destination CRS is " + schema.getCoordinateReferenceSystem().getName());
 			
 			FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter = createOutputWriter(
 					destDataStore, schema, transaction);	
