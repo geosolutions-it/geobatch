@@ -90,11 +90,7 @@
     </dependency>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-core-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-fs-catalog</artifactId>
+      <artifactId>gb-core-model</artifactId>
     </dependency>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>

@@ -48,6 +48,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import it.geosolutions.geobatch.imagemosaic.config.DomainAttribute;
+import it.geosolutions.geobatch.imagemosaic.utils.ConfigUtil;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -143,13 +145,14 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
         InputStream is = null;
         try{
         	is=new FileInputStream(file);
-            return (ImageMosaicCommand)STREAM.fromXML(is);	
+            ImageMosaicCommand ret = (ImageMosaicCommand)STREAM.fromXML(is);
+            ret.fixObsoleteConfig();
+            return ret;
         } finally {
         	if(is!=null){
         		IOUtils.closeQuietly(is);
         	}
         }
-
     }
 
     
@@ -252,7 +255,8 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
      * @see ImageMosaicConfiguration
      * @see GeoServerActionConfig
      * @see GeoServerActionConfiguration
-     * 
+     *
+     * @deprecated use {@link #copyConfigurationIntoCommand(it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration) }
      */
     public void overrideImageMosaicConfiguration(final ImageMosaicConfiguration conf) {
 
@@ -314,13 +318,6 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
         if (getDatastorePropertiesPath() != null)
             conf.setDatastorePropertiesPath(getDatastorePropertiesPath());
 
-        if (getElevationPresentationMode() != null)
-            conf.setElevationRegex(getElevationRegex());
-
-        if (getElevDimEnabled() != null)
-            conf.setElevDimEnabled(getElevDimEnabled());
-        if (getElevationPresentationMode() != null)
-            conf.setElevationPresentationMode(getElevationPresentationMode());
         if (getInputTransparentColor() != null)
             conf.setInputTransparentColor(getInputTransparentColor());
         if (getLatLonMaxBoundingBoxX() != null)
@@ -343,8 +340,8 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
             conf.setOutputTransparentColor(getOutputTransparentColor());
         if (getProjectionPolicy() != null)
             conf.setProjectionPolicy(getProjectionPolicy());
-        if (getRuntimeRegex() != null)
-            conf.setRuntimeRegex(getRuntimeRegex());
+
+        copyDomainAttributes(this, conf);
 
         // wins the one which set different from default (0)
         if (getTileSizeH() != 0)
@@ -354,30 +351,66 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
         if ((getTileSizeW() != 0))
             conf.setTileSizeW(getTileSizeW());
 
-        if (getTimeDimEnabled() != null)
-            conf.setTimeDimEnabled(getTimeDimEnabled());
-        if (getTimePresentationMode() != null)
-            conf.setTimePresentationMode(getTimePresentationMode());
-        if (getTimeRegex() != null)
-            conf.setTimeRegex(getTimeRegex());
-
         // wins the one which set different from default (false)
         if ((isUseJaiImageRead() != false) || (conf.isUseJaiImageRead() != false))
             conf.setUseJaiImageRead(true);
     }
 
+    protected static void copyDomainAttributes(ImageMosaicConfiguration src, ImageMosaicConfiguration dst) {
+        
+        if(src.getDomainAttributes() != null) {
+            if(dst.domainAttributes == null) {
+                dst.domainAttributes = new ArrayList<DomainAttribute>(src.getDomainAttributes().size());
+            }
 
-    private static final Set<String> RESERVED_PROPS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("class", "listenerIds")));
+            for (DomainAttribute srcAttr : src.getDomainAttributes()) {
+                DomainAttribute dstAttr = ConfigUtil.getAttribute(dst, srcAttr.getDimensionName());
+                if(dstAttr == null) {
+                    dst.domainAttributes.add(srcAttr.clone());
+                } else { // override single fields, excluding dimName
+                    if(srcAttr.getAttribName() != null) {
+                        dstAttr.setAttribName(srcAttr.getAttribName());
+                    }
+                    if(srcAttr.getEndRangeAttribName() != null) {
+                        dstAttr.setEndRangeAttribName(srcAttr.getEndRangeAttribName());
+                    }
+                    if(srcAttr.getRegEx() != null) {
+                        dstAttr.setRegEx(srcAttr.getRegEx());
+                    }
+                    if(srcAttr.getEndRangeRegEx() != null) {
+                        dstAttr.setEndRangeRegEx(srcAttr.getEndRangeRegEx());
+                    }
+                    if(srcAttr.getType() != null) {
+                        dstAttr.setType(srcAttr.getType());
+                    }
+                    if(srcAttr.getDiscreteInterval() != null) {
+                        dstAttr.setDiscreteInterval(srcAttr.getDiscreteInterval());
+                    }
+                    if(srcAttr.getPresentationMode() != null) {
+                        dstAttr.setPresentationMode(srcAttr.getPresentationMode());
+                    }
+                }
+            }
+        }
+    }
+
+
+    private static final Set<String> RESERVED_PROPS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("class", "listenerIds", "domainAttributes"
+            // exclude obsolete fields:
+            ,"elevDimEnabled","elevationAttribute","elevationDiscreteInterval","elevationPresentationMode","elevationRegex"
+            ,"runtimeRegex"
+            ,"timeAttribute","timeDimEnabled","timeDiscreteInterval","timePresentationMode","timeRegex"
+            )));
 
     /**
      * set this instance null properties with the passed configuration
-     * @param conf
+     * @param src
      */
-    public void copyConfigurationIntoCommand(final ImageMosaicConfiguration conf) {
+    public void copyConfigurationIntoCommand(final ImageMosaicConfiguration src) {
 
-            final PropertyDescriptor[] props = PropertyUtils.getPropertyDescriptors(conf);
-            for (PropertyDescriptor prop: props){
-                final String name = prop.getName();
+            final PropertyDescriptor[] srcProps = PropertyUtils.getPropertyDescriptors(src);
+            for (PropertyDescriptor srcProp: srcProps){
+                final String name = srcProp.getName();
                 if ( RESERVED_PROPS.contains(name) ) {
                     continue;
                 }
@@ -386,7 +419,7 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
                     obj = PropertyUtils.getProperty(this,name);
                     if (obj==null){
                         // override
-                        PropertyUtils.setProperty(this, name, PropertyUtils.getProperty(conf,name));
+                        PropertyUtils.setProperty(this, name, PropertyUtils.getProperty(src,name));
                     }
                 } catch (InvocationTargetException e) {
                     if (LOGGER.isWarnEnabled())
@@ -398,7 +431,9 @@ public class ImageMosaicCommand extends ImageMosaicConfiguration implements Seri
                     if (LOGGER.isWarnEnabled())
                         LOGGER.warn(e.getMessage());
                 }
-            }   
+            }
+            
+            copyDomainAttributes(src, this);
     }
 
 	public boolean isDeleteGranules() {

@@ -21,6 +21,7 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
+import it.geosolutions.geobatch.imagemosaic.utils.ConfigUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import junit.framework.Assert;
 import org.geotools.TestData;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test the ImageMosaicCommand
@@ -39,7 +41,7 @@ import org.junit.Test;
  * @author Simone Giannecchini, GeoSolutions SAS
  * 
  */
-public class ImageMosaicCommandTest extends Assert {
+public class ImageMosaicCommandTest {
 	ImageMosaicCommand cmd = null;
 	File cmdFile;
 	List<File> addList;
@@ -69,6 +71,7 @@ public class ImageMosaicCommandTest extends Assert {
 		cmd.setTileSizeW(128);
 
 		cmdFile = new File(TestData.file(this, null), "test_cmd_out.xml");
+        System.out.println("Out file is " + cmdFile);
 	}
 
 	@Test
@@ -111,9 +114,7 @@ public class ImageMosaicCommandTest extends Assert {
 	void compare(ImageMosaicCommand cmd, ImageMosaicCommand cmd2) {
 		assertEquals(cmd.getBackgroundValue(),cmd2.getBackgroundValue());
 		assertEquals(cmd.getCrs(),cmd2.getCrs());
-		assertEquals(cmd.getElevationAttribute(),cmd2.getElevationAttribute());
-		assertEquals(cmd.getElevationPresentationMode(),cmd2.getElevationPresentationMode());
-		assertEquals(cmd.getElevationRegex(),cmd2.getElevationRegex());
+		assertEquals(ConfigUtil.getElevationAttribute(cmd),      ConfigUtil.getElevationAttribute(cmd2));
 		assertEquals(cmd.getFinalReset(),cmd2.getFinalReset());
 		assertEquals(cmd.getNFSCopyWait(),cmd2.getNFSCopyWait());
 		assertEquals(cmd.getAddFiles(),cmd2.getAddFiles());

@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FlowConfiguration>
 	<!-- ID MUST be the same as file name -->
-	<id>imagemosaic</id>
+	<id>imagemosaic_publish</id>
 	<name>Prepare ImageMosaic and publish</name>
 	<description>Create indexes and publish on GeoServer</description>
 
 	<autorun>true</autorun>
-
-	<EventGeneratorConfiguration>
-		<serviceID>fsEventGeneratorService</serviceID>
-		<wildCard>*</wildCard>
-		<watchDirectory>imagemosaic/in</watchDirectory>
-		<osType>OS_UNDEFINED</osType>
-		<eventType>FILE_ADDED</eventType>
-	</EventGeneratorConfiguration>
 
 	<EventConsumerConfiguration>
 
@@ -24,8 +16,9 @@
 
 		<ImageMosaicActionConfiguration>
 			<id>imagemosaic</id>
-			<name>ImageMosaic</name>
+
 			<description>ImageMosaicService</description>
+			<name>ImageMosaicService</name>
 
 			<crs>EPSG:4326</crs>
 			
@@ -70,31 +63,13 @@
 
 	</EventConsumerConfiguration>
 
+	<EventGeneratorConfiguration>
+		<serviceID>fsEventGeneratorService</serviceID>
+		<wildCard>*.*</wildCard>
+		<watchDirectory>imagemosaic_publish/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+	</EventGeneratorConfiguration>
 
-	<ListenerConfigurations>
-		<StatusProgressListener>
-			<serviceID>statusListenerService</serviceID>
-			<id>ImageMosaicStatusActionLogger0</id>
-		</StatusProgressListener>
-
-		<LoggingProgressListener>
-			<serviceID>loggingListenerService</serviceID>
-			<id>ImageMosaicActionLogger0</id>
-
-			<loggerName>ImageMosaicActionLogger0</loggerName>
-		</LoggingProgressListener>
-
-		<LoggingProgressListener>
-			<serviceID>loggingListenerService</serviceID>
-			<id>ImageMosaicConsumerLogger0</id>
-
-			<loggerName>ImageMosaicConsumerLogger0</loggerName>
-		</LoggingProgressListener>
-
-		<CumulatingProgressListener>
-			<serviceID>cumulatingListenerService</serviceID>
-			<id>ImageMosaicCumulator0</id>
-		</CumulatingProgressListener>
-	</ListenerConfigurations>
 
 </FlowConfiguration>

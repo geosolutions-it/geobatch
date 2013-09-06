@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
-import java.util.Collections;
+import java.text.ParseException;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -219,46 +219,25 @@ abstract class ImageMosaicUpdater {
 			 * @see {@link #org.geotools.gce.imagemosaic.properties.RegExPropertiesCollector.collect(File)}
 			 */
 			final String granuleName=FilenameUtils.getBaseName(granule.getName());
-			if (indexerProps.getProperty("TimeAttribute") != null) {
-				// TODO move out of the cycle
-				final File timeregexFile = new File(baseDir, "timeregex.properties");
-				final Properties timeProps = ImageMosaicProperties.getPropertyFile(timeregexFile);
-                String timeregex = timeProps.getProperty("regex");
-                if(LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("time regex: --->"+timeregex+"<--");
+
+            if (indexerProps.getProperty("TimeAttribute") != null) {
+
+                // Since timeattrib may be ranged, we may have 2 attribs to update
+                String timePropNames[] = indexerProps.getProperty("TimeAttribute").split(";");
+
+                for (String timePropName : timePropNames) {
+                    updateFeatureTimeAttrib(feature, baseDir, timePropName, indexerProps, granuleName);
                 }
-				final Pattern timePattern = Pattern.compile(timeregex);
-				// TODO move out of the cycle
-				if (timePattern != null) { // when it is == null?????
-					final Matcher matcher = timePattern.matcher(granuleName);
-					if (matcher.find()) {
-                        String matchedGroup = matcher.group();
-                        if(LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("time regex is matching: ["+matchedGroup+"]");
-                        }
-//						List<Date> dates = TimeParser.parse(matchedGroup);
-                        TimeParser timeParser = new TimeParser();
-                        List<Date> dates = timeParser.parse(matchedGroup);
-                        if(LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("TimeParser parsed dates:" + dates);
-                        }
-
-						if (dates != null && !dates.isEmpty()) {
-							Calendar cal = Calendar.getInstance();
-							cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-							cal.setTime(dates.get(0));
-
-							feature.setAttribute(
-									indexerProps.getProperty("TimeAttribute"),
-									cal.getTime());
-						}
-					} else {
-                        if(LOGGER.isWarnEnabled()) {
-                            LOGGER.warn("time regex is not matching");
-                        }
-                    }
-				}
 			}
+
+            // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+            // TODO: the time attribute handling has been refact'ed in order to use proper regex files
+            // and to support ranges.
+            // Same should be done for Elevation, Runtime(?) and AdditionalDomain attributes.
+            // Furthermore, proper SPI should be used for parsing.
+            // All of this should be handled if possibile using GT libs, and not reimplementing
+            // the parsing from scratch.
+            // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 
 			if (indexerProps.getProperty("ElevationAttribute") != null) {
 				// TODO move out of the cycle
@@ -303,6 +282,74 @@ abstract class ImageMosaicUpdater {
 		}
 
 	}
+
+    private static Pattern PROP_COLLECTOR_PATTERN = Pattern.compile("(.*)\\[(.*)\\]\\((.*)\\)");
+
+    /**
+     * Update a time attrib.
+     * <P/>
+     * TODO: use the proper SPI for parsing the extracted strings
+     */
+    private static void updateFeatureTimeAttrib(SimpleFeature feature, File baseDir, String propName, Properties indexerProps, String granuleName ) throws IOException, ParseException {
+
+        // find regex file
+        String propertyCollectors = indexerProps.getProperty("PropertyCollectors");
+        String regexname = null;
+        for (String coll : propertyCollectors.split(",")) {
+            Matcher m = PROP_COLLECTOR_PATTERN.matcher(coll);
+            if(m.matches()) {
+//                String spi = m.group(1);
+                String rex = m.group(2);
+                String pname = m.group(3);
+                if(pname.equals(propName)) {
+                    regexname = rex;
+                    break;
+                }
+            } else {
+                LOGGER.error("Error in indexer: Collector not parsable: " + coll);
+                continue;
+            }
+        }
+
+        if(regexname == null) {
+            LOGGER.error("Error in indexer: regex not found for attribute: " + propName);
+            return;
+        }
+
+        final File regexFile = new File(baseDir, regexname + ".properties");
+        final Properties regexProps = ImageMosaicProperties.getPropertyFile(regexFile);
+        String regex = regexProps.getProperty("regex");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("regex for prop "+propName+": --->"+regex+"<--");
+        }
+        final Pattern pattern = Pattern.compile(regex);
+        final Matcher matcher = pattern.matcher(granuleName);
+        if (matcher.find()) {
+            String matchedGroup = matcher.group();
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("time regex is matching: ["+matchedGroup+"]");
+            }
+//						List<Date> dates = TimeParser.parse(matchedGroup);
+            TimeParser timeParser = new TimeParser();
+            List<Date> dates = timeParser.parse(matchedGroup);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("TimeParser parsed dates:" + dates);
+            }
+
+            if (dates != null && !dates.isEmpty()) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+                cal.setTime(dates.get(0));
+
+                feature.setAttribute(propName, cal.getTime());
+            }
+        } else {
+            if(LOGGER.isWarnEnabled()) {
+                LOGGER.warn("time regex is not matching");
+            }
+        }
+    }
+
 
 	/**
 	 * return the datastore or null

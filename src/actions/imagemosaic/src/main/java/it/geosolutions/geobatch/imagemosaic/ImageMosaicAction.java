@@ -26,7 +26,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
+import it.geosolutions.geobatch.imagemosaic.config.DomainAttribute;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
@@ -67,7 +67,12 @@ import org.slf4j.LoggerFactory;
  *          $ ImageMosaicAction.java $ Rev: 0.3 $ 8/jul/11
  */
 
-@Action(configurationClass=ImageMosaicConfiguration.class,configurationAlias="ImageMosaicActionConfiguration")
+@Action(configurationClass=ImageMosaicConfiguration.class
+        ,configurationAlias="ImageMosaicActionConfiguration"
+        ,implicitCollections = {"domainAttributes"}
+        ,aliases = {DomainAttribute.class}
+        )
+
 public class ImageMosaicAction extends BaseAction<EventObject> {
 
 	/** Seconds to wait for nfs propagation.*/
@@ -93,22 +98,27 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 
 	@Override
 	public boolean checkConfiguration() {
-		if (getConfiguration() == null) {
+        ImageMosaicConfiguration cfg = getConfiguration();
+
+		if (cfg == null) {
 			final String message = "ImageMosaicAction: DataFlowConfig is null.";
 			if (LOGGER.isErrorEnabled())
 				LOGGER.error(message,new IllegalStateException(message));
 			return false;
-		} else if ((getConfiguration().getGeoserverURL() == null)) {
+		} else if ((cfg.getGeoserverURL() == null)) {
 			final String message = "GeoServerURL is null.";
 			if (LOGGER.isErrorEnabled())
 				LOGGER.error(message,new IllegalStateException(message));
 			return false;
-		} else if (getConfiguration().getGeoserverURL().isEmpty()) {
+		} else if (cfg.getGeoserverURL().isEmpty()) {
 			final String message = "GeoServerURL is empty.";
 			if (LOGGER.isErrorEnabled())
 				LOGGER.error(message,new IllegalStateException(message));
 			return false;
 		}
+
+        cfg.fixObsoleteConfig();
+
 		return true;
 	}
 
@@ -411,7 +421,7 @@ public class ImageMosaicAction extends BaseAction<EventObject> {
 				// preventing overwrite)
 				addedFiles = Copy.copyListFileToNFS(cmd.getAddFiles(), cmd.getBaseDir(), true,
 						cmd.getNFSCopyWait());
-				if (addedFiles == null || addedFiles.size() == 0) {
+				if (addedFiles == null || addedFiles.isEmpty()) {
 					// no file where transfer to the
 					// destination dir
 					if (LOGGER.isWarnEnabled())

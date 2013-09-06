@@ -23,10 +23,18 @@
 package it.geosolutions.geobatch.imagemosaic;
 
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
+import it.geosolutions.geobatch.imagemosaic.config.DomainAttribute;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
+
+    protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicConfiguration.class);
 
     private final static Boolean DEFAULT_IGNORE_GEOSERVER = Boolean.FALSE;
 
@@ -43,16 +51,13 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     
     private String datastorePropertiesPath;
 
-    private String timeRegex;
-
-    private String elevationRegex;
-
-    private String runtimeRegex;
 
     private String backgroundValue;// NoData
 
     private String projectionPolicy;// NONE, REPROJECT_TO_DECLARED,
                                     // FORCE_DECLARED
+
+    List<DomainAttribute> domainAttributes;
 
     private Double NativeMinBoundingBoxX;// BoundingBox
     private Double NativeMinBoundingBoxY;// BoundingBox
@@ -69,14 +74,30 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     // <entry key="dirName">20101012T210000_wdi_20101012T210000_wdi</entry>
     // <entry key="timePresentationMode">LIST</entry>
     // </metadata>
+
+    /** @deprecated use {@link #domainAttributes} */
+    private String runtimeRegex;
+
+    /** @deprecated use {@link #domainAttributes} */
+    private String timeRegex;
+    /** @deprecated use {@link #domainAttributes} */
     private String timeDimEnabled;
+    /** @deprecated use {@link #domainAttributes} */
     private String timeAttribute;
+    /** @deprecated use {@link #domainAttributes} */
     private String timePresentationMode;
+    /** @deprecated use {@link #domainAttributes} */
     private BigDecimal timeDiscreteInterval;
 
+    /** @deprecated use {@link #domainAttributes} */
+    private String elevationRegex;
+    /** @deprecated use {@link #domainAttributes} */
     private String elevDimEnabled;
+    /** @deprecated use {@link #domainAttributes} */
     private String elevationAttribute;
+    /** @deprecated use {@link #domainAttributes} */
     private String elevationPresentationMode;
+    /** @deprecated use {@link #domainAttributes} */
     private BigDecimal elevationDiscreteInterval;
 
     private String granuleFormat;
@@ -107,38 +128,6 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
 
     public void setProjectionPolicy(String projectionPolicy) {
         this.projectionPolicy = projectionPolicy;
-    }
-
-    public String getElevDimEnabled() {
-        return elevDimEnabled;
-    }
-
-    public void setElevDimEnabled(String elevationDimEnabled) {
-        this.elevDimEnabled = elevationDimEnabled;
-    }
-    
-    public String getElevationPresentationMode() {
-        return elevationPresentationMode;
-    }
-
-    public void setElevationPresentationMode(String elevationPresentationMode) {
-        this.elevationPresentationMode = elevationPresentationMode;
-    }
-
-    public BigDecimal getTimeDiscreteInterval() {
-        return timeDiscreteInterval;
-    }
-
-    public void setTimeDiscreteInterval(BigDecimal timeDiscreteInterval) {
-        this.timeDiscreteInterval = timeDiscreteInterval;
-    }
-
-    public BigDecimal getElevationDiscreteInterval() {
-        return elevationDiscreteInterval;
-    }
-
-    public void setElevationDiscreteInterval(BigDecimal elevationDiscreteInterval) {
-        this.elevationDiscreteInterval = elevationDiscreteInterval;
     }
 
     public boolean isCOARDS() {
@@ -215,13 +204,6 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         this.latLonMaxBoundingBoxY = latLonMaxBoundingBoxY;
     }
 
-    public String getTimeDimEnabled() {
-        return timeDimEnabled;
-    }
-
-    public void setTimeDimEnabled(String timeDimEnabled) {
-        this.timeDimEnabled = timeDimEnabled;
-    }
 
     /** @deprecated */
     public String getDirName() {
@@ -231,14 +213,6 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     /** @deprecated */
     public void setDirName(String dirName) {
         this.dirName = dirName;
-    }
-
-    public String getTimePresentationMode() {
-        return timePresentationMode;
-    }
-
-    public void setTimePresentationMode(String timePresentationMode) {
-        this.timePresentationMode = timePresentationMode;
     }
 
     public String getOutputTransparentColor() {
@@ -328,6 +302,51 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         return datastorePropertiesPath;
     }
 
+    private String getElevDimEnabled() {
+        return elevDimEnabled;
+    }
+
+    public void setElevDimEnabled(String elevationDimEnabled) {
+        this.elevDimEnabled = elevationDimEnabled;
+    }
+
+    private String getElevationPresentationMode() {
+        return elevationPresentationMode;
+    }
+
+    public void setElevationPresentationMode(String elevationPresentationMode) {
+        this.elevationPresentationMode = elevationPresentationMode;
+    }
+
+    private BigDecimal getTimeDiscreteInterval() {
+        return timeDiscreteInterval;
+    }
+
+    public void setTimeDiscreteInterval(BigDecimal timeDiscreteInterval) {
+        this.timeDiscreteInterval = timeDiscreteInterval;
+    }
+
+    private BigDecimal getElevationDiscreteInterval() {
+        return elevationDiscreteInterval;
+    }
+
+    public void setElevationDiscreteInterval(BigDecimal elevationDiscreteInterval) {
+        this.elevationDiscreteInterval = elevationDiscreteInterval;
+    }
+    private String getTimeDimEnabled() {
+        return timeDimEnabled;
+    }
+
+    public void setTimeDimEnabled(String timeDimEnabled) {
+        this.timeDimEnabled = timeDimEnabled;
+    }
+    private String getTimePresentationMode() {
+        return timePresentationMode;
+    }
+
+    public void setTimePresentationMode(String timePresentationMode) {
+        this.timePresentationMode = timePresentationMode;
+    }
     /**
      * @param timeRegex the timeRegex to set
      */
@@ -338,7 +357,7 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     /**
      * @return the timeRegex
      */
-    public String getTimeRegex() {
+    private String getTimeRegex() {
         return timeRegex;
     }
 
@@ -352,7 +371,7 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     /**
      * @return the elevationRegex
      */
-    public String getElevationRegex() {
+    private String getElevationRegex() {
         return elevationRegex;
     }
 
@@ -366,11 +385,11 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
     /**
      * @return the runtimeRegex
      */
-    public String getRuntimeRegex() {
+    private String getRuntimeRegex() {
         return runtimeRegex;
     }
 
-    public String getTimeAttribute() {
+    private String getTimeAttribute() {
         return timeAttribute;
     }
 
@@ -378,7 +397,7 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         this.timeAttribute = timeAttribute;
     }
 
-    public String getElevationAttribute() {
+    private String getElevationAttribute() {
         return elevationAttribute;
     }
 
@@ -432,9 +451,35 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         this.ignoreEmptyAddList = ignoreEmptyAddList;
     }
 
+    public List<DomainAttribute> getDomainAttributes() {
+        return domainAttributes;
+    }
+
+    public void setDomainAttributes(List<DomainAttribute> domainAttributes) {
+        this.domainAttributes = domainAttributes;
+    }
+
+    public void addDomainAttribute(DomainAttribute attr) {
+        if(domainAttributes == null)
+            domainAttributes = new ArrayList<DomainAttribute>();
+
+        domainAttributes.add(attr);
+    }
+
+
+
     @Override
     public ImageMosaicConfiguration clone() {
-        return (ImageMosaicConfiguration)super.clone();
+        ImageMosaicConfiguration clone = (ImageMosaicConfiguration)super.clone();
+        // deep copy
+        if(domainAttributes != null) {
+            clone.domainAttributes = new ArrayList<DomainAttribute>();
+            for (DomainAttribute attr : domainAttributes) {
+                clone.domainAttributes.add(attr.clone());
+            }
+        }
+
+        return clone;
     }
 
     @Override
@@ -442,6 +487,60 @@ public class ImageMosaicConfiguration extends GeoServerActionConfiguration {
         return getClass().getSimpleName() + "[" + "id:" + getId() + " name:" + getName() + " srvId:"
                + getServiceID() + " GS:" + getGeoserverUID() + "@" + getGeoserverURL() + " ignoreGS:"
                + ignoreGeoServer + "]";
+    }
+
+    public void fixObsoleteConfig() {
+
+        if (!CollectionUtils.isEmpty(getDomainAttributes())) {
+            return;
+        }
+
+        setDomainAttributes(new ArrayList<DomainAttribute>());
+
+        if ( getTimeRegex() != null ) {
+            LOGGER.warn("ImageMosaicCommand contains deprecated TIME dim configuration. PLEASE FIX IT.");
+
+            DomainAttribute attr = new DomainAttribute();
+            attr.setDimensionName(DomainAttribute.DIM_TIME);
+            if(getTimeAttribute() != null)
+                attr.setAttribName(getTimeAttribute());
+            else
+                attr.setAttribName(DomainAttribute.DIM_TIME);
+
+            attr.setRegEx(getTimeRegex());
+            attr.setType(DomainAttribute.TYPE.DATE);
+            attr.setPresentationMode(getTimePresentationMode());
+            attr.setDiscreteInterval(getTimeDiscreteInterval());
+            domainAttributes.add(attr);
+        }
+
+        if ( getElevationRegex() != null ) {
+            LOGGER.warn("ImageMosaicCommand contains deprecated ELEVATION dim configuration. PLEASE FIX IT.");
+
+            DomainAttribute attr = new DomainAttribute();
+            attr.setDimensionName(DomainAttribute.DIM_ELEV);
+            if(getElevationAttribute() != null)
+                attr.setAttribName(getElevationAttribute());
+            else
+                attr.setAttribName(DomainAttribute.DIM_ELEV);
+
+            attr.setRegEx(getElevationRegex());
+            attr.setType(DomainAttribute.TYPE.DOUBLE);
+            attr.setPresentationMode(getElevationPresentationMode());
+            attr.setDiscreteInterval(getElevationDiscreteInterval());
+            domainAttributes.add(attr);
+        }
+
+        if ( getRuntimeRegex() != null ) {
+            LOGGER.warn("ImageMosaicCommand contains deprecated RUNTIME dim configuration. PLEASE FIX IT.");
+
+            DomainAttribute attr = new DomainAttribute();
+            attr.setDimensionName(DomainAttribute.DIM_RUNTIME);
+            attr.setAttribName(DomainAttribute.DIM_RUNTIME);
+            attr.setRegEx(getRuntimeRegex());
+            attr.setType(DomainAttribute.TYPE.DATE);
+            domainAttributes.add(attr);
+        }
     }
 
 }

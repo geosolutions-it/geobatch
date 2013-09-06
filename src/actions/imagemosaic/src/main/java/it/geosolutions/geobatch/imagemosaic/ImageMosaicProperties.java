@@ -21,6 +21,9 @@
  */
 package it.geosolutions.geobatch.imagemosaic;
 
+import it.geosolutions.geobatch.imagemosaic.config.DomainAttribute;
+import it.geosolutions.geobatch.imagemosaic.config.DomainAttribute.TYPE;
+import it.geosolutions.geobatch.imagemosaic.utils.ConfigUtil;
 import it.geosolutions.tools.commons.file.Path;
 
 import java.io.File;
@@ -28,6 +31,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -48,6 +55,27 @@ public abstract class ImageMosaicProperties {
      * Default logger
      */
     protected final static Logger LOGGER = LoggerFactory.getLogger(ImageMosaicProperties.class);
+
+
+    private static class IndexerHelper {
+        String type;
+        String extractor;
+
+        public IndexerHelper(String type, String extractor) {
+            this.type = type;
+            this.extractor = extractor;
+        }
+    }
+
+    private static final Map<DomainAttribute.TYPE, IndexerHelper> indexerMap;
+    static {
+        Map<DomainAttribute.TYPE, IndexerHelper> tmp = new HashMap<DomainAttribute.TYPE, IndexerHelper>();
+        tmp.put(DomainAttribute.TYPE.DATE, new IndexerHelper("java.util.Date", "TimestampFileNameExtractorSPI"));
+        tmp.put(DomainAttribute.TYPE.DOUBLE, new IndexerHelper("Double", "DoubleFileNameExtractorSPI"));
+        tmp.put(DomainAttribute.TYPE.INTEGER, new IndexerHelper("Integer", "IntegerFileNameExtractorSPI"));
+        tmp.put(DomainAttribute.TYPE.STRING, new IndexerHelper("String", "StringFileNameExtractorSPI"));
+        indexerMap = Collections.unmodifiableMap(tmp);
+    }
 
     /**
      * get the properties object from the file.
@@ -81,7 +109,7 @@ public abstract class ImageMosaicProperties {
      * @throws NullPointerException
      * @throws IOException 
      */
-    private static Properties build(File regexFile, String regex) throws NullPointerException, IOException {
+    private static Properties createRegexFile(File regexFile, String regex) throws NullPointerException, IOException {
 
         if (!regexFile.exists()) {
             FileWriter outFile = null;
@@ -156,50 +184,71 @@ public abstract class ImageMosaicProperties {
 
                 // Write text to file
                 // setting caching of file to false
+
+                // create a private copy and fix inconsistencies in it
+                configuration = configuration.clone();
+                ConfigUtil.sanitize(configuration);
                 
-                out.println(org.geotools.gce.imagemosaic.Utils.Prop.CACHING+"=false");
+                // create regex files
+                for (DomainAttribute domainAttr : configuration.getDomainAttributes()) {
+                    final File regexFile = new File(baseDir, domainAttr.getAttribName() +"regex.properties");
+                    ImageMosaicProperties.createRegexFile(regexFile, domainAttr.getRegEx());
 
-                String timeAttrName = configuration.getTimeAttribute() != null?
-                        configuration.getTimeAttribute() :
-                        TIME_DEFAULT_ATTRIBUTE;
-
-                if (configuration.getTimeRegex() != null) {
-                    out.println(org.geotools.gce.imagemosaic.Utils.Prop.TIME_ATTRIBUTE+"="+timeAttrName);
-
-                    final File timeregex = new File(baseDir, "timeregex.properties");
-                    ImageMosaicProperties.build(timeregex, configuration.getTimeRegex());
+                    if(domainAttr.getEndRangeAttribName() != null) {
+                        final File endRangeRegexFile = new File(baseDir, domainAttr.getEndRangeAttribName() +"regex.properties");
+                        ImageMosaicProperties.createRegexFile(endRangeRegexFile, domainAttr.getEndRangeRegEx());
+                    }
                 }
 
-                String elevAttrName = configuration.getElevationAttribute() != null?
-                        configuration.getElevationAttribute() :
-                        ELEV_DEFAULT_ATTRIBUTE;
+                StringBuilder indexerSB = createIndexer(configuration);
+                out.append(indexerSB);
 
-                if (configuration.getElevationRegex() != null) {
-                    out.println(org.geotools.gce.imagemosaic.Utils.Prop.ELEVATION_ATTRIBUTE+"="+elevAttrName);
+//                out.println(org.geotools.gce.imagemosaic.Utils.Prop.CACHING+"=false");
+//
+//                // create indexer
+//                DomainAttribute timeAttr = ConfigUtil.getTimeAttribute(configuration);
+//                DomainAttribute elevAttr = ConfigUtil.getElevationAttribute(configuration);
+//
+//                if(timeAttr != null) {
+//                    out.println(org.geotools.gce.imagemosaic.Utils.Prop.TIME_ATTRIBUTE+"="+getAttribDeclaration(timeAttr));
+//                }
+//                if(elevAttr != null) {
+//                    out.println(org.geotools.gce.imagemosaic.Utils.Prop.ELEVATION_ATTRIBUTE+"="+getAttribDeclaration(elevAttr));
+//                }
+//
+//                List<DomainAttribute> customAttribs = ConfigUtil.getCustomDimensions(configuration);
+//                if( ! customAttribs.isEmpty() ) {
+//                    out.println("AdditionalDomainAttributes");
+//                    String sep="=";
+//                    for (DomainAttribute customAttr : customAttribs) {
+//                        out.print(sep);
+//                        sep=",";
+//                        out.print(getDimensionDeclaration(customAttr));
+//                    }
+//                    out.println();
+//                }
+//
+//                out.print("Schema=*the_geom:Polygon,location:String");
+//                for (DomainAttribute attr : configuration.getDomainAttributes()) {
+//                    TYPE type = attr.getType();
+//                    printSchemaField(out, attr.getAttribName(), type);
+//                    if(attr.getEndRangeAttribName() != null)
+//                        printSchemaField(out, attr.getEndRangeAttribName(), type);
+//                }
+//                out.println();
+//
+//                String sep="";
+//                out.print("PropertyCollectors=");
+//                for (DomainAttribute attr : configuration.getDomainAttributes()) {
+//                    TYPE type = attr.getType();
+//                    out.print(sep);
+//                    sep=";";
+//                    printCollectorField(out, attr.getAttribName(), type);
+//                    if(attr.getEndRangeAttribName() != null)
+//                        printCollectorField(out, attr.getEndRangeAttribName(), type);
+//                }
+//                out.println();
 
-                    final File elevationRegex = new File(baseDir, "elevationregex.properties");
-                    ImageMosaicProperties.build(elevationRegex, configuration.getElevationRegex());
-                }
-
-                if (configuration.getRuntimeRegex() != null) {
-                    out.println("RuntimeAttribute=runtime");
-
-                    final File runtimeRegex = new File(baseDir, "runtimeregex.properties");
-                    ImageMosaicProperties.build(runtimeRegex, configuration.getRuntimeRegex());
-                }
-
-                out.println("Schema=*the_geom:Polygon,location:String"
-                        + (configuration.getTimeRegex() != null ? ","+timeAttrName+":java.util.Date" : "")
-                        + (configuration.getElevationRegex() != null ? ","+elevAttrName+":Double" : "")
-                        + (configuration.getRuntimeRegex() != null ? ",runtime:Integer" : ""));
-                out.println("PropertyCollectors="
-                        + (configuration.getTimeRegex() != null ? "TimestampFileNameExtractorSPI[timeregex]("+timeAttrName+")" : "")
-                        + (configuration.getElevationRegex() != null ?
-                                (configuration.getTimeRegex() != null ? "," : "")
-                                + "DoubleFileNameExtractorSPI[elevationregex]("+elevAttrName+")" : "")
-                        + (configuration.getRuntimeRegex() != null ?
-                                (configuration.getTimeRegex() != null || configuration.getElevationRegex() != null ? "," : "")
-                                + "TimestampFileNameExtractorSPI[runtimeregex](runtime)" : ""));
             } catch (IOException e) {
                 if (LOGGER.isErrorEnabled())
                     LOGGER.error(
@@ -239,6 +288,95 @@ public abstract class ImageMosaicProperties {
             return indexerProps;
         }
     }
+
+    public static StringBuilder createIndexer(ImageMosaicConfiguration configuration) {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(org.geotools.gce.imagemosaic.Utils.Prop.CACHING).append("=false").append("\n");
+
+        // create indexer
+        DomainAttribute timeAttr = ConfigUtil.getTimeAttribute(configuration);
+        DomainAttribute elevAttr = ConfigUtil.getElevationAttribute(configuration);
+
+        if(timeAttr != null) {
+            sb.append(org.geotools.gce.imagemosaic.Utils.Prop.TIME_ATTRIBUTE)
+                    .append("=")
+                    .append(getAttribDeclaration(timeAttr)).append("\n");
+        }
+        if(elevAttr != null) {
+            sb.append(org.geotools.gce.imagemosaic.Utils.Prop.ELEVATION_ATTRIBUTE)
+                    .append("=")
+                    .append(getAttribDeclaration(elevAttr)).append("\n");
+        }
+
+        List<DomainAttribute> customAttribs = ConfigUtil.getCustomDimensions(configuration);
+        if( ! customAttribs.isEmpty() ) {
+            sb.append("AdditionalDomainAttributes");
+            String sep="=";
+            for (DomainAttribute customAttr : customAttribs) {
+                sb.append(sep);
+                sep=",";
+                sb.append(getDimensionDeclaration(customAttr));
+            }
+            sb.append("\n");
+        }
+
+        sb.append("Schema=*the_geom:Polygon,location:String");
+        for (DomainAttribute attr : configuration.getDomainAttributes()) {
+            TYPE type = attr.getType();
+            System.out.println("Adding to schema" + attr);
+            appendSchemaField(sb, attr.getAttribName(), type);
+            if(attr.getEndRangeAttribName() != null)
+                appendSchemaField(sb, attr.getEndRangeAttribName(), type);
+        }
+        sb.append("\n");
+
+        String sep="";
+        sb.append("PropertyCollectors=");
+        for (DomainAttribute attr : configuration.getDomainAttributes()) {
+            TYPE type = attr.getType();
+            sb.append(sep);
+            sep=",";
+            appendCollectorField(sb, attr.getAttribName(), type);
+            if(attr.getEndRangeAttribName() != null) {
+                sb.append(sep);
+                appendCollectorField(sb, attr.getEndRangeAttribName(), type);
+            }
+        }
+        sb.append("\n");
+
+        return sb;
+    }
+
+    protected static void appendSchemaField(StringBuilder sb, String attrName, TYPE type) {
+        sb.append(",");
+        sb.append(attrName);
+        sb.append(":");
+        sb.append(indexerMap.get(type).type);
+    }
+
+    protected static void appendCollectorField(StringBuilder sb, String attrName, TYPE type) {
+        sb.append(indexerMap.get(type).extractor);
+        sb.append('[').append(attrName).append("regex]");
+        sb.append('(').append(attrName).append(')');
+    }
+
+    private static String getAttribDeclaration(DomainAttribute attr) {
+        if(attr.getEndRangeAttribName() == null)
+            return attr.getAttribName();
+        else
+            return attr.getAttribName() + ";" + attr.getEndRangeAttribName();
+    }
+
+    private static String getDimensionDeclaration(DomainAttribute attr) {
+        if(attr.getEndRangeAttribName() == null)
+            return attr.getAttribName();
+        else
+            return attr.getDimensionName()+ "(" + attr.getAttribName() + ";" + attr.getEndRangeAttribName() + ")";
+    }
+
+
 
     /**
      * CHECKING FOR datastore.properties If the 'datastore.properties' do not exists into the

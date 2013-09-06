@@ -22,6 +22,8 @@
 package it.geosolutions.geobatch.imagemosaic;
 
 //import it.geosolutions.geobatch.geoserver.GeoServerRESTHelper;
+import it.geosolutions.geobatch.imagemosaic.config.DomainAttribute;
+import it.geosolutions.geobatch.imagemosaic.utils.ConfigUtil;
 import it.geosolutions.geoserver.rest.encoder.GSResourceEncoder.ProjectionPolicy;
 import it.geosolutions.geoserver.rest.encoder.coverage.GSCoverageEncoder;
 import it.geosolutions.geoserver.rest.encoder.coverage.GSImageMosaicEncoder;
@@ -124,60 +126,40 @@ public abstract class ImageMosaicREST {
         }
 
 //        final GSMetadataEncoder<GSDimensionInfoEncoder> metadata=new GSMetadataEncoder<GSDimensionInfoEncoder>();
-        
-        if (config.getTimeDimEnabled()!=null && config.getTimeDimEnabled().equals("true")){
-        	final GSDimensionInfoEncoder timeDimensionInfo=new GSDimensionInfoEncoder(true);
-	        final String presentation=config.getTimePresentationMode();
-	        if (presentation != null){
-	        	if (presentation.equals(Presentation.LIST.toString())){
-	    			timeDimensionInfo.setPresentation(Presentation.LIST);
-	        	}
-	        	else if (presentation.equals(Presentation.DISCRETE_INTERVAL.toString())){
-	        	        BigDecimal interval = config.getTimeDiscreteInterval();
-	        	        if(interval == null || interval.intValue() < 1){
-	        	            interval = new BigDecimal(1);
-	        	            LOGGER.warn("Invalid value for time DISCRETE_INTERVAL value ("+interval+"). Forcing to 1.");
-	        	        }
-	        		timeDimensionInfo.setPresentation(Presentation.DISCRETE_INTERVAL,interval);
-	        	}
-	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
-        			timeDimensionInfo.setPresentation(Presentation.CONTINUOUS_INTERVAL);
-	        	}
-	        }
-	        else {
-	            timeDimensionInfo.setPresentation(Presentation.LIST);
-	        }
-	        coverageEnc.setMetadata("time", timeDimensionInfo);
+
+
+        for (DomainAttribute attr : config.getDomainAttributes()) {
+            final GSDimensionInfoEncoder info = new GSDimensionInfoEncoder(true);
+
+            final String presentation = attr.getPresentationMode();
+            if (presentation == null) {
+	            info.setPresentation(Presentation.LIST);
+            } else  if (presentation.equals(Presentation.DISCRETE_INTERVAL.toString())) {
+                BigDecimal interval = attr.getDiscreteInterval();
+                if (interval == null || interval.intValue() < 1) {
+                    interval = new BigDecimal(1);
+                    LOGGER.warn("Invalid value in dimension "+attr.getDimensionName()+" for time DISCRETE_INTERVAL value (" + interval + "). Forcing to 1.");
+                }
+                info.setPresentation(Presentation.DISCRETE_INTERVAL, interval);
+            } else if (presentation.equals(Presentation.LIST.toString())) {
+                info.setPresentation(Presentation.LIST);
+            } else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
+                info.setPresentation(Presentation.CONTINUOUS_INTERVAL);
+            } else {
+                LOGGER.error("Unknown presentation type '"+presentation+"'");
+            }
+
+	        coverageEnc.setMetadata(attr.getDimensionName(), info);
         }
-        else
-        	coverageEnc.setMetadata("time", new GSDimensionInfoEncoder());
-        
-        if (config.getElevDimEnabled()!=null && config.getElevDimEnabled().equals("true")){
-        	final GSDimensionInfoEncoder elevationDimensionInfo=new GSDimensionInfoEncoder(true);
-	        final String presentation=config.getElevationPresentationMode();
-	        if (presentation != null){
-	        	if (presentation.equals(Presentation.LIST.toString())){
-	    			elevationDimensionInfo.setPresentation(Presentation.LIST);
-	        	}
-	        	else if (presentation.equals(Presentation.DISCRETE_INTERVAL.toString())){
-    	        	        BigDecimal interval = config.getElevationDiscreteInterval();
-                                if(interval == null || interval.intValue() < 1){
-                                    interval = new BigDecimal(1);
-                                    LOGGER.warn("Invalid value for elevation DISCRETE_INTERVAL value ("+interval+"). Forcing to 1.");
-                                }
-	        	        elevationDimensionInfo.setPresentation(Presentation.DISCRETE_INTERVAL,config.getElevationDiscreteInterval());
-	        	}
-	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
-        			elevationDimensionInfo.setPresentation(Presentation.CONTINUOUS_INTERVAL);
-	        	}
-	        }
-	        else {
-	            elevationDimensionInfo.setPresentation(Presentation.LIST);
-	        }
-	        coverageEnc.setMetadata("elevation", elevationDimensionInfo);
-        }
-        else
-        	coverageEnc.setMetadata("elevation", new GSDimensionInfoEncoder());
+
+//        // is this really needed?
+//        if( ! ConfigUtil.hasDimension(config, DomainAttribute.DIM_TIME))
+//        	coverageEnc.setMetadata("time", new GSDimensionInfoEncoder());
+//
+//        // is this really needed?
+//        if( ! ConfigUtil.hasDimension(config, DomainAttribute.DIM_ELEV))
+//        	coverageEnc.setMetadata("elevation", new GSDimensionInfoEncoder());
+
         
 //        coverageEnc.addNativeBoundingBox(minx, maxy, maxx, miny, crs)
             // coverageParams.put(GeoServerRESTHelper.NATIVE_MAXX,
@@ -242,6 +224,8 @@ public abstract class ImageMosaicREST {
     @Deprecated
     protected static GSCoverageEncoder createGSCoverageEncoder(final String coverageID, ImageMosaicConfiguration config) {
 
+        LOGGER.warn(" **** Deprecated method ****");
+
 	    final GSCoverageEncoder coverageEnc=new GSCoverageEncoder();
 
 	    coverageEnc.setName(coverageID);
@@ -251,46 +235,36 @@ public abstract class ImageMosaicREST {
 
 //        final GSMetadataEncoder<GSDimensionInfoEncoder> metadata=new GSMetadataEncoder<GSDimensionInfoEncoder>();
         
-        if (config.getTimeDimEnabled()!=null && config.getTimeDimEnabled().equals("true")){
-        	final GSDimensionInfoEncoder timeDimensionInfo=new GSDimensionInfoEncoder(true);
-	        final String presentation=config.getTimePresentationMode();
-	        if (presentation != null){
-	        	if (presentation.equals(Presentation.LIST.toString())){
-	    			timeDimensionInfo.setPresentation(Presentation.LIST);
-	        	}
-	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
-	//        			timeDimensionInfo.addPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
-	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
-        			timeDimensionInfo.setPresentation(Presentation.CONTINUOUS_INTERVAL);
-	        	}
-	        }
-	        else {
-	            timeDimensionInfo.setPresentation(Presentation.LIST);
-	        }
-	        coverageEnc.setMetadata("time", timeDimensionInfo);
+        for (DomainAttribute attr : config.getDomainAttributes()) {
+            final GSDimensionInfoEncoder info = new GSDimensionInfoEncoder(true);
+
+            final String presentation = attr.getPresentationMode();
+            if (presentation == null) {
+	            info.setPresentation(Presentation.LIST);
+            } else  if (presentation.equals(Presentation.DISCRETE_INTERVAL.toString())) {
+                BigDecimal interval = attr.getDiscreteInterval();
+                if (interval == null || interval.intValue() < 1) {
+                    interval = new BigDecimal(1);
+                    LOGGER.warn("Invalid value in dimension "+attr.getDimensionName()+" for time DISCRETE_INTERVAL value (" + interval + "). Forcing to 1.");
+                }
+                info.setPresentation(Presentation.DISCRETE_INTERVAL, interval);
+            } else if (presentation.equals(Presentation.LIST.toString())) {
+                info.setPresentation(Presentation.LIST);
+            } else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
+                info.setPresentation(Presentation.CONTINUOUS_INTERVAL);
+            } else {
+                LOGGER.error("Unknown presentation type '"+presentation+"'");
+            }
+
+	        coverageEnc.setMetadata(attr.getDimensionName(), info);
         }
-        else
+
+        // is this really needed?
+        if( ! ConfigUtil.hasDimension(config, DomainAttribute.DIM_TIME))
         	coverageEnc.setMetadata("time", new GSDimensionInfoEncoder());
-        
-        if (config.getElevDimEnabled()!=null && config.getElevDimEnabled().equals("true")){
-        	final GSDimensionInfoEncoder elevationDimensionInfo=new GSDimensionInfoEncoder(true);
-	        final String presentation=config.getElevationPresentationMode();
-	        if (presentation != null){
-	        	if (presentation.equals(Presentation.LIST.toString())){
-	    			elevationDimensionInfo.setPresentation(Presentation.LIST);
-	        	}
-	//        	else if (config.getTimePresentationMode().equals(DiscretePresentation.DISCRETE_INTERVAL.toString()))
-	//        			timeDimensionInfo.setPresentation(DiscretePresentation.DISCRETE_INTERVAL,config.getDiscreteInterval());
-	        	else if (presentation.equals(Presentation.CONTINUOUS_INTERVAL.toString())) {
-        			elevationDimensionInfo.setPresentation(Presentation.CONTINUOUS_INTERVAL);
-	        	}
-	        }
-	        else {
-	            elevationDimensionInfo.setPresentation(Presentation.LIST);
-	        }
-	        coverageEnc.setMetadata("elevation", elevationDimensionInfo);
-        }
-        else
+
+        // is this really needed?
+        if( ! ConfigUtil.hasDimension(config, DomainAttribute.DIM_ELEV))
         	coverageEnc.setMetadata("elevation", new GSDimensionInfoEncoder());
         
 //        coverageEnc.setNativeBoundingBox(minx, maxy, maxx, miny, crs)
