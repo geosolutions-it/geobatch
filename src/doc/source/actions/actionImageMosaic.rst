@@ -182,8 +182,10 @@ To understand most of the following parameters please read the official GeoServe
 	  ...
 	  <styles/>
 
+Dimensions
+@@@@@@@@@@
   
-Since GeoServer 2.2.x Elevation and Time metadata settings are supported:
+Since *GeoServer 2.2.x* Elevation and Time metadata settings are supported:
 
 .. sourcecode:: xml
 
@@ -236,6 +238,72 @@ Your mosaic should contains files named as following::
 	  FILENAME_20121231T235959_0001.000.tif
 
 Which represents a granule with date 2012-12-31 23:59:59 and elevation 1.0.
+
+Custom and ranged dimensions
+____________________________
+
+Since *GeoServer 2.4* and *GeoTools 10* it is possible to index custom dimensions, and use ranged dimensions.
+
+In order to support these new features, the time and elevation declarations in the action configuration have changed.
+The previous format is anyway still supported, even if deprecated.
+
+A time dimension index is declared in the action configuration in an element of this kind:
+
+.. sourcecode:: xml
+
+  <DomainAttribute>
+    <dimensionName>time</dimensionName>
+    <regEx>[0-9]{8}T[0-9]{9}Z(\?!.\*[0-9]{8}T[0-9]{9}Z.\*)</regEx>
+  </DomainAttribute>
+
+You may specify a presentation mode using the element
+
+.. sourcecode:: xml
+
+   <presentationMode>LIST</presentationMode>
+
+and, if the type is `DISCRETE_INTERVAL`, you can specify the interval value itself:
+
+.. sourcecode:: xml
+
+   <presentationMode>DISCRETE_INTERVAL</presentationMode>
+   <discreteInterval>100</discreteInterval>
+
+Dimensions with name `time` and `elevation` are of known type, so they do not need any other specification.
+If you need a custom dimension, you need to provide the `type` as well; e.g.:
+
+.. sourcecode:: xml
+
+  <DomainAttribute>
+    <dimensionName>wavelenght</dimensionName>
+    <regEx>...regex...</regEx>
+    <type>DOUBLE</type>
+  </DomainAttribute>
+
+`type` may be
+ * DOUBLE
+ * INTEGER
+ * TIME
+ * STRING
+
+If you are using ranged dimensions, you'll need to specify, along with the dimension name, also the attribute names where the
+values will be stored:
+
+.. sourcecode:: xml
+
+  <DomainAttribute>
+    <dimensionName>wavelenght</dimensionName>
+    <attribName>loww</attribName>
+    <regEx>...regexLO...</regEx>
+    <endRangeAttribName>highw</endRangeAttribName>
+    <endRangeRegEx>...regexHI...</endRangeRegEx>
+    <type>DOUBLE</type>
+  </DomainAttribute>
+
+Note that the dimension declarations are read only for creating the indexer files and ancillary regex property files, if the mosaic has not yet been set up.
+When performing updates, the indexer files is used directly, so that the action can be used also in existing mosaics.
+
+
 
 Minimal giode to using the datastore.properties file
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
