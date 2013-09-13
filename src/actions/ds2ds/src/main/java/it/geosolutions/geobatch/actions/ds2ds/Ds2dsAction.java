@@ -113,16 +113,31 @@ public class Ds2dsAction extends DsBaseAction {
 					if (acceptableFiles.size() == 0) {
 						failAction("No file to process");
 					} else {
+					        List<ActionException> exceptions = new ArrayList<ActionException>();
 						for (FileSystemEvent fileEvent : acceptableFiles) {
-							EventObject output = importFile(fileEvent);
-							if (output != null) {
-								// add the event to the return
-								outputEvents.add(output);
-							} else {
-								if (LOGGER.isWarnEnabled()) {
-									LOGGER.warn("No output produced");
-								}
-							}
+						        try {
+						            EventObject output = importFile(fileEvent);
+						            if (output != null) {
+                                                                    // add the event to the return
+                                                                    outputEvents.add(output);
+                                                            } else {
+                                                                    if (LOGGER.isWarnEnabled()) {
+                                                                            LOGGER.warn("No output produced");
+                                                                    }
+                                                            }
+						        } catch(ActionException e) {
+						            exceptions.add(e);
+						        }
+							
+						}
+						if(acceptableFiles.size() == exceptions.size()) {
+						    throw new ActionException(this, exceptions.get(0).getMessage());
+						} else if(exceptions.size() > 0) {
+						        if (LOGGER.isWarnEnabled()) {
+						            for(ActionException ex : exceptions) {
+						                LOGGER.warn("Error in action: " + ex.getMessage());
+						            }
+						        }
 						}
 					}
 
