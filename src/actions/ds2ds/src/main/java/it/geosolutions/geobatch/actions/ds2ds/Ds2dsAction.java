@@ -178,18 +178,10 @@ public class Ds2dsAction extends DsBaseAction {
 			FeatureStore<SimpleFeatureType, SimpleFeature> featureReader = createSourceReader(
 					sourceDataStore, transaction, query);
 
-            if(LOGGER.isDebugEnabled())
-                for (Name name : sourceDataStore.getNames()) {
-                    LOGGER.debug("Source CRS is " + sourceDataStore.getSchema(sourceDataStore.getNames().get(0)).getCoordinateReferenceSystem().getName() + " ["+getName()+"]");
-                }
-
 			// output
 			destDataStore = createOutputDataStore();
 			SimpleFeatureType schema = buildDestinationSchema(featureReader
 					.getSchema());
-
-            if(LOGGER.isDebugEnabled())
-                LOGGER.debug("Destination CRS is " + schema.getCoordinateReferenceSystem().getName());
 			
 			FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter = createOutputWriter(
 					destDataStore, schema, transaction);	
@@ -399,7 +391,8 @@ public class Ds2dsAction extends DsBaseAction {
 	private AttributeDescriptor buildSchemaAttribute(String attributeName,
 			SimpleFeatureType schema, CoordinateReferenceSystem crs) {
 		AttributeDescriptor attr;
-		if (configuration.getAttributeMappings().containsKey(attributeName)) {
+		if (configuration.getAttributeMappings().containsKey(attributeName) && !isExpression(configuration.getAttributeMappings()
+				.get(attributeName).toString())) {
 			attr = schema.getDescriptor(configuration.getAttributeMappings()
 					.get(attributeName).toString());
 		} else {
