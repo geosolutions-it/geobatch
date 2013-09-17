@@ -308,6 +308,38 @@ public class ActionTest extends BaseDs2DsTest {
 	}
 	
 	@Test
+	public void testExpression1() {	
+		try {
+			Map<String,Serializable> attributes=new HashMap<String,Serializable>();
+			attributes.put("LAND_KM", "#{LAND_KM * 0}");
+			configuration.setAttributeMappings(attributes);
+			executeAction("shp");			
+			assertTrue(getDoubleAttributeFromTable("test","LAND_KM").equals(0.0));			
+			
+			
+		} catch (ActionException e) {
+			fail("Action failure in execution: " + e.getLocalizedMessage());
+		} catch (URISyntaxException e) {
+			fail("Failure in loading resource file: " + e.getLocalizedMessage());
+		}	
+	}
+	
+	@Test
+	public void testExpression2() {	
+		try {
+			Map<String,Serializable> attributes=new HashMap<String,Serializable>();						
+			attributes.put("LAND_KM", "#{LAND_KM + 10}");
+			configuration.setAttributeMappings(attributes);
+			executeAction("shp");			
+			assertFalse(getDoubleAttributeFromTable("test","LAND_KM").equals(0.0));
+		} catch (ActionException e) {
+			fail("Action failure in execution: " + e.getLocalizedMessage());
+		} catch (URISyntaxException e) {
+			fail("Failure in loading resource file: " + e.getLocalizedMessage());
+		}	
+	}
+	
+	@Test
 	public void testAttributesProjection() {	
 		try {								
 			configuration.setProjection(Arrays.asList("STATE_NAME","the_geom"));

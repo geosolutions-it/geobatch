@@ -252,6 +252,14 @@ abstract public class BaseDs2DsTest {
 		}				
 	}
 	
+	protected Double getDoubleAttributeFromTable(String tableName, String attributeName) {
+		try {
+			return (Double) executeOnDb(dbName,"select \""+attributeName+"\" from \"" + tableName +"\"", true);
+		} catch (SQLException e) {
+			return -1.0;
+		}				
+	}
+	
 	/**
 	 * This utility method is useful when a test is needed between different imports using different reprojections
 	 * 

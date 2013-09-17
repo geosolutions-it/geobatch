@@ -69,6 +69,12 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.expression.AccessException;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.PropertyAccessor;
+import org.springframework.expression.TypedValue;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 /**
  *
@@ -85,6 +91,48 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 	private List<PrimaryKeyColumn> pks;
 	
 	private Boolean isPkGenerated;
+	
+	public static SpelExpressionParser expressionParser = new SpelExpressionParser();
+	
+	public static StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
+	
+	static {
+		evaluationContext.addPropertyAccessor(new PropertyAccessor() {
+			
+			@Override
+			public void write(EvaluationContext ctx, Object target, String name,
+					Object value) throws AccessException {					
+				
+			}
+			
+			@Override
+			public TypedValue read(EvaluationContext ctx, Object target, String name)
+					throws AccessException {
+				if(target instanceof SimpleFeature) {
+					SimpleFeature feature = (SimpleFeature) target;
+					return new TypedValue(feature.getAttribute(name));
+				}
+				return null;
+			}
+			
+			@Override
+			public Class[] getSpecificTargetClasses() {					
+				return new Class[] {SimpleFeature.class};
+			}
+			
+			@Override
+			public boolean canWrite(EvaluationContext ctx, Object target, String name)
+					throws AccessException {					
+				return false;
+			}
+			
+			@Override
+			public boolean canRead(EvaluationContext ctx, Object target, String name)
+					throws AccessException {
+				return target instanceof SimpleFeature;
+			}
+		});
+	}
 	
 	public DsBaseAction(ActionConfiguration actionConfiguration) {
 		super(actionConfiguration);
@@ -225,8 +273,8 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
                     if (!first) {
                         sb.append(".");
                     }
-                    first = false;
-                    sb.append(sourceFeature.getAttribute(el.getName()));
+                    first = false;                   
+                    sb.append(getAttributeValue(sourceFeature, el.getName(), mappings));
                 }
                 String fid = sb.toString();
                 smf = builder.buildFeature(fid);
@@ -376,8 +424,27 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         } else if (mappings.containsKey(attributeName)) {
             attributeName = mappings.get(attributeName);
         }
-        return sourceFeature.getAttribute(attributeName);
+        
+		
+		if(isExpression(attributeName)) {
+			String expression = attributeName.trim().substring(2,attributeName.length()-1);
+			org.springframework.expression.Expression spelExpression = expressionParser
+					.parseExpression(expression);
+			
+			return spelExpression
+					.getValue(evaluationContext, sourceFeature);
+		} else {
+			return sourceFeature.getAttribute(attributeName);
+		}                
     }
+
+	/**
+	 * @param attributeName
+	 * @return
+	 */
+	protected boolean isExpression(String attributeName) {
+		return attributeName.trim().startsWith("#{") && attributeName.trim().endsWith("}");
+	}
 
     /**
      * Returns case variants for the given name.
