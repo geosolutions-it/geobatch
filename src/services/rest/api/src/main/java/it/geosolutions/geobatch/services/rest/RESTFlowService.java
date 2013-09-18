@@ -87,6 +87,7 @@ public interface RESTFlowService {
      */
     @POST
     @Path("/flows/{flowid}/run")
+    @Produces(MediaType.TEXT_PLAIN)
     String run(@PathParam("flowid") String flowId,
             @QueryParam("fastfail") Boolean fastfail,
             @Multipart("data") byte[]data)
@@ -115,6 +116,7 @@ public interface RESTFlowService {
      */
     @POST
     @Path("/flows/{flowid}/runlocal")
+    @Produces(MediaType.TEXT_PLAIN)
     String runLocal(@PathParam("flowid") String flowId,
             @QueryParam("fastfail") Boolean fastfail,
             @Multipart("info") RESTRunInfo info)
