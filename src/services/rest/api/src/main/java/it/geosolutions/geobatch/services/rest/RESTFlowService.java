@@ -87,8 +87,6 @@ public interface RESTFlowService {
      */
     @POST
     @Path("/flows/{flowid}/run")
-//    @Produces(MediaType.APPLICATION_XML)
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
     String run(@PathParam("flowid") String flowId,
             @QueryParam("fastfail") Boolean fastfail,
             @Multipart("data") byte[]data)
