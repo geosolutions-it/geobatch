@@ -208,9 +208,8 @@ public class HarvestGeoServerAction extends BaseAction<FileSystemEvent> {
         return false;
     }
 
-    @Override
     public boolean checkConfiguration() {
-        // TODO Auto-generated method stub
+        //TODO: Check it
         return true;
     }
 

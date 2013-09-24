@@ -32,10 +32,8 @@ import it.geosolutions.tools.io.file.Collector;
 import java.awt.image.renderable.RenderedImageFactory;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOError;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -104,9 +102,8 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
         DEFAULT_PARAMS.put("crs", wgs84code);
     }
 
-    @Override
     public boolean checkConfiguration() {
-        // TODO Auto-generated method stub
+        //TODO: Check it
         return true;
     }
 
