@@ -22,6 +22,7 @@
 package it.geosolutions.geobatch.beam;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
@@ -31,6 +32,7 @@ import it.geosolutions.tools.io.file.Copy;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -204,6 +206,12 @@ public class HarvestGeoServerAction extends BaseAction<FileSystemEvent> {
                 throw new ActionException(HarvestGeoServerAction.class, message);
         }
         return false;
+    }
+
+    @Override
+    public boolean checkConfiguration() {
+        // TODO Auto-generated method stub
+        return true;
     }
 
 }

@@ -32,8 +32,10 @@ import it.geosolutions.tools.io.file.Collector;
 import java.awt.image.renderable.RenderedImageFactory;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOError;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -100,6 +102,12 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
         DEFAULT_PARAMS.put("copyMetaData", true);
         DEFAULT_PARAMS.put("orientation", "0");
         DEFAULT_PARAMS.put("crs", wgs84code);
+    }
+
+    @Override
+    public boolean checkConfiguration() {
+        // TODO Auto-generated method stub
+        return true;
     }
 
     private BeamGeorectifierConfiguration configuration;
@@ -273,7 +281,21 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
 
             // Reprojecting
             listenerForwarder.setTask("Reprojecting");
-            reprojectedProduct = GPF.createProduct("Reproject", DEFAULT_PARAMS, reducedProduct);
+            Map<String,Object> operationParams = null;
+            final String params = configuration.getParams();
+            if (params != null && params.trim().length() > 0) {
+                String parameters[] = params.split(",");
+                if (parameters != null) {
+                    operationParams = new HashMap<String,Object>(DEFAULT_PARAMS);
+                    for (String parameter: parameters) {
+                        String[] key_value = parameter.trim().split("=");
+                        operationParams.put(key_value[0], key_value[1]);
+                    }
+                }
+            } else {
+                operationParams = DEFAULT_PARAMS;
+            }
+            reprojectedProduct = GPF.createProduct("Reproject", operationParams, reducedProduct);
             listenerForwarder.progressing(20f, "Reprojecting");
 
             // Get a store depending on the requested format

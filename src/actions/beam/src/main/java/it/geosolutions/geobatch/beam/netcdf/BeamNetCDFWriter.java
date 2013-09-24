@@ -300,7 +300,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                 while (variablesIterator.hasNext()) {
                     String variableName = variablesIterator.next();
                     BandsGroup bands = variables.get(variableName);
-                    setData(ncFileOut, bands, variableName, geophysics);
+                    setData(ncFileOut, bands, variableName, geophysics, listenerForwarder);
                     progress++;
                     if (listenerForwarder != null) {
                         listenerForwarder.progressing((int)((progress * 100) / numVariables), "writingVariable: " + variableName);
@@ -326,7 +326,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                 final BandsGroup bandsGroup = new BandsGroup(Collections.singletonList(band));
 
                 // Writing variable
-                setData(ncFileOut, bandsGroup, bandName, geophysics);
+                setData(ncFileOut, bandsGroup, bandName, geophysics, listenerForwarder);
                 if (listenerForwarder != null) {
                     listenerForwarder.progressing((int)((i * 100) / numBands), "writingByDimension");
                 }
@@ -392,11 +392,12 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * @param variablesName
      * @param bands
      * @param geophysics
+     * @param listenerForwarder 
      * @throws IOException
      * @throws InvalidRangeException
      */
     private static void setData(final NetcdfFileWriteable ncFileOut,
-            final BandsGroup beamVariableBands, String variableName, final boolean geophysics)
+            final BandsGroup beamVariableBands, String variableName, final boolean geophysics, final ProgressListenerForwarder listenerForwarder)
             throws IOException, InvalidRangeException {
 
         // Retrieve all bands for this variable
@@ -419,7 +420,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
 
         // get a properly sized array for this dimension to fill it with values
         final Array matrix = NCUtilities.getArray(dimensions, datatype);
-        setValues(bands, numBands, matrix, datatype, geophysics);
+        setValues(bands, numBands, matrix, datatype, geophysics, listenerForwarder);
         ncFileOut.write(variableName, matrix);
 
     }
@@ -432,9 +433,10 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
      * @param matrix
      * @param datatype
      * @param geophysics
+     * @param listenerForwarder 
      */
     private static void setValues(List<Band> bands, int numBands, Array matrix,
-            DataType datatype, boolean geophysics) {
+            DataType datatype, boolean geophysics, ProgressListenerForwarder listenerForwarder) {
 
         // Getting first band as sample
         final Band bandProduct = bands.get(0);
@@ -513,9 +515,12 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             data.done();
             band.dispose();
         } else {
+            
+            listenerForwarder.setTask("Writing bands");
             // Loop over bands using a 3D index
             for (int b = 0; b < numBands; b++) {
                 Band band = bands.get(b);
+                
                 MultiLevelImage imageBand = geophysics ? band.getGeophysicalImage() : band
                         .getSourceImage();
                 final RenderedImage inputRI = imageBand.getImage(0);
@@ -562,6 +567,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                 // Finalize the iterator and dispose the Band
                 data.done();
                 band.dispose();
+                listenerForwarder.progressing((100 * (b+1)) / (float)numBands, "Writing bands");
           }
         }
     }

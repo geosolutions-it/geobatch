@@ -75,6 +75,11 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
     private boolean filterInclude = true;
 
     /**
+     * Add reprojectiong params here
+     */
+    private String params = null;
+
+    /**
      * Whether we want geophysics values back or not. Note that BEAM always seems 
      * returning geophysics when missing values are defined. Need to investigate on it.
      */
@@ -154,6 +159,14 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
 
     public void setFilterVariables(String filterVariables) {
         this.filterVariables = filterVariables;
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
     }
 
     public boolean isFilterInclude() {

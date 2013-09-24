@@ -1,5 +1,8 @@
 package it.geosolutions.geobatch.beam;
 
+import it.geosolutions.geobatch.catalog.Identifiable;
+import it.geosolutions.geobatch.flow.event.IProgressListener;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -8,6 +11,82 @@ import org.esa.beam.util.UtilConstants;
 import org.junit.Test;
 
 public class BeamGeorectifyTest {
+    
+    static class MyProgressListener implements IProgressListener {
+
+        String task;
+
+        float progress;
+
+        @Override
+        public void completed() {
+            System.out.println("Completed");
+            
+        }
+
+        @Override
+        public void failed(Throwable arg0) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public Identifiable getOwner() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public float getProgress() {
+            return progress;
+        }
+
+        @Override
+        public String getTask() {
+            return task;
+        }
+
+        @Override
+        public void paused() {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void progressing() {
+            System.out.println("Progressing: TASK: " + task + " progress: " + progress);
+        }
+
+        @Override
+        public void resumed() {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void setProgress(float arg0) {
+            progress = arg0;
+//            System.out.println("Progress: " + arg0);
+        }
+
+        @Override
+        public void setTask(String arg0) {
+            task = arg0;
+//            System.out.println("Setting Task: " + arg0);
+        }
+
+        @Override
+        public void started() {
+            System.out.println("Started");
+        }
+
+        @Override
+        public void terminated() {
+            System.out.println("Terminated");
+            
+        }
+        
+    }
 
     static class ConfigSamplePair {
         public ConfigSamplePair(String folder, String file, BeamGeorectifierConfiguration config) {
@@ -33,7 +112,7 @@ public class BeamGeorectifyTest {
         configuration.setFilterInclude(false);
         configuration.setGeophysics(true);
         configuration.setJAICapacity(512*1024*1024);
-        final File outputFolder = new File("C:\\data\\outAscatL\\");
+        final File outputFolder = new File("C:\\data\\outIasiL2\\");
         configuration.setOutputFolder(outputFolder.getAbsolutePath());
         configuration.setOutputFormat("NETCDF");
         
@@ -46,17 +125,17 @@ public class BeamGeorectifyTest {
 //                new ConfigSamplePair(
 //                        sourceFolder,"W_XX-EUMETSAT-Darmstadt,VIS+IR+IMAGERY,MET7+MVIRI_C_EUMS_20120904163000.nc", // Meteosat MSG2
 //                        configuration.clone()),
-//                new ConfigSamplePair(
-//                       sourceFolder,"W_XX-EUMETSAT-Darmstadt,HYPERSPECT+SOUNDING,METOPA+IASI_C_EUMP_20121120113254_31593_eps_o_l1c.nc", // METOPA IASI
-//                                                                                                                                        // L1C
-//                        configuration.clone()),
-//                new ConfigSamplePair(
-//                        sourceFolder,"W_XX-EUMETSAT-Darmstadt,IASI,METOPA+IASI_C_EUMP_20121120062959_31590_eps_o_l2.nc", // METOPA IASI L2
-//                        configuration.clone()),
                 new ConfigSamplePair(
-//                        sourceFolder,"W_XX-EUMETSAT-Darmstadt,SURFACE+SATELLITE,METOPA+ASCAT_C_EUMP_20120412144801_28441_eps_o_125_l1.nc", // METOPA ASCAT L1
-                        sourceFolder,"W_XX-EUMETSAT-Darmstadt,SURFACE+SATELLITE,METOPA+ASCAT_C_EUMP_20110620020000_24214_eps_o_125_l1.nc", // METOPA ASCAT L1
+                       sourceFolder,"W_XX-EUMETSAT-Darmstadt,HYPERSPECT+SOUNDING,METOPA+IASI_C_EUMP_20121120113254_31593_eps_o_l1c.nc", // METOPA IASI
+                                                                                                                                        // L1C
                         configuration.clone()),
+//                new ConfigSamplePair(
+//                        sourceFolder,"W_XX-EUMETSAT-Darmstadt,IASI,METOPA+IASI_C_EUMP_20121120113254_31593_eps_o_l2.nc", // METOPA IASI L2
+//                        configuration.clone()),
+//                new ConfigSamplePair(
+////                        sourceFolder,"W_XX-EUMETSAT-Darmstadt,SURFACE+SATELLITE,METOPA+ASCAT_C_EUMP_20120412144801_28441_eps_o_125_l1.nc", // METOPA ASCAT L1
+//                        sourceFolder,"W_XX-EUMETSAT-Darmstadt,SURFACE+SATELLITE,METOPA+ASCAT_C_EUMP_20110620020000_24214_eps_o_125_l1.nc", // METOPA ASCAT L1
+//                        configuration.clone()),
 //                new ConfigSamplePair(
 //                        sourceFolder,"W_XX-EUMETSAT-Darmstadt,SURFACE+SATELLITE,METOPA+ASCAT_C_EUMP_20110620020000_24214_eps_o_125_ssm_l2.nc", // METOPA
 //                                                                                                                                              // ASCAT L2
@@ -67,15 +146,19 @@ public class BeamGeorectifyTest {
         final String prefix = "SS" + UtilConstants.SUBSAMPLING + "_SR" + UtilConstants.SEARCH_RADIUS 
                 + "_TS" + UtilConstants.TILE_SIZE + "_PPSD" + UtilConstants.POINTS_PER_SIDE_DIVIDER + "_";
         for (ConfigSamplePair singlecase : cases) {
-            if (singlecase.file.endsWith("C_EUMP_20121120062959_31590_eps_o_l2.nc")) {
+            if (singlecase.file.contains("IASI,METOPA")) {
                 singlecase.config.setDimensions("nlt, nlq, new, nlo, surf_temp, cloud_formations");
+            } else if (singlecase.file.contains("HYPERSPECT")) {
+                    singlecase.config.setDimensions("spectral");
+                    String parameters = "width=360,height=180";
+                    singlecase.config.setParams(parameters);
             } else if (singlecase.file.contains("ASCAT_C_EUMP") && singlecase.file.contains("l1.nc")) {
                 singlecase.config.setDimensions("numSigma");
                 // Forcing coordinates creation for numSigma dimension to use stacking dimensions
                 singlecase.config.setForceCoordinates(true);
             }
             BeamGeorectifier georectifier = new BeamGeorectifier(singlecase.config);
-
+            georectifier.addListener(new MyProgressListener());
             // configuration.setGeophysics(false);
             try {
                 georectifier.georectify(new File(sourceFolder, singlecase.file), null);
