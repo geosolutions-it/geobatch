@@ -7,11 +7,19 @@
 Develop an action
 ====================
 
-Starting from |GB| **1.4** an action is much simpler to develop than the previous versions. The need for developing boilerplate code or create spring context files has been removed.
+Starting from |GB| **1.4** an action is much simpler to develop than the previous versions. The need for create boilerplate code or spring context files for each action has been removed.
 
-Just create a POJO where unmarshall the configuration, create the action class extending *BaseAction.java*, annotate these two classes with some GeoBatch annotations and use the action inside a flow configuration.
+Now developers has just to create a POJO for handle the configuration, develop the action class extending *BaseAction.java*, annotate these two classes with some GeoBatch annotations and use the action inside a flow configuration.
 
-In the next sections of this chapter will be described all the **naming convenction**, the **maven poms** to create or change, how to **develop unit tests** and of course which **annotations must be used** to create an action.
+In the next sections of this chapter will be described: 
+
+* All the `naming convenctions <#naming-conventions-and-other-general-guidelines>`_ should be used
+* The `annotations <#develop-an-action-the-annotations>`_ must be used to create an action
+* Steps to do for `migrate a Flow configuration from GB 1.3 to GB 1.4 <#develop-an-action-flow-configuration-migration-from-gb-1-3-to-gb-1-4>`_
+* The code templates  to use for `develop an action <#develop-an-action-write-the-source-code>`_
+* The `maven pom management <#maven>`_ need for add a new action
+* How to `access to Temp and Config dir <#temp-and-config-directories-usage>`_ when developing an action
+* How to `develop unit tests <#unit-testing>`_
 
 Naming conventions and other general guidelines
 ----------------------------------------------------
@@ -76,6 +84,17 @@ This annotation should be used only in class annotated as {@link Action} and ext
 If the method returns **False** means that the system and configuration prerequisites to run the action aren't present so the action will not be executed.
 
 Note that the usage of this annotation is optional.
+
+Develop an action: flow configuration migration from GB 1.3 to GB 1.4
+------------------------------------------------------------------------
+
+The flows configurations that has been created for running flows with |GB| *1.3* need for just one small fix in order to be used with |GB| *1.4*.
+
+The old configurations specify also an ID called **ServicesID** for each action. Now that id should be removed because |GB| uses a generic Service for instantiate the actions and retrieve all the information needed introspecting the Configuration Class.
+
+If during |GB| startup an error like this is logged::
+	
+	
 
 Develop an action: write the source code
 --------------------------------------------
@@ -403,8 +422,8 @@ If you are working with multiple version of the platform, be sure to use the *ec
 
 	mvn eclipse:clean eclipse:eclipse -P${PROFILE} -Declipse.addVersionToProjectName=true
 	
-Temp directories usage
------------------------
+Temp and Config directories usage
+----------------------------------
 
 * ``DataDirHandler`` will handle the basic dir configurations, both the ``GEOBATCH_CONFIG_DIR`` and the ``GEOBATCH_TEMP_DIR``. It will take care of setting the default base temp dir if it's not defined. It provides methods to retrieve these two base directories.
 

@@ -227,23 +227,3 @@ Each listener configuration is referred from other places using the ``<listenerI
       <loggerName>ConsumerLogger0</loggerName>
     </LoggingProgressListener>
   </ListenerConfigurations>
-  
-Actions' Temp directories 
-.............................
-
-Each Action instance needs to use a separate subdirectory under the base temp dir. The |GB| Engine will manage its creation, as explained below. In case an Action is instantiated manually and not through |GB| Engine, you will need to manage the subdirectory creation manually.
-
-Subdirectory creation under ``GEOBATCH_CONFIG_DIR`` is automatically managed by |GB|, according to this pattern:
-
-* Each flow wil have a separate temp dir for all of its running instances (the ``flowTempDir``):
-
-  * By default this directory is called like the flow ID and is located under ``GEOBATCH_TEMP_DIR``.
-  * Can be overridden in the FlowConfiguration, either as an absolute dir or as a relative one. In the latter case, it will be located under ``GEOBATCH_TEMP_DIR``.
-
-* Every running instance of a flow has its own temp dir (the ``flowInstanceTempDir``):
-
-  * By default, the name of this dir is built using the timestamp of its instantiation, and is placed inside its related ``flowTempDir``.
-
-* Finally, every Action inside a running flow instance will have its own temp dir:
-
-  * By default, the dir name is built using the Action ordinal position in the flow, and its ID (e.g. ``1_tiffRetile``), and is placed inside its related ``flowInstanceTempDir``.

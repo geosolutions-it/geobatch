@@ -31,38 +31,11 @@ Actions
 
 Once the event conditions are met, |GB| triggers the associated flow of action, or set of concatenated actions, which define the data manipulation processes.
 
-Actions get a collection of events as input, and return a collection of new events as output, so complex processes can be constructed from a concatenation of atomic actions. Actions perform tasks, which provide the core functionalities in |GB|. There is a wide collection of action types available:
+Actions get a collection of events as input, and return a collection of new events as output, so complex processes can be constructed from a concatenation of atomic actions. Actions perform tasks, which provide the core functionalities in |GB|. 
 
-* *File-based resource management:*
+There is a **wide collection of action types available** to automate several type of different tasks as *File-based resource management* , *GeoServer resources Publishing* , *raster processing* and *data migration between geotools Datastores* .
 
-  * **Collector**: Given a wildcard, selects files from a directory, searching recursively in subdirectories if needed.
-  * **Copy**: Copies files to another directory.
-  * **Move**: Moves files to another directory.
-  * **Extract**: Extracts a zipped file into a destination.
-  * **FTP**: Sets a client FTP connection.
-
-* *Publishing in GeoServer*:
-
-  * **ShapeFile**: Publish a collection of shapefiles as layers in GeoServer.
-  * **GeotiffGeoServer**: Publish a collection of geotiff files as layers in GeoServer.
-  * **ImageMosaic**: Builds and manages an imagemosaic in geoserver from a collection of raster images.
-  * **GeoServerReload**: Reloads the configuration in a collection of GeoServer instances.
-  * **GeoNetwork**: Metadata insertion in a GeoNetwork catalog.
-
-* *Raster Processing*:
-
-  * **GeotiffOverviewsEmbedder**: Adds overviews to a GeoTIFF image.
-  * **GeotiffRetiler**: (re)creates a tiled GeoTIFF.
-  * **TaskExecutor**: Action used to execute external tasks such as Gdal operation (and much more...)
-  * **Xstream**: Action used to produce xml files from incoming event object or deserialize files to java object form incoming xml files using the xstream library
-  * **Scripting**: Action used to run (groovy) scripts
-  
-* *Unsupported Actions*:
-  
-  * **FreeMarker**: Action used to produce ascii files using the freemarker library
-  * **Shp2pg**: Loads a collection of shapefiles in a PostGIS database.
-
-We tend to keep actions as simple as possible in order to account for reusability in different flows. When developing a new actions a developer should first make sure the same goal cannot be achieved with a combination of the available actions and if not it should decompose the processing into atomic steps that can either be coded easily and/or can reuse existing actions anyway.
+We tend to **keep actions as simple as possible** in order to account for reusability in different flows. When developing a new actions a developer should first make sure the same goal cannot be achieved with a combination of the available actions and if not it should decompose the processing into atomic steps that can either be coded easily and/or can reuse existing actions anyway.
   
 
 Listeners
