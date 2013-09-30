@@ -25,12 +25,13 @@
   <properties>
     <root.basedir>${project.basedir}/..</root.basedir>
   </properties>
-  <dependencies>
+<!--  <dependencies>
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-action-tools</artifactId>
     </dependency>
   </dependencies>
+-->
   <build>
     <plugins>
       <plugin>

@@ -47,12 +47,15 @@
     <!-- GEOBATCH lib -->
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-core-impl</artifactId>
+      <artifactId>gb-core-model</artifactId>
     </dependency>
+
+    <!-- OBSOLETE DEP TO BE REMOVED!!! -->
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-fs-catalog</artifactId>
+      <artifactId>gb-action-tools</artifactId>
     </dependency>
+
     <!--  test  -->
     <dependency>
       <groupId>junit</groupId>
@@ -73,14 +76,6 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-dao-xstream</artifactId>
       <scope>test</scope>
-    </dependency>
-	<dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-core-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-fs-catalog</artifactId>
     </dependency>
   </dependencies>
 </project>
