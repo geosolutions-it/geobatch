@@ -154,6 +154,7 @@ public class FeatureConfiguration implements Cloneable {
 		xstream.toXML(this, outXML);
 	}
 	
+    @Override
 	public FeatureConfiguration clone() {
         try {
         	FeatureConfiguration fc = (FeatureConfiguration) super.clone();

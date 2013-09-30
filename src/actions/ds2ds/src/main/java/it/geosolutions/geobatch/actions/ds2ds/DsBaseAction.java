@@ -22,6 +22,7 @@ package it.geosolutions.geobatch.actions.ds2ds;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
+import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
@@ -318,7 +319,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      */
     protected DataStore createOutputDataStore() throws IOException, ActionException {
         updateTask("Connecting to output DataStore");
-        return createDataStore(configuration.getOutputFeature().getDataStore());
+        return createDataStore(configuration.getOutputFeature());
     }
 
     /**
@@ -351,10 +352,8 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         FileOutputStream outStream = null;
         try {
             File outputDir = getTempDir();
-            File outputFile = new File(outputDir.getAbsolutePath()
-+ File.separator + "output.xml");
+            File outputFile = new File(outputDir.getAbsolutePath(), "output.xml");
 
-//                    new File(outputDir, "output.xml");
             outStream = new FileOutputStream(outputFile);
             configuration.getOutputFeature().toXML(outStream);
             updateTask("Output event built");
@@ -463,8 +462,11 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @return
      * @throws IOException
      * @throws ActionException
+     *
+     * @deprecated Use {@link FeatureConfigurationUtil#createDataStore(it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration) }
      */
     protected DataStore createDataStore(Map<String, Serializable> connect) throws IOException, ActionException {
+
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("DataStore connection parameters:");
             for (String connectKey : connect.keySet()) {
@@ -477,6 +479,14 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
             }
         }
         DataStore dataStore = DataStoreFinder.getDataStore(connect);
+        if (dataStore == null) {
+            failAction("Cannot connect to DataStore: wrong parameters");
+        }
+        return dataStore;
+    }
+
+    protected DataStore createDataStore(FeatureConfiguration config) throws IOException, ActionException {
+        DataStore dataStore = FeatureConfigurationUtil.createDataStore(config);
         if (dataStore == null) {
             failAction("Cannot connect to DataStore: wrong parameters");
         }
@@ -505,7 +515,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 			sourceFeature.getDataStore()
 					.put("url", DataUtilities.fileToURL(fileEvent.getSource()));
         }
-		DataStore source = createDataStore(sourceFeature.getDataStore());
+		DataStore source = createDataStore(sourceFeature);
 		// if no typeName is configured, takes the first one registered in store
 		if(sourceFeature.getTypeName() == null) {
 			sourceFeature.setTypeName(source.getTypeNames()[0]);

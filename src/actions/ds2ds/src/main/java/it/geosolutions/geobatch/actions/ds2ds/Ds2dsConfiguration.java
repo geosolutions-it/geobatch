@@ -236,9 +236,9 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 
         ret.sourceFeature = (this.sourceFeature != null)?this.sourceFeature.clone():null;
         ret.outputFeature = (this.outputFeature != null)?this.outputFeature.clone():null;
-        ret.ecqlFilter = (this.ecqlFilter != null)?this.ecqlFilter:null;
-        ret.purgeData = this.purgeData;
-        ret.projectOnMappings = this.projectOnMappings;
+//        ret.ecqlFilter = (this.ecqlFilter != null)?this.ecqlFilter:null;
+//        ret.purgeData = this.purgeData;
+//        ret.projectOnMappings = this.projectOnMappings;
         
         if(this.attributeMappings != null) {
 	    	ret.attributeMappings=new HashMap<String,Serializable>();
