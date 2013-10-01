@@ -46,26 +46,3 @@ Listeners are used to get feedback about actions as their execution is in progre
 * **CumulatingProgress**: Used to send messages to the user graphical interface.
 * **StatusProgress**: Used to monitor the progress status of individual actions.
 * **LoggingProgress**: Used to log messages about the execution progress of actions.
-
-
-FLowChart of a Sample Flow - GeoTiff preprocessing and pubslishing in GeoServer
---------------------------------------------------------------------------------
-
-Let us now briefly introduce the flowchart of a simple flow that would:
-
-  * trigger when a new geotiff file is placed in a certain directory
-  * retile the geotiff file
-  * add proper overviews
-  * publish the reprocessed geotiff in GeoServer
-  
-The flow would contains:
- 
-  * an event generator to monitor a certain directory for incoming geotiff files
-  * an actions to retile the input geotiff
-  * an action to add overviews to the retiled geotiff
-  * an actions to publish the geotiff to a GeoServer instance
-  
-The configuration directory
----------------------------
-
-The configuration directory is where all |GB| flow definitions and other configuration files are placed. |GB| comes with a default configuration directory with a collection of sample flow configurations, that will be located under ``WEB-INF/data`` in |GB|'s installation.
