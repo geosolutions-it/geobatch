@@ -1,5 +1,5 @@
-.. |GB| replace:: **GeoBatch**
-.. |GS| replace:: **GeoServer**
+.. |GB| replace:: *GeoBatch*
+.. |GS| replace:: *GeoServer*
 .. |GH| replace:: *GitHub*
 
 .. _`restinterface`:
@@ -7,11 +7,22 @@
 Rest Interface Overview
 =========================
 
-The |GB| rest interface allows third-part client softwares to start, stop, pause and get execution informations for each flow.
+The |GB| rest interface allows third-part client softwares to start, stop, pause and get execution informations from a running |GB| flow.
 
-The |GB| GUI is thought to perform a simple monitoring of the flows execution and for user management. With the REST interface Indeed is possible to build custom applications able to interact with |GB| in order to couple different flows executions, embedd the monitoring stuff inside external applications and so on.
+The |GB| **GUI** can be used to perform a monitoring of the flows execution and for users management by an user or an administrator. 
 
-In order to build |GB| with REST support the maven profile ``-Prest`` must be activated. The Web Service framework used to create the REST resources is `Apache CXF <http://cxf.apache.org/>`_. For an introduction to the REST architectures see the `related wikipedia page <http://en.wikipedia.org/wiki/Representational_state_transfer>`_
+The |GB| **REST interface** expose the GUI functionality through a programmable API. It allows developers to control |GB| from external applications. In this way is possible couple different flows executions or embedd the monitoring task triggering external events inside external applications.
+
+.. warning::
+	
+	In order to build |GB| with REST support the maven profile ``-Prest`` must be activated.
+
+For an high level introduction to the REST architectures see the `related wikipedia page <http://en.wikipedia.org/wiki/Representational_state_transfer>`_
+
+The Web Service framework used to create the REST resources is `Apache CXF <http://cxf.apache.org/>`_.
+
+Maven modules
+---------------------------
 
 The |GB| maven modules related to REST implementation are:
 
@@ -25,13 +36,24 @@ Access to the Interface
 
 The base url for acces to all services is::
 	
-	http://< host>:<port>/<geobatch_instancename>/rest
+	http://<host>:<port>/<geobatch_instancename>/rest
 
 for example::
 
 	http://localhost:8081/geobatch/rest
 	
-In order to Invoke a service one of the following operation URL must be concatenated to the base URL.
+In order to Invoke a service one of the following **Operation** URL must be concatenated to the base URL. 
+
+REST Operations
+-------------------
+
+There are 2 main categories of Operations: **Flow Operations** and **Consumer Operations**. 
+
+Next 2 sections will describe the interface of each flow listing HTTP **HTTP Method** to use to invoke them, the **path**, the **Return type** and the **HTTP Error code** returned.
+
+.. note::
+
+	The sequence used to list all operation in the next sections isn't random: often in order to invoke the *n-* operation an information provided by the *n-i-* operation is required.
 
 Flows Operations
 ------------------
@@ -51,8 +73,8 @@ Returns a List of flow that are available on the geobatch running instance. Each
      - Errors
    * - GET 
      - ``/flows``
-     - MediaType.APPLICATION_XML
-     - TODO
+     - APPLICATION_XML
+     - 500
 	 
 Get all info about a Flow
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -69,8 +91,8 @@ Returns all the useful informations about a flow.
      - Errors
    * - GET
      - ``/flows/{flowid}``
-     - MediaType.APPLICATION_XML
-     - TODO	 
+     - APPLICATION_XML
+     - 404, 500	 
 	 
 Run a Flow uploading a file
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -87,8 +109,8 @@ Starts a flow copying the data provided into the watch dir of the flow.
      - Errors
    * - POST
      - ``/flows/{flowid}/run``
-     - MediaType.TEXT_PLAIN
-     - TODO	 
+     - TEXT_PLAIN
+     - 400, 500	 
 
 Run a Flow providing a file list
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -109,8 +131,8 @@ Input files will not be renamed since the filename could have some extra info en
      - Errors
    * - POST
      - ``/flows/{flowid}/runlocal``
-     - MediaType.TEXT_PLAIN
-     - TODO
+     - TEXT_PLAIN
+     - 400, 500
 	 
 Get flow consumers
 ,,,,,,,,,,,,,,,,,,,,,
@@ -128,8 +150,8 @@ Returns all the consumers (with any state) for a given flow. Each consumer is de
      - Errors
    * - GET
      - ``/flows/{flowId}/consumers``
-     - MediaType.APPLICATION_XML
-     - TODO
+     - APPLICATION_XML
+     - 404, 500
 	 
 	 
 	 
@@ -155,8 +177,8 @@ Returns all the useful informations about a consumer.
      - Errors
    * - GET
      - ``/consumers/{consumerid}/status``
-     - MediaType.APPLICATION_XML
-     - TODO
+     - APPLICATION_XML
+     - 404
 	 
 Consumer Log
 ,,,,,,,,,,,,,,
@@ -173,8 +195,8 @@ Returns the status log of the consumer.
      - Errors
    * - GET
      - ``/consumers/{consumerid}/log``
-     - TODO
-     - TODO
+     - TEXT_PLAIN
+     - 404
 	 
 Consumer pause
 ,,,,,,,,,,,,,,
@@ -191,8 +213,8 @@ Pause a running consumer.
      - Errors
    * - PUT
      - ``/consumers/{consumerid}/pause``
-     - TODO
-     - TODO
+     - void
+     - 404
 	 
 Consumer Resume
 ,,,,,,,,,,,,,,,,,
@@ -209,8 +231,8 @@ Resume a paused consumer.
      - Errors
    * - PUT
      - ``/consumers/{consumerid}/resume``
-     - TODO
-     - TODO
+     - void
+     - 404
 	 
 Consumer Deletion
 ,,,,,,,,,,,,,,,,,,,
@@ -227,5 +249,5 @@ Delete a consumer if it isn't in an active state.
      - Errors
    * - PUT
      - ``/consumers/{consumerid}/clean``
-     - TODO
-     - TODO
+     - void
+     - 404, 400
