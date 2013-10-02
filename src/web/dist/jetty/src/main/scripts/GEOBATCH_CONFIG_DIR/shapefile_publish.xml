@@ -14,7 +14,6 @@
 		<listenerId>Cumulator</listenerId> 	
 		
 		<GeoServerShapeActionConfiguration>
-			<serviceID>ShapeFileGeoServerService</serviceID>
 			<id>shapefile</id>
 			<name>ShapeFileIngestion</name>
 			<description>Get a pack of shapefiles (zipped) and ingest them into a GeoServer instance.</description>
