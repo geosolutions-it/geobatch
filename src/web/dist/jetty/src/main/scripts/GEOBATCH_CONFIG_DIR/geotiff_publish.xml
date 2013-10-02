@@ -39,7 +39,6 @@
 			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 
-			<serviceID>GeotiffRetilerService</serviceID>
 			<forceToBigTiff>false</forceToBigTiff>
 			<tileH>256</tileH>
 			<tileW>256</tileW>
@@ -54,8 +53,7 @@
 			<listenerId>GeoTIFFStatusActionLogger0</listenerId>
 			<listenerId>GeoTIFFActionLogger0</listenerId>
 
-			<serviceID>GeotiffOverviewsEmbedderService</serviceID>
-
+			
 			<downsampleStep>2</downsampleStep>
 			<scaleAlgorithm>Average</scaleAlgorithm>
 			<numSteps>15</numSteps>
@@ -65,7 +63,7 @@
 		</GeotiffOverviewsEmbedderConfiguration>
 
 		<GeoServerActionConfiguration>
-			<serviceID>GeotiffGeoServerService</serviceID>
+			
 			<id>geotiff</id>
 			<description>Action to ingest GeoTIFF on GeoServer</description>
 			<name>geotiff action</name>
