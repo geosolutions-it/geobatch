@@ -71,8 +71,8 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 	@Override
 	@CheckConfiguration
 	public boolean checkConfiguration() {
-		// TODO Auto-generated method stub
-		return false;
+		LOGGER.info("Calculating if this action could be Created...");
+        return true;
 	}
 	
 	/**
