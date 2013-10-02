@@ -2,6 +2,8 @@
 .. |start| image:: images/start-icon.png
 .. |config| image:: images/config-icon.png
 
+.. _`use`:
+
 Basic Usage Instructions
 ==========
 

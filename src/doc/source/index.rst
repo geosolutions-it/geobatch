@@ -20,6 +20,7 @@ Overview
    
    basics/introduction
    basics/concepts
+   basics/consumer
 
 Basic usage
 ^^^^^^^^^^^
