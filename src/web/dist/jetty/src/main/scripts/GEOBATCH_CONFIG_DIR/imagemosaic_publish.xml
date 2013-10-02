@@ -15,7 +15,7 @@
 		<performBackup>false</performBackup>
 
 		<ImageMosaicActionConfiguration>
-			<serviceID>ImageMosaicGeneratorService</serviceID>
+			
 			<id>imagemosaic</id>
 
 			<description>ImageMosaicService</description>
