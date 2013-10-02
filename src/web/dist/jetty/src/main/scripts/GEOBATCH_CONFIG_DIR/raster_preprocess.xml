@@ -28,7 +28,7 @@
 
 			<overrideConfigDir>./</overrideConfigDir>
 
-			<serviceID>ScriptingService</serviceID>
+			
 
 			<language>groovy</language>
 			<scriptFile>config/raster_preprocess.groovy</scriptFile>
