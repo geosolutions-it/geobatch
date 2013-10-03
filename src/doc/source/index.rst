@@ -12,13 +12,37 @@ User's Documentation
 .. toctree::
    :maxdepth: 1
 
+Overview
+^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+   
    basics/introduction
    basics/concepts
-   basics/installation 
-   basics/flowConfiguration
+   basics/consumer
+
+Basic usage
+^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+   
    basics/use
    basics/ftpUsage
+   basics/flowConfiguration
 
+System Configuration
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+   
+   basics/installation
+   basics/javatweeks
+   basics/datadir
+   basics/databases
+   
 Actions
 ^^^^^^^^^^^^^
 
@@ -36,7 +60,7 @@ Services
    :glob:
 
    services/service*
-
+   
 Demos & Tutorials
 -----------------
 
@@ -56,4 +80,5 @@ Developer's Guide
    developers/developerDoc
    developers/ideSettings
    developers/developAction
+   developers/restinterface
    developers/tools

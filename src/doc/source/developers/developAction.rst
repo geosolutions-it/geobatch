@@ -5,35 +5,104 @@
 .. _`dvlpAction`:
 
 Develop an action
-=================
+====================
 
+Starting from |GB| **1.4** an action is much simpler to develop than the previous versions. The need for create boilerplate code or spring context files for each action has been removed.
 
-Class naming conventions
-------------------------------------------------
+Now developers has just to create a POJO for handle the configuration, develop the action class extending *BaseAction.java*, annotate these two classes with some GeoBatch annotations and use the action inside a flow configuration.
 
-It is recommended to have one action per maven module, unless the actions are strictly related to one another.
+In the next sections of this chapter will be described: 
+
+* All the `naming convenctions <#naming-conventions-and-other-general-guidelines>`_ should be used
+* The `annotations <#develop-an-action-the-annotations>`_ must be used to create an action
+* Steps to do for `migrate a Flow configuration from GB 1.3 to GB 1.4 <#develop-an-action-flow-configuration-migration-from-gb-1-3-to-gb-1-4>`_
+* The code templates  to use for `develop an action <#develop-an-action-write-the-source-code>`_
+* The `maven pom management <#maven>`_ need for add a new action
+* How to `access to Temp and Config dir <#temp-and-config-directories-usage>`_ when developing an action
+* How to `develop unit tests <#unit-testing>`_
+
+Naming conventions and other general guidelines
+----------------------------------------------------
+
+A best practice is to aggregate actions that are strictly related each other in a single maven module and create a custom maven build profile for that.
+If different actions developed doesn't share any relation it is preferible use different maven modules for each action.
 
 A maven module implementing one (or more) actions should be called ``gb-action-modulename``, where  **modulename** is a name specific to the action.
 
-An action is composed of 4 mandatory classes that should follow this naming convention: Given an Action named **ExampleAction** the four classes shall be called 
+An action is composed of two mandatory classes that should follow this naming convention: Given an Action named **ExampleAction** the two classes shall be called 
 
 * **ExampleActionAction.java** -   the Actions business logic.
 * **ExampleActionConfiguration.java** - any configuration you need in the action.
-* **ExampleActionGeneratorService.java** - a Service that creates an ExampleActionAction using a ExampleActionConfiguration
-* **ExampleActionAliasRegistrar.java** - a bean used to register the GeneratorService into the Spring context.
 
+These two classes (and any other utility class developed for the action) should be placed under a package called *it.geosolutions.geosolutions.modulename.exampleaction* 
 
-The 4 classes (and any other utility class developed for the action) should be placed under a package called *it.geosolutions.geosolutions.modulename.exampleaction* 
-
-Next paragraphs will show how the four classes are to be implemented. Some code templates are also provided.
+Next paragraphs will show how this two classes should be implemented. Some code templates will be provided.
 
 You can use these templates replacing the placeholder ``#ACTION_NAME#`` with the custom action name and implementing where the comments starts with TODO.
 You'll need to fill in the imports, the package declaration and the license as well.
 
+**Notes:**
 
+Remember to set accordingly the editor formatter and the template of the code following this http://docs.geoserver.org/stable/en/developer/eclipse-guide/index.html guide.
 
-Configuration
--------------
+**Quick How-TO**
+
+*Window* -> *Preferences* -> *Java* -> *Code Style* :
+
+-> *Code Templates* : import from geotools source code /build/eclipse/codetemplates.xml
+
+-> *Formatter* : import from geotools source code /build/eclipse/formatter.xml
+
+Develop an action: The Annotations
+--------------------------------------------
+
+As told before the *action configuration class* and the *action implementation class* must be annotated to be recognized by |GB| as an action.
+
+Inside the module *gb-core-model* in the package *it.geosolutions.geobatch.annotations* can be found the annotation classes that must be used.
+
+Action annotation
+,,,,,,,,,,,,,,,,,,,,
+ 
+The annotation **Action** indicates to |GB| that the annotated Class is an Action and will be execute running its method **execute()**. 
+
+The usage of this annotation is **Mandatory** and must be used only if a class extends **BaseAction**.
+
+The parameters taken by this annotation are:
+
+* **configurationClass** (mandatory): Indicates the class that act as Action configuration. Accepts instances of **Class<? extends ActionConfiguration>** . This parameter is Mandatory because of is the only way to bind an action to its configuration.
+* **configurationAlias** (optional): Indicates the alias to use for the configuration. Accepts instances of **String**. Remember that the action configuration is extracted from the flow configuration and it is unmarshalled into the related ActionConfiguration Bean using a java2XML binder (the |GB| default one is `xstream <http://xstream.codehaus.org/>`_ ) in order to avoid to write configuration using the full qualified name of the class you can specified an alias to keep the configuration more human-readable. This value is **Optional**, the Configuration Class name will be used by default.
+* **aliases** (optional): Similar to the previous parameter but it is used for the configurations fields used. Accepts an array of Class. Each class found in this array will be registered with the ClassName instead of its FullQualifiedName.
+* **implicitCollections** (optional): configuration attributes listed in this array will be marshalled inside a Collection without the need for be wrapped between tags in the XML configuration.
+
+see this `xstream tutorial <http://xstream.codehaus.org/alias-tutorial.html>`_ for a better explanation of the **alias** and **implicitCollections** concepts but remeber that this is a |GB| astractions that allows to use this annotation and this system for simplify the XML flow configuration with all different java2XML binder.
+
+CheckConfiguration annotation
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
+Indicates that the annotated Method contains the logic to check action configuration before action can be executed. 
+This annotation should be used only in class annotated as {@link Action} and extending {@link BaseAction} and with a Boolean return type.
+If the method returns **False** means that the system and configuration prerequisites to run the action aren't present so the action will not be executed.
+
+Note that the usage of this annotation is optional.
+
+Develop an action: flow configuration migration from GB 1.3 to GB 1.4
+------------------------------------------------------------------------
+
+The flows configurations that has been created for running flows with |GB| *1.3* need for just one small fix in order to be used with |GB| *1.4*.
+
+The old configurations specify also an ID called **ServicesID** for each action. Now that id should be removed because |GB| uses a generic Service for instantiate the actions and retrieve all the information needed introspecting the Configuration Class.
+
+If during |GB| startup an error like this is logged::
+	
+	
+
+Develop an action: write the source code
+--------------------------------------------
+
+After the introduction of the convenctions to follow and the annotations that must be used below are showed the templates for the **ActionConfiguration** and **Action** classes.
+
+Develop the Configuration Class
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 The class #ACTION_NAME#Configuration.java is the bean where the action configuration, extracted from the whole flow configuration, will be unmarshalled.
 
@@ -63,37 +132,8 @@ A standard template is provided here::
 
 You have to fill in the 3 *todo* if needed.
 
-
-
-AliasRegistrar
---------------
-
-The class #ACTION_NAME#AliasRegistrar.java is responsible for settings the XStream aliases in order to write a human readable Flow configuration.
-
-A template is provided here::
-
-	public class #ACTION_NAME#AliasRegistrar extends AliasRegistrar {
-
-		public #ACTION_NAME#AliasRegistrar(AliasRegistry registry) {
-			
-			LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-			
-			// Setting up the Alias for the root of the Configuration
-			registry.putAlias("#ACTION_NAME#Configuration", #ACTION_NAME#Configuration.class);
-			
-			// TODO Add here other Aliases...
-		}
-	}
-
-
-Note that ``registry.putAlias(aliasName, aliasedClass)`` calls the `XStream.alias  <http://xstream.codehaus.org/javadoc/com/thoughtworks/xstream/XStream.html#alias(java.lang.String,%20java.lang.Class)>`_ method. 
-We're using the AliasRegistrar class in order to decouple the action code from the XStream libs.
-
-For a deeper documentation about XStream aliases see the official documentations and `this tutorial <http://xstream.codehaus.org/alias-tutorial.html>`_.
-
-
 Action
-------
+,,,,,,,,,,,
 
 The class #ACTION_NAME#Action.java holds the business logic of the action. The implementation of the ``execute()`` method is the main task for a |GB| action developer.
 
@@ -103,6 +143,7 @@ The whole loop body is wrapped inside a ``try`` block so any Exception that isn'
 
 The template::
 
+   @Action(configurationClass=#ACTION_NAME#Configuration.class)
    public class #ACTION_NAME#Action extends BaseAction<EventObject> {
       private final static Logger LOGGER = LoggerFactory.getLogger(#ACTION_NAME#Action.class);
 
@@ -157,77 +198,6 @@ An Action must extends the class ``BaseAction<XEO extends EventObject>``. Often 
 Another aspect is the action fault tolerance. Sometimes, if an error occurs during an action execution, we want to terminate the whole flow execution; some other times we want that the error could be skipped and continue to process the next event.
 In order to handle this situation there is a property called ``failIgnored`` in the class *ActionConfiguration* (so every configurations inherit it). The meaning of this flag is to specify whether errors are tolerated during an action executions.
 In order to handle in a standard way this flag the class *ActionExceptionHandler.java* (module gb-tools package *it.geosolutions.tool.errorhandling*) provide the static method *handleError(...)* so, calling this, the error could be handled depending on the failIgnore flag value.
-
-GeneratorService
-----------------
-
-The Class #ACTION_NAME#GeneratorService.java is responsible for the runtime creation of the Action from its configuration.
-
-Must implement the methods createAction() and canCreateAction().
-
-a standard template is provided here::
-
-   public class #ACTION_NAME#GeneratorService 
-            extends BaseService 
-            implements ActionService<EventObject, #ACTION_NAME#Configuration> {
-
-      private final static Logger LOGGER = LoggerFactory.getLogger(#ACTION_NAME#GeneratorService.class);
-
-            
-      public #ACTION_NAME#GeneratorService(String id, String name, String description) {
-         super(id, name, description);
-      }
-
-      public #ACTION_NAME#Action createAction(#ACTION_NAME#Configuration configuration) {
-         try {
-            return new #ACTION_NAME#Action(configuration);
-         } catch (Exception e) {
-            if (LOGGER.isInfoEnabled())
-               LOGGER.info(e.getLocalizedMessage(), e);
-            return null; // ?!? should throw
-         }
-      }
-
-      public boolean canCreateAction(#ACTION_NAME#Configuration configuration) {
-         if ( the input configuration is acceptable ) 
-            return true;
-         else {
-            if (LOGGER.isWarnEnabled())
-                  LOGGER.warn("Unable to create action: bad configuration (ADD DETAILS IF NEEDED)");
-         
-            return false;
-         }
-      }
-   }
-
-Spring
-------
-
-Since GeoBatch is a Spring based framework you have to add into::
-
-	${GEOBATCH}/src/actions/gb-${ACTION_NAME}/src/main/resources 
-
-an XML file called *applicationContext.xml* which will be used to load beans on server startup: 
-
-.. sourcecode:: xml
-
-	<?xml version="1.0" encoding="UTF-8"?>
-	<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-
-	<beans default-init-method="init" default-destroy-method="dispose">
-
-		<!-- Environment Initialization -->
-
-		<bean id="ACTIONGeneratorService" class="it.geosolutions.geobatch.ACTION_PACKAGE.ACTIONGeneratorService">
-		 <constructor-arg type="String"><value>ACTIONGeneratorService</value></constructor-arg><!--"id"-->
-		 <constructor-arg type="String"><value>ACTIONGeneratorService</value></constructor-arg><!--"name"-->
-		 <constructor-arg type="String"><value>ACTIONGeneratorService</value></constructor-arg><!--"description"-->
-		</bean>
-		
-		<bean id="ACTION_IDAliasRegistrar" class="it.geosolutions.geobatch.ACTION_PACKAGE.ACTIONAliasRegistrar" lazy-init="false">
-			<constructor-arg ref="aliasRegistry" />
-		</bean>
-	</beans>
 	
 Maven
 -----
@@ -452,8 +422,8 @@ If you are working with multiple version of the platform, be sure to use the *ec
 
 	mvn eclipse:clean eclipse:eclipse -P${PROFILE} -Declipse.addVersionToProjectName=true
 	
-Temp directories usage
------------------------
+Temp and Config directories usage
+----------------------------------
 
 * ``DataDirHandler`` will handle the basic dir configurations, both the ``GEOBATCH_CONFIG_DIR`` and the ``GEOBATCH_TEMP_DIR``. It will take care of setting the default base temp dir if it's not defined. It provides methods to retrieve these two base directories.
 
@@ -527,28 +497,3 @@ Using jUnit 4, copy all previous instructions into this method::
 So with this test will be easy debug and check the outcome of an action without configure the whole flow.
 
 For an explanation of how to write a flow configuration see the :ref:`flwCnfg` .
-
-
-build_archetype.sh and war creation
------------------------------------
-
-**TO BE COMPLETED**
-
-|GB| provide a useful tool for the automatic creation of the the templates shown before.
-Into the root dir of |GB| sources directory there is the script ``build_archetype.sh`` and a directory called ``.build``.
-The script generates, from the templates hold in ``.build`` a maven directory tree with all the 4 classes described.
-
-To compile the project and generate the .war run the command::
-
-   $ ~work/code/geobatch/src/application# mvn clean install
-	
-and the war will be copied under the local maven repo.
-
-
-*Notes:*
-
-Remember to set accordingly the editor formatter and the template of the code following this http://docs.geoserver.org/stable/en/developer/eclipse-guide/index.html guide.
-Short How-TO:
-Window -> Preferences -> Java -> Code Style:
--> Code Templates: e importate dal codice di geotools /build/eclipse/codetemplates.xml
--> Formatter: e importare dal codice di geotools /build/eclipse/formatter.xml
