@@ -2,6 +2,8 @@
 .. |start| image:: images/start-icon.png
 .. |config| image:: images/config-icon.png
 
+.. _`use`:
+
 Basic Usage Instructions
 ==========
 
@@ -23,6 +25,7 @@ Clicking on any link, login screen appears:
 
 .. figure:: images/login.png
    :align: center
+   :width: 600
 
 Default user is ``admin``, default password is also ``admin``.
 
@@ -47,3 +50,4 @@ Flow management
 
 .. figure:: images/flows.png
    :align: center
+   :width: 600
