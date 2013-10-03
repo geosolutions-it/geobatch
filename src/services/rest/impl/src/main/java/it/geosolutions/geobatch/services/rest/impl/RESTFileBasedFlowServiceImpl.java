@@ -42,6 +42,7 @@ import it.geosolutions.geobatch.services.rest.model.RESTActionShort;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerList;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerShort;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus;
+import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus.Status;
 import it.geosolutions.geobatch.services.rest.model.RESTFlow;
 import it.geosolutions.geobatch.services.rest.model.RESTFlowList;
 import it.geosolutions.geobatch.services.rest.model.RESTRunInfo;
@@ -58,10 +59,9 @@ import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -285,8 +285,9 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
         rcs.setUuid(bec.getId());
         rcs.setStatus(RESTUtils.convertStatus(bec.getStatus()));
         rcs.setExtendedStatus(RESTUtils.getExtStatus(bec.getStatus()));
-        rcs.setErrorMessage("property ErrorMessage: Not Implemented yet");
-
+        if(bec.getStatus().equals(Status.FAIL)){
+            rcs.setErrorMessage("property ErrorMessage: Not Implemented yet");
+        }
         BaseAction<EventObject> currentAction = (BaseAction)bec.getCurrentAction();
         RESTActionShort lras = new RESTActionShort();
         lras.setId(currentAction.getId());
