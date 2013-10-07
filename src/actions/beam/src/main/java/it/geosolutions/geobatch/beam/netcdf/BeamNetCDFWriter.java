@@ -165,10 +165,14 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
         NetcdfFileWriteable ncFileOut = null;
 
         try {
+            boolean isLargeFile = false;
             ncFileOut = NetcdfFileWriteable.createNew(outputFilePath);
             if (params != null) {
                 if (params.containsKey(BeamFormatWriter.PARAM_GEOPHYSIC)) {
                     geophysics = (Boolean) params.get(BeamFormatWriter.PARAM_GEOPHYSIC);
+                }
+                if (params.containsKey(BeamFormatWriter.PARAM_LARGEFILE)) {
+                    isLargeFile = (Boolean) params.get(BeamFormatWriter.PARAM_LARGEFILE);
                 }
                 if (params.containsKey(BeamFormatWriter.PARAM_FORCECOORDINATE)) {
                     forceCoordinate = (Boolean) params.get(BeamFormatWriter.PARAM_FORCECOORDINATE);
@@ -222,6 +226,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             ncFileOut.setFill(false);
 
             // Definition is done... create the file
+            ncFileOut.setLargeFile(isLargeFile);
             ncFileOut.create();
 
             // Fill coordinates with values

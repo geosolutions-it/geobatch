@@ -50,6 +50,13 @@ public interface BeamFormatWriter {
      */
     public final static String PARAM_FORCECOORDINATE = "forceCoordinate";
 
+    /**
+     * This parameter is used to specify whether we want to create a largeFile (64 bits offset). 
+     * We may consider making this parameter automatically-computed from the upper layer.
+     */
+    public final static String PARAM_LARGEFILE = "largeFile";
+
+    
     public void storeProduct(final String outputFilePath, 
             final Product inputProduct, 
             final Product reprojectedProduct, 
