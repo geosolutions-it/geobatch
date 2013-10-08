@@ -112,7 +112,7 @@ public class BeamGeorectifyTest {
         configuration.setFilterInclude(false);
         configuration.setGeophysics(true);
         configuration.setJAICapacity(512*1024*1024);
-        final File outputFolder = new File("C:\\data\\outIasiL2\\");
+        final File outputFolder = new File("C:\\data\\dlr\\output\\msg2\\");
         configuration.setOutputFolder(outputFolder.getAbsolutePath());
         configuration.setOutputFormat("NETCDF");
         
@@ -150,12 +150,17 @@ public class BeamGeorectifyTest {
                 singlecase.config.setDimensions("nlt, nlq, new, nlo, surf_temp, cloud_formations");
             } else if (singlecase.file.contains("HYPERSPECT")) {
                     singlecase.config.setDimensions("spectral");
+                    singlecase.config.setLargeFile(true);
                     String parameters = "width=360,height=180";
                     singlecase.config.setParams(parameters);
             } else if (singlecase.file.contains("ASCAT_C_EUMP") && singlecase.file.contains("l1.nc")) {
                 singlecase.config.setDimensions("numSigma");
                 // Forcing coordinates creation for numSigma dimension to use stacking dimensions
                 singlecase.config.setForceCoordinates(true);
+            }  else if (singlecase.file.contains("MSG2")) {
+//                singlecase.config.setLargeFile(true);
+                String parameters = "width=3600,height=1800";
+                singlecase.config.setParams(parameters);
             }
             BeamGeorectifier georectifier = new BeamGeorectifier(singlecase.config);
             georectifier.addListener(new MyProgressListener());

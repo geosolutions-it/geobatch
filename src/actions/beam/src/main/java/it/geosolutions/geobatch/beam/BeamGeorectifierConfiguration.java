@@ -94,7 +94,7 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
     /**
      *  Whether to create an output file supporting 64bit offsets.
      */
-    private boolean isLargeFile = false;
+    private boolean largeFile = false;
 
     
     private String outputFolder;
@@ -223,14 +223,13 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
         this.forceCoordinates = forceCoordinates;
     }
 
-
     public boolean isLargeFile() {
-        return isLargeFile;
+        return largeFile;
     }
 
 
-    public void setLargeFile(boolean isLargeFile) {
-        this.isLargeFile = isLargeFile;
+    public void setLargeFile(boolean largeFile) {
+        this.largeFile = largeFile;
     }
 
 }

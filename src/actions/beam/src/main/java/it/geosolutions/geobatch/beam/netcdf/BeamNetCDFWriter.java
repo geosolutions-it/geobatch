@@ -217,16 +217,17 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             if (listenerForwarder != null) {
                 listenerForwarder.setTask("definePhase");
             }
-            Map<String, VariablesGroup> dimensionsGroup = defineOutputNetCDF(ncFileOut,
-                    inputProduct, outputProduct, latLonCoordinates, geophysics, forceCoordinate, 
-                    coordinateDimensions);
-
             // This will prevent a time consuming phase where the NetCDF lib will fill all arrays with
             // the predefined value
             ncFileOut.setFill(false);
 
             // Definition is done... create the file
             ncFileOut.setLargeFile(isLargeFile);
+
+            Map<String, VariablesGroup> dimensionsGroup = defineOutputNetCDF(ncFileOut,
+                    inputProduct, outputProduct, latLonCoordinates, geophysics, forceCoordinate, 
+                    coordinateDimensions);
+
             ncFileOut.create();
 
             // Fill coordinates with values
@@ -274,7 +275,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             final ProgressListenerForwarder listenerForwarder)
             throws IOException, InvalidRangeException {
         if (listenerForwarder != null) {
-            listenerForwarder.setTask("writing");
+            listenerForwarder.setTask("Writing values");
         }
 
         if (!dimensionsGroup.isEmpty()) {
@@ -282,13 +283,16 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             Iterator<String> iterator = keys.iterator();
             final int numElements = keys.size();
             if (listenerForwarder != null) {
-                listenerForwarder.setTask("writingByDimension");
+                listenerForwarder.setTask("--------> Writing By Dimensions");
             }
             
             float dimensionProgress = 0;
             // Loop over dimensions.
             while (iterator.hasNext()) {
                 String dimension = iterator.next();
+                if (listenerForwarder != null) {
+                    listenerForwarder.setTask("        > Writing By Dimension: " + dimension);
+                }
 
                 // Get all the variables pertaining to that dimension
                 final VariablesGroup variablesForCurrentDimension = dimensionsGroup.get(dimension);
@@ -298,7 +302,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
 
                 final int numVariables = variablesKeys.size();
                 if (listenerForwarder != null) {
-                    listenerForwarder.setTask("writingVariable");
+                    listenerForwarder.setTask("------------> Writing Variables");
                 }
                 // Set data for each variable related to that dimension
                 float progress = 0;
@@ -308,12 +312,12 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                     setData(ncFileOut, bands, variableName, geophysics, listenerForwarder);
                     progress++;
                     if (listenerForwarder != null) {
-                        listenerForwarder.progressing((int)((progress * 100) / numVariables), "writingVariable: " + variableName);
+                        listenerForwarder.progressing((int)((progress * 100) / numVariables), "            > Writing Variable: " + variableName);
                     }
                 }
                 dimensionProgress++;
                 if (listenerForwarder != null) {
-                    listenerForwarder.progressing((int)((dimensionProgress * 100) / numElements), "writingByDimension");
+                    listenerForwarder.progressing((int)((dimensionProgress * 100) / numElements), "        > Writing By Dimension: " + dimension);
                 }
             }
         } else {
@@ -333,7 +337,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                 // Writing variable
                 setData(ncFileOut, bandsGroup, bandName, geophysics, listenerForwarder);
                 if (listenerForwarder != null) {
-                    listenerForwarder.progressing((int)((i * 100) / numBands), "writingByDimension");
+                    listenerForwarder.progressing((int)((i * 100) / numBands), "        > Writing By Dimension");
                 }
             }
         }
@@ -424,9 +428,10 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                 height, width };
 
         // get a properly sized array for this dimension to fill it with values
-        final Array matrix = NCUtilities.getArray(dimensions, datatype);
+        Array matrix = NCUtilities.getArray(dimensions, datatype);
         setValues(bands, numBands, matrix, datatype, geophysics, listenerForwarder);
         ncFileOut.write(variableName, matrix);
+        matrix = null;
 
     }
 
@@ -521,7 +526,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
             band.dispose();
         } else {
             
-            listenerForwarder.setTask("Writing bands");
+            listenerForwarder.setTask("--------------> Writing bands (dimensions)");
             // Loop over bands using a 3D index
             for (int b = 0; b < numBands; b++) {
                 Band band = bands.get(b);
@@ -572,7 +577,7 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                 // Finalize the iterator and dispose the Band
                 data.done();
                 band.dispose();
-                listenerForwarder.progressing((100 * (b+1)) / (float)numBands, "Writing bands");
+                listenerForwarder.progressing((100 * (b+1)) / (float)numBands, "                > Writing bands");
           }
         }
     }
