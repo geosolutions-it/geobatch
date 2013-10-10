@@ -27,9 +27,13 @@ import it.geosolutions.geobatch.catalog.file.DataDirHandler;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.EventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
+import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
+import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerService;
+import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.file.FileBasedEventConsumer;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
+import it.geosolutions.geobatch.global.CatalogHolder;
 
 import java.io.File;
 import java.util.List;
@@ -42,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * 
  *         This class provides methods for create consumers, create events and starts the consumer,
  * 
- *         This class has been developed in order to support the start flow method but this code could be usefull also in other context... Externalize
+ *         This class has been developed in order to support the start flow method but this code could be useful also in other context... Externalize
  *         it in a core module?
  * 
  * 
@@ -76,6 +80,8 @@ public class FlowRunner {
                 "RESTCreatedConsumer");
 
         consumerConfig.setActions(actions);
+        
+        consumerConfig.setListenerId(ecc.getListenerIds());
 
         // TODO may we want to remove only when getStatus is remotely called???
         // consumerConfig.setKeepContextDir(true);
@@ -94,6 +100,17 @@ public class FlowRunner {
             LOGGER.info("INIT injecting consumer to the parent flow. UUID: " + consumer.getId());
         }
 
+        // Setting the listeners
+        for (ProgressListenerConfiguration plConfig : ecc.getListenerConfigurations()) {
+	        final String serviceID = plConfig.getServiceID();
+	        final ProgressListenerService progressListenerService =
+	                CatalogHolder.getCatalog().getResource(serviceID, ProgressListenerService.class);
+	        if (progressListenerService != null) {
+	            ProgressListener progressListener = progressListenerService.createProgressListener(plConfig, consumer);
+	            consumer.addListener(progressListener);
+	        }
+        }
+        
         // Add to the consumer map
         if (!flowManager.addConsumer(consumer)) {
             consumer.dispose();
@@ -101,7 +118,7 @@ public class FlowRunner {
                     "Unable to add another consumer, consumer queue is full. "
                             + "Please dispose some completed consumer before submit a new one.");
         }
-
+        
         return consumer;
     }
 
