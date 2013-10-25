@@ -77,7 +77,13 @@
     <!-- ============================== -->
     <!-- Platform -->
     <!-- ============================== -->
-
+	<dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>jstl</artifactId>
+		<version>1.2</version>
+		<!-- scope>provided</scope -->
+	</dependency>
+	
     <!--
         Provides class org.apache.cxf.transport.servlet.CXFServlet
         when the rest profile is not enabled

@@ -74,11 +74,11 @@ public class Ds2dsAction extends DsBaseAction {
 
     private static final List<String> ACCEPTED_FILE_TYPES = Collections.unmodifiableList(Arrays.asList("xml", "shp", "run"));
 
-    private Ds2dsConfiguration configuration = null;
+	private Ds2dsConfiguration actionConfiguration;
 
     public Ds2dsAction(Ds2dsConfiguration actionConfiguration) {
         super(actionConfiguration);
-        configuration = super.configuration; // this has been cloned and should be shared between DsBaseAction and this.
+        this.actionConfiguration = actionConfiguration;
     }
 
     @Override
@@ -100,6 +100,7 @@ public class Ds2dsAction extends DsBaseAction {
         final Queue<EventObject> outputEvents = new LinkedList<EventObject>();
 
         while (events.size() > 0) {
+            final Ds2dsConfiguration configuration = (Ds2dsConfiguration)actionConfiguration.clone();
             final EventObject ev;
             try {
                 if ((ev = events.remove()) != null) {
@@ -109,12 +110,12 @@ public class Ds2dsAction extends DsBaseAction {
 
                     Queue<FileSystemEvent> acceptableFiles = acceptableFiles(unpackCompressedFiles(ev));
                     if (acceptableFiles.size() == 0) {
-                        failAction("No file to process");
+                        failAction("No file to process", configuration);
                     } else {
                         List<ActionException> exceptions = new ArrayList<ActionException>();
                         for (FileSystemEvent fileEvent : acceptableFiles) {
                             try {
-                                EventObject output = importFile(fileEvent);
+                                EventObject output = importFile(fileEvent, configuration);
                                 if (output != null) {
                                     // add the event to the return
                                     outputEvents.add(output);
@@ -147,10 +148,10 @@ public class Ds2dsAction extends DsBaseAction {
                 }
             } catch (ActionException ioe) {
                 failAction("Unable to produce the output, "
-                        + ioe.getLocalizedMessage(), ioe);
+                        + ioe.getLocalizedMessage(), ioe, configuration);
             } catch (Exception ioe) {
                 failAction("Unable to produce the output: "
-                        + ioe.getLocalizedMessage(), ioe);
+                        + ioe.getLocalizedMessage(), ioe, configuration);
             }
         }
         return outputEvents;
@@ -163,22 +164,22 @@ public class Ds2dsAction extends DsBaseAction {
      * @return ouput EventObject (an xml describing the output feature)
      * @throws ActionException
      */
-    private EventObject importFile(FileSystemEvent fileEvent) throws ActionException {
+    private EventObject importFile(FileSystemEvent fileEvent, Ds2dsConfiguration configuration) throws ActionException {
         DataStore sourceDataStore = null;
         DataStore destDataStore = null;
 
         final Transaction transaction = new DefaultTransaction("create");
         try {
             // source
-            sourceDataStore = createSourceDataStore(fileEvent);
-            Query query = buildSourceQuery(sourceDataStore);
+            sourceDataStore = createSourceDataStore(fileEvent, configuration);
+            Query query = buildSourceQuery(sourceDataStore, configuration);
             FeatureStore<SimpleFeatureType, SimpleFeature> featureReader = createSourceReader(
                     sourceDataStore, transaction, query);
 
             // output
-            destDataStore = createOutputDataStore();
+            destDataStore = createOutputDataStore(configuration);
             SimpleFeatureType schema = buildDestinationSchema(featureReader
-                    .getSchema());
+                    .getSchema(), configuration);
 
             FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter = createOutputWriter(
                     destDataStore, schema, transaction);
@@ -188,7 +189,7 @@ public class Ds2dsAction extends DsBaseAction {
             Map<String, String> schemaDiffs = compareSchemas(destSchema, schema);
             SimpleFeatureBuilder builder = new SimpleFeatureBuilder(destSchema);
 
-            purgeData(featureWriter);
+            purgeData(featureWriter, configuration);
 
             updateTask("Reading data");
             int total = featureReader.getCount(query);
@@ -198,7 +199,7 @@ public class Ds2dsAction extends DsBaseAction {
             try {
                 while (iterator.hasNext()) {
                     SimpleFeature feature = buildFeature(builder,
-                            iterator.next(), schemaDiffs, sourceDataStore);
+                            iterator.next(), schemaDiffs, sourceDataStore, configuration);
                     featureWriter.addFeatures(DataUtilities
                             .collection(feature));
                     count++;
@@ -214,7 +215,7 @@ public class Ds2dsAction extends DsBaseAction {
             updateTask("Data imported (" + count + " features)");
             transaction.commit();
             listenerForwarder.completed();
-            return buildOutputEvent();
+            return buildOutputEvent(configuration);
         } catch (Exception ioe) {
             try {
                 transaction.rollback();
@@ -310,7 +311,7 @@ public class Ds2dsAction extends DsBaseAction {
      * @return
      */
     private SimpleFeatureType buildDestinationSchema(
-            SimpleFeatureType sourceSchema) {
+            SimpleFeatureType sourceSchema, Ds2dsConfiguration configuration) {
         String typeName = configuration.getOutputFeature().getTypeName();
         if (typeName == null) {
             typeName = sourceSchema.getTypeName();
@@ -336,8 +337,8 @@ public class Ds2dsAction extends DsBaseAction {
         builder.setCRS(crs);
         builder.setName(typeName);
 
-        for (String attributeName : buildOutputAttributes(sourceSchema)) {
-            builder.add(buildSchemaAttribute(attributeName, sourceSchema, crs));
+        for (String attributeName : buildOutputAttributes(sourceSchema, configuration)) {
+            builder.add(buildSchemaAttribute(attributeName, sourceSchema, crs, configuration));
         }
         return builder.buildFeatureType();
     }
@@ -349,14 +350,14 @@ public class Ds2dsAction extends DsBaseAction {
      * @param sourceSchema
      * @return
      */
-    private Collection<String> buildOutputAttributes(SimpleFeatureType sourceSchema) {
+    private Collection<String> buildOutputAttributes(SimpleFeatureType sourceSchema, Ds2dsConfiguration configuration) {
 
         if (configuration.isProjectOnMappings()) {
             return configuration.getAttributeMappings().keySet();
         } else {
             List<String> attributes = new ArrayList<String>();
             for (AttributeDescriptor attr : sourceSchema.getAttributeDescriptors()) {
-                attributes.add(getAttributeMapping(attr.getLocalName()));
+                attributes.add(getAttributeMapping(attr.getLocalName(), configuration));
             }
             return attributes;
         }
@@ -368,7 +369,7 @@ public class Ds2dsAction extends DsBaseAction {
      * @param localName
      * @return
      */
-    private String getAttributeMapping(String localName) {
+    private String getAttributeMapping(String localName, Ds2dsConfiguration configuration) {
         for (String outputName : configuration.getAttributeMappings().keySet()) {
             if (configuration.getAttributeMappings().get(outputName).toString().equals(localName)) {
                 return outputName;
@@ -386,7 +387,7 @@ public class Ds2dsAction extends DsBaseAction {
      * @return
      */
     private AttributeDescriptor buildSchemaAttribute(String attributeName,
-            SimpleFeatureType schema, CoordinateReferenceSystem crs) {
+            SimpleFeatureType schema, CoordinateReferenceSystem crs, Ds2dsConfiguration configuration) {
         AttributeDescriptor attr;
         if (configuration.getAttributeMappings().containsKey(attributeName) && !isExpression(configuration.getAttributeMappings()
                 .get(attributeName).toString())) {
