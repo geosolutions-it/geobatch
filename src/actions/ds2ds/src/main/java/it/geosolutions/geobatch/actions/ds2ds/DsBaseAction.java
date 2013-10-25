@@ -85,8 +85,6 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(DsBaseAction.class);
 
-	protected Ds2dsConfiguration configuration = null;
-	
 	private Filter filter;
 	
 	private List<PrimaryKeyColumn> pks;
@@ -137,7 +135,6 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 	
 	public DsBaseAction(ActionConfiguration actionConfiguration) {
 		super(actionConfiguration);
-		this.configuration = (Ds2dsConfiguration)actionConfiguration.clone();
 		this.pks = null;
 		this.isPkGenerated = false;
 	}
@@ -148,7 +145,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @param featureWriter
      * @throws IOException
      */
-    protected void purgeData(FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter) throws Exception {
+    protected void purgeData(FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter, Ds2dsConfiguration configuration) throws Exception {
         if(configuration.isForcePurgeAllData()){
             updateTask("Purging ALL existing data");
             featureWriter.removeFeatures(Filter.INCLUDE);
@@ -156,7 +153,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         }
         else if (configuration.isPurgeData()) {
             updateTask("Purging existing data");
-            featureWriter.removeFeatures(buildFilter());
+            featureWriter.removeFeatures(buildFilter(configuration));
             updateTask("Data purged");
         }
     }
@@ -168,7 +165,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         }
     }
     
-    protected Filter buildFilter() throws Exception {
+    protected Filter buildFilter(Ds2dsConfiguration configuration) throws Exception {
         if(filter != null){
             return filter;
         }
@@ -227,10 +224,10 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @param sourceFeature
      * @return
      */
-    protected SimpleFeature buildFeature(SimpleFeatureBuilder builder, SimpleFeature sourceFeature, Map<String, String> mappings, DataStore srcDataStore) {
+    protected SimpleFeature buildFeature(SimpleFeatureBuilder builder, SimpleFeature sourceFeature, Map<String, String> mappings, DataStore srcDataStore, Ds2dsConfiguration configuration) {
         for (AttributeDescriptor ad : builder.getFeatureType().getAttributeDescriptors()) {
             String attribute = ad.getLocalName();
-            builder.set(attribute, getAttributeValue(sourceFeature, attribute, mappings));
+            builder.set(attribute, getAttributeValue(sourceFeature, attribute, mappings, configuration));
         }
         SimpleFeature smf = null;
         if (srcDataStore != null && srcDataStore instanceof JDBCDataStore && isPkGenerated == false) {
@@ -275,7 +272,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
                         sb.append(".");
                     }
                     first = false;                   
-                    sb.append(getAttributeValue(sourceFeature, el.getName(), mappings));
+                    sb.append(getAttributeValue(sourceFeature, el.getName(), mappings, configuration));
                 }
                 String fid = sb.toString();
                 smf = builder.buildFeature(fid);
@@ -317,9 +314,9 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @throws IOException
      * @throws ActionException
      */
-    protected DataStore createOutputDataStore() throws IOException, ActionException {
+    protected DataStore createOutputDataStore(Ds2dsConfiguration configuration) throws IOException, ActionException {
         updateTask("Connecting to output DataStore");
-        return createDataStore(configuration.getOutputFeature());
+        return createDataStore(configuration.getOutputFeature(), configuration);
     }
 
     /**
@@ -347,7 +344,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @throws FileNotFoundException
      * @throws ActionException
      */
-    protected EventObject buildOutputEvent() throws FileNotFoundException, ActionException {
+    protected EventObject buildOutputEvent(Ds2dsConfiguration configuration) throws FileNotFoundException, ActionException {
         updateTask("Building output event");
         FileOutputStream outStream = null;
         try {
@@ -389,11 +386,11 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         }
     }
 
-    protected void failAction(String message) throws ActionException {
-        failAction(message, null);
+    protected void failAction(String message, Ds2dsConfiguration configuration) throws ActionException {
+        failAction(message, null, configuration);
     }
 
-    protected void failAction(String message, Throwable t) throws ActionException {
+    protected void failAction(String message, Throwable t, Ds2dsConfiguration configuration) throws ActionException {
 
         if (LOGGER.isErrorEnabled()) {
             // checkme: this check may be useless: null checks may be performed by the log libs
@@ -416,7 +413,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @param attributeName name of the attribute in the output feature
      * @return
      */
-    protected Object getAttributeValue(SimpleFeature sourceFeature, String attributeName, Map<String, String> mappings) {
+    protected Object getAttributeValue(SimpleFeature sourceFeature, String attributeName, Map<String, String> mappings, Ds2dsConfiguration configuration) {
         // gets mapping for renamed attributes
         if (configuration.getAttributeMappings().containsKey(attributeName)) {
             attributeName = configuration.getAttributeMappings().get(attributeName).toString();
@@ -433,8 +430,12 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 			return spelExpression
 					.getValue(evaluationContext, sourceFeature);
 		} else {
-			return sourceFeature.getAttribute(attributeName);
-		}                
+			Object value = sourceFeature.getAttribute(attributeName);
+			if (value != null && value instanceof String) {
+				value = ((String) value).replace("\\", "\\\\");
+			}
+			return value;
+		}
     }
 
 	/**
@@ -465,7 +466,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      *
      * @deprecated Use {@link FeatureConfigurationUtil#createDataStore(it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration) }
      */
-    protected DataStore createDataStore(Map<String, Serializable> connect) throws IOException, ActionException {
+    protected DataStore createDataStore(Map<String, Serializable> connect, Ds2dsConfiguration configuration) throws IOException, ActionException {
 
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("DataStore connection parameters:");
@@ -480,20 +481,20 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
         }
         DataStore dataStore = DataStoreFinder.getDataStore(connect);
         if (dataStore == null) {
-            failAction("Cannot connect to DataStore: wrong parameters");
+            failAction("Cannot connect to DataStore: wrong parameters", configuration);
         }
         return dataStore;
     }
 
-    protected DataStore createDataStore(FeatureConfiguration config) throws IOException, ActionException {
+    protected DataStore createDataStore(FeatureConfiguration config, Ds2dsConfiguration configuration) throws IOException, ActionException {
         DataStore dataStore = FeatureConfigurationUtil.createDataStore(config);
         if (dataStore == null) {
-            failAction("Cannot connect to DataStore: wrong parameters");
+            failAction("Cannot connect to DataStore: wrong parameters", configuration);
         }
         return dataStore;
     }
 
-	protected DataStore createSourceDataStore(FileSystemEvent fileEvent) throws IOException, ActionException {
+	protected DataStore createSourceDataStore(FileSystemEvent fileEvent, Ds2dsConfiguration configuration) throws IOException, ActionException {
 		updateTask("Connecting to source DataStore");
 		String fileType = getFileType(fileEvent);
 		FeatureConfiguration sourceFeature = configuration.getSourceFeature();
@@ -515,7 +516,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 			sourceFeature.getDataStore()
 					.put("url", DataUtilities.fileToURL(fileEvent.getSource()));
         }
-		DataStore source = createDataStore(sourceFeature);
+		DataStore source = createDataStore(sourceFeature, configuration);
 		// if no typeName is configured, takes the first one registered in store
 		if(sourceFeature.getTypeName() == null) {
 			sourceFeature.setTypeName(source.getTypeNames()[0]);
@@ -537,7 +538,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 	 * @return
 	 * @throws IOException
 	 */
-        protected Query buildSourceQuery(DataStore sourceStore) throws Exception {
+        protected Query buildSourceQuery(DataStore sourceStore, Ds2dsConfiguration configuration) throws Exception {
             Query query = new Query();
             query.setTypeName(configuration.getSourceFeature().getTypeName());
             
@@ -564,7 +565,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
                 }
             }
             query.setCoordinateSystemReproject(coordinateReferenceSystemTarget);
-            query.setFilter(buildFilter());
+            query.setFilter(buildFilter(configuration));
             return query;
         }
 
