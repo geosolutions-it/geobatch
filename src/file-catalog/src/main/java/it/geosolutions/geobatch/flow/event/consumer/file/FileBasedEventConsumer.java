@@ -242,6 +242,10 @@ public class FileBasedEventConsumer
                     if (progressListenerService != null) {
                         ProgressListener progressListener = progressListenerService
                                 .createProgressListener(plConfig, action);
+                        // @see {@link ProgressListenerConfiguration#appendToListenerForwarder}
+                        if(Boolean.TRUE.equals(plConfig.getAppendToListenerForwarder())){
+                            getListenerForwarder().addListener(progressListener);
+                        }
                         action.addListener(progressListener);
                     } else {
                         throw new IllegalArgumentException("Could not find '" + listenerServiceID

@@ -31,6 +31,13 @@ public class ProgressListenerConfiguration extends BaseConfiguration implements 
 //        super();
 //    }
 
+    /**
+     * Flag to append this forwarder to the BaseEventConsumer listenerForwarder. 
+     * If true each listener it's added to the parent listener forwarder instead a specific listener.  
+     * Default it's false. 
+     */
+    private Boolean appendToListenerForwarder;
+
     public ProgressListenerConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
@@ -39,6 +46,21 @@ public class ProgressListenerConfiguration extends BaseConfiguration implements 
     public ProgressListenerConfiguration clone() {
         ProgressListenerConfiguration clone=(ProgressListenerConfiguration)super.clone();
         return clone;
+    }
+    
+
+    /**
+     * @return the appendToListenerForwarder
+     */
+    public Boolean getAppendToListenerForwarder() {
+        return appendToListenerForwarder;
+    }
+
+    /**
+     * @param appendToListenerForwarder the appendToListenerForwarder to set
+     */
+    public void setAppendToListenerForwarder(Boolean appendToListenerForwarder) {
+        this.appendToListenerForwarder = appendToListenerForwarder;
     }
 
 }
