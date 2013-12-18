@@ -39,8 +39,9 @@ An example of the xml input is:
 	</feature>
 
 To simplify things we also support as an input:
- * shapefiles
- * compressed files (containing either an xml or a shapefile)
+ * **shapefile** of course in that case no connection parameters are provided as input but the whole source datastore
+ * **compressed files** containing either an *xml* or a *shapefile*. Only **zip** archives are supported.
+ * a file with extension **.run** that is used to start the flow when both the input and output datasource connection parameters are specified directly in the flow configuration. In that cases user put a file in the whatch dir just to start the flow, not to provide more datastores info. Only the input file extension is important, the user can use any file changing its extension.
 
 Configuration
 ---------------
