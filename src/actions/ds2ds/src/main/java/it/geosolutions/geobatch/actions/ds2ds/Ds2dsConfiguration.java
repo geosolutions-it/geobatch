@@ -59,6 +59,18 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 	private Boolean forcePurgeAllData = false;
 	
 	/**
+	 * move (remove) data from the input feature after importing
+	 * If the configuration specify an ecqlFilter only the features selected by the filter will be removed
+	 * If no filter are provided this flag remove no features
+	 */
+	private Boolean moveData = false;
+	
+	/**
+	 *  move (remove) ALL data from the input feature after importing although a filter is specified if this flag is set to TRUE the flag moveData has no effect.
+	 */
+	private Boolean forceMoveAllData = false;
+	
+	/**
 	 *  optional mappings (renaming) from source feature attributes to output (key is output attribute name, value is source attribute name
 	 */
 	private Map<String,Serializable> attributeMappings; 
@@ -79,7 +91,7 @@ public class Ds2dsConfiguration extends ActionConfiguration {
         private String reprojectedCrs;
 	
 	public Ds2dsConfiguration(String id, String name, String description) {
-		super(id, name, description);		
+		super(id, name, description);	
 	}
 	
 	/**
@@ -135,6 +147,8 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 	public void setPurgeData(boolean purgeData) {
 		this.purgeData = purgeData;
 	}
+	
+	
 
 	/**
 	 * 
@@ -202,8 +216,36 @@ public class Ds2dsConfiguration extends ActionConfiguration {
         public void setForcePurgeAllData(Boolean forcePurgeAllData) {
             this.forcePurgeAllData = forcePurgeAllData;
         }
-    
+        
         /**
+         * @return the moveData
+         */
+        public Boolean isMoveData() {
+			return moveData == null ? false : moveData;
+		}
+
+        /**
+         * @return the forceMoveAllData
+         */
+        public Boolean isForceMoveAllData() {
+        	return (forceMoveAllData == null) ? false : forceMoveAllData;
+        }
+
+        /**
+         * @param moveData the moveData to set
+         */
+		public void setMoveData(Boolean moveData) {
+			this.moveData = moveData;
+		}
+
+        /**
+         * @param forceMoveAllData the forceMoveAllData to set
+         */
+		public void setForceMoveAllData(Boolean forceMoveAllData) {
+			this.forceMoveAllData = forceMoveAllData;
+		}
+
+		/**
 	 * Shortcut to set projection on source attributes.
 	 * @param attributes
 	 */

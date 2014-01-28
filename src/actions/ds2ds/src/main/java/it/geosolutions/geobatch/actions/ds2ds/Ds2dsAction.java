@@ -22,6 +22,7 @@
 package it.geosolutions.geobatch.actions.ds2ds;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -108,49 +109,54 @@ public class Ds2dsAction extends DsBaseAction {
                     updateTask("Working on incoming event: " + ev.getSource());
 
                     Queue<FileSystemEvent> acceptableFiles = acceptableFiles(unpackCompressedFiles(ev));
-                    if (acceptableFiles.size() == 0) {
-                        failAction("No file to process");
-                    } else {
-                        List<ActionException> exceptions = new ArrayList<ActionException>();
-                        for (FileSystemEvent fileEvent : acceptableFiles) {
-                            try {
-                                EventObject output = importFile(fileEvent);
-                                if (output != null) {
-                                    // add the event to the return
-                                    outputEvents.add(output);
-                                } else {
-                                    if (LOGGER.isWarnEnabled()) {
-                                        LOGGER.warn("No output produced");
-                                    }
-                                }
-                            } catch (ActionException e) {
-                                exceptions.add(e);
-                            }
+                    if(ev instanceof FileSystemEvent && ((FileSystemEvent)ev).getEventType().equals(FileSystemEventType.POLLING_EVENT)){
+                    	EventObject output = importFile((FileSystemEvent)ev);
+                    	outputEvents.add(output);
+                    }else{
+                    	if (acceptableFiles.size() == 0) {
+                    		failAction("No file to process");
+                    	} else {
+                    		List<ActionException> exceptions = new ArrayList<ActionException>();
+                    		for (FileSystemEvent fileEvent : acceptableFiles) {
+                    			try {
+                    				EventObject output = importFile(fileEvent);
+                    				if (output != null) {
+                    					// add the event to the return
+                    					outputEvents.add(output);
+                    				} else {
+                    					if (LOGGER.isWarnEnabled()) {
+                    						LOGGER.warn("No output produced");
+                    					}
+                    				}
+                    			} catch (ActionException e) {
+                    				exceptions.add(e);
+                    			}
 
-                        }
-                        if (acceptableFiles.size() == exceptions.size()) {
-                            throw new ActionException(this, exceptions.get(0).getMessage());
-                        } else if (exceptions.size() > 0) {
-                            if (LOGGER.isWarnEnabled()) {
-                                for (ActionException ex : exceptions) {
-                                    LOGGER.warn("Error in action: " + ex.getMessage());
-                                }
-                            }
-                        }
+                    		}
+                    		if (acceptableFiles.size() == exceptions.size()) {
+                    			throw new ActionException(this, exceptions.get(0).getMessage());
+                    		} else if (exceptions.size() > 0) {
+                    			if (LOGGER.isWarnEnabled()) {
+                    				for (ActionException ex : exceptions) {
+                    					LOGGER.warn("Error in action: " + ex.getMessage());
+                    				}
+                    			}
+                    		}
+                    	}
                     }
 
                 } else {
-                    if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error("Encountered a NULL event: SKIPPING...");
-                    }
-                    continue;
+                	if (LOGGER.isErrorEnabled()) {
+                		LOGGER.error("Encountered a NULL event: SKIPPING...");
+                	}
+                	continue;
                 }
             } catch (ActionException ioe) {
-                failAction("Unable to produce the output, "
-                        + ioe.getLocalizedMessage(), ioe);
+            	failAction("Unable to produce the output, "
+            			+ ioe.getLocalizedMessage(), ioe);
             } catch (Exception ioe) {
-                failAction("Unable to produce the output: "
-                        + ioe.getLocalizedMessage(), ioe);
+            	failAction("Unable to produce the output: "
+            			+ ioe.getLocalizedMessage(), ioe);
             }
         }
         return outputEvents;
@@ -174,13 +180,17 @@ public class Ds2dsAction extends DsBaseAction {
             Query query = buildSourceQuery(sourceDataStore);
             FeatureStore<SimpleFeatureType, SimpleFeature> featureReader = createSourceReader(
                     sourceDataStore, transaction, query);
+            
+            SimpleFeatureType sourceSchema = featureReader.getSchema();
+            FeatureStore<SimpleFeatureType, SimpleFeature> inputFeatureWriter = createWriter(
+            		sourceDataStore, sourceSchema, transaction);
 
             // output
             destDataStore = createOutputDataStore();
             SimpleFeatureType schema = buildDestinationSchema(featureReader
                     .getSchema());
 
-            FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter = createOutputWriter(
+            FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter = createWriter(
                     destDataStore, schema, transaction);
             SimpleFeatureType destSchema = featureWriter.getSchema();
 
@@ -212,6 +222,9 @@ public class Ds2dsAction extends DsBaseAction {
                 iterator.close();
             }
             updateTask("Data imported (" + count + " features)");
+            
+            moveData(inputFeatureWriter);
+            
             transaction.commit();
             listenerForwarder.completed();
             return buildOutputEvent();
@@ -301,7 +314,7 @@ public class Ds2dsAction extends DsBaseAction {
 
         return result;
     }
-
+    
     /**
 	 * Builds the output Feature schema.
 	 * By default it uses the original source schema, if not overriden by configuration.
