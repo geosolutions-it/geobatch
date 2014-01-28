@@ -70,6 +70,8 @@ Will contain the following child elements:
     * **ecqlFilter**: specify an ECQL filter to the source datastore. Just the features filtered will be copyed.
     * **purgeData**: remove existing data from the output feature, if a filter is specified remove just the features filtered. The default value is false.
     * **forcePurgeAllData**: remove ALL existing data from the output feature although a filter is specified. If this flag is set to TRUE the flag purgeData has no effect. The default value is false.
+    * **moveData**: remove copied data from the input feature, if a filter is specified remove just the features filtered. The default value is false.
+    * **moveAllData**: remove ALL existing data from the input feature although a filter is specified. If this flag is set to TRUE the flag moveData has no effect. The default value is false.
     * **attributeMappings**: attribute mappings (from output to source) for projection (see projectOnMappings) / renaming / transformation; a simple attribute name can be used a source, or an SpEl expression for attribute(s) transformation (e.g. #{MY_ATTR + 1})
     * **projectOnMappings**: if true only attribute present in attributeMappings are copied to the output feature
     * **ReprojectedCrs**: specify a CRS as EPSG code used to perform a reprojection from SourceFeature to OutputFeature. Note that this feature is affected by *Source feature* and *Output feature crs* attributes settings. If *Source-crs* is not null the projection is performed from that CRS to the projectedCRS without read CRS from feature. If *Output-crs* is not null the projection will not affected but the feature will be stored as *Output-crs* otherwise the *ReprojectedCrs* code will be used.
@@ -180,6 +182,8 @@ Configuration example:
 		</attributeMappings>
 		<!-- remove data in the output feature before importing the new one -->
 		<purgeData>true</purgeData>
+        <!-- don't remove data in the input feature after importing -->
+		<moveData>false</moveData>
 		<ecqlFilter>LAND_KM < 3000 OR STATE_NAME = 'California'</ecqlFilter>
 			
 	</Ds2dsConfiguration>
