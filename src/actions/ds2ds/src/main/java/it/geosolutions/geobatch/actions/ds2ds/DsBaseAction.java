@@ -160,6 +160,25 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
             updateTask("Data purged");
         }
     }
+    
+    /**
+     * Purge data on input feature, if requested.
+     *
+     * @param featureWriter
+     * @throws IOException
+     */
+    protected void moveData(FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter) throws Exception {
+        if(configuration.isForceMoveAllData()){
+            updateTask("Remove ALL DATA from input feature");
+            featureWriter.removeFeatures(Filter.INCLUDE);
+            updateTask("Data purged");
+        }
+        else if (configuration.isMoveData()) {
+            updateTask("Remove DATA from input feature with FILTER");
+            featureWriter.removeFeatures(buildFilter());
+            updateTask("Data purged");
+        }
+    }
 
     protected void updateTask(String task) {
         listenerForwarder.setTask(task);
@@ -197,7 +216,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @return
      * @throws IOException
      */
-    protected FeatureStore<SimpleFeatureType, SimpleFeature> createOutputWriter(DataStore store, SimpleFeatureType schema, Transaction transaction) throws IOException {
+    protected FeatureStore<SimpleFeatureType, SimpleFeature> createWriter(DataStore store, SimpleFeatureType schema, Transaction transaction) throws IOException {
         String destTypeName = schema.getTypeName();
         boolean createSchema = true;
         for (String typeName : store.getTypeNames()) {
@@ -331,7 +350,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @param message
      */
     protected void updateImportProgress(int progress, int total, String message) {
-        float f = total == 0 ? 0 : (float) progress / total;
+        float f = total == 0 ? 0 : (float) progress*100 / total;
         listenerForwarder.progressing(f, message);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Importing data: " + progress + "/" + total);
