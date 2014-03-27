@@ -42,6 +42,13 @@
       <artifactId>jai_codec</artifactId>
     </dependency>
     <!-- ============================== -->
+    <!-- JAI-Ext for settings			-->
+    <!-- ============================== -->
+	<dependency>
+		<groupId>it.geosolutions.jaiext.scheduler</groupId>
+		<artifactId>jt-scheduler</artifactId>
+	</dependency>
+    <!-- ============================== -->
     <!-- GeoBatch -->
     <!-- ============================== -->
     <dependency>
