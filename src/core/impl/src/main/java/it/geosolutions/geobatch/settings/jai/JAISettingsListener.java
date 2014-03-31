@@ -25,10 +25,12 @@ package it.geosolutions.geobatch.settings.jai;
 import it.geosolutions.geobatch.settings.GBSettings;
 import it.geosolutions.geobatch.settings.GBSettingsDAO;
 import it.geosolutions.geobatch.settings.GBSettingsListener;
+import it.geosolutions.jaiext.scheduler.JAIExtTileScheduler;
 
 import javax.media.jai.JAI;
 import javax.media.jai.RecyclingTileFactory;
 import javax.media.jai.TileCache;
+import javax.media.jai.TileScheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,10 +113,18 @@ public class JAISettingsListener extends GBSettingsListener<JAISettings> {
         // Setting up Cache Threshold
         jaiCache.setMemoryThreshold((float) jai.getMemoryThreshold());
         
-        jaiDef.getTileScheduler().setParallelism(jai.getTileThreads());
-        jaiDef.getTileScheduler().setPrefetchParallelism(jai.getTileThreads());
-        jaiDef.getTileScheduler().setPriority(jai.getTilePriority());
-        jaiDef.getTileScheduler().setPrefetchPriority(jai.getTilePriority());
+        // Setting up TileScheduler
+        TileScheduler jaiScheduler = new JAIExtTileScheduler(); 
+        
+        jaiScheduler.setParallelism(jai.getTileThreads());
+        jaiScheduler.setPrefetchParallelism(jai.getTileThreads());
+        jaiScheduler.setPriority(jai.getTilePriority());
+        jaiScheduler.setPrefetchPriority(jai.getTilePriority());
+
+        jai.setTileScheduler(jaiScheduler);
+        jaiDef.setTileScheduler(jaiScheduler);
+        if (LOGGER.isInfoEnabled())
+            LOGGER.info("JAI-Ext Tile Scheduler set");
         
         // Workaround for native mosaic BUG
 //        Registry.setNativeAccelerationAllowed("Mosaic", jai.isAllowNativeMosaic(), jaiDef);
