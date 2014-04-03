@@ -22,6 +22,7 @@
 
 package it.geosolutions.geobatch.beam;
 
+import it.geosolutions.geobatch.beam.msgwarp.MSGConfiguration;
 import it.geosolutions.geobatch.beam.netcdf.BeamNetCDFWriter;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
@@ -105,6 +106,17 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
      */
     private String outputFormat = "NETCDF"; 
    
+    /**
+     * Whether to use the default Beam georectification, or use the MSGWarp object.
+     * Default value is Boolean.<code>false</code>
+     */
+    private boolean useBeam = false;
+
+    /**
+     * Object storing the configuration for an MSG NetCDF file
+     */
+    private MSGConfiguration msgConf = null;
+
     public static BeamFormatWriter getFormatWriter(String storeType) {
         if (storeType.equalsIgnoreCase(OutputFormat.NETCDF.toString())) {
             return OutputFormat.NETCDF.getFormatWriter();
@@ -232,4 +244,22 @@ public class BeamGeorectifierConfiguration extends ActionConfiguration {
         this.largeFile = largeFile;
     }
 
+
+    public boolean isUseBeam() {
+        return useBeam;
+    }
+
+    public void setUseBeam(boolean useBeam) {
+        this.useBeam = useBeam;
+    }
+
+
+    public MSGConfiguration getMsgConf() {
+        return msgConf;
+    }
+
+
+    public void setMsgConf(MSGConfiguration msgConf) {
+        this.msgConf = msgConf;
+    }
 }

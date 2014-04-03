@@ -21,6 +21,8 @@
  */
 package it.geosolutions.geobatch.beam.netcdf;
 
+import it.geosolutions.geobatch.beam.msgwarp.MSGProduct;
+
 import java.awt.geom.AffineTransform;
 import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
@@ -96,7 +98,17 @@ public class NCUtilities {
 
     public final static String NO_COORDS = "NoCoords";
 
+    public final static String SCALE_OFFSET = "add_offset";
+
+    public final static String SCALE_FACTOR = "scale_factor";
+
     final static Set<String> EXCLUDED_ATTRIBUTES = new HashSet<String>();
+
+    private static final String COMMENT = "comment";
+
+    private static final String VALID_MAX = "valid_max";
+
+    private static final String VALID_MIN = "valid_min";
 
     static {
         EXCLUDED_ATTRIBUTES.add(UNITS);
@@ -345,6 +357,33 @@ public class NCUtilities {
                 isGeophysics ? band.getGeophysicalNoDataValue() : band.getNoDataValue());
     
         // TODO need to add more attributes when dealing with non geophysical values
+
+        // if the input band belongs to a MSGProduct
+        Product prod = band.getProduct();
+        if(prod instanceof MSGProduct){
+            ncFileOut.addVariableAttribute(varName, NCUtilities.LONGNAME, band.getDescription());
+            ncFileOut.addVariableAttribute(varName, NCUtilities.SCALE_FACTOR, band.getScalingFactor());
+            ncFileOut.addVariableAttribute(varName, NCUtilities.SCALE_OFFSET, band.getScalingOffset());
+            String comment = band.getComment();
+            if(comment!=null && !comment.isEmpty()){
+                ncFileOut.addVariableAttribute(varName, NCUtilities.COMMENT, comment);
+            }
+
+            String standardName = band.getStandardName();
+            if(standardName!=null && !standardName.isEmpty()){
+                ncFileOut.addVariableAttribute(varName, NCUtilities.STANDARD_NAME, standardName);
+            }
+
+            Number validMax = band.getValidMax();
+            if(validMax!=null){
+                ncFileOut.addVariableAttribute(varName, NCUtilities.VALID_MAX, validMax);
+            }
+
+            Number validMin = band.getValidMin();
+            if(validMin!=null){
+                ncFileOut.addVariableAttribute(varName, NCUtilities.VALID_MIN, validMin);
+            }
+        }
     }
 
     static void copyGlobalAttributes(NetcdfFileWriteable ncFileOut, Product netcdfProduct) {

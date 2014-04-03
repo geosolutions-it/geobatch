@@ -1,5 +1,6 @@
 package it.geosolutions.geobatch.beam;
 
+import it.geosolutions.geobatch.beam.msgwarp.MSGConfiguration;
 import it.geosolutions.geobatch.catalog.Identifiable;
 import it.geosolutions.geobatch.flow.event.IProgressListener;
 
@@ -112,11 +113,11 @@ public class BeamGeorectifyTest {
         configuration.setFilterInclude(false);
         configuration.setGeophysics(true);
         configuration.setJAICapacity(512*1024*1024);
-        final File outputFolder = new File("C:\\data\\dlr\\output\\msg2\\");
+        final File outputFolder = new File("C:\\work\\EUMETSAT\\test_data\\output");
         configuration.setOutputFolder(outputFolder.getAbsolutePath());
         configuration.setOutputFormat("NETCDF");
         
-        final String sourceFolder = "c:/data/dlr/eumetsat"; //eumetsat/"; 
+        final String sourceFolder = "C:\\work\\EUMETSAT\\test_data"; //eumetsat/";
 
         final ConfigSamplePair[] cases = new ConfigSamplePair[] {
 //                new ConfigSamplePair(
@@ -125,10 +126,18 @@ public class BeamGeorectifyTest {
 //                new ConfigSamplePair(
 //                        sourceFolder,"W_XX-EUMETSAT-Darmstadt,VIS+IR+IMAGERY,MET7+MVIRI_C_EUMS_20120904163000.nc", // Meteosat MSG2
 //                        configuration.clone()),
+//                new ConfigSamplePair(
+//                       sourceFolder,"W_XX-EUMETSAT-Darmstadt,HYPERSPECT+SOUNDING,METOPA+IASI_C_EUMP_20121120113254_31593_eps_o_l1c.nc", // METOPA IASI
+//                                                                                                                                        // L1C
+//                        configuration.clone()),
                 new ConfigSamplePair(
-                       sourceFolder,"W_XX-EUMETSAT-Darmstadt,HYPERSPECT+SOUNDING,METOPA+IASI_C_EUMP_20121120113254_31593_eps_o_l1c.nc", // METOPA IASI
-                                                                                                                                        // L1C
-                        configuration.clone()),
+                        sourceFolder,"W_XX-EUMETSAT-Darmstadt,VIS+IR+IMAGERY,MSG3+SEVIRI_C_EUMG_20130421120010.nc", // Meteosat MSG3
+                                                                                                                                         // L1C
+                         configuration.clone()),
+//                 new ConfigSamplePair(
+//                         sourceFolder,"SS30_SR5_TS10.0_PPSD10_W_XX-EUMETSAT-Darmstadt,VIS+IR+IMAGERY,MSG3+SEVIRI_C_EUMG_20130421120010.nc", // Meteosat MSG3
+//                                                                                                                                          // L1C
+//                          configuration.clone()),
 //                new ConfigSamplePair(
 //                        sourceFolder,"W_XX-EUMETSAT-Darmstadt,IASI,METOPA+IASI_C_EUMP_20121120113254_31593_eps_o_l2.nc", // METOPA IASI L2
 //                        configuration.clone()),
@@ -157,10 +166,23 @@ public class BeamGeorectifyTest {
                 singlecase.config.setDimensions("numSigma");
                 // Forcing coordinates creation for numSigma dimension to use stacking dimensions
                 singlecase.config.setForceCoordinates(true);
-            }  else if (singlecase.file.contains("MSG2")) {
+            }  else if (singlecase.file.contains("MSG3")) {
 //                singlecase.config.setLargeFile(true);
-                String parameters = "width=3600,height=1800";
+                String parameters = "width=3712,height=3712";
+                singlecase.config.setGeophysics(false);
                 singlecase.config.setParams(parameters);
+                singlecase.config.setUseBeam(false);
+                // Creation of an MSG configuration Object
+                MSGConfiguration config = new MSGConfiguration();
+                config.setEarthCentreDistance(42164);
+                config.setLrx(82);
+                config.setLry(-82);
+                config.setResol_angle_X(17.83);
+                config.setResol_angle_Y(17.83);
+                config.setUlx(-82);
+                config.setUly(82);
+                // Setting of the MSG configuration object
+                singlecase.config.setMsgConf(config);
             }
             BeamGeorectifier georectifier = new BeamGeorectifier(singlecase.config);
             georectifier.addListener(new MyProgressListener());

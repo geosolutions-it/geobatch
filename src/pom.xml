@@ -96,7 +96,7 @@
     <jetty.version>6.1.14</jetty.version>
     <nelios.restlet.version>1.1.10</nelios.restlet.version>
     <cxf-version>2.5.8</cxf-version>
-
+	<jaiext.version>1.0-SNAPSHOT</jaiext.version>
     <dao.type>xstream</dao.type>    <!-- the default dao type -->
     <allow.test.skip>true</allow.test.skip>
     <allow.test.failure.ignore>false</allow.test.failure.ignore>
