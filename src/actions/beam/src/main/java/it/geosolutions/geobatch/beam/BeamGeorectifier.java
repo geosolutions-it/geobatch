@@ -24,11 +24,23 @@ package it.geosolutions.geobatch.beam;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.beam.msgwarp.MSGConfiguration;
+import it.geosolutions.geobatch.beam.msgwarp.MSGProduct;
+import it.geosolutions.geobatch.beam.msgwarp.MSGWarp;
+import it.geosolutions.geobatch.beam.netcdf.NCUtilities;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.jaiext.interpolators.InterpolationNearest;
+import it.geosolutions.jaiext.range.Range;
+import it.geosolutions.jaiext.range.RangeFactory;
+import it.geosolutions.jaiext.warp.WarpDescriptor;
+import it.geosolutions.jaiext.warp.WarpRIF;
 import it.geosolutions.tools.io.file.Collector;
 
+import java.awt.RenderingHints;
+import java.awt.image.DataBuffer;
+import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderedImageFactory;
 import java.io.File;
 import java.io.FileFilter;
@@ -40,10 +52,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import javax.media.jai.OperationDescriptor;
 import javax.media.jai.OperationRegistry;
 import javax.media.jai.RegistryElementDescriptor;
+import javax.media.jai.RenderedOp;
+import javax.media.jai.Warp;
 import javax.media.jai.registry.RenderedRegistryMode;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
@@ -53,6 +68,7 @@ import org.esa.beam.framework.datamodel.Band;
 import org.esa.beam.framework.datamodel.Product;
 import org.esa.beam.framework.gpf.GPF;
 import org.esa.beam.gpf.operators.standard.reproject.ReprojectionOp;
+import org.jaitools.imageutils.ImageLayout2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +101,17 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
                 registry.registerDescriptor(op);
                 final RenderedImageFactory rif = new ReinterpretRIF();
                 registry.registerFactory(RenderedRegistryMode.MODE_NAME, descName, "com.bc.ceres.jai", rif);
+            }
+            
+            final OperationDescriptor opWarp = new WarpDescriptor();
+            final String descNameWarp = opWarp.getName();
+            
+            RegistryElementDescriptor descWarp = registry.getDescriptor(RenderedRegistryMode.MODE_NAME, descNameWarp);
+            
+            if (descWarp == null) {
+                registry.registerDescriptor(opWarp);
+                final RenderedImageFactory rif = new WarpRIF();
+                registry.registerFactory(RenderedRegistryMode.MODE_NAME, descNameWarp, "it.geosolutions.jaiext.roiaware", rif);
             }
             
         } catch (Exception e) {
@@ -292,7 +319,14 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
             } else {
                 operationParams = DEFAULT_PARAMS;
             }
-            reprojectedProduct = GPF.createProduct("Reproject", operationParams, reducedProduct);
+
+            // Check from the configuration if the beam georectification must be used or not
+            if(configuration.isUseBeam()){
+                reprojectedProduct = GPF.createProduct("Reproject", operationParams, reducedProduct);
+            }else{
+                reprojectedProduct = createGeorectifiedProduct(reducedProduct);
+            }
+
             listenerForwarder.progressing(20f, "Reprojecting");
 
             // Get a store depending on the requested format
@@ -404,6 +438,154 @@ public class BeamGeorectifier extends BaseAction<FileSystemEvent> {
             }
         }
         return product;
+    }
+
+
+    /**
+     * Creation of a final product where each Band is georectified.
+     *
+     * @param reducedProduct input product
+     * @return
+     */
+    private Product createGeorectifiedProduct(Product reducedProduct) {
+        int sceneRasterWidth = reducedProduct.getSceneRasterWidth();
+        int sceneRasterHeight = reducedProduct.getSceneRasterHeight();
+        // Output product
+        MSGProduct outputProduct = new MSGProduct(reducedProduct.getName(),
+                reducedProduct.getProductType(), sceneRasterWidth, sceneRasterHeight);
+        // Selection of the bands
+        Band[] bands = reducedProduct.getBands();
+        // Creation of the Warp object to use for doing the georectification
+        MSGConfiguration conf = configuration.getMsgConf();
+        double earthCentreDistance = conf.getEarthCentreDistance();
+        double ulx = conf.getUlx();
+        double uly = conf.getUly();
+        double lrx = conf.getLrx();
+        double lry = conf.getLry();
+        double subSatLon = conf.getSubSatLon();
+        Double resol_angle_X = conf.getResol_angle_X();
+        Double resol_angle_Y = conf.getResol_angle_Y();
+
+        // Cycle on the bands for rectification
+        for (Band band : bands) {
+            // Selection of the band raster dimensions
+            int bandSceneRasterWidth = band.getSceneRasterWidth();
+            int bandSceneRasterHeight = band.getSceneRasterHeight();
+            // Creation of the new band
+            Band newBand = new Band(band.getName(), band.getDataType(), bandSceneRasterWidth,
+                    bandSceneRasterHeight);
+            // For each band the associated image is taken
+            RenderedImage image = band.getSourceImage().getImage(0);
+            // Selection of the band related nodata
+            double nodata = band.getNoDataValue();
+            // Setting of the Band nodata
+            newBand.setNoDataValue(nodata);
+            // Setting of various parameters from the old band to the new band
+            prepareNewBand(newBand, band);
+            // Selection of the image data type
+            int dataType = image.getSampleModel().getDataType();
+            // Creation of the related nodata range.
+            Range range = prepareRange(nodata, dataType);
+            // Backgroudn values
+            double[] backgroundValues = new double[] { nodata };
+            // Interpolation object
+            Interpolation interpolation = new InterpolationNearest(range, false, nodata, dataType);
+            // JAI hints used for forcing the image to the selected width/height
+            ImageLayout2 layout = new ImageLayout2();
+            layout.setMinX(0).setMinY(0).setWidth(sceneRasterWidth).setHeight(sceneRasterHeight);
+            // Setting of the layout inside the RenderingHints
+            RenderingHints hints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout);
+            // Creation of the Warp object
+            Warp msgWarp = new MSGWarp(earthCentreDistance, ulx, uly, lrx, lry, sceneRasterWidth,
+                    sceneRasterHeight, subSatLon, resol_angle_X, resol_angle_Y,
+                    bandSceneRasterWidth * 1l, bandSceneRasterHeight * 1l);
+            // Elaboration of the image
+            RenderedOp warpedImage = WarpDescriptor.create(image, msgWarp, interpolation,
+                    backgroundValues, null, hints);
+            // Setting of the image inside the new band
+            newBand.setSourceImage(warpedImage);
+            // Adding the new band to the new product
+            outputProduct.addBand(newBand);
+        }
+        // Add the associated MathTransform
+        outputProduct.initMathTransform(ulx, uly, lrx, lry, sceneRasterWidth, sceneRasterHeight);
+
+        return outputProduct;
+    }
+
+    /**
+     * Private method for populating the new band with the parameters from the old band
+     *
+     * @param newBand
+     * @param band
+     */
+    private void prepareNewBand(Band newBand, Band band) {
+        // Setting of the Band description
+        newBand.setDescription(band.getDescription());
+        // Setting of the Scaling
+        newBand.setScalingFactor(band.getScalingFactor());
+        newBand.setScalingOffset(band.getScalingOffset());
+        // Setting of the unit
+        newBand.setUnit(band.getUnit());
+        // Setting of the band related geophysical nodata
+        newBand.setGeophysicalNoDataValue(band.getGeophysicalNoDataValue());
+        // Setting of the comments if present
+        String comment = band.getComment();
+        if(comment!=null && !comment.isEmpty()){
+            newBand.setComment(comment);
+        }
+        // Setting of the band standard name if present
+        String standardName = band.getStandardName();
+        if(standardName!=null && !standardName.isEmpty()){
+            newBand.setStandardName(standardName);
+        }
+        // Setting of the Valid Maximum Data if present
+        Number validMax = band.getValidMax();
+        if(validMax!=null){
+            newBand.setValidMax(validMax);
+        }
+        // Setting of the Valid Minimum Data if present
+        Number validMin = band.getValidMin();
+        if(validMin!=null){
+            newBand.setValidMin(validMin);
+        }
+    }
+
+    /**
+     * Prepares the nodata Range to use inside the JAI-EXT Warp operator
+     *
+     * @param nodata
+     * @param dataType
+     * @return
+     */
+    private Range prepareRange(double nodata, int dataType) {
+        Range range = null;
+
+        // Switch on the data type
+        switch (dataType) {
+            case DataBuffer.TYPE_BYTE:
+                range = RangeFactory.create((byte) nodata, true, (byte) nodata, true);
+                break;
+            case DataBuffer.TYPE_USHORT:
+                range = RangeFactory.createU((short) nodata, true, (short) nodata, true);
+                break;
+            case DataBuffer.TYPE_SHORT:
+                range = RangeFactory.create((short) nodata, true, (short) nodata, true);
+                break;
+            case DataBuffer.TYPE_INT:
+                range = RangeFactory.create((int) nodata, true, (int) nodata, true);
+                break;
+            case DataBuffer.TYPE_FLOAT:
+                range = RangeFactory.create((float) nodata, true, (float) nodata, true, true);
+                break;
+            case DataBuffer.TYPE_DOUBLE:
+                range = RangeFactory.create(nodata, true, nodata, true, true);
+                break;
+            default:
+                throw new IllegalArgumentException("Wrong image data type");
+        }
+
+        return range;
     }
 
 }

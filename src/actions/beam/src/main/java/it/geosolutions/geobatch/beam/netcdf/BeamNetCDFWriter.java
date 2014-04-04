@@ -22,6 +22,7 @@
 package it.geosolutions.geobatch.beam.netcdf;
 
 import it.geosolutions.geobatch.beam.BeamFormatWriter;
+import it.geosolutions.geobatch.beam.msgwarp.MSGProduct;
 import it.geosolutions.geobatch.beam.netcdf.NCUtilities.NCCoordinateDimension;
 import it.geosolutions.geobatch.beam.netcdf.NCUtilities.NCCoordinates;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
@@ -206,6 +207,13 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
                         }
                     }
                 }
+            }
+
+            // If the outputProduct is an instance of MSGProdut, the geophysics is always set to false.
+            // This is associated to the fact that the elaboration is on the source image of each band
+            // without modifying the geophysics data.
+            if(outputProduct instanceof MSGProduct){
+                geophysics = false;
             }
 
             // netCDF creation is made through 2 steps:
@@ -950,10 +958,19 @@ public class BeamNetCDFWriter implements BeamFormatWriter {
 
         // Get geocoding from a coordinate band
         final Band band = reprojectedProduct.getBand(NCUtilities.LAT);
-        final GeoCoding geoCoding = band.getGeoCoding();
 
-        // Get geotransformation and image properties to setup the coordinates
-        final MathTransform transform = geoCoding.getImageToMapTransform();
+        final MathTransform transform;
+
+        // If the product is an MSGProduct instance, then the related MathTransform is used
+        if(reprojectedProduct instanceof MSGProduct){
+            transform = ((MSGProduct)reprojectedProduct).getTransform();
+        }else{
+            final GeoCoding geoCoding = band.getGeoCoding();
+            transform = geoCoding.getImageToMapTransform();
+        }
+
+
+        // Get geotransformation and image properties to setup the coordinates 
         final MultiLevelImage image = band.getGeophysicalImage();
         final RenderedImage ri = image.getImage(0);
 
