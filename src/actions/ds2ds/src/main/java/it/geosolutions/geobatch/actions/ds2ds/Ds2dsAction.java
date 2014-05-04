@@ -44,6 +44,7 @@ import java.util.Queue;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
@@ -175,16 +176,24 @@ public class Ds2dsAction extends DsBaseAction {
 
         final Transaction transaction = new DefaultTransaction("create");
         try {
+            updateTask("Setting Source");
             // source
             sourceDataStore = createSourceDataStore(fileEvent);
+            updateTask("Setting Source query");
             Query query = buildSourceQuery(sourceDataStore);
-            FeatureStore<SimpleFeatureType, SimpleFeature> featureReader = createSourceReader(
+            updateTask("Creating FeatureSource");
+            // TODO: check input write permissions before casting to FeatureStore
+            FeatureSource<SimpleFeatureType, SimpleFeature> featureReader = createSourceReader(
                     sourceDataStore, transaction, query);
-            
-            SimpleFeatureType sourceSchema = featureReader.getSchema();
-            FeatureStore<SimpleFeatureType, SimpleFeature> inputFeatureWriter = createWriter(
-            		sourceDataStore, sourceSchema, transaction);
 
+            updateTask("Getting Source Schema");
+            SimpleFeatureType sourceSchema = featureReader.getSchema();
+            FeatureSource<SimpleFeatureType, SimpleFeature> inputFeatureWriter = null;
+            if(featureReader instanceof FeatureStore){
+            	inputFeatureWriter = createWriter(
+            			sourceDataStore, sourceSchema, transaction);
+            }
+            updateTask("Setting Output");
             // output
             destDataStore = createOutputDataStore();
             SimpleFeatureType schema = buildDestinationSchema(featureReader
@@ -194,6 +203,7 @@ public class Ds2dsAction extends DsBaseAction {
                     destDataStore, schema, transaction);
             SimpleFeatureType destSchema = featureWriter.getSchema();
 
+            updateTask("Checking schema");
             // check for schema case differences from input to output
             Map<String, String> schemaDiffs = compareSchemas(destSchema, schema);
             SimpleFeatureBuilder builder = new SimpleFeatureBuilder(destSchema);
@@ -223,7 +233,9 @@ public class Ds2dsAction extends DsBaseAction {
             }
             updateTask("Data imported (" + count + " features)");
             
-            moveData(inputFeatureWriter);
+            if(featureReader instanceof FeatureStore){
+            	moveData(inputFeatureWriter);
+            }
             
             transaction.commit();
             listenerForwarder.completed();
@@ -263,7 +275,7 @@ public class Ds2dsAction extends DsBaseAction {
      * @throws IOException
      */
     private FeatureIterator<SimpleFeature> createSourceIterator(Query query,
-            FeatureStore<SimpleFeatureType, SimpleFeature> featureReader)
+            FeatureSource<SimpleFeatureType, SimpleFeature> featureReader)
             throws IOException {
         FeatureCollection<SimpleFeatureType, SimpleFeature> features = featureReader
                 .getFeatures(query);
