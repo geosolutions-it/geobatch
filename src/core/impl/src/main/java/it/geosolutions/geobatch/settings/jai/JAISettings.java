@@ -26,6 +26,7 @@ import it.geosolutions.geobatch.settings.GBSettings;
 
 import javax.media.jai.JAI;
 import javax.media.jai.TileCache;
+import javax.media.jai.TileScheduler;
 
 /**
  * 
@@ -41,7 +42,8 @@ public class JAISettings extends GBSettings {
 	
     private transient JAI jai;
     private transient TileCache tileCache;
-    
+    private transient TileScheduler tileScheduler;
+
     private boolean allowInterpolation;
     
     public static final boolean DEFAULT_Recycling = false;
@@ -104,6 +106,20 @@ public class JAISettings extends GBSettings {
 	}
 
 
+    /**
+     * @return the TileScheduler used
+     */
+    public TileScheduler getTileScheduler() {
+		return tileScheduler;
+	}
+
+    /** 
+     * @param tileScheduler the TileScheduler to set
+     */
+	public void setTileScheduler(TileScheduler tileScheduler) {
+		this.tileScheduler = tileScheduler;
+	}
+	
 	/**
 	 * @return the allowInterpolation
 	 */
