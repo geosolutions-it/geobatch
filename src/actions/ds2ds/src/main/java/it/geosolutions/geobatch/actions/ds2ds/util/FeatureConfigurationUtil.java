@@ -61,11 +61,12 @@ public class FeatureConfigurationUtil {
             dataStore = DataStoreFinder.getDataStore(connect);
             if (dataStore == null) {
                 LOGGER.warn("Cannot connect to DataStore: wrong parameters");
+            } else {
+            	 LOGGER.warn("Connected to DataStore: wrong parameters");
             }
         } catch (IOException ex) {
             LOGGER.warn("Error searching datastore", ex);
-        }
-
+        }   
         return dataStore;
     }
 }

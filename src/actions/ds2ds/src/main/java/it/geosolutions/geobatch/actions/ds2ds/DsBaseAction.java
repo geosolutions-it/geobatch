@@ -47,6 +47,7 @@ import org.apache.commons.io.IOUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataUtilities;
+import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
@@ -167,17 +168,22 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
      * @param featureWriter
      * @throws IOException
      */
-    protected void moveData(FeatureStore<SimpleFeatureType, SimpleFeature> featureWriter) throws Exception {
-        if(configuration.isForceMoveAllData()){
-            updateTask("Remove ALL DATA from input feature");
-            featureWriter.removeFeatures(Filter.INCLUDE);
-            updateTask("Data purged");
-        }
-        else if (configuration.isMoveData()) {
-            updateTask("Remove DATA from input feature with FILTER");
-            featureWriter.removeFeatures(buildFilter());
-            updateTask("Data purged");
-        }
+    protected void moveData(FeatureSource<SimpleFeatureType, SimpleFeature> featureWriter) throws Exception {
+    	if(featureWriter instanceof FeatureStore){
+    		FeatureStore<SimpleFeatureType, SimpleFeature> featureStoreWriter = (FeatureStore<SimpleFeatureType, SimpleFeature>)featureWriter;
+	        if(configuration.isForceMoveAllData()){
+	            updateTask("Remove ALL DATA from input feature");
+	            featureStoreWriter.removeFeatures(Filter.INCLUDE);
+	            updateTask("Data purged");
+	        }
+	        else if (configuration.isMoveData()) {
+	            updateTask("Remove DATA from input feature with FILTER");
+	            featureStoreWriter.removeFeatures(buildFilter());
+	            updateTask("Data purged");
+	        }
+    	}else{
+            updateTask("Cannot purge on read only Sources, skipping");
+    	}
     }
 
     protected void updateTask(String task) {
@@ -546,6 +552,7 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 					.getCoordinateReferenceSystem());
 		}
 		configuration.setSourceFeature(sourceFeature);
+		updateTask("Source DataStore set");
 		return source;
 	}
 
@@ -597,13 +604,15 @@ public abstract class DsBaseAction extends BaseAction<EventObject> {
 	 * @return
 	 * @throws IOException
 	 */
-	protected FeatureStore<SimpleFeatureType, SimpleFeature> createSourceReader(
+	protected FeatureSource<SimpleFeatureType, SimpleFeature> createSourceReader(
 			DataStore sourceDataStore, final Transaction transaction,
 			Query query) throws IOException {
-		FeatureStore<SimpleFeatureType, SimpleFeature> featureReader =
-				(FeatureStore<SimpleFeatureType, SimpleFeature>) sourceDataStore
-				.getFeatureSource(query.getTypeName());
-		featureReader.setTransaction(transaction);
+		FeatureSource<SimpleFeatureType, SimpleFeature> featureReader =	(FeatureSource<SimpleFeatureType, SimpleFeature>) sourceDataStore.getFeatureSource(query.getTypeName());
+		if(featureReader instanceof FeatureStore){
+			FeatureStore<SimpleFeatureType, SimpleFeature> featureStoreReader =	(FeatureStore<SimpleFeatureType, SimpleFeature>) sourceDataStore.getFeatureSource(query.getTypeName());
+			featureStoreReader.setTransaction(transaction);
+			return featureReader;
+		}
 		return featureReader;
 	}
     
