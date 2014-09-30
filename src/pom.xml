@@ -1866,8 +1866,8 @@
     </repository>
     <repository>
       <id>opengeo</id>
-      <name>OpenGeo Maven Repository</name>
-      <url>http://repo.opengeo.org</url>
+      <name>BoundlessGeo Maven Repository</name>
+      <url>http://repo.boundlessgeo.com</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
