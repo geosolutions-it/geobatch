@@ -274,7 +274,7 @@
 	  <dependency>
         <groupId>net.sourceforge.hatbox</groupId>
         <artifactId>hatbox</artifactId>
-        <version>1.0.b9</version>
+        <version>1.0.b8</version>
       </dependency>
 	  
       <!-- gb-users DEPENDENCY -->
@@ -1865,9 +1865,9 @@
       <url>http://maven.geotoolkit.org/</url>
     </repository>
     <repository>
-      <id>opengeo</id>
+      <id>boundless</id>
       <name>BoundlessGeo Maven Repository</name>
-      <url>http://repo.boundlessgeo.com</url>
+      <url>http://repo.boundlessgeo.com/main</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
