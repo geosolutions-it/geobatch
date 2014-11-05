@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.services.rest.model;
 import it.geosolutions.geobatch.services.rest.model.RESTConsumerStatus.Status;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -32,15 +33,25 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlRootElement(name = "consumer")
-@XmlType(propOrder = {"uuid", "startDate"})
+@XmlType(propOrder = {"uuid", "startDate", "description"})
 public class RESTConsumerShort {
     
     private Status status;
     
     private String uuid;
     private String startDate;
+    private String description;
     
-    @XmlAttribute(name = "status")
+    
+    public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@XmlAttribute(name = "status")
     public Status getStatus() {
         return status;
     }
