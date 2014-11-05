@@ -264,6 +264,7 @@ public class RESTFileBasedFlowServiceImpl implements RESTFlowService {
             rcs.setUuid(bec.getId());
             rcs.setStatus(RESTUtils.convertStatus(bec.getStatus()));
             rcs.setStartDate(RESTUtils.formatDate(bec.getCreationTimestamp()));
+            rcs.setDescription(bec.toString());
             rcl.add(rcs);
         }
         return rcl;
