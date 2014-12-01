@@ -25,6 +25,7 @@ import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,11 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 	 * optional ecql filter in order to filter the source store
 	 */
 	private String ecqlFilter;
+	
+	/**
+	 * optional list of file types to skip.
+	 */
+	private List<String> skippedTypes;
 	
 	/**
          * coordinate system (EPSG code) used for feature reprojection.
@@ -161,6 +167,27 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 		return attributeMappings;
 	}
 
+	/**
+	 * 
+	 * @return 
+	 */
+	public List<String> getSkippedTypes() {
+		if(skippedTypes == null) {
+			skippedTypes = new ArrayList<String>();
+		}
+		return skippedTypes;
+	}
+
+	/**
+	 * 
+	 * @param 
+	 */
+	public void setSkippedTypes(List<String> skippedTypes) {
+		if(skippedTypes != null) {
+			this.skippedTypes = skippedTypes;
+		}
+	}
+	
 	/**
 	 * 
 	 * @param attributes attribute mappings from source to destination
@@ -289,6 +316,15 @@ public class Ds2dsConfiguration extends ActionConfiguration {
 	    	}
         } else {
         	ret.attributeMappings = null;
+        }
+        
+        if(this.skippedTypes != null) {
+	    	ret.skippedTypes=new ArrayList<String>();
+	    	for(String type : this.skippedTypes) {
+	    		ret.skippedTypes.add(type);
+	    	}
+        } else {
+        	ret.skippedTypes = null;
         }
 
         return ret;

@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import org.apache.commons.io.FilenameUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultTransaction;
@@ -74,7 +75,7 @@ public class Ds2dsAction extends DsBaseAction {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Ds2dsAction.class);
 
-    private static final List<String> ACCEPTED_FILE_TYPES = Collections.unmodifiableList(Arrays.asList("xml", "shp", "run"));
+    private static final List<String> ACCEPTED_FILE_TYPES = Collections.unmodifiableList(Arrays.asList("xml", "shp", "run", "feature"));
 
     private Ds2dsConfiguration configuration = null;
 
@@ -111,7 +112,19 @@ public class Ds2dsAction extends DsBaseAction {
 
                     Queue<FileSystemEvent> acceptableFiles = acceptableFiles(unpackCompressedFiles(ev));
                     if(ev instanceof FileSystemEvent && ((FileSystemEvent)ev).getEventType().equals(FileSystemEventType.POLLING_EVENT)){
-                    	EventObject output = importFile((FileSystemEvent)ev);
+                    	String fileType = getFileType((FileSystemEvent)ev);
+                    	EventObject output = null;
+                    	if("feature".equalsIgnoreCase(fileType)) {
+							configuration.getOutputFeature().setTypeName(
+									FilenameUtils
+											.getBaseName(((FileSystemEvent) ev)
+													.getSource().getName()));
+                    		output = buildOutputEvent();
+                    		updateImportProgress(1,1,"Completed");
+                    	} else {
+                    		output = importFile((FileSystemEvent)ev);
+                    	}
+                    	
                     	outputEvents.add(output);
                     }else{
                     	if (acceptableFiles.size() == 0) {
@@ -120,7 +133,18 @@ public class Ds2dsAction extends DsBaseAction {
                     		List<ActionException> exceptions = new ArrayList<ActionException>();
                     		for (FileSystemEvent fileEvent : acceptableFiles) {
                     			try {
-                    				EventObject output = importFile(fileEvent);
+                    				String fileType = getFileType(fileEvent);
+                                	EventObject output = null;
+                                	if("feature".equalsIgnoreCase(fileType)) {
+                                		configuration.getOutputFeature().setTypeName(
+            									FilenameUtils
+            											.getBaseName(((FileSystemEvent) ev)
+            													.getSource().getName()));
+                                		output = buildOutputEvent();
+                                		updateImportProgress(1,1,"Completed");
+                                	} else {
+                                		output = importFile(fileEvent);
+                                	}
                     				if (output != null) {
                     					// add the event to the return
                     					outputEvents.add(output);
@@ -175,6 +199,7 @@ public class Ds2dsAction extends DsBaseAction {
         DataStore destDataStore = null;
 
         final Transaction transaction = new DefaultTransaction("create");
+        boolean error = false;
         try {
             updateTask("Setting Source");
             // source
@@ -226,7 +251,7 @@ public class Ds2dsAction extends DsBaseAction {
                         updateImportProgress(count, total, "Importing data");
                     }
                 }
-                listenerForwarder.progressing(100F, "Data imported");
+                listenerForwarder.progressing(100F, "Data import completed");
 
             } finally {
                 iterator.close();
@@ -241,6 +266,7 @@ public class Ds2dsAction extends DsBaseAction {
             listenerForwarder.completed();
             return buildOutputEvent();
         } catch (Exception ioe) {
+        	error = true;
             try {
                 transaction.rollback();
             } catch (IOException e1) {
@@ -256,7 +282,11 @@ public class Ds2dsAction extends DsBaseAction {
             throw new ActionException(this, msg);
 
         } finally {
-            updateTask("Closing connections");
+        	if(error) {
+        		updateTask("Import Failed");
+        	} else {
+        		updateTask("Import Completed");
+        	}
             closeResource(sourceDataStore);
             closeResource(destDataStore);
             closeResource(transaction);
@@ -449,7 +479,7 @@ public class Ds2dsAction extends DsBaseAction {
         Queue<FileSystemEvent> accepted = new LinkedList<FileSystemEvent>();
         for (FileSystemEvent event : events) {
             String fileType = getFileType(event);
-            if (ACCEPTED_FILE_TYPES.contains(fileType)) {
+            if (ACCEPTED_FILE_TYPES.contains(fileType) && !configuration.getSkippedTypes().contains(fileType)) {
                 if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace("Accepted file: " + event.getSource().getName());
                 }
