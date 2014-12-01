@@ -30,7 +30,7 @@ import it.geosolutions.geobatch.services.rest.model.RESTFlow;
 import it.geosolutions.geobatch.services.rest.model.RESTFlowList;
 import it.geosolutions.geobatch.services.rest.model.RESTRunInfo;
 
-import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -90,6 +90,7 @@ public interface RESTFlowService {
     @Produces(MediaType.TEXT_PLAIN)
     String run(@PathParam("flowid") String flowId,
             @QueryParam("fastfail") Boolean fastfail,
+            @QueryParam("fileName") String fileName,
             @Multipart("data") byte[]data)
                 throws BadRequestRestEx, InternalErrorRestEx;
 
@@ -134,7 +135,10 @@ public interface RESTFlowService {
     @GET
     @Path("/flows/{flowId}/consumers")
     @Produces(MediaType.APPLICATION_XML)
-    RESTConsumerList getFlowConsumers(@PathParam("flowId") String flowId) throws NotFoundRestEx, InternalErrorRestEx;
+	RESTConsumerList getFlowConsumers(
+			@PathParam("flowId") String flowId,
+			@DefaultValue("false") @QueryParam("includeDetails") boolean includeDetails)
+			throws NotFoundRestEx, InternalErrorRestEx;
     
     /**
      * Returns a RESTFlow object that hold all the useful informations about a flow.

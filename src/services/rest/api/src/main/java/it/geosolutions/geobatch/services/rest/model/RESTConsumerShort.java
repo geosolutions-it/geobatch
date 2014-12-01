@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlRootElement(name = "consumer")
-@XmlType(propOrder = {"uuid", "startDate", "description"})
+@XmlType(propOrder = {"uuid", "startDate", "description", "details"})
 public class RESTConsumerShort {
     
     private Status status;
@@ -41,7 +41,15 @@ public class RESTConsumerShort {
     private String uuid;
     private String startDate;
     private String description;
+    private String details;
     
+    public String getDetails() {
+		return details;
+	}
+
+	public void setDetails(String details) {
+		this.details = details;
+	}
     
     public String getDescription() {
 		return description;
@@ -83,6 +91,8 @@ public class RESTConsumerShort {
                 + (uuid!=null? " uuid=" + uuid : "")
                 + (status != null? " status=" + status : "")
                 + (startDate != null? " startDate=" + startDate : "")
+                + (description != null? " description=" + description : "")
+                + (details != null? " details=" + details : "")
                 + ']';
     }
 
