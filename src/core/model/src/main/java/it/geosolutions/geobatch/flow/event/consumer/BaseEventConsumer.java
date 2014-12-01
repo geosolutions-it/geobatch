@@ -417,7 +417,14 @@ public abstract class BaseEventConsumer<XEO extends EventObject, ECC extends Eve
      * @return
      */
     protected abstract void setupAction(BaseAction action, int step);
-
+    
+    /**
+     * Returns Consumer detailed information in JSON format.
+     * 
+     * @return
+     */
+    public abstract EventConsumerDetails getDetails(); 
+    
     protected class EventConsumerListenerForwarder extends ProgressListenerForwarder {
 
         protected EventConsumerListenerForwarder(BaseIdentifiable owner) {

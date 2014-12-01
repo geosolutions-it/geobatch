@@ -93,11 +93,17 @@ public class ProgressListenerForwarder extends ProgressListener implements
 
     @Override
     public float getProgress() {
+    	for (IProgressListener l : listeners) {
+    		return l.getProgress();
+    	}
         throw new UnsupportedOperationException("ProgressListenerForwarder: Forwarder does not hold a status");
     }
 
     @Override
     public String getTask() {
+    	for (IProgressListener l : listeners) {
+    		return l.getTask();
+    	}
         throw new UnsupportedOperationException("ProgressListenerForwarder: Forwarder does not hold a status");
     }
 

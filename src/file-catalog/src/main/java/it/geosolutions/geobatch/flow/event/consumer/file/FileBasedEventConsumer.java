@@ -24,6 +24,7 @@ package it.geosolutions.geobatch.flow.event.consumer.file;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.annotations.GenericActionService;
 import it.geosolutions.geobatch.catalog.Catalog;
+import it.geosolutions.geobatch.catalog.impl.BaseDescriptable;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
@@ -35,8 +36,10 @@ import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
+import it.geosolutions.geobatch.flow.event.consumer.EventConsumerDetails;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
 import it.geosolutions.geobatch.flow.event.listeners.cumulator.CumulatingProgressListener;
+import it.geosolutions.geobatch.flow.event.listeners.logger.LoggingProgressListener;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.tools.io.file.IOUtils;
 
@@ -469,7 +472,7 @@ public class FileBasedEventConsumer
             throw e;
 
         } finally {
-            getListenerForwarder().progressing(100, "Running actions");
+            getListenerForwarder().progressing(100, "Completed");
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info(Thread.currentThread().getName() + " DONE!");
             }
@@ -655,6 +658,62 @@ public class FileBasedEventConsumer
             LOGGER.debug("Action config dir set to " + ret);
         return ret;
     }
+    
+    /**
+     * Returns Consumer detailed information in JSON format.
+     * 
+     * @return
+     */
+    public EventConsumerDetails getDetails() {
+    	FileBasedEventConsumerDetails details = new FileBasedEventConsumerDetails();
+    	for(FileSystemEvent event : eventsQueue) {
+    		details.addEvent(event.getSource().getName());
+    	}
+    	
+	    if(getListeners() != null) {
+	    	List<String> progress = new ArrayList<String>();
+	    	for(IProgressListener listener : getListeners()) {
+	    		if(listener instanceof LoggingProgressListener) {
+					details.addProgress(new FileBasedEventConsumerDetails.Progress(
+							listener.getTask(), listener.getProgress()
+						)
+					);
+		    		
+	    		}
+	    	}
+    	}
+    	if(getActions() != null) {
+    		List<String> actions = new ArrayList<String>();
+    		for(Action action : getActions()) {
+    			String actionName = action.getId();
+    			if(action instanceof BaseDescriptable) {
+    				actionName = ((BaseDescriptable)action).getName();
+    			}
+    			FileBasedEventConsumerDetails.Action actionDetail = new FileBasedEventConsumerDetails.Action(actionName);
+				
+    			if(action.getListeners() != null && !action.getListeners().isEmpty()) {
+    				
+    		    	for(Object obj : action.getListeners()) {
+    		    		if(obj instanceof LoggingProgressListener) {
+    		    			LoggingProgressListener listener = (LoggingProgressListener)obj;
+	    		    		actionDetail.addProgress(new FileBasedEventConsumerDetails.Progress(
+	    							listener.getTask(), listener.getProgress()
+	    						)
+	    		    		);
+	    		    				
+    		    		}
+    		    	}
+    			}
+    			details.addAction(actionDetail);
+    			
+    		}
+    	}
+		return details;
+    }
+
+
+
+	
     
     @Override
     public String toString() {
