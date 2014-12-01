@@ -40,7 +40,7 @@ public abstract class ProgressListener implements IProgressListener, Serializabl
     protected ProgressListenerConfiguration configuration;
 
     
-    private String currentTask = "TASK";
+    private String currentTask = "Not Started";
 
     
     private float progress = 0;

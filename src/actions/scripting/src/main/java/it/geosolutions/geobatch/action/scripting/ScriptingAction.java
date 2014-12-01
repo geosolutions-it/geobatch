@@ -293,12 +293,13 @@ public class ScriptingAction extends BaseAction<FileSystemEvent> implements
 				}
 				return ret;
 			}
-
+			listenerForwarder.setTask("Completed");
 			listenerForwarder.completed();
 
 			return ret;
 
 		} catch (Exception t) {
+			listenerForwarder.setTask("Completed with errors");
 			listenerForwarder.failed(t);
 			throw new ActionException(this, t.getMessage(), t);
 		} finally {
