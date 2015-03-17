@@ -41,10 +41,7 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
     </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
-    </dependency>
+
     <!-- ============================== -->
     <!--     Platform                   -->
     <!-- ============================== -->

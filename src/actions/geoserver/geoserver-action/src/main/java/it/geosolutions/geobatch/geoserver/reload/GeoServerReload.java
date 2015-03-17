@@ -1,6 +1,5 @@
 package it.geosolutions.geobatch.geoserver.reload;
 
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -20,6 +19,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.global.CatalogHolder;
 
 import javax.management.BadAttributeValueExpException;
 
@@ -56,13 +57,42 @@ public class GeoServerReload extends BaseAction<EventObject> {
 		return true;
 	}
 	
+    private String getAbsolutePath(String working_dir) {
+		if (working_dir == null)
+			return null;
+		final File working_dirFile = new File(working_dir);
+		if (working_dirFile.isAbsolute() || working_dirFile.isFile()
+				|| working_dirFile.isDirectory()) {
+			try {
+				return working_dirFile.getCanonicalPath();
+			} catch (IOException e) {
+				return null;
+			}
+		}
+
+		final FileBaseCatalog c = (FileBaseCatalog) CatalogHolder.getCatalog();
+		if (c == null)
+			return null;
+
+		try {
+			File fo = it.geosolutions.tools.commons.file.Path.findLocation(
+					working_dir, c.getConfigDirectory());
+			if (fo != null) {
+				return fo.toString();
+			}
+		} catch (Exception e) {
+			// eat
+		}
+		return null;
+	}
+    
 	@Override
 	public Queue<EventObject> execute(Queue<EventObject> events)
 			throws ActionException {
 
 		listenerForwarder.started();
 		listenerForwarder.setTask("Checking conf");
-		final String geoserverListName = Path.getAbsolutePath(conf
+		final String geoserverListName = getAbsolutePath(conf
 				.getGeoserverList());
 		final File geoserverListFile;
 		if (geoserverListName != null) {

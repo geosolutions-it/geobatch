@@ -40,11 +40,7 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
     </dependency>
-    <!-- tools -->
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
-    </dependency>
+    
     <!-- =========================================================== -->
     <!-- GeoStore -->
     <!-- =========================================================== -->

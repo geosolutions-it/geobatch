@@ -25,7 +25,6 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.actions.tools.adapter.EventAdapter;
 import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.annotations.CheckConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -59,8 +58,7 @@ import org.slf4j.LoggerFactory;
  */
 @Action(configurationClass=FreeMarkerConfiguration.class,configurationAlias="FreeMarker")
 public class FreeMarkerAction
-    extends BaseAction<EventObject>
-    implements EventAdapter<TemplateModelEvent> {
+    extends BaseAction<EventObject> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(FreeMarkerAction.class);
 
