@@ -49,13 +49,10 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-core-model</artifactId>
     </dependency>
-
-    <!-- OBSOLETE DEP TO BE REMOVED!!! -->
     <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
+        <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-fs-catalog</artifactId>
     </dependency>
-
     <!--  test  -->
     <dependency>
       <groupId>junit</groupId>

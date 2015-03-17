@@ -43,10 +43,6 @@
    
     <dependency>
       <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-octave</artifactId>
     </dependency>
     <dependency>

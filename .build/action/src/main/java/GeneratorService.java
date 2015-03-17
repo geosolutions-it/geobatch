@@ -21,9 +21,10 @@
  */
 package it.geosolutions.geobatch.##NAME_APP##.##NAME_ACT##;
 
-import it.geosolutions.geobatch.actions.tools.configuration.Path;
 import it.geosolutions.geobatch.catalog.impl.BaseService;
 import it.geosolutions.geobatch.flow.event.action.ActionService;
+import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.global.CatalogHolder;
 
 import java.util.EventObject;
 
@@ -54,10 +55,39 @@ public class ##NAME_ACT##GeneratorService extends BaseService implements
         }
     }
 
+    private String getAbsolutePath(String working_dir) {
+		if (working_dir == null)
+			return null;
+		final File working_dirFile = new File(working_dir);
+		if (working_dirFile.isAbsolute() || working_dirFile.isFile()
+				|| working_dirFile.isDirectory()) {
+			try {
+				return working_dirFile.getCanonicalPath();
+			} catch (IOException e) {
+				return null;
+			}
+		}
+
+		final FileBaseCatalog c = (FileBaseCatalog) CatalogHolder.getCatalog();
+		if (c == null)
+			return null;
+
+		try {
+			File fo = it.geosolutions.tools.commons.file.Path.findLocation(
+					working_dir, c.getConfigDirectory());
+			if (fo != null) {
+				return fo.toString();
+			}
+		} catch (Exception e) {
+			// eat
+		}
+		return null;
+	}
+    
     public boolean canCreateAction(##NAME_ACT##Configuration configuration) {
         try {
             // absolutize working dir
-            String wd = Path.getAbsolutePath(configuration.getWorkingDirectory());
+            String wd = getAbsolutePath(configuration.getWorkingDirectory());
             if (wd != null) {
                 configuration.setWorkingDirectory(wd);
                 return true;

@@ -41,14 +41,7 @@
       <groupId>it.geosolutions.geobatch</groupId>
       <artifactId>gb-fs-catalog</artifactId>
     </dependency>
-    
-    <!-- OBSOLETE DEP TO BE REMOVED!!! -->
-    <dependency>
-      <groupId>it.geosolutions.geobatch</groupId>
-      <artifactId>gb-action-tools</artifactId>
-    </dependency>
-
-    
+        
     <dependency>
       <groupId>it.geosolutions.tools</groupId>
       <artifactId>tools-compress</artifactId>

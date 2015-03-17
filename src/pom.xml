@@ -85,6 +85,7 @@
     <geostore.version>1.1.0</geostore.version>
 
     <gt.version>10.8</gt.version>
+    <gsmanager.version>1.6-SNAPSHOT</gsmanager.version>
     <imageio-ext.version>1.2-M102011</imageio-ext.version>
     <spring.version>3.0.3.RELEASE</spring.version>
     <spring.security.version>3.0.3.RELEASE</spring.security.version>
@@ -93,7 +94,7 @@
     <camel.version>2.9.0</camel.version>
     <slf4j.version>1.5.11</slf4j.version>
     <jt.version>1.2.0</jt.version>
-    <jaiext.version>1.0-SNAPSHOT</jaiext.version>
+    <jaiext.version>1.0-M09032015</jaiext.version>
     <jetty.version>6.1.14</jetty.version>
     <nelios.restlet.version>1.1.10</nelios.restlet.version>
     <cxf-version>2.5.11</cxf-version>
@@ -378,13 +379,7 @@
         <!-- Latest 2.3.x (not 2.4.x), at least 2.3.16 -->
         <version>2.3.19</version>
       </dependency>
-      <!-- tools -->
-      <dependency>
-        <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb-tools</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- tools -->
+      
       <!-- Apache Tika -->
       <dependency>
         <groupId>org.apache.tika</groupId>
@@ -498,7 +493,7 @@
       </dependency>
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
-        <artifactId>gb-action-tools</artifactId>
+        <artifactId>gb-tools</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- gb-action-commons -->
@@ -664,7 +659,7 @@
       <dependency>
         <groupId>it.geosolutions</groupId>
         <artifactId>geoserver-manager</artifactId>
-        <version>1.6-SNAPSHOT</version>
+        <version>${gsmanager.version}</version>
       </dependency>
       <!-- =========================================================== -->
       <!-- GeoStore -->
